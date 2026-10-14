@@ -15,10 +15,12 @@ work on or implement this plan until I give the command to execute it). That com
 `ayokoding-learn-revamp-03-catalog-and-metadata` must both be merged and archived on `origin/main`
 before Phase 1 starts. Phase 0 checks this and every contract this plan consumes from them.
 
+plan-quality-gate: PASS_WITH_FINDINGS (2 cycles, 0 open blocking, 9 open non-blocking; cycle 1 FAIL on a wrong `course-page-content.tsx` path (F1, HIGH), repaired and re-audited in cycle 2)
+
 ## Worktree
 
 - **Execution worktree:** `worktrees/ayokoding-learn-revamp-04-learning-experience/`
-- **Provisioning status:** pending
+- **Provisioning status:** provisioned
 - **Authoring-worktree exception:** this plan was authored inside the separate authoring worktree
   `.claude/worktrees/ayokoding-update` (branch `worktree-ayokoding-update`), which the user required
   for writing all plans of the AyoKoding Learn Revamp series together. That authoring worktree is
@@ -32,6 +34,21 @@ before Phase 1 starts. Phase 0 checks this and every contract this plan consumes
   writes the immutable identity and the first inventory row into this section, replaces
   `Provisioning status: pending` with `Provisioning status: provisioned` in the same plan update, and
   syncs with `origin/main` before any delivery packet starts.
+
+### Provisioned Worktree Identity
+
+- Declared repository-relative route: `worktrees/ayokoding-learn-revamp-04-learning-experience/`
+- Initial branch: `ayokoding-learn-revamp-04-learning-experience-base`
+- Created by: CommandCode plan-execution session
+- Created at: 2026-10-14T01:53Z
+
+### Delivery Branch Inventory
+
+| Branch                                               | Mode             | Lifecycle state | Proof                                                                        |
+| ---------------------------------------------------- | ---------------- | --------------- | ---------------------------------------------------------------------------- |
+| `ayokoding-learn-revamp-04-learning-experience-base` | `provisioned`    | `delivered`     | PR #702 merged; squash `1c848ae0e6460d50f2fe9d640e10e2f3d9c63b90`            |
+| `ayokoding-learn-revamp-04-learning-experience`      | `worktree-to-pr` | `active`        | created from `origin/main` `1c848ae0e` on 2026-10-14 (implementation branch) |
+
 - **Cleanup:** after the PR merges, the worktree and its branches come down through
   [Dev Artifact Clean-Up](../../../repo-governance/workflows/maintenance/dev-artifact-clean-up.md)
   (see Plan Archival).
@@ -459,7 +476,7 @@ Phase 0 opens no PR. Its evidence rides the DU-01 PR.
       scenarios fail.
 - [ ] [AI] **GREEN:** create `shell/lesson-context-provider.tsx`, `shell/context-bar.tsx`, and
       `shell/lesson-nav.tsx`; add the context bar and lesson navigation keys to both dictionaries; add
-      the optional `lesson` prop to `features/content/shell/course-page-content.tsx` (render
+      the optional `lesson` prop to `features/course-paths/shell/course-page-content.tsx` (render
       `LessonContextProvider`, `ContextBar` under the breadcrumb and above the `h1`, `StorageNotice`
       under the bar, and `LessonNav` in place of `PrevNext`); forward it from
       `course-page-path-content.tsx`; in `page.tsx`, compute `courseLocationFromSlug` and pass

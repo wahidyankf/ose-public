@@ -60,7 +60,7 @@ have no estimate (plan 03); when `k > 0` core courses lack one, append `roadmapH
 
 ## Changes to Existing App Files
 
-- `features/content/shell/course-page-content.tsx`: new optional prop `lesson?: LessonProps`. When
+- `features/course-paths/shell/course-page-content.tsx`: new optional prop `lesson?: LessonProps`. When
   present: render `LessonContextProvider` around `ContextBar` (above the `h1`, below the breadcrumb)
   and `LessonNav` (in place of `PrevNext`), plus `StorageNotice` under the bar. When absent: unchanged.
 - `features/course-paths/shell/course-page-path-content.tsx`: forwards `lesson` like other props.

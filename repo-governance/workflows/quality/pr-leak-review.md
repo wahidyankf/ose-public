@@ -25,9 +25,9 @@ Two entries share one judgement:
 
 - **Push.** Before any push, review the outgoing range privately per
   [Push Review](./pr-leak-review/002-push-review.md): nothing is posted, and a finding blocks the push.
-- **Merge.** A pull request is open and no owner `pass` record exists for its current head. Run
+- **Merge.** A pull request is open and no owner `pass` record exists for its current head. The delivery harness runs
   [Execution](./pr-leak-review/003-execution.md), then
-  [Evidence and Outcomes](./pr-leak-review/004-evidence-and-outcomes.md).
+  [Evidence and Outcomes](./pr-leak-review/004-evidence-and-outcomes.md) for that head before merge.
 
 ## Goal and Termination
 

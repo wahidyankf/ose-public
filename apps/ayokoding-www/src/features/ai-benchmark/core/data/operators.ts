@@ -22,14 +22,14 @@ export const OPERATORS: readonly BenchmarkOperator[] = [
     name: "Artificial Analysis — Coding Agent Index v1.5",
     shortName: "Artificial Analysis",
     url: "https://artificialanalysis.ai/agents/coding-agents",
-    checkedOn: "2026-10-08",
+    checkedOn: "2026-10-14",
   },
   {
     id: "datacurve",
     name: "Datacurve — DeepSWE v1.1 leaderboard",
     shortName: "Datacurve",
     url: "https://deepswe.datacurve.ai/",
-    checkedOn: "2026-10-08",
+    checkedOn: "2026-10-14",
     sourceUpdated: "2026-09-22",
   },
   {
@@ -37,7 +37,7 @@ export const OPERATORS: readonly BenchmarkOperator[] = [
     name: "Terminal-Bench — official 4.0 leaderboard",
     shortName: "Terminal-Bench board",
     url: "https://www.tbench.ai/leaderboard",
-    checkedOn: "2026-10-08",
+    checkedOn: "2026-10-14",
     sourceUpdated: "2026-09-21",
   },
   {
@@ -45,15 +45,15 @@ export const OPERATORS: readonly BenchmarkOperator[] = [
     name: "Vals AI — Terminal-Bench 4",
     shortName: "Vals AI",
     url: "https://www.vals.ai/benchmarks/terminal-bench-4",
-    checkedOn: "2026-10-08",
-    sourceUpdated: "2026-10-06",
+    checkedOn: "2026-10-14",
+    sourceUpdated: "2026-10-13",
   },
   {
     id: "scale",
     name: "Scale AI — SWE-Atlas QnA leaderboard",
     shortName: "Scale AI",
     url: "https://labs.scale.com/leaderboard/sweatlas-qna",
-    checkedOn: "2026-10-08",
+    checkedOn: "2026-10-14",
   },
 ];
 

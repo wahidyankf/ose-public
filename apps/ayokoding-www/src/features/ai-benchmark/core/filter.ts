@@ -11,6 +11,7 @@ export const HARNESS_IDS: readonly HarnessId[] = [
   "command-code",
   "command-code-pro",
   "cursor",
+  "muse-code",
   "opencode-go",
   "opencode-zen",
 ];

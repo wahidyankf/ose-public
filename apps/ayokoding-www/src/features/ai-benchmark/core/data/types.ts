@@ -11,10 +11,10 @@ export type BenchmarkId = "deep-swe" | "terminal-bench" | "swe-atlas-qna";
 export type OperatorId = "artificial-analysis" | "datacurve" | "terminal-bench" | "vals" | "scale";
 
 /**
- * The seven harnesses used as page filters. claude-code = Claude Code, codex-cli = Codex CLI,
+ * The eight harnesses used as page filters. claude-code = Claude Code, codex-cli = Codex CLI,
  * command-code = Command Code (every model in its catalog), command-code-pro = Command Code Pro
- * (the models its $20 Pro plan includes), cursor = Cursor, opencode-go = OpenCode Go,
- * opencode-zen = OpenCode Zen.
+ * (the models its $20 Pro plan includes), cursor = Cursor, muse-code = Muse Code (Meta's own
+ * coding agent), opencode-go = OpenCode Go, opencode-zen = OpenCode Zen.
  */
 export type HarnessId =
   | "claude-code"
@@ -22,6 +22,7 @@ export type HarnessId =
   | "command-code"
   | "command-code-pro"
   | "cursor"
+  | "muse-code"
   | "opencode-go"
   | "opencode-zen";
 

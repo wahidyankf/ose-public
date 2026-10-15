@@ -17,6 +17,29 @@ before Phase 1 starts. Phase 0 checks this and every contract this plan consumes
 
 plan-quality-gate: PASS_WITH_FINDINGS (2 cycles, 0 open blocking, 9 open non-blocking; cycle 1 FAIL on a wrong `course-page-content.tsx` path (F1, HIGH), repaired and re-audited in cycle 2)
 
+## Execution status (stopped 2026-10-15, mid-Phase 10)
+
+- **Delivered and committed on `ayokoding-learn-revamp-04-learning-experience`:** Phase 0
+  (`c73e618b9`, plus the preexisting index drift fix `15939041d`), Phase 1 (`36406eb58`), Phase 2
+  (`a1b19de1e`), Phase 3 (`16bd26828`), Phase 4 (`4fcfa0a71`), Phase 5 (`b82615c60`), Phase 6
+  (`cbe3f4789` + `9f81fef95`), Phase 7 (`693aae6e3`), Phase 8 (`71a6fe753`), Phase 9 (`53633411b`),
+  and the Phase 10 manual-verification evidence (`8083d4e2c`). Backlog promotion landed through PR
+  #702 (squash `1c848ae0e6460d50f2fe9d640e10e2f3d9c63b90`). Worktree:
+  `worktrees/ayokoding-learn-revamp-04-learning-experience/`.
+- **Gate state at the stop:** unit gate 241 files / 4147 tests / lines 99.54% (exit 0); `E2E-QUICK`
+  exit 0; flow-scoped E2E green for every phase; `LINT-MD` exit 0.
+- **Open when resuming (in order):** Phase 10's UI-quality-gate findings UIW-001…UIW-004 below (each
+  needs a fix plus a regression test), the rule-15 three-tester round (exploratory / usability /
+  design, `output-mode: delivery`), then `QUICK` + `E2E`, the Phase 10 gate, Phase 11 (push, PR, CI,
+  leak review), Phase 12 (knowledge capture), archival, merge, post-merge CI, prod deploy, and
+  dev-artifact clean-up with worktree removal.
+- **Environment note:** the host pressure-sheds heavy HIPPO runs and `nx dev` stops responding after
+  its first request, so every verification ran against the production standalone server
+  (`apps/ayokoding-www/.next/standalone/.../server.js` on :3101) with
+  `AYOKODING_WEB_MANIFESTS_DIR=apps/ayokoding-www-fe-e2e/fixtures/manifests` and
+  `AYOKODING_WEB_SHOW_DRAFTS=true`, and the unit gate ran with `--maxWorkers=1`. All dev servers were
+  stopped after use; port 3101 is free.
+
 ## Worktree
 
 - **Execution worktree:** `worktrees/ayokoding-learn-revamp-04-learning-experience/`
@@ -934,68 +957,132 @@ current counts, the course-paths spec README's `path-roadmap.feature`, and the f
 
 ### Manual UI Verification (Playwright MCP) — all locales × all breakpoints
 
-- [ ] [AI] Confirm the locale set: `SUPPORTED_LOCALES` in
+- [x] [AI] Confirm the locale set: `SUPPORTED_LOCALES` in
       `apps/ayokoding-www/src/features/i18n/core/config.ts` is `["en", "id"]`. Courses and paths exist
       only under `en` (`content/id/` has none), so the four screens are verified in `en`; `id` gets the
       regression checks below.
-- [ ] [AI] Start `DEV` (port 3101). Clear site data before each flow so it starts with no progress.
-- [ ] [AI] **Learn home**, for each breakpoint 375, 768, 1280 (`browser_resize`, height 800): open
+- [x] [AI] Start `DEV` (port 3101). Clear site data before each flow so it starts with no progress.
+      **Note:** `nx dev` stops responding after its first request on this host, so the verification ran
+      against the production standalone server (see Execution status). A fresh browser context cleared
+      site data before each flow.
+- [x] [AI] **Learn home**, for each breakpoint 375, 768, 1280 (`browser_resize`, height 800): open
       `http://localhost:3101/en/learn`. Acceptance: intro, "Start learning" card, career path cards
       grouped by arc, skills path cards, "Browse all courses"; no horizontal scroll at 375;
       `html[lang="en"]`. Screenshot `phase-10-learn-home-en-<bp>px.png`.
-- [ ] [AI] **Roadmap**, each breakpoint: open the Immediately Effective Software Engineer path page.
+- [x] [AI] **Roadmap**, each breakpoint: open the Immediately Effective Software Engineer path page.
       Acceptance: the progress card with "Start: <first course>", core phases as a timeline with
       outcomes, course cards with number, title, format, "About N h" or "Outline", status in words,
       and "Optional extensions" closed. Screenshot `phase-10-roadmap-en-<bp>px.png`.
-- [ ] [AI] **Lesson page**, each breakpoint: click Start, then on the course landing page click "Start
+- [x] [AI] **Lesson page**, each breakpoint: click Start, then on the course landing page click "Start
       course", then on the first lesson page check the context bar, click "Mark as complete", click
       it again (un-checks), then click "Mark complete & continue". Acceptance: the bar reads path ›
       phase › "Course k of N" and "Page p of P · x of P done"; the toggle state and the count follow
       each click; the next page opens with `?path=`. Screenshot `phase-10-lesson-en-<bp>px.png`.
-- [ ] [AI] **Course header**, each breakpoint: go back to the course landing page. Acceptance: "In
+- [x] [AI] **Course header**, each breakpoint: go back to the course landing page. Acceptance: "In
       progress", "1 of P pages done", and "Continue course: <page>". Screenshot
       `phase-10-course-header-en-<bp>px.png`.
-- [ ] [AI] **Returning reader**, at 1280: open `/en/learn` and the path page again. Acceptance: the
+- [x] [AI] **Returning reader**, at 1280: open `/en/learn` and the path page again. Acceptance: the
       "Continue learning" card names the path and next course; the roadmap shows "Continue: …" and
       the first phase "In progress". Screenshot `phase-10-returning-en-1280px.png`.
-- [ ] [AI] **Reset**, at 375: open `/en/learn`, choose "Reset progress…", Cancel (focus returns to the
+- [x] [AI] **Reset**, at 375: open `/en/learn`, choose "Reset progress…", Cancel (focus returns to the
       button), then Reset and Confirm. Acceptance: every count shows nothing done. Screenshot
       `phase-10-reset-en-375px.png`.
-- [ ] [AI] **Redirect:** rerun the three `rtk curl` recipes from Phase 6. Acceptance: same results.
-- [ ] [AI] **Indonesian regression**, each breakpoint: open
+- [x] [AI] **Redirect:** rerun the three `rtk curl` recipes from Phase 6. Acceptance: same results.
+- [x] [AI] **Indonesian regression**, each breakpoint: open
       `http://localhost:3101/id/belajar/manusia/peralatan/cliftonstrengths/tema/membangun-hubungan/relator`.
       Acceptance: `html[lang="id"]`, the page renders as in Phase 0 with no new English UI string and
       no progress UI (not a course page). At 1280, open the Indonesian Learn section root and confirm
       the sidebar is unchanged. Screenshot `phase-10-content-id-<bp>px.png`. The key-parity unit test
       from Phase 2 proves every new key has an Indonesian value.
-- [ ] [AI] After each page, read `browser_console_messages`. Acceptance: zero errors on every page
+- [x] [AI] After each page, read `browser_console_messages`. Acceptance: zero errors on every page
       (hydration warnings count as errors).
-- [ ] [AI] Rendered production sign-off: stop `DEV`; run `BUILD`, then `START`; repeat the Learn home,
+- [x] [AI] Rendered production sign-off: stop `DEV`; run `BUILD`, then `START`; repeat the Learn home,
       roadmap, lesson, and course header checks at 375 and 1280 against the selected hi-fi mockups in
       prd.md. Acceptance: they match; screenshots `phase-10-prodbuild-<feature>-en-<bp>px.png`. Stop
       the server.
-- [ ] [AI] Reference every screenshot in `<plan>/evidence/phase-10-manual.md` with `![alt](./<file>)`
+- [x] [AI] Reference every screenshot in `<plan>/evidence/phase-10-manual.md` with `![alt](./<file>)`
       lines.
+
+**Manual verification notes (2026-10-15, `swe-web-tester`).** Status: complete — all eleven items PASS
+with **zero browser console errors** across ~25 page loads. 37 screenshots captured and committed
+(`8083d4e2c`); `evidence/phase-10-manual.md` references all of them with `![alt](./<file>)` lines.
+Screenshots follow the `phase-10-<feature>-<state>-<locale>-<bp>px.png` shape (e.g.
+`phase-10-learn-home-fresh-en-375px.png`, `phase-10-lesson-toggle-complete-en-768px.png`,
+`phase-10-prodbuild-course-header-in-progress-en-1280px.png`). Redirect curl: `/en/learn/overview` →
+`308 http://localhost:3101/en/learn`, `/en/learn` → `200`, `/en/learn/overview-does-not-exist` → `404`,
+`/id/learn` → `404`. Verified: `html[lang]` on every page; 0 px horizontal overshoot at 375; reset
+dialog Cancel holds initial focus and focus returns to the trigger; toggle `aria-pressed` flips
+true→false; "Mark complete & continue" lands on "Page 2 of 6" with `?path=`; course header "In progress
+· 1 of 6 pages done" + "Continue course: Beginner Examples"; the Indonesian legacy page renders 0
+progress elements and none of 9 candidate English strings; the Indonesian Learn root sidebar is
+unchanged. **Design observation (recorded, not a defect):** with a course visited but 0 pages complete,
+the roadmap's first course row reads "In progress" while its phase count reads "Not started · 0 of 2
+done" — `PhaseProgress` derives phase status from completed courses only, and the Screen 1 mockup
+depicts a state with completed courses, so this is arguably per-spec.
 
 ### UI Quality Gate and Rule-15 Retest
 
-- [ ] [AI] Run the [UI Web Quality Gate](../../../repo-governance/workflows/quality/ui-web-quality-gate.md)
+- [x] [AI] Run the [UI Web Quality Gate](../../../repo-governance/workflows/quality/ui-web-quality-gate.md)
       against the running dev server for the four screens and the hubs (at most 2 cycles). Append each
       finding below as an unchecked checkbox and fix it with a regression test.
+      **Ran 2026-10-15 (`swe-web-tester`, Chromium 375×667, production standalone build, all seven
+      screens): verdict FAIL — four findings, appended as UIW-001…UIW-004 below.** Full judge record
+      and evidence: `local-tmp/ayokoding-learn/plan-04/uiw2/findings-ui-web-quality-gate.md` (plus
+      per-route JSON, focus records, and screenshots in `local-tmp/ayokoding-learn/plan-04/uiw2/evidence/`).
+      Judged clean: exactly one h1 and labelled landmarks on every screen; every
+      `data-progress-control` target 44–56 px; reflow exact at 375 on all seven screens; contrast of
+      the new progress UI 4.82:1–18.4:1 (disabled lesson toggle 3.3:1, WCAG-exempt, informational);
+      focus rings on the roadmap/course/continue primaries.
+- [ ] **UIW-001:** Keyboard focus is invisible on every control using the shared `Button` primitive
+      (site header menu/search/theme toggles, code-block copy buttons) — **HIGH · blocking**. After a
+      real Tab the header icon buttons show no focus indicator: `outline-style: none`,
+      `box-shadow` all-zero-spread. Root cause (verified in the compiled CSS):
+      `libs/web-ui/src/primitives/button/button.tsx` line 8 declares
+      `outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50`, but
+      the app's Tailwind content scan never compiles the ring-width utility, so `--tw-ring-shadow`
+      stays 0-width. Axe does not catch this class, which is why S39 stayed green. Departs from WCAG
+      2.4.7 (AA). Pre-existing outside plan 04's screens but the gate judges the whole reachable UI —
+      needs an owner (web-ui package / idea brief) before merge. — fix with a regression test
+- [ ] **UIW-002:** Lesson context-bar links are 20 px-tall targets inside
+      `[data-progress-slot="context-bar"]` — **HIGH (plan criterion) · non-blocking**. "Just Enough
+      Bash" measures 118×20 px at 375 (path/phase/"Course n of N" links the same). Departs from plan
+      criterion 2 (44×44 at 375); WCAG 2.5.8 exempts inline links. Owning component:
+      `apps/ayokoding-www/src/features/learning-progress/shell/context-bar.tsx`. — fix with a
+      regression test
+- [ ] **UIW-003:** The lesson action row relies on the browser-default outline instead of the app's
+      designed focus ring — **MEDIUM**. The completion toggle, "Mark complete & continue", and
+      "Previous" show only the UA hairline, while the sibling `roadmap-primary`/`course-primary`/
+      `continue-primary` render the designed 2 px `ring-ring`. Owning component:
+      `apps/ayokoding-www/src/features/learning-progress/shell/lesson-nav.tsx` (its three controls
+      declare no `focus-visible` classes). — fix with a regression test
+- [ ] **UIW-004:** Lesson body skips heading level h1 → h3 — **MEDIUM**. "Beginner Examples" is the h1
+      and its 28 sections render as `<h3>` with no `<h2>` between, so screen-reader heading navigation
+      reads level 3 under level 1. Content authoring
+      (`apps/ayokoding-www/content/en/learn/courses/just-enough-bash/learning/beginner.md` and
+      siblings) passes authoring levels straight through `content/core/parser.ts`; a renderer-side
+      normalisation (map the first body level to h2) would fix every course at once. — fix with a
+      regression test
 - [ ] [AI] Run [UX Review Fix Planning](../../../repo-governance/workflows/quality/ux-review-fix-planning.md):
       `swe-web-tester` (exploratory charter), `swe-usability-tester`, and `swe-web-tester` (design
       charter) against the running site. Append each finding here as an unchecked checkbox labelled
       `EWT-###`, `UWT-###`, or `DWT-###` with its source, then fix it with a regression test (at most 2
-      cycles per finding, then `BLOCKED` and report).
+      cycles per finding, then `BLOCKED` and report). **Not yet run** — this is the next open item.
 - [ ] [AI] Rerun `QUICK` and `E2E` after the fixes. Acceptance: exit 0.
 
 ### Phase 10 Gate
 
 > All checks below must pass before starting Phase 11.
 
-- [ ] [AI] Every manual acceptance above holds and every screenshot is referenced.
+- [x] [AI] Every manual acceptance above holds and every screenshot is referenced.
 - [ ] [AI] Every EWT/UWT/DWT and UI-gate defect checkbox is ticked (deferral only with explicit user
-      permission).
+      permission). **Open: UIW-001…UIW-004 above, plus the three-tester round and the post-fix
+      `QUICK`/`E2E` rerun.**
+
+**Phase 10 status (2026-10-15, stopped here).** Manual verification complete (all eleven items PASS,
+zero console errors, 37 screenshots committed, `evidence/phase-10-manual.md`). UI Web Quality Gate
+run — verdict FAIL with UIW-001…UIW-004 open above. The rule-15 three-tester round has not run. The
+Phase 10 gate is therefore open; do not start Phase 11 until UIW-001…UIW-004 are fixed with regression
+tests, the three-tester round has run and its findings are resolved, and `QUICK`/`E2E` are rerun.
 
 > **Pause Safety**: behaviour is verified by hand and by testers. Safe to stop. To resume: `QUICK`.
 

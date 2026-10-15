@@ -32,8 +32,9 @@ commits, starts a gate, or runs another propagation.
 ## Normal Workload
 
 It takes each finding from the latest CI checker report, re-reads the definition it names, applies the repair the cited
-rule settles, and re-runs the matching validation. Applying stated rules to repository configuration is `execution`
-work.
+rule settles, and re-runs the matching validation. Applying stated rules finding by finding is `execution` work; writing
+the configuration or code a repair changes is `swe-developer`'s, per
+[Writing Configuration and Code](#writing-configuration-and-code).
 
 ## Procedure
 
@@ -59,6 +60,14 @@ work.
 7. **Write the fix report,** naming the audit it answers, per
    [Generating Validation Reports](../skills/repo-generating-validation-reports/SKILL.md): each finding's disposition, each
    false positive with what would stop it recurring, and the changed files as evidence for each fix.
+
+## Writing Configuration and Code
+
+A repair that changes a pipeline definition, hook, task-runner target, ignore file, example environment file, image
+metadata, script, or test changes declarative configuration or code. The fixer decides that repair and names
+`swe-developer` as its repairer in the fix report. The fixer or its caller dispatches `swe-developer` to write the
+change, per [SWE Delegation](../../repo-governance/development/agents/swe-delegation.md). The fixer never writes that
+change itself, and it confirms the result by re-reading the file, as step 5 requires.
 
 ## Left for a Person
 

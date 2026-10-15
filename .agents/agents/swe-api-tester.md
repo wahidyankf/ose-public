@@ -6,7 +6,7 @@ description: >-
 when_to_use: >-
   Use as the judge of an API HTTP quality gate cycle, or whenever a reachable REST, GraphQL, or similar interface needs
   contract or exploratory testing.
-tier: execution
+tier: plan
 capabilities:
   - repository-read
   - repository-write
@@ -27,7 +27,8 @@ source, tests, the contract, or a specification; `repository-write` serves its f
 ## Normal Workload
 
 Under the charter its caller names, it sends requests, compares each response with a cited contract clause or scenario,
-and rates what differs. Each question has a fixed criterion, so this is `execution` work.
+and rates what differs. Each question has a fixed criterion, but deciding which differences matter across a whole
+contract takes high-context judgement, so this is `plan` work.
 
 ## Charter
 

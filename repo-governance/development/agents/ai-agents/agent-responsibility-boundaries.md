@@ -51,7 +51,7 @@ Before creating a new agent, check if existing agents already cover the domain:
 
 - `docs-maker` - Documentation only
 - `rules-checker` - Consistency validation only
-- `swe-developer` - Application code only
+- `swe-developer` - Application code and declarative configuration only
 
 **FAIL: Bad - Over-Generalized:**
 

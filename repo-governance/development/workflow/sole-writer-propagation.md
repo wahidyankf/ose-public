@@ -12,7 +12,7 @@ when_to_use: >-
 Each quality-gate family has exactly one writer: the workflow `<family>-propagation`, executed by the agent
 `<family>-fixer`. The gate and its checker judge and never write, per the
 [Quality Gate Contract](quality-gate-contract.md). This document holds the rules every writer shares, so each family
-file stays thin and states only what differs.
+file stays thin.
 
 This standard implements One Source Per Fact and
 [Minimal Sufficiency](../../principles/general/simplicity-over-complexity.md).
@@ -72,7 +72,8 @@ it.
 ## Executor Naming
 
 The writer is always `<family>-propagation`, and its executor is always `<family>-fixer`, in every family. A maker
-authors; a fixer repairs only ledger rows. One agent never holds both roles in the same gate run.
+authors; a fixer repairs only ledger rows. One agent never holds both roles in a gate run. Repairs to code or
+configuration go to `swe-developer`, per [SWE Delegation](../agents/swe-delegation.md).
 
 ## Existing Writers Keep Their Rules
 

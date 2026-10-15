@@ -6,7 +6,7 @@ description: >-
 when_to_use: >-
   Use as the judge of a UI web quality gate cycle, for a design-fidelity or spec-aware exploratory pass, or whenever a
   reachable web interface must be checked before release.
-tier: execution
+tier: plan
 capabilities:
   - repository-read
   - repository-write
@@ -28,7 +28,8 @@ tests, designs, or specifications; `repository-write` serves its findings record
 ## Normal Workload
 
 Under the charter its caller names, it drives the interface, compares each observation with a cited scenario, design
-source, or computation, and rates what differs. Judging each observation against fixed sources is `execution` work.
+source, or computation, and rates what differs. Judging each observation against fixed sources takes high-context
+judgement about what a difference means, so this is `plan` work.
 
 ## Charter
 

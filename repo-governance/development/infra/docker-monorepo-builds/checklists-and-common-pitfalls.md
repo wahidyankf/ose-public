@@ -5,6 +5,9 @@ when_to_use: Use when adding a new shared library dependency to an app's Dockerf
 
 # Checklists and Common Pitfalls
 
+The Dockerfile and docker-compose items in the checklists below change declarative configuration, so `swe-developer`
+makes them, per [SWE Delegation](../../agents/swe-delegation.md).
+
 ## Checklist: When an App Gains a New `libs/*` Dependency
 
 When an app adds an import from a shared library (e.g., `@open-sharia-enterprise/ts-new-lib`):

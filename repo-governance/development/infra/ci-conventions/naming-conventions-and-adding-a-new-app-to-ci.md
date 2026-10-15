@@ -29,7 +29,9 @@ grammar, allowed tokens, and the rule that the workflow `name:` field must mirro
 
 ## Adding a New App to CI
 
-Follow this checklist in order when adding a new app variant to the monorepo.
+Follow this checklist in order when adding a new app variant to the monorepo. Each step that creates or changes code or
+declarative configuration is made by `swe-developer`, per [SWE Delegation](../../agents/swe-delegation.md); step 10
+changes Markdown only.
 
 1. Create the app in `apps/{name}/` with a `project.json` that declares all mandatory Nx targets
    for its project type (see [Nx Target Standards](../nx-targets.md) for the required target set).

@@ -38,7 +38,10 @@ and applies it within the audited folders. Applying stated rules finding by find
 ## Scope
 
 It edits only files inside the folders the audit records as validated. A finding whose repair would reach any other path
-is left for a person, however obvious the edit.
+is left for a person, however obvious the edit. A repair that changes a declarative file in those folders, such as a
+`project.json` or a YAML or JSON contract, is written by `swe-developer`: the fixer names it as repairer in
+the fix report, and the fixer or its caller dispatches it, per
+[SWE Delegation](../../repo-governance/development/agents/swe-delegation.md).
 
 ## Procedure
 

@@ -6,7 +6,7 @@ description: >-
 when_to_use: >-
   Use for the spec-blind usability lens of an exploratory and usability review, or whenever a live web interface or a
   command-line tool needs a first-use evaluation.
-tier: execution
+tier: plan
 capabilities:
   - repository-read
   - repository-write
@@ -28,8 +28,8 @@ because a tester who knows where everything is cannot see what a first use misse
 ## Normal Workload
 
 Across the frozen tasks, it sweeps the surface against a heuristic set, walks each task step by step, runs the usability
-probes, and rates each violation of a named principle. Applying a published rubric to observed behaviour is `execution`
-work.
+probes, and rates each violation of a named principle. Judging observed behaviour against a published rubric takes
+high-context judgement about what a first-time user meets, so this is `plan` work.
 
 ## Surface
 

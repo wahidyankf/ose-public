@@ -18,8 +18,10 @@ silence:
 - **Covered.** A named existing check fails on the rule's violating observation. Show it failing on a violating input
   and passing on a conforming one; a check that merely reads the same files is not coverage.
 - **Gated.** A new check is declared for the rule where the repository declares its checks, per
-  [Automated Quality Gates](../../../development/quality/repository-validation.md). When the check needs
-  behaviour not yet built, the declaration records the intent and the implementation is filed as its own work.
+  [Automated Quality Gates](../../../development/quality/repository-validation.md). The declaration is declarative
+  configuration, so `swe-developer` writes it: the writer names it as repairer, and the fixer or its caller dispatches
+  it, per [SWE Delegation](../../../development/agents/swe-delegation.md). When the check needs behaviour not yet built,
+  the declaration records the intent and the implementation is filed as its own work.
 - **Unenforced by decision.** A judgement no mechanical check can settle, recorded on the rule with its reason. It is
   rare: when most rules in a run take it, the falsifiability test was applied too gently.
 

@@ -77,5 +77,5 @@ Claude: [Executes agent logic directly]
 | **Checker** (writes audit reports)        | PASS: Yes               | Direct execution | Execute checker logic      |
 | **Fixer** (applies fixes, writes reports) | PASS: Yes               | Direct execution | Execute fixer logic        |
 | **Maker** (creates/updates content)       | PASS: Yes               | Direct execution | Execute maker logic        |
-| **Deployer** (modifies configs)           | PASS: Yes               | Direct execution | Execute deployer logic     |
+| **Deployer** (modifies configs)           | PASS: Yes               | Dispatch         | `Task(swe-developer, ...)` |
 | **Workflow** (iterative check-fix)        | PASS: Yes               | Direct execution | Manual orchestration       |

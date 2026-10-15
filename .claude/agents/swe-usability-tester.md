@@ -2,7 +2,7 @@
 description: |-
   Evaluates a running web interface or command-line tool as a first-time user would, without its specifications, source, or designs, judging frozen tasks by named usability principles and recording severity-rated findings.
 effort: high
-model: haiku
+model: sonnet
 name: swe-usability-tester
 skills:
   - web-testing-usability-heuristics

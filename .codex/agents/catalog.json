@@ -55,7 +55,7 @@
     {
       "id": "agent/ci-fixer",
       "path": ".agents/agents/ci-fixer.md",
-      "digest": "ef437d97ca1d242b0a9f94fe1d1502744c63d38ff6b6245a540282705088799f"
+      "digest": "83272d760dcb28ad125f810115ce26d96b3622b14e7cc727380c3ff9506bffe3"
     },
     {
       "id": "agent/content-checker",
@@ -125,7 +125,7 @@
     {
       "id": "agent/harness-fixer",
       "path": ".agents/agents/harness-fixer.md",
-      "digest": "096260df5507ae443fe9ee3f8d7ea4b613ad8f16f6e6e3cd59b9544b01bff5de"
+      "digest": "bb7ed609ddeb7bf5d02f39341035dd3158e2c72b21656c5daf57e571ce5ccd86"
     },
     {
       "id": "agent/leak-reviewer",
@@ -180,7 +180,7 @@
     {
       "id": "agent/pr-review-fixer",
       "path": ".agents/agents/pr-review-fixer.md",
-      "digest": "4cbd5d4d79772f09bee4f7237cb347861f3bfff408bf5d2174d4e75d5d4806ee"
+      "digest": "c47e6715fd5fb3ac08611862e62b01b1d973d94b286e5f9afbc28a7b2f8d1584"
     },
     {
       "id": "agent/pr-review-governance-checker",
@@ -265,7 +265,7 @@
     {
       "id": "agent/rules-fixer",
       "path": ".agents/agents/rules-fixer.md",
-      "digest": "6200dd8ef5f093be8915a544b8492554eb68c57432a18ed7c448afed3e63bd69"
+      "digest": "990656cd82e153a98debe0e342728ff3d096c8550819921caee92c531722b724"
     },
     {
       "id": "agent/rules-maker",
@@ -285,7 +285,7 @@
     {
       "id": "agent/specs-fixer",
       "path": ".agents/agents/specs-fixer.md",
-      "digest": "4c342438e4ce09cd537ffec1faabc8c8d3da1ee725f35fdcf236972e1f292a40"
+      "digest": "efcc258af7e7d5ec6fcb4cf1b128f1af70bfdaa93865a6c637b2a27dffd23747"
     },
     {
       "id": "agent/specs-maker",
@@ -295,7 +295,7 @@
     {
       "id": "agent/swe-api-tester",
       "path": ".agents/agents/swe-api-tester.md",
-      "digest": "3a4a58c958d1d866c7a2276b22030b35da2c3570e6fc16260d0fa9f2682ca3cb"
+      "digest": "bcefad559bd30612abaedfa18f299262f908d3832ead39626d4f96abbfec554c"
     },
     {
       "id": "agent/swe-architect",
@@ -305,7 +305,7 @@
     {
       "id": "agent/swe-debugger",
       "path": ".agents/agents/swe-debugger.md",
-      "digest": "b970d4dc9875417ab3bb5275153d52cc44dc2b204cd747315f9124d561df86f2"
+      "digest": "c26f94cc2a4a7503c971e900038a1cb52e3acf379a2f5a7ba1d074afecca0062"
     },
     {
       "id": "agent/swe-developer",
@@ -325,17 +325,17 @@
     {
       "id": "agent/swe-reviewer",
       "path": ".agents/agents/swe-reviewer.md",
-      "digest": "1fd615207d43c332d2cecf31ed9ecdf1e797794698bbf628ff97b17321351c9c"
+      "digest": "fc1c7972507690427da035ca86410ac3788027aec7e901582f0cc1239aacc927"
     },
     {
       "id": "agent/swe-usability-tester",
       "path": ".agents/agents/swe-usability-tester.md",
-      "digest": "36f66fa17e82d750d4387c2661ae9cc1b1e83d9363b6a14773d549bed8c19f9c"
+      "digest": "d9202cdda39c3857498b237f8c57410bdfcd768470c8295d2df17793704218e5"
     },
     {
       "id": "agent/swe-web-tester",
       "path": ".agents/agents/swe-web-tester.md",
-      "digest": "c89013e208c22fd6b9315399f9093fcc310710a1d2bd2b160e39befe688315d0"
+      "digest": "837f9ae82058caf67a1ba9905ec09b1c97613bcff19968832440a592bf1bc881"
     },
     {
       "id": "agent/tutorial-annotated-concept-checker",
@@ -345,7 +345,7 @@
     {
       "id": "agent/tutorial-annotated-concept-fixer",
       "path": ".agents/agents/tutorial-annotated-concept-fixer.md",
-      "digest": "a4424cf21c930960a4857f875d9189a6fb5e0f5d7a9f55cb0a1e280c89490000"
+      "digest": "bfa017bced4ba53b014e6ccb2f0010ad628ce08e11356278d8ed6487f60cac91"
     },
     {
       "id": "agent/tutorial-by-example-checker",
@@ -355,7 +355,7 @@
     {
       "id": "agent/tutorial-by-example-fixer",
       "path": ".agents/agents/tutorial-by-example-fixer.md",
-      "digest": "57b600056a21283d078792ee157a07554fc3cce10818d6bac0268fe7143f8524"
+      "digest": "12a9fbb8b1784fbaedbaa00ed6763c2e981987dc304cfb07c07b180087e7fb32"
     },
     {
       "id": "agent/tutorial-in-the-field-checker",
@@ -365,7 +365,7 @@
     {
       "id": "agent/tutorial-in-the-field-fixer",
       "path": ".agents/agents/tutorial-in-the-field-fixer.md",
-      "digest": "a68ce3f6cc1f4e4c697e96f1c33a99a34e939768e8f9ed8545dd88852602206b"
+      "digest": "d5f7f843c03f3cdbe29b1241be1dab2f6b9e9f84840b3b599939d3adb4cf65ce"
     },
     {
       "id": "agent/tutorial-primer-checker",
@@ -375,7 +375,7 @@
     {
       "id": "agent/tutorial-primer-fixer",
       "path": ".agents/agents/tutorial-primer-fixer.md",
-      "digest": "3b3a58af7a706f4e956a76fba06cafbc99358dfd1d6cfa5ab69bfab8f595d689"
+      "digest": "8084bba004f4e811e706943830959e47d490db03048104689aeb3feb86de3efd"
     },
     {
       "id": "agent/web-researcher",
@@ -740,7 +740,7 @@
     {
       "id": "instruction",
       "path": "AGENTS.md",
-      "digest": "3de444bf35df92abccf663b23a39ef3403d3a3e55713a96ea985e621ac52b4c8"
+      "digest": "e16c8530a27df4d592de462c441ef8287dbe1478d8a9662739a74b2a21ccc47d"
     }
   ]
 }

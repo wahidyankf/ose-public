@@ -29,7 +29,10 @@ the `tutorial-annotated-concept` family's sole writer under
 [Sole-Writer Propagation](../../repo-governance/development/workflow/sole-writer-propagation.md). Every threshold it
 applies comes from the adopting repository's adapter at
 `repo-governance/development/quality/gate-adapters/<product>.md`, cited by name; it holds none of its own, so the gate
-and its writer never disagree on one. Repairing what a row settles, row by row, is `execution` work.
+and its writer never disagree on one. Repairing what a row settles, row by row, is `execution` work. A repair that adds
+or changes an example's code, such as an import or a helper, is code work: the fixer names `swe-developer` as its
+repairer in the fix report, and the fixer or its caller dispatches it, per
+[Family Fixers](../../repo-governance/development/agents/swe-delegation.md#family-fixers).
 
 ## Procedure
 

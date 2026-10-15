@@ -120,8 +120,8 @@ Verify UI/API behaviour manually; investigate CI failures at the root cause, nev
 
 [Canonical agents](./.agents/agents/README.md) and skills under `.agents/skills/` are authoritative;
 regenerate and validate every generated route with the pinned Rhino adapter commands, never by
-hand. Dispatch coding work to the fitting `swe-*` agent, except a
-trivial edit or a harness without subagents, per [SWE Delegation](./repo-governance/development/agents/swe-delegation.md).
+hand. Dispatch every create, modify, update, or delete of code or declarative configuration to the fitting
+`swe-*` agent (exceptions in [SWE Delegation](./repo-governance/development/agents/swe-delegation.md)).
 
 **See**: [ai-agents.md](./repo-governance/development/agents/ai-agents.md)
 

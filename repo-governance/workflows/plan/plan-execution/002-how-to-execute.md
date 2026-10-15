@@ -35,8 +35,8 @@ The calling context will:
 4. For each ready item (dependencies terminal), up to the concurrency cap: mark
    `in_progress`, **repo-ground its file paths and commands** (refuse-on-uncertainty if grounding
    fails), analyze it, **prefer the `_Suggested executor:_` annotation** if present (else fall back
-   to Agent Selection heuristics), delegate to the chosen agent (or execute directly for trivial
-   edits), verify the result
+   to Agent Selection heuristics), delegate to the chosen agent (or execute directly only work that is not
+   coding work, per [SWE Delegation](../../../development/agents/swe-delegation.md)), verify the result
 5. Perform the Atomic Sync Ritual after each item — tick `- [ ]` → `- [x]` in `delivery.md`, add implementation notes, `TaskUpdate completed`
 6. Invoke `plan-execution-checker` via the Agent tool to validate the implementation
 7. Repeat execution and validation, at most `max-cycles` times, until no blocking finding remains

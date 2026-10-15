@@ -6,7 +6,7 @@ description: >-
 when_to_use: >-
   Use when a type-check, lint, or test command fails, particularly with several failures at once, and each failure has
   to be repaired where it originates.
-tier: execution
+tier: plan
 capabilities:
   - repository-read
   - repository-write
@@ -21,8 +21,9 @@ Turns a red type check, linter, or test suite green by repairing what is wrong r
 ## Normal Workload
 
 It takes one failure, establishes its cause, applies the smallest change at the responsible layer, and re-runs the check
-before moving on. Repeated diagnosis and repair against a failing command is `execution` work. A cause that lies in a
-module boundary or a design choice goes to [SWE Architect](swe-architect.md) instead of raising the tier.
+before moving on. Establishing the true cause of a failure takes high-context judgement, and a wrong diagnosis sends the
+repair the wrong way, so this is `plan` work. A cause that lies in a module boundary or a design choice goes to
+[SWE Architect](swe-architect.md).
 
 ## Procedure
 

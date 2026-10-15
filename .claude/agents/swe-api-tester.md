@@ -2,7 +2,7 @@
 description: |-
   Judges a running request-based interface with real requests under one charter, against its contract and behaviour specifications, and records criticality-rated findings with reproducing requests without fixing anything.
 effort: high
-model: haiku
+model: sonnet
 name: swe-api-tester
 skills:
   - exploratory-testing

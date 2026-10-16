@@ -6,14 +6,14 @@ when_to_use: "Read this index to find the right Plans Organization Convention ch
 # Plans Organization Convention
 
 - [Purpose, Scope, and Overview](./purpose-scope-and-overview.md) — Why the plans/ convention exists, what it covers and excludes, and the high-level lifecycle and no-secrets rule for plan documents.
-- [Folder Structure](./folder-structure.md) — The four top-level plans/ subfolders (ideas/, backlog/, in-progress/, done/) and the purpose of each.
+- [Folder Structure](./folder-structure.md) — The four plans/ subfolders and the purpose of each.
 - [Ideas Folder (Two-Pagers)](./ideas-folder-overview-rationale-and-file-layout.md) — Capturing a new idea, or deciding whether it duplicates an existing two-pager.
-- [Two-Pager Template](./two-pager-template.md) — Writing or reviewing the section structure of a plans/ideas/<slug>.md file.
+- [Two-Pager Template](./two-pager-template.md) — Writing or reviewing a two-pager's section structure.
 - [Two-Page Discipline and Difference from backlog/](./two-page-discipline-and-difference-from-backlog.md) — A two-pager grows too detailed, or an idea may be ready to become a full plan.
 - [Promoting a Two-Pager and Worked Examples](./promoting-ideas-and-worked-examples.md) — Promoting a two-pager to backlog/, or filing a learning in ideas/.
 - [Plan Folder Naming](./plan-folder-naming.md) — Naming or renaming a plan folder as it moves between lifecycle stages.
 - [Plan-Artifact Authorization and Transition](./plan-artifact-authorization-and-transition.md) — Deciding whether a request authorizes a new plans/ artifact and which plans use the current contract.
-- [Comprehensive Decision Records](./comprehensive-decision-records.md) — Making a formal plan understandable to a bootcamp graduate with no professional experience, with alternatives and prior art.
+- [Comprehensive Decision Records](./comprehensive-decision-records.md) — Making a formal plan understandable to a newcomer, with alternatives and prior art.
 - [Structure Decision](./structure-decision.md) — Choosing the required mature-plan core and reader-led technical shape.
 - [Retired Single-File Structure](./single-file-structure.md) — Recognizing the prospective boundary for existing single-file plans.
 - [Bug-Fix Plan](./bug-fix-plan.md) — The current one-document plan for a blocking defect.
@@ -34,6 +34,7 @@ when_to_use: "Read this index to find the right Plans Organization Convention ch
 - [Placement, Legend, and Execution Semantics](./executor-tagging-placement-legend-and-execution-semantics.md) — Adding the executor-tag legend to a delivery.md file or handling a [HUMAN] stop during execution.
 - [Phases as Natural Pauses With Clear Gates](./phases-as-natural-pauses.md) — Writing a delivery.md phase's closing gate and Pause Safety note.
 - [Delivery Checklists Express a DAG](./delivery-checklists-express-a-dag.md) — Requires a Parallelization Model naming concurrent vs. serial delivery nodes.
+- [Plan-Order Graph and Legend](./plan-order-graph-and-legend.md) — The live-plan order graph, legend, and done-takeout.
 - [Delivery Units and Planning Granularity](./delivery-units-and-planning-granularity.md) — Mapping DAG nodes onto natural units and mode-specific integration opportunities.
 - [the Earliest PR Is Phase 1](./phase-0-opens-no-pr.md) — Scoping a plan's Phase 0 to confirm it contains no PR-creation or merge step.
 - [Baseline Artifacts and Enforcement](./phase-0-opens-no-pr-rationale-and-enforcement.md) — A Phase 0 step writes evidence.

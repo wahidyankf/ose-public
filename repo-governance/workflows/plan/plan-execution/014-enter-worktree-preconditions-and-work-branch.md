@@ -16,6 +16,10 @@ resolves to `plans/in-progress/`. A direct caller, including
 perform that same procedure for each backlog plan first. See
 [Execute Plan from Backlog](./046-example-usage-and-iteration-example.md#execute-plan-from-backlog) for the full worked example.
 
+Before starting, resolve every dependency the plan declares under
+[Plan-Order Graph](../../../conventions/structure/plans/plan-order-graph-and-legend.md): each must already be
+satisfied, or the run stops and names the unmet one. A missing declaration reads as no dependencies.
+
 Plan execution happens in the plan's declared designated worktree, synced to the latest
 `origin/main`. The resolved `worktree-to-pr` mode and `## Worktree` section determine that work
 location. An invocation-selected delivery-unit branch is valid only inside it; the primary checkout

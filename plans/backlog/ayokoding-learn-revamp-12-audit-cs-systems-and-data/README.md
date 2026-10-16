@@ -1,5 +1,7 @@
 # AyoKoding Learn Revamp 12 — Audit of Computer Science, Systems, and Data Courses
 
+Depends-on: [ayokoding-learn-revamp-05-code-harness]
+
 > **Status:** Backlog. Do not execute until both are true: the user gives an explicit execution command
 > ("jangan kerjain/implement plan ini sebelum gw kasih perintah buat eksekusi ya"), and plans 01 to 11 of this series
 > have merged to `origin/main`. The 14 plans run strictly one after another (series decision 42), so plan 11 is

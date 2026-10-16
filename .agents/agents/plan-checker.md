@@ -56,7 +56,7 @@ acting.
   `delivery.md`; a selected option, two viable alternatives, and prior art for each material decision, flagging
   editorial changelogs presented as alternatives; schema and migration contracts; outcome sections with Input, Outcome,
   and Proof; separate RED, GREEN, and REFACTOR actions; rule and C4 reconciliation; terminal recovery; natural seams,
-  deployable state, the temporary-flag lifecycle, and nonnumeric boundaries.
+  deployable state, the temporary-flag lifecycle, nonnumeric boundaries, and plan-order Depends-on declarations.
 - **Rule impact.** Detect it independently from scope and file effects. Each affected repository needs the complete
   repository-local `rules-propagation` runbook, enforcement dispositions, generated-binding proof, manifest,
   and `rules-quality-gate` in the rule-changing delivery unit; a generic workflow checkbox is a HIGH finding.

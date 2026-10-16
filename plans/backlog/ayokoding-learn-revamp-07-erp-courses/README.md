@@ -1,5 +1,7 @@
 # AyoKoding Learn Revamp 07 — ERP Courses
 
+Depends-on: [ayokoding-learn-revamp-06-accounting-courses]
+
 > **Status:** Backlog. Do not execute until both are true: the user gives an explicit execution
 > command, and plans 01 to 06 of this series have merged to `origin/main`. The 14 plans run strictly
 > one after another (series decision 42), so plan 06 is merged, deployed, verified, and cleaned up

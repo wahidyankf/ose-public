@@ -145,7 +145,7 @@
     {
       "id": "agent/plan-checker",
       "path": ".agents/agents/plan-checker.md",
-      "digest": "d5242d4863181b06b547f935e68a40149ed709b0c2efd8e23c057cdc9520f2ce"
+      "digest": "7875c2099b479dec0dee1cf545be6121494c142139635387daa9ba12d7827cf4"
     },
     {
       "id": "agent/plan-execution-checker",
@@ -550,7 +550,7 @@
     {
       "id": "skill/plan-creating-project-plans",
       "path": ".agents/skills/plan-creating-project-plans/SKILL.md",
-      "digest": "f11e6d5949f6f8d00ded41a32507a41df520c16874b8b32e3495f4752409ec51"
+      "digest": "744e777a9951a348f70ac4c737ab9a670f23562553ae699e2275547497596f19"
     },
     {
       "id": "skill/plan-grooming-idea-briefs",

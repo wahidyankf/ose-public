@@ -35,8 +35,9 @@ checklist short. Every RED checkbox names what must fail and why; “test fails�
 ## Batched cycles in planned delivery
 
 When a plan already delivers work in batches — one pull request or one delivery boundary at a time — one RED run and
-one GREEN run may cover the batch's scenarios instead of one full trio per scenario, so planned work does not pay a
-full red-green ceremony for every scenario:
+one GREEN run cover the batch's scenarios instead of one full trio per scenario, so planned work does not pay a
+full red-green ceremony for every scenario. Batched is the rule; per-scenario trios remain a recorded adaptation
+where junior-engineer readability needs each behaviour's own failing proof:
 
 1. Write the batch's tests first, from its scenarios, before any production change in the batch.
 2. Run one focused RED run for the batch. Every scenario's test must fail for its stated reason; group the reasons in

@@ -1,5 +1,7 @@
 # AyoKoding Learn Revamp 09 — Filler Course Rewrites
 
+Depends-on: [ayokoding-learn-revamp-05-code-harness]
+
 > **Status:** Backlog. Do not execute until both are true: the user gives an explicit execution
 > command, and plans 01 to 08 of this series have merged to `origin/main`. The 14 plans run strictly
 > one after another (series decision 42), so plan 08 is merged, deployed, verified, and cleaned up

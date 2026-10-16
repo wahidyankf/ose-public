@@ -23,7 +23,7 @@ The gate starts only on an explicit request that names it, or from one of these 
 - [Dependency Bump Planning](../maintenance/dependency-bump-planning.md), on the backlog plan it authors.
 
 Creating, editing, or executing a plan never starts it alone. Each run serves one named checkpoint: an optional
-manual check before execution, or a check after a material change. Neither checkpoint is required by execution.
+manual pre-execution check, or a post-material-change check. Neither checkpoint is required by execution.
 
 ## Inputs
 
@@ -52,7 +52,7 @@ judgeable. Plans are not a declared word-budget surface.
 
 ## Cycle
 
-Each cycle is one full audit by `plan-checker`, loading the `plan-validating-quality` skill, and one repair by
+Each cycle is one `plan-checker` audit loading the `plan-validating-quality` skill, plus one repair by
 [Plan Propagation](plan-propagation.md), run by `plan-fixer`, per
 [Sequence and Termination](../../development/workflow/quality-gate-contract/002-sequence-and-termination.md). The audit
 reads the frozen plan and asks whether:
@@ -64,10 +64,11 @@ reads the frozen plan and asks whether:
 4. for a bug-fix plan, the root cause carries checkable evidence and the solution cites references; and
 5. every decision the plan relies on is recorded, so an executor invents no policy.
 
-Wording preference and speculative cases are not findings, per
+The checker raises only essential findings: executability, correctness, or decision completeness; wording preference,
+style, and speculative cases without executability impact are never findings, per
 [Minimal Sufficiency](../../principles/general/simplicity-over-complexity.md). `plan-maker` authors plans; `plan-fixer`
-only repairs
-ledger rows.
+only repairs ledger rows. This convention adapts the `ose-rules` rule at catalog head
+`8816d23a7725ac1431c99a050a9c938d6b038eee`, adopted by explicit copy; unenforced by decision.
 
 ## Termination
 

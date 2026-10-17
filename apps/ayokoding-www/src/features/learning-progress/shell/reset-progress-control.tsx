@@ -65,7 +65,7 @@ export function ResetProgressControl({ locale }: ResetProgressControlProps) {
       </button>
       <p
         ref={statusRef}
-        tabIndex={-1}
+        tabIndex={announcement ? -1 : undefined}
         role="status"
         aria-live="polite"
         className="mt-1 h-5 text-sm text-muted-foreground"

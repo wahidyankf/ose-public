@@ -39,6 +39,33 @@ describe("parseMarkdown", () => {
     expect(headings[2]).toMatchObject({ text: "Heading Four", level: 4 });
   });
 
+  it("maps the first body heading level to h2 so the body never skips a level (UIW-004)", async () => {
+    const md = "### Section One\n#### Detail\n### Section Two";
+    const { html, headings } = await parseMarkdown(md);
+
+    expect(html).toContain("<h2");
+    // The nested `#### Detail` shifts with its parent (h2 > h3: no skip).
+    expect(html).toContain("<h3");
+    expect(html).not.toContain("<h4");
+    expect(headings).toMatchObject([
+      { text: "Section One", level: 2 },
+      { text: "Detail", level: 3 },
+      { text: "Section Two", level: 2 },
+    ]);
+  });
+
+  it("leaves a body that already starts at h2 untouched", async () => {
+    const md = "## Top\n### Sub";
+    const { html, headings } = await parseMarkdown(md);
+
+    expect(html).toContain("<h2");
+    expect(html).toContain("<h3");
+    expect(headings).toMatchObject([
+      { text: "Top", level: 2 },
+      { text: "Sub", level: 3 },
+    ]);
+  });
+
   it("adds id attributes to headings via rehype-slug", async () => {
     const md = "## Getting Started";
     const { html } = await parseMarkdown(md);

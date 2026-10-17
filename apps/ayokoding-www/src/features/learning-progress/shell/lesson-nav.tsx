@@ -60,7 +60,7 @@ export function LessonNav() {
     >
       <Link
         href={previous.href}
-        className="flex min-h-11 items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+        className="flex min-h-11 items-center gap-2 text-sm text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
       >
         <span aria-hidden="true">←</span>
         {tf(loc, "lessonPrevious", { title: previous.title })}
@@ -75,7 +75,7 @@ export function LessonNav() {
           learningProgressStore.update((state) => setPageComplete(state, courseId, pagePath, !complete));
           setAnnouncement(complete ? "incomplete" : "complete");
         }}
-        className="min-h-11 w-full rounded-md border border-border px-4 text-sm font-medium hover:border-primary disabled:opacity-50 sm:w-auto"
+        className="min-h-11 w-full rounded-md border border-border px-4 text-sm font-medium hover:border-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:opacity-50 sm:w-auto"
       >
         {complete ? (
           <span className="inline-flex items-center gap-1">
@@ -95,7 +95,7 @@ export function LessonNav() {
             learningProgressStore.update((state) => setPageComplete(state, courseId, pagePath, true));
           }
         }}
-        className="flex min-h-11 w-full flex-col justify-center rounded-md bg-primary px-4 py-2 text-primary-foreground hover:bg-primary/90 sm:w-auto sm:items-end"
+        className="flex min-h-11 w-full flex-col justify-center rounded-md bg-primary px-4 py-2 text-primary-foreground hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none sm:w-auto sm:items-end"
       >
         <span className="font-semibold">
           {complete ? t(loc, "lessonContinue") : t(loc, "lessonMarkCompleteContinue")} →

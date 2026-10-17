@@ -223,6 +223,25 @@ describe("LessonNav", () => {
     expect(hrefs).toContain(`/en/learn/courses/just-enough-bash/learning/advanced?path=${PATH_ID}`);
   });
 
+  it("renders the designed 2px focus ring on all three controls (UIW-003)", () => {
+    const nav = renderNav();
+
+    const controls = [
+      within(nav).getByRole("link", { name: /Previous:/ }),
+      within(nav).getByRole("button", { name: /Mark as complete/ }),
+      within(nav).getByRole("link", { name: /Mark complete & continue/ }),
+    ];
+
+    // The app's designed ring (roadmap-primary / course-primary /
+    // continue-primary): 2px ring-ring, no browser-default outline.
+    for (const control of controls) {
+      const classes = control.className.split(/\s+/);
+      expect(classes).toContain("focus-visible:ring-2");
+      expect(classes).toContain("focus-visible:ring-ring");
+      expect(classes).toContain("focus-visible:outline-none");
+    }
+  });
+
   it("renders no navigation for a page outside the lesson sequence", () => {
     render(
       <LessonContextProvider {...lessonProps({ pagePath: "learning/capstone/overview" })}>

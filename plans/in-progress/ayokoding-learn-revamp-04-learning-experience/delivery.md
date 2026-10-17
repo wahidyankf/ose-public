@@ -39,6 +39,14 @@ plan-quality-gate: PASS_WITH_FINDINGS (2 cycles, 0 open blocking, 9 open non-blo
   `AYOKODING_WEB_MANIFESTS_DIR=apps/ayokoding-www-fe-e2e/fixtures/manifests` and
   `AYOKODING_WEB_SHOW_DRAFTS=true`, and the unit gate ran with `--maxWorkers=1`. All dev servers were
   stopped after use; port 3101 is free.
+- **Resumed 2026-10-17:** delivery branch rebased onto fresh `origin/main` (`f24e95b`, clean, 15
+  commits replayed) and the execution worktree re-provisioned on it (toolchain: `npm install` exit 0,
+  `doctor` no findings). A fresh pre-resume `plan-quality-gate` (2 cycles) returned PASS with 0 open
+  rows (ledger: `local-tmp/quality/plan/ayokoding-learn-revamp-04-learning-experience__20261017T1547Z.md`,
+  gitignored); its substance was already reflected on this branch (correct `course-page-content.tsx`
+  path; pending-restructure fixture executed as `fixtures/manifests/skills/conventional-accounting.json`
+  with real courses `accounting-foundations` + `journal-entries-and-posting-mechanics`), so no plan
+  text changes were carried over. Resume continues with UIW-001…UIW-004 below, in order.
 
 ## Worktree
 
@@ -1033,7 +1041,7 @@ depicts a state with completed courses, so this is arguably per-spec.
       `data-progress-control` target 44–56 px; reflow exact at 375 on all seven screens; contrast of
       the new progress UI 4.82:1–18.4:1 (disabled lesson toggle 3.3:1, WCAG-exempt, informational);
       focus rings on the roadmap/course/continue primaries.
-- [ ] **UIW-001:** Keyboard focus is invisible on every control using the shared `Button` primitive
+- [x] **UIW-001:** Keyboard focus is invisible on every control using the shared `Button` primitive
       (site header menu/search/theme toggles, code-block copy buttons) — **HIGH · blocking**. After a
       real Tab the header icon buttons show no focus indicator: `outline-style: none`,
       `box-shadow` all-zero-spread. Root cause (verified in the compiled CSS):
@@ -1043,25 +1051,33 @@ depicts a state with completed courses, so this is arguably per-spec.
       stays 0-width. Axe does not catch this class, which is why S39 stayed green. Departs from WCAG
       2.4.7 (AA). Pre-existing outside plan 04's screens but the gate judges the whole reachable UI —
       needs an owner (web-ui package / idea brief) before merge. — fix with a regression test
-- [ ] **UIW-002:** Lesson context-bar links are 20 px-tall targets inside
+- [x] **UIW-002:** Lesson context-bar links are 20 px-tall targets inside
       `[data-progress-slot="context-bar"]` — **HIGH (plan criterion) · non-blocking**. "Just Enough
       Bash" measures 118×20 px at 375 (path/phase/"Course n of N" links the same). Departs from plan
       criterion 2 (44×44 at 375); WCAG 2.5.8 exempts inline links. Owning component:
       `apps/ayokoding-www/src/features/learning-progress/shell/context-bar.tsx`. — fix with a
       regression test
-- [ ] **UIW-003:** The lesson action row relies on the browser-default outline instead of the app's
+- [x] **UIW-003:** The lesson action row relies on the browser-default outline instead of the app's
       designed focus ring — **MEDIUM**. The completion toggle, "Mark complete & continue", and
       "Previous" show only the UA hairline, while the sibling `roadmap-primary`/`course-primary`/
       `continue-primary` render the designed 2 px `ring-ring`. Owning component:
       `apps/ayokoding-www/src/features/learning-progress/shell/lesson-nav.tsx` (its three controls
       declare no `focus-visible` classes). — fix with a regression test
-- [ ] **UIW-004:** Lesson body skips heading level h1 → h3 — **MEDIUM**. "Beginner Examples" is the h1
+- [x] **UIW-004:** Lesson body skips heading level h1 → h3 — **MEDIUM**. "Beginner Examples" is the h1
       and its 28 sections render as `<h3>` with no `<h2>` between, so screen-reader heading navigation
       reads level 3 under level 1. Content authoring
       (`apps/ayokoding-www/content/en/learn/courses/just-enough-bash/learning/beginner.md` and
       siblings) passes authoring levels straight through `content/core/parser.ts`; a renderer-side
       normalisation (map the first body level to h2) would fix every course at once. — fix with a
       regression test
+- **UIW fixes landed 2026-10-17 (`swe-developer`, one RED→GREEN cycle each, orchestrator-verified):**
+  UIW-001 → `@source inline(...)` safelist of the three Button focus utilities in
+  `apps/ayokoding-www/src/app/globals.css` + `globals-focus-ring.unit.test.ts` (compiled-CSS proof)
+  and `libs/web-ui` button regression tests (shared primitive untouched); UIW-002 → `min-h-11`
+  targets in `context-bar.tsx` (+ `context-bar.test.tsx`); UIW-003 → designed `focus-visible:ring-2
+ring-ring` on the three `lesson-nav.tsx` controls (+ `lesson-nav.test.tsx`); UIW-004 →
+  `normalizeHeadingLevels` in `content/core/parser.ts` (+ `parser.unit.test.ts` cases). Focused suites:
+  22 + 22 + 8 = 52 tests pass (orchestrator reran each file, `--maxWorkers=1`).
 - [ ] [AI] Run [UX Review Fix Planning](../../../repo-governance/workflows/quality/ux-review-fix-planning.md):
       `swe-web-tester` (exploratory charter), `swe-usability-tester`, and `swe-web-tester` (design
       charter) against the running site. Append each finding here as an unchecked checkbox labelled

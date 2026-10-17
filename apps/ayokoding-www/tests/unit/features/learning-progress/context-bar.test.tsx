@@ -82,7 +82,24 @@ describe("ContextBar", () => {
     const contextBar = renderBar();
 
     expect(contextBar.className.split(/\s+/)).toContain("h-[4.75rem]");
-    expect(contextBar.className.split(/\s+/)).toContain("sm:h-14");
+    // sm:h-[4.5rem] (72px) fits the 44px breadcrumb row + gap + counts row
+    // (44 + 4 + 20 = 68); the slot stays fixed-height at every breakpoint.
+    expect(contextBar.className.split(/\s+/)).toContain("sm:h-[4.5rem]");
+  });
+
+  it("gives every breadcrumb link a 44px minimum target while keeping the inline layout (UIW-002)", () => {
+    for (const overrides of [{}, { pathParam: null }]) {
+      const contextBar = renderBar(overrides as Partial<LessonProps>);
+      const links = within(contextBar).getAllByRole("link");
+
+      expect(links.length).toBeGreaterThan(0);
+      for (const link of links) {
+        // min-h-11 (2.75rem = 44px): plan criterion 2 (44x44 at 375). The
+        // links stay inline flex items of the same wrapping breadcrumb row.
+        expect(link.className.split(/\s+/)).toContain("min-h-11");
+      }
+      cleanup();
+    }
   });
 
   it("counts the pages done from the saved progress", () => {

@@ -38,18 +38,21 @@ export function ContextBar() {
     <nav
       aria-label={t(loc, "contextBarLabel")}
       data-progress-slot="context-bar"
-      className="mb-4 flex h-[4.75rem] flex-col justify-center gap-1 rounded-md border border-border px-3 text-sm sm:h-14"
+      className="mb-4 flex h-[4.75rem] flex-col justify-center gap-1 rounded-md border border-border px-3 text-sm sm:h-[4.5rem]"
     >
       <div className="flex min-w-0 flex-wrap items-center gap-x-2">
         {path === null ? (
-          <Link href={contentUrl(loc, slugForCourseId(courseId))} className="truncate font-medium hover:text-primary">
+          <Link
+            href={contentUrl(loc, slugForCourseId(courseId))}
+            className="flex min-h-11 items-center truncate font-medium hover:text-primary"
+          >
             {courseTitle}
           </Link>
         ) : (
           <>
             <Link
               href={contentUrl(loc, `${LEARN_PATHS_PREFIX}/${path.pathId}`)}
-              className="truncate font-medium text-primary hover:underline"
+              className="flex min-h-11 items-center truncate font-medium text-primary hover:underline"
             >
               {path.title}
             </Link>
@@ -59,14 +62,14 @@ export function ContextBar() {
               // renders those as closed `<details>`), so it links to the path page itself.
               <Link
                 href={contentUrl(loc, `${LEARN_PATHS_PREFIX}/${path.pathId}`)}
-                className="truncate hover:text-primary"
+                className="flex min-h-11 items-center truncate hover:text-primary"
               >
                 {path.phase.title}
               </Link>
             ) : (
               <Link
                 href={`${contentUrl(loc, `${LEARN_PATHS_PREFIX}/${path.pathId}`)}#phase-${path.phase.id}`}
-                className="truncate hover:text-primary"
+                className="flex min-h-11 items-center truncate hover:text-primary"
               >
                 {`${t(loc, "pathsPhaseLabel")} ${path.phase.index} · ${path.phase.title}`}
               </Link>
@@ -74,7 +77,7 @@ export function ContextBar() {
             <span aria-hidden="true">›</span>
             <Link
               href={contentUrl(loc, slugForCourseId(courseId), path.pathId)}
-              className="truncate hover:text-primary"
+              className="flex min-h-11 items-center truncate hover:text-primary"
             >
               {tf(loc, "contextCourseOf", { position: path.coursePosition, total: path.totalCourses })}
             </Link>

@@ -95,7 +95,9 @@ function normalizeHeadingLevels(tree: HastNode): void {
   collectHeadingLevels(tree, levels);
   if (levels.length === 0) return;
 
-  const delta = 2 - levels[0];
+  const first = levels[0];
+  if (first === undefined) return;
+  const delta = 2 - first;
   if (delta === 0) return;
 
   shiftHeadingLevels(tree, delta);

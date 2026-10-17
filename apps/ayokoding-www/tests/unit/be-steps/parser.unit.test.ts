@@ -281,8 +281,15 @@ function stripFencedCode(body: string): string {
   let opener: { char: string; length: number } | null = null;
   for (const line of body.split("\n")) {
     const fence = line.match(/^ {0,3}(`{3,}|~{3,})/);
-    if (fence && (opener === null || (fence[1][0] === opener.char && fence[1].length >= opener.length))) {
-      opener = opener === null ? { char: fence[1][0], length: fence[1].length } : null;
+    const run = fence?.[1];
+    const ch = run?.[0];
+    if (
+      fence &&
+      run !== undefined &&
+      ch !== undefined &&
+      (opener === null || (ch === opener.char && run.length >= opener.length))
+    ) {
+      opener = opener === null ? { char: ch, length: run.length } : null;
       continue;
     }
     if (opener === null) kept.push(line);
@@ -296,14 +303,17 @@ function checkBodyOutline(html: string): string[] {
   if (html.includes("<h1")) {
     problems.push("body renders an h1 (page would have 2+ h1s)");
   }
-  const levels = [...html.matchAll(/<h([2-6])[\s>]/g)].map((m) => parseInt(m[1], 10));
+  const levels = [...html.matchAll(/<h([2-6])[\s>]/g)].map((m) => parseInt(m[1] ?? "", 10));
   if (levels.length === 0) return problems;
   if (levels[0] !== 2) {
     problems.push(`first body heading is h${levels[0]}, skipping from the page h1`);
   }
   for (let i = 1; i < levels.length; i += 1) {
-    if (levels[i] > levels[i - 1] + 1) {
-      problems.push(`skipped level h${levels[i - 1]} -> h${levels[i]}`);
+    const prev = levels[i - 1];
+    const curr = levels[i];
+    if (prev === undefined || curr === undefined) continue;
+    if (curr > prev + 1) {
+      problems.push(`skipped level h${prev} -> h${curr}`);
       break;
     }
   }

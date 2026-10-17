@@ -267,8 +267,9 @@ Then('exactly one primary button reads "Start:" followed by the first course\'s 
   const firstCourseId = coreCourseIds(manifest)[0] as string;
   expect(firstCourseId).toBe(BASH_ID);
 
-  const nav = syllabus(page, BACKEND_TITLE);
-  const buttons = nav.getByRole("link", { name: /^(Start|Continue):/ });
+  // The primary lives in the progress card before the syllabus nav (a CTA is not navigation),
+  // so it is scoped to the page — while the row title it names is still read off the syllabus.
+  const buttons = page.getByRole("link", { name: /^(Start|Continue):/ });
   // One primary control only, and it names the path's own first course — read off the page.
   await expect(buttons).toHaveCount(1);
   await expect(buttons).toHaveText(`Start: ${await rowTitle(page, BACKEND_TITLE, 1)}`);
@@ -279,7 +280,7 @@ Then("it links to that course's landing page in path context", async ({ page }) 
   const manifest = await publishedManifest(page, BACKEND_PATH);
   const firstCourseId = coreCourseIds(manifest)[0] as string;
 
-  await expect(syllabus(page, BACKEND_TITLE).getByRole("link", { name: /^Start:/ })).toHaveAttribute(
+  await expect(page.getByRole("link", { name: /^Start:/ })).toHaveAttribute(
     "href",
     `/en/learn/courses/${firstCourseId}?path=${BACKEND_PATH}`,
   );
@@ -323,13 +324,13 @@ Then('the primary button reads "Continue:" followed by the second course\'s titl
   const manifest = await publishedManifest(page, BACKEND_PATH);
   expect(manifest.courseOrder[1]).toBe(BACKEND_ID);
 
-  const buttons = syllabus(page, BACKEND_TITLE).getByRole("link", { name: /^(Start|Continue):/ });
+  const buttons = page.getByRole("link", { name: /^(Start|Continue):/ });
   await expect(buttons).toHaveCount(1);
   await expect(buttons).toHaveText(`Continue: ${await rowTitle(page, BACKEND_TITLE, 2)}`);
 });
 
 Then("it links to the first learning page of that course the reader has not completed", async ({ page }) => {
-  const button = syllabus(page, BACKEND_TITLE).getByRole("link", { name: /^Continue:/ });
+  const button = page.getByRole("link", { name: /^Continue:/ });
   const href = await button.getAttribute("href");
 
   // A page of the second course in path context — never the course landing page and never a page
@@ -412,9 +413,7 @@ Then('the headline reads "0 of N core courses done"', async ({ page }) => {
   const manifest = await publishedManifest(page, GENERALIST_PATH);
   const coreTotal = coreCourseIds(manifest).length;
 
-  await expect(
-    syllabus(page, GENERALIST_TITLE).getByText(`0 of ${coreTotal} core courses done`, { exact: true }),
-  ).toBeVisible();
+  await expect(page.getByText(`0 of ${coreTotal} core courses done`, { exact: true })).toBeVisible();
 });
 
 Then('that extension phase shows "1 of M done"', async ({ page }) => {
@@ -443,14 +442,12 @@ Given("a reader completed every core course of a path", async ({ page }) => {
 Then("the headline says the core path is complete", async ({ page }) => {
   const manifest = await publishedManifest(page, BACKEND_PATH);
   const coreTotal = coreCourseIds(manifest).length;
-  const nav = syllabus(page, BACKEND_TITLE);
-
-  await expect(nav.getByText("Core path complete. The optional extensions are below.", { exact: true })).toBeVisible();
-  await expect(nav.getByText(`${coreTotal} of ${coreTotal} core courses done`, { exact: true })).toBeVisible();
+  await expect(page.getByText("Core path complete. The optional extensions are below.", { exact: true })).toBeVisible();
+  await expect(page.getByText(`${coreTotal} of ${coreTotal} core courses done`, { exact: true })).toBeVisible();
 });
 
 Then('no "Start" or "Continue" button is shown', async ({ page }) => {
-  await expect(syllabus(page, BACKEND_TITLE).getByRole("link", { name: /^(Start|Continue):/ })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: /^(Start|Continue):/ })).toHaveCount(0);
 });
 
 // ---------------------------------------------------------------------------

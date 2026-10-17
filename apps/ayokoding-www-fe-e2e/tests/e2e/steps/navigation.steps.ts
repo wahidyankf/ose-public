@@ -174,14 +174,14 @@ Then("the corresponding item in the sidebar should be visually highlighted as ac
   const sidebar = page.getByRole("navigation", { name: /sidebar/i });
   const active = sidebar.locator('a[href="/en/learn/courses/just-enough-python/learning/beginner"]');
   await expect(active).toHaveCount(1);
-  await expect(active).toHaveClass(/bg-primary\/10/);
+  await expect(active).toHaveClass(/bg-primary\/5/);
   await expect(active).toHaveClass(/font-medium/);
   await expect(active).toHaveClass(/text-primary/);
 });
 
 Then("no other sidebar item should be highlighted as active", async ({ page }) => {
   const sidebar = page.getByRole("navigation", { name: /sidebar/i });
-  await expect(sidebar.locator("a.bg-primary\\/10.font-medium.text-primary")).toHaveCount(1);
+  await expect(sidebar.locator("a.bg-primary\\/5.font-medium.text-primary")).toHaveCount(1);
 });
 
 Given("a content page's markdown body contains a relative link to another content file", async ({ page }) => {

@@ -193,12 +193,16 @@ describe("PathLanding — the roadmap (plan ayokoding-learn-revamp-04, Phase 4)"
     );
   }
 
-  it("renders the roadmap inside the syllabus nav with its progress card", () => {
+  it("renders the roadmap inside the syllabus nav with its progress card before it", () => {
     renderPhased();
 
+    // A CTA is not syllabus navigation: the progress card (and its Start/Continue primary)
+    // renders before the nav landmark, in the same visual and tab position as before.
     const nav = screen.getByRole("navigation", { name: "Generalist Track syllabus" });
-    expect(within(nav).getByText("Your progress (saved in this browser)")).toBeTruthy();
-    expect(within(nav).getByText("0 of 2 core courses done")).toBeTruthy();
+    expect(within(nav).queryByText("Your progress (saved in this browser)")).toBeNull();
+    expect(within(nav).queryByText("0 of 2 core courses done")).toBeNull();
+    expect(screen.getByText("Your progress (saved in this browser)")).toBeTruthy();
+    expect(screen.getByText("0 of 2 core courses done")).toBeTruthy();
     expect(within(nav).getByRole("heading", { level: 2, name: /Core path · 1 phase/ })).toBeTruthy();
   });
 

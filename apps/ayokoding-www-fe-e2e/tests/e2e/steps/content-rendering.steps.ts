@@ -12,18 +12,27 @@ When("a visitor opens a content page with prose body text", async ({ page }) => 
 Then("the body text should have prose typography classes applied", async ({ page }) => {
   const prose = page.locator(".prose, [class*='prose']").first();
   await expect(prose).toBeVisible();
-  const paragraph = prose.locator("p").first();
-  const typography = await paragraph.evaluate((element) => {
-    const style = getComputedStyle(element);
+  // One atomic in-page read: the prose subtree is replaced once during hydration, so resolving
+  // the paragraph in one protocol call and reading it in another can straddle that commit and
+  // sample a detached node (whose computed style is empty — webkit-only in practice, where the
+  // commit lands inside the read window most often). Querying and measuring inside a single JS
+  // task sees the attached node either before or after the commit, never mid-replacement.
+  const typography = await page.evaluate(() => {
+    const paragraph = document.querySelector(".prose p, [class*='prose'] p");
+    if (paragraph === null) {
+      return null;
+    }
+    const style = getComputedStyle(paragraph);
     return {
       fontFamily: style.fontFamily,
       fontSize: Number.parseFloat(style.fontSize),
       lineHeight: Number.parseFloat(style.lineHeight),
     };
   });
-  expect(typography.fontFamily).not.toBe("");
-  expect(typography.fontSize).toBeGreaterThanOrEqual(16);
-  expect(typography.lineHeight).toBeGreaterThan(typography.fontSize);
+  expect(typography).not.toBeNull();
+  expect(typography?.fontFamily).not.toBe("");
+  expect(typography?.fontSize ?? 0).toBeGreaterThanOrEqual(16);
+  expect(typography?.lineHeight ?? 0).toBeGreaterThan(typography?.fontSize ?? 0);
 });
 
 Then("headings should be visually distinct from body text", async ({ page }) => {

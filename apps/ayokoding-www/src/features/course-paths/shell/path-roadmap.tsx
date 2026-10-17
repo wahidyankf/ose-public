@@ -58,9 +58,13 @@ export function roadmapHours(
  * optional extensions as closed sections (S19, S23, S24, S25).
  *
  * Keeps plan 02's `<nav aria-label="… syllabus">` wrapper name, so every existing syllabus
- * scenario keeps finding the same landmark. A pending-restructure skills path renders one flat
- * course list instead — today's order, plan 01's numbering, plan 02's copy, no phase heading,
- * outcome, or extensions block (S26). Pure except for its client progress slots; no IO.
+ * scenario keeps finding the same landmark. The progress card renders immediately BEFORE that
+ * nav, not inside it: a Start/Continue CTA is not syllabus navigation, and counting it as a nav
+ * link inflated the syllabus link count. DOM order, margins, and tab order are unchanged, so the
+ * card sits in exactly the same visual position as before. A pending-restructure skills path
+ * renders one flat course list instead — today's order, plan 01's numbering, plan 02's copy, no
+ * phase heading, outcome, or extensions block (S26). Pure except for its client progress slots;
+ * no IO.
  */
 export function PathRoadmap({ locale, manifest, courseCards, sequences, bodyHtml }: PathRoadmapProps) {
   const loc = locale as Locale;
@@ -95,9 +99,9 @@ export function PathRoadmap({ locale, manifest, courseCards, sequences, bodyHtml
     <div>
       {bodyHtml ? <MarkdownRenderer html={bodyHtml} locale={locale} /> : null}
 
-      <nav aria-label={`${manifest.title} syllabus`}>
-        <RoadmapProgressCard locale={locale} manifest={manifest} courseCards={courseCards} sequences={sequences} />
+      <RoadmapProgressCard locale={locale} manifest={manifest} courseCards={courseCards} sequences={sequences} />
 
+      <nav aria-label={`${manifest.title} syllabus`}>
         {flat ? (
           <>
             <p className="mt-8 text-sm font-semibold tracking-wide text-muted-foreground uppercase">

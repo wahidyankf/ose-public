@@ -120,6 +120,17 @@ describe("PathCardProgress", () => {
     expect(screen.getByText("Not started")).toBeTruthy();
   });
 
+  it("keeps the hydrated row on the placeholder's 20px line so progress never shifts the card (S8)", () => {
+    learningProgressStore.update((state) => completeCourse(state, "just-enough-bash"));
+    const { container } = renderProgress();
+
+    // The served placeholder box is min-h-5 (20px). The hydrated row must resolve its anonymous
+    // text (the "·" separator) at the same text-sm line — at the body's 24px line the row grows
+    // 20 → 24px and shifts every card below it on the Learn home.
+    const slot = container.querySelector('[data-progress-slot="path-card-progress"]');
+    expect((slot?.className ?? "").split(/\s+/)).toContain("text-sm");
+  });
+
   it("wraps its row instead of overflowing the viewport, and never breaks a label mid-word (DWT-004)", () => {
     learningProgressStore.update((state) => completeCourse(state, "just-enough-bash"));
     const { container } = renderProgress();

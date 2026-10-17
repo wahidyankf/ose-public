@@ -60,7 +60,16 @@
         "cwd": "apps/ayokoding-www"
       },
       "outputs": ["{projectRoot}/.next"],
-      "dependsOn": ["generate-indexes", "generate-search-data"]
+      "dependsOn": ["generate-indexes", "generate-search-data"],
+      "inputs": [
+        "default",
+        {
+          "env": "AYOKODING_WEB_MANIFESTS_DIR"
+        },
+        {
+          "env": "AYOKODING_WEB_SHOW_DRAFTS"
+        }
+      ]
     },
     "start": {
       "executor": "nx:run-commands",

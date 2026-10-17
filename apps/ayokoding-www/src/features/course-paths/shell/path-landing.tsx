@@ -41,9 +41,10 @@ export interface PathLandingProps {
 /**
  * Path landing (Cycles 3.1/3.1d, Screen 2; plan 02 Phase 4, FR-4/FR-7; plan 04 Phase 4) — the
  * path's own chrome (hue bar, `h1`, description, markdown body, and the "Before you start" note for
- * a path that assumes courses) around plan 04's `PathRoadmap`, which renders the progress card, the
- * core milestones with their outcomes and progress, and the closed optional extensions under the
- * `<nav aria-label="… syllabus">` wrapper every syllabus scenario looks for.
+ * a path that assumes courses) around plan 04's `PathRoadmap`, which renders the progress card
+ * before — never inside — the `<nav aria-label="… syllabus">` wrapper every syllabus scenario
+ * looks for, then the core milestones with their outcomes and progress, and the closed optional
+ * extensions inside that nav.
  *
  * The "Before you start" note stays outside that nav: an assumed course is background, not a member
  * of the path, so it is never a roadmap row. A pending-restructure skills path skips the note (its

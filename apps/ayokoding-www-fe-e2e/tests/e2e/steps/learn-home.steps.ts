@@ -162,7 +162,10 @@ Then(
 
       await expect(title).toHaveText(manifest.title); // the path title
       await expect(card).toContainText(manifest.description ?? ""); // who it is for
-      await expect(card).toContainText(`${corePhaseCount} core phases · ${extensionCount} optional`); // its size
+      // Mirrors LearnPathCard's own singular rule (UWT-012): "1 core phase", never "1 core phases".
+      const coreSize = corePhaseCount === 1 ? "1 core phase" : `${corePhaseCount} core phases`;
+      const extensionSize = extensionCount === 1 ? "1 optional" : `${extensionCount} optional`;
+      await expect(card).toContainText(`${coreSize} · ${extensionSize}`); // its size
       await expect(card).toContainText(/About \d+ h/); // its estimated time
       await expect(card).toContainText(new RegExp(`\\d+ of ${coreCourses.length} core courses done`));
       await expect(card).toContainText(/Not started|In progress|Done/); // its progress in words

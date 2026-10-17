@@ -113,12 +113,30 @@ function renderRoadmap(manifest: PathManifest, cards: Record<string, RoadmapCour
 }
 
 describe("PathRoadmap — core phases (S19)", () => {
-  it("keeps the syllabus nav name plan 02 tests rely on and puts the progress card inside it", () => {
+  it("keeps the syllabus nav name plan 02 tests rely on and keeps the progress card outside it", () => {
     renderRoadmap(phasedManifest());
 
+    // A CTA is not syllabus navigation: the progress card (and its Start/Continue primary)
+    // renders before the nav landmark, in the same visual and tab position as before.
     const nav = screen.getByRole("navigation", { name: "Backend Track syllabus" });
-    expect(within(nav).getByText("Your progress (saved in this browser)")).toBeTruthy();
-    expect(within(nav).getByText("0 of 3 core courses done")).toBeTruthy();
+    expect(within(nav).queryByText("Your progress (saved in this browser)")).toBeNull();
+    expect(within(nav).queryByText("0 of 3 core courses done")).toBeNull();
+    expect(within(nav).queryByRole("link", { name: /^(Start|Continue):/ })).toBeNull();
+    expect(screen.getByText("Your progress (saved in this browser)")).toBeTruthy();
+    expect(screen.getByText("0 of 3 core courses done")).toBeTruthy();
+    const primary = screen.getByRole("link", { name: /^(Start|Continue):/ });
+    expect(primary.compareDocumentPosition(nav) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    // The nav holds the course links only — no primary CTA inflating its link count.
+    expect(
+      within(nav)
+        .getAllByRole("link")
+        .map((link) => link.getAttribute("href")),
+    ).toEqual([
+      `/en/learn/courses/just-enough-bash?path=${PATH_ID}`,
+      `/en/learn/courses/backend-essentials?path=${PATH_ID}`,
+      `/en/learn/courses/sql-essentials?path=${PATH_ID}`,
+      `/en/learn/courses/capstone-secure-service?path=${PATH_ID}`,
+    ]);
   });
 
   it("renders each core phase as a labelled section with id phase-<id>, its number, title, and outcome lines", () => {

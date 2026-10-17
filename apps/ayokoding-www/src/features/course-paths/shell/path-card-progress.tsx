@@ -40,9 +40,14 @@ export function PathCardProgress({ locale, manifest, sequences }: PathCardProgre
 
   if (snapshot.status !== "ready") {
     // S8: the placeholder keeps the slot's own box classes, so hydration never moves the card's
-    // fields below it — the same wrapping minimum-height row the ready branch renders.
+    // fields below it — the same wrapping minimum-height row the ready branch renders. Both
+    // branches resolve anonymous text (the "·" separator) at the text-sm line: at the body's
+    // 24px line the hydrated row would grow 20 → 24px and shift every card below it.
     return (
-      <span data-progress-slot="path-card-progress" className="flex min-h-5 flex-wrap items-center gap-x-2 gap-y-1">
+      <span
+        data-progress-slot="path-card-progress"
+        className="flex min-h-5 flex-wrap items-center gap-x-2 gap-y-1 text-sm"
+      >
         <ProgressPlaceholder className="h-4 w-24" />
         <ProgressPlaceholder className="h-2 w-12" />
       </span>
@@ -53,7 +58,10 @@ export function PathCardProgress({ locale, manifest, sequences }: PathCardProgre
   const status: CourseStatus = complete ? "done" : coreDone > 0 ? "in-progress" : "not-started";
 
   return (
-    <span data-progress-slot="path-card-progress" className="flex min-h-5 flex-wrap items-center gap-x-2 gap-y-1">
+    <span
+      data-progress-slot="path-card-progress"
+      className="flex min-h-5 flex-wrap items-center gap-x-2 gap-y-1 text-sm"
+    >
       <CourseStatusLabel locale={locale} status={status} size="sm" />
       <span aria-hidden="true">·</span>
       <span className="text-sm text-muted-foreground">

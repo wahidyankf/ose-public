@@ -848,7 +848,11 @@ Then("each syllabus row shows its position number starting at 1 before the cours
     { position: "3", title: "SQL Essentials" },
   ];
   for (const [index, { position, title }] of expected.entries()) {
-    await expect(rows.nth(index)).toHaveText(new RegExp(`^${position}\\s*${title}$`, "u"));
+    // Screen-1-Option-A cards carry description, hours, and status after the title, so only the
+    // number prefix plus the title is pinned here — the title-link assertion below already pins
+    // the exact accessible name (WCAG 2.5.3 Label in Name).
+    const prefix = new RegExp(`^${position}\\s*${title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`, "u");
+    await expect(rows.nth(index)).toHaveText(prefix);
     // The number sits outside the link (tech-docs §4.2), so the link's accessible name stays
     // exactly the title (WCAG 2.5.3 Label in Name).
     await expect(rows.nth(index).getByRole("link", { name: title, exact: true })).toBeVisible();
@@ -1192,9 +1196,11 @@ Given("a fixture path manifest declares assumed courses", async ({ page }) => {
 });
 
 Then('a "Before you start" note appears before the first phase', async ({ page }) => {
-  const nav = generalistSyllabus(page);
-  await expect(nav.getByText("Before you start")).toBeVisible();
-  const headings = await nav.getByRole("heading").allTextContents();
+  // The note is page chrome, not syllabus navigation: it renders once, after the h1 and before
+  // the phases, outside the syllabus nav — so it is scoped to the page, keeping only the
+  // before-first-phase DOM-order assertion.
+  await expect(page.getByText("Before you start")).toHaveCount(1);
+  const headings = await page.getByRole("heading").allTextContents();
   const noteIndex = headings.findIndex((text) => text.includes("Before you start"));
   const firstPhaseIndex = headings.findIndex((text) => text.includes("Fixture core"));
   expect(noteIndex).toBeGreaterThanOrEqual(0);
@@ -1202,8 +1208,10 @@ Then('a "Before you start" note appears before the first phase', async ({ page }
 });
 
 Then("it links every assumed course to its canonical course page without a path query parameter", async ({ page }) => {
-  // The assumes note is the syllabus nav's only unordered list — phase courses render as `<ol>`.
-  const assumedLinks = generalistSyllabus(page).locator("ul > li > a");
+  // The assumes note lives outside the syllabus nav (an assumed course is background, not a path
+  // member), so its list is scoped from the note's own heading — phase courses render as `<ol>`.
+  const note = page.getByRole("heading", { name: "Before you start" }).locator("xpath=ancestor::div[1]");
+  const assumedLinks = note.locator("ul > li > a");
   const expected = [
     { id: "just-enough-python", title: "Just Enough Python" },
     { id: "data-structures-and-algorithms-essentials", title: "Data Structures & Algorithms Essentials" },

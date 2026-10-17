@@ -1295,6 +1295,16 @@ immediately-effective/backend-track`), and the phase anchor slug contains "fixtu
   as BLOCKED-for-owner (copy ripple 12/12/7 files incl. Gherkin+E2E — exceeds the 5-file fix threshold);
   UWT-005/006/007/008/013/014 left open as out-of-scope deferral candidates. Both groups need explicit
   user permission at the Phase 10 gate.
+- **E2E failure batch landed 2026-10-17 (`swe-developer`, orchestrator-diagnosed, per-scenario
+  `--grep` verified 3/3 browsers where applicable):** syllabus nav count → `RoadmapProgressCard` moved
+  out of the syllabus `<nav>` (same DOM position/margins/tab order; steps re-scoped nav→page);
+  landing-hero label → aligned to rendered primary; assumes note → step scoped to page keeping
+  before-first-phase DOM order; position numbers → number-prefix + title match (title-link pins 2.5.3);
+  learn-home size → step mirrors singular rule; S8 shift → `text-sm` on the slot so placeholder and
+  hydrated rows share the 24px line; sidebar class → step updated to `bg-primary/5` (S39 fix); firefox
+  keyboard → `tabIndex={-1}` on scroll containers (Tab stops were displaced); webkit fontFamily →
+  atomic in-page read (hydration commit straddled two protocol calls); build `inputs` gain the two env
+  vars (Nx cache correctness). `typecheck` zero errors. Full E2E rerun pending as the gate.
 - [ ] [AI] Rerun `QUICK` and `E2E` after the fixes. Acceptance: exit 0.
 
 ### Phase 10 Gate

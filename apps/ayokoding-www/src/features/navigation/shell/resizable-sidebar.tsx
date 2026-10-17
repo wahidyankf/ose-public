@@ -51,7 +51,12 @@ export function ResizableSidebar({ locale, children }: ResizableSidebarProps) {
         className="h-full"
         handleAriaLabel={t(locale, "resizableSidebarHandleLabel")}
       >
-        <div className="h-full overflow-x-hidden overflow-y-auto p-4">{children}</div>
+        {/* `tabIndex={-1}`: Firefox tabs into scroll containers, costing keyboard users a stop
+            on an element with no action. The region stays scrollable; its links still take focus
+            (and auto-scroll into view) in every browser. */}
+        <div tabIndex={-1} className="h-full overflow-x-hidden overflow-y-auto p-4">
+          {children}
+        </div>
       </ResizablePanel>
     </aside>
   );

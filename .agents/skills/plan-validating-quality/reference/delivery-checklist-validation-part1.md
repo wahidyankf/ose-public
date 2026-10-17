@@ -60,7 +60,9 @@ prerequisites, paths, commands, observations, recovery, or proof, flag the relev
 - **Cross-repository resource schedule (HARD RULE)**: when a plan spans repositories, its
   `## Parallelization Model` classifies each compute-bearing node under the resource-aware boundary
   and names every dependency, shared-output, byte-identity, transactional, or correctness edge that
-  forces serialization. Missing guards/classes or unexplained serial edges: **HIGH**. Live HIPPO
+  forces serialization. Missing guards/classes or unexplained serial edges: **HIGH**. A `Depends-on`
+  naming a plan that does not exist, or one already archived where a live plan was meant: **HIGH**.
+  A missing declaration where the plan-order graph shows dependencies: **MEDIUM**. Live HIPPO
   admission and capacity are execution facts; this check validates only the repository-visible
   declaration. See
   [Delivery Checklists Express a DAG](../../../../repo-governance/conventions/structure/plans/delivery-checklists-express-a-dag.md#delivery-checklists-express-a-dag-hard-rule).

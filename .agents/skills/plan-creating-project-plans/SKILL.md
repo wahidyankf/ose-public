@@ -75,7 +75,8 @@ lifecycle rules; numeric counts never set their boundaries.
 
 Sequence in the file is not dependency. Express phases and items as the dependency graph
 [Delivery Checklists Express a DAG](../../../repo-governance/conventions/structure/plans/delivery-checklists-express-a-dag.md)
-defines, with a Parallelization Model section, so independent nodes can run concurrently.
+defines, with a Parallelization Model section, so independent nodes run concurrently. Declare inter-plan
+dependencies per [Plan-Order Graph and Legend](../../../repo-governance/conventions/structure/plans/plan-order-graph-and-legend.md).
 
 ## Reference Modules
 

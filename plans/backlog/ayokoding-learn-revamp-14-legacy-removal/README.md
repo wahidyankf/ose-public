@@ -1,5 +1,7 @@
 # AyoKoding Learn Revamp 14 — Legacy Removal
 
+Depends-on: [ayokoding-learn-revamp-10-legacy-unique-migration, ayokoding-learn-revamp-11-audit-languages-and-tooling, ayokoding-learn-revamp-12-audit-cs-systems-and-data, ayokoding-learn-revamp-13-audit-product-security-ai]
+
 > **Status:** Backlog. Do not execute until both are true: the user gives an explicit execution command, and
 > plans 01 to 13 of this series have merged to `origin/main` and are archived. The 14 plans run strictly one
 > after another (series decision 42), so plan 13 is merged, deployed, verified, and cleaned up before this

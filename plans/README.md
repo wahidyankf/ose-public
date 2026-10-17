@@ -21,3 +21,46 @@ For plan structure, naming, lifecycle, and evidence requirements, read the
 [Plans Organization Convention](../repo-governance/conventions/structure/plans.md). For help
 choosing between permanent documentation and a temporary plan, see
 [How to Organize Your Work](../docs/how-to/organize-work.md).
+
+## Plan Order
+
+Every plan in `backlog/` and `in-progress/` appears here. Plans with no arrow between them run in parallel. An arrow
+means the head starts only after the tail; a dotted arrow means the tail should land first without blocking. The graph
+is updated in the same change that moves, adds, or removes a plan, per
+[Plan-Order Graph and Legend](../repo-governance/conventions/structure/plans/plan-order-graph-and-legend.md).
+
+```mermaid
+flowchart LR
+  accTitle: Plan order
+  accDescr: Twelve live plans ordered by their Depends-on declarations.
+  P04["🏗️ 04-learning"]:::inprogress
+  P05["🔜 05-code-harness"]:::backlog
+  P06["🔜 06-accounting"]:::backlog
+  P07["🔜 07-erp"]:::backlog
+  P08["🔜 08-capstone"]:::backlog
+  P09["🔜 09-filler"]:::backlog
+  P10["🔜 10-migration"]:::backlog
+  P11["🔜 11-audit-lang"]:::backlog
+  P12["🔜 12-audit-cs"]:::backlog
+  P13["🔜 13-audit-prodsec"]:::backlog
+  P14["🔜 14-removal"]:::backlog
+  FER["🔜 ferret-02-backend"]:::backlog
+  P05 --> P06
+  P05 --> P08
+  P05 --> P09
+  P05 --> P10
+  P05 --> P11
+  P05 --> P12
+  P05 --> P13
+  P06 --> P07
+  P10 --> P14
+  P11 --> P14
+  P12 --> P14
+  P13 --> P14
+  classDef backlog fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef inprogress fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
+```
+
+Legend: 🔜 blue = backlog; 🏗️ teal = in progress. Hexagon credentialed-machine steps do not apply here. `04` and
+`ferret-02` have no live dependencies and run in parallel with everything.

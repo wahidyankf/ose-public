@@ -1318,9 +1318,12 @@ immediately-effective/backend-track`), and the phase anchor slug contains "fixtu
 > All checks below must pass before starting Phase 11.
 
 - [x] [AI] Every manual acceptance above holds and every screenshot is referenced.
-- [ ] [AI] Every EWT/UWT/DWT and UI-gate defect checkbox is ticked (deferral only with explicit user
-      permission). **Open: UIW-001…UIW-004 above, plus the three-tester round and the post-fix
-      `QUICK`/`E2E` rerun.**
+- [x] [AI] Every EWT/UWT/DWT and UI-gate defect checkbox is ticked (deferral only with explicit user
+      permission). **Closed 2026-10-18:** UIW-001…004 fixed + verified; three-tester round run
+      (exploratory/usability/design, all findings resolved or dispositioned); post-fix `QUICK` exit 0
+      (4172 tests) and full `E2E` 1231/1232 + documented transient (isolated 9.0s pass). Owner granted
+      both explicit deferrals 2026-10-18: UWT-003/010/011 → follow-up copy plan; UWT-005/006/007/008/
+      013/014 → owning plans. Phase 11 may start.
 
 **Phase 10 status (2026-10-15, stopped here).** Manual verification complete (all eleven items PASS,
 zero console errors, 37 screenshots committed, `evidence/phase-10-manual.md`). UI Web Quality Gate

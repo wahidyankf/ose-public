@@ -156,26 +156,26 @@ graph TD
     BROWSER([Visitor browser]):::blue
     EDGE((Cloudflare edge)):::blue
     RUNNERS[/On-prem CI runners/]:::orange
-    SERVICES[(Registries, APIs, and upload services)]:::orange
-    PROXY{{Transparent TCP proxy}}:::orange
-    STALLS[/Intermittent TLS and upload stalls/]:::orange
+    SERVICES[("Registries, APIs,<br/>and upload<br/>services")]:::orange
+    PROXY{{"Transparent<br/>TCP proxy"}}:::orange
+    STALLS[/"Intermittent TLS<br/>and upload stalls"/]:::orange
 
     subgraph STAGING[On-prem staging VM]
-        CLOUDFLARED([cloudflared container]):::teal
-        NGINX[[nginx web server container]]:::blue
+        CLOUDFLARED(["cloudflared<br/>container"]):::teal
+        NGINX[["nginx web server<br/>container"]]:::blue
         FRONTEND[Active frontend]:::blue
-        BACKEND[Private backend service]:::blue
-        STAGE_EGRESS[/Other staging Internet requests/]:::orange
-        CLOUDFLARED -->|Local request forwarding| NGINX
+        BACKEND["Private backend<br/>service"]:::blue
+        STAGE_EGRESS[/"Other staging<br/>Internet requests"/]:::orange
+        CLOUDFLARED -->|Local request<br/>forwarding| NGINX
         NGINX --> FRONTEND
         FRONTEND --> BACKEND
     end
 
-    BROWSER -->|Visitor HTTPS requests| EDGE
+    BROWSER -->|Visitor HTTPS<br/>requests| EDGE
     CLOUDFLARED <-->|QUIC/UDP tunnel| EDGE
     RUNNERS -->|Direct TCP| PROXY
     STAGE_EGRESS --> PROXY
-    PROXY -.->|Intermittent connection failures| STALLS
+    PROXY -.->|Intermittent<br/>connection failures| STALLS
     STALLS -.-> SERVICES
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
@@ -183,7 +183,8 @@ graph TD
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef gray fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
     classDef default fill:#FFFFFF,stroke:#000000,color:#000000,stroke-width:2px
-    style STAGING fill:#FFFFFF,stroke:#000000,stroke-width:2px,color:#000000
+    classDef staging fill:#FFFFFF,stroke:#000000,stroke-width:2px,color:#000000
+    class STAGING staging
 ```
 
 We first tried adjusting the runners' maximum transmission unit (MTU) because the network path reported a smaller packet size.
@@ -214,34 +215,35 @@ graph TD
     accDescr: A visitor reaches Cloudflare edge over HTTPS. Inside the on-prem staging virtual machine, cloudflared opens an HTTP/2 Cloudflare Tunnel connection. The TCP connection is carried inside WireGuard over UDP across the ISP route through a Tailscale cloud exit node; the exit node routes but does not terminate the Cloudflare Tunnel or run cloudflared. Local requests pass from cloudflared to the nginx web server, active frontend, and private backend service. Separately, on-prem CI runners and other staging Internet requests use the same WireGuard route through the exit node to reach registries, application programming interfaces, and upload services.
     BROWSER([Visitor browser]):::blue
     EDGE((Cloudflare edge)):::blue
-    EXIT{{Tailscale cloud exit node}}:::gray
+    EXIT{{"Tailscale cloud<br/>exit node"}}:::gray
     RUNNERS[/On-prem CI runners/]:::orange
-    SERVICES[(Registries, APIs, and upload services)]:::orange
+    SERVICES[("Registries, APIs,<br/>and upload<br/>services")]:::orange
 
     subgraph STAGING[On-prem staging VM]
-        CLOUDFLARED([cloudflared container]):::teal
-        NGINX[[nginx web server container]]:::blue
+        CLOUDFLARED(["cloudflared<br/>container"]):::teal
+        NGINX[["nginx web server<br/>container"]]:::blue
         FRONTEND[Active frontend]:::blue
-        BACKEND[Private backend service]:::blue
-        STAGE_EGRESS[/Other staging Internet requests/]:::orange
-        CLOUDFLARED -->|Local request forwarding| NGINX
+        BACKEND["Private backend<br/>service"]:::blue
+        STAGE_EGRESS[/"Other staging<br/>Internet requests"/]:::orange
+        CLOUDFLARED -->|Local request<br/>forwarding| NGINX
         NGINX --> FRONTEND
         FRONTEND --> BACKEND
     end
 
-    BROWSER -->|Visitor HTTPS requests| EDGE
-    EDGE <-->|HTTP/2 tunnel traffic routed through| EXIT
-    EXIT <-->|WireGuard over UDP across ISP| CLOUDFLARED
-    RUNNERS -->|WireGuard over UDP across ISP| EXIT
-    STAGE_EGRESS -->|WireGuard over UDP across ISP| EXIT
-    EXIT -->|CI and staging Internet egress| SERVICES
+    BROWSER -->|Visitor HTTPS<br/>requests| EDGE
+    EDGE <-->|HTTP/2 tunnel<br/>traffic routed<br/>through| EXIT
+    EXIT <-->|WireGuard over UDP<br/>across ISP| CLOUDFLARED
+    RUNNERS -->|WireGuard over UDP<br/>across ISP| EXIT
+    STAGE_EGRESS -->|WireGuard over UDP<br/>across ISP| EXIT
+    EXIT -->|CI and staging<br/>Internet egress| SERVICES
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef gray fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
     classDef default fill:#FFFFFF,stroke:#000000,color:#000000,stroke-width:2px
-    style STAGING fill:#FFFFFF,stroke:#000000,stroke-width:2px,color:#000000
+    classDef staging fill:#FFFFFF,stroke:#000000,stroke-width:2px,color:#000000
+    class STAGING staging
 ```
 
 `cloudflared` initiates the tunnel outbound from the staging VM. Visitor requests return through
@@ -287,10 +289,10 @@ flowchart LR
     WEB["🏗️ regtech-login-<br/>02b-auth-web"]:::inprogress
     REL["🏗️ regtech-login-<br/>02c-auth-release"]:::inprogress
     HARD["🔜 regtech-login-<br/>03-hardening"]:::backlog
-    GO["🏗️ regtech-login-<br/>02-mvp #40;go-live#41;"]:::inprogress
-    LIVE0{{"🏗️ infra-regtech-<br/>login-02-live-proof<br/>#40;before go-live#41;"}}:::inprogress
-    LIVE{{"🏗️ infra-regtech-<br/>login-02-live-proof<br/>#40;after go-live#41;"}}:::inprogress
-    OFF["🏗️ regtech-login-<br/>02-mvp #40;removal#41;"]:::inprogress
+    GO["🏗️ regtech-login-<br/>02-mvp<br/>#40;go-live#41;"]:::inprogress
+    LIVE0{{"🏗️ infra-regtech-<br/>login-02-live-proof<br/>#40;before<br/>go-live#41;"}}:::inprogress
+    LIVE{{"🏗️ infra-regtech-<br/>login-02-live-proof<br/>#40;after<br/>go-live#41;"}}:::inprogress
+    OFF["🏗️ regtech-login-<br/>02-mvp<br/>#40;removal#41;"]:::inprogress
     STAB["🔜 regtech-login-<br/>04-stabilization"]:::backlog
 
     WEB --> HYG
@@ -299,7 +301,7 @@ flowchart LR
     WEB --> GO
     REL --> GO
     LIVE0 --> GO
-    REL -.->|Preferred order; non-blocking| LIVE0
+    REL -.->|Preferred order;<br/>non-blocking| LIVE0
     GO --> LIVE
     LIVE --> OFF
     WEB --> STAB

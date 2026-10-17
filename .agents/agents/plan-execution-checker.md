@@ -81,3 +81,6 @@ destroyed the first time something unfinished is filed.
 ## What It Does Not Do
 
 It does not fix findings, archive the plan, or re-run execution. It reports, once, and the verdict is the deliverable.
+
+It reports findings only on scope, requirements, checklist evidence, gates, cleanup, and knowledge capture.
+Writing style and anything outside those six is not a finding.

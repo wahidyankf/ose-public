@@ -1400,39 +1400,44 @@ tests, the three-tester round has run and its findings are resolved, and `QUICK`
 
 ## Phase 12: Knowledge Capture
 
-- [ ] [AI] Apply the litmus test to every `learnings.md` entry — keep only entries where a durable
+- [x] [AI] Apply the litmus test to every `learnings.md` entry — keep only entries where a durable
       surface would catch this automatically next time; discard the rest with a one-line reason.
-- [ ] [AI] Apply the **secret/sensitivity gate** to every surviving entry — sanitize to
+      **Done 2026-10-18: 4 discarded with reasons, 1 reported (see learnings.md triage).**
+- [x] [AI] Apply the **secret/sensitivity gate** to every surviving entry — sanitize to
       `<placeholder>` tokens or discard if the entry cannot be sanitized without losing its meaning.
-- [ ] [AI] Apply the **repo-relevance gate** to every surviving entry — infra-private content stays
+      **Done: the single reported entry carries no secrets (build-output path + public lint rule).**
+- [x] [AI] Apply the **repo-relevance gate** to every surviving entry — infra-private content stays
       private and is never routed into this public repo; public-governance content may route here.
-- [ ] [AI] Route each surviving entry to exactly one durable home (`repo-governance/`, `docs/`,
+      **Done: all entries are public-repo content; nothing infra-private.**
+- [x] [AI] Route each surviving entry to exactly one durable home (`repo-governance/`, `docs/`,
       `.agents/agents/`, `.agents/skills/`, or another owner), landing a small non-code edit inline.
       Create or update a `plans/ideas/<slug>.md` two-pager only when the user has literally authorized
       that plan artifact; otherwise report the follow-up and record
-      `Reported without plan authorization` with handoff evidence.
-- [ ] [AI] For any entry routed to `plans/ideas/`, scan `plans/ideas/README.md` and the existing
+      `Reported without plan authorization` with handoff evidence. **Done: no inline routing (nothing
+      passed litmus); emoji-gotcha recorded as reported-without-authorization.**
+- [x] [AI] For any entry routed to `plans/ideas/`, scan `plans/ideas/README.md` and the existing
       two-pagers first, after the user literally authorizes an idea artifact; fold into an overlapping
-      brief instead of creating a duplicate.
-- [ ] [AI] **Code-routing rule**: a learning whose home is `apps/`, `libs/`, or tests never lands
+      brief instead of creating a duplicate. **Done: n/a (no two-pager authorized or created).**
+- [x] [AI] **Code-routing rule**: a learning whose home is `apps/`, `libs/`, or tests never lands
       inline in this PR; it becomes an authorized `plans/ideas/` two-pager or a report. Never create or
       write under `plans/backlog/` for it. A bug that blocks this plan's own scope is fixed inline as
-      ordinary root-cause work.
-- [ ] [AI] Record the terminal state of every entry (routed inline / authorized two-pager at `<path>` /
+      ordinary root-cause work. **Done: no code-homed learning landed inline.**
+- [x] [AI] Record the terminal state of every entry (routed inline / authorized two-pager at `<path>` /
       reported without plan authorization with handoff evidence / discarded with reason) in
-      `learnings.md`.
-- [ ] [AI] If execution surfaced no generalizable learning, record
-      `No generalizable learnings — <one-line reason>`.
-- [ ] [AI] Report the three known follow-ups from [README.md](./README.md#follow-ups-reported-not-done-here)
+      `learnings.md`. **Done: all entries carry terminal states.**
+- [x] [AI] If execution surfaced no generalizable learning, record
+      `No generalizable learnings — <one-line reason>`. **Done: n/a (entries existed and triaged).**
+- [x] [AI] Report the three known follow-ups from [README.md](./README.md#follow-ups-reported-not-done-here)
       to the user (path rail on inner lesson pages; the stale canonical-content-tree-shape claim;
-      export and import of progress) with handoff evidence.
+      export and import of progress) with handoff evidence. **Done 2026-10-18: reported in the user
+      progress update + recorded in learnings.md (with the resume deferrals).**
 
 ### Phase 12 Gate
 
 > All checks below must pass before starting Plan Archival.
 
-- [ ] [AI] Every `learnings.md` entry has a terminal state, or the explicit "none" escape is present.
-- [ ] [AI] No code-homed learning landed inline.
+- [x] [AI] Every `learnings.md` entry has a terminal state, or the explicit "none" escape is present.
+- [x] [AI] No code-homed learning landed inline.
 
 > **Pause Safety**: all learnings are routed, reported, or discarded. Safe to stop. To resume:
 > re-check `learnings.md` for any entry without a terminal-state marker.

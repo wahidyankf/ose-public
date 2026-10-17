@@ -81,11 +81,13 @@ interface HastNode {
 }
 
 /**
- * UIW-004: lesson bodies author sections at `###` while the page title renders
- * as the h1, so the page outline skipped h1 → h3. Lift the shallowest body
- * heading level to h2 — shifting deeper levels by the same delta so nesting is
- * preserved — fixing every course at once. Bodies already starting at h1/h2
- * are untouched. Runs before slug/extraction so heading ids and the TOC
+ * UIW-004/EWT-002/EWT-003: the page title owns the h1, so the first body
+ * heading maps to h2 and every other body heading shifts by the same delta —
+ * nesting is preserved — clamped to [h2, h6] so nothing is promoted to h1
+ * and nothing exceeds h6. Shifting from the FIRST body heading (not the
+ * document-global minimum) keeps bodies that open with `# Title` (EWT-002)
+ * and bodies whose first heading is h3 with a later `##` (EWT-003) on a clean
+ * h1 → h2 outline. Runs before slug/extraction so heading ids and the TOC
  * follow the normalized levels.
  */
 function normalizeHeadingLevels(tree: HastNode): void {
@@ -93,10 +95,10 @@ function normalizeHeadingLevels(tree: HastNode): void {
   collectHeadingLevels(tree, levels);
   if (levels.length === 0) return;
 
-  const min = Math.min(...levels);
-  if (min <= 2) return;
+  const delta = 2 - levels[0];
+  if (delta === 0) return;
 
-  shiftHeadingLevels(tree, 2 - min);
+  shiftHeadingLevels(tree, delta);
 }
 
 function collectHeadingLevels(tree: HastNode, levels: number[]): void {
@@ -116,8 +118,9 @@ function shiftHeadingLevels(tree: HastNode, delta: number): void {
   if (!tree.children) return;
 
   for (const node of tree.children) {
-    if (node.type === "element" && node.tagName !== undefined && /^h[2-6]$/.test(node.tagName)) {
-      node.tagName = `h${parseInt(node.tagName.slice(1), 10) + delta}`;
+    if (node.type === "element" && node.tagName !== undefined && /^h[1-6]$/.test(node.tagName)) {
+      const shifted = Math.min(6, Math.max(2, parseInt(node.tagName.slice(1), 10) + delta));
+      node.tagName = `h${shifted}`;
     }
     if (node.children) {
       shiftHeadingLevels(node, delta);

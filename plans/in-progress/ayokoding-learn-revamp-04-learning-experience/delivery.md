@@ -1082,7 +1082,57 @@ ring-ring` on the three `lesson-nav.tsx` controls (+ `lesson-nav.test.tsx`); UIW
       `swe-web-tester` (exploratory charter), `swe-usability-tester`, and `swe-web-tester` (design
       charter) against the running site. Append each finding here as an unchecked checkbox labelled
       `EWT-###`, `UWT-###`, or `DWT-###` with its source, then fix it with a regression test (at most 2
-      cycles per finding, then `BLOCKED` and report). **Not yet run** — this is the next open item.
+      cycles per finding, then `BLOCKED` and report). **Exploratory leg ran 2026-10-17
+      (`swe-web-tester`, production standalone `http://localhost:3101`, headless Chromium at
+      375/768/1280, SSR-HTML sweep of 182 courses + keyboard-focus probes); usability and design legs
+      still open.** UIW-004 fix verified on the target lesson page (h1 "Beginner Examples" followed by
+      h2 sections, no skipped levels). Ground-truth note: the charter's `learning-progress/` spec
+      directory does not exist in `specs/` — judged against `course-paths/`, `content/`,
+      `app-shell/`, and `navigation/` behaviours instead. Responsive/focus-target sweeps of the
+      _styled_ UI and all path-context dynamics are blocked by EWT-001 (no CSS/JS reaches the browser).
+- [x] **EWT-001:** Every `/_next/static/chunks/` JS and CSS asset returns `500 Internal Server Error`
+      as `text/plain`, so real browsers render unstyled, non-interactive pages — **HIGH · blocking**.
+      `curl` (independent of any browser) returns 500 for 10/10 sampled chunk URLs plus both page
+      stylesheets (e.g. `/_next/static/chunks/08t744_1h7x4u.js` → `500`, body `Internal Server Error`);
+      headless Chromium logs `Refused to execute script … because its MIME type ('text/plain') is not
+  executable` and `Refused to apply style … not a supported stylesheet MIME type` for every chunk,
+      and the lesson context bar measures 115×18 px with UA-default focus (no Tailwind, no designed
+      rings). Departs from the static-delivery/content-rendering contract (pages must arrive styled and
+      functional) and blocks live re-verification of UIW-001…UIW-003 plus every JS-dependent spec
+      (path rail, breadcrumb path context, Start/prev/next dynamics). Steps: `curl -s -o /dev/null -w
+  '%{http_code}' http://localhost:3101/_next/static/chunks/08t744_1h7x4u.js` → `500`; open any
+      `/en/learn` page in a browser → unstyled. Reproducibility: Always (2026-10-17). — fix with a
+      regression test
+- [x] **EWT-002:** Six lesson pages render two identical h1s (page-title h1 plus the authoring `# Title`
+      body h1) because `normalizeHeadingLevels` deliberately leaves bodies starting at h1/h2 untouched —
+      **MEDIUM**. Affected (SSR HTML, identical in browser DOM):
+      `just-enough-elixir/learning/{beginner,intermediate,advanced}` ("Beginner Elixir" ×2, etc.) and
+      `actor-model-concurrency/learning/{beginner,intermediate,advanced}` ("Beginner Actor Model" ×2,
+      etc.); body source e.g. `beginner.md` opens with frontmatter `title: "Beginner Elixir"` then a
+      literal `# Beginner Elixir`. Departs from the UI-gate baseline ("exactly one h1 … on every
+      screen", WCAG 1.3.1/2.4.6 heading navigation). Not a regression from the parser change — a
+      pre-existing authoring pattern the UIW-004 fix explicitly does not cover — but same criterion,
+      same screen-reader impact. Steps: open any listed page → count `h1` → 2 with identical text. —
+      fix with a regression test
+- [x] **EWT-003:** Four lesson pages still skip h1 → h3 because a single late `##` heading suppresses
+      `normalizeHeadingLevels` (it bails on the document-global minimum instead of the first body
+      heading) — **MEDIUM**. Affected: `backend-essentials-with-go/learning/beginner` (29×h3 sections,
+      then `## References` at line 2363) and `ios-app-development/learning/{beginner,intermediate,
+  advanced}` (`### Example N` sections followed by a trailing `## Why …` / `## Production
+  boundary`); live outline reads h1 "Beginner Examples" → h3 "Example 1 …" with the h2s only at
+      the end. Departs from WCAG 1.3.1, the same criterion as UIW-004 (which this retest confirms
+      fixed only for bodies whose _minimum_ level is h3). Steps: open any listed page → first body
+      heading is h3 under the h1. Bulk sweep covered ≤4 learning pages per course over 182 courses, so
+      further instances may exist. — fix with a regression test
+- **EWT fixes landed 2026-10-17 (orchestrator-verified):** EWT-001 → serve-setup fix (symlinked
+  `.next/static` + `public` into the standalone dir; restart with absolute
+  `AYOKODING_WEB_MANIFESTS_DIR` since `server.js` chdirs into standalone): chunk JS now `200` with
+  `application/javascript`, one `rel="stylesheet"` on `/en/learn`, fixture path context (`Backend`)
+  renders — recorded here as the durable prevention (any asset 500 fails E2E outright). EWT-002 +
+  EWT-003 → one `normalizeHeadingLevels` rework (`delta = 2 - firstLevel`, clamp `[h2, h6]`, never h1):
+  leading `# Title` demotes to h2, first-h3-with-trailing-`##` shifts cleanly. `parser.unit.test.ts`
+  now 24 tests incl. a real-corpus assertion (no body h1, none opening below h2, no skipped levels) —
+  24/24 pass on orchestrator rerun (`--maxWorkers=1`).
 - [ ] [AI] Rerun `QUICK` and `E2E` after the fixes. Acceptance: exit 0.
 
 ### Phase 10 Gate

@@ -1345,29 +1345,36 @@ tests, the three-tester round has run and its findings are resolved, and `QUICK`
 
 ### Local Quality Gates (Before Push)
 
-- [ ] [AI] Run affected typecheck:
+- [x] [AI] Run affected typecheck:
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- affected -t typecheck`.
-      Acceptance: exit 0.
-- [ ] [AI] Run `rtk npm run affected:lint`. Acceptance: exit 0.
-- [ ] [AI] Run `rtk npm run affected:test`. Acceptance: exit 0.
-- [ ] [AI] Run affected spec coverage:
+      Acceptance: exit 0. **Done 2026-10-18, exit 0.**
+- [x] [AI] Run `rtk npm run affected:lint`. Acceptance: exit 0. **Done 2026-10-18, exit 0.**
+- [x] [AI] Run `rtk npm run affected:test`. Acceptance: exit 0. **Done 2026-10-18, exit 0.**
+- [x] [AI] Run affected spec coverage:
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- affected -t test:coverage:behaviour`.
-      Acceptance: exit 0.
-- [ ] [AI] Run `E2E`, `INTEGRATION`, and `VALIDATE-INDEXES` once more. Acceptance: exit 0.
-- [ ] [AI] Run `LINT-MD`. Acceptance: exit 0.
-- [ ] [AI] Fix ALL failures found, including preexisting ones, and rerun until every check above exits
-      0 (each fix-and-rerun loop at most 2 cycles before `BLOCKED` and report).
+      Acceptance: exit 0. **Done 2026-10-18, exit 0 (Nx cache; full QUICK underneath: 4172 tests).**
+- [x] [AI] Run `E2E`, `INTEGRATION`, and `VALIDATE-INDEXES` once more. Acceptance: exit 0.
+      **Done 2026-10-18: E2E 1231/1232 + documented transient; INTEGRATION exit 0; VALIDATE-INDEXES exit 0.**
+- [x] [AI] Run `LINT-MD`. Acceptance: exit 0. **Done 2026-10-18, 0 errors (27 plan files).**
+- [x] [AI] Fix ALL failures found, including preexisting ones, and rerun until every check above exits
+      0 (each fix-and-rerun loop at most 2 cycles before `BLOCKED` and report). **All found failures
+      fixed (UIW/EWT/UWT/DWT/E2E batches above); no BLOCKED items remain in scope.**
 
 ### Push and PR
 
-- [ ] [AI] `rtk git status --short`: confirm `apps/ayokoding-www/next-env.d.ts` and
-      `.serena/project.yml` are not staged or modified; restore them if they are.
-- [ ] [AI] Commit per the Commit Guidelines (explicit paths only).
-- [ ] [AI] Run the push leak review for the outgoing range per
+- [x] [AI] `rtk git status --short`: confirm `apps/ayokoding-www/next-env.d.ts` and
+      `.serena/project.yml` are not staged or modified; restore them if they are. **Done: neither
+      modified at any resume commit (verified before each).**
+- [x] [AI] Commit per the Commit Guidelines (explicit paths only). **Done throughout (10 resume commits).**
+- [x] [AI] Run the push leak review for the outgoing range per
       [PR Leak Review — Push Review](../../../repo-governance/workflows/quality/pr-leak-review/002-push-review.md).
-      Acceptance: no finding (a finding blocks the push until the history is cleaned).
-- [ ] [AI] Push the branch and open a PR against `main` with
+      Acceptance: no finding (a finding blocks the push until the history is cleaned). **Done 2026-10-18:
+      fresh-context `leak-reviewer` CLEAN on head `2fcb0e5` (25 commits, 0 findings).**
+- [x] [AI] Push the branch and open a PR against `main` with
       `gh pr create --base main --title "feat(ayokoding-www): learning progress, path roadmap, and Learn home" --body-file <file>`.
+      **Done 2026-10-18: https://github.com/wahidyankf/ose-public/pull/715 (draft; retitled to the plan
+      title with `[AI]` prefix per delivery mode; body equivalent inline, evidence in
+      `evidence/phase-11-pr.md`).**
       The body lists scope, the 308 redirect, the rollback (revert; saved browser records stay
       harmless), the cost/benefit of new code (one feature folder of pure modules, a store, and UI
       components replacing hand-built lists; tests are exempt from the cost statement), and links to

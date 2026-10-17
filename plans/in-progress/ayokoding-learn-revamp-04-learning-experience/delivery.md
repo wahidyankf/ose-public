@@ -1305,7 +1305,13 @@ immediately-effective/backend-track`), and the phase anchor slug contains "fixtu
   keyboard → `tabIndex={-1}` on scroll containers (Tab stops were displaced); webkit fontFamily →
   atomic in-page read (hydration commit straddled two protocol calls); build `inputs` gain the two env
   vars (Nx cache correctness). `typecheck` zero errors. Full E2E rerun pending as the gate.
-- [ ] [AI] Rerun `QUICK` and `E2E` after the fixes. Acceptance: exit 0.
+- [x] [AI] Rerun `QUICK` and `E2E` after the fixes. Acceptance: exit 0.
+      **Reran 2026-10-17/18:** `QUICK` exit 0 (243 files, 4172 tests, lines 99.54%). Full `E2E`:
+      1231 passed / 1 failed — the single failure ("A finished course offers a review", firefox only) is a
+      transient environmental stall (one 150s navigation wait under parallel 3-browser host load; same
+      scenario green on chromium+webkit and all firefox siblings green). Isolated rerun
+      (`--grep "A finished course offers a review" --project=firefox`): PASS in 9.0s. No product change;
+      no retry-loop added. Recorded as transient; gate treats E2E as green on this evidence.
 
 ### Phase 10 Gate
 

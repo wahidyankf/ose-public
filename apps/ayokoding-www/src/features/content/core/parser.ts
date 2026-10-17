@@ -89,8 +89,12 @@ interface HastNode {
  * and bodies whose first heading is h3 with a later `##` (EWT-003) on a clean
  * h1 → h2 outline. Runs before slug/extraction so heading ids and the TOC
  * follow the normalized levels.
+ *
+ * Exported (no behavior change) so the lesson-corpus outline sweep can run this
+ * exact normalization over mdast-derived heading levels without the full
+ * rehype/shiki pipeline.
  */
-function normalizeHeadingLevels(tree: HastNode): void {
+export function normalizeHeadingLevels(tree: HastNode): void {
   const levels: number[] = [];
   collectHeadingLevels(tree, levels);
   if (levels.length === 0) return;

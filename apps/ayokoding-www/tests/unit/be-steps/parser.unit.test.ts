@@ -1,7 +1,4 @@
 import { describe, it, expect } from "vitest";
-import fs from "node:fs";
-import path from "node:path";
-import matter from "gray-matter";
 import { parseMarkdown } from "@/features/content/core/parser";
 
 describe("parseMarkdown", () => {
@@ -228,94 +225,19 @@ describe("parseMarkdown", () => {
   });
 
   describe("lesson heading outline over the real corpus (EWT-002/EWT-003)", () => {
-    // Walks every lesson page under content/en/learn/courses/**/learning/** from process.cwd()
-    // (the hygiene-steps corpus pattern), strips frontmatter the way the fs repository does,
-    // and parses the body with the fences removed (fence content never yields headings, and
-    // removing it keeps shiki out of this 1300-file sweep). The rendered lesson page adds the
-    // page-title h1 around this body, so the body must contribute zero h1s, open at h2, and
-    // never skip a level.
-    it("no lesson body renders an h1, opens below h2, or skips a level", { timeout: 120_000 }, async () => {
-      const root = path.join(process.cwd(), "content/en/learn/courses");
-      const lessonFiles: string[] = [];
-      const walk = (relative: string) => {
-        for (const entry of fs.readdirSync(path.join(root, relative), { withFileTypes: true })) {
-          const rel = path.posix.join(relative, entry.name);
-          if (entry.isDirectory()) {
-            walk(rel);
-            continue;
-          }
-          if (rel.split("/").includes("learning") && entry.name.endsWith(".md")) {
-            lessonFiles.push(rel);
-          }
-        }
-      };
-      walk("");
-      expect(lessonFiles.length, "no lesson files walked").toBeGreaterThan(0);
+    // Corpus sweep body lives in ./corpus-outline-sweep (sharded across
+    // corpus-outline-sweep-0..3.test.ts for CI parallelism); raw <h1-6> outside
+    // fences is absent corpus-wide, transformShortcodes emits no headings, and
+    // math/GFM/slug/autolink never change heading levels — so the mdast depths
+    // the helper collects are exactly the pre-normalization levels the
+    // production pipeline sees, checked through the REAL normalizeHeadingLevels.
+    it("demotes raw HTML headings through the full pipeline (hast-level raw handling)", async () => {
+      const md = "<h1>Raw title</h1>\n\n## Markdown section";
+      const { html } = await parseMarkdown(md);
 
-      const offenders: string[] = [];
-      for (const rel of lessonFiles.sort()) {
-        const raw = fs.readFileSync(path.join(root, rel), "utf8");
-        const body = stripFencedCode(matter(raw).content);
-        const { html } = await parseMarkdown(body);
-        const problems = checkBodyOutline(html);
-        if (problems.length > 0) {
-          offenders.push(`${rel}: ${problems.join("; ")}`);
-        }
-      }
-      expect(
-        offenders.length,
-        `${offenders.length} lesson outline problems across ${lessonFiles.length} lessons:\n` + offenders.join("\n"),
-      ).toBe(0);
+      expect(html).not.toContain("<h1");
+      expect(html).toContain("<h2");
+      expect(html).toContain("<h3");
     });
   });
 });
-
-/**
- * Fence content never parses as headings; dropping it keeps this sweep fast (no shiki).
- * Mirrors CommonMark fences so the kept lines agree with remark: at most 3 spaces of
- * indent, and a fence only closes on the same fence character (traceback ASCII art like
- * `    ~~~~^^^` inside a ``` block is literal text, not a fence).
- */
-function stripFencedCode(body: string): string {
-  const kept: string[] = [];
-  let opener: { char: string; length: number } | null = null;
-  for (const line of body.split("\n")) {
-    const fence = line.match(/^ {0,3}(`{3,}|~{3,})/);
-    const run = fence?.[1];
-    const ch = run?.[0];
-    if (
-      fence &&
-      run !== undefined &&
-      ch !== undefined &&
-      (opener === null || (ch === opener.char && run.length >= opener.length))
-    ) {
-      opener = opener === null ? { char: ch, length: run.length } : null;
-      continue;
-    }
-    if (opener === null) kept.push(line);
-  }
-  return kept.join("\n");
-}
-
-/** Every violation of the lesson-outline contract in one rendered body. */
-function checkBodyOutline(html: string): string[] {
-  const problems: string[] = [];
-  if (html.includes("<h1")) {
-    problems.push("body renders an h1 (page would have 2+ h1s)");
-  }
-  const levels = [...html.matchAll(/<h([2-6])[\s>]/g)].map((m) => parseInt(m[1] ?? "", 10));
-  if (levels.length === 0) return problems;
-  if (levels[0] !== 2) {
-    problems.push(`first body heading is h${levels[0]}, skipping from the page h1`);
-  }
-  for (let i = 1; i < levels.length; i += 1) {
-    const prev = levels[i - 1];
-    const curr = levels[i];
-    if (prev === undefined || curr === undefined) continue;
-    if (curr > prev + 1) {
-      problems.push(`skipped level h${prev} -> h${curr}`);
-      break;
-    }
-  }
-  return problems;
-}

@@ -315,13 +315,13 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
 
     Then('exactly one primary button reads "Start:" followed by the first course\'s title', () => {
-      const buttons = within(generalistNav()).getAllByRole("link", { name: /^(Start|Continue):/ });
+      const buttons = screen.getAllByRole("link", { name: /^(Start|Continue):/ });
       expect(buttons).toHaveLength(1);
       expect(buttons[0]?.textContent).toBe("Start: Computer Science Foundations");
     });
 
     And("it links to that course's landing page in path context", () => {
-      const button = within(generalistNav()).getByRole("link", { name: /^Start:/ });
+      const button = screen.getByRole("link", { name: /^Start:/ });
       expect(button.getAttribute("href")).toBe(`/en/learn/courses/${FIRST_COURSE}?path=${PATH_ID}`);
     });
   });
@@ -342,13 +342,13 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
 
     Then('the primary button reads "Continue:" followed by the second course\'s title', () => {
-      const buttons = within(generalistNav()).getAllByRole("link", { name: /^(Start|Continue):/ });
+      const buttons = screen.getAllByRole("link", { name: /^(Start|Continue):/ });
       expect(buttons).toHaveLength(1);
       expect(buttons[0]?.textContent).toBe("Continue: Software Engineering Practices");
     });
 
     And("it links to the first learning page of that course the reader has not completed", () => {
-      const button = within(generalistNav()).getByRole("link", { name: /^Continue:/ });
+      const button = screen.getByRole("link", { name: /^Continue:/ });
       expect(button.getAttribute("href")).toBe(
         `/en/learn/courses/${SECOND_COURSE}/${SECOND_COURSE_NEXT_PAGE}?path=${PATH_ID}`,
       );
@@ -415,7 +415,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
 
     Then('the headline reads "0 of N core courses done"', () => {
-      expect(within(generalistNav()).getByText("0 of 3 core courses done")).toBeTruthy();
+      expect(screen.getByText("0 of 3 core courses done")).toBeTruthy();
     });
 
     And('that extension phase shows "1 of M done"', () => {
@@ -441,9 +441,8 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
 
     Then("the headline says the core path is complete", () => {
-      const nav = generalistNav();
-      expect(within(nav).getByText("3 of 3 core courses done")).toBeTruthy();
-      expect(within(nav).getByText("Core path complete. The optional extensions are below.")).toBeTruthy();
+      expect(screen.getByText("3 of 3 core courses done")).toBeTruthy();
+      expect(screen.getByText("Core path complete. The optional extensions are below.")).toBeTruthy();
     });
 
     And('no "Start" or "Continue" button is shown', () => {

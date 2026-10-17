@@ -326,7 +326,8 @@ describeFeature(feature, ({ Scenario, Background }) => {
 
           expect(text).toContain(manifest.title); // the path title
           expect(text).toContain(manifest.description); // who it is for
-          expect(text).toContain(`${corePhaseCount} core phases · ${extensionCount} optional`); // its size
+          const expectedSize = `${corePhaseCount === 1 ? "1 core phase" : `${corePhaseCount} core phases`} · ${extensionCount === 1 ? "1 optional" : `${extensionCount} optional`}`; // its size (UWT-012: singular counts)
+          expect(text).toContain(expectedSize);
           expect(text).toContain(`About ${hours} h`); // its estimated time
           expect(text).toContain(`0 of ${coreCourseIds.length} core courses done`); // its progress
           expect(text).toContain("Not started");

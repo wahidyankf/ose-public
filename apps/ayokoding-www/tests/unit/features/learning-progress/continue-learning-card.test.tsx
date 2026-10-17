@@ -70,6 +70,17 @@ describe("ContinueLearningCard — a new reader sees Start learning (S29)", () =
     expect(container.firstElementChild?.className).toContain("sm:h-32");
   });
 
+  it("sizes the hero primary auto from sm so it never spans the card on tablet and desktop (DWT-002)", () => {
+    renderCard();
+
+    // The card is a column flex container, whose stretch default would keep even a
+    // `sm:w-auto` link full-width: `sm:self-start` opts the primary back out of it.
+    const classes = screen.getByRole("link", { name: "Choose a path" }).className.split(/\s+/);
+    expect(classes).toContain("w-full");
+    expect(classes).toContain("sm:w-auto");
+    expect(classes).toContain("sm:self-start");
+  });
+
   it("renders the start variant on the server, so hydration never swaps the slot's content size", () => {
     const html = renderToString(
       <ContinueLearningCard

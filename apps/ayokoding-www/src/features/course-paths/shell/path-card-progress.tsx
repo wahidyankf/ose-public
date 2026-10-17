@@ -23,7 +23,9 @@ export interface PathCardProgressProps {
 
 /**
  * One path card's progress line (plan ayokoding-learn-revamp-04, Phase 6, tech-docs/004): the
- * status in words, the path headline count, and a decoration bar, in one fixed-height slot.
+ * status in words, the path headline count, and a decoration bar, in a wrapping row with a
+ * minimum height (DWT-004) — it wraps instead of overflowing the viewport, while each label
+ * stays unbroken on its own line.
  *
  * Counts core courses only — every course of a path still waiting for its restructure — exactly
  * like the roadmap headline, so a card and its own path page never disagree (tech-docs/003
@@ -37,8 +39,10 @@ export function PathCardProgress({ locale, manifest, sequences }: PathCardProgre
   const flat = isPendingSkillsRestructure(manifest);
 
   if (snapshot.status !== "ready") {
+    // S8: the placeholder keeps the slot's own box classes, so hydration never moves the card's
+    // fields below it — the same wrapping minimum-height row the ready branch renders.
     return (
-      <span data-progress-slot="path-card-progress" className="flex h-5 items-center gap-2">
+      <span data-progress-slot="path-card-progress" className="flex min-h-5 flex-wrap items-center gap-x-2 gap-y-1">
         <ProgressPlaceholder className="h-4 w-24" />
         <ProgressPlaceholder className="h-2 w-12" />
       </span>
@@ -49,13 +53,13 @@ export function PathCardProgress({ locale, manifest, sequences }: PathCardProgre
   const status: CourseStatus = complete ? "done" : coreDone > 0 ? "in-progress" : "not-started";
 
   return (
-    <span data-progress-slot="path-card-progress" className="flex h-5 items-center gap-2">
+    <span data-progress-slot="path-card-progress" className="flex min-h-5 flex-wrap items-center gap-x-2 gap-y-1">
       <CourseStatusLabel locale={locale} status={status} size="sm" />
       <span aria-hidden="true">·</span>
-      <span className="text-sm whitespace-nowrap text-muted-foreground">
+      <span className="text-sm text-muted-foreground">
         {tf(loc, flat ? "progressCoursesDone" : "progressCoreCoursesDone", { done: coreDone, total: coreTotal })}
       </span>
-      <span className="w-12 sm:w-16">
+      <span className="w-12 shrink-0 sm:w-16">
         <ProgressMeter value={coreDone} max={coreTotal} tone={complete ? "done" : "progress"} />
       </span>
     </span>

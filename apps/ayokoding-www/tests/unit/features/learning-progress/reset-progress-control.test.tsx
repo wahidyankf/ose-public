@@ -70,7 +70,10 @@ describe("ResetProgressControl", () => {
     });
     expect(screen.queryByRole("dialog")).toBeNull();
     expect(screen.getByRole("status").textContent).toBe("Progress reset.");
-    expect(document.activeElement).toBe(trigger);
+    // The reset emptied the store, so the trigger is now disabled (UWT-009) and cannot take
+    // focus back: focus lands on the reset announcement instead.
+    expect(screen.getByRole("button", { name: "Reset progress…" }).hasAttribute("disabled")).toBe(true);
+    expect(document.activeElement).toBe(screen.getByRole("status"));
   });
 
   it("localizes the button, the dialog, and the announcement on the id locale", async () => {
@@ -99,5 +102,28 @@ describe("ResetProgressControl", () => {
     expect(screen.getByRole("button", { name: "Reset progress…" })).toBeTruthy();
     expect(screen.getByRole("status").textContent).toBe("");
     expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  it("disables the trigger when there is no saved progress to reset (UWT-009)", () => {
+    learningProgressStore.reset();
+    window.localStorage.clear();
+    render(<ResetProgressControl locale="en" />);
+
+    // A first-time reader with zero progress gets no destructive affordance: the control
+    // renders disabled instead of promising a dialog over an empty state.
+    expect(screen.getByRole("button", { name: "Reset progress…" }).hasAttribute("disabled")).toBe(true);
+  });
+
+  it("enables the trigger again once any progress exists (UWT-009)", () => {
+    learningProgressStore.reset();
+    window.localStorage.clear();
+    render(<ResetProgressControl locale="en" />);
+    expect(screen.getByRole("button", { name: "Reset progress…" }).hasAttribute("disabled")).toBe(true);
+
+    act(() => {
+      seed();
+    });
+
+    expect(screen.getByRole("button", { name: "Reset progress…" }).hasAttribute("disabled")).toBe(false);
   });
 });

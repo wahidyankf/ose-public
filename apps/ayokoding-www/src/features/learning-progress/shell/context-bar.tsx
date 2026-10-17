@@ -16,10 +16,10 @@ import { ProgressPlaceholder } from "./progress-placeholder";
  * The thin lesson context bar (plan ayokoding-learn-revamp-04, Screen 2 option A): where the reader
  * is — path › phase › course n of N — and how far into this course's pages they are.
  *
- * It sits in a fixed-height box (`h-[4.75rem]` phone, `h-14` from `sm`) and shows placeholders
- * instead of counts while the progress snapshot is unknown, so the lesson body below never moves
- * once progress arrives (S8). Without a path context it is the course title plus the same page
- * counts (S11).
+ * It sits in a minimum-height box (`min-h-[4.75rem]` phone, `sm:min-h-[4.5rem]`) that grows
+ * when wrapped 44px links need another row (UWT-004), and shows placeholders instead of counts
+ * while the progress snapshot is unknown, so the lesson body below never moves once progress
+ * arrives (S8). Without a path context it is the course title plus the same page counts (S11).
  */
 export function ContextBar() {
   const { locale, courseId, courseTitle, sequence, index, snapshot, path } = useLessonContext();
@@ -38,7 +38,7 @@ export function ContextBar() {
     <nav
       aria-label={t(loc, "contextBarLabel")}
       data-progress-slot="context-bar"
-      className="mb-4 flex h-[4.75rem] flex-col justify-center gap-1 rounded-md border border-border px-3 text-sm sm:h-[4.5rem]"
+      className="mb-4 flex min-h-[4.75rem] flex-col justify-center gap-1 rounded-md border border-border px-3 text-sm sm:min-h-[4.5rem]"
     >
       <div className="flex min-w-0 flex-wrap items-center gap-x-2">
         {path === null ? (

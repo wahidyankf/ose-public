@@ -78,13 +78,17 @@ describe("ContextBar", () => {
     expect(contextBar.textContent).toContain("0 of 3 pages done");
   });
 
-  it("names the landmark and keeps the fixed-height slot at every breakpoint", () => {
+  it("names the landmark and keeps a growing minimum-height slot at every breakpoint (UWT-004)", () => {
     const contextBar = renderBar();
 
-    expect(contextBar.className.split(/\s+/)).toContain("h-[4.75rem]");
-    // sm:h-[4.5rem] (72px) fits the 44px breadcrumb row + gap + counts row
-    // (44 + 4 + 20 = 68); the slot stays fixed-height at every breakpoint.
-    expect(contextBar.className.split(/\s+/)).toContain("sm:h-[4.5rem]");
+    // min-h-[4.75rem] fits the 44px breadcrumb row + gap + counts row (44 + 4 + 20 = 68)
+    // and grows when wrapped 44px links need a second row, so content never escapes the
+    // border at 375/768 the way the old fixed h- did.
+    const classes = contextBar.className.split(/\s+/);
+    expect(classes).toContain("min-h-[4.75rem]");
+    expect(classes).toContain("sm:min-h-[4.5rem]");
+    expect(classes).not.toContain("h-[4.75rem]");
+    expect(classes).not.toContain("sm:h-[4.5rem]");
   });
 
   it("gives every breadcrumb link a 44px minimum target while keeping the inline layout (UIW-002)", () => {

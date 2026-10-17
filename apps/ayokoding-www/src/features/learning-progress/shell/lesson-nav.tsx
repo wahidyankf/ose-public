@@ -60,7 +60,7 @@ export function LessonNav() {
     >
       <Link
         href={previous.href}
-        className="flex min-h-11 items-center gap-2 text-sm text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+        className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md border border-border px-4 text-sm font-medium text-muted-foreground hover:border-primary hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none sm:w-auto"
       >
         <span aria-hidden="true">←</span>
         {tf(loc, "lessonPrevious", { title: previous.title })}

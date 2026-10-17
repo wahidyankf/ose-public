@@ -223,6 +223,21 @@ describe("LessonNav", () => {
     expect(hrefs).toContain(`/en/learn/courses/just-enough-bash/learning/advanced?path=${PATH_ID}`);
   });
 
+  it("boxes the Previous control like the toggle and the primary at every width (DWT-003)", () => {
+    const nav = renderNav();
+
+    // Screen 2 option A: three boxed controls in a desktop row, three full-width stacked
+    // rows on the phone — Previous is the third row, never a bare text link.
+    const previous = within(nav).getByRole("link", { name: /Previous:/ });
+    const classes = previous.className.split(/\s+/);
+    expect(classes).toContain("w-full");
+    expect(classes).toContain("sm:w-auto");
+    expect(classes).toContain("rounded-md");
+    expect(classes).toContain("border");
+    expect(classes).toContain("justify-center");
+    expect(classes).not.toContain("justify-between");
+  });
+
   it("renders the designed 2px focus ring on all three controls (UIW-003)", () => {
     const nav = renderNav();
 

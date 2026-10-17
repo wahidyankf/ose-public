@@ -27,7 +27,7 @@ export function CourseStatusLabel({
   const iconSize = size === "sm" ? "h-3.5 w-3.5" : "h-4 w-4";
 
   return (
-    <span className={`inline-flex items-center gap-1 text-sm ${className}`}>
+    <span className={`inline-flex items-center gap-1 text-sm whitespace-nowrap ${className}`}>
       <Icon className={iconSize} aria-hidden="true" />
       {t(locale as Locale, key)}
     </span>

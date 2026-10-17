@@ -88,7 +88,7 @@ export function RoadmapProgressCard({ locale, manifest, courseCards, sequences }
             manifest.pathId,
           )}
           data-progress-control="roadmap-primary"
-          className="inline-flex min-h-11 w-full items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none sm:w-auto"
+          className="inline-flex min-h-11 w-full items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none sm:w-auto sm:self-start"
         >
           {tf(loc, step !== null && step.kind === "continue" ? "roadmapContinue" : "roadmapStart", {
             title: targetTitle,

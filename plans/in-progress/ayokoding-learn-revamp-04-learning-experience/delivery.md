@@ -1095,12 +1095,12 @@ ring-ring` on the three `lesson-nav.tsx` controls (+ `lesson-nav.test.tsx`); UIW
       `curl` (independent of any browser) returns 500 for 10/10 sampled chunk URLs plus both page
       stylesheets (e.g. `/_next/static/chunks/08t744_1h7x4u.js` → `500`, body `Internal Server Error`);
       headless Chromium logs `Refused to execute script … because its MIME type ('text/plain') is not
-  executable` and `Refused to apply style … not a supported stylesheet MIME type` for every chunk,
+executable` and `Refused to apply style … not a supported stylesheet MIME type` for every chunk,
       and the lesson context bar measures 115×18 px with UA-default focus (no Tailwind, no designed
       rings). Departs from the static-delivery/content-rendering contract (pages must arrive styled and
       functional) and blocks live re-verification of UIW-001…UIW-003 plus every JS-dependent spec
       (path rail, breadcrumb path context, Start/prev/next dynamics). Steps: `curl -s -o /dev/null -w
-  '%{http_code}' http://localhost:3101/_next/static/chunks/08t744_1h7x4u.js` → `500`; open any
+'%{http_code}' http://localhost:3101/_next/static/chunks/08t744_1h7x4u.js` → `500`; open any
       `/en/learn` page in a browser → unstyled. Reproducibility: Always (2026-10-17). — fix with a
       regression test
 - [x] **EWT-002:** Six lesson pages render two identical h1s (page-title h1 plus the authoring `# Title`
@@ -1118,8 +1118,8 @@ ring-ring` on the three `lesson-nav.tsx` controls (+ `lesson-nav.test.tsx`); UIW
       `normalizeHeadingLevels` (it bails on the document-global minimum instead of the first body
       heading) — **MEDIUM**. Affected: `backend-essentials-with-go/learning/beginner` (29×h3 sections,
       then `## References` at line 2363) and `ios-app-development/learning/{beginner,intermediate,
-  advanced}` (`### Example N` sections followed by a trailing `## Why …` / `## Production
-  boundary`); live outline reads h1 "Beginner Examples" → h3 "Example 1 …" with the h2s only at
+advanced}` (`### Example N` sections followed by a trailing `## Why …` / `## Production
+boundary`); live outline reads h1 "Beginner Examples" → h3 "Example 1 …" with the h2s only at
       the end. Departs from WCAG 1.3.1, the same criterion as UIW-004 (which this retest confirms
       fixed only for bodies whose _minimum_ level is h3). Steps: open any listed page → first body
       heading is h3 under the h1. Bulk sweep covered ≤4 learning pages per course over 182 courses, so
@@ -1133,6 +1133,168 @@ ring-ring` on the three `lesson-nav.tsx` controls (+ `lesson-nav.test.tsx`); UIW
   leading `# Title` demotes to h2, first-h3-with-trailing-`##` shifts cleanly. `parser.unit.test.ts`
   now 24 tests incl. a real-corpus assertion (no body h1, none opening below h2, no skipped levels) —
   24/24 pass on orchestrator rerun (`--maxWorkers=1`).
+- **Usability leg ran 2026-10-17 (`swe-usability-tester`, spec-blind first-time-learner pass, production
+  standalone `http://localhost:3101`, headless Chromium rendered DOM + screenshots at 375/768/1280, fresh
+  profile, non-destructive); verdict FAIL — fifteen findings, appended as UWT-001…UWT-015 below.**
+  Severity uses the existing HIGH/MEDIUM/LOW words, mapped to Nielsen 0–4 as HIGH=3, MEDIUM=2, LOW=1.
+  Probes: A (conditional controls) found UWT-009; B (jargon scan) found UWT-001/UWT-002/UWT-008/UWT-014;
+  C (cross-view redundancy) found UWT-010/UWT-011; D (unit/currency inputs) N/A — zero `<input>` elements
+  on all four screens. Design leg still open.
+- [x] **UWT-001:** Path cards show internal E2E-test assertion copy as learner-facing descriptions —
+      **HIGH (3)**. `/en/learn`, the Immediately-Effective arc landing, and `/en/learn/paths/skills` render
+      sentences such as "E2E fixture: the third fixture arc — proves the careers category landing's arc
+      chooser renders one arc card per arc (three total) rather than assuming exactly two",
+      "Shares just-enough-python with the interview-ready fixture on purpose — the multi-badge case", and
+      "the one skills path on plan 02's closed restructure allowlist … (plan 01 numbering, plan 02 copy) …
+      waiting for plan 06 to fill its courses". Departs from Heuristic 2 (match the real world: a newcomer
+      cannot decode "arc", "allowlist", "plan 02 copy") and Heuristic 8 (test scaffolding competes with the
+      learning offer and erodes trust). Steps: open `/en/learn` → read any path card description.
+      Reproducibility: Always (2026-10-17). Evidence: `evidence/phase-10-learn-home-fixture-copy-en-375px.png`.
+      — fix with a regression test
+- [x] **UWT-002:** Roadmap phase is named "Fixture core" and its outcome reads "After this phase you can
+      complete this fixture path" — **MEDIUM (2)**. `/en/learn/paths/careers/immediately-effective/backend-track`
+      labels Phase 1 "Fixture core" and links the phase anchor `#phase-fixture-core`, exposing the internal
+      "fixture" test term in learner navigation. Departs from Heuristic 2 (system speaks the test harness's
+      language, not the learner's). Steps: open the roadmap → read the phase heading. — fix with a
+      regression test
+- [ ] **UWT-003:** Lesson action row pairs two near-identical controls — "Mark as complete" toggle button
+      beside "Mark complete & continue → Next: Intermediate Examples" link — **MEDIUM (2)**. A first-time user
+      cannot tell whether the link also records completion or whether the toggle must come first; the shared
+      "Mark (as) complete" wording gives no scent of the difference. Departs from Heuristic 4 (same words
+      must mean the same thing) and fails cognitive-walkthrough Q3 (associate action with result). Steps:
+      open any `/learning/beginner`-style lesson with `?path=` → scroll to the action row. — fix with a
+      regression test
+- [x] **UWT-004:** Lesson context-bar content escapes its bordered container at 375 and 768 —
+      **MEDIUM (2)**. "Course 1 of 3" wraps to a second row inside the fixed-height bar while "Page 2 of 6 ·
+      0 of 6 pages done" renders below/outside the border, so progress reads as detached body text. Departs
+      from responsive usability (grouping must survive restack) and the Law of Proximity. Steps: open a lesson
+      at 375 or 768 → look above the h1. Evidence:
+      `evidence/phase-10-lesson-context-overflow-en-375px.png`,
+      `evidence/phase-10-lesson-context-overflow-en-768px.png`. — fix with a regression test
+- [ ] **UWT-005:** Lesson breadcrumb ends at "Learning", not the page — **MEDIUM (2)**. The trail reads
+      "Home › … › Browse › Learn › Courses › Just enough bash › Learning" while the h1 is "Beginner Examples";
+      the final crumb names the content folder, "Browse" is a level the learner never chose, and
+      "Just enough bash" casing differs from "Just Enough Bash" used everywhere else. Departs from
+      information scent (URL/crumb must predict content) and Heuristic 4. Steps: open any lesson → read the
+      breadcrumb. Evidence: `evidence/phase-10-lesson-context-overflow-en-768px.png`. — fix with a
+      regression test
+- [ ] **UWT-006:** The "Learn" nav item lands on a page titled "Browse", never on `/en/learn` —
+      **MEDIUM (2)**. Header primary nav and the course breadcrumb both label `/en/browse` as "Learn", but that
+      page's title and h1 are "Browse"; nothing labelled "Learn" leads to `/en/learn`. Departs from Heuristic 4
+      and fails first-click scent (the section is unreachable under its own name). Steps: click "Learn" in the
+      header → read the h1. — fix with a regression test
+- [ ] **UWT-007:** The Immediately-Effective node shows different children per view — **MEDIUM (2)**. The
+      sidebar lists "Immediately Effective Software Engineer" / "Immediately Effective AI Engineer" while the
+      arc landing lists "Backend Track (Immediately-Effective)" / "Frontend Track (Immediately-Effective)",
+      and course "This course is part of" uses the role names — three views, two groupings, no single mental
+      model. Departs from Heuristic 4 (internal consistency) and Heuristic 6 (the learner must recall which
+      grouping the current page uses). Steps: expand "Immediately-Effective" in the sidebar, then open its
+      landing page → compare. — fix with a regression test
+- [ ] **UWT-008:** Lesson body renders internal authoring codes — "ex-01 · exercises co-01" — **MEDIUM (2)**.
+      Seventeen such italic code lines sit directly under example headings on the Beginner Examples lesson
+      (e.g. "ex-02 · exercises co-01", "ex-03 · exercises co-03"), meaningless to a learner. Departs from
+      Heuristic 2 and Heuristic 8. Steps: open the lesson → read the line under any "Example N" heading.
+      Evidence: `evidence/phase-10-lesson-context-overflow-en-768px.png`. — fix with a regression test
+- [x] **UWT-009:** "Reset progress…" is enabled for a first-time user with zero progress — **LOW (1)**.
+      The Learn home reset control (Probe A) renders active with nothing to reset; its ellipsis promises a
+      dialog over an empty state. Departs from Heuristic 8 (a destructive affordance with no function competes
+      for attention). Steps: open `/en/learn` in a fresh profile → the button is clickable. — fix with a
+      regression test
+- [ ] **UWT-010:** Status is stated twice everywhere progress appears — "Not started · 0 of 2 core courses
+      done" — **LOW (1)**. Path cards and roadmap phase rows (Probe C) render both a state label and a
+      zero-fraction meaning the same thing. Departs from Heuristic 8 (redundant data inflates reading cost).
+      Steps: open `/en/learn` → read any path card progress line. — fix with a regression test
+- [ ] **UWT-011:** The "Choose a path" primary button only scrolls within the same page — **LOW (1)**. The
+      "Start learning / Pick a path below" hero on `/en/learn` (Probe C) duplicates the page's own content,
+      and its primary button links to `#career-paths` on the same page — a navigation promise that performs an
+      anchor scroll. Departs from information scent and Heuristic 8. Steps: open `/en/learn` at 375 → tap the
+      hero button. Evidence: `evidence/phase-10-learn-home-fixture-copy-en-375px.png`. — fix with a
+      regression test
+- [x] **UWT-012:** Singular counts use plural nouns — "1 core phases", "Core path · 1 phases" — **LOW (1)**.
+      Path cards ("1 core phases · 1 optional · About 10 h") and the roadmap summary read as unedited template
+      output. Departs from Heuristic 2 (speak the user's language). Steps: open `/en/learn` → read any
+      single-phase card. — fix with a regression test
+- [ ] **UWT-013:** Skills-hub legend "Dangerous / Comfortable / Confident" is unexplained and its swatches
+      identical — **LOW (1)**. The legend names no dimension (dangerous at what?), all three dots render the
+      same hue, and "Dangerous" contradicts the hub's own "starts safe" copy. Departs from Heuristic 2 and
+      Heuristic 6. Steps: open `/en/learn/paths/skills` → read the legend under the first card. — fix with a
+      regression test
+- [ ] **UWT-014:** Nav labels "Rants", "Legacy", and "Drilling" carry no first-timer gloss — **LOW (1)**.
+      Probe-B enumeration of visible labels: sidebar and hubs list these terms with no adjacent plain-language
+      hint of what the learner finds there (opinion essays? deprecated material? practice sets?). Departs from
+      Heuristic 2. Steps: open the sidebar → read the section list. — fix with a regression test
+- [x] **UWT-015:** Path breadcrumb links carry a self-referential `?path=` query — **LOW (1)**. The crumb
+      for the current path points at its own URL plus `?path=<itself>` (e.g. `backend-track?path=careers/
+immediately-effective/backend-track`), and the phase anchor slug contains "fixture"
+      (`#phase-fixture-core`). Departs from URL naturalness (no cruft or leakage) and Heuristic 4. Steps:
+      hover the path crumb on any roadmap/course page. — fix with a regression test
+- **Design leg ran 2026-10-17 (`swe-web-tester`, design charter, production standalone
+  `http://localhost:3101` with all UIW/EWT fixes, headless Chromium at 375/768/1280, fresh
+  profile, non-destructive); verdict FAIL — four findings, appended as DWT-001…DWT-004 below.**
+  Severity uses the existing HIGH/MEDIUM/LOW words, mapped to Nielsen 0–4 as MEDIUM=2, LOW=1 (no
+  HIGH this leg). Mandatory checks: (A) raw-element audit — every native `button`/`input`/`select`
+  on all eight routes (four screens plus paths/careers/skills/arc hubs) carries design-system
+  classes, zero UA-default controls; (B) styling-consistency matrix — the Learn-home, roadmap, and
+  course-landing primaries share one tuple (`rgb(37, 99, 235)` · 12 px radius · 14 px/500 ·
+  `min-h-11`), the lesson primary differs by design (two-line `Next:` subtitle per the Screen 2
+  details), and the Previous link is the lone intra-row outlier (DWT-003). Judged clean: exactly
+  one h1 per screen; zero console errors on all 24 page loads; context-bar links 44 px tall at 375
+  (UIW-002 holds live); no overflow at 375/1280. Ground truth throughout is the PRD Screen funnel
+  (four Option A mockups + Responsive Strategy) and the tech-docs/004 component rows, judged on the
+  rendered page only.
+- [x] **DWT-001:** Roadmap renders with no timeline spine and no phase nodes — **MEDIUM (2)**.
+      `/en/learn/paths/careers/immediately-effective/backend-track` at 375/768/1280 shows the phases
+      as plain stacked sections; the selected Screen 1 Option A mockup's signature vertical milestone
+      timeline (one node per core phase at the left edge) is absent — a DOM sweep finds zero thin
+      vertical elements inside any `section[id^="phase-"]`, and the phase h3 row carries only the
+      status icon. Departs from `assets/path-roadmap-option-a-milestone-timeline.excalidraw.png` and
+      the PRD Responsive Strategy ("The roadmap timeline line sits at the left edge at every width").
+      Steps: open the roadmap at any breakpoint → look left of the phase headings. Reproducibility:
+      Always (2026-10-17). Evidence:
+      `evidence/phase-10-roadmap-no-timeline-en-1280px.png`. — fix with a regression test
+- [x] **DWT-002:** Primary buttons stay full-width at tablet and desktop widths — **MEDIUM (2)**. At
+      768 and 1280 the roadmap "Start: …", course "Start course", and Learn-home "Choose a path" buttons
+      span the full content width, while the Screen 1/3/4 Option A desktop mockups render them
+      auto-width and the PRD Responsive Strategy requires "auto width from `sm`" (full width only below
+      640 px). The lesson primary on the same build does render auto-width at 1280, so the primaries are
+      cross-surface inconsistent (Check B). Steps: open any of the three pages at 768 or 1280 → measure
+      the primary button. Reproducibility: Always (2026-10-17). Evidence:
+      `evidence/phase-10-roadmap-no-timeline-en-1280px.png`,
+      `evidence/phase-10-course-fullwidth-primary-en-1280px.png`. — fix with a regression test
+- [x] **DWT-003:** Lesson "Previous" renders as an unboxed text link beside two boxed controls —
+      **LOW (1)**. In `nav[aria-label="Page navigation"]` at every breakpoint the toggle (radius 12 px,
+      bordered, `min-h-11`) and the blue primary sit next to "← Previous: …" with a transparent
+      background, zero radius, and zero padding — the Screen 2 Option A mockup boxes all three controls
+      on desktop and stacks three full-width boxed controls on the phone, and at 375 the rendered
+      Previous is a small left-aligned link under two full-width buttons instead of the designed third
+      full-width row. Intra-row consistency outlier (Check B). Steps: open any lesson with `?path=` at
+      375 or 1280 → look at the action row. Reproducibility: Always (2026-10-17). Evidence:
+      `evidence/phase-10-lesson-previous-link-en-375px.png`,
+      `evidence/phase-10-lesson-previous-link-en-1280px.png`. — fix with a regression test
+- [x] **DWT-004:** Path-card progress row overflows the viewport at 768 and wraps mid-label at 375 —
+      **MEDIUM (2)**. The `LearnPathCard` progress line (`whitespace-nowrap` count plus a fixed
+      `w-12 sm:w-16` meter in one flex row) pushes `document.documentElement.scrollWidth` to 780–784 px
+      against a 768 px viewport on `/en/learn` and every path hub (12–16 px of page-level horizontal
+      scroll), and at 375 the same row wraps "○ Not / started · 0 of 2 …" with the meter squeezed —
+      the Screen 3 Option A phone mockup shows the status on one clean line. Departs from the Screen 3
+      mockup and the PRD Reflow bar (WCAG 1.4.10, S38). Steps: open `/en/learn` at 768 → read
+      `document.documentElement.scrollWidth`; open at 375 → read any path-card progress line.
+      Reproducibility: Always (2026-10-17). Evidence:
+      `evidence/phase-10-pathcard-progress-wrap-en-375px.png`,
+      `evidence/phase-10-pathcard-progress-overflow-en-768px.png`. — fix with a regression test
+- **Tester-fix batch landed 2026-10-17 (`swe-developer`, TDD, orchestrator-verified):** DWT-001 →
+  milestone timeline (`data-timeline` spine + per-core-phase nodes); DWT-002 → primaries auto-width
+  from `sm`; DWT-003 → boxed Previous (desktop row of three, phone three stacked rows); DWT-004 →
+  card progress row reflow; UWT-004 → context-bar fixed `h-` to growing `min-h`; UWT-009 → Reset
+  disabled on empty progress (new pure `isProgressEmpty` in `progress-state.ts`); UWT-012 →
+  singular/plural in both locales; UWT-015 → path crumb drops self-`?path=` (scenario text updated to
+  match; invalid-path fallback green). `nx run ayokoding-www:typecheck` zero errors; 331 tests pass
+  across 24 focused files (child report; QUICK rerun still pending). UWT-001/002 ticked as
+  NOT-APPLICABLE (fixture-build artifacts: production `src/features/course-paths/manifests/` verified
+  free of "E2E fixture"/"Fixture core" copy; same for UWT-015's anchor half). UWT-003/010/011 left open
+  as BLOCKED-for-owner (copy ripple 12/12/7 files incl. Gherkin+E2E — exceeds the 5-file fix threshold);
+  UWT-005/006/007/008/013/014 left open as out-of-scope deferral candidates. Both groups need explicit
+  user permission at the Phase 10 gate.
 - [ ] [AI] Rerun `QUICK` and `E2E` after the fixes. Acceptance: exit 0.
 
 ### Phase 10 Gate

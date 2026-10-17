@@ -93,7 +93,7 @@ describe("ArcLanding — two-role state (Cycle 3.1c-i, R7; plan 04 Phase 7)", ()
     expect(screen.queryByText(/^\~\d+ courses$/)).toBeNull();
     expect(screen.queryByText("Start")).toBeNull();
     // The card states the path's size and time from the server-built course data.
-    expect(container.textContent).toContain("1 core phases · 0 optional");
+    expect(container.textContent).toContain("1 core phase · 0 optional");
     expect(container.textContent).toContain("About 3 h");
   });
 

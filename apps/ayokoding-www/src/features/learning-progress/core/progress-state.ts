@@ -53,6 +53,15 @@ export function serializeProgress(state: ProgressState): string {
 }
 
 /**
+ * Whether `state` holds nothing worth resetting: no completed page, no remembered course, and
+ * no remembered path — the state of a reader with zero progress (UWT-009). Pure — no IO, never
+ * throws.
+ */
+export function isProgressEmpty(state: ProgressState): boolean {
+  return Object.keys(state.completed).length === 0 && state.lastCourse === null && state.lastPath === null;
+}
+
+/**
  * Mark `pagePath` of `courseId` complete or incomplete. Adding is idempotent; removing the last
  * page of a course drops that course's key (tech-docs/002 field guide). Returns a new object and
  * never mutates the input. Pure — no IO, never throws.

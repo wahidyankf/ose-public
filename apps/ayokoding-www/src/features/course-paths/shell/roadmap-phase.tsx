@@ -85,7 +85,19 @@ export function RoadmapPhase({
   const headingId = `phase-${phase.id}-heading`;
 
   return (
-    <section id={`phase-${phase.id}`} aria-labelledby={headingId} className="mt-6">
+    <section id={`phase-${phase.id}`} aria-labelledby={headingId} className="relative mt-6 pl-8">
+      {/*
+       * DWT-001: the milestone node for this core phase (Screen 1 option A). It sits in the
+       * section's left gutter, centred on the timeline spine `PathRoadmap` draws at the same
+       * x, so every core phase reads as one milestone on one vertical line at every width.
+       * Decorative (`aria-hidden`): the phase status in words next to it carries the meaning,
+       * with its own status icon (PRD Screen 1 details).
+       */}
+      <span
+        aria-hidden="true"
+        data-timeline-node
+        className="absolute top-1 left-1 h-4 w-4 rounded-full border-2 border-primary bg-background"
+      />
       <h3 id={headingId} className="text-lg font-bold tracking-tight">
         {phaseNumber === undefined
           ? phase.title

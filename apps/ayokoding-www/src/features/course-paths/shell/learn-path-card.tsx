@@ -45,11 +45,15 @@ export function LearnPathCard({ locale, manifest, courseTitles, courseCards, seq
   const coreCourseIds = cores.flatMap((phase) => phase.courses.map((reference) => normalizeCourseRef(reference).id));
   const { hours, withoutEstimate } = roadmapHours(flat ? courseIds : coreCourseIds, courseCards);
 
+  // UWT-012: singular counts read "1 core phase", never "1 core phases" (Indonesian needs no
+  // plural change, so its `One` keys render the same shape with count 1 — like `pathsCourseCountOne`).
+  const coreCount = cores.length;
+  const extensionCount = extensionPhases(manifest).length;
   const size = flat
     ? tf(loc, "roadmapCoursesCount", { count: courseIds.length })
-    : `${tf(loc, "pathCardPhases", { count: cores.length })} · ${tf(loc, "pathCardOptional", {
-        count: extensionPhases(manifest).length,
-      })}`;
+    : `${coreCount === 1 ? t(loc, "pathCardPhasesOne") : tf(loc, "pathCardPhases", { count: coreCount })} · ${
+        extensionCount === 1 ? t(loc, "pathCardOptionalOne") : tf(loc, "pathCardOptional", { count: extensionCount })
+      }`;
   const hoursText =
     hours > 0
       ? `${tf(loc, "courseEstimatedHours", { hours })}${

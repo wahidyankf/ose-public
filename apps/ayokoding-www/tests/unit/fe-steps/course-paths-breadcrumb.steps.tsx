@@ -108,10 +108,10 @@ describeFeature(feature, ({ Scenario }) => {
     });
 
     And(
-      "the path crumb links to the path landing page /en/learn/paths/<path-id> with the path context preserved",
+      "the path crumb links to the path landing page /en/learn/paths/<path-id> without a self-referential path context query",
       () => {
         expect(screen.getByRole("link", { name: "Python Fundamentals" }).getAttribute("href")).toBe(
-          "/en/learn/paths/skills/python-fundamentals?path=skills/python-fundamentals",
+          "/en/learn/paths/skills/python-fundamentals",
         );
       },
     );

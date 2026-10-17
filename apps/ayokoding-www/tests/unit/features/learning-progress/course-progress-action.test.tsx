@@ -66,6 +66,17 @@ describe("CourseProgressAction — the server render and a fresh reader", () => 
       "/en/learn/courses/just-enough-bash/learning/overview",
     );
   });
+
+  it("sizes the primary auto from sm so it never spans the header on tablet and desktop (DWT-002)", () => {
+    render(action());
+
+    // The slot is a column flex container, whose stretch default would keep even a
+    // `sm:w-auto` link full-width: `sm:self-start` opts the primary back out of it.
+    const classes = screen.getByRole("link", { name: "Start course" }).className.split(/\s+/);
+    expect(classes).toContain("w-full");
+    expect(classes).toContain("sm:w-auto");
+    expect(classes).toContain("sm:self-start");
+  });
 });
 
 describe("CourseProgressAction — a returning reader", () => {

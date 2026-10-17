@@ -119,7 +119,7 @@ describe("LearnPathCard", () => {
 
     expect(screen.getByText("Write shell scripts, serve an HTTP backend, and store its data.")).toBeTruthy();
     expect(screen.getByText(/Goal:/).textContent).toContain("SQL Essentials");
-    expect(container.textContent).toContain("1 core phases · 1 optional");
+    expect(container.textContent).toContain("1 core phase · 1 optional");
     expect(container.textContent).toContain("About 9 h");
   });
 

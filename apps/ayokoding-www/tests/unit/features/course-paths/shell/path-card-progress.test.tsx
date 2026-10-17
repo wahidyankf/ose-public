@@ -119,4 +119,23 @@ describe("PathCardProgress", () => {
     expect(screen.getByText("0 of 2 core courses done")).toBeTruthy();
     expect(screen.getByText("Not started")).toBeTruthy();
   });
+
+  it("wraps its row instead of overflowing the viewport, and never breaks a label mid-word (DWT-004)", () => {
+    learningProgressStore.update((state) => completeCourse(state, "just-enough-bash"));
+    const { container } = renderProgress();
+
+    // S38: the row may wrap (flex-wrap + growing min-h) but must never force page-level
+    // horizontal scroll with a fixed-height nowrap row, the 768px overflow this fixes.
+    const slot = container.querySelector('[data-progress-slot="path-card-progress"]');
+    const slotTokens = (slot?.className ?? "").split(/\s+/);
+    expect(slotTokens).toContain("flex-wrap");
+    expect(slotTokens).toContain("min-h-5");
+    expect(slotTokens).not.toContain("h-5");
+    // The count may move to the next line, but neither it nor the status label may break
+    // mid-label the way 375px rendered "Not / started".
+    const count = screen.getByText("1 of 2 core courses done");
+    expect(count.className.split(/\s+/)).not.toContain("whitespace-nowrap");
+    const label = screen.getByText("In progress").closest("span");
+    expect(label?.className.split(/\s+/)).toContain("whitespace-nowrap");
+  });
 });

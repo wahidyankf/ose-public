@@ -50,10 +50,12 @@ function resolveEffectiveSegments(
   const current = segments[segments.length - 1]!;
   const pathSlug = `learn/paths/${pathContext.pathId}`;
 
+  // UWT-015: the path crumb never carries `?path=` — on the path's own page that query is
+  // self-referential cruft (`<path>?path=<itself>`), and the path page never consumes it.
   return [
     home,
     { label: pathContext.learnLabel, slug: "learn", href: pathContext.learnHref },
-    { label: pathContext.pathTitle, slug: pathSlug, href: contentUrl(locale as Locale, pathSlug, pathContext.pathId) },
+    { label: pathContext.pathTitle, slug: pathSlug, href: contentUrl(locale as Locale, pathSlug) },
     current,
   ];
 }

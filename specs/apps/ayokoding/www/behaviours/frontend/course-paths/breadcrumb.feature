@@ -21,7 +21,7 @@ Feature: Path-aware breadcrumb and URL context
     Given a reader is on a course with an active path context
     When the breadcrumb renders
     Then it shows Home, Learn, the path title, and the course title
-    And the path crumb links to the path landing page /en/learn/paths/<path-id> with the path context preserved
+    And the path crumb links to the path landing page /en/learn/paths/<path-id> without a self-referential path context query
 
   # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / A legacy fundamentally-strong URL redirects to the canonical course URL
   @integration-exempt

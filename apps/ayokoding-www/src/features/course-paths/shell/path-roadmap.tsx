@@ -122,22 +122,34 @@ export function PathRoadmap({ locale, manifest, courseCards, sequences, bodyHtml
           <>
             {cores.length > 0 && (
               <h2 className="mt-8 text-sm font-semibold tracking-wide text-muted-foreground uppercase">
-                {tf(loc, "roadmapCoreHeading", { count: cores.length })}
+                {/* UWT-012: "Core path · 1 phase", never "1 phases". */}
+                {cores.length === 1
+                  ? t(loc, "roadmapCoreHeadingOne")
+                  : tf(loc, "roadmapCoreHeading", { count: cores.length })}
                 {hoursText === "" ? null : ` · ${hoursText}`}
               </h2>
             )}
-            {coreSections.map(({ phase, phaseNumber, startPosition }) => (
-              <RoadmapPhase
-                key={phase.id}
-                locale={locale}
-                pathId={manifest.pathId}
-                phase={phase}
-                phaseNumber={phaseNumber}
-                startPosition={startPosition}
-                courseCards={courseCards}
-                sequences={sequences}
-              />
-            ))}
+            {/*
+             * DWT-001: the milestone timeline (Screen 1 option A). One continuous spine at the
+             * left edge at every width (PRD Responsive Strategy); each core `RoadmapPhase`
+             * section draws its own node centred on this x in its left gutter. Extension
+             * phases stay outside the timeline: closed rows, not milestones.
+             */}
+            <div data-timeline="roadmap-core" className="relative">
+              <span aria-hidden="true" data-timeline-spine className="absolute top-2 bottom-2 left-3 w-px bg-border" />
+              {coreSections.map(({ phase, phaseNumber, startPosition }) => (
+                <RoadmapPhase
+                  key={phase.id}
+                  locale={locale}
+                  pathId={manifest.pathId}
+                  phase={phase}
+                  phaseNumber={phaseNumber}
+                  startPosition={startPosition}
+                  courseCards={courseCards}
+                  sequences={sequences}
+                />
+              ))}
+            </div>
             {extensions.length > 0 && (
               <>
                 <h2 className="mt-8 text-sm font-semibold tracking-wide text-muted-foreground uppercase">

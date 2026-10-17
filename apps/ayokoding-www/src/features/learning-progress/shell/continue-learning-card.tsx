@@ -59,7 +59,7 @@ export function ContinueLearningCard({ locale, manifests, courseTitles, sequence
           <Link
             href={`${contentUrl(loc, "learn")}#career-paths`}
             data-progress-control="continue-primary"
-            className="inline-flex min-h-11 w-full items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none sm:w-auto"
+            className="inline-flex min-h-11 w-full items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none sm:w-auto sm:self-start"
           >
             {t(loc, "homeChoosePath")}
           </Link>
@@ -125,7 +125,7 @@ export function ContinueLearningCard({ locale, manifests, courseTitles, sequence
 }
 
 const primaryLinkClass =
-  "inline-flex min-h-11 w-full items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none sm:w-auto";
+  "inline-flex min-h-11 w-full items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none sm:w-auto sm:self-start";
 
 /** The card's mode for the current stored progress (tech-docs/003 Learn Home Card, in order). */
 function cardView(

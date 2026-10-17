@@ -161,6 +161,18 @@ describe("PathRoadmap — core phases (S19)", () => {
     expect(secondPhaseRows[0]?.textContent?.match(/^\d+/)?.[0]).toBe("3");
   });
 
+  it("sizes the Start/Continue primary auto from sm so it never spans the card on tablet and desktop (DWT-002)", () => {
+    renderRoadmap(phasedManifest());
+
+    // The card is a column flex container, whose stretch default would keep even a
+    // `sm:w-auto` link full-width: `sm:self-start` opts the primary back out of it.
+    const primary = screen.getByRole("link", { name: /Start:|Continue:/ });
+    const classes = primary.className.split(/\s+/);
+    expect(classes).toContain("w-full");
+    expect(classes).toContain("sm:w-auto");
+    expect(classes).toContain("sm:self-start");
+  });
+
   it("heads the core with its core-phase count and the core courses' hours (Path Hours)", () => {
     renderRoadmap(phasedManifest());
 
@@ -242,6 +254,41 @@ describe("PathRoadmap — optional extensions are separate and closed by default
     // The cards are in the DOM (so opening the section reveals them) with the next position number.
     const row = details?.querySelector("ol > li");
     expect(row?.textContent).toMatch(/^4\s*Capstone Secure Service/);
+  });
+});
+
+describe("PathRoadmap — milestone timeline (DWT-001)", () => {
+  it("renders one spine at the left edge wrapping the core phases", () => {
+    const { container } = renderRoadmap(phasedManifest());
+
+    const timeline = container.querySelector('[data-timeline="roadmap-core"]');
+    expect(timeline).not.toBeNull();
+    const spine = timeline?.querySelector("[data-timeline-spine]");
+    expect(spine).not.toBeNull();
+    expect(spine?.getAttribute("aria-hidden")).toBe("true");
+    const classes = (spine?.className ?? "").split(/\s+/);
+    expect(classes).toContain("absolute");
+    expect(classes).toContain("w-px");
+  });
+
+  it("renders one node per core phase inside its phase section, and none for extensions", () => {
+    const { container } = renderRoadmap(phasedManifest());
+
+    const first = container.querySelector("#phase-shell-foundations");
+    const second = container.querySelector("#phase-data-foundations");
+    expect(first?.querySelectorAll("[data-timeline-node]").length).toBe(1);
+    expect(second?.querySelectorAll("[data-timeline-node]").length).toBe(1);
+    expect(first?.querySelector("[data-timeline-node]")?.getAttribute("aria-hidden")).toBe("true");
+    // The extension phase is a closed details row, not a timeline milestone.
+    expect(container.querySelector("details [data-timeline-node]")).toBeNull();
+  });
+
+  it("renders no timeline for a path waiting for its restructure", () => {
+    const { container } = renderRoadmap(markedManifest());
+
+    expect(container.querySelector('[data-timeline="roadmap-core"]')).toBeNull();
+    expect(container.querySelector("[data-timeline-spine]")).toBeNull();
+    expect(container.querySelector("[data-timeline-node]")).toBeNull();
   });
 });
 

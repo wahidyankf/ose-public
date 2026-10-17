@@ -267,7 +267,7 @@ describe("Breadcrumb with an active path context (Cycle 2.3)", () => {
     expect(screen.queryByText("Courses")).toBeNull();
   });
 
-  it("the path crumb links to the path landing page with the path context preserved", () => {
+  it("the path crumb links to the path landing page without a self-referential path context query (UWT-015)", () => {
     render(
       <Breadcrumb
         locale="en"
@@ -279,7 +279,7 @@ describe("Breadcrumb with an active path context (Cycle 2.3)", () => {
     );
 
     expect(screen.getByRole("link", { name: "Python Fundamentals" }).getAttribute("href")).toBe(
-      "/en/learn/paths/skills/python-fundamentals?path=skills/python-fundamentals",
+      "/en/learn/paths/skills/python-fundamentals",
     );
   });
 

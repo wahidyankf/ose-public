@@ -1,8 +1,7 @@
 # AyoKoding Learn Revamp 04 — Learning Experience
 
-> **Status:** Backlog. Do not execute until the user gives an explicit execution command. This plan
-> depends on plans 02 (`path-model`) and 03 (`catalog-and-metadata`); both must be merged on
-> `origin/main` before Phase 1 starts.
+> **Status:** In Progress. This plan depends on plans 02 (`path-model`) and 03
+> (`catalog-and-metadata`); both are merged and archived on `origin/main`.
 
 AyoKoding Learn today reads like "a pile of documents". This plan turns it into a learning path a
 reader can follow and come back to. The user asked for this on 2026-10-09:

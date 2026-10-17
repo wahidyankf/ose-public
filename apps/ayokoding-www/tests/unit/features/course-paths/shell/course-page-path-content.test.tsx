@@ -112,7 +112,11 @@ describe("CoursePagePathContent", () => {
     renderCoursePage();
 
     expect(screen.getByTestId("active-path")).toHaveTextContent("skills/algorithms");
-    expect(screen.getByTestId("path-badges")).toBeEmptyDOMElement();
+    // Which paths include this course is a fact about the course, not about the URL: the statically
+    // served page always carries the canonical badge list, so a ready path-aware render keeps it
+    // too. Blanking it here is what would collapse the whole "part of paths" block below the header
+    // — and move every line under it — the moment the runtime data arrived (S8).
+    expect(screen.getByTestId("path-badges")).toHaveTextContent("Algorithms");
   });
 
   it("keeps canonical chrome for an invalid path after runtime data is ready", () => {

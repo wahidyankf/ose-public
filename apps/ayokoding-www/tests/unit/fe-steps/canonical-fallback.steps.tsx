@@ -114,6 +114,11 @@ vi.mock("@/lib/trpc/server", () => ({
         if (!page) throw new Error(`no fixture page for slug ${slug}`);
         return page;
       }),
+      // Plan 04 Phase 5: a course root page also reads its lesson sequence, for the header's
+      // progress and action slots. This fixture course has no lesson pages of its own, and this
+      // scenario is about the breadcrumb, the prerequisites, and the path badges, so an empty
+      // content tree is the honest fixture here.
+      getTree: vi.fn(async () => []),
     },
   },
 }));

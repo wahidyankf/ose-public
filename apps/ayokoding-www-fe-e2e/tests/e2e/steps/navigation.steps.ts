@@ -174,14 +174,14 @@ Then("the corresponding item in the sidebar should be visually highlighted as ac
   const sidebar = page.getByRole("navigation", { name: /sidebar/i });
   const active = sidebar.locator('a[href="/en/learn/courses/just-enough-python/learning/beginner"]');
   await expect(active).toHaveCount(1);
-  await expect(active).toHaveClass(/bg-primary\/10/);
+  await expect(active).toHaveClass(/bg-primary\/5/);
   await expect(active).toHaveClass(/font-medium/);
   await expect(active).toHaveClass(/text-primary/);
 });
 
 Then("no other sidebar item should be highlighted as active", async ({ page }) => {
   const sidebar = page.getByRole("navigation", { name: /sidebar/i });
-  await expect(sidebar.locator("a.bg-primary\\/10.font-medium.text-primary")).toHaveCount(1);
+  await expect(sidebar.locator("a.bg-primary\\/5.font-medium.text-primary")).toHaveCount(1);
 });
 
 Given("a content page's markdown body contains a relative link to another content file", async ({ page }) => {
@@ -218,9 +218,9 @@ Then("the href should not be a raw filesystem-relative path", async ({ page }) =
   expect(href).not.toMatch(/^\.\.?(?:\/|$)/);
 });
 
-// The four sidebar entries under Learn, by their public hrefs (contentUrl of the learn
-// overview page and the three section indexes).
-const learnSidebarHrefs = ["/en/learn/overview", "/en/learn/paths", "/en/learn/courses", "/en/learn/legacy"] as const;
+// The three sidebar entries under Learn, by their public hrefs — the section indexes, since the
+// Learn home replaced the retired overview page (U1, plan ayokoding-learn-revamp-04).
+const learnSidebarHrefs = ["/en/learn/paths", "/en/learn/courses", "/en/learn/legacy"] as const;
 
 /**
  * The docs sidebar's desktop `<aside>` (resizable-sidebar.tsx) — the `md:block` shell the
@@ -248,30 +248,26 @@ async function learnSidebarEntriesTopToBottom(aside: Locator): Promise<Array<{ h
   return entries.sort((a, b) => a.y - b.y);
 }
 
-When("a visitor opens the learn overview page", async ({ page }) => {
-  await page.goto("/en/learn/overview");
+When("a visitor opens the Learn home", async ({ page }) => {
+  await page.goto("/en/learn");
   await page.waitForLoadState("networkidle");
 });
 
-Then("the first entry under Learn in the sidebar is {string}", async ({ page }, expectedTitle: string) => {
-  const aside = desktopSidebarAside(page);
-  const entries = await learnSidebarEntriesTopToBottom(aside);
-  const firstHref = entries[0]?.href;
-  expect(
-    firstHref,
-    `the topmost Learn sidebar entry should be /en/learn/overview, but the rendered y-order was: ${entries
-      .map((entry) => `${entry.href}@y=${entry.y}`)
-      .join(", ")}`,
-  ).toBe("/en/learn/overview");
-  await expect(aside.locator(`a[href="${firstHref}"]`)).toHaveText(expectedTitle);
-});
-
-Then("it is followed by Paths, Courses, and Legacy in that order", async ({ page }) => {
-  const entries = await learnSidebarEntriesTopToBottom(desktopSidebarAside(page));
-  expect(
-    entries.map((entry) => entry.href),
-    `the Learn sidebar entries should read Overview, Paths, Courses, Legacy top to bottom, but the rendered y-order was: ${entries
-      .map((entry) => `${entry.href}@y=${entry.y}`)
-      .join(", ")}`,
-  ).toEqual(["/en/learn/overview", "/en/learn/paths", "/en/learn/courses", "/en/learn/legacy"]);
-});
+Then(
+  "the entries under Learn in the sidebar are {string}, {string}, and {string} in that order",
+  async ({ page }, first: string, second: string, third: string) => {
+    const aside = desktopSidebarAside(page);
+    const entries = await learnSidebarEntriesTopToBottom(aside);
+    expect(
+      entries.map((entry) => entry.href),
+      `the Learn sidebar entries should read ${first}, ${second}, ${third} top to bottom, but the rendered y-order was: ${entries
+        .map((entry) => `${entry.href}@y=${entry.y}`)
+        .join(", ")}`,
+    ).toEqual([...learnSidebarHrefs]);
+    // The order and the visible labels both come from the rendered rail, so a wrong title paired
+    // with the right slot cannot pass.
+    for (const [index, expectedTitle] of [first, second, third].entries()) {
+      await expect(aside.locator(`a[href="${learnSidebarHrefs[index]}"]`)).toHaveText(expectedTitle);
+    }
+  },
+);

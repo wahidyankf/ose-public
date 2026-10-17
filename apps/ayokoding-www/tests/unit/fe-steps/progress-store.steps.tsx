@@ -1,0 +1,612 @@
+import path from "node:path";
+import { describeFeature, loadFeature } from "@amiceli/vitest-cucumber";
+import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import { hydrateRoot } from "react-dom/client";
+import { renderToString } from "react-dom/server";
+import { expect, vi } from "vitest";
+import "./helpers/test-setup";
+
+// React's act environment: hydrating a rendered string is a React, not a DOM-testing-library,
+// concern (the same technique as `use-learning-progress.test.tsx`).
+(globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
+
+vi.mock("next/link", () => ({
+  default: ({ href, children, ...rest }: { href: string; children: React.ReactNode; [key: string]: unknown }) => (
+    <a href={href} {...rest}>
+      {children}
+    </a>
+  ),
+}));
+
+vi.mock("@/features/course-paths/shell/use-runtime-course-path-data", () => ({
+  useRuntimeCoursePathData: (_locale: string, initial: unknown) => ({ data: initial, isReady: true }),
+}));
+
+// eslint-disable-next-line import/first
+import { PROGRESS_STORAGE_KEY } from "@/features/learning-progress/core/progress-schema";
+import {
+  emptyProgress,
+  parseProgress,
+  serializeProgress,
+  setPageComplete,
+} from "@/features/learning-progress/core/progress-state";
+import type { ContentMeta } from "@/features/content/core/types";
+import type { PathManifest } from "@/features/course-paths/core/schemas";
+import { PathLanding } from "@/features/course-paths/shell/path-landing";
+import { LearnHome } from "@/features/learning-progress/shell/learn-home";
+import { manifestFixture } from "../features/course-paths/manifest-fixture";
+import { BASH_SEQUENCE } from "../features/learning-progress/lesson-fixtures";
+import { PROGRESS_SCREENS, slotFingerprints } from "./helpers/progress-screens";
+import { completedPages, completionToggle, contextBar, noSavedProgress, openLessonPage } from "./helpers/lesson-page";
+
+const feature = await loadFeature(
+  path.resolve(
+    process.cwd(),
+    "../../specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature",
+  ),
+);
+
+const PATH_ID = "careers/immediately-effective/backend-track";
+
+/** Every network call the store's guard rails must never make, watched for the whole scenario. */
+let networkCalls: string[] = [];
+let originalFetch: typeof globalThis.fetch | undefined;
+let xhrSend: ReturnType<typeof vi.spyOn> | null = null;
+
+function watchNetwork(): void {
+  networkCalls = [];
+  originalFetch = globalThis.fetch;
+  globalThis.fetch = ((input: unknown) => {
+    networkCalls.push(String(input));
+    return Promise.reject(new Error("the progress store must not fetch"));
+  }) as typeof globalThis.fetch;
+  xhrSend = vi.spyOn(globalThis.XMLHttpRequest.prototype, "send").mockImplementation(() => {
+    networkCalls.push("XMLHttpRequest.send");
+  });
+}
+
+function stopWatchingNetwork(): void {
+  if (originalFetch === undefined) {
+    delete (globalThis as unknown as { fetch?: unknown }).fetch;
+  } else {
+    globalThis.fetch = originalFetch;
+  }
+  xhrSend?.mockRestore();
+  xhrSend = null;
+}
+
+/**
+ * Blocking storage (tech-docs/006's blocked-storage technique): every `localStorage` method the
+ * store can reach throws, exactly as a browser with site storage switched off does. The methods
+ * are restored when the scenario ends, but the shared store itself stays in memory mode — which is
+ * what tech-docs/002 promises for the life of the tab. This scenario is therefore the last one in
+ * the file, and any scenario added after it must account for a memory-only store.
+ */
+let blockedStorageMethods: {
+  getItem: typeof Storage.prototype.getItem;
+  setItem: typeof Storage.prototype.setItem;
+  removeItem: typeof Storage.prototype.removeItem;
+} | null = null;
+
+function blockStorage(): void {
+  const blocked = () => {
+    throw new DOMException("blocked", "SecurityError");
+  };
+  blockedStorageMethods = {
+    getItem: Storage.prototype.getItem,
+    setItem: Storage.prototype.setItem,
+    removeItem: Storage.prototype.removeItem,
+  };
+  Storage.prototype.getItem = blocked;
+  Storage.prototype.setItem = blocked;
+  Storage.prototype.removeItem = blocked;
+}
+
+function unblockStorage(): void {
+  if (blockedStorageMethods === null) return;
+  Storage.prototype.getItem = blockedStorageMethods.getItem;
+  Storage.prototype.setItem = blockedStorageMethods.setItem;
+  Storage.prototype.removeItem = blockedStorageMethods.removeItem;
+  blockedStorageMethods = null;
+}
+
+function storedRecord() {
+  return parseProgress(window.localStorage.getItem(PROGRESS_STORAGE_KEY)).state;
+}
+
+const SECOND_PATH_ID = "skills/e2e-fixture-alpha";
+
+/**
+ * The path page the store's own scenarios render: the backend-track fixture's three-course order,
+ * the same manifest `lesson-fixtures.ts` gives the lesson-page helpers, so a unit assertion and its
+ * browser binding describe one reader experience.
+ */
+function backendTrackManifest(): PathManifest {
+  return manifestFixture({
+    pathId: PATH_ID,
+    arc: "immediately-effective",
+    title: "Backend Track",
+    description: "Write shell scripts, serve an HTTP backend, and store its data.",
+    phases: [
+      {
+        id: "fixture-core",
+        title: "Fixture core",
+        kind: "core",
+        outcome: { can: "complete this fixture path" },
+        courses: ["just-enough-bash", "backend-essentials", "sql-essentials"],
+      },
+    ],
+  });
+}
+
+/** A second path that lists the same course — S3's "every path that contains the course". */
+function sharedCourseManifest(): PathManifest {
+  return manifestFixture({
+    pathId: SECOND_PATH_ID,
+    arc: "e2e-fixture-alpha-track",
+    title: "E2E Fixture Alpha Skills Path",
+    description: "A second path that lists the same course.",
+    phases: [
+      {
+        id: "fixture-core",
+        title: "Fixture core",
+        kind: "core",
+        outcome: { can: "complete this fixture path" },
+        courses: ["just-enough-bash"],
+      },
+    ],
+  });
+}
+
+const PATH_COURSE_TITLES: Record<string, string> = {
+  "just-enough-bash": "Just Enough Bash",
+  "backend-essentials": "Backend Essentials",
+  "sql-essentials": "SQL Essentials",
+};
+
+/** Every course's lesson page paths, so a course counts as done only when all of them are done. */
+const PATH_SEQUENCES = { "just-enough-bash": BASH_SEQUENCE.map((page) => page.pagePath) };
+
+/**
+ * Render `copies` of one path page — one per "tab". Every render starts from a clean tree; a
+ * scenario that needs two tabs renders both into the same document, because the store is
+ * app-wide, exactly as it is across the tabs of one browser.
+ */
+function renderPathPage(manifest: PathManifest = backendTrackManifest(), copies = 1): ReturnType<typeof render> {
+  cleanup();
+  return render(
+    <>
+      {Array.from({ length: copies }, (_, index) => (
+        <PathLanding
+          key={index}
+          locale="en"
+          manifest={manifest}
+          courseTitles={PATH_COURSE_TITLES}
+          sequences={PATH_SEQUENCES}
+        />
+      ))}
+    </>,
+  );
+}
+
+/** Every path headline in `container`, in document order — one per rendered path page. */
+function headlinesIn(container: HTMLElement): HTMLElement[] {
+  return Array.from(container.querySelectorAll<HTMLElement>("p")).filter((element) =>
+    /^\d+ of \d+ core courses done$/u.test(element.textContent ?? ""),
+  );
+}
+
+// ---------------------------------------------------------------------------
+// plan ayokoding-learn-revamp-04-learning-experience, Phase 6 — S6 and S7 render the Learn home,
+// where the guarded reset lives. Kept above S4 below, which leaves the app-wide store in memory
+// mode for the life of the "tab".
+// ---------------------------------------------------------------------------
+
+function contentMeta(slug: string, title: string, estimatedHours?: number): [string, ContentMeta] {
+  return [
+    `en:${slug}`,
+    {
+      title,
+      slug,
+      locale: "en",
+      weight: 0,
+      tags: [],
+      draft: false,
+      isSection: true,
+      filePath: `/content/en/${slug}/_index.md`,
+      ...(estimatedHours === undefined ? {} : { estimatedHours }),
+    },
+  ];
+}
+
+/** The arc and course metadata the app reads from the content index, for the Learn home's cards. */
+const LEARN_HOME_CONTENT_MAP = new Map<string, ContentMeta>([
+  contentMeta("learn/paths/careers/immediately-effective", "Immediately Effective"),
+  contentMeta("learn/courses/just-enough-bash", "Just Enough Bash", 4),
+  contentMeta("learn/courses/backend-essentials", "Backend Essentials", 6),
+  contentMeta("learn/courses/sql-essentials", "SQL Essentials", 8),
+]);
+
+/** Render the Learn home, where a reader resets or keeps the progress this browser holds. */
+function openLearnHome(): void {
+  cleanup();
+  render(
+    <LearnHome
+      locale="en"
+      title="Learn"
+      description="Follow a path from your first course to a finished project, or pick single courses from the catalog."
+      manifests={[backendTrackManifest()]}
+      contentMap={LEARN_HOME_CONTENT_MAP}
+      sequences={PATH_SEQUENCES}
+      catalogCounts={{ courses: 3, categories: 1 }}
+    />,
+  );
+}
+
+/** Let Radix's portal mount, its focus scope run, and its close-focus restore settle. */
+async function settle(): Promise<void> {
+  await act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  });
+}
+
+/** Save progress a reader can lose: every page of the path's first course, through its own control. */
+function saveProgress(): void {
+  noSavedProgress();
+  for (const page of BASH_SEQUENCE) {
+    openLessonPage({ pagePath: page.pagePath, pathParam: PATH_ID });
+    fireEvent.click(completionToggle());
+  }
+  expect(completedPages()).toHaveLength(BASH_SEQUENCE.length);
+}
+
+describeFeature(feature, ({ Scenario, Background }) => {
+  Background(({ Given }) => {
+    Given("the app is running", () => {
+      stopWatchingNetwork();
+      unblockStorage();
+      noSavedProgress();
+    });
+  });
+
+  Scenario("Marking a page complete is saved in this browser only", ({ Given, When, Then, And }) => {
+    Given("a reader has no saved progress", () => {
+      noSavedProgress();
+      expect(window.localStorage.getItem(PROGRESS_STORAGE_KEY)).toBeNull();
+      watchNetwork();
+    });
+
+    When("the reader marks a learning page as complete", () => {
+      openLessonPage({ pagePath: "learning/beginner", pathParam: PATH_ID });
+      fireEvent.click(completionToggle());
+    });
+
+    And("the reader reloads the page", () => {
+      // A reload re-reads the same key through the same store: the visit writes a record, and the
+      // completion must survive it.
+      openLessonPage({ pagePath: "learning/beginner", pathParam: PATH_ID });
+    });
+
+    Then("the page is still shown as completed", () => {
+      expect(completionToggle().getAttribute("aria-pressed")).toBe("true");
+      expect(completedPages()).toEqual(["learning/beginner"]);
+    });
+
+    And("no network request sent while marking carries the progress data", () => {
+      expect(networkCalls).toEqual([]);
+      expect(JSON.stringify(storedRecord())).toContain("learning/beginner");
+      stopWatchingNetwork();
+    });
+  });
+
+  Scenario("A completed page can be un-checked", ({ Given, When, Then, And }) => {
+    Given("a reader has marked a learning page as complete", () => {
+      noSavedProgress();
+      openLessonPage({ pagePath: "learning/beginner", pathParam: PATH_ID });
+      fireEvent.click(completionToggle());
+      expect(completionToggle().getAttribute("aria-pressed")).toBe("true");
+      expect(contextBar().textContent).toContain("1 of 3 pages done");
+    });
+
+    When("the reader activates the completed control again", () => {
+      fireEvent.click(completionToggle());
+    });
+
+    Then("the page is shown as not completed", () => {
+      expect(completionToggle().getAttribute("aria-pressed")).toBe("false");
+      expect(completionToggle().textContent).toContain("Mark as complete");
+    });
+
+    And("the course's pages-done count goes down by one", () => {
+      expect(contextBar().textContent).toContain("0 of 3 pages done");
+      expect(completedPages()).toEqual([]);
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // S3, S5, and S9 are bound here, and deliberately BEFORE S4: S4's blocked-storage scenario leaves
+  // the app-wide store in memory mode for the life of the "tab" (tech-docs/002), and every scenario
+  // below reads the shared key, or re-reads it on a `storage` event.
+  // -------------------------------------------------------------------------
+
+  Scenario("Progress is shared by every path that contains the course", ({ Given, When, Then, And }) => {
+    let secondPath: PathManifest;
+
+    Given("a course belongs to two paths", () => {
+      secondPath = sharedCourseManifest();
+      expect(backendTrackManifest().courseOrder).toContain("just-enough-bash");
+      expect(secondPath.courseOrder).toContain("just-enough-bash");
+    });
+
+    And("the reader completed every learning page of that course while following the first path", () => {
+      // Every page of the course, through the lesson page's own completion control, with the first
+      // path in context — the record carries no path, which is why the second path sees it too.
+      for (const page of BASH_SEQUENCE) {
+        openLessonPage({ pagePath: page.pagePath, pathParam: PATH_ID });
+        fireEvent.click(completionToggle());
+      }
+
+      expect(completedPages()).toHaveLength(BASH_SEQUENCE.length);
+      expect(storedRecord().completed["just-enough-bash"]?.length).toBe(BASH_SEQUENCE.length);
+    });
+
+    When("the reader opens the second path's page", () => {
+      renderPathPage(secondPath);
+    });
+
+    Then('that course\'s card shows "Done"', () => {
+      const row = screen.getByRole("link", { name: "Just Enough Bash" }).closest("li");
+      expect(row).not.toBeNull();
+      expect(within(row as HTMLElement).getByText("Done", { exact: true })).toBeTruthy();
+    });
+  });
+
+  Scenario("Unreadable saved progress is ignored and replaced", ({ Given, When, Then, And }) => {
+    Given("the saved progress record cannot be read as valid progress", () => {
+      window.localStorage.setItem(PROGRESS_STORAGE_KEY, "not json");
+      // What another tab's write to the same key says to this one: re-read it. The store finds the
+      // record unreadable and starts from empty progress rather than trusting the bytes.
+      window.dispatchEvent(new StorageEvent("storage", { key: PROGRESS_STORAGE_KEY }));
+      expect(parseProgress(window.localStorage.getItem(PROGRESS_STORAGE_KEY)).recovered).toBe(true);
+    });
+
+    When("the reader opens a path page", () => {
+      renderPathPage();
+    });
+
+    Then('every course card shows "Not started"', () => {
+      const nav = screen.getByRole("navigation", { name: "Backend Track syllabus" });
+      const rows = within(nav).getAllByRole("listitem");
+      expect(rows).toHaveLength(3);
+
+      for (const row of rows) {
+        expect(within(row).getByText("Not started", { exact: true })).toBeTruthy();
+      }
+    });
+
+    And("marking a learning page as complete saves a valid progress record", () => {
+      openLessonPage({ pagePath: "learning/beginner", pathParam: PATH_ID });
+      fireEvent.click(completionToggle());
+
+      const raw = window.localStorage.getItem(PROGRESS_STORAGE_KEY);
+      expect(raw).not.toBeNull();
+      expect(raw).not.toBe("not json");
+
+      const { state, recovered } = parseProgress(raw);
+      expect(recovered).toBe(false);
+      expect(state.completed["just-enough-bash"]).toEqual(["learning/beginner"]);
+    });
+  });
+
+  Scenario("Progress updates in another open tab", ({ Given, When, Then }) => {
+    let container: HTMLElement;
+    let firstHeadline: HTMLElement;
+
+    Given("the same path page is open in two tabs", () => {
+      container = renderPathPage(backendTrackManifest(), 2).container;
+
+      const headlines = headlinesIn(container);
+      expect(headlines.map((element) => element.textContent)).toEqual([
+        "0 of 3 core courses done",
+        "0 of 3 core courses done",
+      ]);
+      firstHeadline = headlines[0] as HTMLElement;
+    });
+
+    When("the reader marks a learning page as complete in a third tab", () => {
+      // A third tab is another document on the same origin: it writes the shared record itself, and
+      // the browser tells the open tabs about it through the `storage` event — nothing reloads.
+      const thirdTab = BASH_SEQUENCE.reduce(
+        (state, page) => setPageComplete(state, "just-enough-bash", page.pagePath, true),
+        emptyProgress(),
+      );
+      window.localStorage.setItem(PROGRESS_STORAGE_KEY, serializeProgress(thirdTab));
+      window.dispatchEvent(new StorageEvent("storage", { key: PROGRESS_STORAGE_KEY }));
+    });
+
+    Then("both open tabs show the new count without a reload", () => {
+      const headlines = headlinesIn(container);
+      expect(headlines.map((element) => element.textContent)).toEqual([
+        "1 of 3 core courses done",
+        "1 of 3 core courses done",
+      ]);
+      // The very element the first tab rendered is the one that changed: neither tab was re-mounted
+      // (a reload builds a new tree) — the count arrived through the store's own notification.
+      expect(headlines[0]).toBe(firstHeadline);
+    });
+  });
+
+  Scenario("Resetting progress clears it after confirmation", ({ Given, When, Then, And }) => {
+    Given("a reader has saved progress", () => {
+      saveProgress();
+    });
+
+    When('the reader chooses "Reset progress" on the Learn home and confirms', async () => {
+      openLearnHome();
+      expect(screen.getByText("1 of 3 core courses done")).toBeTruthy();
+
+      fireEvent.click(screen.getByRole("button", { name: "Reset progress…" }));
+      await settle();
+      expect(screen.getByRole("dialog")).toBeTruthy();
+
+      // The dialog's own confirm clears every record; the trigger above only opens it.
+      fireEvent.click(screen.getByRole("button", { name: "Reset progress" }));
+      await settle();
+      expect(screen.queryByRole("dialog")).toBeNull();
+    });
+
+    Then("every progress count on the Learn home shows nothing done", () => {
+      const counts = screen.getAllByText(/^\d+ of \d+ core courses done$/);
+      expect(counts.length).toBeGreaterThan(0);
+      expect(counts.map((count) => count.textContent)).toEqual(counts.map(() => "0 of 3 core courses done"));
+    });
+
+    And("no saved progress record remains in this browser", () => {
+      expect(window.localStorage.getItem(PROGRESS_STORAGE_KEY)).toBeNull();
+      expect(storedRecord().completed).toEqual({});
+    });
+  });
+
+  Scenario("Cancelling a reset keeps progress", ({ Given, When, Then, And }) => {
+    let savedRecord = "";
+
+    Given("a reader has saved progress", () => {
+      saveProgress();
+      savedRecord = window.localStorage.getItem(PROGRESS_STORAGE_KEY) ?? "";
+      expect(savedRecord).not.toBe("");
+    });
+
+    When('the reader chooses "Reset progress" on the Learn home and cancels', async () => {
+      openLearnHome();
+      fireEvent.click(screen.getByRole("button", { name: "Reset progress…" }));
+      await settle();
+      expect(screen.getByRole("dialog")).toBeTruthy();
+
+      fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
+      await settle();
+      expect(screen.queryByRole("dialog")).toBeNull();
+    });
+
+    Then("the saved progress is unchanged", () => {
+      expect(window.localStorage.getItem(PROGRESS_STORAGE_KEY)).toBe(savedRecord);
+      expect(screen.getByText("1 of 3 core courses done")).toBeTruthy();
+    });
+
+    And('focus returns to the "Reset progress" button', () => {
+      expect(document.activeElement).toBe(screen.getByRole("button", { name: "Reset progress…" }));
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // S8 (Phase 8) — progress appears without moving the page. Added last, before S4 below: it reads
+  // and writes the shared key through the lesson page's own control, which a memory-mode store
+  // cannot do.
+  //
+  // Every element whose content depends on stored progress carries `data-progress-slot`, and the
+  // slot's class list is what gives it its size. This scenario proves the served markup and the
+  // hydrated markup agree on that class list — and on the element that follows each slot — for all
+  // four screens, and that hydration logs no mismatch. The real bounding boxes (within 1 px) are
+  // the E2E binding's proof (tech-docs/006 E2E Techniques, S8).
+  // -------------------------------------------------------------------------
+
+  Scenario("Progress appears without moving the page", ({ Given, When, Then, And }) => {
+    /** The order the feature names the screens in, which is the order they are walked here. */
+    const S8_SCREENS = ["a path page", "a learning page", "a course landing page", "the Learn home"] as const;
+
+    let served: ReturnType<typeof slotFingerprints> = [];
+    let hydrated: ReturnType<typeof slotFingerprints> = [];
+    let hydrationErrors: string[] = [];
+
+    Given("a reader has saved progress", () => {
+      noSavedProgress();
+      openLessonPage({ pagePath: "learning/beginner", pathParam: PATH_ID });
+      fireEvent.click(completionToggle());
+      expect(completedPages()).toEqual(["learning/beginner"]);
+    });
+
+    When("the reader opens a path page, a learning page, a course landing page, and the Learn home", async () => {
+      served = [];
+      hydrated = [];
+      hydrationErrors = [];
+
+      for (const name of S8_SCREENS) {
+        const screen = PROGRESS_SCREENS.find((candidate) => candidate.name === name);
+        if (screen === undefined) {
+          throw new Error(`No progress screen is named "${name}"`);
+        }
+
+        cleanup();
+        // What the server sends: the snapshot is `unknown`, so every slot holds its placeholder.
+        const html = renderToString(screen.element());
+        const asServed = document.createElement("div");
+        asServed.innerHTML = html;
+        served.push(...slotFingerprints(asServed));
+
+        // What the reader gets once scripts run: the same markup, hydrated with saved progress.
+        const container = document.createElement("div");
+        container.innerHTML = html;
+        document.body.append(container);
+
+        const logged: string[] = [];
+        const spy = vi.spyOn(console, "error").mockImplementation((...args: unknown[]) => {
+          logged.push(args.map((value) => String(value)).join(" "));
+        });
+
+        let root: ReturnType<typeof hydrateRoot> | null = null;
+        await act(async () => {
+          root = hydrateRoot(container, screen.element());
+        });
+        hydrationErrors.push(...logged.filter((message) => /hydrat|did not match/i.test(message)));
+        hydrated.push(...slotFingerprints(container));
+
+        await act(async () => {
+          root?.unmount();
+        });
+        spy.mockRestore();
+        container.remove();
+      }
+    });
+
+    Then(
+      "each progress area and the content below it sit at the same position as in the page served before scripts run",
+      () => {
+        // A slot that changed class — or that moved to another tag — is a slot that could resize and
+        // push the content below it down; an empty comparison here means none did.
+        expect(served.length).toBeGreaterThan(0);
+        expect(hydrated).toEqual(served);
+      },
+    );
+
+    And("the browser console shows no hydration error", () => {
+      expect(hydrationErrors).toEqual([]);
+    });
+  });
+
+  Scenario("The site still works when browser storage is blocked", ({ Given, When, Then, And }) => {
+    Given("the browser refuses to read or write site storage", () => {
+      noSavedProgress();
+      blockStorage();
+    });
+
+    When("the reader opens a learning page and marks it as complete", () => {
+      openLessonPage({ pagePath: "learning/beginner", pathParam: PATH_ID });
+      fireEvent.click(completionToggle());
+    });
+
+    Then("the page is shown as completed for the rest of the visit", () => {
+      expect(completionToggle().getAttribute("aria-pressed")).toBe("true");
+      expect(contextBar().textContent).toContain("1 of 3 pages done");
+    });
+
+    And("a notice says progress cannot be saved in this browser", () => {
+      expect(
+        screen.getByText("Progress can't be saved in this browser. It lasts until you close this tab."),
+      ).toBeTruthy();
+    });
+
+    And("the page shows no error", () => {
+      expect(screen.queryByRole("alert")).toBeNull();
+      unblockStorage();
+    });
+  });
+});

@@ -91,7 +91,13 @@ export function MobileNav({
   // the two declared presets is accepted; a stale/tampered value (there is no
   // free-drag range to clamp into here) falls back to the default preset.
   useEffect(() => {
-    const persisted = parsePersistedWidth(localStorage.getItem(MOBILE_NAV_WIDTH_STORAGE_KEY));
+    let raw: string | null = null;
+    try {
+      raw = localStorage.getItem(MOBILE_NAV_WIDTH_STORAGE_KEY);
+    } catch {
+      raw = null;
+    }
+    const persisted = parsePersistedWidth(raw);
     const isValidPreset = MOBILE_NAV_WIDTH_PRESETS.some((preset) => preset.widthPx === persisted);
     if (isValidPreset) {
       setWidthPx(persisted as number);
@@ -111,7 +117,11 @@ export function MobileNav({
 
   function selectPreset(presetWidthPx: number) {
     setWidthPx(presetWidthPx);
-    localStorage.setItem(MOBILE_NAV_WIDTH_STORAGE_KEY, String(presetWidthPx));
+    try {
+      localStorage.setItem(MOBILE_NAV_WIDTH_STORAGE_KEY, String(presetWidthPx));
+    } catch {
+      // Storage can be blocked; the preset still applies for this session.
+    }
   }
 
   return (

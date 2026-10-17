@@ -79,6 +79,9 @@ vi.mock("@/lib/trpc/server", () => ({
       getBySlug: vi.fn(async () => {
         throw new MockTRPCError({ code: "NOT_FOUND", message: "not found" });
       }),
+      // Plan 04's roadmap reads the lesson-sequence index for every path page; this suite exercises
+      // the paths hub, so an empty tree (no page data) is the right boundary here.
+      getTree: vi.fn(async () => []),
     },
   },
 }));
@@ -118,12 +121,38 @@ describe("<ROUTE> paths-hub/category/arc/path-landing dispatch (Phase 3)", () =>
     expect(screen.getByRole("heading", { level: 2, name: /skills/i })).toBeTruthy();
   });
 
-  it("renders the careers category landing (arc chooser) at learn/paths/careers", async () => {
+  // Plan 04 Phase 7 (S32): every hub screen shows the same `LearnPathCard` the Learn home uses —
+  // the title links to the path page and the card carries the "View path" control, with no
+  // remnant of the replaced hub `PathCard` (course-count badge, "Start" CTA).
+  it("renders every hub path as a learning path card, grouped by category", async () => {
+    const jsx = await renderPathsSlug(["learn", "paths"]);
+    render(jsx);
+
+    const careers = within(document.querySelector("section[aria-labelledby='careers-heading']") as HTMLElement);
+    const skills = within(document.querySelector("section[aria-labelledby='skills-heading']") as HTMLElement);
+
+    expect(careers.getAllByRole("link", { name: /View path/ }).length).toBe(3);
+    expect(skills.getAllByRole("link", { name: /View path/ }).length).toBe(1);
+    expect(
+      careers.getByRole("link", { name: "Title for careers/immediately-effective/role-a" }).getAttribute("href"),
+    ).toBe("/en/learn/paths/careers/immediately-effective/role-a");
+    expect(skills.getByRole("link", { name: "Title for skills/example-subject" }).getAttribute("href")).toBe(
+      "/en/learn/paths/skills/example-subject",
+    );
+    expect(screen.queryByText(/^\~\d+ courses$/)).toBeNull();
+  });
+
+  it("renders the careers category landing grouped by arc at learn/paths/careers", async () => {
     const jsx = await renderPathsSlug(["learn", "paths", "careers"]);
     render(jsx);
 
     const nav = within(screen.getByRole("navigation", { name: "Careers arcs" }));
-    expect(nav.getAllByRole("link").length).toBe(2);
+    expect(nav.getAllByRole("heading", { level: 2, name: "Immediately Effective" })).toHaveLength(1);
+    expect(nav.getByRole("link", { name: "Immediately Effective" }).getAttribute("href")).toBe(
+      "/en/learn/paths/careers/immediately-effective",
+    );
+    const section = document.querySelector("section[aria-labelledby='careers-arc-immediately-effective']");
+    expect(section?.querySelectorAll(":scope > ul > li").length).toBe(2);
   });
 
   it("renders the skills category landing (no chooser) at learn/paths/skills", async () => {
@@ -139,7 +168,8 @@ describe("<ROUTE> paths-hub/category/arc/path-landing dispatch (Phase 3)", () =>
     render(jsx);
 
     const nav = within(screen.getByRole("navigation", { name: "immediately-effective paths" }));
-    expect(nav.getAllByRole("link").length).toBe(2);
+    expect(nav.getAllByRole("link", { name: "Title for careers/immediately-effective/role-a" })).toHaveLength(1);
+    expect(nav.getAllByRole("link", { name: "Title for careers/immediately-effective/role-b" })).toHaveLength(1);
   });
 
   it("renders the terminal path landing for a matching manifest at learn/paths/careers/interview-ready/solo-role", async () => {

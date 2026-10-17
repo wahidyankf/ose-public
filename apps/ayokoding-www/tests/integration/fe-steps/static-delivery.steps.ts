@@ -33,7 +33,7 @@ describeFeature(
       });
       When("the build output manifest is inspected", async () => {
         manifest = JSON.parse(await fs.readFile(manifestPath, "utf8")) as PrerenderManifestLike;
-        inspection = inspectPrerenderManifest(manifest, "/en/learn/overview");
+        inspection = inspectPrerenderManifest(manifest, "/en/learn/courses/backend-essentials/overview");
       });
       Then("the prerendered route count is at least two thousand", () => {
         expect(inspection.routeCount).toBeGreaterThanOrEqual(MINIMUM_PRERENDERED_ROUTE_COUNT);

@@ -3,9 +3,9 @@ title: "Learn"
 date: 2025-07-07T07:20:00+07:00
 draft: false
 weight: 10
+description: "Follow a path from your first course to a finished project, or pick single courses from the catalog. Every path is split into phases, and each phase says what you can do after it."
 ---
 
-- [Overview](/en/learn/overview)
 - [Paths](/en/learn/paths)
   - [Careers](/en/learn/paths/careers)
   - [Skills](/en/learn/paths/skills)
@@ -43,6 +43,7 @@ weight: 10
   - [Project Management](/en/learn/courses/project-management)
   - [SQL Essentials](/en/learn/courses/sql-essentials)
   - [Backend Essentials](/en/learn/courses/backend-essentials)
+  - [Backend Essentials with Go](/en/learn/courses/backend-essentials-with-go)
   - [Async Python & FastAPI Services](/en/learn/courses/async-python-and-fastapi-services)
   - [Networking Essentials](/en/learn/courses/networking-essentials)
   - [Just Enough TypeScript](/en/learn/courses/just-enough-typescript)

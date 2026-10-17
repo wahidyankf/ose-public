@@ -12,11 +12,17 @@ they are not published learning content.
 
 ## Fixture coverage
 
-| Area              | What the manifests prove                                         |
-| ----------------- | ---------------------------------------------------------------- |
-| `careers/`        | Arc and category landing pages, including one- and two-role arcs |
-| `skills/`         | Path landing bodies with distinct authored content               |
-| Missing arc slugs | The empty state, without a special zero-manifest fixture         |
+- `careers/immediately-effective/` — two roles (`frontend-track` and `backend-track`): each role
+  card shows its own course count, and one course carries the shared multi-path badge.
+- `careers/interview-ready/` — a one-role arc: the full card and syllabus preview, never a sparse
+  second card.
+- `careers/fundamentally-strong/` — a third arc, so the category landing's arc chooser renders one
+  card per arc instead of assuming exactly two.
+- `skills/e2e-fixture-alpha` and `skills/e2e-fixture-beta` — two skills path landing bodies with
+  distinct authored content, so neither path's body leaks onto the other's page.
+- `skills/conventional-accounting` — the one skills path still waiting for its restructure: a single
+  flat all-courses phase with no outcome, which proves the roadmap renders today's one course list.
+- Missing arc slugs — the empty state, without a special zero-manifest fixture.
 
 ## Fixture shape
 
@@ -26,6 +32,12 @@ courses in order). Every core phase carries the outcome
 `{"can": "complete this fixture path"}`. The two `skills/e2e-fixture-*` paths have matching draft
 content pages in `ayokoding-www/content`.
 That is intentional: the tests need real page bodies as well as manifest metadata.
+
+`skills/conventional-accounting.json` is the deliberate exception. It mirrors a path that is still
+waiting for its restructure: one flat `all-courses` core phase, no outcome, no assumed courses, and
+a `restructurePendingIn` marker naming the phase that will fill it. The fixture exists so the
+roadmap's flat-list behaviour stays proved against a real manifest shape rather than a hand-built
+object.
 
 ## When changing a fixture
 

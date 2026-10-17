@@ -7,6 +7,7 @@ import { learnReorgRedirects } from "./src/redirects/learn-reorg";
 import { courseRehomeRedirects } from "./src/redirects/course-rehome";
 import { contentNamespaceRedirects } from "./src/redirects/content-namespace";
 import { learnThreeBucketRedirects } from "./src/redirects/learn-three-bucket";
+import { learnHomeRedirects } from "./src/redirects/learn-home";
 import { localeEntryRedirects } from "./src/redirects/locale-entry";
 import { contentCacheRule, TRPC_RUNTIME_TRACED_ASSETS } from "./src/features/content/core/static-delivery";
 
@@ -71,6 +72,7 @@ const nextConfig: NextConfig = {
       ...contentNamespaceRedirects,
       ...learnReorgRedirects,
       ...courseRehomeRedirects,
+      ...learnHomeRedirects,
       ...learnThreeBucketRedirects,
     ];
   },

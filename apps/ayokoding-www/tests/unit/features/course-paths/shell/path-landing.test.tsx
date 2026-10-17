@@ -12,6 +12,8 @@ vi.mock("next/link", () => ({
 }));
 
 // eslint-disable-next-line import/first
+import type { RoadmapCourseData } from "../../../../../src/features/course-paths/shell/roadmap-course-card";
+// eslint-disable-next-line import/first
 import { PathLanding } from "../../../../../src/features/course-paths/shell/path-landing";
 
 afterEach(cleanup);
@@ -50,10 +52,12 @@ describe("PathLanding (Cycle 3.1 — Screen 2)", () => {
     ];
     expected.forEach(({ position, title }, index) => {
       const rowText = items[index]?.textContent ?? "";
+      // The row now also carries the course's status in words (plan 04 Phase 4), so the position
+      // number and the title are the row's leading text, not its whole text.
       expect(
         rowText,
         `syllabus row ${index + 1} should render its position number "${position}" before the title (rendered: "${rowText}")`,
-      ).toMatch(new RegExp(`^${position}\\s*${title}$`, "u"));
+      ).toMatch(new RegExp(`^${position}\\s*${title}`, "u"));
       // The number sits outside the link (tech-docs §4.2), so the link's accessible name stays
       // exactly the title (WCAG 2.5.3 Label in Name).
       expect(within(items[index]!).getByRole("link", { name: title })).toBeTruthy();
@@ -113,14 +117,17 @@ describe("PathLanding (Cycle 3.1 — Screen 2)", () => {
     expect(bar!.className).not.toContain("hue");
   });
 
-  it("localizes the 'Syllabus' heading on the id locale (DWT-003 fix, phase-5 rule-15 design-tester retest)", () => {
+  it("localizes the roadmap chrome on the id locale (DWT-003 fix, phase-5 rule-15 design-tester retest)", () => {
     render(<PathLanding locale="id" manifest={manifest} courseTitles={courseTitles} />);
 
-    expect(screen.getByRole("heading", { level: 2, name: "Silabus" })).toBeTruthy();
+    // Plan 04 Phase 4 replaced plan 02's "Syllabus" h2 with the roadmap's own headings, which must
+    // localize just as it did: "Jalur inti · n fase" heads the core of this one-core-phase path.
+    expect(screen.getByRole("heading", { level: 2, name: "Jalur inti · 1 fase" })).toBeTruthy();
+    expect(screen.queryByText("Core path")).toBeNull();
   });
 });
 
-describe("PathLanding — phase sections (AC-4.2 RED)", () => {
+describe("PathLanding — the roadmap (plan ayokoding-learn-revamp-04, Phase 4)", () => {
   const phasedManifest: PathManifest = manifestFixture({
     pathId: "careers/fundamentally-strong/generalist-track",
     arc: "fundamentally-strong",
@@ -151,6 +158,22 @@ describe("PathLanding — phase sections (AC-4.2 RED)", () => {
     "just-enough-python": "Just Enough Python",
   };
 
+  const phasedCards: Record<string, RoadmapCourseData> = {
+    "computer-science-foundations": {
+      title: "Computer Science Foundations",
+      format: "annotated-concept",
+      estimatedHours: 4,
+      isOutline: false,
+    },
+    "software-engineering-practices": {
+      title: "Software Engineering Practices",
+      format: "by-example",
+      estimatedHours: 8,
+      isOutline: false,
+    },
+    "capstone-secure-service": { title: "Capstone Secure Service", isOutline: true },
+  };
+
   function renderPhased(locale = "en", extra?: Partial<React.ComponentProps<typeof PathLanding>>) {
     return render(
       <PathLanding
@@ -159,56 +182,63 @@ describe("PathLanding — phase sections (AC-4.2 RED)", () => {
         courseTitles={phasedTitles}
         outlineCourseIds={["capstone-secure-service"]}
         assumedCourseTitles={{ "just-enough-python": "Just Enough Python" }}
+        courseCards={phasedCards}
+        sequences={{
+          "computer-science-foundations": ["learning/beginner"],
+          "software-engineering-practices": ["learning/overview"],
+          "capstone-secure-service": ["learning/beginner"],
+        }}
         {...extra}
       />,
     );
   }
 
-  it("renders one h2 per phase with its title and course count", () => {
+  it("renders the roadmap inside the syllabus nav with its progress card before it", () => {
     renderPhased();
 
-    const coreHeading = screen.getByRole("heading", { level: 2, name: /Fixture core/ });
-    expect(coreHeading.textContent).toContain("Phase 1");
-    expect(coreHeading.textContent).toContain("2 courses");
-    const extensionHeading = screen.getByRole("heading", { level: 2, name: /Fixture extension/ });
-    expect(extensionHeading.textContent).not.toContain("Phase");
-    expect(extensionHeading.textContent).toContain("1 course");
+    // A CTA is not syllabus navigation: the progress card (and its Start/Continue primary)
+    // renders before the nav landmark, in the same visual and tab position as before.
+    const nav = screen.getByRole("navigation", { name: "Generalist Track syllabus" });
+    expect(within(nav).queryByText("Your progress (saved in this browser)")).toBeNull();
+    expect(within(nav).queryByText("0 of 2 core courses done")).toBeNull();
+    expect(screen.getByText("Your progress (saved in this browser)")).toBeTruthy();
+    expect(screen.getByText("0 of 2 core courses done")).toBeTruthy();
+    expect(within(nav).getByRole("heading", { level: 2, name: /Core path · 1 phase/ })).toBeTruthy();
   });
 
-  it("shows the core phase outcome lines", () => {
-    renderPhased();
-
-    expect(screen.getByText("After this phase you can complete this fixture path")).toBeTruthy();
-    expect(screen.getByText("You cannot yet lead a team")).toBeTruthy();
-  });
-
-  it("renders the 'Optional extensions' heading after the last core phase", () => {
+  it("shows each phase as a numbered milestone with its outcome and its own progress", () => {
     const { container } = renderPhased();
 
-    const extensionsHeading = screen.getByRole("heading", { level: 2, name: "Optional extensions" });
-    const coreHeading = screen.getByRole("heading", { level: 2, name: /Fixture core/ });
-    const extensionHeading = screen.getByRole("heading", { level: 2, name: /Fixture extension/ });
-    expect(coreHeading.compareDocumentPosition(extensionsHeading) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
-      Node.DOCUMENT_POSITION_FOLLOWING,
-    );
-    expect(extensionsHeading.compareDocumentPosition(extensionHeading) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
-      Node.DOCUMENT_POSITION_FOLLOWING,
-    );
+    const core = container.querySelector("#phase-fixture-core");
+    expect(core).not.toBeNull();
+    expect(within(core as HTMLElement).getByRole("heading", { level: 3, name: /Phase 1 · Fixture core/ })).toBeTruthy();
+    expect(within(core as HTMLElement).getByText("After this phase you can complete this fixture path")).toBeTruthy();
+    expect(within(core as HTMLElement).getByText("You cannot yet lead a team")).toBeTruthy();
+    expect(within(core as HTMLElement).getByText("0 of 2 done")).toBeTruthy();
+  });
+
+  it("keeps the extension phase closed under the Optional extensions heading", () => {
+    const { container } = renderPhased();
+
+    expect(screen.getByRole("heading", { level: 2, name: "Optional extensions" })).toBeTruthy();
     expect(container.textContent).toContain("Take these after the core");
+    const details = container.querySelector("details");
+    expect(details?.hasAttribute("open")).toBe(false);
+    expect(details?.querySelector("summary")?.textContent).toContain("Fixture extension");
+    expect(details?.querySelector("summary")?.textContent).toContain("1 course");
   });
 
   it("keeps position numbers continuous across the phase boundary", () => {
     const { container } = renderPhased();
 
-    const nav = container.querySelector("nav");
-    const rows = within(nav as HTMLElement).getAllByRole("listitem");
-    // The assumes note lists one assumed course; the phase courses follow it.
-    expect(rows).toHaveLength(4);
-    const positions = rows.slice(1).map((row) => row.textContent?.match(/^\d+/)?.[0]);
-    expect(positions).toEqual(["1", "2", "3"]);
+    const nav = screen.getByRole("navigation", { name: "Generalist Track syllabus" });
+    const rows = within(nav).getAllByRole("listitem");
+    // Two core cards then the extension's card, whose number continues the sequence.
+    expect(rows.map((row) => row.textContent?.match(/^\d+/)?.[0])).toEqual(["1", "2", "3"]);
+    expect(container.querySelector("details ol > li")?.textContent).toMatch(/^3\s*Capstone Secure Service/);
   });
 
-  it("shows the Outline badge only on outline rows", () => {
+  it("shows the Outline badge only on the outline course's card", () => {
     renderPhased();
 
     expect(screen.getAllByText("Outline")).toHaveLength(1);
@@ -216,16 +246,22 @@ describe("PathLanding — phase sections (AC-4.2 RED)", () => {
     expect(outlineRow?.textContent).toContain("Outline");
   });
 
-  it("lists every assumed course with canonical links before the first phase", () => {
-    renderPhased();
+  it("lists every assumed course with canonical links, outside the roadmap's list", () => {
+    const { container } = renderPhased();
 
     expect(screen.getByText("Before you start")).toBeTruthy();
     const link = screen.getByRole("link", { name: "Just Enough Python" });
     expect(link.getAttribute("href")).toBe("/en/learn/courses/just-enough-python");
     const note = screen.getByText("Before you start").closest("div");
-    const firstPhase = screen.getByRole("heading", { level: 2, name: /Fixture core/ });
+    const firstPhase = screen.getByRole("heading", { level: 3, name: /Phase 1 · Fixture core/ });
     expect(note).not.toBeNull();
-    expect(note?.compareDocumentPosition(firstPhase) ?? 0 & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect((note as HTMLElement).compareDocumentPosition(firstPhase) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+    // The assumed course is background, not a member of the path, so it is not a roadmap row.
+    expect(container.querySelector("#phase-fixture-core ol > li")?.textContent).toMatch(
+      /^1\s*Computer Science Foundations/,
+    );
   });
 
   it("omits the 'Before you start' note when assumes is empty", () => {
@@ -251,6 +287,8 @@ describe("PathLanding — phase sections (AC-4.2 RED)", () => {
         courseTitles={phasedTitles}
         outlineCourseIds={[]}
         assumedCourseTitles={{}}
+        courseCards={phasedCards}
+        sequences={{}}
       />,
     );
 
@@ -261,8 +299,8 @@ describe("PathLanding — phase sections (AC-4.2 RED)", () => {
     renderPhased("id");
 
     expect(screen.getByText("Sebelum memulai")).toBeTruthy();
-    expect(screen.getByText("Inti")).toBeTruthy();
-    expect(screen.getByRole("heading", { level: 2, name: /Fixture core/ }).textContent).toContain("Fase 1");
+    expect(screen.getByText("Progres Anda (tersimpan di browser ini)")).toBeTruthy();
+    expect(screen.getByRole("heading", { level: 3, name: /Fase 1 · Fixture core/ })).toBeTruthy();
     expect(screen.getByRole("heading", { level: 2, name: "Pendalaman opsional" })).toBeTruthy();
     expect(screen.getByText("Setelah fase ini Anda bisa complete this fixture path")).toBeTruthy();
     expect(screen.getByText("Anda belum bisa lead a team")).toBeTruthy();
@@ -305,12 +343,11 @@ describe("PathLanding — marked skills path renders today's flat list (AC-4.5 R
 
     const rows = within(container.querySelector("nav") as HTMLElement).getAllByRole("listitem");
     expect(rows).toHaveLength(2);
-    expect(rows[0]?.textContent).toMatch(/^1\s*Just Enough Python$/);
-    expect(rows[1]?.textContent).toMatch(/^2\s*Capstone Secure Service$/);
-    expect(screen.queryByText("Core")).toBeNull();
-    expect(screen.queryByRole("heading", { name: /All courses/ })).toBeNull();
-    expect(screen.queryByText("After this phase you can", { exact: false })).toBeNull();
+    expect(rows[0]?.textContent).toMatch(/^1\s*Just Enough Python/);
+    expect(rows[1]?.textContent).toMatch(/^2\s*Capstone Secure Service/);
+    expect(container.querySelectorAll("h3")).toHaveLength(0);
     expect(screen.queryByText("Optional extensions")).toBeNull();
+    expect(screen.queryByText("After this phase you can", { exact: false })).toBeNull();
     expect(screen.queryByText("Before you start")).toBeNull();
     expect(screen.queryByText("Outline")).toBeNull();
   });

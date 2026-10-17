@@ -1,19 +1,14 @@
-import type { CSSProperties } from "react";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import { Badge, Card, CardDescription, CardHeader, CardTitle } from "@open-sharia-enterprise/web-ui";
-import { cn } from "@/lib/utils";
 import { contentUrl } from "@/features/content/core/content-url";
 import type { Locale } from "@/features/i18n/core/config";
-import { t } from "@/features/i18n/core/translations";
 import type { ContentMeta } from "@/features/content/core/types";
+import type { SequenceIndex } from "@/features/learning-progress/core/progress-derivations";
 import type { PathManifest } from "../core/schemas";
-import { hueCssVars, hueForCareersArc } from "../core/path-hue";
-import { PathCard } from "./path-card";
+import { CareersArcSections, type CareersArcSection } from "./careers-arc-sections";
+import { buildPathCardCourseData, LearnPathCard } from "./learn-path-card";
 import { EmptyPathListState } from "./empty-path-list-state";
 import { RampMilestoneStrip } from "./ramp-milestone-strip";
 import { groupCareersManifestsByArc, skillsManifests, LEARN_PATHS_PREFIX } from "./paths-route";
-import { buildArcTitleIndex, humanizeKebabSlug } from "./course-path-nav";
+import { buildArcTitleIndex, buildCourseTitleIndex, humanizeKebabSlug } from "./course-path-nav";
 
 export type PathCategory = "careers" | "skills";
 
@@ -23,41 +18,53 @@ export interface CategoryLandingProps {
   manifests: readonly PathManifest[];
   /**
    * The loaded content index's `contentMap` — resolves each arc's humanized title from its own
-   * `_index.md` (UWT-001 fix, phase-5 rule-15 retest), rather than rendering the raw arc slug.
-   * Optional/defaulted to an empty map so existing callers/tests unaware of it still render (via
-   * `buildArcTitleIndex`'s own humanized-slug fallback), just without a real authored title.
+   * `_index.md` (UWT-001 fix, phase-5 rule-15 retest), rather than rendering the raw arc slug, and
+   * supplies each card's course titles, formats, and hours. Optional/defaulted to an empty map so
+   * existing callers/tests unaware of it still render (via `buildArcTitleIndex`'s own
+   * humanized-slug fallback), just without real authored copy.
    */
   contentMap?: ReadonlyMap<string, ContentMeta>;
-}
-
-/** The role (last pathId segment) of a `careers/<arc>/<role>` manifest. */
-function roleFromPathId(pathId: string): string {
-  return pathId.split("/").at(-1) ?? pathId;
+  /**
+   * Every course's lesson page paths (`loadLessonPagePaths`), so each path card states real
+   * progress (plan 04 Phase 7, S32). Optional/defaulted to an empty index.
+   */
+  sequences?: SequenceIndex;
 }
 
 /**
- * Category landing (Cycle 3.1b-i/3.1b-ii, R7) — `/en/learn/paths/careers/` and
+ * Category landing (Cycle 3.1b-i/3.1b-ii, R7; plan 04 Phase 7) — `/en/learn/paths/careers/` and
  * `/en/learn/paths/skills/`. **Two distinct instances, not one template with swapped data (R8)**:
- * the careers instance renders an `ArcCard` grid (an arc chooser); the skills instance renders the
- * shared `PathCard` hub grid plus a `RampMilestoneStrip` per card and states the fixed-arc ramp
- * promise once, with no chooser markup present at all.
+ * the careers instance renders `CareersArcSections` — one section per arc, its heading linking to
+ * the arc page, then that arc's `LearnPathCard`s — while the skills instance renders the same
+ * `LearnPathCard` grid with a `RampMilestoneStrip` per card and states the fixed-arc ramp promise
+ * once, with no chooser markup present at all (decision 39).
  */
-export function CategoryLanding({ locale, category, manifests, contentMap = new Map() }: CategoryLandingProps) {
+export function CategoryLanding({
+  locale,
+  category,
+  manifests,
+  contentMap = new Map(),
+  sequences = {},
+}: CategoryLandingProps) {
   if (category === "careers") {
-    return <CareersCategoryLanding locale={locale} manifests={manifests} contentMap={contentMap} />;
+    return (
+      <CareersCategoryLanding locale={locale} manifests={manifests} contentMap={contentMap} sequences={sequences} />
+    );
   }
 
-  return <SkillsCategoryLanding locale={locale} manifests={manifests} />;
+  return <SkillsCategoryLanding locale={locale} manifests={manifests} contentMap={contentMap} sequences={sequences} />;
 }
 
 function CareersCategoryLanding({
   locale,
   manifests,
   contentMap,
+  sequences,
 }: {
   locale: string;
   manifests: readonly PathManifest[];
   contentMap: ReadonlyMap<string, ContentMeta>;
+  sequences: SequenceIndex;
 }) {
   const arcGroups = groupCareersManifestsByArc(manifests);
 
@@ -75,79 +82,36 @@ function CareersCategoryLanding({
     locale,
     arcGroups.map(({ arc }) => arc),
   );
+  const courseTitles = buildCourseTitleIndex(contentMap, locale, manifests);
+  const courseCards = buildPathCardCourseData(contentMap, locale, manifests, courseTitles);
+  const sections: CareersArcSection[] = arcGroups.map(({ arc, manifests: arcManifests }) => ({
+    arc,
+    arcTitle: arcTitles[arc] ?? humanizeKebabSlug(arc),
+    manifests: arcManifests,
+  }));
 
   return (
-    <nav aria-label="Careers arcs">
-      <ul className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {arcGroups.map(({ arc, manifests: arcManifests }) => (
-          <li key={arc}>
-            <ArcCard locale={locale} arc={arc} arcTitle={arcTitles[arc] ?? arc} manifests={arcManifests} />
-          </li>
-        ))}
-      </ul>
-    </nav>
+    <CareersArcSections
+      locale={locale}
+      sections={sections}
+      courseTitles={courseTitles}
+      courseCards={courseCards}
+      sequences={sequences}
+    />
   );
 }
 
-function ArcCard({
+function SkillsCategoryLanding({
   locale,
-  arc,
-  arcTitle,
   manifests,
+  contentMap,
+  sequences,
 }: {
   locale: string;
-  arc: string;
-  /** The arc's humanized/authored display title (UWT-001 fix) — never the raw `arc` slug. */
-  arcTitle: string;
-  manifests: PathManifest[];
+  manifests: readonly PathManifest[];
+  contentMap: ReadonlyMap<string, ContentMeta>;
+  sequences: SequenceIndex;
 }) {
-  const href = contentUrl(locale as Locale, `${LEARN_PATHS_PREFIX}/careers/${arc}`);
-  const roleNames = manifests.map((manifest) => humanizeKebabSlug(roleFromPathId(manifest.pathId)));
-  // DWT-001 fix (phase-5 rule-15 design-tester retest): the committed category-landing mockup
-  // (`../assets/category-landing-option-a-desktop.png`, Selected) shows each `ArcCard` in its arc's
-  // hue — the shipped card already carried the `border-l-4` width class but never a colour, so the
-  // "wider stripe" rendered in the same neutral border colour as the other three edges.
-  const hue = hueForCareersArc(arc);
-  const hueStyle = hue ? (hueCssVars(hue) as CSSProperties) : undefined;
-
-  return (
-    <Link
-      href={href}
-      aria-label={`Explore the ${arcTitle} arc — ${roleNames.join(", ")}`}
-      className="group block focus-visible:outline-none"
-    >
-      <Card
-        style={hueStyle}
-        className={cn(
-          "h-full rounded-xl border-l-4 transition-colors group-focus-visible:ring-2 group-focus-visible:ring-ring hover:bg-accent hover:shadow-md",
-          hue && "border-l-[var(--hue-current)]",
-        )}
-      >
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold">{arcTitle}</CardTitle>
-          <CardDescription className="text-sm text-muted-foreground">
-            {t(locale as Locale, "pathsExploreArcRoles")}
-          </CardDescription>
-          <ul className="mt-2 flex flex-wrap gap-1">
-            {roleNames.map((name) => (
-              <li key={name}>
-                <Badge variant="secondary" size="sm">
-                  {name}
-                </Badge>
-              </li>
-            ))}
-          </ul>
-          <span className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-primary">
-            {t(locale as Locale, "pathsExploreArc")}
-            <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-          </span>
-        </CardHeader>
-      </Card>
-    </Link>
-  );
-}
-
-function SkillsCategoryLanding({ locale, manifests }: { locale: string; manifests: readonly PathManifest[] }) {
   const skills = skillsManifests(manifests);
 
   if (skills.length === 0) {
@@ -159,6 +123,9 @@ function SkillsCategoryLanding({ locale, manifests }: { locale: string; manifest
     );
   }
 
+  const courseTitles = buildCourseTitleIndex(contentMap, locale, manifests);
+  const courseCards = buildPathCardCourseData(contentMap, locale, manifests, courseTitles);
+
   return (
     <>
       <p className="mt-2 text-muted-foreground">
@@ -169,7 +136,13 @@ function SkillsCategoryLanding({ locale, manifests }: { locale: string; manifest
         <ul className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
           {skills.map((manifest) => (
             <li key={manifest.pathId}>
-              <PathCard locale={locale} manifest={manifest} context="hub" showCourseCount={false} />
+              <LearnPathCard
+                locale={locale}
+                manifest={manifest}
+                courseTitles={courseTitles}
+                courseCards={courseCards}
+                sequences={sequences}
+              />
               <RampMilestoneStrip />
             </li>
           ))}

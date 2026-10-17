@@ -17,6 +17,5 @@ estimatedHours: 19
   - [Intermediate Examples](/en/learn/courses/backend-essentials-with-go/learning/intermediate)
   - [Advanced Examples](/en/learn/courses/backend-essentials-with-go/learning/advanced)
   - [Capstone](/en/learn/courses/backend-essentials-with-go/learning/capstone)
-    - [Overview](/en/learn/courses/backend-essentials-with-go/learning/capstone/overview)
 - [Drilling](/en/learn/courses/backend-essentials-with-go/drilling)
   - [Overview](/en/learn/courses/backend-essentials-with-go/drilling/overview)

@@ -1,6 +1,6 @@
 import type { Locale } from "./config";
 
-const translations: Record<Locale, Record<string, string>> = {
+export const translations: Record<Locale, Record<string, string>> = {
   en: {
     readMore: "Read More",
     lastUpdated: "Last updated",
@@ -446,6 +446,80 @@ const translations: Record<Locale, Record<string, string>> = {
     pathsCourseCountOne: "1 course",
     pathsCourseCountOther: "{count} courses",
     pathsViewPathLabel: "View path: Open path course list — {pathTitle}, course {courseIndex} of {totalCourses}",
+
+    // Learning progress — status, progress, and storage copy (plan
+    // ayokoding-learn-revamp-04-learning-experience, Phase 2). Every key in this block MUST exist
+    // in both locales, like the paths* keys above.
+    statusDone: "Done",
+    statusInProgress: "In progress",
+    statusNotStarted: "Not started",
+    progressSavedInBrowser: "Saved in this browser",
+    progressYourProgress: "Your progress (saved in this browser)",
+    progressCoreCoursesDone: "{done} of {total} core courses done",
+    progressCoursesDone: "{done} of {total} courses done",
+    progressCoreComplete: "Core path complete. The optional extensions are below.",
+    progressPhaseDone: "{done} of {total} done",
+    progressPagesDone: "{done} of {total} pages done",
+    progressStorageUnavailable: "Progress can't be saved in this browser. It lasts until you close this tab.",
+
+    // Learning progress — lesson context bar and action row (plan
+    // ayokoding-learn-revamp-04-learning-experience, Phase 3). Every key in this block MUST exist
+    // in both locales, like the progress keys above.
+    contextBarLabel: "Lesson location",
+    contextCourseOf: "Course {position} of {total}",
+    contextPageOf: "Page {position} of {total}",
+    lessonPrevious: "Previous: {title}",
+    lessonMarkComplete: "Mark as complete",
+    lessonCompleted: "Completed",
+    lessonMarkCompleteContinue: "Mark complete & continue",
+    lessonContinue: "Continue",
+    lessonNextPage: "Next: {title}",
+    lessonNextCourse: "Next course: {title}",
+    lessonBackToPath: "Back to the path",
+    lessonBackToCourse: "Back to the course",
+    lessonAnnounceComplete: "{title} marked as complete. {done} of {total} pages done.",
+    lessonAnnounceIncomplete: "{title} marked as not complete. {done} of {total} pages done.",
+
+    // Path roadmap — Screen 1 option A copy (plan ayokoding-learn-revamp-04-learning-experience,
+    // Phase 4). Every key in this block MUST exist in both locales, like the blocks above.
+    roadmapStart: "Start: {title}",
+    roadmapContinue: "Continue: {title}",
+    roadmapCoreHeading: "Core path · {count} phases",
+    roadmapCoreHeadingOne: "Core path · 1 phase",
+    roadmapCoursesCount: "{count} courses",
+    roadmapHoursPlusOutline: "plus {count} outline courses",
+    roadmapGoal: "Goal:",
+
+    // Course landing header — progress summary and primary action (plan
+    // ayokoding-learn-revamp-04-learning-experience, Phase 5). Every key in this block MUST exist
+    // in both locales, like the blocks above. `courseStart` is plan 03's key, reused here.
+    courseContinueCourse: "Continue course: {title}",
+    courseReviewCourse: "Review course",
+
+    // Learn home — Screen 3 option A copy (plan ayokoding-learn-revamp-04-learning-experience,
+    // Phase 6). Every key in this block MUST exist in both locales, like the blocks above.
+    homeContinueLearning: "Continue learning",
+    homeFinishedCore: "You finished the core of {title}.",
+    homeStartLearning: "Start learning",
+    homeStartHint: "Pick a path below, or browse all courses.",
+    homeChoosePath: "Choose a path",
+    homeCareerPaths: "Career paths",
+    homeSkillPaths: "Skill paths",
+    homeBrowseAll: "Browse all courses",
+    homeOpenCatalog: "Open catalog",
+    homePrivacyNote: "Your progress is saved in this browser only. It is never sent anywhere.",
+    homeLegacyPrompt: "Looking for older material?",
+    homeViewPath: "View path",
+    pathCardPhases: "{count} core phases",
+    pathCardPhasesOne: "1 core phase",
+    pathCardOptional: "{count} optional",
+    pathCardOptionalOne: "1 optional",
+    resetButton: "Reset progress…",
+    resetDialogTitle: "Reset all progress?",
+    resetDialogBody: "This clears every completed page in this browser. It cannot be undone.",
+    resetCancel: "Cancel",
+    resetConfirm: "Reset progress",
+    resetDone: "Progress reset.",
 
     // Resizable docs sidebar — drag/keyboard handle accessible name
     resizableSidebarHandleLabel: "Resize panel",
@@ -900,6 +974,79 @@ const translations: Record<Locale, Record<string, string>> = {
     pathsCourseCountOne: "1 kursus",
     pathsCourseCountOther: "{count} kursus",
     pathsViewPathLabel: "Lihat jalur: Buka daftar kursus — {pathTitle}, kursus {courseIndex} dari {totalCourses}",
+
+    // Learning progress — status, progress, and storage copy (plan
+    // ayokoding-learn-revamp-04-learning-experience, Phase 2). See the en block.
+    statusDone: "Selesai",
+    statusInProgress: "Sedang berjalan",
+    statusNotStarted: "Belum dimulai",
+    progressSavedInBrowser: "Tersimpan di browser ini",
+    progressYourProgress: "Progres Anda (tersimpan di browser ini)",
+    progressCoreCoursesDone: "{done} dari {total} kursus inti selesai",
+    progressCoursesDone: "{done} dari {total} kursus selesai",
+    progressCoreComplete: "Jalur inti selesai. Pendalaman opsional ada di bawah.",
+    progressPhaseDone: "{done} dari {total} selesai",
+    progressPagesDone: "{done} dari {total} halaman selesai",
+    progressStorageUnavailable:
+      "Progres tidak bisa disimpan di browser ini. Progres hanya bertahan sampai tab ini ditutup.",
+
+    // Learning progress — lesson context bar and action row (plan
+    // ayokoding-learn-revamp-04-learning-experience, Phase 3). See the en block.
+    contextBarLabel: "Lokasi pelajaran",
+    contextCourseOf: "Kursus {position} dari {total}",
+    contextPageOf: "Halaman {position} dari {total}",
+    lessonPrevious: "Sebelumnya: {title}",
+    lessonMarkComplete: "Tandai selesai",
+    lessonCompleted: "Sudah selesai",
+    lessonMarkCompleteContinue: "Tandai selesai & lanjutkan",
+    lessonContinue: "Lanjutkan",
+    lessonNextPage: "Berikutnya: {title}",
+    lessonNextCourse: "Kursus berikutnya: {title}",
+    lessonBackToPath: "Kembali ke jalur",
+    lessonBackToCourse: "Kembali ke kursus",
+    lessonAnnounceComplete: "{title} ditandai selesai. {done} dari {total} halaman selesai.",
+    lessonAnnounceIncomplete: "{title} ditandai belum selesai. {done} dari {total} halaman selesai.",
+
+    // Path roadmap — Screen 1 option A copy (plan ayokoding-learn-revamp-04-learning-experience,
+    // Phase 4). See the en block.
+    roadmapStart: "Mulai: {title}",
+    roadmapContinue: "Lanjutkan: {title}",
+    roadmapCoreHeading: "Jalur inti · {count} fase",
+    roadmapCoreHeadingOne: "Jalur inti · 1 fase",
+    roadmapCoursesCount: "{count} kursus",
+    roadmapHoursPlusOutline: "ditambah {count} kursus kerangka",
+    roadmapGoal: "Tujuan:",
+
+    // Course landing header — progress summary and primary action (plan
+    // ayokoding-learn-revamp-04-learning-experience, Phase 5). See the en block.
+    courseContinueCourse: "Lanjutkan kursus: {title}",
+    courseReviewCourse: "Ulas kursus",
+
+    // Learn home — Screen 3 option A copy (plan ayokoding-learn-revamp-04-learning-experience,
+    // Phase 6). See the en block.
+    homeContinueLearning: "Lanjutkan belajar",
+    homeFinishedCore: "Anda telah menyelesaikan inti {title}.",
+    homeStartLearning: "Mulai belajar",
+    homeStartHint: "Pilih jalur di bawah, atau jelajahi semua kursus.",
+    homeChoosePath: "Pilih jalur",
+    homeCareerPaths: "Jalur karier",
+    homeSkillPaths: "Jalur keterampilan",
+    homeBrowseAll: "Jelajahi semua kursus",
+    homeOpenCatalog: "Buka katalog",
+    homePrivacyNote: "Progres Anda hanya tersimpan di browser ini dan tidak pernah dikirim ke mana pun.",
+    homeLegacyPrompt: "Mencari materi lama?",
+    homeViewPath: "Lihat jalur",
+    pathCardPhases: "{count} fase inti",
+    pathCardPhasesOne: "1 fase inti",
+    pathCardOptional: "{count} opsional",
+    pathCardOptionalOne: "1 opsional",
+    resetButton: "Atur ulang progres…",
+    resetDialogTitle: "Atur ulang semua progres?",
+    resetDialogBody:
+      "Ini menghapus semua halaman yang sudah selesai di browser ini. Tindakan ini tidak bisa dibatalkan.",
+    resetCancel: "Batal",
+    resetConfirm: "Atur ulang progres",
+    resetDone: "Progres diatur ulang.",
 
     // Resizable docs sidebar — drag/keyboard handle accessible name
     resizableSidebarHandleLabel: "Ubah ukuran panel",

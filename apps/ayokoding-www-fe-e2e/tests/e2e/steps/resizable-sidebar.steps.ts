@@ -4,12 +4,12 @@ import { expect, type Page } from "@playwright/test";
 const { Given, When, Then } = createBdd();
 
 /**
- * A real docs page that renders both the desktop resizable rail
+ * A real content page that renders both the desktop resizable rail
  * (`ResizableSidebar`, `apps/ayokoding-www/src/features/navigation/shell/resizable-sidebar.tsx`)
- * and — via `Header` — the mobile drawer trigger. Matches the target already used by
- * `navigation.steps.ts`.
+ * and — via `Header` — the mobile drawer trigger. It is the stable course-root page the U6 ledger
+ * names, since `/en/learn/overview` was retired in favour of the Learn home.
  */
-const DOCS_PAGE = "/en/learn/overview";
+const DOCS_PAGE = "/en/learn/courses/backend-essentials/overview";
 
 /** `localStorage` key `ResizableSidebar` persists the desktop rail's chosen width under. */
 const SIDEBAR_STORAGE_KEY = "ayokoding-sidebar-width";
@@ -67,9 +67,7 @@ const SCROLL_CONTAINER_SELECTOR = `aside:has(${PANEL_SELECTOR}) .overflow-x-auto
  * The courses index — a stable (not subject to this plan's learn-section relocation, DD-42)
  * page whose sidebar shows all 37 course titles at once, several long enough (e.g. "21 ·
  * Object-Oriented Design & Patterns") to force horizontal scroll, and numerous enough to force
- * vertical scroll even at a full-height viewport — unlike `DOCS_PAGE` (`/en/learn/overview`),
- * whose own sidebar now shows only the three top-level learn buckets (DD-40) plus itself, too
- * short/narrow for these two overflow scenarios after the six-domain relocation (DD-41/DD-42).
+ * vertical scroll even at a full-height viewport, which is what these two overflow scenarios need.
  */
 const TALL_WIDE_SIDEBAR_PAGE = "/en/learn/courses";
 
@@ -120,9 +118,8 @@ Given("a docs sidebar whose nav tree is taller than the visible rail height", as
   // Rather than fabricating tall content, shrink the viewport height enough that a real page's
   // nav tree exceeds the rail's `h-[calc(100vh-4rem)]` height — mirroring the "narrowed to N
   // pixels" technique above, which shrinks width instead for the horizontal scenario. Uses
-  // `TALL_WIDE_SIDEBAR_PAGE` (the courses index, 37 titles) rather than `DOCS_PAGE`: after the
-  // six-domain relocation (DD-40/DD-41) the `/en/learn/overview` sidebar shows only the three
-  // top-level learn buckets plus itself, too short to overflow the rail even at a 300px viewport.
+  // `TALL_WIDE_SIDEBAR_PAGE` (the courses index, 37 titles), the tallest sidebar the fixture
+  // content offers, so the tree overflows the rail even at a 300px viewport.
   await page.setViewportSize({ width: 1280, height: 300 });
   await page.goto(TALL_WIDE_SIDEBAR_PAGE);
 });

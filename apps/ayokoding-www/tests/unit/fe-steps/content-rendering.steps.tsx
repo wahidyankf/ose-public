@@ -221,7 +221,14 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
 
     And("the raw Mermaid source should not be visible to the visitor", async () => {
-      await waitFor(() => expect(document.querySelector("pre code")).toBeNull());
+      // The source block is the diagram's own reserved size (S8: the lesson's progress controls
+      // below it must not move when the diagram appears), so it stays in the document and is taken
+      // out of the visitor's view with `visibility: hidden` — `invisible` is that token. The browser
+      // tier proves the computed visibility over a real page; here the reserved block must be
+      // present, still carry the source, and be hidden.
+      await waitFor(() => expect(document.querySelector("pre")).toHaveClass("invisible"));
+      expect(document.querySelector("pre")?.textContent).toContain("graph TD");
+      expect(document.querySelector("svg[role='img']")).toBeTruthy();
     });
   });
 

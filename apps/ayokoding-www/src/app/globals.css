@@ -4,6 +4,12 @@
 @source "../../../../libs/web-ui/src/**/*.{ts,tsx}";
 /* Exclude markdown content files — prose text is not Tailwind utility source */
 @source not "../../content/**";
+/* UIW-001: the shared Button primitive's keyboard focus ring (WCAG 2.4.7) must never depend on
+   cross-package content-scan coverage alone — pin its three utilities explicitly so a scan
+   regression can never silently drop the visible focus indicator (axe does not catch this). */
+@source inline("focus-visible:border-ring");
+@source inline("focus-visible:ring-[3px]");
+@source inline("focus-visible:ring-ring/50");
 @plugin "@tailwindcss/typography";
 
 @import "@open-sharia-enterprise/web-ui-token/src/tokens.css";

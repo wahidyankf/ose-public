@@ -57,7 +57,7 @@ describeFeature(feature, ({ Scenario }) => {
 
     Then('a "Before you start" note appears before the first phase', () => {
       const note = screen.getByText("Before you start").closest("div");
-      const firstPhase = screen.getByRole("heading", { level: 2, name: /Phase A/ });
+      const firstPhase = screen.getByRole("heading", { level: 3, name: /Phase A/ });
       expect(note).not.toBeNull();
       expect((note as HTMLElement).compareDocumentPosition(firstPhase) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
         Node.DOCUMENT_POSITION_FOLLOWING,

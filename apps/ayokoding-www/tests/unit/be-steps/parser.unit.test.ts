@@ -39,6 +39,69 @@ describe("parseMarkdown", () => {
     expect(headings[2]).toMatchObject({ text: "Heading Four", level: 4 });
   });
 
+  it("maps the first body heading level to h2 so the body never skips a level (UIW-004)", async () => {
+    const md = "### Section One\n#### Detail\n### Section Two";
+    const { html, headings } = await parseMarkdown(md);
+
+    expect(html).toContain("<h2");
+    // The nested `#### Detail` shifts with its parent (h2 > h3: no skip).
+    expect(html).toContain("<h3");
+    expect(html).not.toContain("<h4");
+    expect(headings).toMatchObject([
+      { text: "Section One", level: 2 },
+      { text: "Detail", level: 3 },
+      { text: "Section Two", level: 2 },
+    ]);
+  });
+
+  it("leaves a body that already starts at h2 untouched", async () => {
+    const md = "## Top\n### Sub";
+    const { html, headings } = await parseMarkdown(md);
+
+    expect(html).toContain("<h2");
+    expect(html).toContain("<h3");
+    expect(headings).toMatchObject([
+      { text: "Top", level: 2 },
+      { text: "Sub", level: 3 },
+    ]);
+  });
+
+  it("demotes a leading body h1 to h2 so the page title keeps the only h1 (EWT-002)", async () => {
+    const md = "# Beginner Elixir\n\nRun every source file.\n\n## Example 01\n\n## Example 02";
+    const { html, headings } = await parseMarkdown(md);
+
+    expect(html).not.toContain("<h1");
+    // Shifted by the same delta (+1), so nesting is preserved: h1 → h2, h2 → h3.
+    expect(headings).toMatchObject([
+      { text: "Beginner Elixir", level: 2 },
+      { text: "Example 01", level: 3 },
+      { text: "Example 02", level: 3 },
+    ]);
+  });
+
+  it("shifts from the first body heading when a trailing h2 follows h3 sections (EWT-003)", async () => {
+    const md = "### Example 1\n\n### Example 2\n\n## References";
+    const { html, headings } = await parseMarkdown(md);
+
+    expect(html).not.toContain("<h3");
+    expect(html).not.toContain("<h1");
+    expect(headings).toMatchObject([
+      { text: "Example 1", level: 2 },
+      { text: "Example 2", level: 2 },
+      { text: "References", level: 2 },
+    ]);
+  });
+
+  it("clamps shifted levels at h6 instead of producing h7+", async () => {
+    const md = "# Title\n\n###### Deep";
+    const { html } = await parseMarkdown(md);
+
+    expect(html).not.toContain("<h1");
+    expect(html).toContain("<h2");
+    expect(html).toContain("<h6");
+    expect(html).not.toMatch(/<h[7-9]/);
+  });
+
   it("adds id attributes to headings via rehype-slug", async () => {
     const md = "## Getting Started";
     const { html } = await parseMarkdown(md);
@@ -158,6 +221,23 @@ describe("parseMarkdown", () => {
       const { html } = await parseMarkdown(md, { locale: "en", slug: sectionSlug, isSection: false });
 
       expect(html).toContain('href="/en/learn/fundamentally-strong/software-engineer/sibling"');
+    });
+  });
+
+  describe("lesson heading outline over the real corpus (EWT-002/EWT-003)", () => {
+    // Corpus sweep body lives in ./corpus-outline-sweep (sharded across
+    // corpus-outline-sweep-0..3.test.ts for CI parallelism); raw <h1-6> outside
+    // fences is absent corpus-wide, transformShortcodes emits no headings, and
+    // math/GFM/slug/autolink never change heading levels — so the mdast depths
+    // the helper collects are exactly the pre-normalization levels the
+    // production pipeline sees, checked through the REAL normalizeHeadingLevels.
+    it("demotes raw HTML headings through the full pipeline (hast-level raw handling)", async () => {
+      const md = "<h1>Raw title</h1>\n\n## Markdown section";
+      const { html } = await parseMarkdown(md);
+
+      expect(html).not.toContain("<h1");
+      expect(html).toContain("<h2");
+      expect(html).toContain("<h3");
     });
   });
 });

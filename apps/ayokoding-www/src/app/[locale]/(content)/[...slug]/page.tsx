@@ -15,10 +15,16 @@ import {
   buildCourseTitleIndex,
   buildArcTitleIndex,
   pageLinkForCourseId,
+  slugForCourseId,
   humanizeKebabSlug,
+  EMPTY_COURSE_PATH_CLIENT_DATA,
 } from "@/features/course-paths/shell/course-path-nav";
+import { normalizeCourseRef } from "@/features/course-paths/core/manifest";
+import { courseLocationFromSlug } from "@/features/learning-progress/core/course-location";
+import { loadLessonSequence, loadLessonPagePaths } from "@/features/learning-progress/shell/lesson-sequences";
+import type { LessonProps } from "@/features/learning-progress/shell/lesson-context-provider";
 import { loadRoutePathData } from "@/features/course-paths/shell/route-path-data";
-import { CoursePageContent } from "@/features/course-paths/shell/course-page-content";
+import { CoursePageContent, type CoursePageContentProps } from "@/features/course-paths/shell/course-page-content";
 import { CoursePagePathContent } from "@/features/course-paths/shell/course-page-path-content";
 import {
   isLearnPathsSlug,
@@ -28,15 +34,25 @@ import {
   manifestsForArc,
   LEARN_PATHS_PREFIX,
 } from "@/features/course-paths/shell/paths-route";
-import { PathCard, CategorySection, ArcGroup } from "@/features/course-paths/shell/path-card";
+import { CategorySection, ArcGroup } from "@/features/course-paths/shell/path-card";
+import { buildPathCardCourseData, LearnPathCard } from "@/features/course-paths/shell/learn-path-card";
 import { COURSE_CATALOG_SLUG, courseRootIdFromSlug } from "@/features/course-paths/shell/course-path-nav";
 import { buildCourseCatalog } from "@/features/course-paths/core/course-catalog";
 import { CourseCatalog } from "@/features/course-paths/shell/course-catalog";
-import { buildCourseHeaderData } from "@/features/course-paths/shell/course-header-data";
+import { buildCourseHeaderData, type CourseHeaderData } from "@/features/course-paths/shell/course-header-data";
 import { CategoryLanding } from "@/features/course-paths/shell/category-landing";
 import { ArcLanding } from "@/features/course-paths/shell/arc-landing";
 import { PathLanding } from "@/features/course-paths/shell/path-landing";
+import type { RoadmapCourseData } from "@/features/course-paths/shell/roadmap-course-card";
 import { EmptyPathListState } from "@/features/course-paths/shell/empty-path-list-state";
+import { LearnHome } from "@/features/learning-progress/shell/learn-home";
+
+/**
+ * The content slug the Learn home answers at (plan ayokoding-learn-revamp-04, tech-docs/001
+ * Route Dispatch Changes). Distinct from the `learn/courses` and `learn/paths` namespaces: it
+ * is the bare section root.
+ */
+const LEARN_HOME_SLUG = "learn";
 
 /**
  * Course-path landing pages may use deployment-provided manifests, so their
@@ -70,6 +86,9 @@ export async function generateStaticParams({ params }: { params: { locale: strin
     if (!key.startsWith(`${params.locale}:`)) continue;
     if (meta.slug === "") continue;
     if (isLearnPathsSlug(meta.slug)) continue;
+    // The Learn home reads the same runtime manifests the paths routes do, so it renders on
+    // demand rather than at build time (tech-docs/001 Route Dispatch Changes step 1).
+    if (meta.slug === LEARN_HOME_SLUG) continue;
     slugs.push({ slug: meta.slug.split("/") });
   }
 
@@ -171,6 +190,13 @@ async function renderPathsRoute(locale: string, slugStr: string) {
 
   const courseTitles = buildCourseTitleIndex(pathData.contentMap, locale, pathData.manifests);
 
+  // Plan 04 Phase 7: every path hub (the paths hub, the careers landing, a careers arc page, and
+  // the skills landing) renders the same `LearnPathCard` the Learn home renders, so it is built
+  // from the same two server-side pieces — the per-course card metadata and the locale's lesson
+  // page paths (`loadLessonPagePaths`), which is memoized per locale.
+  const sequences = await loadLessonPagePaths(locale);
+  const courseCards = buildPathCardCourseData(pathData.contentMap, locale, pathData.manifests, courseTitles);
+
   // Best-effort SEO/body content from this route's own `_index.md`, when one exists — every
   // careers `_index.md` (hub/category/arc roots) already exists; a terminal path's `_index.md` may
   // not (Cycle 3.1d's careers no-regression clause: silent no-op when absent).
@@ -211,7 +237,13 @@ async function renderPathsRoute(locale: string, slugStr: string) {
               <ArcGroup key={arc} arc={arc} arcTitle={arcTitles[arc]}>
                 {arcManifests.map((manifest) => (
                   <li key={manifest.pathId}>
-                    <PathCard locale={locale} manifest={manifest} context="hub" />
+                    <LearnPathCard
+                      locale={locale}
+                      manifest={manifest}
+                      courseTitles={courseTitles}
+                      courseCards={courseCards}
+                      sequences={sequences}
+                    />
                   </li>
                 ))}
               </ArcGroup>
@@ -229,7 +261,13 @@ async function renderPathsRoute(locale: string, slugStr: string) {
             <ul className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
               {skills.map((manifest) => (
                 <li key={manifest.pathId}>
-                  <PathCard locale={locale} manifest={manifest} context="hub" showCourseCount={false} />
+                  <LearnPathCard
+                    locale={locale}
+                    manifest={manifest}
+                    courseTitles={courseTitles}
+                    courseCards={courseCards}
+                    sequences={sequences}
+                  />
                 </li>
               ))}
             </ul>
@@ -258,6 +296,7 @@ async function renderPathsRoute(locale: string, slugStr: string) {
           category={resolution.category}
           manifests={pathData.manifests}
           contentMap={pathData.contentMap}
+          sequences={sequences}
         />
       </section>
     );
@@ -279,7 +318,14 @@ async function renderPathsRoute(locale: string, slugStr: string) {
       <section className="mx-auto max-w-6xl flex-1 px-6 py-8 lg:px-8">
         <h1 className="text-4xl font-extrabold tracking-tight">{seoPage?.title ?? resolution.arc}</h1>
         <p className="mt-2 text-muted-foreground">{seoPage?.description ?? ""}</p>
-        <ArcLanding locale={locale} arc={resolution.arc} manifests={arcManifests} courseTitles={courseTitles} />
+        <ArcLanding
+          locale={locale}
+          arc={resolution.arc}
+          manifests={arcManifests}
+          courseTitles={courseTitles}
+          courseCards={courseCards}
+          sequences={sequences}
+        />
       </section>
     );
   }
@@ -294,6 +340,21 @@ async function renderPathsRoute(locale: string, slugStr: string) {
     assumedCourseTitles[courseId] = link ? link.title : humanizeKebabSlug(courseId);
   }
 
+  // The roadmap's per-course card data, built here (plan 04 Phase 4) — the lesson page paths it
+  // also reads are the `sequences` loaded once above for every paths route.
+  const roadmapCourseCards: Record<string, RoadmapCourseData> = {};
+  for (const reference of resolution.manifest.courseOrder) {
+    const courseId = normalizeCourseRef(reference).id;
+    const meta = pathData.contentMap.get(`${locale}:${slugForCourseId(courseId)}`);
+
+    roadmapCourseCards[courseId] = {
+      title: courseTitles[courseId] ?? courseId,
+      ...(meta?.format === undefined ? {} : { format: meta.format }),
+      ...(meta?.estimatedHours === undefined ? {} : { estimatedHours: meta.estimatedHours }),
+      isOutline: pathData.outlineCourseIds.includes(courseId),
+    };
+  }
+
   return (
     <PathLanding
       locale={locale}
@@ -302,6 +363,8 @@ async function renderPathsRoute(locale: string, slugStr: string) {
       bodyHtml={seoPage?.html}
       outlineCourseIds={pathData.outlineCourseIds}
       assumedCourseTitles={assumedCourseTitles}
+      courseCards={roadmapCourseCards}
+      sequences={sequences}
     />
   );
 }
@@ -318,6 +381,15 @@ export default async function ContentPage({ params }: Props) {
     const rendered = await renderPathsRoute(locale, slugStr);
     if (rendered !== null) {
       return rendered;
+    }
+  }
+
+  // The Learn home (plan 04 Phase 6, tech-docs/001 Route Dispatch Changes step 2): English only,
+  // and only for the bare `learn` slug — `/id/learn` keeps its current 404.
+  if (locale === "en" && slugStr === LEARN_HOME_SLUG) {
+    const home = await renderLearnHome(locale);
+    if (home !== null) {
+      return home;
     }
   }
 
@@ -393,12 +465,25 @@ export default async function ContentPage({ params }: Props) {
   // Course root pages (plan 03) get the header; pages inside a course do not. The tree is
   // rebuilt from the already-loaded content metas — no extra fetch for the header.
   const rootId = courseRootIdFromSlug(slugStr);
-  let courseHeader = undefined;
+  let courseHeader: CourseHeaderData | undefined;
+  let courseHeaderProgress: CoursePageContentProps["courseHeaderProgress"];
+  let courseHeaderAction: CoursePageContentProps["courseHeaderAction"];
   if (rootId !== null) {
     const { buildTrees } = await import("@/features/content/core/tree-builder");
     const trees = buildTrees([...pathData.contentMap.values()]);
-    courseHeader = buildCourseHeaderData(pathData.contentMap, trees[locale] ?? [], rootId, locale) ?? undefined;
+    const header = buildCourseHeaderData(pathData.contentMap, trees[locale] ?? [], rootId, locale);
+    if (header !== null) {
+      courseHeader = header;
+      // Plan 04 Phase 5: the course landing header's own progress and action slots (S33, S34). The
+      // lesson sequence is the same one the lesson pages read, so "where I stopped" and "how much
+      // is done" mean one thing across the course.
+      const sequence = await loadLessonSequence(locale, rootId);
+      courseHeaderProgress = { courseId: rootId, sequence: sequence.map((entry) => entry.pagePath) };
+      courseHeaderAction = { courseId: rootId, sequence, startSlug: header.startSlug };
+    }
   }
+
+  const lesson = await buildLessonProps(locale, slugStr, pathData);
 
   return (
     <Suspense
@@ -408,6 +493,9 @@ export default async function ContentPage({ params }: Props) {
           courseId={courseId}
           renderData={canonicalCourseRenderData}
           courseHeader={courseHeader}
+          courseHeaderProgress={courseHeaderProgress}
+          courseHeaderAction={courseHeaderAction}
+          lesson={lesson}
         />
       }
     >
@@ -415,12 +503,85 @@ export default async function ContentPage({ params }: Props) {
         {...contentProps}
         courseId={courseId}
         courseHeader={courseHeader}
+        courseHeaderProgress={courseHeaderProgress}
+        courseHeaderAction={courseHeaderAction}
         canonicalRenderData={canonicalCourseRenderData}
         fallbackPrev={page.prev}
         fallbackNext={page.next}
+        lesson={lesson}
       />
     </Suspense>
   );
+}
+
+/**
+ * The Learn home's own render (plan ayokoding-learn-revamp-04, Phase 6): the reader-facing landing
+ * page at `/en/learn`, built from the already-loaded manifests, the content index, and the lesson
+ * page paths. `null` when the section has no index page, so the caller falls through to the
+ * standard render — which 404s for a genuinely missing page.
+ */
+async function renderLearnHome(locale: string) {
+  let page;
+  try {
+    page = await serverCaller.content.getBySlug({ locale: locale as Locale, slug: LEARN_HOME_SLUG });
+  } catch (err) {
+    if (err instanceof TRPCError && err.code === "NOT_FOUND") {
+      return null;
+    }
+    throw err;
+  }
+
+  const pathData = await loadRoutePathData(locale);
+  const sequences = await loadLessonPagePaths(locale);
+  const catalog = buildCourseCatalog(pathData.contentMap, pathData.manifests, locale);
+
+  return (
+    <LearnHome
+      locale={locale}
+      title={page.title}
+      description={page.description ?? ""}
+      manifests={pathData.manifests}
+      contentMap={pathData.contentMap}
+      sequences={sequences}
+      catalogCounts={{
+        courses: catalog.reduce((total, group) => total + group.entries.length, 0),
+        categories: catalog.length,
+      }}
+    />
+  );
+}
+
+/**
+ * The lesson chrome (plan 04, tech-docs/001 route dispatch step 3): a `lesson` prop only when this
+ * page is one of its course's lesson-sequence pages. Every other page — the course root, the
+ * course-root `overview` where it is not the start page, and artifact pages — keeps today's render.
+ */
+async function buildLessonProps(
+  locale: string,
+  slugStr: string,
+  pathData: Awaited<ReturnType<typeof loadRoutePathData>>,
+): Promise<LessonProps | undefined> {
+  const location = courseLocationFromSlug(slugStr);
+  if (location === null || location.pagePath === null) {
+    return undefined;
+  }
+
+  const sequence = await loadLessonSequence(locale, location.courseId);
+  if (!sequence.some((page) => page.pagePath === location.pagePath)) {
+    return undefined;
+  }
+
+  const courseTitle =
+    pageLinkForCourseId(pathData.contentMap, locale, location.courseId)?.title ?? humanizeKebabSlug(location.courseId);
+
+  return {
+    locale,
+    courseId: location.courseId,
+    courseTitle,
+    pagePath: location.pagePath,
+    sequence,
+    initialPathData: EMPTY_COURSE_PATH_CLIENT_DATA,
+  };
 }
 
 function buildBreadcrumbs(

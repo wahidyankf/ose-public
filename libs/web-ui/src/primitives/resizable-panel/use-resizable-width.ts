@@ -59,7 +59,13 @@ export function useResizableWidth({
   const [width, setWidth] = useState(defaultWidth);
 
   useEffect(() => {
-    const persisted = parsePersistedWidth(localStorage.getItem(storageKey));
+    let raw: string | null = null;
+    try {
+      raw = localStorage.getItem(storageKey);
+    } catch {
+      raw = null;
+    }
+    const persisted = parsePersistedWidth(raw);
     if (persisted !== undefined) {
       const resolvedViewportPx = viewportPx ?? window.innerWidth;
       setWidth(clampWidth(persisted, resolvedViewportPx, minPct, maxPct));
@@ -73,7 +79,11 @@ export function useResizableWidth({
 
   const commitWidth = (nextWidth: number) => {
     setWidth(nextWidth);
-    localStorage.setItem(storageKey, String(nextWidth));
+    try {
+      localStorage.setItem(storageKey, String(nextWidth));
+    } catch {
+      // Storage can be blocked; the width still applies for this session.
+    }
   };
 
   return { width, updateWidth, commitWidth };

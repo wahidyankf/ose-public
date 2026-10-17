@@ -52,7 +52,7 @@ apps/ayokoding-www/
 │   │   ├── arc-landing.tsx                                      [E] LearnPathCard
 │   │   ├── course-page-path-content.tsx                         [E] forward lesson prop
 │   │   └── phase-section.tsx (plan 02)                          [D] only if no caller remains after Phase 4
-│   ├── features/content/shell/course-page-content.tsx           [E] lesson prop → ContextBar, LessonNav
+│   ├── features/course-paths/shell/course-page-content.tsx      [E] lesson prop → ContextBar, LessonNav
 │   └── features/i18n/core/translations.ts                       [E] keys in 004 (en and id)
 └── tests/
     ├── unit/features/learning-progress/*.unit.test.ts           [N] see 006

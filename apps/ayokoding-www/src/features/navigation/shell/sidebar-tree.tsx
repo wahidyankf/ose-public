@@ -67,6 +67,10 @@ function ScrollableTree({ children }: { children: React.ReactNode }) {
     <div
       ref={containerRef}
       data-overflowing={isOverflowing || undefined}
+      // Firefox tabs into scroll containers, costing keyboard users a stop on an element with
+      // no action. `tabIndex={-1}` keeps the region scrollable without making it a tab stop —
+      // its links still take focus (and auto-scroll into view) in every browser.
+      tabIndex={-1}
       className="overflow-x-auto"
       style={
         isOverflowing
@@ -107,7 +111,10 @@ function SidebarNode({ node, locale, depth }: { node: TreeNode; locale: string; 
           className={cn(
             "flex-1 rounded-md px-2 py-1.5 text-sm whitespace-nowrap transition-colors",
             isActive
-              ? "bg-primary/10 font-medium text-primary"
+              ? // The 10% tint put the active label's primary blue at 4.39:1 on the rail surface,
+                // below the 4.5:1 AA minimum for body text (S39); the 5% tint keeps the same
+                // colour-is-never-the-only-signal treatment at 4.8:1.
+                "bg-primary/5 font-medium text-primary"
               : "text-muted-foreground hover:bg-accent hover:text-foreground",
           )}
         >

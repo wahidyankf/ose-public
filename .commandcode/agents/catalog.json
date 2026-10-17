@@ -150,7 +150,7 @@
     {
       "id": "agent/plan-execution-checker",
       "path": ".agents/agents/plan-execution-checker.md",
-      "digest": "276c0188fe93661c3514a456eb45d54298e1d3af4060a6f22d91bf72d204f520"
+      "digest": "0c39a1c9744a20b1faf7ea24978496e012e975b44b9fe559f1253934930067e1"
     },
     {
       "id": "agent/plan-fixer",

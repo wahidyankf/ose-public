@@ -32,9 +32,8 @@ is updated in the same change that moves, adds, or removes a plan, per
 ```mermaid
 flowchart LR
   accTitle: Plan order
-  accDescr: Twelve live plans ordered by their Depends-on declarations.
-  P04["🏗️ 04-learning"]:::inprogress
-  P05["🔜 05-code-harness"]:::backlog
+  accDescr: Eleven live plans ordered by their Depends-on declarations.
+  P05["🏗️ 05-code-harness"]:::inprogress
   P06["🔜 06-accounting"]:::backlog
   P07["🔜 07-erp"]:::backlog
   P08["🔜 08-capstone"]:::backlog
@@ -62,5 +61,5 @@ flowchart LR
   classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
-Legend: 🔜 blue = backlog; 🏗️ teal = in progress. Hexagon credentialed-machine steps do not apply here. `04` and
-`ferret-02` have no live dependencies and run in parallel with everything.
+Legend: 🔜 blue = backlog; 🏗️ teal = in progress. Hexagon credentialed-machine steps do not apply here.
+`ferret-02` has no live dependencies and runs in parallel with everything.

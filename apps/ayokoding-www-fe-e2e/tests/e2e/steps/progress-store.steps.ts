@@ -453,7 +453,9 @@ async function withScriptsDisabled<T>(browser: Browser, url: string, read: (page
   try {
     const page = await context.newPage();
     await page.goto(url);
-    await page.waitForLoadState("domcontentloaded");
+    // Match the hydrated side's wait: webfonts still swap fallback metrics for 2-3 px after
+    // domcontentloaded, so measuring earlier compares fallback text against settled text.
+    await page.waitForLoadState("networkidle");
     return await read(page);
   } finally {
     await context.close();

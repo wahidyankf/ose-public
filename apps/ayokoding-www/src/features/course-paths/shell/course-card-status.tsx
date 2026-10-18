@@ -19,12 +19,16 @@ export interface CourseCardStatusProps {
  * While the progress snapshot is `unknown` — the server render and hydration — the slot holds a
  * neutral placeholder, so the card's size never changes when progress arrives (S8). Pure except for
  * the store read; no IO.
+ *
+ * The slot is block-level (`flex`, never `inline-flex`): an inline-level box inherits the line
+ * box's strut, so its height shifts a pixel with the surrounding font metrics between the
+ * placeholder and the label on some platforms (S8 layout-shift failure, deploy run 39079366390).
  */
 export function CourseCardStatus({ locale, courseId, sequence }: CourseCardStatusProps) {
   const snapshot = useLearningProgress();
 
   return (
-    <span data-progress-slot="course-status" className="inline-flex h-5 items-center">
+    <span data-progress-slot="course-status" className="flex h-5 items-center">
       {snapshot.status === "ready" ? (
         <CourseStatusLabel
           locale={locale}

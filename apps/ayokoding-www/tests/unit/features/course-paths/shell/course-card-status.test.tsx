@@ -74,6 +74,18 @@ describe("CourseCardStatus", () => {
     expect(html).toContain('aria-hidden="true"');
   });
 
+  it("keeps the slot block-level in both states, so its box never inherits a line-box strut", () => {
+    const { container: before } = renderStatus();
+    const beforeSlot = before.querySelector("[data-progress-slot='course-status']");
+    expect(beforeSlot?.classList.contains("flex")).toBe(true);
+    expect(beforeSlot?.classList.contains("inline-flex")).toBe(false);
+
+    learningProgressStore.update((state) => setPageComplete(state, "just-enough-bash", "learning/beginner", true));
+    const { container: after } = renderStatus();
+    const afterSlot = after.querySelector("[data-progress-slot='course-status']");
+    expect(afterSlot?.className).toBe(beforeSlot?.className);
+  });
+
   it("localizes the status word on the id locale", () => {
     renderStatus("id");
 

@@ -25,7 +25,7 @@ The content below is platform-specific. It documents the concrete translation ap
 **Single source of truth**: the declared Rhino harness profile. Any mapping change MUST update
 the profile and this table in the same commit.
 
-**No generated color**: canonical agents in `.agents/agents/` carry no `color`, so no generated route renders one. The table maps role colors for documentation only.
+**No generated color**: canonical agents in `agents/` carry no `color`, so no generated route renders one. The table maps role colors for documentation only.
 
 **Edge Case Notes:**
 

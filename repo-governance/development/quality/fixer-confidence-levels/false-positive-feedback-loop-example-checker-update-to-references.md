@@ -24,17 +24,17 @@ when_to_use: "Use for the second half of a worked feedback-loop example."
 
 ### Fixer Agents Using This Convention
 
-- [content-fixer.md](../../../.agents/agents/content-fixer.md) - ayokoding-www general Next.js content fixer
-- [tutorial-by-example-fixer.md](../../../.agents/agents/tutorial-by-example-fixer.md) - ayokoding-www by-example tutorial fixer
-- [content-fixer.md](../../../.agents/agents/content-fixer.md) - ayokoding-www factual accuracy fixer
-- [docs-tutorial-fixer.md](../../../.agents/agents/docs-tutorial-fixer.md) - Tutorial quality fixer
-- [content-fixer.md](../../../.agents/agents/content-fixer.md) - ose-www Next.js content fixer
-- [readme-fixer.md](../../../.agents/agents/readme-fixer.md) - README quality fixer
-- [docs-fixer.md](../../../.agents/agents/docs-fixer.md) - Documentation factual accuracy fixer
-- [tutorial-in-the-field-fixer.md](../../../.agents/agents/tutorial-in-the-field-fixer.md) - ayokoding-www in-the-field tutorial fixer
-- [apps-ayokoding-www-link-fixer.md](../../../.agents/agents/apps-ayokoding-www-link-fixer.md) - ayokoding-www link validation fixer
-- [docs-software-engineering-separation-fixer.md](../../../.agents/agents/docs-software-engineering-separation-fixer.md) - Software engineering documentation separation fixer
-- [repo-workflow-fixer.md](../../../.agents/agents/repo-workflow-fixer.md) - Repository workflow structural consistency fixer
+- [content-fixer.md](../../../agents/content-fixer.md) - ayokoding-www general Next.js content fixer
+- [tutorial-by-example-fixer.md](../../../agents/tutorial-by-example-fixer.md) - ayokoding-www by-example tutorial fixer
+- [content-fixer.md](../../../agents/content-fixer.md) - ayokoding-www factual accuracy fixer
+- [docs-tutorial-fixer.md](../../../agents/docs-tutorial-fixer.md) - Tutorial quality fixer
+- [content-fixer.md](../../../agents/content-fixer.md) - ose-www Next.js content fixer
+- [readme-fixer.md](../../../agents/readme-fixer.md) - README quality fixer
+- [docs-fixer.md](../../../agents/docs-fixer.md) - Documentation factual accuracy fixer
+- [tutorial-in-the-field-fixer.md](../../../agents/tutorial-in-the-field-fixer.md) - ayokoding-www in-the-field tutorial fixer
+- [apps-ayokoding-www-link-fixer.md](../../../agents/apps-ayokoding-www-link-fixer.md) - ayokoding-www link validation fixer
+- [docs-software-engineering-separation-fixer.md](../../../agents/docs-software-engineering-separation-fixer.md) - Software engineering documentation separation fixer
+- [repo-workflow-fixer.md](../../../agents/repo-workflow-fixer.md) - Repository workflow structural consistency fixer
 
 ### Related Conventions
 

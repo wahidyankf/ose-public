@@ -13,4 +13,4 @@ permission:
   websearch: allow
 ---
 
-Before acting, read the complete canonical agent definition at the repository-root path .agents/agents/content-checker.md and follow it as authoritative. If it cannot be read, stop and report the missing path.
+Before acting, read the complete canonical agent definition at the repository-root path agents/content-checker.md and follow it as authoritative. If it cannot be read, stop and report the missing path.

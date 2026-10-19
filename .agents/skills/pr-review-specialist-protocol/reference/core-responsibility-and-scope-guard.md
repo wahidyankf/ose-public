@@ -35,7 +35,7 @@ in-charter for this discipline before it is postable.
 
 ## Leak Predicates Stay With Leak Review
 
-The three leak predicates belong to the [`leak-reviewer`](../../../agents/leak-reviewer.md) agent, which the delivery
+The three leak predicates belong to the [`leak-reviewer`](../../../../agents/leak-reviewer.md) agent, which the delivery
 harness runs under [PR Leak Review](../../../../repo-governance/workflows/quality/pr-leak-review.md) before each push and
 merge. A broad pass never repeats them: it suppresses the secrets, protected-environment-property, and machine-path
 predicates rather than judging them again.

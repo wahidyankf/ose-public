@@ -44,7 +44,7 @@ See [Best Practices and Misconceptions](./reference/best-practices-and-misconcep
 - **[Core Principles Index](../../../repo-governance/principles/README.md)** - Foundational principles
 - **[Conventions Index](../../../repo-governance/conventions/README.md)** - Documentation conventions
 - **[Development Index](../../../repo-governance/development/README.md)** - Development practices
-- **[Agents Index](../../agents/README.md)** - All AI agents and responsibilities
+- **[Agents Index](../../../agents/README.md)** - All AI agents and responsibilities
 - **[Workflows Index](../../../repo-governance/workflows/README.md)** - All orchestrated processes
 
 ## Related Skills

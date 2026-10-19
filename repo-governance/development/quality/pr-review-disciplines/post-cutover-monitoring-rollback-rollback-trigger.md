@@ -34,7 +34,7 @@ operation**, never a history rewrite:
 1. `git revert` (or `git checkout` of the pre-deletion commit) the change that removed
    `.claude/agents/pr-review/pr-review-maker.md` and its register/catalog entries, reintroducing them as a new
    commit on top of the current branch.
-2. Move the restored file to `.agents/agents/pr-review-maker.md` with canonical metadata, then run
+2. Move the restored file to `agents/pr-review-maker.md` with canonical metadata, then run
    `./rhino harness adapters generate` to regenerate every declared agent route from it.
 
 No force-push and no history rewrite happen at any step — restoring the monolith is a forward commit

@@ -1,5 +1,5 @@
 ---
-description: "Defines the mandatory metadata every canonical agent definition in .agents/agents/ must declare."
+description: "Defines the mandatory metadata every canonical agent definition in agents/ must declare."
 when_to_use: Use when authoring or validating an agent's canonical metadata.
 ---
 
@@ -7,7 +7,7 @@ when_to_use: Use when authoring or validating an agent's canonical metadata.
 
 ## Required Frontmatter
 
-Every agent is authored once, flat, at `.agents/agents/<name>.md`. Its YAML frontmatter holds the canonical metadata in
+Every agent is authored once, flat, at `agents/<name>.md`. Its YAML frontmatter holds the canonical metadata in
 this exact order: `name`, `description`, `when_to_use`, `tier`, `capabilities`, then the optional `skills` and
 `constraints`. `./rhino metadata validate` rejects any other key and any out-of-order key.
 
@@ -40,7 +40,7 @@ explanations in the document body below the frontmatter, not as inline comments.
 **Field Definitions:**
 
 1. **`name`** (required)
-   - MUST exactly match the filename (without `.md` extension), and MUST be unique across `.agents/agents/`
+   - MUST exactly match the filename (without `.md` extension), and MUST be unique across `agents/`
    - Use kebab-case format
    - Should be descriptive and action-oriented
    - Examples: `docs-maker`, `rules-checker`, `api-validator`

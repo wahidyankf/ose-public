@@ -36,7 +36,7 @@ validate`, `./rhino governance vendor validate`, `./rhino governance word-budget
 validation is the gate `md-internal-link`, beside `md-readme-index`. All three run at pre-commit and
 on the pull-request surface.
 Generated adapters are routes to canonical `AGENTS.md`,
-`.agents/agents/`, and `.agents/skills/`; never hand-edit a generated adapter.
+`agents/`, and `.agents/skills/`; never hand-edit a generated adapter.
 
 [Lifecycle Stages](#lifecycle-stages) restates the registry's current surfaces; every later
 section is a historical record, not a source of commands or current ownership claims.

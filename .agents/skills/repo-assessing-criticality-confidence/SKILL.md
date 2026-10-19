@@ -69,7 +69,7 @@ Fixer agents should include domain-specific examples of HIGH/MEDIUM/FALSE_POSITI
 
 **Related Agents**:
 
-All checker agents and fixer agents use this system. See [`.agents/agents/README.md`](../../../.agents/agents/README.md) for the complete catalog.
+All checker agents and fixer agents use this system. See [`agents/README.md`](../../../agents/README.md) for the complete catalog.
 
 ---
 

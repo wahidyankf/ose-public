@@ -11,7 +11,7 @@ Eisenhower-quadrant-organized, correctly-resident set of two-pagers — backlog 
 ## Agent References
 
 When grooming promotes a ready idea into a full plan, hand authoring to
-[plan-maker](../../../.agents/agents/plan-maker.md).
+[plan-maker](../../../agents/plan-maker.md).
 
 ## Goal and Termination
 

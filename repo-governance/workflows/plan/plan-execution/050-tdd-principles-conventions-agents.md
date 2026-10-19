@@ -35,4 +35,4 @@ section for required separate, detailed RED/GREEN/REFACTOR checkboxes inside one
 
 ## Agents
 
-- [plan-execution-checker](../../../../.agents/agents/plan-execution-checker.md) — validates plan execution completeness and quality
+- [plan-execution-checker](../../../../agents/plan-execution-checker.md) — validates plan execution completeness and quality

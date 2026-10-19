@@ -38,7 +38,7 @@ commit narrowly and reconcile later.
 **Why it fails**: The next `./rhino harness adapters generate` overwrites it silently, and
 `validate` fails until then. The change disappears with no error, and the time is spent twice.
 
-**Fix**: Standard 9 — `.agents/agents/` and `.agents/skills/` are the hand-authored _canonical
+**Fix**: Standard 9 — `agents/` and `.agents/skills/` are the hand-authored _canonical
 source_ surfaces for generated mirrors. Edit the source, regenerate, and let `class: generated` mirrors follow. A `class: vendored`
 path (declared in the `harness:` registry's `ownership:` list) is the one exception, and it covers
 two structurally different subclasses — see [the two vendored

@@ -5,7 +5,7 @@ when_to_use: Use as the starting skeleton when writing a brand-new agent definit
 
 # Creating New Agents — Agent Template
 
-Use this template when creating a new canonical agent at `.agents/agents/<name>.md`:
+Use this template when creating a new canonical agent at `agents/<name>.md`:
 
 ```markdown
 ---

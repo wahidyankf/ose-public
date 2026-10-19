@@ -81,3 +81,9 @@ apps/ayokoding-www/content/**/code/**/*.sql
 
 # Command Code personal learning data
 .commandcode/taste/**
+
+# Rhino owns these generated adapter bytes; formatting them would diverge from
+# the canonical `agents/` source.
+.agents/agents/*/AGENT.md
+.agents/agents/catalog.json
+.agents/agents/provenance.json

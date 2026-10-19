@@ -243,7 +243,7 @@ After creating your Skill, update agents to reference it:
 
 ### Update Agent Frontmatter
 
-Edit the canonical agent file (e.g., `.agents/agents/agent-name.md`):
+Edit the canonical agent file (e.g., `agents/agent-name.md`):
 
 ```yaml
 ---

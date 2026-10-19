@@ -24,7 +24,7 @@ occurrence (may be legitimate version bump during execution; flag for review).
 (the test was claimed but never written).
 
 **E. Agent-name claims** — for every agent name cited (especially `_Suggested executor:_`
-annotations): `test -f .agents/agents/<name>.md` succeeds — definitions live flat in the canonical agent
+annotations): `test -f agents/<name>.md` succeeds — definitions live flat in the canonical agent
 directory. Missing: **HIGH** (AP-7).
 
 **F. Behaviour claims** — for every claim about library or framework behaviour in the chosen technical form: verify

@@ -23,7 +23,7 @@ when_to_use: Use to find an existing automation to reuse or extend.
 
 ## AI Validation Agents
 
-**Location**: `.agents/agents/`
+**Location**: `agents/`
 
 **Agents**:
 

@@ -15,9 +15,9 @@ when_to_use: Use when looking up related conventions, the agents implementing th
 
 **Agents:**
 
-- [`apps-ayokoding-www-by-example-maker`](../../../../.agents/agents/apps-ayokoding-www-by-example-maker.md) — creates FP-variant by-example content following this convention
-- [`tutorial-by-example-checker`](../../../../.agents/agents/tutorial-by-example-checker.md) — validates compliance
-- [`tutorial-by-example-fixer`](../../../../.agents/agents/tutorial-by-example-fixer.md) — fixes violations
+- [`apps-ayokoding-www-by-example-maker`](../../../../agents/apps-ayokoding-www-by-example-maker.md) — creates FP-variant by-example content following this convention
+- [`tutorial-by-example-checker`](../../../../agents/tutorial-by-example-checker.md) — validates compliance
+- [`tutorial-by-example-fixer`](../../../../agents/tutorial-by-example-fixer.md) — fixes violations
 
 **In-FP-by-example overview pages:**
 

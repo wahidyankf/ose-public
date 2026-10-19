@@ -45,7 +45,7 @@ is a configuration decision, not a wording change.
 ## Declared Trees
 
 The declared list in `repo-config.yml` is authoritative, and this convention copies none of it.
-`.agents/agents/` and `.agents/skills/`, the canonical agent and skill sources, are declared trees.
+`agents/` and `.agents/skills/`, the canonical agent and skill sources, are declared trees.
 Generated binding directories carry no hand-authored-index obligation. A source- or vendored-owned
 Markdown path inside a declared tree remains subject to the rule.
 

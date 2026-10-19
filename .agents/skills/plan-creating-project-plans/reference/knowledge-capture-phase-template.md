@@ -14,7 +14,7 @@ Plan Archival — see [plan-archival.md](plan-archival.md)):
       private and is never routed into this public repo; public-governance content may route here.
 - [ ] [AI] Route each surviving entry to exactly one durable home. The rubric is open-ended —
       route to whichever surface owns that kind of knowledge (`repo-governance/`, `docs/`,
-      `.agents/agents/`, `.agents/skills/`, a post-mortem, or any other durable home), landing a
+      `agents/`, `.agents/skills/`, a post-mortem, or any other durable home), landing a
       small non-code edit inline. Create or update a `plans/ideas/<slug>.md` two-pager only when the
       user has literally authorized that plan artifact; otherwise report the follow-up and record
       `Reported without plan authorization` with handoff evidence.

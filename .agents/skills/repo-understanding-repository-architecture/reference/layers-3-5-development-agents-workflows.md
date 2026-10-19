@@ -13,7 +13,7 @@
 - Source code (JS, TS, future: Kotlin, Python)
 - Next.js 16 web applications (ayokoding-web, ose-web)
 - Build systems and tooling
-- AI agents (.agents/agents/ canonical; .claude/agents/, .codex/agents/, .opencode/agents/ generated routes)
+- AI agents (agents/ canonical; .claude/agents/, .codex/agents/, .opencode/agents/ generated routes)
 - Git workflows
 
 **Example Practices**:
@@ -34,9 +34,9 @@
 
 **Purpose**: Automated implementers enforcing conventions and development practices.
 
-**Location**: `.agents/agents/` (canonical; harness routes under `.claude/agents/` and elsewhere are generated)
+**Location**: `agents/` (canonical; harness routes under `.claude/agents/` and elsewhere are generated)
 
-**Key Document**: [Agents Index](../../../agents/README.md)
+**Key Document**: [Agents Index](../../../../agents/README.md)
 
 **Agent Families**:
 

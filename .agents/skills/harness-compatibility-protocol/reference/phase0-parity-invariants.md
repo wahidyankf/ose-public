@@ -37,7 +37,7 @@ Run the full standalone inventory before Phase 1. Quality-gate filtering is defi
 ## Invariant 4 — Agent inventory parity
 
 - **Tool**: compare filename sets, not counts — equal counts with mismatched names must still fail.
-  `comm -3 <(find .agents/agents -maxdepth 1 -name '*.md' ! -name README.md -exec basename {} \; | sort) <(find .claude/agents -maxdepth 1 -name '*.md' -exec basename {} \; | sort)`
+  `comm -3 <(find agents -maxdepth 1 -name '*.md' ! -name README.md -exec basename {} \; | sort) <(find .claude/agents -maxdepth 1 -name '*.md' -exec basename {} \; | sort)`
 - **Pass**: empty output
 - **Fail**: any line — tab-indented names are `.claude/` orphans, the rest are missing routes
 - **Default criticality**: HIGH (divergent agent inventories). **Confidence**: HIGH
@@ -48,8 +48,8 @@ Run the full standalone inventory before Phase 1. Quality-gate filtering is defi
 
 ## Invariant 5 — Translation-map coverage
 
-- **Tools**: tier map — `grep -h "^tier:" .agents/agents/*.md | sort -u` vs. the Claude profile's `tiers` map in
-  `repo-config.yml`; constraint map — `grep -h -A9 "^constraints:" .agents/agents/*.md | grep "^  - " | sort -u` vs.
+- **Tools**: tier map — `grep -h "^tier:" agents/*.md | sort -u` vs. the Claude profile's `tiers` map in
+  `repo-config.yml`; constraint map — `grep -h -A9 "^constraints:" agents/*.md | grep "^  - " | sort -u` vs.
   `harness.requirements.constraints`
 - **Pass**: every distinct frontmatter value appears in the corresponding map
 - **Fail**: any value not in the map — report the missing entry

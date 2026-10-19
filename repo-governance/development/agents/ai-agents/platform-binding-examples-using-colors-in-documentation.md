@@ -9,7 +9,7 @@ when_to_use: Use when documenting an agent's color in prose or when picking an e
 
 **Agent README Listings:**
 
-When listing agents in the agent definition directory README (`.agents/agents/README.md` or equivalent), use the colored square emoji:
+When listing agents in the agent definition directory README (`agents/README.md` or equivalent), use the colored square emoji:
 
 ```markdown
 ### 🟦 `docs-maker.md`

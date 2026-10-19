@@ -9,7 +9,7 @@ Before submitting a new agent, verify:
 
 ## Frontmatter Complete
 
-- [ ] File is flat at `.agents/agents/<name>.md`; `name` matches the filename (kebab-case, no `.md`) and is unique
+- [ ] File is flat at `agents/<name>.md`; `name` matches the filename (kebab-case, no `.md`) and is unique
 - [ ] `description` states what the agent does; `when_to_use` states when to use it
 - [ ] `tier` is `ultra`, `plan`, `execution`, or `fast`, justified if above `execution`
 - [ ] `capabilities` lists only what the agent needs (least privilege), in canonical order
@@ -65,6 +65,6 @@ session is not guaranteed to appear in the Agent tool's available `subagent_type
 is populated at session/process start, not from a live directory read. A plan that authors a new
 agent and needs to invoke it within the same run (e.g., wiring a freshly created review agent into
 a later phase) should not treat an unlisted `subagent_type` as a broken agent. **Workaround**:
-invoke `general-purpose` and instruct it, as its first step, to `Read` the new canonical `.agents/agents/<name>.md` file in
+invoke `general-purpose` and instruct it, as its first step, to `Read` the new canonical `agents/<name>.md` file in
 full and follow its instructions verbatim, then perform the task — this reproduces the target
 agent's behaviour without requiring session-level registration.

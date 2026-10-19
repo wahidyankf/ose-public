@@ -25,8 +25,8 @@ the quality gate. Outcome-section Input/Outcome/Proof stays as shared context:
 2. **Pre-Item Repo-Grounding (HARD GATE — Anti-Hallucination)**: before delegating, repo-ground every claim in the checkbox per the [Plan Anti-Hallucination Convention §Repo-Grounding Rule](../../../development/quality/plan-anti-hallucination/repo-grounding-rule-hard.md#repo-grounding-rule-hard):
    - For each cited file path: `Bash test -f <path>`. If missing AND not marked `_New file_`: HALT the item, escalate to user with the failing path (do not invent a substitute).
    - For each cited Nx target: `jq -r '.targets | keys[]' apps/<project>/project.json | grep -qx '<target>'`. If missing AND not marked `_New target_`: HALT the item.
-   - For each cited agent: `test -f .agents/agents/<name>.md` succeeds (agent definitions live
-     flat in `.agents/agents/`, e.g. `.agents/agents/swe-developer.md`). If missing: HALT (no
+   - For each cited agent: `test -f agents/<name>.md` succeeds (agent definitions live
+     flat in `agents/`, e.g. `agents/swe-developer.md`). If missing: HALT (no
      fabricating).
    - For each cited symbol: `Grep` for evidence. Missing AND not marked `_New symbol_`: HALT.
    - **Refuse-on-uncertainty**: if a cited fact cannot be grounded and the checkbox does not mark it as new, the orchestrator MUST escalate rather than guess. Surface the failure to the user with the specific claim and the missing artifact.

@@ -33,13 +33,13 @@ generator changes only paths or delimited regions declared as generated.
 
 ## Source of Truth Hierarchy
 
-`.agents/agents/` and `.agents/skills/` are the canonical sources for their generated routes.
+`agents/` and `.agents/skills/` are the canonical sources for their generated routes.
 `repo-config.yml` is authoritative for path-level ownership; a more-specific vendored declaration
 overrides a generated parent. Vendored configuration and plugin paths are maintained in place.
 
 **Making Changes**:
 
-1. Edit an agent in `.agents/agents/` or a skill in `.agents/skills/`.
+1. Edit an agent in `agents/` or a skill in `.agents/skills/`.
 2. Run `./rhino harness adapters generate`, then `./rhino harness adapters validate`.
 3. Commit every changed generated mirror in the same commit as its source.
 4. Edit a vendored path directly only when `repo-config.yml` classifies that exact path or a

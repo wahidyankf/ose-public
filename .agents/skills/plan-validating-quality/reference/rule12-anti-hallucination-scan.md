@@ -21,7 +21,7 @@ label (`[Repo-grounded]`, `[Web-cited]`, `[Judgment call]`, `[Unverified]`) stil
 - **AP-4** function/method name cited without import-path evidence or web citation: **HIGH**
 - **AP-5** numeric KPI presented as measured fact with no baseline: **HIGH**
 - **AP-6** test name cited that doesn't exist and isn't marked `_New test_`: **HIGH**
-- **AP-7** agent/skill name cited that doesn't resolve via `.agents/agents/<name>.md`
+- **AP-7** agent/skill name cited that doesn't resolve via `agents/<name>.md`
   (flat canonical directory) or `.agents/skills/<name>/SKILL.md`: **HIGH**
 - **AP-8** CLI flag cited without `<cmd> --help` evidence or repo-doc reference: **MEDIUM**
 - **AP-9** behaviour claim cited without a source: **MEDIUM**
@@ -30,7 +30,7 @@ label (`[Repo-grounded]`, `[Web-cited]`, `[Judgment call]`, `[Unverified]`) stil
 (all per occurrence)
 
 **C. Suggested-executor annotation validity** — where a checkbox carries `_Suggested executor:
-<agent-name>_`: `test -f .agents/agents/<agent-name>.md` succeeds (missing: **HIGH**,
+<agent-name>_`: `test -f agents/<agent-name>.md` succeeds (missing: **HIGH**,
 counts as AP-7); the agent's role suits the action (e.g. `swe-developer` for a `.fs` edit, not
 `docs-maker`; mismatch: **MEDIUM**).
 

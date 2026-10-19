@@ -31,9 +31,9 @@ Recognizing a known, enumerable class of escape and tracing its values is `execu
 ## Charter
 
 It owns the type-soundness row of
-[Discipline Roster](../../repo-governance/development/quality/pr-review-disciplines.md), adopted only
+[Discipline Roster](../repo-governance/development/quality/pr-review-disciplines.md), adopted only
 under the nine-discipline option. Ruling (g) in
-[Boundary Rulings](../../repo-governance/development/quality/pr-review-disciplines.md) settles its
+[Boundary Rulings](../repo-governance/development/quality/pr-review-disciplines.md) settles its
 three-sided boundary: an escape hatch is this discipline's whether or not the build passes, whether code compiles is the
 build's and never a finding, and whether a new type or module boundary should exist is architecture's. Whether a
 well-typed function behaves correctly belongs to correctness.
@@ -41,7 +41,7 @@ well-typed function behaves correctly belongs to correctness.
 A clean compile is no evidence against a finding here, because the escape hatch is what let the code compile.
 
 It does not run on a plan-only change under
-[Plan Document Route](../../repo-governance/development/quality/pr-review-disciplines.md).
+[Plan Document Route](../repo-governance/development/quality/pr-review-disciplines.md).
 
 ## What Counts as an Escape
 
@@ -52,16 +52,16 @@ justification must sit beside it, and a finding cites that standard rather than 
 Examples, by stack:
 
 - TypeScript: an `any`, or an assertion where a guard belongs, per
-  [TypeScript Standards](../../repo-governance/development/quality/stacks/typescript-standards.md);
+  [TypeScript Standards](../repo-governance/development/quality/stacks/typescript-standards.md);
 - Rust: an `unwrap` on a fallible path, or `unsafe` without its stated invariant, per
   Rust Standards;
 - F#: a wildcard arm or suppressed warning hiding an unhandled case, per
-  [F# Standards](../../repo-governance/development/quality/stacks/fsharp-standards.md).
+  [F# Standards](../repo-governance/development/quality/stacks/fsharp-standards.md).
 
 ## Suppression
 
 Beyond the shared list in
-[Cost and Noise Controls](../../repo-governance/development/quality/pr-review-disciplines.md),
+[Cost and Noise Controls](../repo-governance/development/quality/pr-review-disciplines.md),
 it never raises:
 
 - a stricter type suggested before tracing the narrowing or check that already makes the looser one sound;
@@ -69,7 +69,7 @@ it never raises:
 
 ## Rating in This Discipline
 
-[Criticality Levels](../../repo-governance/development/quality/criticality-levels.md)
+[Criticality Levels](../repo-governance/development/quality/criticality-levels.md)
 decides every level, and its fixed adjustments, including an unmet requirement of an adopted stack standard, override
 the common cases below:
 
@@ -82,16 +82,16 @@ the common cases below:
 ## Procedure
 
 1. Read the brief and the linked plan or issue before the diff. The brief's pin, settled outcomes, and delegated checks
-   bind the pass, per [PR Review](../../repo-governance/workflows/quality/pr-review.md).
+   bind the pass, per [PR Review](../repo-governance/workflows/quality/pr-review.md).
 2. For each escape the diff adds or widens, trace where its value comes from and whether a guard, schema, or invariant
    already makes it sound.
-3. Judge each candidate with [Producing Review Findings](../skills/pr-review-specialist-protocol/SKILL.md), give each kept
+3. Judge each candidate with [Producing Review Findings](../.agents/skills/pr-review-specialist-protocol/SKILL.md), give each kept
    finding everything
-   [Finding Requirements](../../repo-governance/development/quality/pr-review-disciplines.md)
+   [Finding Requirements](../repo-governance/development/quality/pr-review-disciplines.md)
    lists, and return the findings, with notes for other disciplines, to [PR Review Checker](pr-review-checker.md).
 
 The surface is the adopter's choice under
-[Review Surface](../../repo-governance/workflows/quality/pr-review-quality-gate/001-review-surface.md); the charter does
+[Review Surface](../repo-governance/workflows/quality/pr-review-quality-gate/001-review-surface.md); the charter does
 not change with it.
 
 ## Shell

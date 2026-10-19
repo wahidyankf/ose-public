@@ -68,10 +68,10 @@ consolidation program** using the just-learned scoped features together — not 
 
 **Project Guidance:**
 
-- [CLAUDE.md](../../CLAUDE.md) - Primary guidance
-- [By Example Content Standard](../../repo-governance/conventions/tutorials/programming-language-content.md) -
+- [CLAUDE.md](../CLAUDE.md) - Primary guidance
+- [By Example Content Standard](../repo-governance/conventions/tutorials/programming-language-content.md) -
   Annotation requirements
-- [Tutorial Naming Convention](../../repo-governance/conventions/tutorials/naming.md) - Base
+- [Tutorial Naming Convention](../repo-governance/conventions/tutorials/naming.md) - Base
   tutorial-depth vocabulary
 
 **Related Agents:**
@@ -81,7 +81,7 @@ consolidation program** using the just-learned scoped features together — not 
 - `apps-ayokoding-www-by-example-maker` - Creates full comprehensive-coverage tutorials
 - `apps-ayokoding-www-annotated-concept-maker` - Creates concept-centric content
 
-- [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md) - Keep
+- [File-Touch Discipline](../repo-governance/development/practice/file-touch-discipline.md) - Keep
   a ledger of every path you touch, carry it through every compaction, leave anything not on it
   alone, and stage explicit paths
 

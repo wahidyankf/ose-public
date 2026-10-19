@@ -24,7 +24,7 @@ This convention does not apply to pushes that exclusively touch:
 - `plans/` — planning documents only
 - `generated-reports/` — human-requested artifacts only
 - `social-media-posts/` — social content only
-- `.agents/agents/`, `.agents/skills/`, and their generated harness routes — agent/skill definitions only, no app code impact
+- `agents/`, `.agents/skills/`, and their generated harness routes — agent/skill definitions only, no app code impact
 
 The pre-push hook runs only the registry-declared `pre-push` gates (the public-safety screens and
 environment validation) and runs no `test:quick`; quick owns Unit runtime and

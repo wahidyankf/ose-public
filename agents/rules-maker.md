@@ -31,14 +31,14 @@ Create repository rules and conventions.
 
 ## Reference
 
-- [Convention Writing Convention](../../repo-governance/conventions/writing/conventions.md)
+- [Convention Writing Convention](../repo-governance/conventions/writing/conventions.md)
 - Skills: `docs-applying-diataxis-framework`, `docs-applying-content-quality`
 
 ## Workflow
 
 Document standards following convention structure (Purpose, Standards, Examples, Validation). Name
 new conventions and any shards a split produces per
-[Ordinal Filename Prefixes](../../repo-governance/conventions/structure/ordinal-filename-prefixes.md):
+[Ordinal Filename Prefixes](../repo-governance/conventions/structure/ordinal-filename-prefixes.md):
 a shard is not a step, so it takes a plain name and the parent index carries order. For a
 gate-surface rule change, update the registry-managed documentation to use `gate list`, verify the
 registry with `gate validate`, update affected workflow and hook documentation plus their indexes,
@@ -60,8 +60,8 @@ foreign worktrees. Regenerate bindings after every `.claude/` edit and validate 
 
 **Project Guidance**:
 
-- [CLAUDE.md](../../CLAUDE.md) - Primary guidance
-- [Repository Governance Architecture](../../repo-governance/repository-governance-architecture.md)
+- [CLAUDE.md](../CLAUDE.md) - Primary guidance
+- [Repository Governance Architecture](../repo-governance/repository-governance-architecture.md)
 
 **Related Agents**:
 
@@ -70,6 +70,6 @@ foreign worktrees. Regenerate bindings after every `.claude/` edit and validate 
 
 **Related Conventions**:
 
-- [Convention Writing Convention](../../repo-governance/conventions/writing/conventions.md)
-- [AI Agents Convention](../../repo-governance/development/agents/ai-agents.md)
-- [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md) - Keep a ledger of every path you touch, carry it through every compaction, leave anything not on it alone, and stage explicit paths
+- [Convention Writing Convention](../repo-governance/conventions/writing/conventions.md)
+- [AI Agents Convention](../repo-governance/development/agents/ai-agents.md)
+- [File-Touch Discipline](../repo-governance/development/practice/file-touch-discipline.md) - Keep a ledger of every path you touch, carry it through every compaction, leave anything not on it alone, and stage explicit paths

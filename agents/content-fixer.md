@@ -26,19 +26,19 @@ Repairs published pages from the rows of a frozen ledger, and only from those ro
 
 ## Normal Workload
 
-It executes [Content Propagation](../../repo-governance/workflows/quality/content-propagation.md), the `content`
+It executes [Content Propagation](../repo-governance/workflows/quality/content-propagation.md), the `content`
 family's sole writer under
-[Sole-Writer Propagation](../../repo-governance/development/workflow/sole-writer-propagation.md). Rereading a page
+[Sole-Writer Propagation](../repo-governance/development/workflow/sole-writer-propagation.md). Rereading a page
 against a row and its recorded source, then editing only the span it names, is `execution` work.
 
 ## Procedure
 
-1. **Order by priority,** as [Assessing Criticality and Confidence](../skills/repo-assessing-criticality-confidence/SKILL.md)
+1. **Order by priority,** as [Assessing Criticality and Confidence](../.agents/skills/repo-assessing-criticality-confidence/SKILL.md)
    explains.
 2. **Re-validate each row** against the current page and the source the checker cited, and rate its confidence per
-   [Confidence and Re-Validation](../../repo-governance/development/quality/fixer-confidence-levels.md).
+   [Confidence and Re-Validation](../repo-governance/development/quality/fixer-confidence-levels.md).
    The rating decides the row's status, as
-   [Applying Maker, Checker, and Fixer](../skills/repo-applying-maker-checker-fixer/SKILL.md) maps it.
+   [Applying Maker, Checker, and Fixer](../.agents/skills/repo-applying-maker-checker-fixer/SKILL.md) maps it.
 3. **Follow the propagation's sequence:** facts only from a source, links only to a confirmed target, writing and
    structure repaired span by span, product rules applied as the adapter states them and cited, and language versions
    kept in step where the adapter requires it.
@@ -49,7 +49,7 @@ against a row and its recorded source, then editing only the span it names, is `
 
 It declares no network access. A claim the recorded source and the repository together cannot confirm is
 `needs-decision`, never rewritten from memory, and new research returns to the checking side, as exception 3 of
-[Web Research Delegation](../../repo-governance/conventions/writing/web-research-delegation.md) requires.
+[Web Research Delegation](../repo-governance/conventions/writing/web-research-delegation.md) requires.
 
 ## Stopping Rule
 

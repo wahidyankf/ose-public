@@ -27,7 +27,7 @@ Trunk-Based Dev on `main`. Node.js 24 (Volta), npm.
 
 ## Project Structure
 
-`apps/` (deployable), `libs/` (flat), `.agents/` (canonical harness content), and generated
+`apps/` (deployable), `libs/` (flat), `agents/` (canonical harness content), and generated
 platform routes under the declared harness directories (see the [platform catalog](./docs/reference/platform-bindings.md)).
 Filenames: lowercase kebab-case.
 
@@ -71,7 +71,7 @@ assumptions, ledger, and verification before acting.
 `worktree-to-pr` is mandatory. A fresh-context `leak-reviewer` judges each push and merge head; the harness refuses
 any finding, failed spawn, or stale head. Every PR needs current-head/base `pr-quality-gate.yml`; semantic review
 runs only when requested.
-Applicable UI/API surface gates still bind.
+Applicable UI/API gates still bind.
 `[AI]` merges by default. At most one worktree per repo per plan; Phase 0 opens none.
 Create it only at `{repository location}/worktrees/<task>`; sibling `*-worktrees/` directories are forbidden.
 
@@ -103,8 +103,8 @@ Never commit secrets; real values only in uncommitted `.env*` (except `.env.exam
 Maintain tasks; plan non-trivial work in the harness task list unless the user literally requests a
 repository plan. Exhaust instructions, repository evidence, history, safe diagnostics, and bounded
 reversible assumptions before asking the user; never assume material authority or preference. Preserve
-user-set rules across compaction/handoff; reconcile before resuming. N+1 agents (N=3). Reconcile the
-file ledger with `git status`. Hand-author `.agents/`; generate routes together. New worktree: follow
+user-set rules across compaction/handoff; reconcile before resuming. N+1 agents (N=3). Reconcile `git status` with the
+ledger. Hand-author canonicals (`agents/`, `.agents/skills/`); generate routes together. New worktree: follow
 [worktree setup](./repo-governance/development/workflow/worktree-setup.md). Poll CI every 2
 minutes; never `gh run watch`. If main only polls non-CI background work, update user every 5 minutes.
 
@@ -118,7 +118,7 @@ Verify UI/API behaviour manually; investigate CI failures at the root cause, nev
 
 ## AI Agents
 
-[Canonical agents](./.agents/agents/README.md) and skills under `.agents/skills/` are authoritative;
+[Canonical agents](./agents/README.md) and skills under `.agents/skills/` are authoritative;
 regenerate and validate every generated route with the pinned Rhino adapter commands, never by
 hand. Dispatch every create, modify, update, or delete of code or declarative configuration to the fitting
 `swe-*` agent (exceptions in [SWE Delegation](./repo-governance/development/agents/swe-delegation.md)).

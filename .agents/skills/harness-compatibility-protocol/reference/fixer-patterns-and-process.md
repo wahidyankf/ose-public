@@ -9,7 +9,7 @@ affected row cell.
 field line, verify with Grep that it no longer appears.
 
 **Post-edit sync (D4 Claude Code agent changes)**: after any edit to a canonical agent in
-`.agents/agents/`, run `./rhino harness adapters generate` — this keeps `.claude/agents/`,
+`agents/`, run `./rhino harness adapters generate` — this keeps `.claude/agents/`,
 `.codex/agents/`, and `.opencode/agents/` aligned. Failure here is a
 blocker; do not mark the fix complete until sync succeeds.
 
@@ -30,7 +30,7 @@ structure intact, record each touched file in the fix summary.
    file to verify drift still exists, check the source confidence tag, apply (HIGH confidence
    only) or skip with reason, verify the fix was applied, write the result progressively.
 4. After Invariant 3 fixes, confirm `rtk ./rhino harness adapters generate` is idempotent.
-5. After canonical agent edits in `.agents/agents/`, run `rtk ./rhino harness adapters generate` as the required mutation.
+5. After canonical agent edits in `agents/`, run `rtk ./rhino harness adapters generate` as the required mutation.
 6. Re-run binding and vendor validation as the row's evidence.
 7. Capture changed files with `rtk git diff --name-only HEAD` and record them on the ledger.
 8. Write FALSE_POSITIVE carry-forward entries.

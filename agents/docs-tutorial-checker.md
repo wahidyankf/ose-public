@@ -30,7 +30,7 @@ constraints:
 ## Lifecycle Handoff
 
 Under a quality gate, never report or fix a property the gate's Deterministic Boundary lists; its declared tool
-owns it, per the [Quality Gate Contract](../../repo-governance/development/workflow/quality-gate-contract.md). Pedagogical, narrative, visual-necessity, and
+owns it, per the [Quality Gate Contract](../repo-governance/development/workflow/quality-gate-contract.md). Pedagogical, narrative, visual-necessity, and
 hands-on judgments remain active.
 
 ## Agent Metadata
@@ -51,14 +51,14 @@ tool if it's hard to follow, missing visuals, or lacks narrative flow.
 Validate tutorials in `docs/tutorials/` for pedagogical structure, narrative quality, visual
 completeness, and hands-on learning elements — the aspects `docs-checker` (factual accuracy) and
 `docs-link-checker` (links) don't cover. Validation criteria are defined in the
-[Tutorial Convention](../../repo-governance/conventions/tutorials/general.md) (required
+[Tutorial Convention](../repo-governance/conventions/tutorials/general.md) (required
 sections, narrative scaffolding, visual completeness, hands-on elements, technical standards) and
-the [Tutorial Naming Convention](../../repo-governance/conventions/tutorials/naming.md) (seven
+the [Tutorial Naming Convention](../repo-governance/conventions/tutorials/naming.md) (seven
 tutorial types, coverage-percentage depth indicators).
 
 ## Validation Workflow
 
-See [docs-applying-diataxis-framework/reference/validating-tutorial-quality.md](../../.agents/skills/docs-applying-diataxis-framework/reference/validating-tutorial-quality.md)
+See [docs-applying-diataxis-framework/reference/validating-tutorial-quality.md](../.agents/skills/docs-applying-diataxis-framework/reference/validating-tutorial-quality.md)
 for the complete six-step execution procedure (read/understand → structural validation →
 narrative analysis → visual completeness incl. color-accessibility and diagram-splitting checks →
 hands-on assessment → finalize), the critical LaTeX delimiter check, the report structure
@@ -69,7 +69,7 @@ template, and the anti-patterns checklist.
 See `repo-generating-validation-reports` Skill's Convergence Safeguards reference — the
 false-positive skip list applies; each cycle of a calling gate audits the whole frozen scope, for at
 most three cycles, per the
-[Quality Gate Contract](../../repo-governance/development/workflow/quality-gate-contract.md).
+[Quality Gate Contract](../repo-governance/development/workflow/quality-gate-contract.md).
 
 ## Report Generation
 
@@ -86,13 +86,13 @@ link validation.
 
 ## Reference Documentation
 
-**Project Guidance**: [AGENTS.md](../../AGENTS.md), [AI Agents Convention](../../repo-governance/development/agents/ai-agents.md),
-[Tutorial Convention](../../repo-governance/conventions/tutorials/general.md).
+**Project Guidance**: [AGENTS.md](../AGENTS.md), [AI Agents Convention](../repo-governance/development/agents/ai-agents.md),
+[Tutorial Convention](../repo-governance/conventions/tutorials/general.md).
 
 **Related Agents**: `docs-tutorial-maker` (creates tutorials this checker validates),
 `docs-tutorial-fixer` (fixes issues this checker finds), `docs-checker` (factual accuracy).
 
-- [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md) - Keep a ledger of every path you touch, carry it through every compaction, leave anything not on it alone, and stage explicit paths
+- [File-Touch Discipline](../repo-governance/development/practice/file-touch-discipline.md) - Keep a ledger of every path you touch, carry it through every compaction, leave anything not on it alone, and stage explicit paths
 
 ## Required Reading
 

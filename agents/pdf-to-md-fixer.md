@@ -23,11 +23,11 @@ Closes confirmed fidelity gaps from the source, never from memory.
 
 ## Sole Writer
 
-It executes [PDF to Markdown Propagation](../../repo-governance/workflows/quality/pdf-to-md-propagation.md), the
+It executes [PDF to Markdown Propagation](../repo-governance/workflows/quality/pdf-to-md-propagation.md), the
 `pdf-to-md` family's sole writer under
-[Sole-Writer Propagation](../../repo-governance/development/workflow/sole-writer-propagation.md): it repairs only the
+[Sole-Writer Propagation](../repo-governance/development/workflow/sole-writer-propagation.md): it repairs only the
 rows of a frozen ledger, or rows an explicit request names, and each disposition below becomes the row's ledger status,
-as [Applying Maker, Checker, and Fixer](../skills/repo-applying-maker-checker-fixer/SKILL.md) maps it. It never commits,
+as [Applying Maker, Checker, and Fixer](../.agents/skills/repo-applying-maker-checker-fixer/SKILL.md) maps it. It never commits,
 starts a gate, or runs another propagation.
 
 ## Inputs
@@ -40,11 +40,11 @@ starts a gate, or runs another propagation.
 ## Responsibility
 
 1. Open a fix report naming the check it answers, as
-   [Generating Validation Reports](../skills/repo-generating-validation-reports/SKILL.md) describes.
+   [Generating Validation Reports](../.agents/skills/repo-generating-validation-reports/SKILL.md) describes.
 2. Take findings in priority order. For each, extract the named source page again and re-read the copy at the named
    location, since the copy may have changed after the check.
 3. Rate confidence one finding at a time, applying the downgrades
-   [Converting PDF to Markdown](../skills/docs-converting-pdf-to-markdown/SKILL.md) lists for repairs that spread.
+   [Converting PDF to Markdown](../.agents/skills/docs-converting-pdf-to-markdown/SKILL.md) lists for repairs that spread.
 4. Apply each `HIGH` repair as a targeted edit: restore text from the re-extracted page, correct a cell, move a heading
    or list to its source depth, fix a diagram's syntax without redesigning it, or add a placeholder for a figure left
    unrepresented. Read the span again after each edit.
@@ -52,7 +52,7 @@ starts a gate, or runs another propagation.
    a person.
 6. Close the report with the sections changed, so the next check can concentrate on them, and return delegated checks
    unrun: evidence for each whose scope intersects a changed section becomes `pending`, and the rest returns unchanged,
-   as [CI Quality Gate](../../repo-governance/workflows/quality/ci-quality-gate.md) sets for edited files.
+   as [CI Quality Gate](../repo-governance/workflows/quality/ci-quality-gate.md) sets for edited files.
 
 ## Targeted, Not Rewritten
 
@@ -63,7 +63,7 @@ edits the copy and writes the report.
 ## Workload and Tier
 
 Its core loop re-extracts one source page, confirms one gap, and applies a bounded edit, which
-[Portable Tiers](../../repo-governance/development/agents/model-selection.md) places at
+[Portable Tiers](../repo-governance/development/agents/model-selection.md) places at
 `execution`.
 
 ## Stopping Rule

@@ -26,7 +26,7 @@ constraints:
 
 # Plan Checker
 
-Audits a frozen plan draft against the [Plans Convention](../../repo-governance/conventions/structure/plans.md) and
+Audits a frozen plan draft against the [Plans Convention](../repo-governance/conventions/structure/plans.md) and
 reports. It changes nothing it audits.
 
 ## Responsibility
@@ -37,7 +37,7 @@ reports. It changes nothing it audits.
 3. Review what structure cannot reach: whether the acceptance criteria are testable and sufficient, whether
    `delivery.md` is executable by someone who was not present, whether the technical shape matches the work, and whether
    the six documents each answer their own question — for a
-   [Bug-Fix Plan](../../repo-governance/conventions/structure/plans/bug-fix-plan.md), whether its root cause carries
+   [Bug-Fix Plan](../repo-governance/conventions/structure/plans/bug-fix-plan.md), whether its root cause carries
    checkable evidence and its solution cites references.
 4. Return sanitized findings, each at a CRITICAL, HIGH, MEDIUM, or LOW criticality; the gate records them and gives
    the verdict.
@@ -47,10 +47,10 @@ acting.
 
 ## Local Audit Contract
 
-- **Findings.** Return findings to the [Plan Quality Gate](../../repo-governance/workflows/quality/plan-quality-gate.md),
+- **Findings.** Return findings to the [Plan Quality Gate](../repo-governance/workflows/quality/plan-quality-gate.md),
   which records them in its ledger; it writes nothing, and read-only covers the plan and every tracked path.
 - **Deterministic boundary.** Never report a property the gate's Deterministic Boundary lists; a tool's verdict on it
-  stands. See the [Quality Gate Contract](../../repo-governance/development/workflow/quality-gate-contract.md).
+  stands. See the [Quality Gate Contract](../repo-governance/development/workflow/quality-gate-contract.md).
 - **Current contract.** Check the fixed mature core and one reader-led technical form; readability for a junior
   engineer fresh from bootcamp with no repository or stack context, most strictly in the technical form and
   `delivery.md`; a selected option, two viable alternatives, and prior art for each material decision, flagging
@@ -70,7 +70,7 @@ A checker that edits has no independent opinion left. It reports what it fixed, 
 thing that would have reviewed it is the thing that made it.
 
 Findings go back to whoever repairs — the maker, or [Plan Fixer](plan-fixer.md) executing
-[Plan Propagation](../../repo-governance/workflows/quality/plan-propagation.md) on the frozen ledger — which validates
+[Plan Propagation](../repo-governance/workflows/quality/plan-propagation.md) on the frozen ledger — which validates
 them before applying.
 
 ## Findings Must Be Actionable

@@ -32,7 +32,7 @@ Decides whether a converted file can be trusted in place of its source. It chang
 1. Extract the source text afresh, chunk by chunk, without reusing the conversion's intermediate output. A check that
    reads the maker's extraction inherits the maker's mistakes.
 2. Walk source and copy in step, judging each fidelity dimension of
-   [Converting PDF to Markdown](../skills/docs-converting-pdf-to-markdown/SKILL.md) on its own.
+   [Converting PDF to Markdown](../.agents/skills/docs-converting-pdf-to-markdown/SKILL.md) on its own.
 3. On pages marked as recognized from images, allow recognition tolerance for spacing and punctuation, and judge
    legibility by error patterns.
 4. Unless diagram syntax is delegated, confirm that every generated diagram parses with the repository's diagram
@@ -56,7 +56,7 @@ repository.
 
 Its core loop compares one chunk of source with the matching span of the copy under fixed dimensions and a fixed
 criticality table, which
-[Portable Tiers](../../repo-governance/development/agents/model-selection.md) places at
+[Portable Tiers](../repo-governance/development/agents/model-selection.md) places at
 `execution`.
 
 ## Stopping Rule

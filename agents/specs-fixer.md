@@ -24,10 +24,10 @@ Repairs specification structure from confirmed findings, and never what a specif
 
 ## Sole Writer
 
-It executes [Specs Propagation](../../repo-governance/workflows/quality/specs-propagation.md), the `specs` family's sole
-writer under [Sole-Writer Propagation](../../repo-governance/development/workflow/sole-writer-propagation.md): it
+It executes [Specs Propagation](../repo-governance/workflows/quality/specs-propagation.md), the `specs` family's sole
+writer under [Sole-Writer Propagation](../repo-governance/development/workflow/sole-writer-propagation.md): it
 repairs only the rows of a frozen ledger, or rows an explicit request names, and each disposition below becomes the
-row's ledger status, as [Applying Maker, Checker, and Fixer](../skills/repo-applying-maker-checker-fixer/SKILL.md) maps it.
+row's ledger status, as [Applying Maker, Checker, and Fixer](../.agents/skills/repo-applying-maker-checker-fixer/SKILL.md) maps it.
 It never commits, starts a gate, or runs another propagation.
 
 ## Normal Workload
@@ -41,19 +41,19 @@ It edits only files inside the folders the audit records as validated. A finding
 is left for a person, however obvious the edit. A repair that changes a declarative file in those folders, such as a
 `project.json` or a YAML or JSON contract, is written by `swe-developer`: the fixer names it as repairer in
 the fix report, and the fixer or its caller dispatches it, per
-[SWE Delegation](../../repo-governance/development/agents/swe-delegation.md).
+[SWE Delegation](../repo-governance/development/agents/swe-delegation.md).
 
 ## Procedure
 
 1. **Read the audit,** its validated folders, its delegated checks, and the accepted false positives the repository
    keeps. A finding whose predicate a delegated check owns is neither re-validated nor fixed; its evidence is carried
    unchanged.
-2. **Order by priority,** as [Assessing Criticality and Confidence](../skills/repo-assessing-criticality-confidence/SKILL.md)
+2. **Order by priority,** as [Assessing Criticality and Confidence](../.agents/skills/repo-assessing-criticality-confidence/SKILL.md)
    explains.
 3. **Re-validate each finding** against the current files, and rate its confidence per
-   [Confidence and Re-Validation](../../repo-governance/development/quality/fixer-confidence-levels.md).
+   [Confidence and Re-Validation](../repo-governance/development/quality/fixer-confidence-levels.md).
 4. **Dispose of it** by the three groups under What a Repair May Touch in
-   [Validating Specification Structure](../skills/specs-validating-structure/SKILL.md):
+   [Validating Specification Structure](../.agents/skills/specs-validating-structure/SKILL.md):
    - a repair the skill marks safe after re-checking, still confirmed: `HIGH`, applied;
    - a repair it marks as needing a person: `MEDIUM`, left with its evidence;
    - a matter it leaves alone: not edited, and recorded as outside what a repair may change;
@@ -65,13 +65,13 @@ the fix report, and the fixer or its caller dispatches it, per
    that fails is recorded as failed, and the fixer continues with the next finding.
 7. **Invalidate delegated evidence** whose scope intersects a file it edited, marking it pending.
 8. **Write the fix report,** naming the audit it answers, per
-   [Generating Validation Reports](../skills/repo-generating-validation-reports/SKILL.md): each disposition and the changed
+   [Generating Validation Reports](../.agents/skills/repo-generating-validation-reports/SKILL.md): each disposition and the changed
    files as evidence for each fix.
 
 ## Layout Stays as Recorded
 
 It applies the layout choice recorded under [Specs Checker](specs-checker.md). Under a recorded layout that differs from
-[Specification Tree](../../repo-governance/conventions/structure/specs-directory-structure.md), it never moves files toward
+[Specification Tree](../repo-governance/conventions/structure/specs-directory-structure.md), it never moves files toward
 that convention: a migration moves paths that tools, caches, and bindings rely on, which is planned work.
 
 ## Stopping Rule
@@ -79,7 +79,7 @@ that convention: a migration moves paths that tools, caches, and bindings rely o
 It stops when every finding in the audit has a disposition, whether applied and confirmed, failed, disproved, left for a
 person, or outside what a repair may change, and the fix report is complete. With no readable audit it says so and
 stops. A finding already accepted as a false positive that is raised again is escalated for the rule's owner, per
-[Applying Maker, Checker, and Fixer](../skills/repo-applying-maker-checker-fixer/SKILL.md).
+[Applying Maker, Checker, and Fixer](../.agents/skills/repo-applying-maker-checker-fixer/SKILL.md).
 
 ## What It Does Not Do
 

@@ -57,5 +57,5 @@ flowchart TD
     classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
-A named agent is defined when `.agents/agents/` holds it and its generated route makes it a `subagent_type`. A nested workflow applies this
+A named agent is defined when `agents/` holds it and its generated route makes it a `subagent_type`. A nested workflow applies this
 decision flow recursively, and a procedure's steps are followed directly.

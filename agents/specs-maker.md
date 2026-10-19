@@ -59,15 +59,15 @@ color palette; PM-readability contract serves the dual engineer/TPM audience).
 
 ## Reference Documentation
 
-[App README vs Specs Convention](../../repo-governance/conventions/structure/app-readme-vs-specs.md) —
+[App README vs Specs Convention](../repo-governance/conventions/structure/app-readme-vs-specs.md) —
 combined convention: content split rule, PM-readability contract, BDD/Contracts adoption, spec
-tree shape. [Specs Directory Structure Convention](../../repo-governance/conventions/structure/specs-directory-structure.md) —
+tree shape. [Specs Directory Structure Convention](../repo-governance/conventions/structure/specs-directory-structure.md) —
 canonical path patterns, per-surface variants, domain subdirectory rules.
-[Maker-Checker-Fixer Pattern](../../repo-governance/development/pattern/maker-checker-fixer.md).
-[Specs Validation Workflow](../../repo-governance/workflows/quality/specs-quality-gate.md). Related
+[Maker-Checker-Fixer Pattern](../repo-governance/development/pattern/maker-checker-fixer.md).
+[Specs Validation Workflow](../repo-governance/workflows/quality/specs-quality-gate.md). Related
 agents: [specs-checker](specs-checker.md), [specs-fixer](specs-fixer.md).
 
-- [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md) -
+- [File-Touch Discipline](../repo-governance/development/practice/file-touch-discipline.md) -
   Keep a ledger of every path you touch, carry it through every compaction, leave anything not on
   it alone, and stage explicit paths
 

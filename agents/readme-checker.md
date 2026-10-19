@@ -66,12 +66,12 @@ validating against standards, identifying engagement/accessibility issues.
 
 ## Reference Documentation
 
-[README Quality Convention](../../repo-governance/conventions/writing/readme-quality.md) (MASTER
-reference), [Content Quality Principles](../../repo-governance/conventions/writing/quality.md),
-[Emoji Usage Convention](../../repo-governance/conventions/formatting/emoji.md). Related:
+[README Quality Convention](../repo-governance/conventions/writing/readme-quality.md) (MASTER
+reference), [Content Quality Principles](../repo-governance/conventions/writing/quality.md),
+[Emoji Usage Convention](../repo-governance/conventions/formatting/emoji.md). Related:
 `readme-maker`, `readme-fixer`, `docs-checker`.
 
-- [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md) -
+- [File-Touch Discipline](../repo-governance/development/practice/file-touch-discipline.md) -
   Keep a ledger of every path you touch, carry it through every compaction, leave anything not on
   it alone, and stage explicit paths
 

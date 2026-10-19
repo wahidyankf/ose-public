@@ -59,14 +59,14 @@ required output, and convergence safeguards.
 
 ## Reference Documentation
 
-[Fixer Confidence Levels](../../repo-governance/development/quality/fixer-confidence-levels.md),
-[Maker-Checker-Fixer Pattern](../../repo-governance/development/pattern/maker-checker-fixer.md),
-[README Quality Convention](../../repo-governance/conventions/writing/readme-quality.md),
-[Repository Validation Methodology](../../repo-governance/development/quality/repository-validation.md).
+[Fixer Confidence Levels](../repo-governance/development/quality/fixer-confidence-levels.md),
+[Maker-Checker-Fixer Pattern](../repo-governance/development/pattern/maker-checker-fixer.md),
+[README Quality Convention](../repo-governance/conventions/writing/readme-quality.md),
+[Repository Validation Methodology](../repo-governance/development/quality/repository-validation.md).
 Related: `readme-checker` (generates the audit reports this agent processes), `readme-maker`,
 `repo-workflow-fixer` (similar fixer pattern).
 
-- [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md) -
+- [File-Touch Discipline](../repo-governance/development/practice/file-touch-discipline.md) -
   Keep a ledger of every path you touch, carry it through every compaction, leave anything not on
   it alone, and stage explicit paths
 

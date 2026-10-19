@@ -47,10 +47,10 @@ tutorials (`apps-ayokoding-www-general-maker`), validation
 
 **Project Guidance:**
 
-- [CLAUDE.md](../../CLAUDE.md) - Primary guidance
-- [In-the-Field Tutorial Convention](../../repo-governance/conventions/tutorials/in-the-field.md) -
+- [CLAUDE.md](../CLAUDE.md) - Primary guidance
+- [In-the-Field Tutorial Convention](../repo-governance/conventions/tutorials/in-the-field.md) -
   Primary authority for in-the-field standards
-- [Tutorial Naming Convention](../../repo-governance/conventions/tutorials/naming.md) - In-the-Field
+- [Tutorial Naming Convention](../repo-governance/conventions/tutorials/naming.md) - In-the-Field
   type definition
 
 **Related Agents:**
@@ -61,7 +61,7 @@ tutorials (`apps-ayokoding-www-general-maker`), validation
 **Remember**: Always show standard library first, then introduce frameworks with clear rationale.
 Code must be production-ready with proper error handling, security, and logging.
 
-- [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md) - Keep
+- [File-Touch Discipline](../repo-governance/development/practice/file-touch-discipline.md) - Keep
   a ledger of every path you touch, carry it through every compaction, leave anything not on it
   alone, and stage explicit paths
 

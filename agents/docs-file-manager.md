@@ -72,7 +72,7 @@ file, especially for deletions and large reorganizations.
 - `docs-link-checker.md` - Validates links (use after file operations to verify)
 - `rules-checker.md` - Validates consistency (use for large reorganizations)
 
-- [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md) - Keep
+- [File-Touch Discipline](../repo-governance/development/practice/file-touch-discipline.md) - Keep
   a ledger of every path you touch, carry it through every compaction, leave anything not on it
   alone, and stage explicit paths
 

@@ -11,7 +11,7 @@ when_to_use: >-
 
 This repository follows the [Quality Gate Contract](./quality-gate-contract.md) and
 [Sole-Writer Propagation](./sole-writer-propagation.md). Each family's gate and propagation live in
-[`workflows/quality/`](../../workflows/quality/README.md); its checker and fixer live in `.agents/agents/`. The gates are
+[`workflows/quality/`](../../workflows/quality/README.md); its checker and fixer live in `agents/`. The gates are
 copies of a shared catalog revision, and every adopting commit names it in an `OSE-Rules-Commit:` trailer. Product rules
 live in [Gate Adapters](../quality/gate-adapters/README.md), never in a gate.
 

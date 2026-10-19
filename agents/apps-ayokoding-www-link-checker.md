@@ -46,7 +46,7 @@ comes from `repo-assessing-criticality-confidence`.
 ## Web Research Delegation
 
 This agent has `WebFetch` and `WebSearch` tools but invokes **Exception 3 (link-reachability
-checkers)** of the [Web Research Delegation Convention](../../repo-governance/conventions/writing/web-research-delegation.md).
+checkers)** of the [Web Research Delegation Convention](../repo-governance/conventions/writing/web-research-delegation.md).
 Its domain is URL reachability — HTTP status codes, redirect chains — not content research. It
 invokes `WebFetch` directly against the URL under test; delegating a reachability probe to
 [`web-researcher`](./web-researcher.md) would add latency without improving the signal. If
@@ -71,12 +71,12 @@ Per `repo-applying-maker-checker-fixer`: initialize the report (UUID + progressi
 `docs-validating-links` methodology against external and internal links while writing findings progressively, then finalize status and summary. The same skill
 keeps the known false-positive skip list; each cycle of a calling gate audits the whole frozen scope, for at
 most three cycles, per the
-[Quality Gate Contract](../../repo-governance/development/workflow/quality-gate-contract.md).
+[Quality Gate Contract](../repo-governance/development/workflow/quality-gate-contract.md).
 
 ## Reference Documentation
 
-- [CLAUDE.md](../../CLAUDE.md)
-- [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md) - Keep a ledger of every path you touch, carry it through every compaction, leave anything not on it alone, and stage explicit paths
+- [CLAUDE.md](../CLAUDE.md)
+- [File-Touch Discipline](../repo-governance/development/practice/file-touch-discipline.md) - Keep a ledger of every path you touch, carry it through every compaction, leave anything not on it alone, and stage explicit paths
 
 ## Required Reading
 

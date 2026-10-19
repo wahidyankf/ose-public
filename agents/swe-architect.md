@@ -43,7 +43,7 @@ Before implementation, when a task touches a module boundary, adds a dependency,
 settles.
 
 The rest of this section is in
-[SWE Architect Modes](../../repo-governance/development/agents/swe-agent-procedures/swe-architect-modes.md#design); read
+[SWE Architect Modes](../repo-governance/development/agents/swe-agent-procedures/swe-architect-modes.md#design); read
 it in full before acting.
 
 ### Final Review
@@ -65,7 +65,7 @@ occurrence. On a plan-only change under
 the design decisions the plan makes.
 
 The rest of this section is in
-[SWE Architect Modes](../../repo-governance/development/agents/swe-agent-procedures/swe-architect-modes.md#lens); read
+[SWE Architect Modes](../repo-governance/development/agents/swe-agent-procedures/swe-architect-modes.md#lens); read
 it in full before acting.
 
 ## Adopter Decision: ADR location
@@ -84,7 +84,7 @@ and immutability follow Architecture Decision Records under either option.
 
 `shell` reads history and traces imports and call paths across modules; it changes no tracked file. `network` serves a
 single fetch of a dependency's or standard's documentation page whose address is already known, exception 1 of
-[Web Research Delegation](../../repo-governance/conventions/writing/web-research-delegation.md). Research needing more
+[Web Research Delegation](../repo-governance/conventions/writing/web-research-delegation.md). Research needing more
 returns to the caller as a research need.
 
 ## Stopping Rule

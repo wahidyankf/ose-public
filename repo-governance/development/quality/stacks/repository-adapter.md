@@ -67,7 +67,7 @@ The adopted `swe-*` agents load five catalog skills under local names: `applying
 `generating-validation-reports` as `repo-generating-validation-reports`, `design-fidelity-review` as
 `web-testing-design-fidelity`, and `usability-heuristic-evaluation` as `web-testing-usability-heuristics`.
 Every other adopted skill keeps its catalog name. The local `apps-deploying-vercel-branches` skill serves Deploy mode;
-[SWE Releaser Cut](../../../../.agents/agents/swe-releaser.md#cut) adopts the pinned Release Cut workflow and
+[SWE Releaser Cut](../../../../agents/swe-releaser.md#cut) adopts the pinned Release Cut workflow and
 Cutting Releases skill directly for versioned releases.
 
 ## Release Build Location

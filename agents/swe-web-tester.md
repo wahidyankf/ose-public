@@ -37,8 +37,8 @@ The caller names one charter per pass. With none named, it asks rather than gues
 
 | Charter       | Judges                                                                                           | Inside                                                                                                                                                                                             |
 | ------------- | ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `spec`        | behaviour, design fidelity, and accessibility no scanner settles, against the specification      | [UI Web Quality Gate](../../repo-governance/workflows/quality/ui-web-quality-gate.md), as its judge                                                                                                |
-| `design`      | the render against approved designs, runtime tokens, primitives, and cited design practice       | [UX Review Fix Planning](../../repo-governance/workflows/quality/ux-review-fix-planning.md), third pass                                                                                            |
+| `spec`        | behaviour, design fidelity, and accessibility no scanner settles, against the specification      | [UI Web Quality Gate](../repo-governance/workflows/quality/ui-web-quality-gate.md), as its judge                                                                                                   |
+| `design`      | the render against approved designs, runtime tokens, primitives, and cited design practice       | [UX Review Fix Planning](../repo-governance/workflows/quality/ux-review-fix-planning.md), third pass                                                                                               |
 | `exploratory` | behaviour against specifications, contracts, and designs, within charters frozen before the pass | [Exploratory and Usability Review](https://github.com/wahidyankf/ose-rules/blob/18760a44f7ae4d88e89c0aa79349297f55bb9d9c/repo-governance/workflows/quality/exploratory-usability-review.md), first |
 
 ## Before the First Action
@@ -53,7 +53,7 @@ requires. An unreachable origin, an unresolved specification, or no browser ends
 ## Procedure
 
 The rest of this section is in
-[SWE Web Tester Procedure](../../repo-governance/development/agents/swe-agent-procedures/swe-web-tester-procedure.md#procedure);
+[SWE Web Tester Procedure](../repo-governance/development/agents/swe-agent-procedures/swe-web-tester-procedure.md#procedure);
 read it in full before acting.
 
 ## Inside the UI Web Quality Gate
@@ -66,7 +66,7 @@ build and smoke-tests what the repair touched. It never rates confidence, gives 
 ## Where Findings Go
 
 One findings record, at the location the caller names or else under the temporary-report location of
-[Temporary Files](../../repo-governance/development/infra/temporary-files.md), plus the sanitized captures
+[Temporary Files](../repo-governance/development/infra/temporary-files.md), plus the sanitized captures
 [Evidence Safety](https://github.com/wahidyankf/ose-rules/blob/18760a44f7ae4d88e89c0aa79349297f55bb9d9c/repo-governance/development/quality/manual-verification/005-evidence-safety.md) requires. The
 record opens in progress, gains each finding as confirmed, and closes with totals, per
 [Agent Authoring](https://github.com/wahidyankf/ose-rules/blob/18760a44f7ae4d88e89c0aa79349297f55bb9d9c/repo-governance/development/agents/agent-authoring.md#reports-are-written-as-findings-are-confirmed).
@@ -76,7 +76,7 @@ Under the gate, findings also return to the gate for its ledger.
 
 `shell` runs the repository's browser automation. `network` reaches the served origin and makes single fetches of a
 standard or design source whose address is already known, exception 1 of
-[Web Research Delegation](../../repo-governance/conventions/writing/web-research-delegation.md); more research returns to
+[Web Research Delegation](../repo-governance/conventions/writing/web-research-delegation.md); more research returns to
 the caller, and the observation stays an open question meanwhile.
 
 ## Stopping Rule

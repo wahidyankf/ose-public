@@ -42,9 +42,9 @@ when_to_use: "Read when you need to confirm whether a topic falls inside this co
 
 ## Related Agents
 
-- [apps-ayokoding-www-by-example-maker](../../../../.agents/agents/apps-ayokoding-www-by-example-maker.md) — Creates by-example content
-- [tutorial-by-example-checker](../../../../.agents/agents/tutorial-by-example-checker.md) — Validates by-example standards
-- [tutorial-by-example-fixer](../../../../.agents/agents/tutorial-by-example-fixer.md) — Applies validated fixes
+- [apps-ayokoding-www-by-example-maker](../../../../agents/apps-ayokoding-www-by-example-maker.md) — Creates by-example content
+- [tutorial-by-example-checker](../../../../agents/tutorial-by-example-checker.md) — Validates by-example standards
+- [tutorial-by-example-fixer](../../../../agents/tutorial-by-example-fixer.md) — Applies validated fixes
 
 ## Related Workflows
 

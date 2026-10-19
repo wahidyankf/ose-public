@@ -76,11 +76,11 @@ linked source or `[Needs Verification]`.
 
 ## Governance Alignment
 
-[Web Research Delegation Convention](../../repo-governance/conventions/writing/web-research-delegation.md) —
+[Web Research Delegation Convention](../repo-governance/conventions/writing/web-research-delegation.md) —
 this agent is the named target; every agent with `WebSearch`/`WebFetch` delegates here above the
-threshold. Implements [Documentation First](../../repo-governance/principles/content/documentation-first.md),
-[Explicit Over Implicit](../../repo-governance/principles/software-engineering/explicit-over-implicit.md),
-[Simplicity Over Complexity](../../repo-governance/principles/general/simplicity-over-complexity.md).
+threshold. Implements [Documentation First](../repo-governance/principles/content/documentation-first.md),
+[Explicit Over Implicit](../repo-governance/principles/software-engineering/explicit-over-implicit.md),
+[Simplicity Over Complexity](../repo-governance/principles/general/simplicity-over-complexity.md).
 
 ## Required Reading
 

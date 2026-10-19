@@ -32,28 +32,28 @@ base, and confirms that each bug fix brings its reproducing test. Recognizing a 
 ## Charter
 
 It owns the test integrity row of
-[Discipline Roster](../../repo-governance/development/quality/pr-review-disciplines.md). Its question
+[Discipline Roster](../repo-governance/development/quality/pr-review-disciplines.md). Its question
 is whether the change weakens a check, never whether the underlying behaviour is now correct, which correctness owns.
 
 Its common findings are the forms of suppression
-[Root Cause Orientation](../../repo-governance/principles/general/root-cause-orientation.md) names, seen in a diff:
+[Root Cause Orientation](../repo-governance/principles/general/root-cause-orientation.md) names, seen in a diff:
 
 - an assertion loosened until it holds, or an error swallowed that a test existed to surface;
 - a test skipped, quarantined, or deleted without a replacement;
 - a coverage floor lowered or an exclusion widened outside the gate change
-  [Test Boundaries and Gates](../../repo-governance/development/behaviour-driven-development.md) requires;
+  [Test Boundaries and Gates](../repo-governance/development/behaviour-driven-development.md) requires;
 - a repaired defect lacking the test
-  [Regression Tests](../../repo-governance/development/quality/regression-test-mandate.md)
+  [Regression Tests](../repo-governance/development/quality/regression-test-mandate.md)
   requires, or carrying one that would also pass on the defective code.
 
 A gate that was already failing and is worked around rather than repaired is a finding under
-[Preexisting Error Resolution](../../repo-governance/development/practice/proactive-preexisting-error-resolution.md), even
+[Preexisting Error Resolution](../repo-governance/development/practice/proactive-preexisting-error-resolution.md), even
 when the change did not introduce the failure.
 
 ## Suppression
 
 Beyond the shared list in
-[Cost and Noise Controls](../../repo-governance/development/quality/pr-review-disciplines.md),
+[Cost and Noise Controls](../repo-governance/development/quality/pr-review-disciplines.md),
 it never raises:
 
 - a simplified test that still exercises the same behaviour at the same strength;
@@ -63,7 +63,7 @@ it never raises:
 
 ## Rating in This Discipline
 
-[Criticality Levels](../../repo-governance/development/quality/criticality-levels.md)
+[Criticality Levels](../repo-governance/development/quality/criticality-levels.md)
 decides every level, and its fixed adjustments override the common cases below:
 
 - `CRITICAL`: a weakened check that hides a defect the change ships, shown by the check passing on the defective state;
@@ -74,17 +74,17 @@ decides every level, and its fixed adjustments override the common cases below:
 ## Procedure
 
 1. Read the brief and the linked plan or issue before the diff. The brief's pin, settled outcomes, and delegated checks
-   bind the pass, per [PR Review](../../repo-governance/workflows/quality/pr-review.md).
-2. Judge exemptions, exclusions, and target changes as [Applying CI Standards](../skills/ci-standards/SKILL.md)
+   bind the pass, per [PR Review](../repo-governance/workflows/quality/pr-review.md).
+2. Judge exemptions, exclusions, and target changes as [Applying CI Standards](../.agents/skills/ci-standards/SKILL.md)
    teaches.
-3. Judge each candidate with [Producing Review Findings](../skills/pr-review-specialist-protocol/SKILL.md), give each kept
+3. Judge each candidate with [Producing Review Findings](../.agents/skills/pr-review-specialist-protocol/SKILL.md), give each kept
    finding everything
-   [Finding Requirements](../../repo-governance/development/quality/pr-review-disciplines.md)
+   [Finding Requirements](../repo-governance/development/quality/pr-review-disciplines.md)
    lists, and return the findings, with notes for other disciplines, to the coordinator,
    [PR Review Checker](pr-review-checker.md).
 
 The surface is the adopter's choice under
-[Review Surface](../../repo-governance/workflows/quality/pr-review-quality-gate/001-review-surface.md); the charter does
+[Review Surface](../repo-governance/workflows/quality/pr-review-quality-gate/001-review-surface.md); the charter does
 not change with it.
 
 ## Shell

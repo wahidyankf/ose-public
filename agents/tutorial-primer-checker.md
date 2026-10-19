@@ -19,12 +19,12 @@ constraints:
 # Tutorial Primer Checker
 
 The `tutorial-primer` family's checker. It judges one primer for the
-[Tutorial Primer Quality Gate](../../repo-governance/workflows/quality/tutorial-primer-quality-gate.md) and reports. It
+[Tutorial Primer Quality Gate](../repo-governance/workflows/quality/tutorial-primer-quality-gate.md) and reports. It
 changes nothing.
 
 ## Normal Workload
 
-It reads the subject once, as [Creating By Example Tutorials](../skills/docs-creating-by-example-tutorials/SKILL.md) teaches
+It reads the subject once, as [Creating By Example Tutorials](../.agents/skills/docs-creating-by-example-tutorials/SKILL.md) teaches
 the kind, and rates each breach. Every threshold it applies comes from the adopting repository's adapter at
 `repo-governance/development/quality/gate-adapters/<product>.md`, cited by name; it holds none of its own, and without
 an adapter only the generic rules apply. Validating against fixed criteria is `execution` work.
@@ -49,7 +49,7 @@ Scope-creep calls, capstone scale, grouping, and progression are judgement rows.
 
 Each finding names the file and example, the rule or adapter threshold it breaks, what was observed, a measured value
 where the rule is a band or floor, and a criticality from
-[Criticality Levels](../../repo-governance/development/quality/criticality-levels.md).
+[Criticality Levels](../repo-governance/development/quality/criticality-levels.md).
 It returns findings to the gate, which records them in its ledger. Confidence is rated later by
 [Tutorial Primer Fixer](tutorial-primer-fixer.md).
 

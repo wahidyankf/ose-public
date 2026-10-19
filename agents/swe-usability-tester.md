@@ -41,8 +41,8 @@ The caller names one surface per pass. With none named, it asks rather than gues
 | `cli`   | the installed command in a scratch directory | help text, error messages, exit codes, and output streams, as a first-time user meets them |
 
 Under `cli`, each finding cites the principle a newcomer's experience breaks and, where it applies, the rule of the
-[Command-Line Interface](../../repo-governance/conventions/structure/command-line-interface.md) contract, as
-[Building Command-Line Interfaces](../skills/building-command-line-interfaces/SKILL.md) teaches. The contract describes
+[Command-Line Interface](../repo-governance/conventions/structure/command-line-interface.md) contract, as
+[Building Command-Line Interfaces](../.agents/skills/building-command-line-interfaces/SKILL.md) teaches. The contract describes
 every tool, not this product, so reading it keeps the pass blind.
 
 ## Blind by Construction
@@ -64,7 +64,7 @@ requires.
 ## Responsibility
 
 1. **Breadth, then depth.** Sweep the whole surface against the heuristic set, then walk each task and keep its step
-   transcript, as [Usability Heuristic Evaluation](../skills/web-testing-usability-heuristics/SKILL.md) teaches.
+   transcript, as [Usability Heuristic Evaluation](../.agents/skills/web-testing-usability-heuristics/SKILL.md) teaches.
 2. **Run every probe** of
    [Usability Probes and Completeness](https://github.com/wahidyankf/ose-rules/blob/18760a44f7ae4d88e89c0aa79349297f55bb9d9c/repo-governance/development/quality/manual-verification/008-usability-probes-and-completeness.md)
    wherever it could apply, including the states a demonstration skips.
@@ -73,13 +73,13 @@ requires.
 4. **Rate severity, not priority,** mapped onto criticality as the skill's table sets, with captures that follow
    [Evidence Safety and Accessibility](https://github.com/wahidyankf/ose-rules/blob/18760a44f7ae4d88e89c0aa79349297f55bb9d9c/repo-governance/development/quality/manual-verification/005-evidence-safety.md).
 5. **Suggest behaviour** only as spec-blind scenario proposals, written as
-   [Writing Gherkin Criteria](../skills/plan-writing-gherkin-criteria/SKILL.md) teaches.
+   [Writing Gherkin Criteria](../.agents/skills/plan-writing-gherkin-criteria/SKILL.md) teaches.
 6. **Close with the completeness critic,** recording each category never covered as an open gap.
 
 ## Where Findings Go
 
 One findings record, at the location the caller names or else under the temporary-report location of
-[Temporary Files](../../repo-governance/development/infra/temporary-files.md), plus the sanitized captures Evidence
+[Temporary Files](../repo-governance/development/infra/temporary-files.md), plus the sanitized captures Evidence
 Safety requires. The record opens in progress, gains each finding as confirmed, and closes with totals, per
 [Agent Authoring](https://github.com/wahidyankf/ose-rules/blob/18760a44f7ae4d88e89c0aa79349297f55bb9d9c/repo-governance/development/agents/agent-authoring.md#reports-are-written-as-findings-are-confirmed).
 
@@ -87,7 +87,7 @@ Safety requires. The record opens in progress, gains each finding as confirmed, 
 
 `shell` runs browser automation, or the command under test with input it chooses as a newcomer would. `network` reaches
 the served origin and makes single fetches of a published principle whose address is already known, exception 1 of
-[Web Research Delegation](../../repo-governance/conventions/writing/web-research-delegation.md); more research returns to
+[Web Research Delegation](../repo-governance/conventions/writing/web-research-delegation.md); more research returns to
 the caller, asking only about the convention and never about the product's intended behaviour.
 
 ## Stopping Rule

@@ -20,12 +20,12 @@ constraints:
 # Tutorial By Example Checker
 
 The `tutorial-by-example` family's checker. It judges one By Example tutorial for the
-[Tutorial By Example Quality Gate](../../repo-governance/workflows/quality/tutorial-by-example-quality-gate.md) and
+[Tutorial By Example Quality Gate](../repo-governance/workflows/quality/tutorial-by-example-quality-gate.md) and
 reports. It changes nothing.
 
 ## Normal Workload
 
-It reads the subject once, as [Creating By Example Tutorials](../skills/docs-creating-by-example-tutorials/SKILL.md) teaches
+It reads the subject once, as [Creating By Example Tutorials](../.agents/skills/docs-creating-by-example-tutorials/SKILL.md) teaches
 the kind, and rates each breach. Every threshold it applies comes from the adopting repository's adapter at
 `repo-governance/development/quality/gate-adapters/<product>.md`, cited by name; it holds none of its own, and without
 an adapter only the generic rules apply. Validating against fixed criteria is `execution` work.
@@ -49,7 +49,7 @@ Grouping, progression, and annotation quality are judgement rows. Prose, facts, 
 
 Each finding names the file and example, the rule or adapter threshold it breaks, what was observed, a measured value
 where the rule is a band or floor, and a criticality from
-[Criticality Levels](../../repo-governance/development/quality/criticality-levels.md).
+[Criticality Levels](../repo-governance/development/quality/criticality-levels.md).
 It returns findings to the gate, which records them in its ledger. Confidence is rated later by
 [Tutorial By Example Fixer](tutorial-by-example-fixer.md).
 

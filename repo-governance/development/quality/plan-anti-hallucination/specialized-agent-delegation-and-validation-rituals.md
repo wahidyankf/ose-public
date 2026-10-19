@@ -34,7 +34,7 @@ Domain-specialized agents hallucinate less than generic orchestration because th
 - Shell commands without code edits.
 
 `plan-checker` validates that any annotated executor agent name resolves to a real agent file via
-`test -f .agents/agents/<name>.md` (flat canonical directory). Citing a non-existent agent is
+`test -f agents/<name>.md` (flat canonical directory). Citing a non-existent agent is
 treated as AP-7 (HIGH finding).
 
 `plan-execution` Step 2 Agent Selection respects the annotation as the highest-priority match — the suggested executor wins over the heuristic match by file extension or content keyword.

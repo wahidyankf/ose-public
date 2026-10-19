@@ -59,7 +59,7 @@ the restriction. An adopter's copy lists only the family agents that repository 
 - [Repo Setup Manager](repo-setup-manager.md) to prove the checkout's baseline before plan work begins.
 
 Independent tasks run in parallel within the concurrency cap (N=3) and dispatch order of
-[Subagent Orchestration](../../repo-governance/development/agents/subagent-orchestration.md). Each result is verified
+[Subagent Orchestration](../repo-governance/development/agents/subagent-orchestration.md). Each result is verified
 before the next task relies on it, and the results are merged into one report.
 
 ## Completion
@@ -78,14 +78,14 @@ It has no round cap and no repeat guard. It stops early only when it judges itse
 its own; no list of blocker categories binds it.
 
 **Not a quality gate.** The three-cycle cap of the
-[Quality Gate Contract](../../repo-governance/development/workflow/quality-gate-contract.md) binds quality gates and
+[Quality Gate Contract](../repo-governance/development/workflow/quality-gate-contract.md) binds quality gates and
 their propagations, not this agent. Its run is bounded by its deterministic exit criteria instead.
 
 ## Invocation
 
 It runs as the main thread, selected by agent name, or as a subagent of the main session where the harness lets a
 delegated agent spawn agents, as
-[Agent Workflow Orchestration](../../repo-governance/development/agents/agent-workflow-orchestration.md) allows an agent
+[Agent Workflow Orchestration](../repo-governance/development/agents/agent-workflow-orchestration.md) allows an agent
 declaring `dispatches`. Where the harness cannot, it runs as the main thread.
 
 ## Shell

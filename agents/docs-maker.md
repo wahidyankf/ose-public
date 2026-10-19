@@ -29,7 +29,7 @@ markdown: traditional structure (single H1, hierarchical sections), Diátaxis or
 
 **CRITICAL FORMAT RULE**: All documentation MUST use traditional markdown structure (H1,
 sections, paragraphs) — see
-[Indentation Convention](../../repo-governance/conventions/formatting/indentation.md).
+[Indentation Convention](../repo-governance/conventions/formatting/indentation.md).
 
 **See `docs-authoring-standards` Skill** for the correctness-verification checklist, frontmatter
 template, and the AGENTS.md navigation-document philosophy. **See `docs-applying-diataxis-framework`
@@ -51,7 +51,7 @@ sonnet); the more demanding narrative-flow tutorial authoring stays with opus vi
 4. Add proper frontmatter (title, description, category, tags) and validate all links
 5. Test code examples and command sequences; document assumptions/prerequisites/versions
 6. Apply the two-tier rule-reference format (link on first mention, inline code after) — see
-   [Linking Convention](../../repo-governance/conventions/formatting/linking.md)
+   [Linking Convention](../repo-governance/conventions/formatting/linking.md)
 7. Use inline `WebSearch`/`WebFetch` only for single-shot verification; delegate multi-page
    research to `web-researcher`
 
@@ -60,14 +60,14 @@ sonnet); the more demanding narrative-flow tutorial authoring stays with opus vi
 **Project Guidance**: `AGENTS.md`,
 `repo-governance/development/agents/ai-agents.md`
 
-**Documentation Conventions**: [Conventions Index](../../repo-governance/conventions/README.md),
-[File Naming](../../repo-governance/conventions/structure/file-naming.md),
-[Diátaxis Framework](../../repo-governance/conventions/structure/diataxis-framework.md),
-[Color Accessibility](../../repo-governance/conventions/formatting/color-accessibility.md)
+**Documentation Conventions**: [Conventions Index](../repo-governance/conventions/README.md),
+[File Naming](../repo-governance/conventions/structure/file-naming.md),
+[Diátaxis Framework](../repo-governance/conventions/structure/diataxis-framework.md),
+[Color Accessibility](../repo-governance/conventions/formatting/color-accessibility.md)
 
 **Structure**: `docs/{tutorials,how-to,reference,explanation}/README.md`
 
-- [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md) -
+- [File-Touch Discipline](../repo-governance/development/practice/file-touch-discipline.md) -
   Keep a ledger of every path you touch, carry it through every compaction, leave anything not
   on it alone, and stage explicit paths
 

@@ -28,7 +28,7 @@ skills:
 ## Lifecycle Handoff
 
 Under a quality gate, never report or fix a property the gate's Deterministic Boundary lists; its declared tool
-owns it, per the [Quality Gate Contract](../../repo-governance/development/workflow/quality-gate-contract.md).
+owns it, per the [Quality Gate Contract](../repo-governance/development/workflow/quality-gate-contract.md).
 
 ## Agent Metadata
 
@@ -74,14 +74,14 @@ parameter handling (lax/normal/strict/all).
 
 **Related Conventions**:
 
-- [Fixer Confidence Levels](../../repo-governance/development/quality/fixer-confidence-levels.md)
-- [Maker-Checker-Fixer Pattern](../../repo-governance/development/pattern/maker-checker-fixer.md)
-- [Tutorial Convention](../../repo-governance/conventions/tutorials/general.md) - Primary
+- [Fixer Confidence Levels](../repo-governance/development/quality/fixer-confidence-levels.md)
+- [Maker-Checker-Fixer Pattern](../repo-governance/development/pattern/maker-checker-fixer.md)
+- [Tutorial Convention](../repo-governance/conventions/tutorials/general.md) - Primary
   reference for tutorial standards and validation criteria
-- [Tutorial Naming Convention](../../repo-governance/conventions/tutorials/naming.md)
-- [Repository Validation Methodology](../../repo-governance/development/quality/repository-validation.md)
+- [Tutorial Naming Convention](../repo-governance/conventions/tutorials/naming.md)
+- [Repository Validation Methodology](../repo-governance/development/quality/repository-validation.md)
 
-- [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md) -
+- [File-Touch Discipline](../repo-governance/development/practice/file-touch-discipline.md) -
   Keep a ledger of every path you touch, carry it through every compaction, leave anything not on
   it alone, and stage explicit paths
 

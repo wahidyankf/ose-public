@@ -59,7 +59,7 @@ waits.
 - [Playwright e2e development skill](../../../.agents/skills/writing-browser-e2e-tests/SKILL.md)
   — the authoritative in-repo home for Playwright standards, and the natural place for a documented
   caveat if the remedy turns out to be documentation rather than config.
-- [`ci-checker` agent](../../../.agents/agents/ci-checker.md) — already validates projects against CI
+- [`ci-checker` agent](../../../agents/ci-checker.md) — already validates projects against CI
   conventions including E2E pairing and env-variable compliance; the plausible host for an automated
   guard flagging any new `*-e2e` config that hardcodes `true`.
 - [`ayokoding-www-e2e-flake-under-concurrent-load`](./ayokoding-www-e2e-flake-under-concurrent-load.md) — a sibling

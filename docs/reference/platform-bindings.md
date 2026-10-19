@@ -19,7 +19,7 @@ bindings live in their own directories and are explicitly excluded from the
 ## Current stable v0.12 contract
 
 The checksum-pinned v0.12 Rhino configuration is authoritative. Canonical content is `AGENTS.md`,
-`.agents/agents/*.md`, and `.agents/skills/*/SKILL.md`. The current profiles generate only the
+`agents/*.md`, and `.agents/skills/*/SKILL.md`. The current profiles generate only the
 declared routes: Claude receives `CLAUDE.md`, one route `.claude/agents/{name}.md` per canonical
 agent, and one pointer `.claude/skills/{name}/SKILL.md` per canonical skill; Codex receives
 `.codex/agents/` and OpenCode receives `.opencode/agents/` for every canonical agent, and OpenCode
@@ -99,7 +99,7 @@ directory and fails naming any file it cannot classify.
 
 | Class       | What it means                                                               | Paths here                                                                                                                         |
 | ----------- | --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `source`    | Hand-authored canonical input; never written by the emitter                 | `.claude/`, `.agents/agents/`, `CLAUDE.md`, `AGENTS.md`                                                                            |
+| `source`    | Hand-authored canonical input; never written by the emitter                 | `.claude/`, `agents/`, `CLAUDE.md`, `AGENTS.md`                                                                                    |
 | `generated` | Emitted from canonical source; must reproduce byte-for-byte                 | `.opencode/agents/`, `.codex/agents/`, `.agents/skills/` (emitter-owned subdirectories)                                            |
 | `vendored`  | Third-party payload with no in-repo source; survives regeneration untouched | `.opencode/opencode.json`, `.codex/config.toml`, `.codex/ci-monitor-subagent.toml`, the eight `.agents/skills/` plugin directories |
 
@@ -381,7 +381,7 @@ configuration decides: a primary agent falls back to the globally configured mod
 to the model of the primary that invoked it. OpenCode has no `inherit` sentinel — omitting the key
 is the only way to express inheritance.
 
-- **Source**: `.agents/agents/<name>.md` metadata `tier:` field
+- **Source**: `agents/<name>.md` metadata `tier:` field
 - **Transform**: the declared `opencode` profile omits a model projection, so the native adapter
   drops the field
 - **Sink**: `.opencode/agents/<name>.md` — no `model:` key is written
@@ -405,7 +405,7 @@ per-action verdict of `allow`, `ask`, or `deny`, it supports sub-patterns for ba
 wins**, which makes declaration order significant. This repository's generated mirrors emit
 `permission`; `tools` appears only in the vendored `opencode.json`, never in an emitted agent file.
 
-- **Source**: `.agents/agents/<name>.md` metadata `capabilities:` and `constraints:` lists
+- **Source**: `agents/<name>.md` metadata `capabilities:` and `constraints:` lists
 - **Transform**: the declared Rhino adapter profile
 - **Sink**: `.opencode/agents/<name>.md` frontmatter `permission:` map (`read: allow`, `write: allow`, etc.)
 

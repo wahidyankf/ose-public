@@ -31,7 +31,7 @@ and weightings its skill sets out is `execution` work.
 
 `folders`: the specification folders to audit. Each is audited with its subfolders and nothing else; a folder a listed
 one links to stays out of scope. Cross-folder consistency runs only when two or more are listed, as
-[Specs Quality Gate](../../repo-governance/workflows/quality/specs-quality-gate.md) requires.
+[Specs Quality Gate](../repo-governance/workflows/quality/specs-quality-gate.md) requires.
 
 ## Adopter Decision: Layout and Structure Check
 
@@ -46,22 +46,22 @@ applies what the repository records.
 | structure check | none               | judges existence, counts, and tree shape by reading, as the gate's judgeable properties | nothing to maintain; those judgements are not exactly repeatable      |
 
 With no layout recorded, it applies
-[Specification Tree](../../repo-governance/conventions/structure/specs-directory-structure.md) and reports the missing
+[Specification Tree](../repo-governance/conventions/structure/specs-directory-structure.md) and reports the missing
 decision.
 
 ## What It Judges
 
-[Validating Specification Structure](../skills/specs-validating-structure/SKILL.md) carries the judgement and
+[Validating Specification Structure](../.agents/skills/specs-validating-structure/SKILL.md) carries the judgement and
 typical level for each category:
 
 1. **Index quality.** Each index says what its folder holds, per
-   [Directory Indexes](../../repo-governance/conventions/structure/governance-readme-completeness.md).
+   [Directory Indexes](../repo-governance/conventions/structure/governance-readme-completeness.md).
 2. **Feature format.** Headers, user stories, shared preconditions, and naming, per
-   [Discovery and Scenarios](../../repo-governance/development/behaviour-driven-development.md).
+   [Discovery and Scenarios](../repo-governance/development/behaviour-driven-development.md).
 3. **Cross-folder consistency.** Counterpart folders state shared rules, actors, and entities alike.
 4. **Architecture views.** The as-built document agrees with itself across levels, per
    Architecture Specifications,
-   with colour judged by [Color Accessibility](../../repo-governance/conventions/formatting/color-accessibility.md).
+   with colour judged by [Color Accessibility](../repo-governance/conventions/formatting/color-accessibility.md).
 5. **References.** Each target still holds what the text claims it holds.
 6. **Implementation alignment.** Each implementation a specification names exists.
 
@@ -72,7 +72,7 @@ never as a defect.
 
 Each finding names the folder, the file and location, the category, the rule it breaks, what was observed, and its
 criticality under
-[Criticality Levels](../../repo-governance/development/quality/criticality-levels.md).
+[Criticality Levels](../repo-governance/development/quality/criticality-levels.md).
 The checker returns the structure check's results first, then its findings and how many folders and files it read, to
 its caller; zero read is never a clean result. Accepted false positives the caller supplies are noted and left out of
 the count.

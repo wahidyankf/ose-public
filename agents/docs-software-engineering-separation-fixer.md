@@ -26,22 +26,22 @@ Repairs the style guides and their cross-links from the rows of a frozen ledger,
 ## Normal Workload
 
 It executes
-[Software Engineering Separation Propagation](../../repo-governance/workflows/quality/docs-software-engineering-separation-propagation.md),
+[Software Engineering Separation Propagation](../repo-governance/workflows/quality/docs-software-engineering-separation-propagation.md),
 the family's sole writer under
-[Sole-Writer Propagation](../../repo-governance/development/workflow/sole-writer-propagation.md). Rereading a file
+[Sole-Writer Propagation](../repo-governance/development/workflow/sole-writer-propagation.md). Rereading a file
 against a row, then editing only the span it names, is `execution` work.
 
 ## Procedure
 
-1. **Order by priority,** as [Assessing Criticality and Confidence](../skills/repo-assessing-criticality-confidence/SKILL.md)
+1. **Order by priority,** as [Assessing Criticality and Confidence](../.agents/skills/repo-assessing-criticality-confidence/SKILL.md)
    explains.
 2. **Re-validate each row** against the current files and rate its confidence per
-   [Confidence and Re-Validation](../../repo-governance/development/quality/fixer-confidence-levels.md). The rating
+   [Confidence and Re-Validation](../repo-governance/development/quality/fixer-confidence-levels.md). The rating
    decides the row's status, as
-   [Applying Maker, Checker, and Fixer](../skills/repo-applying-maker-checker-fixer/SKILL.md) maps it.
+   [Applying Maker, Checker, and Fixer](../.agents/skills/repo-applying-maker-checker-fixer/SKILL.md) maps it.
 3. **Follow the propagation's sequence:** table entries, Prerequisite Knowledge sections, duplicated teaching replaced
    by a pointer to the AyoKoding path, then cross-links, as the
-   [fixing patterns](../skills/docs-validating-software-engineering-separation/reference/fixing-workflow-and-patterns.md)
+   [fixing patterns](../.agents/skills/docs-validating-software-engineering-separation/reference/fixing-workflow-and-patterns.md)
    show.
 4. **Verify each row** by rereading the file and running the repository's checks over the edited files, then record its
    status and evidence on the ledger.

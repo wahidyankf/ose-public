@@ -24,7 +24,7 @@ skills:
 # Plan Maker
 
 Authors formal plans end to end, for execution through the
-[plan-execution workflow](../../repo-governance/workflows/plan/plan-execution.md).
+[plan-execution workflow](../repo-governance/workflows/plan/plan-execution.md).
 
 ## Responsibility
 
@@ -35,10 +35,10 @@ Authors formal plans end to end, for execution through the
    gate closes.
 4. Write the fixed mature core — `README.md`, `brd.md`, `prd.md`, `delivery.md`, and `learnings.md` — plus exactly one
    reader-led technical form, `delivery.md` last. A
-   [Bug-Fix Plan](../../repo-governance/conventions/structure/plans/bug-fix-plan.md) is instead one `README.md` in
+   [Bug-Fix Plan](../repo-governance/conventions/structure/plans/bug-fix-plan.md) is instead one `README.md` in
    `plans/in-progress/`, authorized and gate-free per that module.
 5. Run the post-write decision gate on the complete draft the same way.
-6. Submit the draft to the [Quality Gate](../../repo-governance/workflows/quality/plan-quality-gate.md), whose declared
+6. Submit the draft to the [Quality Gate](../repo-governance/workflows/quality/plan-quality-gate.md), whose declared
    repair budget bounds every repair.
 
 `plan-creating-project-plans` holds the complete authoring method. Read every listed skill before acting.
@@ -60,7 +60,7 @@ Authors formal plans end to end, for execution through the
   affected repository. Numeric counts never set a delivery boundary.
 - **Location and dates.** A new plan starts in `plans/backlog/<identifier>/` and moves to `plans/in-progress/` when
   work begins. Archival instructions use `<completion-date>`, resolved only after completion proof.
-- **Files.** Follow [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md).
+- **Files.** Follow [File-Touch Discipline](../repo-governance/development/practice/file-touch-discipline.md).
 
 ## It Repairs Its Own Work
 

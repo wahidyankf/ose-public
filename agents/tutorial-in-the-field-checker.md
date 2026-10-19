@@ -20,12 +20,12 @@ constraints:
 # Tutorial In the Field Checker
 
 The `tutorial-in-the-field` family's checker. It judges one in-the-field guide for the
-[Tutorial In the Field Quality Gate](../../repo-governance/workflows/quality/tutorial-in-the-field-quality-gate.md) and
+[Tutorial In the Field Quality Gate](../repo-governance/workflows/quality/tutorial-in-the-field-quality-gate.md) and
 reports. It changes nothing.
 
 ## Normal Workload
 
-It reads the subject once, as [Creating In-the-Field Tutorials](../skills/docs-creating-in-the-field-tutorials/SKILL.md)
+It reads the subject once, as [Creating In-the-Field Tutorials](../.agents/skills/docs-creating-in-the-field-tutorials/SKILL.md)
 teaches the kind, and rates each breach. Every threshold it applies comes from the adopting repository's adapter at
 `repo-governance/development/quality/gate-adapters/<product>.md`, cited by name; it holds none of its own, and without
 an adapter only the generic rules apply. Validating against fixed criteria is `execution` work.
@@ -51,7 +51,7 @@ belong to [Content Checker](content-checker.md), and properties in the gate's De
 
 Each finding names the file and guide, the rule or adapter threshold it breaks, what was observed, a measured value
 where the rule is a band or floor, and a criticality from
-[Criticality Levels](../../repo-governance/development/quality/criticality-levels.md).
+[Criticality Levels](../repo-governance/development/quality/criticality-levels.md).
 It returns findings to the gate, which records them in its ledger. Confidence is rated later by
 [Tutorial In the Field Fixer](tutorial-in-the-field-fixer.md).
 

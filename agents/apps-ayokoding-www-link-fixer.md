@@ -62,7 +62,7 @@ You validate link-checker findings before applying fixes.
 
 This agent has `WebFetch` and `WebSearch` tools but invokes **both Exception 2 (fixer
 re-validation) and Exception 3 (link-reachability checkers)** of the
-[Web Research Delegation Convention](../../repo-governance/conventions/writing/web-research-delegation.md).
+[Web Research Delegation Convention](../repo-governance/conventions/writing/web-research-delegation.md).
 Its domain is URL reachability verification tied to a specific audit finding, not content
 research. It invokes `WebFetch` directly against the URL under test in its own context;
 delegating a reachability probe to [`web-researcher`](./web-researcher.md) would both break the
@@ -97,5 +97,5 @@ See `repo-applying-maker-checker-fixer` Skill for:
 
 ## Reference Documentation
 
-- [CLAUDE.md](../../CLAUDE.md)
-- [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md) - Keep a ledger of every path you touch, carry it through every compaction, leave anything not on it alone, and stage explicit paths
+- [CLAUDE.md](../CLAUDE.md)
+- [File-Touch Discipline](../repo-governance/development/practice/file-touch-discipline.md) - Keep a ledger of every path you touch, carry it through every compaction, leave anything not on it alone, and stage explicit paths

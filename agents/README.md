@@ -17,7 +17,7 @@ Humans edit only the canonical file. `./rhino harness adapters generate` renders
 
 For a gate family the read-only `<family>-checker` writes a frozen ledger and the `<family>-fixer` executes
 `<family>-propagation`, the sole writer, per the
-[Quality Gate Contract](../../repo-governance/development/workflow/quality-gate-contract.md).
+[Quality Gate Contract](../repo-governance/development/workflow/quality-gate-contract.md).
 
 ## Directory Map
 

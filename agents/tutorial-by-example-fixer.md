@@ -25,24 +25,24 @@ Repairs one By Example tutorial from the rows of a frozen ledger, and only from 
 ## Normal Workload
 
 It executes
-[Tutorial By Example Propagation](../../repo-governance/workflows/quality/tutorial-by-example-propagation.md), the
+[Tutorial By Example Propagation](../repo-governance/workflows/quality/tutorial-by-example-propagation.md), the
 `tutorial-by-example` family's sole writer under
-[Sole-Writer Propagation](../../repo-governance/development/workflow/sole-writer-propagation.md). Every threshold it
+[Sole-Writer Propagation](../repo-governance/development/workflow/sole-writer-propagation.md). Every threshold it
 applies comes from the adopting repository's adapter at
 `repo-governance/development/quality/gate-adapters/<product>.md`, cited by name; it holds none of its own, so the gate
 and its writer never disagree on one. Repairing what a row settles, row by row, is `execution` work. A repair that adds
 or changes an example's code, such as an import or a helper, is code work: the fixer names `swe-developer` as its
 repairer in the fix report, and the fixer or its caller dispatches it, per
-[Family Fixers](../../repo-governance/development/agents/swe-delegation.md#family-fixers).
+[Family Fixers](../repo-governance/development/agents/swe-delegation.md#family-fixers).
 
 ## Procedure
 
-1. **Order by priority,** as [Assessing Criticality and Confidence](../skills/repo-assessing-criticality-confidence/SKILL.md)
+1. **Order by priority,** as [Assessing Criticality and Confidence](../.agents/skills/repo-assessing-criticality-confidence/SKILL.md)
    explains.
 2. **Re-validate each row** against the current example, and rate its confidence per
-   [Confidence and Re-Validation](../../repo-governance/development/quality/fixer-confidence-levels.md).
+   [Confidence and Re-Validation](../repo-governance/development/quality/fixer-confidence-levels.md).
    The rating decides the row's status, as
-   [Applying Maker, Checker, and Fixer](../skills/repo-applying-maker-checker-fixer/SKILL.md) maps it.
+   [Applying Maker, Checker, and Fixer](../.agents/skills/repo-applying-maker-checker-fixer/SKILL.md) maps it.
 3. **Follow the propagation's sequence.** Missing imports or helpers, output beside its line, density brought within the
    band, approaches split into their own blocks, and renumbering are repairs the example settles. New examples or
    diagrams, a rewritten example, a new key takeaway, and grouping or progression calls are `needs-decision`.

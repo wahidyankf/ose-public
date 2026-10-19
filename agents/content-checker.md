@@ -22,7 +22,7 @@ constraints:
 # Content Checker
 
 The `content` family's checker. It judges published pages for the
-[Content Quality Gate](../../repo-governance/workflows/quality/content-quality-gate.md) and reports. It changes nothing.
+[Content Quality Gate](../repo-governance/workflows/quality/content-quality-gate.md) and reports. It changes nothing.
 
 ## Normal Workload
 
@@ -34,11 +34,11 @@ that settles it, and rates each breach. Validating against fixed criteria is `ex
 The gate's cycle owns the seven questions; this checker answers them per page:
 
 1. voice, headings, accessible content, and code-fence language, as
-   [Applying Content Quality](../skills/docs-applying-content-quality/SKILL.md) reads them;
+   [Applying Content Quality](../.agents/skills/docs-applying-content-quality/SKILL.md) reads them;
 2. every factual claim against an authoritative source, as
-   [Validating Factual Accuracy](../skills/docs-validating-factual-accuracy/SKILL.md) labels it;
+   [Validating Factual Accuracy](../.agents/skills/docs-validating-factual-accuracy/SKILL.md) labels it;
 3. internal links, image links, anchors, and external reachability, as
-   [Validating Links](../skills/docs-validating-links/SKILL.md) checks them; and
+   [Validating Links](../.agents/skills/docs-validating-links/SKILL.md) checks them; and
 4. every product rule the page's adapter at `repo-governance/development/quality/gate-adapters/<product>.md` states, by
    name.
 
@@ -49,7 +49,7 @@ finding, and a claim no source settles is reported as unverified, never as wrong
 
 Each finding names the page and location, the rule or adapter clause it breaks, the source that settled a factual claim,
 and a criticality from
-[Criticality Levels](../../repo-governance/development/quality/criticality-levels.md).
+[Criticality Levels](../repo-governance/development/quality/criticality-levels.md).
 It returns findings to the gate, which records them in its ledger. Confidence is rated later by
 [Content Fixer](content-fixer.md).
 
@@ -57,7 +57,7 @@ It returns findings to the gate, which records them in its ledger. Confidence is
 
 `shell` lists pages and runs the repository's read-only checks. `network` reads authoritative sources and requests an
 external address only to see whether it responds. Research beyond the threshold in
-[Web Research Delegation](../../repo-governance/conventions/writing/web-research-delegation.md) goes back to its caller,
+[Web Research Delegation](../repo-governance/conventions/writing/web-research-delegation.md) goes back to its caller,
 and the claim stays unverified meanwhile.
 
 ## Stopping Rule

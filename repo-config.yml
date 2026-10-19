@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/wahidyankf/rhino/v0.13.0/schemas/repo-config/v2.schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/wahidyankf/rhino/v0.15.0/schemas/repo-config/v2.schema.json
 # Repository-owned policy for the checksum-pinned Rhino candidate.
 #
 # The grouped document contains no legacy compatibility section. Each retained
@@ -42,6 +42,7 @@ scan:
     - taste
 
 harness:
+  agents-root: agents
   canonical:
     agents:
       name: name
@@ -559,14 +560,52 @@ harness:
         plan: {}
         execution: {}
         fast: {}
+    - id: muse
+      supports:
+        capabilities:
+          - repository-read
+          - repository-write
+          - shell
+          - network
+          - subagent
+        constraints:
+          - read-only
+          - no-edit
+          - no-glob
+          - no-read
+          - no-write
+        routes:
+          - canonical-import
+        identities:
+          - description
+      agent-adapter:
+        path: ".agents/agents/{name}/AGENT.md"
+        format: front-matter
+        route-field: body
+        route:
+          "Before acting, read the complete canonical agent definition at the repository-root path\n{path} and follow it
+          as authoritative.\nIf it cannot be read, stop and report the missing path."
+        identity:
+          name: name
+          description: description
+        tier-fields:
+          model: model
+          effort: effort
+      tiers:
+        ultra: { model: muse-wonder-1.0, effort: high }
+        plan: { model: muse-spark-1.3, effort: xhigh }
+        execution: { model: muse-spark-1.3, effort: high }
+        fast: { model: muse-spark-1.3, effort: medium }
 
 policies:
   markdown:
     metadata:
       surfaces:
-        - glob: ".agents/agents/*.md"
+        - glob: "agents/*.md"
           schema: agent
-        - glob: ".agents/agents/README.md"
+        - glob: ".agents/**/README.md"
+          schema: governance
+        - glob: "agents/**/README.md"
           schema: governance
         - glob: ".agents/skills/grill-me/SKILL.md"
           schema: skill
@@ -590,7 +629,7 @@ policies:
         - glob: "repo-governance/**/*.md"
           require: [description, when_to_use]
           forbid: [updated, created]
-        - glob: ".agents/agents/*.md"
+        - glob: "agents/*.md"
           require: []
           forbid: [updated]
         - glob: ".agents/skills/**/*.md"
@@ -710,6 +749,7 @@ policies:
       exempt:
         - "**/README.md"
         - "**/SKILL.md"
+        - "**/AGENT.md"
         - "**/AGENTS.md"
         - "**/CLAUDE.md"
         - "**/_index.md"
@@ -726,7 +766,7 @@ policies:
     # deliberately not set: it checks declared file and text pairs, not that each link is annotated.
     readme-index:
       trees:
-        - path: .agents/agents
+        - path: agents
           require-direct-children: true
         - path: .agents/skills
           require-direct-children: true
@@ -940,12 +980,14 @@ policies:
         - { glob: ".codex/**/*.md", target: 650, warn: 750, fail: 750 }
         - { glob: ".opencode/**/*.md", target: 650, warn: 750, fail: 750 }
         - { glob: ".agents/**/*.md", target: 650, warn: 750, fail: 750 }
+        - { glob: "agents/**/*.md", target: 650, warn: 750, fail: 750 }
         - { glob: "AGENTS.md", target: 650, warn: 750, fail: 750 }
         - { glob: "CLAUDE.md", target: 650, warn: 750, fail: 750 }
         - { glob: "repo-governance/**/README.md", target: 900, warn: 1000, fail: 1000 }
         - { glob: ".codex/**/README.md", target: 900, warn: 1000, fail: 1000 }
         - { glob: ".opencode/**/README.md", target: 900, warn: 1000, fail: 1000 }
         - { glob: ".agents/**/README.md", target: 900, warn: 1000, fail: 1000 }
+        - { glob: "agents/**/README.md", target: 900, warn: 1000, fail: 1000 }
         - { glob: "apps/**/README.md", target: 900, warn: 1000, fail: 1000 }
         - { glob: "libs/**/README.md", target: 900, warn: 1000, fail: 1000 }
         - { glob: ".github/**/README.md", target: 900, warn: 1000, fail: 1000 }
@@ -957,7 +999,7 @@ policies:
     # propagation, checker, and fixer; product rules live in repo-governance/development/quality/gate-adapters/.
     quality-gates:
       root: repo-governance/workflows
-      agents: .agents/agents
+      agents: agents
       groups: [plan, quality, maintenance]
       gate-group: quality
       gate-headings:

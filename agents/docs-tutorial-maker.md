@@ -59,22 +59,22 @@ quality (use `docs-tutorial-checker`); fixing tutorial issues (use `docs-tutoria
 ## File Naming
 
 Tutorial files follow `tu-[content-identifier].md` (e.g., `tu-getting-started-with-nodejs.md`).
-See [File Naming Convention](../../repo-governance/conventions/structure/file-naming.md).
+See [File Naming Convention](../repo-governance/conventions/structure/file-naming.md).
 
 ## Reference Documentation
 
-**Tutorial Standards**: [Tutorial Naming Convention](../../repo-governance/conventions/tutorials/naming.md),
-[By Example Content Standard](../../repo-governance/conventions/tutorials/programming-language-content.md)
+**Tutorial Standards**: [Tutorial Naming Convention](../repo-governance/conventions/tutorials/naming.md),
+[By Example Content Standard](../repo-governance/conventions/tutorials/programming-language-content.md)
 
-**Content/Formatting**: [Content Quality Principles](../../repo-governance/conventions/writing/quality.md),
-[Diátaxis Framework](../../repo-governance/conventions/structure/diataxis-framework.md),
-[Diagrams Convention](../../repo-governance/conventions/formatting/diagrams.md),
-[Mathematical Notation](../../repo-governance/conventions/formatting/mathematical-notation.md),
-[Linking Convention](../../repo-governance/conventions/formatting/linking.md)
+**Content/Formatting**: [Content Quality Principles](../repo-governance/conventions/writing/quality.md),
+[Diátaxis Framework](../repo-governance/conventions/structure/diataxis-framework.md),
+[Diagrams Convention](../repo-governance/conventions/formatting/diagrams.md),
+[Mathematical Notation](../repo-governance/conventions/formatting/mathematical-notation.md),
+[Linking Convention](../repo-governance/conventions/formatting/linking.md)
 
 **Related Agents**: `docs-tutorial-checker.md`, `docs-tutorial-fixer.md`, `docs-maker.md`
 
-- [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md) -
+- [File-Touch Discipline](../repo-governance/development/practice/file-touch-discipline.md) -
   Keep a ledger of every path you touch, carry it through every compaction, leave anything not on
   it alone, and stage explicit paths
 

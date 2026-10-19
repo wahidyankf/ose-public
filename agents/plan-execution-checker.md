@@ -43,10 +43,10 @@ against the delivered repository instead of the authored plan. Read every listed
   `plan-execution__{uuid-chain}__{YYYY-MM-DD--HH-MM}__validation.md`. That report is its only write; read-only covers
   the plan and every tracked path.
 - **Execution-time gates.** Confirm operational readiness, manual behavioural assertions under
-  [Evidence Capture](../../repo-governance/development/quality/evidence-capture.md), worktree usage, phase gates,
-  post-execution anti-hallucination, [Knowledge Capture](../../repo-governance/development/quality/knowledge-capture.md)
+  [Evidence Capture](../repo-governance/development/quality/evidence-capture.md), worktree usage, phase gates,
+  post-execution anti-hallucination, [Knowledge Capture](../repo-governance/development/quality/knowledge-capture.md)
   routing as a blocking gate, delivery mode with exact-head pull-request checks, and the
-  [User-Facing Delivery Hardening](../../repo-governance/development/quality/user-facing-delivery-hardening.md) rules.
+  [User-Facing Delivery Hardening](../repo-governance/development/quality/user-facing-delivery-hardening.md) rules.
   An absent semantic review is valid unless the user requested one.
 - **Current contract.** Verify each outcome section's Input, Outcome, Proof, acceptance reference, action checkboxes,
   and separate RED, GREEN, and REFACTOR proof against the delivered state. Rule propagation and as-built C4

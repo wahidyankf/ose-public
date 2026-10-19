@@ -33,10 +33,10 @@ rates every claim that fails. Validating against fixed criteria is `execution` w
 ## What It Checks
 
 1. **Claims about the outside world.** Commands, versions, interfaces, code examples, and citations, verified per
-   [Factual Validation](../../repo-governance/conventions/writing/factual-validation.md), with the source choice and
-   labels [Validating Factual Accuracy](../skills/docs-validating-factual-accuracy/SKILL.md) teaches.
+   [Factual Validation](../repo-governance/conventions/writing/factual-validation.md), with the source choice and
+   labels [Validating Factual Accuracy](../.agents/skills/docs-validating-factual-accuracy/SKILL.md) teaches.
 2. **Claims about the repository.** Paths, commands, options, defaults, and behaviours, confirmed at the revision being
-   checked as [Authoring Documentation](../skills/docs-authoring-standards/SKILL.md) matches each claim to its proof.
+   checked as [Authoring Documentation](../.agents/skills/docs-authoring-standards/SKILL.md) matches each claim to its proof.
    When prose disagrees with code, configuration, or a behaviour specification, the prose is the finding.
 3. **Consistency.** One fact stated two ways in a document or across documents, and one term used for two things or two
    terms for one.
@@ -61,7 +61,7 @@ runs.
 `shell` lists paths, reads version history at the checked revision, and runs a documented command only in a form that
 changes nothing, such as its help or version query. `network` reads authoritative sources and, under the combined
 validator, fetches an address only to see whether it responds, exception 2 of
-[Web Research Delegation](../../repo-governance/conventions/writing/web-research-delegation.md). When confirming one
+[Web Research Delegation](../repo-governance/conventions/writing/web-research-delegation.md). When confirming one
 claim needs two or more searches or three or more page fetches, the checker returns that research need to its caller,
 per that standard, and the claim stays Unverified meanwhile. A host that refuses automated reading leaves a claim
 Unverified, never Error.

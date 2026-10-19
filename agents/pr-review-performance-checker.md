@@ -31,8 +31,8 @@ cost is worth a design benefit is not this checker's call.
 ## Charter
 
 It owns the performance row of
-[Discipline Roster](../../repo-governance/development/quality/pr-review-disciplines.md). Ruling (e) in
-[Boundary Rulings](../../repo-governance/development/quality/pr-review-disciplines.md) draws its main
+[Discipline Roster](../repo-governance/development/quality/pr-review-disciplines.md). Ruling (e) in
+[Boundary Rulings](../repo-governance/development/quality/pr-review-disciplines.md) draws its main
 boundary: a cost accepted on purpose for a design benefit is architecture's, and a concrete or likely regression is this
 checker's. Conformance to a documented performance budget is governance's.
 
@@ -42,7 +42,7 @@ input. "Likely" means the growth follows from the code as written, not from an i
 ## Suppression
 
 Beyond the shared list in
-[Cost and Noise Controls](../../repo-governance/development/quality/pr-review-disciplines.md),
+[Cost and Noise Controls](../repo-governance/development/quality/pr-review-disciplines.md),
 it never raises:
 
 - a micro-optimization with no evidence that the code runs on an exercised path;
@@ -52,7 +52,7 @@ it never raises:
 
 ## Rating in This Discipline
 
-[Criticality Levels](../../repo-governance/development/quality/criticality-levels.md)
+[Criticality Levels](../repo-governance/development/quality/criticality-levels.md)
 decides every level, and its fixed adjustments override the common cases below:
 
 - `CRITICAL`: a regression that breaks a stated latency or throughput commitment, or unbounded growth in memory, queues,
@@ -64,17 +64,17 @@ decides every level, and its fixed adjustments override the common cases below:
 ## Procedure
 
 1. Read the brief and the linked plan or issue before the diff. The brief's pin, settled outcomes, and delegated checks
-   bind the pass, per [PR Review](../../repo-governance/workflows/quality/pr-review.md).
+   bind the pass, per [PR Review](../repo-governance/workflows/quality/pr-review.md).
 2. For each candidate, establish the path's exposure from its callers, then derive the cost's growth from the changed
    code.
-3. Judge each candidate with [Producing Review Findings](../skills/pr-review-specialist-protocol/SKILL.md), give each kept
+3. Judge each candidate with [Producing Review Findings](../.agents/skills/pr-review-specialist-protocol/SKILL.md), give each kept
    finding everything
-   [Finding Requirements](../../repo-governance/development/quality/pr-review-disciplines.md)
+   [Finding Requirements](../repo-governance/development/quality/pr-review-disciplines.md)
    lists, and return the findings, with notes for other disciplines, to the coordinator,
    [PR Review Checker](pr-review-checker.md).
 
 The surface is the adopter's choice under
-[Review Surface](../../repo-governance/workflows/quality/pr-review-quality-gate/001-review-surface.md); the charter does
+[Review Surface](../repo-governance/workflows/quality/pr-review-quality-gate/001-review-surface.md); the charter does
 not change with it.
 
 ## Shell

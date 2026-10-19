@@ -47,7 +47,7 @@ checklist.
 
 Every `overview.md` MUST end with a `## Examples by Level` section listing every example as a deep
 link to the matching `### Example N:` heading on the corresponding level page. See the
-[Examples-by-Level Section rule in the By-Example Tutorial Convention](../../repo-governance/conventions/tutorials/swe-by-example.md#examples-by-level-section-mandatory)
+[Examples-by-Level Section rule in the By-Example Tutorial Convention](../repo-governance/conventions/tutorials/swe-by-example.md#examples-by-level-section-mandatory)
 for the exact format, slug algorithm (`github-slugger`, matches `rehype-slug`), and worked snippet.
 
 Generate this section last, after all level pages are written with their `### Example N: Title`
@@ -61,12 +61,12 @@ wrong anchor or 404.
 
 **Project Guidance:**
 
-- [CLAUDE.md](../../CLAUDE.md) - Primary guidance
-- [By Example Content Standard](../../repo-governance/conventions/tutorials/programming-language-content.md) -
+- [CLAUDE.md](../CLAUDE.md) - Primary guidance
+- [By Example Content Standard](../repo-governance/conventions/tutorials/programming-language-content.md) -
   Annotation requirements
-- [Tutorial Naming Convention](../../repo-governance/conventions/tutorials/naming.md) - By Example
+- [Tutorial Naming Convention](../repo-governance/conventions/tutorials/naming.md) - By Example
   type definition
-- [By-Example Tutorial Convention](../../repo-governance/conventions/tutorials/swe-by-example.md) -
+- [By-Example Tutorial Convention](../repo-governance/conventions/tutorials/swe-by-example.md) -
   Primary authority for by-example standards
 
 **Related Agents:**
@@ -78,7 +78,7 @@ wrong anchor or 404.
 **Remember**: Annotation quality is paramount - every line should have 1.0-2.25 lines of insightful
 comments explaining WHY, not WHAT.
 
-- [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md) - Keep
+- [File-Touch Discipline](../repo-governance/development/practice/file-touch-discipline.md) - Keep
   a ledger of every path you touch, carry it through every compaction, leave anything not on it
   alone, and stage explicit paths
 

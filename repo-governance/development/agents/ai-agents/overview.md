@@ -36,17 +36,17 @@ This convention ensures all agents are:
 
 This convention applies to:
 
-- All canonical agent files in `.agents/agents/` and their generated harness routes
+- All canonical agent files in `agents/` and their generated harness routes
 - References to agents in `AGENTS.md`
 - Agent validation rules in `rules-checker`
 
 ## Platform Bindings
 
 This repository maintains **multi-harness compatibility** across multiple AI coding agent platforms.
-`.agents/agents/` is the agent source of truth. Every harness agent directory, `.claude/agents/`
+`agents/` is the agent source of truth. Every harness agent directory, `.claude/agents/`
 included, holds generated routes, while registry-declared configuration and plugin paths remain vendored.
 
-- **Source of Truth**: The canonical agent directory `.agents/agents/` — edit agents here
+- **Source of Truth**: The canonical agent directory `agents/` — edit agents here
 - **Harness routes (Generated)**: Synced from the canonical sources using `./rhino harness adapters generate`
 - **Secondary exceptions (Vendored)**: Maintained in place as declared by `repo-config.yml`
 

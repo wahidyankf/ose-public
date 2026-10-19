@@ -44,8 +44,8 @@ Markdown file at `md-file` path. If the file already exists, the maker overwrite
 
 ## Step-by-Step Workflow
 
-See [making-conversions-detect-and-extract.md](../../.agents/skills/docs-converting-pdf-to-markdown/reference/making-conversions-detect-and-extract.md)
-and [making-conversions-assemble-and-write.md](../../.agents/skills/docs-converting-pdf-to-markdown/reference/making-conversions-assemble-and-write.md)
+See [making-conversions-detect-and-extract.md](../.agents/skills/docs-converting-pdf-to-markdown/reference/making-conversions-detect-and-extract.md)
+and [making-conversions-assemble-and-write.md](../.agents/skills/docs-converting-pdf-to-markdown/reference/making-conversions-assemble-and-write.md)
 for the complete five-step workflow: PDF type detection, text-based extraction (chunked), the OCR
 path for image-only PDFs, per-element conversion rules (headings via section-numbering depth,
 tables, figures/Mermaid stubs, nested lists, footnotes, headers/footers), assembly, and output
@@ -63,10 +63,10 @@ OCR pages tagged, chunk boundaries invisible) and the tool-graceful-degradation 
 
 ## Reference Documentation
 
-- [Maker-Checker-Fixer Pattern](../../repo-governance/development/pattern/maker-checker-fixer.md)
-- [pdf-to-md-quality-gate workflow](../../repo-governance/workflows/quality/pdf-to-md-quality-gate.md)
+- [Maker-Checker-Fixer Pattern](../repo-governance/development/pattern/maker-checker-fixer.md)
+- [pdf-to-md-quality-gate workflow](../repo-governance/workflows/quality/pdf-to-md-quality-gate.md)
 - **Related Agents**: `pdf-to-md-checker.md`, `pdf-to-md-fixer.md`
-- [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md) - Keep a ledger of every path you touch, carry it through every compaction, leave anything not on it alone, and stage explicit paths
+- [File-Touch Discipline](../repo-governance/development/practice/file-touch-discipline.md) - Keep a ledger of every path you touch, carry it through every compaction, leave anything not on it alone, and stage explicit paths
 
 ## Required Reading
 

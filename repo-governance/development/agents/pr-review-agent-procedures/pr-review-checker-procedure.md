@@ -8,7 +8,7 @@ when_to_use: >-
 
 # PR Review Checker Procedure
 
-Moved verbatim from [pr-review-checker](../../../../.agents/agents/pr-review-checker.md), which links each section here,
+Moved verbatim from [pr-review-checker](../../../../agents/pr-review-checker.md), which links each section here,
 per [Document Word Budget](https://github.com/wahidyankf/ose-rules/blob/18760a44f7ae4d88e89c0aa79349297f55bb9d9c/repo-governance/conventions/structure/document-word-budget.md).
 
 ## Procedure
@@ -27,7 +27,7 @@ per [Document Word Budget](https://github.com/wahidyankf/ose-rules/blob/18760a44
 4. **Rate criticality** for each surviving finding per
    [Criticality Levels](../../quality/criticality-levels.md), as
    [Assessing Criticality and Confidence](../../../../.agents/skills/repo-assessing-criticality-confidence/SKILL.md)
-   explains. Confidence for a repair is rated later by [PR Review Fixer](../../../../.agents/agents/pr-review-fixer.md),
+   explains. Confidence for a repair is rated later by [PR Review Fixer](../../../../agents/pr-review-fixer.md),
    as the gate's writer.
 5. **Confirm the head, then publish once.** When the live head differs from the pin, publish nothing and end the pass
    stale. Otherwise publish exactly one line-anchored, non-approving review carrying the record PR Review requires, then

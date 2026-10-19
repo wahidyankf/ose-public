@@ -8,7 +8,7 @@ when_to_use: Use when assigning or validating the color field on an agent defini
 ## Role Color (Documentation Only)
 
 Each agent has a role color that helps users identify its type at a glance. The color is **not** agent metadata:
-canonical agents in `.agents/agents/` carry no `color` key, `./rhino metadata validate` rejects one, and no generated
+canonical agents in `agents/` carry no `color` key, `./rhino metadata validate` rejects one, and no generated
 harness route renders one. The color lives in documentation, such as an agent body's `**Role**: Checker (green)` line
 and the tables below.
 
@@ -29,7 +29,7 @@ Agents are categorized by their **primary role** which aligns with naming suffix
 
 ## Platform Binding Color Translation
 
-No harness route carries a color. Canonical agents in `.agents/agents/` are the only authored source, and
+No harness route carries a color. Canonical agents in `agents/` are the only authored source, and
 `./rhino harness adapters generate` renders their routes from `name`, `description`, `tier`, `capabilities`, `skills`,
 and `constraints` only. The translation table in the platform binding examples records the historical mapping for
 documentation that still uses role colors.

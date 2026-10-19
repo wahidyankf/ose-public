@@ -8,7 +8,7 @@ when_to_use: >-
 
 # SWE Developer Apply Findings
 
-Moved verbatim from [swe-developer](../../../../.agents/agents/swe-developer.md), which links each section here, per
+Moved verbatim from [swe-developer](../../../../agents/swe-developer.md), which links each section here, per
 [Document Word Budget](https://github.com/wahidyankf/ose-rules/blob/18760a44f7ae4d88e89c0aa79349297f55bb9d9c/repo-governance/conventions/structure/document-word-budget.md).
 
 ## Apply Findings

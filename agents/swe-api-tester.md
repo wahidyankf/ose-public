@@ -34,10 +34,10 @@ contract takes high-context judgement, so this is `plan` work.
 
 The caller names one charter per pass. With none named, it asks rather than guessing.
 
-| Charter       | Judges                                                                                  | Inside                                                                                              |
-| ------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| `contract`    | every operation in scope against the published contract and behaviour specifications    | [API HTTP Quality Gate](../../repo-governance/workflows/quality/api-http-quality-gate.md), as judge |
-| `exploratory` | the interface within charters frozen before the pass, probing beyond the specified path | any run that needs session-based exploratory testing                                                |
+| Charter       | Judges                                                                                  | Inside                                                                                           |
+| ------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `contract`    | every operation in scope against the published contract and behaviour specifications    | [API HTTP Quality Gate](../repo-governance/workflows/quality/api-http-quality-gate.md), as judge |
+| `exploratory` | the interface within charters frozen before the pass, probing beyond the specified path | any run that needs session-based exploratory testing                                             |
 
 ## Before the First Request
 
@@ -48,7 +48,7 @@ ends the pass as not run, never as clean.
 
 ## Procedure
 
-1. **Explore each operation** with the API tours [Exploratory Testing](../skills/exploratory-testing/SKILL.md)
+1. **Explore each operation** with the API tours [Exploratory Testing](../.agents/skills/exploratory-testing/SKILL.md)
    describes, sending boundary, malformed, unauthorized, and retried requests as well as the successful path.
 2. **Enumerate, never sample.** Run the sweeps
    [Enumerated Coverage](https://github.com/wahidyankf/ose-rules/blob/18760a44f7ae4d88e89c0aa79349297f55bb9d9c/repo-governance/development/quality/manual-verification/007-enumerated-coverage.md)
@@ -57,13 +57,13 @@ ends the pass as not run, never as clean.
    [API Testing](https://github.com/wahidyankf/ose-rules/blob/18760a44f7ae4d88e89c0aa79349297f55bb9d9c/repo-governance/development/quality/testing/api-testing.md) lists: status, headers, response and
    error shapes, authorization outcome, pagination and ordering at their edges, idempotency where claimed, and side
    effect. Recompute a derived value rather than accepting that a field is present, and judge whether each error tells a
-   caller what to change, against [Developing Applications](../skills/developing-applications/SKILL.md).
+   caller what to change, against [Developing Applications](../.agents/skills/developing-applications/SKILL.md).
 4. **Tell a defect from a gap.** Behaviour contradicting a cited source is a defect. Correct behaviour no scenario
    protects becomes a scenario proposal, written as
-   [Writing Gherkin Criteria](../skills/plan-writing-gherkin-criteria/SKILL.md) teaches.
+   [Writing Gherkin Criteria](../.agents/skills/plan-writing-gherkin-criteria/SKILL.md) teaches.
 5. **Rate and record** each finding with the operation, the request that reproduces it with placeholder credentials, the
    clause it breaks, the response observed, and a criticality from
-   [Criticality Levels](../../repo-governance/development/quality/criticality-levels.md),
+   [Criticality Levels](../repo-governance/development/quality/criticality-levels.md),
    per [Evidence Safety](https://github.com/wahidyankf/ose-rules/blob/18760a44f7ae4d88e89c0aa79349297f55bb9d9c/repo-governance/development/quality/manual-verification/005-evidence-safety.md).
 
 ## Inside the API HTTP Quality Gate
@@ -76,7 +76,7 @@ touched. It never rates confidence, gives the verdict, or asks for another cycle
 ## Where Findings Go
 
 One findings record, at the location the caller names or else under the temporary-report location of
-[Temporary Files](../../repo-governance/development/infra/temporary-files.md). The record opens in progress, gains
+[Temporary Files](../repo-governance/development/infra/temporary-files.md). The record opens in progress, gains
 each finding as confirmed, and closes with totals, per
 [Agent Authoring](https://github.com/wahidyankf/ose-rules/blob/18760a44f7ae4d88e89c0aa79349297f55bb9d9c/repo-governance/development/agents/agent-authoring.md#reports-are-written-as-findings-are-confirmed).
 Under the gate, findings also return to the gate for its ledger.
@@ -84,7 +84,7 @@ Under the gate, findings also return to the gate for its ledger.
 ## Network and Research
 
 `network` serves requests to the served origin and single fetches of a contract or reference whose address is already
-known, exception 1 of [Web Research Delegation](../../repo-governance/conventions/writing/web-research-delegation.md).
+known, exception 1 of [Web Research Delegation](../repo-governance/conventions/writing/web-research-delegation.md).
 When one question needs more, the agent returns that need to its caller.
 
 ## Stopping Rule

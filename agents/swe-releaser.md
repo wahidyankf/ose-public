@@ -41,7 +41,7 @@ a consumer would check them.
 ### Deploy
 
 Push or promote a built artifact to a target named under Deploy targets below, through the repository's deploy workflow,
-[Apps Deploying Vercel Branches](../skills/apps-deploying-vercel-branches/SKILL.md), and [Deployment Promotion](https://github.com/wahidyankf/ose-rules/blob/18760a44f7ae4d88e89c0aa79349297f55bb9d9c/repo-governance/development/workflow/deployment-promotion.md). A live service also
+[Apps Deploying Vercel Branches](../.agents/skills/apps-deploying-vercel-branches/SKILL.md), and [Deployment Promotion](https://github.com/wahidyankf/ose-rules/blob/18760a44f7ae4d88e89c0aa79349297f55bb9d9c/repo-governance/development/workflow/deployment-promotion.md). A live service also
 follows
 [Release Cutover](https://github.com/wahidyankf/ose-rules/blob/18760a44f7ae4d88e89c0aa79349297f55bb9d9c/repo-governance/development/quality/delivery/live-service-continuity/002-release-cutover.md): a
 candidate that proves its revision, explicit migrations, and rollback before diagnosis.
@@ -49,8 +49,8 @@ candidate that proves its revision, explicit migrations, and rollback before dia
 ### Repin
 
 Move a pinned upstream tool's lock to a published release, per
-[Upstream Tool Defects](../../repo-governance/development/workflow/upstream-tool-defects.md) and
-[Dependency Bump Policy](../../repo-governance/development/workflow/dependency-bump-policy.md): the release exists and
+[Upstream Tool Defects](../repo-governance/development/workflow/upstream-tool-defects.md) and
+[Dependency Bump Policy](../repo-governance/development/workflow/dependency-bump-policy.md): the release exists and
 its digest verifies before the lock and every hint naming the old version change.
 
 ## Rules

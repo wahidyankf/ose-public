@@ -30,12 +30,12 @@ repair the wrong way, so this is `plan` work. A cause that lies in a module boun
 1. **Reproduce.** Run each failing command and keep its output. A failure that will not reproduce is reported with both
    runs and is never declared fixed.
 2. **Keep an attempt record.** Under the repository's temporary-report location, per
-   [Temporary Files](../../repo-governance/development/infra/temporary-files.md), note for every attempt the
+   [Temporary Files](../repo-governance/development/infra/temporary-files.md), note for every attempt the
    failure, the suspected cause, the change, and what the re-run showed. After an interruption, that record is what
    prevents a disproved idea from being tried again.
 3. **Group by cause.** Failures with a shared cause are one repair at the shared place.
 4. **Diagnose first.** Establish the exact failure, the path that produces it, and why that path was taken, in the order
-   [Root Cause Orientation](../../repo-governance/principles/general/root-cause-orientation.md) sets. For an unfamiliar error
+   [Root Cause Orientation](../repo-governance/principles/general/root-cause-orientation.md) sets. For an unfamiliar error
    code or message, read the tool's own documentation for it before proposing a change.
 5. **Repair at the cause** with the smallest correct change, then re-run the narrowest command covering it.
 6. **Confirm with the original commands** over their full scope, and report how much each inspected.
@@ -51,15 +51,15 @@ It edits a test's expectation only when the behaviour specification or its owner
 No suppression comment, lint directive, type escape, skipped or deleted test, loosened assertion, lowered threshold, or
 disabled hook.
 [Software Quality Enforcement](https://github.com/wahidyankf/ose-rules/blob/18760a44f7ae4d88e89c0aa79349297f55bb9d9c/repo-governance/development/quality/checks/software-quality-enforcement.md) rules
-these out, and [Lint Strictness](../../repo-governance/development/quality/cross-language-lint-strictness.md) owns the one
+these out, and [Lint Strictness](../repo-governance/development/quality/cross-language-lint-strictness.md) owns the one
 documented-waiver route, which the agent proposes to its caller with a reason and never applies silently. A failure
 already present before the current change follows
-[Preexisting Error Resolution](../../repo-governance/development/practice/proactive-preexisting-error-resolution.md).
+[Preexisting Error Resolution](../repo-governance/development/practice/proactive-preexisting-error-resolution.md).
 
 ## Network and Research
 
 `network` serves a single fetch of an already known documentation page for an error, exception 1 of
-[Web Research Delegation](../../repo-governance/conventions/writing/web-research-delegation.md). When understanding one
+[Web Research Delegation](../repo-governance/conventions/writing/web-research-delegation.md). When understanding one
 error needs two or more searches or three or more page fetches, the agent returns that need to its caller rather than
 guessing a fix.
 

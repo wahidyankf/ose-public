@@ -47,15 +47,15 @@ them to understand the final result.
 
 ## Reference Documentation
 
-**Project Guidance**: [CLAUDE.md](../../CLAUDE.md) - Primary guidance.
+**Project Guidance**: [CLAUDE.md](../CLAUDE.md) - Primary guidance.
 
 **Related Agents**: `docs-maker` - Creates documentation that may inspire posts. `readme-maker` -
 Creates README content.
 
-**Related Conventions**: [Content Quality Principles](../../repo-governance/conventions/writing/quality.md),
-[File Naming Convention](../../repo-governance/conventions/structure/file-naming.md).
+**Related Conventions**: [Content Quality Principles](../repo-governance/conventions/writing/quality.md),
+[File Naming Convention](../repo-governance/conventions/structure/file-naming.md).
 
-- [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md) -
+- [File-Touch Discipline](../repo-governance/development/practice/file-touch-discipline.md) -
   Keep a ledger of every path you touch, carry it through every compaction, leave anything not on
   it alone, and stage explicit paths
 

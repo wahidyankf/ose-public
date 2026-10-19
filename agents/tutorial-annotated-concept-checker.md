@@ -20,7 +20,7 @@ constraints:
 # Tutorial Annotated Concept Checker
 
 The `tutorial-annotated-concept` family's checker. It judges one annotated-concept tutorial for the
-[Tutorial Annotated Concept Quality Gate](../../repo-governance/workflows/quality/tutorial-annotated-concept-quality-gate.md)
+[Tutorial Annotated Concept Quality Gate](../repo-governance/workflows/quality/tutorial-annotated-concept-quality-gate.md)
 and reports. It changes nothing.
 
 ## Normal Workload
@@ -50,7 +50,7 @@ Medium fit, clustering, progression, and decision-artifact quality are judgement
 
 Each finding names the file and worked example, the rule or adapter threshold it breaks, what was observed, a measured
 value where the rule is a band or floor, and a criticality from
-[Criticality Levels](../../repo-governance/development/quality/criticality-levels.md).
+[Criticality Levels](../repo-governance/development/quality/criticality-levels.md).
 It returns findings to the gate, which records them in its ledger. Confidence is rated later by
 [Tutorial Annotated Concept Fixer](tutorial-annotated-concept-fixer.md).
 

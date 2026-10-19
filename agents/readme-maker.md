@@ -33,7 +33,7 @@ sonnet.
 ## Documentation First Principle
 
 READMEs are mandatory per
-[Documentation First](../../repo-governance/principles/content/documentation-first.md): every
+[Documentation First](../repo-governance/principles/content/documentation-first.md): every
 application in `apps/` and every library in `libs/` MUST have README.md; every significant
 directory should have one explaining its purpose. Without them, codebases are opaque and
 unmaintainable.
@@ -70,12 +70,12 @@ scannability.
 
 ## Reference Documentation
 
-[README Quality Convention](../../repo-governance/conventions/writing/readme-quality.md),
-[Content Quality Principles](../../repo-governance/conventions/writing/quality.md),
-[Documentation First](../../repo-governance/principles/content/documentation-first.md). Related:
+[README Quality Convention](../repo-governance/conventions/writing/readme-quality.md),
+[Content Quality Principles](../repo-governance/conventions/writing/quality.md),
+[Documentation First](../repo-governance/principles/content/documentation-first.md). Related:
 `readme-checker`, `readme-fixer`, `docs-maker`.
 
-- [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md) -
+- [File-Touch Discipline](../repo-governance/development/practice/file-touch-discipline.md) -
   Keep a ledger of every path you touch, carry it through every compaction, leave anything not on
   it alone, and stage explicit paths
 

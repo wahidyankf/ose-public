@@ -30,4 +30,4 @@ When rewriting governance prose, replace vendor-specific terms with the vendor-n
 
 Binding directory paths such as `.agents/`, `.claude/`, `.codex/`, and `.opencode/` need no
 replacement: they are not vendor terms, so governance prose names the real path it means. Prefer the
-canonical source path (for example `.agents/agents/<name>.md`) over a generated route.
+canonical source path (for example `agents/<name>.md`) over a generated route.

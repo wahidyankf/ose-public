@@ -1,11 +1,11 @@
 ---
-description: "Standards for creating and managing canonical AI agents in .agents/agents/ and their generated harness routes"
-when_to_use: Use when authoring, reviewing, or restructuring an agent definition file in .agents/agents/, or when deciding which sub-topic of agent standards applies.
+description: "Standards for creating and managing canonical AI agents in agents/ and their generated harness routes"
+when_to_use: Use when authoring, reviewing, or restructuring an agent definition file in agents/, or when deciding which sub-topic of agent standards applies.
 ---
 
 # AI Agents Convention
 
-Standards for creating, structuring, and managing AI agents in the canonical agent directory `.agents/agents/` (source of truth) and their generated harness routes. **Edit the canonical agent, then run `./rhino harness adapters generate`.**
+Standards for creating, structuring, and managing AI agents in the canonical agent directory `agents/` (source of truth) and their generated harness routes. **Edit the canonical agent, then run `./rhino harness adapters generate`.**
 
 ## Overview, Principles, and File Structure
 

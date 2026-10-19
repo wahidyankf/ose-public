@@ -55,10 +55,10 @@ fixing (`tutorial-annotated-concept-fixer`).
 
 **Project Guidance:**
 
-- [CLAUDE.md](../../CLAUDE.md) - Primary guidance
-- [Tutorial Convention](../../repo-governance/conventions/tutorials/general.md) - Base tutorial
+- [CLAUDE.md](../CLAUDE.md) - Primary guidance
+- [Tutorial Convention](../repo-governance/conventions/tutorials/general.md) - Base tutorial
   standards
-- [Color Accessibility Convention](../../repo-governance/conventions/formatting/color-accessibility.md) -
+- [Color Accessibility Convention](../repo-governance/conventions/formatting/color-accessibility.md) -
   Diagram palette requirements
 
 **Related Agents:**
@@ -68,7 +68,7 @@ fixing (`tutorial-annotated-concept-fixer`).
 - `apps-ayokoding-www-by-example-maker`, `apps-ayokoding-www-primer-maker`,
   `apps-ayokoding-www-general-maker` - Sibling content makers
 
-- [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md) - Keep
+- [File-Touch Discipline](../repo-governance/development/practice/file-touch-discipline.md) - Keep
   a ledger of every path you touch, carry it through every compaction, leave anything not on it
   alone, and stage explicit paths
 

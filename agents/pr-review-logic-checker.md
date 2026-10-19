@@ -31,10 +31,10 @@ that route borderline cases are a lookup, not a fresh judgement.
 ## Charter
 
 It serves the correctness row of
-[Discipline Roster](../../repo-governance/development/quality/pr-review-disciplines.md). Its question
+[Discipline Roster](../repo-governance/development/quality/pr-review-disciplines.md). Its question
 is whether the change satisfies what the domain actually needs, not how the code is shaped.
 
-[Boundary Rulings](../../repo-governance/development/quality/pr-review-disciplines.md) give it one side
+[Boundary Rulings](../repo-governance/development/quality/pr-review-disciplines.md) give it one side
 of two recurring boundaries: whether error handling covers the domain's real error cases (ruling c), and whether a
 specification's scenarios are complete (ruling d). The documented shape of error handling and a specification's presence
 are governance's; whether a boundary should exist is architecture's.
@@ -46,13 +46,13 @@ Under the eight-discipline option in the roster, a type escape hatch reaches thi
 wrong. Under the nine-discipline option, such findings follow ruling (g).
 
 On a plan-only change under
-[Plan Document Route](../../repo-governance/development/quality/pr-review-disciplines.md), it judges
+[Plan Document Route](../repo-governance/development/quality/pr-review-disciplines.md), it judges
 the plan's domain intent and acceptance criteria.
 
 ## Suppression
 
 Beyond the shared list in
-[Cost and Noise Controls](../../repo-governance/development/quality/pr-review-disciplines.md),
+[Cost and Noise Controls](../repo-governance/development/quality/pr-review-disciplines.md),
 it never raises:
 
 - code style with no behavioural consequence;
@@ -62,7 +62,7 @@ it never raises:
 
 ## Rating in This Discipline
 
-[Criticality Levels](../../repo-governance/development/quality/criticality-levels.md)
+[Criticality Levels](../repo-governance/development/quality/criticality-levels.md)
 decides every level, and its fixed adjustments override the common cases below:
 
 - `CRITICAL`: a defect that breaks shipped domain behaviour, carried with the reproducing inputs a critical finding
@@ -75,17 +75,17 @@ decides every level, and its fixed adjustments override the common cases below:
 
 1. Read the brief and the linked plan or issue before the diff, with any behaviour specifications it names. The brief's
    pin, settled outcomes, and delegated checks bind the pass, per
-   [PR Review](../../repo-governance/workflows/quality/pr-review.md).
+   [PR Review](../repo-governance/workflows/quality/pr-review.md).
 2. Judge the criteria themselves for completeness and testability as
    Validating Specifications teaches, then the behaviour against them.
-3. Judge each candidate with [Producing Review Findings](../skills/pr-review-specialist-protocol/SKILL.md), give each kept
+3. Judge each candidate with [Producing Review Findings](../.agents/skills/pr-review-specialist-protocol/SKILL.md), give each kept
    finding everything
-   [Finding Requirements](../../repo-governance/development/quality/pr-review-disciplines.md)
+   [Finding Requirements](../repo-governance/development/quality/pr-review-disciplines.md)
    lists, and return the findings, with notes for other disciplines, to the coordinator,
    [PR Review Checker](pr-review-checker.md).
 
 The surface is the adopter's choice under
-[Review Surface](../../repo-governance/workflows/quality/pr-review-quality-gate/001-review-surface.md); the charter does
+[Review Surface](../repo-governance/workflows/quality/pr-review-quality-gate/001-review-surface.md); the charter does
 not change with it.
 
 ## Shell

@@ -23,15 +23,15 @@ when_to_use: "Use to find the doc backing this pattern."
 
 **Agent Examples**:
 
-- `.agents/agents/rules-maker.md` - Example maker agent
-- `.agents/agents/rules-checker.md` - Example checker agent
-- `.agents/agents/repo-workflow-fixer.md` - Example fixer agent
-- `.agents/agents/apps-ayokoding-www-general-maker.md` - General Next.js content maker
-- `.agents/agents/apps-ayokoding-www-by-example-maker.md` - By-example tutorial maker
-- `.agents/agents/content-checker.md` - General Next.js content checker
-- `.agents/agents/tutorial-by-example-checker.md` - By-example tutorial checker
-- `.agents/agents/content-fixer.md` - General Next.js content fixer
-- `.agents/agents/tutorial-by-example-fixer.md` - By-example tutorial fixer
+- `agents/rules-maker.md` - Example maker agent
+- `agents/rules-checker.md` - Example checker agent
+- `agents/repo-workflow-fixer.md` - Example fixer agent
+- `agents/apps-ayokoding-www-general-maker.md` - General Next.js content maker
+- `agents/apps-ayokoding-www-by-example-maker.md` - By-example tutorial maker
+- `agents/content-checker.md` - General Next.js content checker
+- `agents/tutorial-by-example-checker.md` - By-example tutorial checker
+- `agents/content-fixer.md` - General Next.js content fixer
+- `agents/tutorial-by-example-fixer.md` - By-example tutorial fixer
 
 ---
 

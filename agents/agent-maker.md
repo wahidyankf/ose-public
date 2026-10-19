@@ -1,7 +1,7 @@
 ---
 name: agent-maker
 description: >-
-  Creates new canonical AI agent files in .agents/agents/ following AI Agents Convention, then routes them to every
+  Creates new canonical AI agent files in agents/ following AI Agents Convention, then routes them to every
   harness via ./rhino harness adapters generate. Ensures proper structure, skills integration, and documentation.
 when_to_use: >-
   Use when a new AI agent must be created following the AI Agents Convention.
@@ -35,7 +35,7 @@ Create new AI agent files following AI Agents Convention.
 
 ## Reference
 
-- [AI Agents Convention](../../repo-governance/development/agents/ai-agents.md)
+- [AI Agents Convention](../repo-governance/development/agents/ai-agents.md)
 - Skill: `docs-applying-diataxis-framework`
 
 ## Workflow
@@ -46,15 +46,15 @@ Create new AI agent files following AI Agents Convention.
 3. Document core responsibility
 4. Define workflow
 5. Reference conventions and Skills
-6. Write the file to `.agents/agents/<name>.md`, then regenerate its routes with
+6. Write the file to `agents/<name>.md`, then regenerate its routes with
    `./rhino harness adapters generate`; never hand-edit a generated route
 
 ## Reference Documentation
 
 **Project Guidance**:
 
-- [CLAUDE.md](../../CLAUDE.md) - Primary guidance
-- [AI Agents Convention](../../repo-governance/development/agents/ai-agents.md)
+- [CLAUDE.md](../CLAUDE.md) - Primary guidance
+- [AI Agents Convention](../repo-governance/development/agents/ai-agents.md)
 
 **Related Agents**:
 
@@ -63,6 +63,6 @@ Create new AI agent files following AI Agents Convention.
 
 **Related Conventions**:
 
-- [AI Agents Convention](../../repo-governance/development/agents/ai-agents.md)
-- [Maker-Checker-Fixer Pattern](../../repo-governance/development/pattern/maker-checker-fixer.md)
-- [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md) - Keep a ledger of every path you touch, carry it through every compaction, leave anything not on it alone, and stage explicit paths
+- [AI Agents Convention](../repo-governance/development/agents/ai-agents.md)
+- [Maker-Checker-Fixer Pattern](../repo-governance/development/pattern/maker-checker-fixer.md)
+- [File-Touch Discipline](../repo-governance/development/practice/file-touch-discipline.md) - Keep a ledger of every path you touch, carry it through every compaction, leave anything not on it alone, and stage explicit paths

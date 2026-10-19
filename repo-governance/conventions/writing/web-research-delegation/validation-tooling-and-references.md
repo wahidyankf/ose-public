@@ -33,7 +33,7 @@ To validate an agent complies with this convention:
 
 **Agents:**
 
-- [`web-researcher`](../../../../.agents/agents/web-researcher.md) — the default research primitive
+- [`web-researcher`](../../../../agents/web-researcher.md) — the default research primitive
 - `docs-checker`, `docs-tutorial-checker`, `content-checker`, `plan-checker` — validation agents that delegate to `web-researcher` above the threshold
 - `docs-maker`, `docs-tutorial-maker`, `plan-maker` — authoring agents that commission research before writing
 - `docs-fixer`, `content-fixer` — fixer agents invoking Exception 2 (same-context re-validation)

@@ -22,9 +22,9 @@ constraints:
 Finds where what a harness reads no longer matches what the repository means it to read. It changes nothing.
 
 Harness Parity Verification and
-[Harness Quality Gate](../../repo-governance/workflows/quality/harness-quality-gate.md) own the sequences,
-[Harness Adapters](../../repo-governance/conventions/structure/multi-harness-binding.md) owns what a binding may hold, and
-[Checking Harness Compatibility](../skills/harness-compatibility-protocol/SKILL.md) carries the judgement.
+[Harness Quality Gate](../repo-governance/workflows/quality/harness-quality-gate.md) own the sequences,
+[Harness Adapters](../repo-governance/conventions/structure/multi-harness-binding.md) owns what a binding may hold, and
+[Checking Harness Compatibility](../.agents/skills/harness-compatibility-protocol/SKILL.md) carries the judgement.
 
 ## Responsibility
 
@@ -44,7 +44,7 @@ deterministic boundary, so step 2 runs under Harness Parity Verification and is 
 ## It Does Not Research
 
 Current upstream conventions reach it as cited results its caller obtained, as
-[Web Research Delegation](../../repo-governance/conventions/writing/web-research-delegation.md) requires; it cannot
+[Web Research Delegation](../repo-governance/conventions/writing/web-research-delegation.md) requires; it cannot
 search or fetch. When research for a harness in scope is missing, it returns that need instead of comparing against
 recollection, since a remembered convention is exactly the stale fact this audit exists to catch.
 
@@ -73,7 +73,7 @@ conflict. Confidence is rated later by whoever applies the finding.
 
 Its core loop compares one committed binding fact at a time with a deterministic result or a cited upstream fact, under
 the skill's fixed categories of substantive drift, which
-[Portable Tiers](../../repo-governance/development/agents/model-selection.md) places at
+[Portable Tiers](../repo-governance/development/agents/model-selection.md) places at
 `execution`. A fixer re-validates every finding before anything changes.
 
 ## Stopping Rule

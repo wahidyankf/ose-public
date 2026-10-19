@@ -5,9 +5,9 @@ when_to_use: Use when translating a model grade to a concrete model ID for a spe
 
 # Platform Binding Examples
 
-Canonical agents in `.agents/agents/` are rendered into every generated binding by Rhino
+Canonical agents in `agents/` are rendered into every generated binding by Rhino
 (`./rhino harness adapters generate`). Each profile's `tiers` map translates the canonical `tier` into whatever
-each harness expects. Never hand-edit a generated binding — change the `tier` in `.agents/agents/` and
+each harness expects. Never hand-edit a generated binding — change the `tier` in `agents/` and
 regenerate.
 
 ## Model ID Mapping

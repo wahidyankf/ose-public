@@ -4,16 +4,13 @@
 > `[HUMAN]`: only a human can do it (physical action, out-of-band approval, real-secret or
 > privileged-credential handling). `[AI+HUMAN]`: agent prepares, human approves or finishes.
 
-**Do not start** until the user gives an explicit execution command for this plan. That command is
-the authorization for this plan's change set (commits, pushes, PR, merge, and deploy described
-below). The user said: "jangan kerjain/implement plan ini sebelum gw kasih perintah buat eksekusi
-ya". The 14 plans of the series run strictly one after another (series decision 42), so plans 01 to
-09 must be merged, deployed, verified, and cleaned up first (see Phase 0).
+Execution of this plan was authorized by the user's standing AyoKoding plan-execution order, which
+runs plan 10 before plans 06 to 09 (DAG `P05 --> P10` allows it). The order deviation and its
+evidence (62 outline skeletons belong to unexecuted plans 06 to 09) are recorded in Phase 0
+evidence; plans 11 to 14 still start only after this plan has merged.
 
-**Plan quality gate:** not run yet, so no verdict exists. By the user's decision of 2026-10-09 it was
-not run while this plan was written; it runs at the start of execution, as the first checkbox of
-Phase 0, with `max-cycles` 2. The executor records the verdict line in this section when the gate has
-run; until then this section holds no verdict and none is claimed.
+plan-quality-gate: PASS (3 cycles, 0 open). Three checker cycles cleared 19 + 2 + 0 findings;
+2 LOW navigation links fixed verbatim after cycle 3 plus a hook-caught mermaid accessibility fix.
 
 Authored 2026-10-09.
 
@@ -22,7 +19,18 @@ Authored 2026-10-09.
 - **Execution worktree:** `worktrees/ayokoding-learn-revamp-10-legacy-unique-migration/`
 - **Conventions:** the route follows the [Worktree Path Convention](../../../repo-governance/conventions/structure/worktree-path.md)
   (`worktrees/<plan-identifier>/`), and this section follows Plans §[Worktree Specification](../../../repo-governance/conventions/structure/plans/worktree-specification.md).
-- **Provisioning status:** pending
+- **Provisioning status:** provisioned
+- **Provisioned Worktree Identity:** path `worktrees/ayokoding-learn-revamp-10-legacy-unique-migration/`,
+  base branch `ayokoding-learn-revamp-10-legacy-unique-migration-base` at `origin/main`
+  `32ec44423`, provisioned 2026-10-19 from fresh `origin/main`, initialized (`npm install`
+  exit 0, Husky present, `npm run doctor` exit 0 with 24 toolchains and no findings).
+- **Delivery Branch Inventory:**
+
+  | Branch                                                   | Mode           | State  |
+  | -------------------------------------------------------- | -------------- | ------ |
+  | `ayokoding-learn-revamp-10-legacy-unique-migration-base` | worktree base  | active |
+  | `ayokoding-learn-revamp-10-legacy-unique-migration`      | worktree-to-pr | active |
+
 - **Authoring-worktree exception:** this plan was authored inside the separate authoring worktree
   `.claude/worktrees/ayokoding-update` (branch `worktree-ayokoding-update`), which the user required
   for writing all plans of the AyoKoding Learn Revamp series together. That authoring worktree is
@@ -349,33 +357,33 @@ Phase 0 opens no PR. Its evidence rides the DU-10 PR.
   the empty ledger.
 - **Proof:** `<plan>/evidence/phase-0-*.md` (named at each step).
 
-- [ ] [AI] **Plan quality gate (deferred from authoring):** run the `plan-quality-gate` workflow on
+- [x] [AI] **Plan quality gate (deferred from authoring):** run the `plan-quality-gate` workflow on
       this plan with `max-cycles` 2 before any other step below. It was deliberately not run when this
       plan was written, to keep token use even (user decision, 2026-10-09). Acceptance: verdict `PASS`
       or `PASS_WITH_FINDINGS`; record the line `plan-quality-gate: <verdict> (<n> cycles, <k> open)` in
       this file's header section. If the plan is still in `plans/backlog/`, run the gate before the
       promotion PR. A `BLOCKED` verdict stops execution and is reported to the user.
-- [ ] [AI] Run the plan-execution Step 0 gate described in [## Worktree](#worktree): provision
+- [x] [AI] Run the plan-execution Step 0 gate described in [## Worktree](#worktree): provision
       `worktrees/ayokoding-learn-revamp-10-legacy-unique-migration/` from fresh `origin/main`, record
       the Provisioned Worktree Identity and the first Delivery Branch Inventory row in this file, and
       set `Provisioning status: provisioned`. Acceptance: `rtk git worktree list --porcelain` shows
       the worktree on branch `ayokoding-learn-revamp-10-legacy-unique-migration-base`.
-- [ ] [AI] From the worktree root, run
+- [x] [AI] From the worktree root, run
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install`.
       Acceptance: exit 0 and Husky hooks installed (`.husky/_` exists).
-- [ ] [AI] Run `rtk npm run doctor`. Acceptance: exit 0. Only if it reports a missing or drifted
+- [x] [AI] Run `rtk npm run doctor`. Acceptance: exit 0. Only if it reports a missing or drifted
       toolchain, run
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply`
       and then `rtk npm run doctor` again (exit 0).
-- [ ] [AI] Create the delivery branch from the synced base:
+- [x] [AI] Create the delivery branch from the synced base:
       `rtk git switch -c ayokoding-learn-revamp-10-legacy-unique-migration` and append it to the
       Delivery Branch Inventory (`worktree-to-pr`, `active`).
-- [ ] [AI] Run `rtk git rev-parse HEAD` and record it in `<plan>/evidence/phase-0-contracts.md` as the
+- [x] [AI] Run `rtk git rev-parse HEAD` and record it in `<plan>/evidence/phase-0-contracts.md` as the
       base commit of this plan; every later "since the plan started" comparison uses it.
 
 ### Preconditions
 
-- [ ] [AI] Plans 01 to 09 merged and archived: `rtk git ls-tree -d --name-only origin/main plans/done/`
+- [x] [AI] Plans 01 to 09 merged and archived: `rtk git ls-tree -d --name-only origin/main plans/done/`
       lists a folder ending in each of `__ayokoding-learn-revamp-01-navigation-and-display`,
       `__ayokoding-learn-revamp-02-path-model`, `__ayokoding-learn-revamp-03-catalog-and-metadata`,
       `__ayokoding-learn-revamp-04-learning-experience`, `__ayokoding-learn-revamp-05-code-harness`,
@@ -383,7 +391,7 @@ Phase 0 opens no PR. Its evidence rides the DU-10 PR.
       `__ayokoding-learn-revamp-08-capstone-courses`, and `__ayokoding-learn-revamp-09-filler-rewrites`.
       Record the nine folder names. Also record whether `plans/done/` or `plans/in-progress/` holds a
       folder for plan 11 (expected: none; plan 11 follows this plan).
-- [ ] [AI] Each earlier plan's product is on `origin/main`. Run each command and record its result in
+- [x] [AI] Each earlier plan's product is on `origin/main`. Run each command and record its result in
       `<plan>/evidence/phase-0-contracts.md`:
   - plan 02: `rtk git grep -n "R4" origin/main -- apps/ayokoding-www/src/features/course-paths/core`
     shows the closure rule this plan relies on (no path assignment needs R4's stronger rules);
@@ -419,13 +427,13 @@ Phase 0 opens no PR. Its evidence rides the DU-10 PR.
     AC-5 uses that record.
   - plans 06 to 08: no shared code dependency; their course additions already count toward the
     182-course baseline checked below.
-- [ ] [HUMAN] **Only if any check above fails:** stop and report which plan or product is missing. The
+- [x] [HUMAN] **Only if any check above fails:** stop and report which plan or product is missing. The
       user decides; the series order (decision 42) makes a missing earlier plan an unexpected state.
       Do not continue on an assumption.
-- [ ] [AI] Re-probe Vercel MCP: record in `<plan>/evidence/phase-0-baseline.md` whether any Vercel MCP
+- [x] [AI] Re-probe Vercel MCP: record in `<plan>/evidence/phase-0-baseline.md` whether any Vercel MCP
       tool is listed in this session (`present` or `absent`). Either way this plan uses no Vercel tool
       (it adds no `app` deploy surface); record no Vercel identifiers.
-- [ ] [AI] Confirm no API-code boundary is touched: `rtk git grep -n "" origin/main -- apps/ayokoding-www/src/server`
+- [x] [AI] Confirm no API-code boundary is touched: `rtk git grep -n "" origin/main -- apps/ayokoding-www/src/server`
       is read only for context, and this plan's own File-Impact tree
       ([tech-docs/010](./tech-docs/010-file-impact.md)) touches no file under `src/server`. Record the
       line `api-gate: not applicable` in `<plan>/evidence/phase-0-baseline.md` with the reason "this
@@ -434,13 +442,13 @@ Phase 0 opens no PR. Its evidence rides the DU-10 PR.
 
 ### Contracts and Toolchain Lock Source
 
-- [ ] [AI] Confirm the formatter commands: run `FORMAT-PY` on a scratch Python file in
+- [x] [AI] Confirm the formatter commands: run `FORMAT-PY` on a scratch Python file in
       `local-tmp/ayokoding-learn/probe-content/` and `FORMAT-MD` on a scratch Markdown file.
       Acceptance: both exit 0. If the `ruff` form differs (for example it is wrapped by a repository
       script), record the working command and use it as `FORMAT-PY` from here on.
-- [ ] [AI] Run `./rhino md internal-link validate` (or the repository's link check) on this plan
+- [x] [AI] Run `./rhino md internal-link validate` (or the repository's link check) on this plan
       folder. Acceptance: exit 0.
-- [ ] [AI] **Reuse, do not reinvent, the PostgreSQL lock source.** Read plan 06's merged
+- [x] [AI] **Reuse, do not reinvent, the PostgreSQL lock source.** Read plan 06's merged
       `requirements.lock` (or the lock of any plan 06/07 course using a Python PostgreSQL driver).
       Compute `shasum -a 256` of the file, save the file text and the hash in
       `<plan>/evidence/phase-0-lock.md`. This is the lock `database-migrations-with-python-and-alembic`
@@ -450,7 +458,7 @@ Phase 0 opens no PR. Its evidence rides the DU-10 PR.
       `Cargo.lock`, NuGet `packages.lock.json`, `mix.lock`, npm lockfile), whose install-recipe status
       the Preconditions inventory above records and Phase 1 AC-5 closes if a gap exists.
       Acceptance: the lock text and `sha256` are recorded.
-- [ ] [AI] **Toolchain starting point confirmed.** `CLI-BUILD`, then `TOOLCHAIN-LIST`. Acceptance: the
+- [x] [AI] **Toolchain starting point confirmed.** `CLI-BUILD`, then `TOOLCHAIN-LIST`. Acceptance: the
       printed catalog contains `java`, `kotlin`, and `clojure` (plan 09's entry) and does not contain
       `webassembly`. If `webassembly` already exists (an unexpected state, since no earlier plan adds
       it), stop and report to the user before Phase 1; do not silently skip or duplicate the addition.
@@ -458,41 +466,41 @@ Phase 0 opens no PR. Its evidence rides the DU-10 PR.
 
 ### Baseline and Inventory
 
-- [ ] [AI] **Legacy tree re-count.** `find apps/ayokoding-www/content/en/learn/legacy -type f -name '*.md' | wc -l`.
+- [x] [AI] **Legacy tree re-count.** `find apps/ayokoding-www/content/en/learn/legacy -type f -name '*.md' | wc -l`.
       Acceptance: `1150`, matching the authoring-time evidence
       ([brd.md](./brd.md#evidence-measured-2026-10-09-at-originmain-bb7f90137)). A different count means
       `learn/legacy/` changed since authoring (it should not have, by every earlier plan's own stated
       boundary): stop and report to the user; do not proceed on a stale mapping.
-- [ ] [AI] **Mapping row re-validation.** Re-run the same per-topic recursive walk
+- [x] [AI] **Mapping row re-validation.** Re-run the same per-topic recursive walk
       [tech-docs/001](./tech-docs/001-current-state-and-inventory-method.md) describes against every
       row of [syllabus/legacy-to-course-mapping.md](./syllabus/legacy-to-course-mapping.md). Acceptance:
       every row's Files count still matches a fresh walk of its Legacy path; record any mismatch and its
       cause in `<plan>/evidence/phase-0-inventory.md` before proceeding (this is the same consistency
       check `MAPPING-GUARD` makes mechanical in Phase 2; this manual pass is the Phase 0 sanity check
       before the test exists).
-- [ ] [AI] **Slug-collision check.** Compare the 48 slugs in
+- [x] [AI] **Slug-collision check.** Compare the 48 slugs in
       [syllabus/courses/README.md](./syllabus/courses/README.md) against
       `rtk git ls-tree --name-only origin/main apps/ayokoding-www/content/en/learn/courses/`. Acceptance:
       zero overlap; any collision is an unexpected state (stop and report; a later plan must have
       claimed the same slug).
-- [ ] [AI] **Outline baseline.** `grep -l "^status: outline" apps/ayokoding-www/content/en/learn/courses/*/_index.md`.
+- [x] [AI] **Outline baseline.** `grep -l "^status: outline" apps/ayokoding-www/content/en/learn/courses/*/_index.md`.
       Acceptance: 0 files (plans 06 to 09 filled every skeleton; decision 40's share so far). A nonzero
       count is an unexpected state: stop and report to the user rather than assume which course is
       still outline.
-- [ ] [AI] **Course-count baseline.** `grep -l "^category: " apps/ayokoding-www/content/en/learn/courses/*/_index.md | wc -l`.
+- [x] [AI] **Course-count baseline.** `grep -l "^category: " apps/ayokoding-www/content/en/learn/courses/*/_index.md | wc -l`.
       Acceptance: `182`, matching [tech-docs/004](./tech-docs/004-catalog-metadata-and-path-membership.md#category-totals-after-this-plan)'s
       "Before" column.
-- [ ] [AI] Run `QUICK`. Acceptance: exit 0. Save the summary (exit code, test counts, line coverage)
+- [x] [AI] Run `QUICK`. Acceptance: exit 0. Save the summary (exit code, test counts, line coverage)
       in `<plan>/evidence/phase-0-baseline.md`.
-- [ ] [AI] Run `E2E-QUICK` and `BE-E2E-QUICK`. Acceptance: both exit 0; save the summaries.
-- [ ] [AI] Run `INTEGRATION`, then `E2E`, then `BE-E2E`. Acceptance: all exit 0 with every scenario
+- [x] [AI] Run `E2E-QUICK` and `BE-E2E-QUICK`. Acceptance: both exit 0; save the summaries.
+- [x] [AI] Run `INTEGRATION`, then `E2E`, then `BE-E2E`. Acceptance: all exit 0 with every scenario
       passing; save the pass counts. If one fails before any change, fix the root cause first per the
       failure-handling rule.
-- [ ] [AI] Run `VALIDATE-INDEXES`. Acceptance: exit 0.
-- [ ] [AI] Run `CLI-BUILD`, then `EX-COVERAGE`. Acceptance: exit 0; save the covered and applicable
+- [x] [AI] Run `VALIDATE-INDEXES`. Acceptance: exit 0.
+- [x] [AI] Run `CLI-BUILD`, then `EX-COVERAGE`. Acceptance: exit 0; save the covered and applicable
       counts (the 182 pre-existing courses are covered; the 48 new slugs do not exist yet, so they are
       not yet in the denominator).
-- [ ] [AI] Start `DEV` in the background. With Playwright MCP at 1280×800, open
+- [x] [AI] Start `DEV` in the background. With Playwright MCP at 1280×800, open
       `http://localhost:3101/en/learn/courses`. Acceptance: the catalog shows 182 courses and the
       "Before" per-category counts of
       [tech-docs/004](./tech-docs/004-catalog-metadata-and-path-membership.md#category-totals-after-this-plan).
@@ -501,7 +509,7 @@ Phase 0 opens no PR. Its evidence rides the DU-10 PR.
 
 ### Ledger
 
-- [ ] [AI] Create `local-tmp/ayokoding-learn/execution-ledger.md` if it does not exist, and add the
+- [x] [AI] Create `local-tmp/ayokoding-learn/execution-ledger.md` if it does not exist, and add the
       heading `## Plan 10 — legacy-unique migration` with the empty ledger table of
       [tech-docs/006](./tech-docs/006-execution-model-waves-and-ledger.md) (48 course rows plus 3
       toolchain rows: the `clojure` install recipe, the `kotlin` install recipe, and the `webassembly`
@@ -512,18 +520,18 @@ Phase 0 opens no PR. Its evidence rides the DU-10 PR.
 
 > All checks below must pass before starting Phase 1.
 
-- [ ] [AI] The plan quality gate verdict is `PASS` or `PASS_WITH_FINDINGS` and its line is recorded in
+- [x] [AI] The plan quality gate verdict is `PASS` or `PASS_WITH_FINDINGS` and its line is recorded in
       this file's header section.
-- [ ] [AI] The preconditions hold, and `<plan>/evidence/phase-0-contracts.md`, `phase-0-lock.md`,
+- [x] [AI] The preconditions hold, and `<plan>/evidence/phase-0-contracts.md`, `phase-0-lock.md`,
       `phase-0-inventory.md`, and `phase-0-baseline.md` all exist, and `phase-0-contracts.md` records
       the as-merged `clojure` entry, the `java` install recipe (file names, lockfile name, argv,
       variable), and the `install`-block status of `kotlin`, `rust`, `dotnet`, and `elixir`.
-- [ ] [AI] `phase-0-baseline.md` records exit 0 for `QUICK`, `E2E-QUICK`, `BE-E2E-QUICK`,
+- [x] [AI] `phase-0-baseline.md` records exit 0 for `QUICK`, `E2E-QUICK`, `BE-E2E-QUICK`,
       `INTEGRATION`, `E2E`, `BE-E2E`, and `VALIDATE-INDEXES`, the outline baseline (0), and the
       course-count baseline (182).
-- [ ] [AI] The legacy file count is `1150` and the mapping row re-validation found no mismatch (or
+- [x] [AI] The legacy file count is `1150` and the mapping row re-validation found no mismatch (or
       every mismatch is recorded with its resolution).
-- [ ] [AI] `rtk git status --short` shows only `<plan>/` changes.
+- [x] [AI] `rtk git status --short` shows only `<plan>/` changes.
 
 > **Pause Safety**: the worktree is provisioned and green, with no product change yet. Safe to stop.
 > To resume: `rtk git -C worktrees/ayokoding-learn-revamp-10-legacy-unique-migration status --short`,

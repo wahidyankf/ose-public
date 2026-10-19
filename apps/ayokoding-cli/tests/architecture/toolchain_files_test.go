@@ -72,16 +72,15 @@ func TestJarFetchCopiesAreIdentical(t *testing.T) {
 // fetcher line breaks the comparison.
 func jarFetchBlock(recipe string) (string, bool) {
 	for line := range strings.Lines(strings.TrimSpace(recipe)) {
-		start := strings.Index(line, jarFetchEchoPrefix)
-		if start < 0 {
+		_, rest, found := strings.Cut(line, jarFetchEchoPrefix)
+		if !found {
 			continue
 		}
-		rest := line[start+len(jarFetchEchoPrefix):]
-		end := strings.Index(rest, jarFetchEchoSuffix)
-		if end < 0 {
+		encoded, _, found := strings.Cut(rest, jarFetchEchoSuffix)
+		if !found {
 			continue
 		}
-		decoded, err := base64.StdEncoding.DecodeString(rest[:end])
+		decoded, err := base64.StdEncoding.DecodeString(encoded)
 		if err != nil {
 			return "", false
 		}

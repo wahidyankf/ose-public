@@ -67,8 +67,15 @@ toolchains:
   - id: kotlin
     kind: language
     version: "2.4.21"
-    image: ayokoding-toolchain/kotlin:812eaeff10297e717fd044f54eac1525dbe72932f95b9816274ab343969b0b1e@sha256:812eaeff10297e717fd044f54eac1525dbe72932f95b9816274ab343969b0b1e
+    # Locked units build an environment image whose install argv fetches
+    # jars.lock into /deps/kotlin (JARS), the same recipe as java and clojure.
+    image: ayokoding-toolchain/kotlin:97e1de2aa6633e62efd282adc388f4cffc58b1f104c1bf5bc047a9673e47b1d3@sha256:97e1de2aa6633e62efd282adc388f4cffc58b1f104c1bf5bc047a9673e47b1d3
     build: kotlin/Dockerfile
+    install:
+      lockfiles: [jars.lock]
+      command: [java, /opt/tools/JarFetch.java, /deps/lock/jars.lock, /deps/kotlin]
+      env:
+        JARS: /deps/kotlin
   - id: dotnet
     kind: language
     version: "10.0.402"

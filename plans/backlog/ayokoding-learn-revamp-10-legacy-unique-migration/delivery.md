@@ -20,6 +20,8 @@ Authored 2026-10-09.
 ## Worktree
 
 - **Execution worktree:** `worktrees/ayokoding-learn-revamp-10-legacy-unique-migration/`
+- **Conventions:** the route follows the [Worktree Path Convention](../../../repo-governance/conventions/structure/worktree-path.md)
+  (`worktrees/<plan-identifier>/`), and this section follows Plans §[Worktree Specification](../../../repo-governance/conventions/structure/plans/worktree-specification.md).
 - **Provisioning status:** pending
 - **Authoring-worktree exception:** this plan was authored inside the separate authoring worktree
   `.claude/worktrees/ayokoding-update` (branch `worktree-ayokoding-update`), which the user required
@@ -27,8 +29,9 @@ Authored 2026-10-09.
   removed after the plan-docs PR merges and is **never** used for execution. The Provisioned Worktree
   Identity and Delivery Branch Inventory are intentionally omitted until Step 0 below creates them.
 - **Step 0 obligation (blocking):** the plan-execution Step 0 gate provisions the execution worktree
-  from fresh `origin/main` with
-  `rtk git worktree add -b ayokoding-learn-revamp-10-legacy-unique-migration-base worktrees/ayokoding-learn-revamp-10-legacy-unique-migration origin/main`,
+  from fresh `origin/main` with the canonical command (run from the repository root)
+  `claude --worktree ayokoding-learn-revamp-10-legacy-unique-migration` (the initial branch is
+  `ayokoding-learn-revamp-10-legacy-unique-migration-base`),
   initializes it per
   [Worktree Toolchain Initialization](../../../repo-governance/development/workflow/worktree-setup.md),
   writes the immutable identity and the first inventory row into this section, replaces
@@ -55,11 +58,50 @@ folder moves to `plans/done/` inside this same PR, before the merge (archival-in
 
 | Unit  | Phases                                      | Safe `main` state after merge                                                                                                                                                                                                                                                                                                                                                                     | Rollback                                                                                                                                                                                                                                   |
 | ----- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| DU-10 | 1–8 and Plan Archival (Phase 0 opens no PR) | All 48 new courses are complete and green in the harness; the WebAssembly toolchain is added and the merged `clojure` and `kotlin` entries are extended with the hash-locked jar install recipe, each smoke-tested; the mapping file validates against the real legacy tree and the real catalog; the catalog's total and per-category counts are 229; `learn/legacy/` is byte-for-byte unchanged | Revert the merge commit in a revert PR (the 48 course directories, the WebAssembly toolchain and the two install-recipe extensions, and the test extensions all return together; see [tech-docs/008](./tech-docs/008-testing-strategy.md)) |
+| DU-10 | 1–8 and Plan Archival (Phase 0 opens no PR) | All 48 new courses are complete and green in the harness; the WebAssembly toolchain is added and the merged `clojure` and `kotlin` entries are extended with the hash-locked jar install recipe, each smoke-tested; the mapping file validates against the real legacy tree and the real catalog; the catalog's total and per-category counts are 230; `learn/legacy/` is byte-for-byte unchanged | Revert the merge commit in a revert PR (the 48 course directories, the WebAssembly toolchain and the two install-recipe extensions, and the test extensions all return together; see [tech-docs/008](./tech-docs/008-testing-strategy.md)) |
 
 There is no feature flag ([tech-docs/README](./tech-docs/README.md)): every new course is additive
 content discoverable by its `category`, with no toggle needed. The phases are natural pauses inside
 the one branch; no phase is merged on its own.
+
+## Parallelization Model
+
+The 48 courses are written in 16 waves of 3 in prerequisite order ([tech-docs/006](./tech-docs/006-execution-model-waves-and-ledger.md)).
+Inside a wave, up to three background agents each write one course; a wave starts only when every course
+of the waves it needs is DONE or BLOCKED. Phase 1 runs serially in the coordinator, because its edits
+share `catalog.yaml` and `JarFetch.java` (a shared-output edge). Every other shared file (the step files,
+the catalog counts, the indexes, course `_index.md` frontmatter) is touched by the coordinator in a
+serial step.
+
+```mermaid
+flowchart TD
+  accTitle: Plan 10 phase and wave model
+  accDescr: Serial setup and baseline, parallel course waves, end-state gates, and archival.
+  P0["0 setup and baseline"] --> P1["1 toolchains<br/>and full baseline"]
+  P1 --> P2["2 test extensions<br/>RED"]
+  P2 --> P3["3 sixteen waves<br/>of 3 courses"]
+  P3 --> P4["4 end-state gate<br/>and full suites"]
+  P4 --> P5["5 manual<br/>and testers"]
+  P5 --> P6["6 rules, docs, C4"]
+  P6 --> P7["7 gates, push,<br/>PR, CI"]
+  P7 --> P8["8 knowledge capture"]
+  P8 --> PA["archival:<br/>move to done,<br/>merge, cleanup"]
+
+  classDef serial fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef parallel fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  classDef gate fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
+  class P0,P1,P2,P4,P5,P6,P8 serial
+  class P3 parallel
+  class P7,PA gate
+```
+
+### Delivery Boundaries
+
+| Phase(s)              | Natural cohesive seam                                                                                                                                   | Worktree                                                       | Branch                                              | Delivery opportunity                                                       | Exact resulting `main` / rollback / feature-flag evidence                                                                                                                                                                                                |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- | --------------------------------------------------- | -------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0                     | — (setup and baseline)                                                                                                                                  | —                                                              | —                                                   | none                                                                       | No resulting state change; no PR; flag not applicable                                                                                                                                                                                                    |
+| 1–8 and Plan Archival | The 48 courses with their gates and harness runs, the WebAssembly toolchain and the two install-recipe extensions, and the mapping artifact for plan 14 | `worktrees/ayokoding-learn-revamp-10-legacy-unique-migration/` | `ayokoding-learn-revamp-10-legacy-unique-migration` | PR opened as a draft at Wave 1's checkpoint push and merged after archival | `main` gets the 48 courses, the toolchain changes, the test extensions, and the mapping table together (DU-10). Rollback: revert the merge commit in a revert PR. Feature-flag lifecycle: not applicable, because no flag is created; nothing to remove. |
 
 ### Before Phase 0: Promotion
 
@@ -81,6 +123,8 @@ the one branch; no phase is merged on its own.
   (written below as `<plan>/`). Evidence goes to `<plan>/evidence/`.
 - **Course folder:** `<dir>` means `apps/ayokoding-www/content/en/learn/courses/<slug>` for the
   course in hand.
+- **Test files:** `<wtests>` means `apps/ayokoding-www/tests`. Every `UNIT-NODE` step path below
+  is written as `<wtests>/unit/…` (relative to `apps/ayokoding-www`, which is `UNIT-NODE`'s `--cwd`).
 - **Scratch:** the execution ledger, saved partial work, and probe content live in the execution
   worktree's `local-tmp/ayokoding-learn/` (gitignored). The ledger is
   `local-tmp/ayokoding-learn/execution-ledger.md`; this plan writes only under its heading
@@ -148,8 +192,8 @@ Run every command from the execution worktree root. Expected results are stated 
 | `HARNESS-GENERATE`     | `rtk ./hippo run --class transactional --resource-tier light --disk-path . -- ./rhino harness adapters generate`                                                                                                                                           |
 | `HARNESS-VALIDATE`     | `rtk ./hippo run --class ephemeral --resource-tier light --disk-path . -- ./rhino harness adapters validate`                                                                                                                                               |
 | `LINT-MD`              | `rtk npm run lint:md`                                                                                                                                                                                                                                      |
-| `CORPUS-GUARD`         | `UNIT-NODE tests/unit/be-steps/course-metadata.steps.ts` (plan 03's real-corpus guard, extended by this plan's Phase 2 to the 48 new slugs and the 229-course totals; prints "Expected estimatedHours for every non-outline course:" on drift)             |
-| `MAPPING-GUARD`        | `UNIT-NODE tests/unit/be-steps/legacy-mapping.steps.ts` (this plan's new mapping-completeness and legacy-untouched test)                                                                                                                                   |
+| `CORPUS-GUARD`         | `UNIT-NODE <wtests>/unit/be-steps/course-metadata.steps.ts` (plan 03's real-corpus guard, extended by this plan's Phase 2 to the 48 new slugs and the 230-course totals; prints "Expected estimatedHours for every non-outline course:" on drift)          |
+| `MAPPING-GUARD`        | `UNIT-NODE <wtests>/unit/be-steps/legacy-mapping.steps.ts` (this plan's new mapping-completeness and legacy-untouched test)                                                                                                                                |
 | `CLI-BUILD`            | `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ayokoding-cli:build`                                                                                                                                       |
 | `CLI-TEST`             | the as-merged Go test command for `apps/ayokoding-cli`, confirmed at Phase 0 (expected form: `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ayokoding-cli:test`)                                          |
 | `TOOLCHAIN-LIST`       | `rtk ./hippo run --class ephemeral --resource-tier light --disk-path . -- apps/ayokoding-cli/dist/ayokoding-cli toolchains list`                                                                                                                           |
@@ -172,12 +216,12 @@ Notes:
 
 - `QUICK` runs typecheck, lint, `test:unit` (99% line threshold), and `test:coverage` (every scenario
   bound once per non-exempt adapter). From Phase 2's RED checkbox onward, `QUICK` is deliberately red
-  for the two scenarios that cannot turn green until the 48 courses and the 229-course totals exist;
+  for the two scenarios that cannot turn green until the 48 courses and the 230-course totals exist;
   the Phase 2 and wave gates name exactly which failures are expected at each point. From the end of
   Phase 4 on, `QUICK` must exit 0.
 - The `EX-*` and `TOOLCHAIN-*` commands need a running Docker daemon and a built CLI (`CLI-BUILD`).
   `EX-RECORD` writes only expected files that are missing; it never overwrites one. `EX-CHECK-ALL`
-  runs every opted-in course in the repository (229 by the end of this plan), so it takes hours; run
+  runs every opted-in course in the repository (230 by the end of this plan), so it takes hours; run
   it in the background and poll every 2 minutes.
 - `E2E` builds the app with the fixture manifests in `apps/ayokoding-www-fe-e2e/fixtures/manifests/`
   and runs every scenario in three browsers. `INTEGRATION` depends on `build`, so it is heavy too.
@@ -301,7 +345,7 @@ Phase 0 opens no PR. Its evidence rides the DU-10 PR.
 - **Input:** this plan at `<plan>/`; `origin/main` with plans 01 to 09 merged.
 - **Outcome:** a verdict from the plan quality gate; a provisioned, initialized worktree; confirmed
   preconditions; the as-merged names of every consumed contract; a reused PostgreSQL lock source; the
-  re-validated 1,150-file legacy baseline and 181-course catalog baseline; a recorded green baseline;
+  re-validated 1,150-file legacy baseline and 182-course catalog baseline; a recorded green baseline;
   the empty ledger.
 - **Proof:** `<plan>/evidence/phase-0-*.md` (named at each step).
 
@@ -348,8 +392,10 @@ Phase 0 opens no PR. Its evidence rides the DU-10 PR.
     shows the 14-category constant;
   - plan 05: `rtk git grep -n "examples:check" origin/main -- apps/ayokoding-www/project.json` shows
     the Nx target; `rtk git ls-tree -r --name-only origin/main apps/ayokoding-cli` lists the Go
-    project; `rtk git grep -n "Adding a Toolchain" origin/main -- apps/ayokoding-cli` locates the
-    merged procedure's home (record its as-merged file and heading); `rtk git grep -n "toolchains build\|toolchains list" origin/main -- apps/ayokoding-cli`
+    project; the "Adding a Toolchain" procedure lives at
+    `plans/done/2026-10-19__ayokoding-learn-revamp-05-code-harness/tech-docs/005-runners-and-toolchain-catalog.md:218`
+    (`## Adding a Toolchain`); confirm that heading still exists on `origin/main` and record any
+    difference; `rtk git grep -n "toolchains build\|toolchains list" origin/main -- apps/ayokoding-cli`
     confirms the CLI subcommand names this plan's `TOOLCHAIN-BUILD`/`TOOLCHAIN-LIST` commands use, and
     `rtk git grep -n "^test" origin/main -- apps/ayokoding-cli/project.json` confirms the `CLI-TEST`
     Nx target name. Record every as-merged name (or "same as planned") in
@@ -372,7 +418,7 @@ Phase 0 opens no PR. Its evidence rides the DU-10 PR.
     (`rtk git grep -n "install:" origin/main -- apps/ayokoding-cli/toolchains/catalog.yaml`); Phase 1's
     AC-5 uses that record.
   - plans 06 to 08: no shared code dependency; their course additions already count toward the
-    181-course baseline checked below.
+    182-course baseline checked below.
 - [ ] [HUMAN] **Only if any check above fails:** stop and report which plan or product is missing. The
       user decides; the series order (decision 42) makes a missing earlier plan an unexpected state.
       Do not continue on an assumption.
@@ -434,7 +480,7 @@ Phase 0 opens no PR. Its evidence rides the DU-10 PR.
       count is an unexpected state: stop and report to the user rather than assume which course is
       still outline.
 - [ ] [AI] **Course-count baseline.** `grep -l "^category: " apps/ayokoding-www/content/en/learn/courses/*/_index.md | wc -l`.
-      Acceptance: `181`, matching [tech-docs/004](./tech-docs/004-catalog-metadata-and-path-membership.md#category-totals-after-this-plan)'s
+      Acceptance: `182`, matching [tech-docs/004](./tech-docs/004-catalog-metadata-and-path-membership.md#category-totals-after-this-plan)'s
       "Before" column.
 - [ ] [AI] Run `QUICK`. Acceptance: exit 0. Save the summary (exit code, test counts, line coverage)
       in `<plan>/evidence/phase-0-baseline.md`.
@@ -444,10 +490,10 @@ Phase 0 opens no PR. Its evidence rides the DU-10 PR.
       failure-handling rule.
 - [ ] [AI] Run `VALIDATE-INDEXES`. Acceptance: exit 0.
 - [ ] [AI] Run `CLI-BUILD`, then `EX-COVERAGE`. Acceptance: exit 0; save the covered and applicable
-      counts (the 181 pre-existing courses are covered; the 48 new slugs do not exist yet, so they are
+      counts (the 182 pre-existing courses are covered; the 48 new slugs do not exist yet, so they are
       not yet in the denominator).
 - [ ] [AI] Start `DEV` in the background. With Playwright MCP at 1280×800, open
-      `http://localhost:3101/en/learn/courses`. Acceptance: the catalog shows 181 courses and the
+      `http://localhost:3101/en/learn/courses`. Acceptance: the catalog shows 182 courses and the
       "Before" per-category counts of
       [tech-docs/004](./tech-docs/004-catalog-metadata-and-path-membership.md#category-totals-after-this-plan).
       Save `<plan>/evidence/phase-0-before-catalog-en-1280px.png`. Stop `DEV`, then run
@@ -474,7 +520,7 @@ Phase 0 opens no PR. Its evidence rides the DU-10 PR.
       variable), and the `install`-block status of `kotlin`, `rust`, `dotnet`, and `elixir`.
 - [ ] [AI] `phase-0-baseline.md` records exit 0 for `QUICK`, `E2E-QUICK`, `BE-E2E-QUICK`,
       `INTEGRATION`, `E2E`, `BE-E2E`, and `VALIDATE-INDEXES`, the outline baseline (0), and the
-      course-count baseline (181).
+      course-count baseline (182).
 - [ ] [AI] The legacy file count is `1150` and the mapping row re-validation found no mismatch (or
       every mismatch is recorded with its resolution).
 - [ ] [AI] `rtk git status --short` shows only `<plan>/` changes.
@@ -499,7 +545,7 @@ Phase 0 opens no PR. Its evidence rides the DU-10 PR.
   measured against the CI budget.
 - **Proof:** `<plan>/evidence/phase-1-toolchains.md` (RED/GREEN outputs),
   `<plan>/evidence/phase-1-probes.md`, and `<plan>/evidence/phase-1-timing.md`.
-- _Suggested executor: `swe-go-dev` (the `ayokoding-cli` toolchain catalog and its Go tests)._
+- _Suggested executor: `swe-developer` (the `ayokoding-cli` toolchain catalog and its Go tests)._
 
 Every production-code outcome below keeps RED, GREEN, and REFACTOR as separate steps, per the
 plan-authoring contract; this is code (catalog entries, Dockerfiles, `JarFetch.java`, and their smoke
@@ -625,12 +671,30 @@ re-added; where the steps below say "the merged name", Phase 0's record is the s
   with the Phase 0 inventory as proof.
 - [ ] [AI] Write the decision for each of the three toolchains (`recipe exists` or `recipe missing`) in
       `<plan>/evidence/phase-1-toolchains.md`, and add one `PENDING` ledger row per missing recipe.
-- [ ] [AI] For each toolchain marked `recipe missing`, run its own **RED** (a smoke course with one
-      unit that declares `dependencies.lockfile` and fails for the missing recipe), **GREEN** (the
-      `install` block, Dockerfile support, and the passing smoke unit under `--network none`, two
-      executions agreeing, `SMOKE` green), and **REFACTOR** (align with AC-2, `CLI-TEST` exit 0), then
-      commit `feat(ayokoding-cli): extend the <Rust|.NET|Elixir> toolchain with an install recipe`.
-      Skip this step for a toolchain marked `recipe exists`.
+- [ ] [AI] **Rust RED (only if marked `recipe missing`):** add a smoke course with one `rust` unit
+      that declares `dependencies.lockfile` and fails for the missing recipe. Skip this and the next
+      three steps for a toolchain marked `recipe exists`.
+- [ ] [AI] **Rust GREEN:** add the `install` block and Dockerfile support; the smoke unit passes under
+      `--network none` on two executions with agreeing output, and `SMOKE` is green.
+- [ ] [AI] **Rust REFACTOR:** align with AC-2. Run `CLI-TEST`. Acceptance: exit 0.
+- [ ] [AI] **Rust commit:** `feat(ayokoding-cli): extend the Rust toolchain with an install recipe`,
+      explicit paths only.
+- [ ] [AI] **.NET RED (only if marked `recipe missing`):** add a smoke course with one `dotnet` unit
+      that declares `dependencies.lockfile` and fails for the missing recipe. Skip this and the next
+      three steps for a toolchain marked `recipe exists`.
+- [ ] [AI] **.NET GREEN:** add the `install` block and Dockerfile support; the smoke unit passes under
+      `--network none` on two executions with agreeing output, and `SMOKE` is green.
+- [ ] [AI] **.NET REFACTOR:** align with AC-2. Run `CLI-TEST`. Acceptance: exit 0.
+- [ ] [AI] **.NET commit:** `feat(ayokoding-cli): extend the .NET toolchain with an install recipe`,
+      explicit paths only.
+- [ ] [AI] **Elixir RED (only if marked `recipe missing`):** add a smoke course with one `elixir` unit
+      that declares `dependencies.lockfile` and fails for the missing recipe. Skip this and the next
+      three steps for a toolchain marked `recipe exists`.
+- [ ] [AI] **Elixir GREEN:** add the `install` block and Dockerfile support; the smoke unit passes under
+      `--network none` on two executions with agreeing output, and `SMOKE` is green.
+- [ ] [AI] **Elixir REFACTOR:** align with AC-2. Run `CLI-TEST`. Acceptance: exit 0.
+- [ ] [AI] **Elixir commit:** `feat(ayokoding-cli): extend the Elixir toolchain with an install recipe`,
+      explicit paths only.
 
 ### Lock Generation Procedure
 
@@ -698,14 +762,14 @@ by the Lock Generation Procedure. Record each result and the decision it forces 
 - [ ] [AI] Any change under `apps/ayokoding-cli/toolchains/` puts the PR's examples check in full mode
       (series decision 33). After the last toolchain commit, run `EX-CHECK-ALL` in the background now
       (before any course uses a changed entry, so this run's own baseline is clean); poll every 2
-      minutes. Acceptance: exit 0 across all 181 pre-existing courses (the 48 new ones do not exist
+      minutes. Acceptance: exit 0 across all 182 pre-existing courses (the 48 new ones do not exist
       yet), which also proves plan 09's Java units and its Clojure smoke unit still pass with the
       changed `JarFetch.java` and images. Save the summary.
 - [ ] [AI] **Timing.** From `EX-CHECK-ALL`'s own per-toolchain timing output, plus the probe runs, record
       the real run time for one Clojure unit with a locked jar set, one Kotlin unit with a locked jar
       set, and one WebAssembly unit in `<plan>/evidence/phase-1-timing.md`, the same way plan 08
       measured its own CI budget. Also record the image-build time of each `(toolchain, lockfile)`
-      pair a probe built. If the projected full-corpus time (229 courses, after Phase 3) threatens the
+      pair a probe built. If the projected full-corpus time (230 courses, after Phase 3) threatens the
       CI job timeout, apply the four-rung response ladder in order: author the remaining examples for
       speed, shard by unit count, raise the timeout, or stop and report to the user. No course is ever
       weakened to fit a time budget.
@@ -760,14 +824,14 @@ by the Lock Generation Procedure. Record each result and the decision it forces 
 
 - **Input:** scenario 1–3 of `legacy-mapping-completeness.feature`; the real `learn/legacy` tree; the
   real `syllabus/legacy-to-course-mapping.md` table (already complete at authoring time).
-- **Outcome:** `tests/unit/be-steps/legacy-mapping.steps.ts` binds all 3 scenarios and passes, because
+- **Outcome:** `<wtests>/unit/be-steps/legacy-mapping.steps.ts` binds all 3 scenarios and passes, because
   the mapping artifact this plan authored is already complete; this is the one AC in this phase that
   does not wait for Phase 3.
-- [ ] [AI] **RED:** write `tests/unit/be-steps/legacy-mapping.steps.ts` (`loadFeature` +
+- [ ] [AI] **RED:** write `<wtests>/unit/be-steps/legacy-mapping.steps.ts` (`loadFeature` +
       `describeFeature`), binding scenario 1 (every legacy file matched by exactly one row), scenario 2
       (every row's Target resolves to a real course directory or a dash), and scenario 3 (`learn/legacy`
       is untouched, diffed against the commit where plan 09 merged). Run
-      `UNIT-NODE tests/unit/be-steps/legacy-mapping.steps.ts`. Acceptance: it fails only because the
+      `UNIT-NODE <wtests>/unit/be-steps/legacy-mapping.steps.ts`. Acceptance: it fails only because the
       step file is new and unbound test infrastructure does not exist yet (for example, a missing shared
       word-count helper); save the output.
 - [ ] [AI] **GREEN:** implement the shared helpers the step file needs (a legacy-tree walker, a mapping
@@ -788,14 +852,14 @@ by the Lock Generation Procedure. Record each result and the decision it forces 
 ### AC-7 — Legacy-migrated course completion (RED only — GREEN is Phase 4's job)
 
 - **Input:** the 4 scenarios of `legacy-migrated-course-completion.feature`; the existing
-  `tests/unit/be-steps/course-metadata.steps.ts` and its `checkCourseCorpus` helper.
+  `<wtests>/unit/be-steps/course-metadata.steps.ts` and its `checkCourseCorpus` helper.
 - **Outcome:** the step file is extended to check, for each of the 48 named slugs: no outline status;
   the mode's word floor, capstone, and drilling sections; every code-bearing example/kata/capstone has a
   `run.yaml` with no real network call; the 4 AI-agent courses' References dates are within 30 days of
   the last content commit. **This extension is intentionally RED now** — none of the 48 directories
   exists yet — and turns GREEN incrementally through Phase 3 as each course lands, with full GREEN
   confirmed only at Phase 4's end-state gate.
-- [ ] [AI] **RED:** extend `tests/unit/be-steps/course-metadata.steps.ts` to bind the 4 new scenarios
+- [ ] [AI] **RED:** extend `<wtests>/unit/be-steps/course-metadata.steps.ts` to bind the 4 new scenarios
       against the 48 named slugs (the list in
       [syllabus/courses/README.md](./syllabus/courses/README.md)) and the 4 AI-agent slugs' date check.
       Run `CORPUS-GUARD`. Acceptance: it fails, naming all 48 missing course directories; save the
@@ -809,13 +873,13 @@ by the Lock Generation Procedure. Record each result and the decision it forces 
 - **Input:** the 1 scenario of `catalog-count-after-migration.feature`; plan 03's corpus-count
   assertions and every per-category count in test code (plans 03, 06, 07, 08, and 09 each touched one).
 - **Outcome:** a new binding (in `course-metadata.steps.ts`, alongside AC-7's extension, since both read
-  the same real corpus) asserts the total is 229 and each of the 14 categories matches
+  the same real corpus) asserts the total is 230 and each of the 14 categories matches
   [tech-docs/004](./tech-docs/004-catalog-metadata-and-path-membership.md#category-totals-after-this-plan)'s
-  "After" column. **Intentionally RED now** (the real corpus is still 181 courses).
+  "After" column. **Intentionally RED now** (the real corpus is still 182 courses).
 - [ ] [AI] **RED:** bind the scenario; update every hard-coded "181" and every stale per-category count
       found by `rtk git grep -rn "\b181\b" tests/ apps/ayokoding-www/src` to the 229 totals in the same
-      commit as the binding. Run `CORPUS-GUARD`. Acceptance: it fails, reporting the real count (181) against
-      the now-updated expectation (229); save the output.
+      commit as the binding. Run `CORPUS-GUARD`. Acceptance: it fails, reporting the real count (182) against
+      the now-updated expectation (230); save the output.
 - [ ] [AI] **(GREEN deferred.)** Confirmed at [Phase 4](#phase-4-end-state-gate-and-full-local-suites).
 - **Proof:** the RED output above; the GREEN confirmation lives in `<plan>/evidence/phase-4-end-state.md`.
 
@@ -832,7 +896,7 @@ by the Lock Generation Procedure. Record each result and the decision it forces 
 > All checks below must pass before starting Phase 3.
 
 - [ ] [AI] `MAPPING-GUARD` passes (AC-6 is fully GREEN).
-- [ ] [AI] `CORPUS-GUARD` fails only for the 48 missing course directories and the 229-vs-181 count
+- [ ] [AI] `CORPUS-GUARD` fails only for the 48 missing course directories and the 230-vs-182 count
       mismatch — no other failure. This is the expected, documented RED state for Phase 3 to resolve.
 - [ ] [AI] `TYPECHECK` and `LINT` exit 0.
 - [ ] [AI] `rtk git status --short` shows only `<plan>/` changes (the test-extension commit is made).
@@ -935,13 +999,15 @@ coordinator instance runs it.
       Acceptance: 3 commits exist (fewer only if a course is `BLOCKED`), and `rtk git status --short` is
       clean for those paths.
 - [ ] [AI] Push the branch (`rtk git push`, or `rtk git push -u origin <branch>` on the first wave).
-      Wave 1's push opens the draft PR (see [Wave Strategy and PR-Size
-      Risk](#wave-strategy-and-pr-size-risk)); every later wave's push updates it. Poll
+      Wave 1's push is followed by the draft-PR step below (see [Wave Strategy and PR-Size
+      Risk](#wave-strategy-and-pr-size-risk)); every later wave's push updates that PR. Poll
       `rtk gh pr checks <number>` every 2 minutes for the affected-courses `examples:check` shard on
       this push. Acceptance: green, or a failure fixed at its root cause before the next wave starts.
+- [ ] [AI] **Wave 1 only:** open the draft PR with `rtk gh pr create --draft --title "docs(ayokoding-www): migrate 48 unique legacy topics into new courses" --body "Draft for the 48-course legacy migration (DU-10); the full body is written at Phase 7."`.
+      Record the PR number in the wave's evidence and use it as `<number>` from here on.
 
 > **Pause Safety**: every committed course is complete and green; every other course does not exist
-> yet, so the branch builds and the site works with 181 + (courses done so far) courses. Safe to stop.
+> yet, so the branch builds and the site works with 182 + (courses done so far) courses. Safe to stop.
 > To resume: re-read the ledger, run `rtk git status --short`, then start the first non-`DONE` course
 > of the current wave.
 
@@ -1564,12 +1630,12 @@ coordinator instance runs it.
   decision 40 ([README.md](./README.md#scope)).
 - **Outcome:** decision 40 is measured for this plan's share: all 48 new courses filled and
   harness-green; the mapping file's every row resolved and validated against the real tree and the
-  real catalog; the catalog's 229-course total and every per-category count correct; `learn/legacy/`
+  real catalog; the catalog's 230-course total and every per-category count correct; `learn/legacy/`
   byte-for-byte unchanged; every suite green on the final tree.
 - **Proof:** `<plan>/evidence/phase-4-end-state.md` and `<plan>/evidence/phase-4-reconciliation.md`.
 
 - [ ] [AI] **Phase 2's deferred GREEN, confirmed now.** Run `CORPUS-GUARD` and `MAPPING-GUARD`.
-      Acceptance: both exit 0 — AC-7 (every migrated course complete), AC-8 (229-course and
+      Acceptance: both exit 0 — AC-7 (every migrated course complete), AC-8 (230-course and
       per-category totals), and AC-6 (mapping completeness, already green since Phase 2) all pass
       together on the final tree. Save the output as the GREEN half of AC-7 and AC-8's RED/GREEN pair
       in `<plan>/evidence/phase-4-end-state.md`.
@@ -1577,16 +1643,16 @@ coordinator instance runs it.
       Acceptance: empty output (FR11). This is also what `MAPPING-GUARD`'s scenario 3 checks
       mechanically; this line is the same proof read by a human.
 - [ ] [AI] Run `INTEGRATION`, `E2E`, `BE-E2E`, and `BUILD`. Acceptance: all exit 0.
-- [ ] [AI] Run `EX-CHECK-ALL` in the background (all 229 courses; expect hours; poll every 2 minutes),
-      then `EX-COVERAGE`. Acceptance: exit 0 for both; all 229 courses are listed as covered.
+- [ ] [AI] Run `EX-CHECK-ALL` in the background (all 230 courses; expect hours; poll every 2 minutes),
+      then `EX-COVERAGE`. Acceptance: exit 0 for both; all 230 courses are listed as covered.
 - [ ] [AI] **Reconciliation.** Fill `<plan>/evidence/phase-4-reconciliation.md` with these counts, each
       taken with its command, and compare with the expected value:
 
   | Item                              | Command (from the worktree root)                                                                   | Expected                                                                                                                  |
   | --------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-  | Total courses in the catalog      | `grep -l "^category: " apps/ayokoding-www/content/en/learn/courses/*/_index.md \| wc -l`           | 229                                                                                                                       |
+  | Total courses in the catalog      | `grep -l "^category: " apps/ayokoding-www/content/en/learn/courses/*/_index.md \| wc -l`           | 230                                                                                                                       |
   | Per-category counts (14 rows)     | `grep -l "^category: <id>" ...` for each category                                                  | [tech-docs/004](./tech-docs/004-catalog-metadata-and-path-membership.md#category-totals-after-this-plan)'s "After" column |
-  | New courses this plan added       | `comm` of the 229-list against the Phase 0 181-list, or count the 48 named slugs directly          | 48                                                                                                                        |
+  | New courses this plan added       | `comm` of the 230-list against the Phase 0 182-list, or count the 48 named slugs directly          | 48                                                                                                                        |
   | By Example new courses            | `grep -l "^format: by-example"` over the 48 new slugs                                              | 41                                                                                                                        |
   | Annotated-Concept new courses     | `grep -l "^format: annotated-concept"` over the 48 new slugs                                       | 7                                                                                                                         |
   | New courses with `estimatedHours` | `grep -l "^estimatedHours: "` over the 48 new slugs                                                | 48                                                                                                                        |
@@ -1645,7 +1711,7 @@ Funnel](./prd.md#ui-design-funnel) states no new screen or component was written
       take a `browser_snapshot` (confirm `html[lang]` matches the locale, no untranslated string),
       read `browser_console_messages` (zero errors; hydration warnings count as errors), and capture one
       screenshot per breakpoint.
-- [ ] [AI] `/en/learn/courses`: the catalog. Acceptance: 229 total, the 7 changed categories show their
+- [ ] [AI] `/en/learn/courses`: the catalog. Acceptance: 230 total, the 7 changed categories show their
       new counts, each of the 48 new course cards shows a format badge, "About N h", a one-sentence
       description ending with a period, and no Outline badge; no Outline badge renders anywhere on the
       page. Screenshot `phase-5-catalog-en-<width>px.png`.
@@ -1793,6 +1859,7 @@ Funnel](./prd.md#ui-design-funnel) states no new screen or component was written
       (`rtk git diff --stat <phase-4-head>..HEAD -- apps/ayokoding-www/content apps/ayokoding-cli`), also
       run `EX-CHECK-SINCE`. Acceptance: exit 0.
 - [ ] [AI] Run `LINT-MD`. Acceptance: exit 0.
+- [ ] [AI] Run `./rhino gate run --surface pre-push`. Acceptance: exit 0.
 - [ ] [AI] Fix ALL failures found, including preexisting ones, and rerun until every check above exits 0.
 
 ### Push and PR
@@ -1805,9 +1872,12 @@ Funnel](./prd.md#ui-design-funnel) states no new screen or component was written
       [PR Leak Review — Push Review](../../../repo-governance/workflows/quality/pr-leak-review/002-push-review.md).
       Read the commits locally with git: the range is far larger than GitHub's diff view can show.
       Acceptance: no finding (a finding blocks the push until the history is cleaned).
+- [ ] [AI] Write the PR body to `<plan>/evidence/phase-7-pr-body.md` (scope, rollback, new-code
+      cost and benefit, PR size and how to review it, the deferred plan-quality-gate fact if it
+      matters, and a link to this plan, as listed in the next step).
 - [ ] [AI] Push the branch (the draft PR already exists, opened at Wave 1's checkpoint); update its
       title to `docs(ayokoding-www): migrate 48 unique legacy topics into new courses` and write the
-      body with `gh pr edit <number> --body-file <file>`. The body states the scope (48 courses across
+      body with `gh pr edit <number> --body-file <plan>/evidence/phase-7-pr-body.md`. The body states the scope (48 courses across
       16 waves, one new toolchain (WebAssembly) and the install-recipe extensions of the merged
       `clojure` and `kotlin` entries, the mapping artifact for plan 14, zero edits under
       `learn/legacy/`), the rollback (revert the merge commit), the new-code cost and benefit (the new

@@ -7,17 +7,17 @@ Every new course's `_index.md` frontmatter carries: `category` (one of the 14 `C
 `annotated-concept` for every course in this plan), `estimatedHours` (an integer 1 to 200, taken only
 from the drift test's own message, formula
 `max(1, round((proseWords/200 + max(inlineCodeLines, codeFileLines)/10)/60))`), and no `status: outline`.
-The real-corpus guard `tests/unit/be-steps/course-metadata.steps.ts` (`checkCourseCorpus`) runs over the
-finished corpus and must pass for all 229 courses, not only the 48 new ones.
+The real-corpus guard `<wtests>/unit/be-steps/course-metadata.steps.ts` (`checkCourseCorpus`) runs over the
+finished corpus and must pass for all 230 courses, not only the 48 new ones.
 
 ## Category totals after this plan
 
-| Category                               | Before (181 courses) | New courses added | After   |
+| Category                               | Before (182 courses) | New courses added | After   |
 | -------------------------------------- | -------------------- | ----------------- | ------- |
 | `tools-and-practices`                  | 11                   | 2                 | 13      |
 | `programming-languages`                | 16                   | 14                | 30      |
 | `computer-science`                     | 13                   | 0                 | 13      |
-| `application-development`              | 17                   | 13                | 30      |
+| `application-development`              | 18                   | 13                | 31      |
 | `data-and-databases`                   | 11                   | 13                | 24      |
 | `systems-and-networking`               | 7                    | 0                 | 7       |
 | `architecture-and-distributed-systems` | 8                    | 0                 | 8       |
@@ -28,9 +28,9 @@ finished corpus and must pass for all 229 courses, not only the 48 new ones.
 | `interview-preparation`                | 5                    | 0                 | 5       |
 | `accounting`                           | 24                   | 1                 | 25      |
 | `erp-systems`                          | 30                   | 0                 | 30      |
-| **Total**                              | **181**              | **48**            | **229** |
+| **Total**                              | **182**              | **48**            | **230** |
 
-Every hard-coded "181" and every hard-coded per-category count in test code (the corpus tests plans 03,
+Every hard-coded "182" and every hard-coded per-category count in test code (the corpus tests plans 03,
 06, 07, 08, and 09 each added or updated) is found by a repository-wide search for the literal counts
 above and updated to the new totals in the same commit that adds the 48th course's metadata. This
 includes the catalog page's own rendered count and the global sidebar's per-category grouping, both of

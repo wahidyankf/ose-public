@@ -194,3 +194,10 @@ toolchains:
     version: "Debian trixie snapshot"
     image: ayokoding-toolchain/windows-static:f92e8b786d3f1edb47402da464b9a52f76c461ab26d3619b85fa265c5b707fa5@sha256:f92e8b786d3f1edb47402da464b9a52f76c461ab26d3619b85fa265c5b707fa5
     build: windows-static/Dockerfile
+  - id: webassembly
+    kind: language
+    version: "1.12.0"
+    # WebAssembly via the wazero CLI on slim Debian. No install recipe: no
+    # third-party Wasm library is used (AC-4 scope is the runtime alone).
+    image: ayokoding-toolchain/webassembly:0db6bd900c10447dcc73879a33585df4ec10a0bb836f3ad887ea2307cc0fc8c1@sha256:0db6bd900c10447dcc73879a33585df4ec10a0bb836f3ad887ea2307cc0fc8c1
+    build: webassembly/Dockerfile

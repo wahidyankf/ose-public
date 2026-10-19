@@ -17,7 +17,7 @@ Use this checklist when adding a new table or reviewing an existing one.
 
 **F# / DbUp additional checks:**
 
-- [ ] Migration file name follows `{timestamp}_{Description}.sql` format
+- [ ] Migration file name follows `{NNN}-{description}.sql` format, with `NNN` the next free number on main
 - [ ] DbUp `PerformUpgrade()` is called in `Program.fs` before the server starts accepting requests
 - [ ] DbUp result is checked and startup aborts on failure
 

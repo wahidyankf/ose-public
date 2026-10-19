@@ -23,6 +23,23 @@ A schema-changing plan must make the resulting contract and safe migration execu
 - Specify rollback triggers and procedure, migration observability, reconciliation checks, and
   evidence that proves no loss, duplication, or unintended reinterpretation.
 
+## Migration Numbers Are Hints
+
+A plan, brief, or other document that names a migration number must call that number a hint. A number in a document
+reserves no number and authorizes no migration to take it, because the plan cannot know which number will be free when
+the work merges. The migration takes the next free number when its work executes, as
+[Migrations Take the Next Free Number](../../../development/pattern/database-audit-trail/schema-migration.md#migrations-take-the-next-free-number)
+requires. Followed: the document calls the number a hint, or names none. Violated: the document says a number is
+reserved, claimed, or fixed, or a migration takes a number because a document named it.
+
+Enforcement: unenforced by decision. Whether a wording reserves a number is a judgement a reader makes, and no check in
+this repository reads plan prose for it.
+
+Adopted by explicit copy from [ose-rules](https://github.com/wahidyankf/ose-rules) at catalog head
+`81982e20c798d8af6dbb85ae446d39d0432b6362`, from its
+[Migration Numbers Are Hints](https://github.com/wahidyankf/ose-rules/blob/81982e20c798d8af6dbb85ae446d39d0432b6362/repo-governance/conventions/structure/plan-migrations/001-source-inventory-and-contracts.md#migration-numbers-are-hints)
+section.
+
 ## Examples
 
 A column rename identifies the dual-read/dual-write interval, backfill batching and retry behaviour,

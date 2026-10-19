@@ -237,6 +237,19 @@
         "{workspaceRoot}/apps/ayokoding-www-fe-e2e/playwright.config.ts"
       ]
     },
+    "examples:check": {
+      "executor": "nx:run-commands",
+      "dependsOn": [{ "projects": ["ayokoding-cli"], "target": "build" }],
+      "cache": false,
+      "options": {
+        "command": "apps/ayokoding-cli/dist/ayokoding-cli examples check --since \"${NX_BASE:-origin/main}\" --shard \"${AYOKODING_SHARD:-1/1}\""
+      },
+      "configurations": {
+        "full": {
+          "command": "apps/ayokoding-cli/dist/ayokoding-cli examples check --all --shard \"${AYOKODING_SHARD:-1/1}\""
+        }
+      }
+    },
     "test:coverage": {
       "executor": "nx:run-commands",
       "options": {

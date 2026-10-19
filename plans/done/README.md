@@ -9,6 +9,16 @@ Archived plans and completed project planning documents.
 
 ## Completed Projects
 
+- [2026-10-19: ayokoding-learn-revamp-05-code-harness](./2026-10-19__ayokoding-learn-revamp-05-code-harness/README.md) —
+  Shipped the AyoKoding course code harness: a Go + Cobra CLI (`ayokoding-cli`) that validates
+  run specs and catalog references, checks lesson fences against course files (with `--write`
+  repair), runs units in pinned containers twice with comparison, and reports coverage; a
+  17-toolchain catalog with pinned digests; selection, check, affected, and coverage commands;
+  the `ayokoding-www:examples:check` Nx target with PR-gate and monthly CI wiring; rules
+  HC1–HC8 in the content skill and gate adapters; and full BDD/E2E/SMOKE proof.
+- [2026-10-18: ayokoding-learn-revamp-04-learning-experience](./2026-10-18__ayokoding-learn-revamp-04-learning-experience/README.md) —
+  Shipped the AyoKoding Learn learning experience: the lesson page, unit runner affordances,
+  and progress displays (merged #715, E2E-stability follow-ups #716 and #717, deployed to prod).
 - [2026-10-13: ayokoding-learn-revamp-03-catalog-and-metadata](./2026-10-13__ayokoding-learn-revamp-03-catalog-and-metadata/README.md) —
   Shipped the AyoKoding Learn course catalog and metadata: tolerant course frontmatter
   with a strict corpus guard, 14 course categories, the category-grouped catalog page,

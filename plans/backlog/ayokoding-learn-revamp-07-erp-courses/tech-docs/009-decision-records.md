@@ -77,7 +77,7 @@ decisions 39 and 42 and the one-plan-one-PR rule); the others are this plan's de
 - **Prior art:** plan 05's catalog supports `python` and `postgres`; plan 06 adds the `psql` toolchain; the
   completed `sql-essentials` course teaches SQL and is a prerequisite here.
 - **Evidence:** catalog versions (Python 3.14.8, PostgreSQL 18.6) read on 2026-10-09 in plan 05
-  [tech-docs/005](../../ayokoding-learn-revamp-05-code-harness/tech-docs/005-runners-and-toolchain-catalog.md).
+  [tech-docs/005](../../../done/2026-10-19__ayokoding-learn-revamp-05-code-harness/tech-docs/005-runners-and-toolchain-catalog.md).
 - **Trade-offs:** ERP practitioners in other languages see Python; the lessons teach models, not syntax, and
   state this.
 - **Consequences:** prerequisite rubric rule L1 adds `just-enough-python` to every course

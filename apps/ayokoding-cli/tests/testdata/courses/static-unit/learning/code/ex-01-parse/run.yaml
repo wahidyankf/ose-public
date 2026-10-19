@@ -1,0 +1,12 @@
+schema: ayokoding.run/v1
+toolchain: python
+mode: static
+static:
+  reason: ios
+  note: Syntax only; UIKit exists only on Apple platforms.
+runs:
+  - name: parse
+    command: [python3, check.py]
+    expect:
+      exit: 0
+      stdout: expected/parse.stdout.txt

@@ -614,6 +614,7 @@ policies:
         - glob: "README.md"
         - glob: "SECURITY.md"
         - glob: "roadmap.md"
+        - glob: "apps/ayokoding-cli/README.md"
         - glob: "apps/ayokoding-www/README.md"
         - glob: "apps/ayokoding-www-be-e2e/README.md"
         - glob: "apps/ayokoding-www-fe-e2e/README.md"
@@ -1441,6 +1442,10 @@ extensions:
         path: apps/ayokoding-www-fe-e2e
         kind: app
         stacks: [typescript]
+      ayokoding-cli:
+        path: apps/ayokoding-cli
+        kind: app
+        stacks: [golang]
       crane-cli:
         path: apps/crane-cli
         kind: app

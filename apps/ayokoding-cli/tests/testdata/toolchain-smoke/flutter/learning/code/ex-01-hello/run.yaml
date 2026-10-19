@@ -1,0 +1,16 @@
+schema: ayokoding.run/v1
+toolchain: flutter
+# The x64 test compiler under emulation needs more than the 1g default;
+# memory (unlike CPU) is not halved on the second execution.
+resources:
+  memory: 2g
+runs:
+  - name: test
+    kind: check
+    command: [sh, -c, "flutter pub get --offline && flutter test --no-pub"]
+    # One cold emulated run takes ~50s; the halved-CPU second execution
+    # needs headroom under the 600s ceiling.
+    timeout: 300s
+    expect:
+      exit: 0
+      stdout: ignore

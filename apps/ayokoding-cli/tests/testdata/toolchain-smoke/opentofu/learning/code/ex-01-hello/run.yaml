@@ -1,0 +1,21 @@
+schema: ayokoding.run/v1
+toolchain: opentofu
+mode: static
+static:
+  reason: cloud
+  note: Validates configuration offline without a cloud account.
+runs:
+  - name: init
+    kind: check
+    # The image entrypoint is already the tofu binary, so argv starts at
+    # the subcommand; a `tofu` argv word would parse as a subcommand name.
+    command: [init, -backend=false]
+    expect:
+      exit: 0
+      stdout: ignore
+  - name: validate
+    kind: check
+    command: [validate]
+    expect:
+      exit: 0
+      stdout: ignore

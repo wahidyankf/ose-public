@@ -6,6 +6,10 @@ node_modules/
 # ones, so reformatting it changes what the corpus asserts
 specs/fixtures/plan-structure/
 
+# Code-harness fixtures: run.yaml/lesson bytes are asserted byte-for-byte by SMOKE and BDD proofs,
+# and template-laden YAML crashes the prettier parser, so the bytes must never be reformatted
+apps/ayokoding-cli/tests/testdata/
+
 # Build outputs
 dist/
 build/

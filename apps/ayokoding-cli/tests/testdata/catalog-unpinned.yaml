@@ -1,0 +1,7 @@
+# Unpinned catalog fixture: the image carries a tag but no digest.
+schema: ayokoding.toolchains/v1
+toolchains:
+  - id: python
+    kind: language
+    version: "3.15.0"
+    image: docker.io/library/python:3.15.0

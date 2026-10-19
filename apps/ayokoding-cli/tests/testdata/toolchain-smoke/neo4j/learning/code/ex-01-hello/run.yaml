@@ -1,0 +1,9 @@
+schema: ayokoding.run/v1
+toolchain: python
+services: [neo4j]
+runs:
+  - name: query
+    command: [python3, query.py]
+    expect:
+      exit: 0
+      stdout: expected/query.stdout.txt

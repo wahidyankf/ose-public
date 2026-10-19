@@ -1,0 +1,9 @@
+schema: ayokoding.run/v1
+toolchain: python
+services: [postgres]
+runs:
+  - name: query
+    command: [python3, query.py]
+    expect:
+      exit: 0
+      stdout: expected/query.stdout.txt

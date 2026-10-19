@@ -9,6 +9,7 @@ when_to_use: Use when copying an existing project's tag set as a template or che
 
 | Project                    | Tags                                                                     |
 | -------------------------- | ------------------------------------------------------------------------ |
+| `ayokoding-cli`            | `["type:app", "platform:cli", "lang:go", "domain:ayokoding"]`            |
 | `ayokoding-www`            | `["type:app", "platform:nextjs", "lang:ts", "domain:ayokoding"]`         |
 | `ayokoding-www-be-e2e`     | `["type:e2e", "platform:playwright", "lang:ts", "domain:ayokoding"]`     |
 | `ayokoding-www-fe-e2e`     | `["type:e2e", "platform:playwright", "lang:ts", "domain:ayokoding"]`     |

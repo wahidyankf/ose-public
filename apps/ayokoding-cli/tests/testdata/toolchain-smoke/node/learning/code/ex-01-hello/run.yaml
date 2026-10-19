@@ -1,0 +1,8 @@
+schema: ayokoding.run/v1
+toolchain: node
+runs:
+  - name: main
+    command: [node, main.js]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

@@ -1,0 +1,19 @@
+schema: ayokoding.run/v1
+toolchain: kotlin
+runs:
+  - name: build
+    kind: check
+    # kotlinc extracts its jansi native library under java.io.tmpdir
+    # (/tmp here) and executes it; the harness /tmp is noexec, so the
+    # jansi.tmpdir property points scratch at the executable bind instead.
+    command: [kotlinc, -J-Djansi.tmpdir=/work, main.kt, -include-runtime, -d, main.jar]
+    expect:
+      exit: 0
+      stdout: ignore
+  - name: main
+    # Each execution gets a fresh working copy, so the run recompiles
+    # before executing the jar the build run checks.
+    command: [sh, -c, "kotlinc -J-Djansi.tmpdir=/work main.kt -include-runtime -d main.jar && java -jar main.jar"]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

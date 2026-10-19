@@ -32,8 +32,7 @@ is updated in the same change that moves, adds, or removes a plan, per
 ```mermaid
 flowchart LR
   accTitle: Plan order
-  accDescr: Eleven live plans ordered by their Depends-on declarations.
-  P05["🏗️ 05-code-harness"]:::inprogress
+  accDescr: Ten live plans ordered by their Depends-on declarations.
   P06["🔜 06-accounting"]:::backlog
   P07["🔜 07-erp"]:::backlog
   P08["🔜 08-capstone"]:::backlog
@@ -44,13 +43,6 @@ flowchart LR
   P13["🔜 13-audit-prodsec"]:::backlog
   P14["🔜 14-removal"]:::backlog
   FER["🔜 ferret-02-backend"]:::backlog
-  P05 --> P06
-  P05 --> P08
-  P05 --> P09
-  P05 --> P10
-  P05 --> P11
-  P05 --> P12
-  P05 --> P13
   P06 --> P07
   P10 --> P14
   P11 --> P14

@@ -1,0 +1,16 @@
+schema: ayokoding.run/v1
+toolchain: gcc
+runs:
+  - name: build
+    kind: check
+    command: [gcc, main.c, -o, main]
+    expect:
+      exit: 0
+      stdout: ignore
+  - name: main
+    # Each execution gets a fresh working copy, so the run recompiles
+    # before executing the binary the build run checks.
+    command: [sh, -c, "gcc main.c -o main && ./main"]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

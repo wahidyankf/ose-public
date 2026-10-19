@@ -1,0 +1,1 @@
+print("static check placeholder")

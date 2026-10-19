@@ -56,7 +56,7 @@ PostgreSQL examples in 14 courses and 18 simulation examples in two courses.
 ## Unit Layout
 
 Paths are relative to the course folder. "Code root" is the folder the harness copies into the run
-(plan 05 [Runtime View](../../ayokoding-learn-revamp-05-code-harness/tech-docs/003-run-yaml-contract.md#runtime-view)).
+(plan 05 [Runtime View](../../../done/2026-10-19__ayokoding-learn-revamp-05-code-harness/tech-docs/003-run-yaml-contract.md#runtime-view)).
 
 | Kind     | Folder                          | Code root        | Shared files in the code root                                                                         |
 | -------- | ------------------------------- | ---------------- | ----------------------------------------------------------------------------------------------------- |
@@ -244,7 +244,7 @@ unit.
 
 ## Determinism Rules for ERP Code
 
-These extend the plan 05 rules ([Rules for Every Example](../../ayokoding-learn-revamp-05-code-harness/tech-docs/006-determinism-and-simulation.md#rules-for-every-example))
+These extend the plan 05 rules ([Rules for Every Example](../../../done/2026-10-19__ayokoding-learn-revamp-05-code-harness/tech-docs/006-determinism-and-simulation.md#rules-for-every-example))
 and the plan 06 money, date, and database rules with ERP-specific ones. The harness's double run catches many
 violations; the rest the makers and the gates must catch. A reviewer reads every example against this list.
 

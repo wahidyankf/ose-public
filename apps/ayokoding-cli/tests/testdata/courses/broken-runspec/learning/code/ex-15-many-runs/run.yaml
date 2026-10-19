@@ -1,0 +1,108 @@
+schema: ayokoding.run/v1
+toolchain: python
+runs:
+  - name: run-01
+    command: [python3, example.py]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+  - name: run-02
+    command: [python3, example.py]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+  - name: run-03
+    command: [python3, example.py]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+  - name: run-04
+    command: [python3, example.py]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+  - name: run-05
+    command: [python3, example.py]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+  - name: run-06
+    command: [python3, example.py]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+  - name: run-07
+    command: [python3, example.py]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+  - name: run-08
+    command: [python3, example.py]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+  - name: run-09
+    command: [python3, example.py]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+  - name: run-10
+    command: [python3, example.py]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+  - name: run-11
+    command: [python3, example.py]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+  - name: run-12
+    command: [python3, example.py]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+  - name: run-13
+    command: [python3, example.py]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+  - name: run-14
+    command: [python3, example.py]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+  - name: run-15
+    command: [python3, example.py]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+  - name: run-16
+    command: [python3, example.py]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+  - name: run-17
+    command: [python3, example.py]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+  - name: run-18
+    command: [python3, example.py]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+  - name: run-19
+    command: [python3, example.py]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+  - name: run-20
+    command: [python3, example.py]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+  - name: run-21
+    command: [python3, example.py]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

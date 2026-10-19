@@ -1,0 +1,26 @@
+# Pinned test catalog. Fixture digests are shape-valid and never pulled.
+schema: ayokoding.toolchains/v1
+toolchains:
+  - id: python
+    kind: language
+    version: "3.15.0"
+    image: docker.io/library/python:3.15.0@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+    install:
+      lockfiles: [requirements.lock]
+      command: [pip, install, --require-hashes, --no-deps, --target, /deps/python, -r, /deps/lock/requirements.lock]
+      env:
+        PYTHONPATH: /deps/python
+  - id: postgres
+    kind: service
+    version: "18.6"
+    image: docker.io/library/postgres:18.6@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+    env:
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ready: [pg_isready, -h, 127.0.0.1, -U, postgres]
+    readyTimeout: 60s
+    connect:
+      PGHOST: postgres
+      PGUSER: postgres
+      PGDATABASE: postgres

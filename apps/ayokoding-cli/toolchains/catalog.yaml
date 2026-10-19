@@ -1,0 +1,160 @@
+# Toolchain catalog. Versions re-checked in Phase 0; every image carries its
+# Phase 3 digest pin (official and project images by registry digest,
+# derived images by content-hash tag), so the CLI loads this catalog.
+schema: ayokoding.toolchains/v1
+toolchains:
+  - id: python
+    kind: language
+    version: "3.15.0"
+    image: docker.io/library/python:3.15@sha256:e748956ccf3f50c9555f236753bbcd5f430d3937e665d3bd6922dd0e6e591a24
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+    install:
+      lockfiles: [requirements.lock]
+      command: [pip, install, --require-hashes, --no-deps, --target, /deps/python, -r, /deps/lock/requirements.lock]
+      env:
+        PYTHONPATH: /deps/python
+  - id: go
+    kind: language
+    version: "1.27.2"
+    image: docker.io/library/golang:1.27@sha256:820153096fda4de6ac1b7194d12e416b7dd8f4e9a33d17e0345b111b945162d8
+  - id: rust
+    kind: language
+    version: "1.99.1"
+    image: docker.io/library/rust:1.99@sha256:e259494b14672950a909b4c54527e19d29cae6ebf980672114c8bb85e5594e4a
+  - id: node
+    kind: language
+    version: "24.22.0"
+    image: docker.io/library/node:24@sha256:14078204b6bb268c107ceff6d3c43f45a888105e5c2b18b14c32b3409d93a1b0
+  - id: typescript
+    kind: language
+    version: "7.0.2"
+    image: ayokoding-toolchain/typescript:b7c9c03f556ecef1da8571cb3ddceb9697254b8d4b0a473b73672eb4821bdd14@sha256:b7c9c03f556ecef1da8571cb3ddceb9697254b8d4b0a473b73672eb4821bdd14
+    build: typescript/Dockerfile
+  - id: java
+    kind: language
+    version: "25.0.4.1+1"
+    image: docker.io/library/eclipse-temurin:25-jdk@sha256:2d5d5e9b533342a565907c84f47a2ec298c40cde7b13a3ca85d4950fa456a641
+  - id: kotlin
+    kind: language
+    version: "2.4.21"
+    image: ayokoding-toolchain/kotlin:812eaeff10297e717fd044f54eac1525dbe72932f95b9816274ab343969b0b1e@sha256:812eaeff10297e717fd044f54eac1525dbe72932f95b9816274ab343969b0b1e
+    build: kotlin/Dockerfile
+  - id: dotnet
+    kind: language
+    version: "10.0.402"
+    image: mcr.microsoft.com/dotnet/sdk:10.0@sha256:0d99ebf1ccad15037b5c98c9fe8979d6b8dbac23812feae2277a0b277b5c5ffa
+    env:
+      # The SDK 10 CLI refuses to start when HOME names a missing folder,
+      # and the harness HOME (/tmp/home) is never created. Point HOME at
+      # the container /tmp, which always exists and is private per run.
+      HOME: /tmp
+  - id: elixir
+    kind: language
+    version: "1.20.4 (OTP 29.1.2)"
+    image: docker.io/library/elixir:1.20-otp-29@sha256:8241e27b8915d197eb8df4783f14490de9c9c335d03bd8a5d5613005cb2d7fc2
+  - id: lua
+    kind: language
+    version: "5.5.1"
+    image: ayokoding-toolchain/lua:3b2f3dc54d52710af0d9961a36317b2cfa88c1738bc7869ae1dad19e6283e7b0@sha256:3b2f3dc54d52710af0d9961a36317b2cfa88c1738bc7869ae1dad19e6283e7b0
+    build: lua/Dockerfile
+  - id: luajit
+    kind: language
+    version: "v2.1 at commit 2a8e017"
+    image: ayokoding-toolchain/luajit:071b09ec4233e8724109a95572118460ee156fd33fcbe0e10b6185328bef10d4@sha256:071b09ec4233e8724109a95572118460ee156fd33fcbe0e10b6185328bef10d4
+    build: luajit/Dockerfile
+  - id: neovim
+    kind: language
+    version: "0.12.6"
+    image: ayokoding-toolchain/neovim:0ebf17227a338bf2246967ffa9fd43153979bd29e967f7fda6c3fc0cc04c812a@sha256:0ebf17227a338bf2246967ffa9fd43153979bd29e967f7fda6c3fc0cc04c812a
+    build: neovim/Dockerfile
+  - id: gcc
+    kind: language
+    version: "16.2"
+    image: docker.io/library/gcc:16@sha256:17043c23ec2ad97fc3beca18da77275d26be5db5cd70ea0a5d73200e21a8e999
+  - id: racket
+    kind: language
+    version: "9.3"
+    image: docker.io/racket/racket:9.3@sha256:9e175f049faa155ca5137dcb6d56799a7511072495271c56d4778e0639e6e3af
+  - id: ocaml
+    kind: language
+    version: "5.5.1"
+    image: ayokoding-toolchain/ocaml:639060383d59e0aaf10bdadfe8a044a96336f7324fb5afc272fb9b6cdce49a64@sha256:639060383d59e0aaf10bdadfe8a044a96336f7324fb5afc272fb9b6cdce49a64
+    build: ocaml/Dockerfile
+  - id: swift
+    kind: language
+    version: "6.4.1"
+    image: docker.io/library/swift:6.4@sha256:6fbd5978b56a5a9ff05a48f8f678079fc45be496ecda15b4e74e8944fab857be
+  - id: dart
+    kind: language
+    version: "3.13.5"
+    image: docker.io/library/dart:3.13@sha256:8604cbd137b6d67c24f49b916f2aa9b67d71b539576e0178bf161d831c9e344f
+  - id: flutter
+    kind: language
+    version: "3.41.5"
+    image: ayokoding-toolchain/flutter:cc4fd8e235a66b354d33632de23d2146af1722a40df631fcc55fa44189b3a4c8@sha256:cc4fd8e235a66b354d33632de23d2146af1722a40df631fcc55fa44189b3a4c8
+    build: flutter/Dockerfile
+    # The SDK publishes a linux x64 archive only, so the harness builds
+    # and runs this image for linux/amd64 on every host.
+    platform: linux/amd64
+    env:
+      # The SDK checkout at /opt/flutter is owned by the image user, so
+      # every git call the tool makes needs this exception; env config
+      # reaches the harness user, unlike the image-home gitconfig.
+      GIT_CONFIG_COUNT: "1"
+      GIT_CONFIG_KEY_0: safe.directory
+      GIT_CONFIG_VALUE_0: /opt/flutter
+  - id: shell
+    kind: language
+    version: "Debian trixie snapshot"
+    image: ayokoding-toolchain/shell:a9e969bb659a65d9a2a74d75d42a324c58f62bbac87927a43981426bbf52b57a@sha256:a9e969bb659a65d9a2a74d75d42a324c58f62bbac87927a43981426bbf52b57a
+    build: shell/Dockerfile
+  - id: powershell
+    kind: language
+    version: "7.4 LTS"
+    image: mcr.microsoft.com/powershell:7.4-ubuntu-22.04@sha256:62300a213a9293916333df2b014cd3a8f22fb0b0b65f2bb446aaf436bcf8c868
+  - id: postgres
+    kind: service
+    version: "18.6"
+    image: docker.io/library/postgres:18@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336
+    env:
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ready: [pg_isready, -h, 127.0.0.1, -U, postgres]
+    readyTimeout: 60s
+    connect:
+      PGHOST: postgres
+      PGUSER: postgres
+      PGDATABASE: postgres
+  - id: neo4j
+    kind: service
+    version: "2026.09.0 Community"
+    image: docker.io/library/neo4j:2026.09.0@sha256:d6269a020149934597c8c3df926d080a612796dbbb48861ca9d5b1109cabf0d8
+    env:
+      NEO4J_AUTH: none
+    ready: [cypher-shell, RETURN 1 AS one]
+    readyTimeout: 60s
+    connect:
+      NEO4J_HOST: neo4j
+  - id: swift-parse
+    kind: validator
+    version: "6.4.1"
+    image: docker.io/library/swift:6.4@sha256:6fbd5978b56a5a9ff05a48f8f678079fc45be496ecda15b4e74e8944fab857be
+  - id: ktlint
+    kind: validator
+    version: "1.8.0"
+    image: ayokoding-toolchain/ktlint:8b7611ee4960c516abda5bd72290caff76ec9bd256f9fb8429909f4c533d0dee@sha256:8b7611ee4960c516abda5bd72290caff76ec9bd256f9fb8429909f4c533d0dee
+    build: ktlint/Dockerfile
+  - id: opentofu
+    kind: validator
+    version: "1.13.1"
+    image: ghcr.io/opentofu/opentofu:1.13.1@sha256:1df996fca13806a20d5a3d3ad54acdcf76bcb1aa4ac30b5ba169b9e4cecdbcc8
+  - id: kubeconform
+    kind: validator
+    version: "v0.8.0"
+    image: ayokoding-toolchain/kubeconform:945b3d03cd56e93e524515b058b189f231adbf62ded8de4dd94f12d483201416@sha256:945b3d03cd56e93e524515b058b189f231adbf62ded8de4dd94f12d483201416
+    build: kubeconform/Dockerfile
+  - id: windows-static
+    kind: validator
+    version: "Debian trixie snapshot"
+    image: ayokoding-toolchain/windows-static:f92e8b786d3f1edb47402da464b9a52f76c461ab26d3619b85fa265c5b707fa5@sha256:f92e8b786d3f1edb47402da464b9a52f76c461ab26d3619b85fa265c5b707fa5
+    build: windows-static/Dockerfile

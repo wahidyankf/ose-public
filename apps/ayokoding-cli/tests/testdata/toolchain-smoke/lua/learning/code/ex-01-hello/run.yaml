@@ -1,0 +1,8 @@
+schema: ayokoding.run/v1
+toolchain: lua
+runs:
+  - name: main
+    command: [lua, main.lua]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

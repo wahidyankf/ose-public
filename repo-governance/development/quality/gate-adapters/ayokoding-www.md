@@ -22,7 +22,22 @@ adapter does not state is never applied, per the content gate's
 palette) reach these pages, so those properties are never findings. Front matter, heading hierarchy, internal links and
 anchors, external links, and `_index.md` correctness reach no declared gate here: the content trees sit outside the
 front-matter and heading surfaces and in the internal-link `exclude-sources`, and the `ayokoding-www:validate-indexes`
-target is wired into no gate. They are judgeable.
+target is wired into no gate. They are judgeable. `ayokoding-www:examples:check` (built on
+`ayokoding-cli`) reaches every opted-in course in the PR gate and the monthly full run, so the following are never
+findings for opted-in courses:
+
+- whether an example runs and prints its expected output;
+- whether a lesson block equals its file;
+- unit layout;
+- `run.yaml` validity.
+
+## Example Harness
+
+A course is complete only when opted in with `examples check --course <slug>` exiting 0 (decision
+27). A whole-course gate run records that exit status as an exit criterion; a page-level run on a
+course that has not opted in notes the course's harness status without blocking. HC1–HC7 live in
+the skill module [Code Example Harness](../../../../.agents/skills/apps-ayokoding-www-developing-content/reference/code-example-harness.md).
+Still judged: HC4, the unenforced half of HC5, and S1–S5, S8, S9 of HC6.
 
 ## Content Rules
 

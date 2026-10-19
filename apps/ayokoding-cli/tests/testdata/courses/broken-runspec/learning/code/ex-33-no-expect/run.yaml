@@ -1,0 +1,5 @@
+schema: ayokoding.run/v1
+toolchain: python
+runs:
+  - name: main
+    command: [python3, example.py]

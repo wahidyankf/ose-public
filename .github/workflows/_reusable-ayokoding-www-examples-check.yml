@@ -1,0 +1,66 @@
+name: _reusable-ayokoding-www-examples-check
+
+on:
+  workflow_call:
+    inputs:
+      selection:
+        description: "since runs the affected selection; all runs every opted-in course"
+        required: true
+        type: string
+      base:
+        description: "revision the since selection diffs against; empty for the all selection"
+        required: false
+        default: ""
+        type: string
+      shards:
+        description: "JSON array of shard numbers to run"
+        required: true
+        type: string
+      shard-total:
+        description: "total shard count; each shard runs as K/N against it"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Examples check (shard ${{ matrix.shard }} of ${{ inputs.shard-total }})
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ inputs.selection == 'all' && 300 || 60 }}
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ${{ fromJSON(inputs.shards) }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/setup-go
+      - uses: ./.github/actions/setup-docker-cache
+      - name: Run the examples check
+        env:
+          AYOKODING_SHARD: ${{ matrix.shard }}/${{ inputs.shard-total }}
+          AYOKODING_BUILDX_CACHE: /tmp/.buildx-cache
+          NX_BASE: ${{ inputs.base }}
+        run: |
+          set -euo pipefail
+          args=(run ayokoding-www:examples:check)
+          if [ "${{ inputs.selection }}" = "all" ]; then
+            args+=(--configuration=full)
+          fi
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx "${args[@]}"
+      # The CLI writes fresh buildx layers to a -new sibling of the cache folder, because
+      # cache-to cannot write to the folder cache-from reads. Promote it so the cache
+      # action saves the fresh layers; skip when nothing ran and no -new folder exists.
+      - name: Rotate the buildx cache folder
+        run: |
+          set -euo pipefail
+          if [ -d /tmp/.buildx-cache-new ]; then
+            rm -rf /tmp/.buildx-cache
+            mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+          fi
+      - name: Append the coverage report to the summary
+        run: apps/ayokoding-cli/dist/ayokoding-cli examples coverage >> "$GITHUB_STEP_SUMMARY"

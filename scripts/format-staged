@@ -79,7 +79,18 @@ if (( ${#prettier_paths[@]} > 0 )); then
     "$node_modules_directory" \
     "$snapshot_root" \
     "$prettier_config"
-  prettier --config "$prettier_config" --write "${prettier_paths[@]}"
+  # Lesson fences mirror their course files byte for byte, so Markdown under the course content
+  # keeps embedded formatting off while every other path formats as before.
+  lesson_paths=()
+  other_paths=()
+  for path in "${prettier_paths[@]}"; do
+    case "$path" in
+      apps/ayokoding-www/content/*.md) lesson_paths+=("$path") ;;
+      *) other_paths+=("$path") ;;
+    esac
+  done
+  (( ${#other_paths[@]} == 0 )) || prettier --config "$prettier_config" --write "${other_paths[@]}"
+  (( ${#lesson_paths[@]} == 0 )) || prettier --config "$prettier_config" --embedded-language-formatting=off --write "${lesson_paths[@]}"
 fi
 (( ${#rust_paths[@]} == 0 )) || rustfmt --edition 2024 "${rust_paths[@]}"
 if (( ${#fsharp_paths[@]} > 0 )); then

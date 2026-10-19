@@ -319,3 +319,66 @@ test("the snapshot formatter refuses an overrides value that is not a list", () 
     refuses(/the Prettier overrides must be a list/),
   );
 });
+
+// Lesson fences mirror their course files byte for byte: sync copies file bytes into fences, so the
+// commit hook must never reformat code inside lesson fences, while Markdown elsewhere keeps embedded
+// formatting.
+const lessonMarkdownWithTsFence = [
+  "# Lesson",
+  "",
+  "```ts",
+  'const greeting="hello";',
+  "console.log( greeting );",
+  "```",
+  "",
+].join("\n");
+
+function lessonWorkspace() {
+  const root = mkdtempSync(join(tmpdir(), "ose-format-staged-sync-"));
+  writeFileSync(join(root, ".prettierrc.json"), "{}\n");
+  mkdirSync(join(root, "scripts"), { recursive: true });
+  copyFileSync(snapshotConfigScript, join(root, "scripts", "prettier-snapshot-config.mjs"));
+  return root;
+}
+
+test("leaves a ts fence in a lesson under apps/ayokoding-www/content byte-for-byte untouched", () => {
+  const root = lessonWorkspace();
+  const lesson = join(
+    "apps",
+    "ayokoding-www",
+    "content",
+    "en",
+    "learn",
+    "courses",
+    "green-python",
+    "learning",
+    "lesson.md",
+  );
+  try {
+    mkdirSync(join(root, "apps", "ayokoding-www", "content", "en", "learn", "courses", "green-python", "learning"), {
+      recursive: true,
+    });
+    writeFileSync(join(root, lesson), lessonMarkdownWithTsFence);
+
+    execFileSync(formatStaged, [lesson], { cwd: root, stdio: "pipe", env: javaEnvironment });
+
+    assert.equal(readFileSync(join(root, lesson), "utf8"), lessonMarkdownWithTsFence);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("still formats a ts fence in Markdown outside apps/ayokoding-www/content", () => {
+  const root = lessonWorkspace();
+  try {
+    mkdirSync(join(root, "docs"), { recursive: true });
+    writeFileSync(join(root, "docs", "notes.md"), lessonMarkdownWithTsFence);
+
+    execFileSync(formatStaged, ["docs/notes.md"], { cwd: root, stdio: "pipe", env: javaEnvironment });
+
+    assert.notEqual(readFileSync(join(root, "docs", "notes.md"), "utf8"), lessonMarkdownWithTsFence);
+    assert.match(readFileSync(join(root, "docs", "notes.md"), "utf8"), /const greeting = "hello";/);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});

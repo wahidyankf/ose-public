@@ -14,10 +14,11 @@
 
 ## Tools
 
-| Tool                                 | Purpose                                                    |
-| ------------------------------------ | ---------------------------------------------------------- |
-| [crane-cli](./crane-cli/README.md)   | Deterministic PDF-to-Markdown processing.                  |
-| [ferret-cli](./ferret-cli/README.md) | Local, metadata-only telemetry for coding-agent harnesses. |
+| Tool                                       | Purpose                                                    |
+| ------------------------------------------ | ---------------------------------------------------------- |
+| [ayokoding-cli](./ayokoding-cli/README.md) | Check AyoKoding course code examples in pinned containers. |
+| [crane-cli](./crane-cli/README.md)         | Deterministic PDF-to-Markdown processing.                  |
+| [ferret-cli](./ferret-cli/README.md)       | Local, metadata-only telemetry for coding-agent harnesses. |
 
 ## End-to-end tests
 

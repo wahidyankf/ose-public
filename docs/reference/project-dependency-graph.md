@@ -53,24 +53,31 @@ invalidated and `nx affected` flags the project.
 
 **CLI ecosystem:**
 
-Content sites no longer depend on any CLI — `ayokoding-www` and `ose-www` dropped their
-`implicitDependencies` when the per-domain link-checkers were retired. RHINO, the repository
-validator behind `./rhino`, is a pinned external executable, not an Nx project, so it has no node here.
+Content sites declare no `implicitDependencies` on any CLI — `ayokoding-www` and `ose-www`
+dropped theirs when the per-domain link-checkers were retired. The one exception is task-level:
+`ayokoding-www:examples:check` declares `dependsOn` on `ayokoding-cli:build`, so the harness
+binary builds before the check runs. RHINO, the repository validator behind `./rhino`, is a
+pinned external executable, not an Nx project, so it has no node here.
 
 ```mermaid
 graph TD
   accTitle: Visual Dependency Graph
-  accDescr: crane-cli leads to fsharp-crane-core.
+  accDescr: crane-cli leads to fsharp-crane-core; ayokoding-www examples-check depends on ayokoding-cli build.
   CC[crane-cli]
   FCC[fsharp-crane-core]
+  AC[ayokoding-cli]
+  AYO[ayokoding-www]
 
   CC --> FCC
+  AYO -.->|dependsOn build| AC
 
   classDef lib fill:#029E73,stroke:#000000,color:#000000
   classDef cli fill:#DE8F05,stroke:#000000,color:#000000
+  classDef site fill:#CC78BC,stroke:#000000,color:#000000
 
   class FCC lib
-  class CC cli
+  class CC,AC cli
+  class AYO site
   classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
@@ -130,10 +137,10 @@ graph TD
 
 ### Content Platforms
 
-| Project       | Dependencies | Spec Inputs |
-| ------------- | ------------ | ----------- |
-| ayokoding-www | (none)       | (none)      |
-| ose-www       | (none)       | (none)      |
+| Project       | Dependencies                                                 | Spec Inputs |
+| ------------- | ------------------------------------------------------------ | ----------- |
+| ayokoding-www | ayokoding-cli (`examples:check` task-level `dependsOn` only) | (none)      |
+| ose-www       | (none)                                                       | (none)      |
 
 ### OrganicLever
 
@@ -149,9 +156,10 @@ graph TD
 
 ### CLI Tools
 
-| Project   | Dependencies      | Spec Inputs                     |
-| --------- | ----------------- | ------------------------------- |
-| crane-cli | fsharp-crane-core | crane-cli/\* (test:integration) |
+| Project       | Dependencies      | Spec Inputs                                   |
+| ------------- | ----------------- | --------------------------------------------- |
+| crane-cli     | fsharp-crane-core | crane-cli/\* (test:integration)               |
+| ayokoding-cli | (none)            | ayokoding/cli/\*\* (test:unit, test:coverage) |
 
 ### Libraries
 

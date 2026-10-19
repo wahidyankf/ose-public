@@ -67,6 +67,7 @@ npm exec -- nx run ayokoding-www:test:unit
 npm exec -- nx run ayokoding-www:test:integration
 npm exec -- nx run ayokoding-www:test:coverage
 npm exec -- nx run ayokoding-www:test:quick
+npm exec -- nx run ayokoding-www:examples:check
 ```
 
 The canonical corpus is `specs/apps/ayokoding/www/behaviours/`. This owner runs mandatory Unit
@@ -76,6 +77,11 @@ proof through `test:unit` and real isolated build-tool/local-resource proof thro
 bindings without running tests. Dedicated `ayokoding-www-fe-e2e` and `ayokoding-www-be-e2e`
 projects own the public browser/HTTP runtime, so only the owner-level `test:e2e` target is omitted.
 See [the AyoKoding specs](../../specs/apps/ayokoding/README.md).
+
+Course code examples run through `examples:check`, built on
+[ayokoding-cli](../../apps/ayokoding-cli/README.md): the default run covers courses changed
+since the merge base for the PR gate, and `--configuration=full` covers every opted-in course
+for the monthly run. The harness contract lives in the CLI README linked above.
 
 ## Delivery boundary
 

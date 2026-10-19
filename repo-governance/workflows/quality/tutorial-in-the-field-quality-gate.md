@@ -1,22 +1,21 @@
 ---
 name: tutorial-in-the-field-quality-gate
 description: >-
-  Judges one in-the-field guide against its scenario, built-in-first, and production-code rules, with product thresholds
-  from an adapter, in at most three bounded cycles, and returns one advisory verdict.
+  Judges one in-the-field guide against its scenario, built-in-first, and production-code rules, with adapter product
+  thresholds, in ≤3 bounded cycles, returning one advisory verdict.
 when_to_use: >-
-  Use when someone explicitly asks to review an in-the-field guide, after writing or restructuring one, or before
+  Use when explicitly asked to review an in-the-field guide: after writing or restructuring one, or before
   publishing it.
 ---
 
 # Tutorial In the Field Quality Gate
 
-This gate follows the [Quality Gate Contract](../../development/workflow/quality-gate-contract.md): a read-only checker,
-a frozen ledger, one separate writer, at most three cycles, and an advisory verdict. This file states only what is
-specific to in-the-field guides, which teach production practice from inside one working scenario.
+This gate follows the [Quality Gate Contract](../../development/workflow/quality-gate-contract.md): read-only checker,
+frozen ledger, one separate writer, at most three cycles, advisory verdict. This file states only the in-the-field specifics: production practice in one working scenario.
 
 ## Entry
 
-The gate starts only on an explicit request that names it. No workflow calls it. No cycle waits for a person: editorial
+The gate starts only on an explicit request that names it. No workflow calls it. Editorial
 review sits before cycle 1 or after the verdict, per
 [Human Review](../../development/workflow/quality-gate-contract/003-verdicts-ledger-and-relations.md#human-review).
 
@@ -30,23 +29,23 @@ review sits before cycle 1 or after the verdict, per
 
 Any other `max-cycles` value, or a missing subject, refuses to start.
 
-Product thresholds come from the adopting repository's adapter at
-`repo-governance/development/quality/gate-adapters/<product>.md`. For this kind it holds the guide count band, the
-annotation density band, the diagram count band, the file layout, and the front matter. Each threshold lives only there.
+Product thresholds live only in the adopting repository's adapter at
+`repo-governance/development/quality/gate-adapters/<product>.md`. For this kind: the guide count band, the
+annotation density band, the diagram count band, the file layout, and the front matter.
 Without an adapter, only the generic rules apply.
 
 ## Deterministic Boundary
 
-The checker reports none of these properties. The entry and exit checks run their owners instead.
+The checker reports none of these properties; the entry and exit checks run their owners.
 
-| Property                                     | Owned by                 | This repository runs                  |
-| -------------------------------------------- | ------------------------ | ------------------------------------- |
-| Markdown formatting and lint                 | the formatter and linter | `format-staged`, `markdownlint`       |
-| File names                                   | the file-name validator  | `md-naming`                           |
-| Diagram rendering, label length, and palette | the diagram validator    | `md-mermaid`, `md-mermaid-repository` |
+| Property                                     | Owned by                                                      | This repository runs                       |
+| -------------------------------------------- | ------------------------------------------------------------- | ------------------------------------------ |
+| Markdown formatting and lint                 | the formatter and linter                                      | `format-staged`, `markdownlint`            |
+| File names                                   | the file-name validator                                       | `md-naming`                                |
+| Diagram rendering, label length, and palette | the diagram validator                                         | `md-mermaid`, `md-mermaid-repository`      |
+| Example execution and lesson-to-file match   | the product's example harness, where its adapter declares one | `ayokoding-www:examples:check` (AyoKoding) |
 
-A property no tool of its own owns leaves the table and becomes judgeable. No declared gate compiles or runs tutorial
-code here, so whether an example runs is judgeable, as are links and front matter in the content trees.
+A property no tool owns leaves the table and becomes judgeable. Where the product's gate adapter declares an example harness, that harness owns whether an opted-in example runs and whether its lesson block matches its file, and the checker reports neither; for any other page, whether an example runs is judgeable. Links and front matter in the content trees stay judgeable.
 
 ## Cycle
 
@@ -58,18 +57,18 @@ asks of each guide whether:
 
 - it declares one type from [Tutorial Types](../../conventions/tutorials/naming.md) and keeps one recognizable
   scenario throughout, each step giving the exact action and the output it produced, with checkpoints and recovery notes
-  where the scenario fails in practice;
+  where the scenario fails;
 - the built-in approach comes first: a framework or library shown before the language's or platform's own approach is a
   `CRITICAL` finding;
 - every framework is justified by the built-in approach's limits, shown before it arrives, and a trade-off section says
-  when the simpler approach is still enough;
-- its code is production-complete: errors handled, resources released on every path, configuration from the environment
-  rather than hardcoded values, and no credential anywhere;
+  when the simpler approach still suffices;
+- its code is production-complete: errors handled, resources released on every path, configuration from the environment,
+  never hardcoded, and no credential anywhere;
 - the production pattern it teaches fits the scenario's context;
-- each diagram helps a reader follow the scenario; and
+- each diagram helps follow the scenario; and
 - its annotation density, comment lines divided by code lines per code block, falls within the adapter's band.
 
-Of the set as a whole, it asks whether the guide and diagram counts fall within the adapter's bands.
+Of the set, it asks whether the guide and diagram counts fall within the adapter's bands.
 
 Prose, facts, and links belong to the [Content Quality Gate](content-quality-gate.md). Trade-off depth, justification
 quality, pattern fit, and diagram usefulness are judgement rows.

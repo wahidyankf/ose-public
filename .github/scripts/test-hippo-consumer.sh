@@ -269,6 +269,13 @@ grep -F 'shfmt-version:' .github/actions/setup-go/action.yml
 grep -F 'mvdan.cc/sh/v3/cmd/shfmt@v${want}' .github/actions/setup-go/action.yml
 grep -F '"$gobin/shfmt" --version' .github/actions/setup-go/action.yml
 
+# Terraform files reach the declared staged formatter too. The GitHub-hosted
+# Ubuntu image does not ship tofu, so the shared lint-tools setup must provision
+# the pinned binary rather than relying on an image-specific tool.
+grep -F 'tofu-version:' .github/actions/setup-lint-tools/action.yml
+grep -F 'opentofu/opentofu/releases/download/${TOFU_VERSION}' .github/actions/setup-lint-tools/action.yml
+grep -F '"$bin/tofu" --version' .github/actions/setup-lint-tools/action.yml
+
 # A retained F# path can require Fantomas under the actual Husky environment.
 # Discover its .NET runtime from the installed toolchain; a machine-specific
 # root would make the hook pass only on the authoring workstation.

@@ -77,3 +77,18 @@ PR CI failed 4 checks; 3 shared one root cause, 1 was independent:
    on that file only (whitespace-only diff), then swept every other
    `.md` in the push range with `prettier --check` — all clean (one
    apparent hit was the deleted pre-move backlog path).
+3. `Repository policy` STILL failed `format-staged` after the above,
+   with no filename in the log. Root-caused by elimination: every
+   formatter branch was cleared with CI's exact versions (ruff
+   0.16.8, gofmt 1.26.1, shfmt v3.13.1, dart 3.13.5, clang-format 18,
+   npm-pinned stylua), and a stub-`tofu` (exit 127, silent) run
+   reproduced CI's exact signature locally. Cause: the Ubuntu image
+   ships no `tofu`, nothing provisions it, and this PR is the first
+   to touch `*.tf` (`toolchain-smoke/opentofu/.../main.tf`), so
+   `tofu fmt` crashed the gate. Fix (separate `fix(ci)` commit on
+   the branch, not product code): provision pinned tofu v1.13.1
+   (SHA-verified upstream zip, version assert, catalog-parity note)
+   in `.github/actions/setup-lint-tools`, mirroring the shfmt
+   precedent, plus a `test-hippo-consumer.sh` provisioning
+   assertion. Fixture needed no change (`tofu fmt -check` clean;
+   local tofu already v1.13.1).

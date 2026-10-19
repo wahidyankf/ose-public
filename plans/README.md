@@ -37,7 +37,7 @@ flowchart LR
   P07["🔜 07-erp"]:::backlog
   P08["🔜 08-capstone"]:::backlog
   P09["🔜 09-filler"]:::backlog
-  P10["🔜 10-migration"]:::backlog
+  P10["🏗️ 10-migration"]:::inprogress
   P11["🔜 11-audit-lang"]:::backlog
   P12["🔜 12-audit-cs"]:::backlog
   P13["🔜 13-audit-prodsec"]:::backlog

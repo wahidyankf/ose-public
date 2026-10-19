@@ -50,8 +50,9 @@ repoint table are complete and in the stated format so that a later plan can.
 - Every one of the 1,150 real legacy files matches exactly one mapping row (FR1 in
   [prd.md](../prd.md#functional-requirements)).
 - Every `covered` and `new` row's Target slug resolves to a real, existing course directory (FR7).
-- The 94-file `docs/` table's total matches the series brief's own measured count of 94 (cross-checked in
-  [brd.md](../brd.md#evidence-measured-2026-10-09-at-originmain-bb7f90137)).
+- The 94-file `docs/` table's total matched the series brief's own measured count of 94 at authoring time
+  (cross-checked in [brd.md](../brd.md#evidence-measured-2026-10-09-at-originmain-bb7f90137)); it is an
+  authoring-time cross-check, not a Phase 4 gate item, because this plan never edits `docs/`.
 
 These three checks are this plan's contribution to making plan 14 mechanical; they are not a substitute
 for plan 14 actually running its own redirect-generation and link-repoint steps, which this plan does not

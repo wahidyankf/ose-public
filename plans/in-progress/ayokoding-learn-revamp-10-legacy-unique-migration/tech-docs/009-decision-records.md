@@ -121,6 +121,12 @@ trade-offs accepted, the consequences, and what would make this plan revisit the
   vendor's implementation is licensed would lose real teaching value for no necessary reason.
 - **Evidence:** Datomic's own public documentation and the Datalog literature, read 2026-10-09, confirm
   the underlying model (datoms, transactions, Datalog queries) is openly describable without the server.
+  The Transaction Model page (<https://docs.datomic.com/transactions/model.html>) names Datomic data
+  "_information_, specifically a set of atomic immutable facts", and "we call facts in Datomic _datoms_":
+  "Each datom associates an entity (E) with a value (V) via an attribute (A), similar to the
+  subject/predicate/object of RDF."
+  That E-A-V fact shape, plus Datalog's documented query model over it, is what the reference engine
+  reimplements; nothing in that shape requires the licensed server to describe or test.
 - **Trade-off accepted:** the course cannot claim to teach "how to operate the real Datomic product"; it
   teaches the model Datomic is known for, which the course's own Accuracy notes state plainly.
 - **Consequence:** no new toolchain for a single course; the model is still fully teachable and

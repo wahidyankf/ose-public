@@ -25,6 +25,7 @@ jobs:
       has-dart: ${{ steps.detect.outputs.has-dart }}
       has-go: ${{ steps.detect.outputs.has-go }}
       has-python: ${{ steps.detect.outputs.has-python }}
+      has-ayokoding-examples: ${{ steps.detect.outputs.has-ayokoding-examples }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -40,6 +41,7 @@ jobs:
             echo "has-dart=false"
             echo "has-go=false"
             echo "has-python=false"
+            echo "has-ayokoding-examples=false"
           } >> "$GITHUB_OUTPUT"
 
           # Fail closed for Python only: when the affected set cannot be determined, the Python gate
@@ -48,6 +50,10 @@ jobs:
 
           affected=$(npx nx show projects --affected)
           for project in $affected; do
+            case "$project" in
+              ayokoding-www) echo "has-ayokoding-examples=true" >> "$GITHUB_OUTPUT" ;;
+              ayokoding-cli) echo "has-ayokoding-examples=true" >> "$GITHUB_OUTPUT" ;;
+            esac
             tags=$(npx nx show project "$project" --json | jq -r '.tags[]?')
             for tag in $tags; do
               case "$tag" in
@@ -203,9 +209,53 @@ jobs:
           --exclude='tag:lang:ts,tag:lang:fsharp,tag:lang:rust,tag:lang:dart,tag:lang:go'
           --parallel=1
 
+  examples-plan:
+    name: Plan AyoKoding examples check
+    needs: detect
+    if: needs.detect.outputs.has-ayokoding-examples == 'true'
+    runs-on: ubuntu-latest
+    outputs:
+      shards: ${{ steps.plan.outputs.shards }}
+      shard-total: ${{ steps.plan.outputs.shard-total }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/setup-go
+      - name: Build the CLI
+        run: >-
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
+          npx nx run ayokoding-cli:build
+      - id: plan
+        shell: bash
+        run: |
+          set -euo pipefail
+          plan="$(apps/ayokoding-cli/dist/ayokoding-cli examples affected --since "$NX_BASE" --output json)"
+          mode="$(printf '%s' "$plan" | jq -r '.mode')"
+          count="$(printf '%s' "$plan" | jq -r '.courses | length')"
+          if [ "$mode" = "affected" ] && [ "$count" -le 8 ]; then
+            echo 'shards=[1]' >> "$GITHUB_OUTPUT"
+            echo 'shard-total=1' >> "$GITHUB_OUTPUT"
+          else
+            echo 'shards=[1,2,3,4]' >> "$GITHUB_OUTPUT"
+            echo 'shard-total=4' >> "$GITHUB_OUTPUT"
+          fi
+
+  examples:
+    name: AyoKoding examples check
+    needs: examples-plan
+    if: needs.examples-plan.result == 'success'
+    uses: ./.github/workflows/_reusable-ayokoding-www-examples-check.yml
+    with:
+      selection: since
+      base: origin/${{ github.base_ref }}
+      shards: ${{ needs.examples-plan.outputs.shards }}
+      shard-total: ${{ needs.examples-plan.outputs.shard-total }}
+
   quality-gate:
     name: Quality gate
-    needs: [repository-policy, typescript, dotnet, flutter, go, python]
+    needs: [repository-policy, typescript, dotnet, flutter, go, python, examples-plan, examples]
     if: always()
     runs-on: ubuntu-latest
     steps:

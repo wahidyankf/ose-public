@@ -169,6 +169,23 @@ The former scheduled whole-repository quality workflow is retired. Gate-surface 
 deployment responsibilities. Product workflows cover their owning groups, while
 `non-product-full-quality.yml` covers libraries and executable tools.
 
+### AyoKoding Examples Check Workflows
+
+**Files**: `.github/workflows/_reusable-ayokoding-www-examples-check.yml` (shared selection
+`since` or `all`, sharded) and `.github/workflows/ayokoding-www-examples-check.yml` (monthly
+full run).
+
+**PR gate**: when `ayokoding-www` or `ayokoding-cli` is affected, `pr-quality-gate.yml` plans
+the shards (one shard for 8 or fewer affected courses, else four) and calls the reusable
+workflow with selection `since` against the PR base. The `Quality gate` join includes the
+examples jobs.
+
+**Monthly full run**: cron `17 3 1 * *` (03:17 UTC on day 1 of each month), selection `all`
+over four shards, plus manual `workflow_dispatch`.
+
+**Cadence rule**: course runs happen on the PR gate (affected courses) and monthly (every
+course). No daily schedule exists for course runs.
+
 ### Non-Product Full-Quality Workflow
 
 **File**: `.github/workflows/non-product-full-quality.yml`

@@ -1,0 +1,12 @@
+schema: ayokoding.run/v1
+toolchain: python
+mode: static
+static:
+  reason: ios
+  note: Parses Swift without the Apple SDK.
+runs:
+  - name: parse
+    command: [python3, check.py]
+    expect:
+      exit: 0
+      stdout: expected/parse.stdout.txt

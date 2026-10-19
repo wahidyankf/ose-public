@@ -1,0 +1,13 @@
+schema: ayokoding.run/v1
+toolchain: python
+mode: static
+static:
+  reason: ios
+  note: Parses without the Apple SDK.
+services: [postgres]
+runs:
+  - name: main
+    command: [python3, example.py]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

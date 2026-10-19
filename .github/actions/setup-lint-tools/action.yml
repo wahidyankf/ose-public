@@ -1,5 +1,5 @@
 name: "Setup lint tools"
-description: "Install the pinned shellcheck, hadolint, and actionlint release binaries the declared lint gates invoke"
+description: "Install the pinned shellcheck, hadolint, and actionlint release binaries the declared lint gates invoke, plus the tofu binary the format gate invokes"
 inputs:
   shellcheck-version:
     description: "shellcheck release used by the shellcheck gate and by actionlint's run-block checks"
@@ -25,14 +25,23 @@ inputs:
     description: "SHA-256 of that release's linux_amd64.tar.gz asset"
     required: false
     default: "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8"
+  tofu-version:
+    description: "OpenTofu release used by the format gate's tofu fmt branch; stays equal to the opentofu entry in apps/ayokoding-cli/toolchains/catalog.yaml"
+    required: false
+    default: "v1.13.1"
+  tofu-sha256:
+    description: "SHA-256 of that release's linux_amd64.zip asset"
+    required: false
+    default: "8ccbc6f8ee21d2827715f3c6e08a9b3e0209b1e62057c05067ef117e047c1a80"
 runs:
   using: "composite"
   steps:
-    # The hosted Ubuntu image ships an older apt shellcheck and no hadolint or actionlint, so a
-    # finding could differ from the one a developer sees. Each tool is fetched as its upstream
-    # release asset and refused unless it matches the pinned digest, then put ahead of the image's
-    # own copies on PATH. The version is asserted after install so a mismatched pin fails here.
-    - name: Install shellcheck, hadolint, and actionlint
+    # The hosted Ubuntu image ships an older apt shellcheck and no hadolint, actionlint, or
+    # tofu, so a finding could differ from the one a developer sees. Each tool is fetched as its
+    # upstream release asset and refused unless it matches the pinned digest, then put ahead of
+    # the image's own copies on PATH. The version is asserted after install so a mismatched pin
+    # fails here.
+    - name: Install shellcheck, hadolint, actionlint, and tofu
       shell: bash
       env:
         SHELLCHECK_VERSION: ${{ inputs.shellcheck-version }}
@@ -41,6 +50,8 @@ runs:
         HADOLINT_SHA256: ${{ inputs.hadolint-sha256 }}
         ACTIONLINT_VERSION: ${{ inputs.actionlint-version }}
         ACTIONLINT_SHA256: ${{ inputs.actionlint-sha256 }}
+        TOFU_VERSION: ${{ inputs.tofu-version }}
+        TOFU_SHA256: ${{ inputs.tofu-sha256 }}
       run: |
         set -euo pipefail
         if [ "$(uname -s)-$(uname -m)" != "Linux-x86_64" ]; then
@@ -71,9 +82,17 @@ runs:
         tar -xzf "$work/actionlint.tar.gz" -C "$work" actionlint
         install -m 0755 "$work/actionlint" "$bin/actionlint"
 
+        # scripts/format-staged invokes tofu fmt for any changed .tf file, and the image ships no
+        # tofu at all, so a missing binary fails the format gate rather than skipping it.
+        fetch "https://github.com/opentofu/opentofu/releases/download/${TOFU_VERSION}/tofu_${TOFU_VERSION#v}_linux_amd64.zip" \
+          "$TOFU_SHA256" "$work/tofu.zip"
+        unzip -o "$work/tofu.zip" tofu -d "$work"
+        install -m 0755 "$work/tofu" "$bin/tofu"
+
         rm -rf "$work"
         echo "$bin" >> "$GITHUB_PATH"
 
         "$bin/shellcheck" --version | grep -Fx "version: ${SHELLCHECK_VERSION#v}"
         "$bin/hadolint" --version | grep -F " ${HADOLINT_VERSION#v}"
         "$bin/actionlint" --version | grep -Fx "${ACTIONLINT_VERSION#v}"
+        "$bin/tofu" --version | grep -F "v${TOFU_VERSION#v}"

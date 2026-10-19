@@ -16,6 +16,8 @@ head.
 For behaviour owners, `test:quick` composes typecheck where applicable, lint, Unit runtime, and all
 applicable static `test:coverage:*` validators. Dedicated E2E projects omit Unit runtime. Coverage
 validators never execute tests; runtime code coverage belongs to its corresponding runtime target.
+The PR gate also runs `ayokoding-www:examples:check`, a content validation target that executes
+course examples, not a project test layer.
 
 ```mermaid
 flowchart TD

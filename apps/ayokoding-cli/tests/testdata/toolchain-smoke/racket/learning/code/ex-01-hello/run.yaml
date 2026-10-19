@@ -1,0 +1,11 @@
+schema: ayokoding.run/v1
+toolchain: racket
+runs:
+  - name: main
+    command: [racket, main.rkt]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+      # The image is amd64-only, so the client prints its platform warning
+      # to stderr on arm64 hosts.
+      stderr: expected/main.stderr.txt

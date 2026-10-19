@@ -1,0 +1,12 @@
+schema: ayokoding.run/v1
+toolchain: ktlint
+mode: static
+static:
+  reason: android
+  note: Checks Kotlin syntax without the Android SDK.
+runs:
+  - name: lint
+    command: [ktlint, Main.kt]
+    expect:
+      exit: 0
+      stdout: expected/lint.stdout.txt

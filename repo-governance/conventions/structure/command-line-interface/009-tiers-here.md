@@ -12,12 +12,14 @@ when_to_use: >-
 The convention asks each adopter to record which of its own tools sits at which tier. Several command-line products are
 built here, and they meet the full bar; everything that merely runs from a shell is at the floor:
 
-| Surface                                               | Tier     | Why                                                  |
-| ----------------------------------------------------- | -------- | ---------------------------------------------------- |
-| `ferret-cli`, `crane-cli`, `ose-cli`, `ayokoding-cli` | Full bar | Product surfaces a person and a script call directly |
-| `./hippo` and `./rhino`                               | Floor    | Wrappers; each `exec`s the tool it installs          |
-| `.husky/commit-msg`, `pre-commit`, `pre-push`         | Floor    | Git invokes them and branches on what they return    |
-| `scripts/*.sh` and `.github/scripts/*.sh`             | Floor    | Shipped scripts a gate, a hook, or a workflow calls  |
+| Surface                                       | Tier     | Why                                                  |
+| --------------------------------------------- | -------- | ---------------------------------------------------- |
+| `ferret-cli`, `crane-cli`, `ayokoding-cli`    | Full bar | Product surfaces a person and a script call directly |
+| `./hippo` and `./rhino`                       | Floor    | Wrappers; each `exec`s the tool it installs          |
+| `.husky/commit-msg`, `pre-commit`, `pre-push` | Floor    | Git invokes them and branches on what they return    |
+| `scripts/*.sh` and `.github/scripts/*.sh`     | Floor    | Shipped scripts a gate, a hook, or a workflow calls  |
+
+`ayokoding-cli` starts `docker` and `git` and therefore owes the supervisor statuses.
 
 FERRET records coding-agent harness activity. This repository builds it and carries its own capture registration under
 `.claude/hooks/`, `.codex/`, and `.opencode/plugins/`; a user-level registration steps aside here, so a session is

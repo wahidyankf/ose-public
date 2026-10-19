@@ -1,0 +1,6 @@
+dist/
+/coverage/
+# The root testing rule ignores any dir named coverage, including these two
+# source packages; re-include them so the Go sources track normally.
+!internal/domain/coverage/
+!tests/coverage/

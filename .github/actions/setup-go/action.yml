@@ -2,13 +2,13 @@ name: "Setup Go"
 description: "Install the pinned Go toolchain, with a pinned golangci-lint and shfmt"
 inputs:
   go-version:
-    description: "Go toolchain version; a major.minor value resolves to the latest patch release"
+    description: "Go toolchain version; stays equal to the `go` directive of apps/ayokoding-cli/go.mod"
     required: false
-    default: "1.26"
+    default: "1.26.1"
   cache-dependency-path:
     description: "go.sum used as the module-cache key; empty leaves the setup-go cache off"
     required: false
-    default: ""
+    default: "apps/ayokoding-cli/go.sum"
   golangci-lint-version:
     description: "golangci-lint version used by the Go quality job"
     required: false
@@ -20,9 +20,9 @@ inputs:
 runs:
   using: "composite"
   steps:
-    # No Go module is pinned by a checked-in go.mod any more, so the toolchain version is a literal
-    # input default instead. Keep it equal to the `go` directive of any Go module this repository
-    # adds, so the toolchain CI installs and the toolchain `go build` demands cannot drift apart.
+    # The toolchain version is a literal input default. Keep it equal to the `go` directive of
+    # apps/ayokoding-cli/go.mod, so the toolchain CI installs and the toolchain `go build`
+    # demands cannot drift apart.
     # setup-go owns both the module cache (~/go/pkg/mod) and the build cache (~/.cache/go-build);
     # no second cache action touches them. Its cache is keyed on a dependency file, so caching is
     # on only when a `cache-dependency-path` is supplied.

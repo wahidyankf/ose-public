@@ -58,6 +58,10 @@ See [Course Status and Path Model](./reference/course-status-and-path-model.md) 
 
 See [Course Metadata](./reference/course-metadata.md) for the per-course catalog fields, the estimated-hours rule, and the drift guard that enforces both.
 
+## Code Example Harness
+
+See [Code Example Harness](./reference/code-example-harness.md) for the opt-in rule (HC1), the canonical code units (HC2), the lesson-to-file match (HC3), the illustration marker (HC4, judgement), determinism (HC5), the simulation convention (HC6), and static mode (HC7).
+
 ## By-Example Tutorial Standards
 
 ### Annotation Density Requirement

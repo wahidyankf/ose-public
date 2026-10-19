@@ -1,0 +1,23 @@
+schema: ayokoding.run/v1
+toolchain: dotnet
+runs:
+  - name: build
+    kind: check
+    command: [dotnet, build, --nologo, -v, q]
+    expect:
+      exit: 0
+      stdout: ignore
+      # Offline workload verification notes to stderr; the exit status is
+      # the check signal.
+      stderr: ignore
+  - name: main
+    # Each execution gets a fresh working copy, so the run rebuilds before
+    # executing the same dll path the build run checks. The build summary
+    # line varies between executions, so the build stays off both compared
+    # streams; the program output is what this run proves.
+    command: [sh, -c, "dotnet build --nologo -v q > /dev/null && dotnet bin/Debug/net10.0/app.dll"]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+      # Offline workload verification notes to stderr on every invocation.
+      stderr: ignore

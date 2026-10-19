@@ -1,0 +1,12 @@
+schema: ayokoding.run/v1
+toolchain: python
+mode: static
+static:
+  reason: desktop
+  note: Needs a desktop shell.
+runs:
+  - name: main
+    command: [python3, example.py]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

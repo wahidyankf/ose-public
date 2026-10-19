@@ -1,0 +1,13 @@
+schema: ayokoding.run/v1
+toolchain: python
+runs:
+  - name: main
+    command: [python3, example.py]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+  - name: main
+    command: [python3, other.py]
+    expect:
+      exit: 0
+      stdout: expected/other.stdout.txt

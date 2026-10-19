@@ -1,0 +1,16 @@
+schema: ayokoding.run/v1
+toolchain: rust
+runs:
+  - name: build
+    kind: check
+    command: [rustc, main.rs, -o, main]
+    expect:
+      exit: 0
+      stdout: ignore
+  - name: main
+    # Each execution gets a fresh working copy, so the run recompiles
+    # before executing the binary the build run checks.
+    command: [sh, -c, "rustc main.rs -o main && ./main"]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

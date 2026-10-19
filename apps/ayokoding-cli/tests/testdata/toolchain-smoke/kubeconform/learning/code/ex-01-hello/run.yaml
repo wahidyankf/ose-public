@@ -1,0 +1,15 @@
+schema: ayokoding.run/v1
+toolchain: kubeconform
+mode: static
+static:
+  reason: cluster
+  note: Validates manifests against offline schemas without a cluster.
+runs:
+  - name: check
+    kind: check
+    # The scratch image carries no PATH entry for its binary, so argv uses
+    # the absolute path; a bare name never resolves (exit 127).
+    command: [/kubeconform, -strict, -kubernetes-version, 1.34.12, -schema-location, 'file:///schemas/{{ .NormalizedKubernetesVersion }}-standalone{{ .StrictSuffix }}/{{ .ResourceKind }}{{ .KindSuffix }}.json', deployment.yaml]
+    expect:
+      exit: 0
+      stdout: ignore

@@ -1,0 +1,8 @@
+schema: ayokoding.run/v1
+toolchain: neovim
+runs:
+  - name: main
+    command: [nvim, --headless, --clean, -c, luafile main.lua, -c, quit!]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

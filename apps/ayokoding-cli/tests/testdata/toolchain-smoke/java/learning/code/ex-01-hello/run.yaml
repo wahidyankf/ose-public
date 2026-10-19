@@ -1,0 +1,16 @@
+schema: ayokoding.run/v1
+toolchain: java
+runs:
+  - name: build
+    kind: check
+    command: [javac, Main.java]
+    expect:
+      exit: 0
+      stdout: ignore
+  - name: main
+    # Each execution gets a fresh working copy, so the run recompiles
+    # before executing the class the build run checks.
+    command: [sh, -c, "javac Main.java && java Main"]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

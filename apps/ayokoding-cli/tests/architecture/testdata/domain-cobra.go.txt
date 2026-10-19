@@ -1,0 +1,5 @@
+package fixture
+
+import "github.com/spf13/cobra"
+
+var _ = cobra.Command{}

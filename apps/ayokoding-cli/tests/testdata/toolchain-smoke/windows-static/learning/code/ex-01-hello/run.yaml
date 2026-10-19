@@ -1,0 +1,22 @@
+schema: ayokoding.run/v1
+toolchain: windows-static
+mode: static
+static:
+  reason: windows
+  note: Checks Win32 C and PowerShell without Windows.
+runs:
+  - name: syntax
+    kind: check
+    command: [x86_64-w64-mingw32-gcc, -fsyntax-only, hello.c]
+    expect:
+      exit: 0
+      stdout: ignore
+      # The derived image builds amd64-only, so the client prints its
+      # platform warning to stderr on arm64 hosts.
+      stderr: expected/syntax.stderr.txt
+  - name: parse
+    command: [pwsh, -NoProfile, -Command, '$errors = $null; $tokens = $null; [void][System.Management.Automation.Language.Parser]::ParseFile(''check.ps1'', [ref]$tokens, [ref]$errors); $errors.Count']
+    expect:
+      exit: 0
+      stdout: expected/parse.stdout.txt
+      stderr: expected/parse.stderr.txt

@@ -1,0 +1,5 @@
+package fixture
+
+import "github.com/wahidyankf/ose-public/apps/ayokoding-cli/internal/bootstrap"
+
+var _ = bootstrap.Main

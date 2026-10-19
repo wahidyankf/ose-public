@@ -12,10 +12,11 @@ operation. This distinguishes governance targets from language-level lifecycle t
 
 **Canonical governance and validation Nx targets** (project-local, declared in `project.json`):
 
-| Target               | What it validates                                                                          |
-| -------------------- | ------------------------------------------------------------------------------------------ |
-| `compat:min-version` | The project's declared minimum supported toolchain version                                 |
-| `deps:audit`         | The project's dependencies against the language's vulnerability audit (scheduled, no gate) |
+| Target               | What it validates                                                                                                              |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `compat:min-version` | The project's declared minimum supported toolchain version                                                                     |
+| `deps:audit`         | The project's dependencies against the language's vulnerability audit (scheduled, no gate)                                     |
+| `examples:check`     | AyoKoding course examples against their `run.yaml` and lesson blocks, through `ayokoding-cli`; runs in the PR gate and monthly |
 
 **Repository-wide validators are not Nx targets.** Link, Mermaid, heading-hierarchy, vendor, word-budget,
 adapter-parity, and env checks are `./rhino` commands. Those the lifecycle requires are registry

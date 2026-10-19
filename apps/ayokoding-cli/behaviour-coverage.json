@@ -1,0 +1,9 @@
+{
+  "project": "ayokoding-cli",
+  "corpus": ["../../specs/apps/ayokoding/cli/behaviours"],
+  "adapters": {
+    "unit": { "bindings": ["tests/bdd"], "driver": "go.mod" },
+    "integration": { "bindings": ["tests/bdd"], "driver": "go.mod" },
+    "e2e": { "bindings": ["tests/bdd"], "driver": "go.mod" }
+  }
+}

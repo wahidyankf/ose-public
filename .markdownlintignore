@@ -55,6 +55,9 @@ docs/reference/security/frameworks/nist-sp-800-53-rev5.md
 # its rejected cases are malformed on purpose
 specs/fixtures/plan-structure/
 
+# Intentionally-broken sync fixture — every fence violation is a finding the harness must report
+apps/ayokoding-cli/tests/testdata/courses/broken-sync/
+
 # Archived content — internal links may be stale; do not validate
 plans/done/
 archived/

@@ -27,6 +27,11 @@ execution checklist.
   [plans/done/2026-10-18\_\_ayokoding-learn-revamp-04-learning-experience](../done/2026-10-18__ayokoding-learn-revamp-04-learning-experience/README.md)
   on 2026-10-18 (merged #715, E2E-stability follow-ups #716 and #717, deployed to prod).
   The series continues with plan 05 (`code-harness`).
+- Plan 05 (code harness) moved to
+  [plans/done/2026-10-19\_\_ayokoding-learn-revamp-05-code-harness](../done/2026-10-19__ayokoding-learn-revamp-05-code-harness/README.md)
+  on 2026-10-19.
+  The series continues with plans 10–13 (`legacy-unique-migration`, `audit-languages-and-tooling`,
+  `audit-cs-systems-and-data`, `audit-product-security-ai`), which feed plan 14 (`legacy-removal`).
 
 ## Instructions
 

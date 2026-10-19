@@ -1,0 +1,221 @@
+# Keep ayokoding-cli tooling explicit and local to this Go module.
+version: "2"
+
+formatters:
+  enable:
+    - gofumpt
+    - goimports
+  settings:
+    gofumpt:
+      extra:
+        group-params: true
+  exclusions:
+    paths:
+      # Ignored local scratch preserves historical fixture bytes; repository Go source remains checked.
+      - ^local-tmp/
+
+linters:
+  default: all
+  disable:
+    # Fixture literals stay resilient when domain structs gain fields; exhaustruct_v5 below stays enabled for the closed domain types.
+    - exhaustruct
+    # Method placement is organized by lifecycle flow, not export visibility.
+    - funcorder
+    # Immutable finding codes and command metadata are clearer as package-level declarations.
+    - gochecknoglobals
+    # gomodguard is deprecated; its maintained gomodguard_v2 replacement stays enabled.
+    - gomodguard
+    # gofmt deliberately does not wrap long declarations or composite literals.
+    - lll
+    # Numeric values are exit statuses, signal numbers, and colocated resource-policy contracts.
+    - mnd
+    # gofumpt owns whitespace; mandatory blank lines before returns add no signal.
+    - nlreturn
+    # Splitting short error checks into declarations adds scope without clarifying the flow.
+    - noinlineerr
+    # Filesystem and process lifecycle tests are intentionally serialized.
+    - paralleltest
+    # The JSON payload uses the camelCase field names the CLI convention prescribes (schemaVersion).
+    - tagliatelle
+    # wsl is deprecated; gofumpt owns whitespace and statement layout.
+    - wsl
+    # Subjective statement cuddling adds churn without correctness value.
+    - wsl_v5
+  settings:
+    cyclop:
+      max-complexity: 25
+      package-average: 0
+    depguard:
+      rules:
+        production:
+          files:
+            - $all
+            - "!$test"
+            - "!**/tests/**/*.go"
+            - "!**/internal/adapters/tui/*.go"
+          allow:
+            - $gostd
+            - github.com/spf13/cobra
+            - github.com/wahidyankf/ose-public/apps/ayokoding-cli
+            - go.yaml.in/yaml/v3
+        test-support:
+          files:
+            - $test
+            - "**/tests/**/*.go"
+            - "!**/internal/adapters/tui/*.go"
+            - "!**/tests/host/evidence-verifier/*.go"
+            - "!**/tests/support/tui_arguments.go"
+            - "!**/tests/support/tui_public_interactive_inputs.go"
+            - "!**/tests/support/tui_transport_native.go"
+            - "!**/tests/support/tui_transport_native_darwin.go"
+            - "!**/tests/support/tui_transport_native_linux.go"
+          allow:
+            - $gostd
+            - github.com/cucumber/godog
+            - github.com/cucumber/messages/go/v34
+            - github.com/wahidyankf/ose-public/apps/ayokoding-cli
+        # These five terminal/FD fixtures inspect real kernel state; no other support import gains this capability.
+        native-terminal-support:
+          list-mode: strict
+          files:
+            - "**/tests/support/tui_arguments.go"
+            - "**/tests/support/tui_public_interactive_inputs.go"
+            - "**/tests/support/tui_transport_native.go"
+            - "**/tests/support/tui_transport_native_darwin.go"
+            - "**/tests/support/tui_transport_native_linux.go"
+          allow:
+            - $gostd
+            - github.com/cucumber/godog
+            - github.com/cucumber/messages/go/v34
+            - github.com/wahidyankf/ose-public/apps/ayokoding-cli
+            - golang.org/x/sys/unix$
+        # This host proof tool needs native capture cells; no other host package or framework is adopted here.
+        host-evidence-verifier:
+          list-mode: strict
+          files:
+            - "**/tests/host/evidence-verifier/*.go"
+          allow:
+            - $gostd
+            - github.com/cucumber/godog
+            - github.com/cucumber/messages/go/v34
+            - github.com/wahidyankf/ose-public/apps/ayokoding-cli
+            - github.com/charmbracelet/x/ansi$
+        # Code Clarity confines the adopted versioned frameworks to this adapter; other imports stay restricted.
+        tui-production:
+          list-mode: strict
+          files:
+            - "**/internal/adapters/tui/*.go"
+            - "!$test"
+          allow:
+            - $gostd
+            - github.com/spf13/cobra
+            - github.com/wahidyankf/ose-public/apps/ayokoding-cli
+            - golang.org/x/sys
+            - charm.land/bubbletea/v2$
+            - charm.land/lipgloss/v2$
+            - charm.land/bubbles/v2/
+            # Strip/Truncate supply the renderer's missing text operations; only this utility root is adopted.
+            - github.com/charmbracelet/x/ansi$
+        tui-test-support:
+          list-mode: strict
+          files:
+            - "**/internal/adapters/tui/*_test.go"
+            - "!**/internal/adapters/tui/bdd_native_faults_internal_test.go"
+          allow:
+            - $gostd
+            - github.com/cucumber/godog
+            - github.com/cucumber/messages/go/v34
+            - github.com/wahidyankf/ose-public/apps/ayokoding-cli
+            - charm.land/bubbletea/v2$
+            - charm.land/lipgloss/v2$
+            - charm.land/bubbles/v2/
+            - github.com/charmbracelet/x/ansi$
+        # Only this owned FD fault fixture needs atomic descriptor replacement on every supported architecture.
+        native-fault-test:
+          list-mode: strict
+          files:
+            - "**/internal/adapters/tui/bdd_native_faults_internal_test.go"
+          allow:
+            - $gostd
+            - github.com/wahidyankf/ose-public/apps/ayokoding-cli
+            - golang.org/x/sys/unix$
+    exhaustive:
+      # A map keyed by an enumerated type must name every member, as a switch over it must.
+      check:
+        - switch
+        - map
+    exhaustruct_v5:
+      # Complete literals are required only for the closed domain types this module defines, never globally, so the
+      # fixture brittleness that disabled exhaustruct does not return. Explicit mode checks only what a pattern names;
+      # each unit that adds such a type adds its pattern, matched against the full import path and type name.
+      explicit-mode: true
+      enforce-patterns:
+        - ^github\.com/wahidyankf/ose-public/apps/ayokoding-cli/internal/domain/runspec\.Spec$
+        - ^github\.com/wahidyankf/ose-public/apps/ayokoding-cli/internal/domain/runspec\.Run$
+        - ^github\.com/wahidyankf/ose-public/apps/ayokoding-cli/internal/domain/runspec\.Expectation$
+        - ^github\.com/wahidyankf/ose-public/apps/ayokoding-cli/internal/domain/catalog\.Toolchain$
+        - ^github\.com/wahidyankf/ose-public/apps/ayokoding-cli/internal/domain/finding\.Finding$
+        - ^github\.com/wahidyankf/ose-public/apps/ayokoding-cli/internal/domain/containerplan\.Invocation$
+    goconst:
+      # Scenario data should state its inputs instead of hiding them behind production constants.
+      ignore-tests: true
+    gosec:
+      excludes:
+        # The guard exists to launch an explicitly supplied command.
+        - G204
+        # Guard-owned and caller-selected local paths are the intended interface.
+        - G304
+        # Private directories and executable test fixtures require owner execute permission.
+        - G306
+    funlen:
+      lines: 120
+      statements: 80
+    gocognit:
+      min-complexity: 30
+    govet:
+      enable:
+        # A pointer dereferenced where it is known to be nil, or compared with nil twice, is a defect.
+        - nilness
+    nolintlint:
+      allow-unused: false
+      require-explanation: true
+      require-specific: true
+    revive:
+      # Keep ordinary defaults while making exported documentation a hard failure.
+      enable-default-rules: true
+      severity: error
+      rules:
+        - name: exported
+          severity: error
+  exclusions:
+    generated: strict
+    warn-unused: true
+    rules:
+      # The guarded-process state machine is branch-heavy by design and separately behavior tested.
+      - path: ^internal/application/run\.go$
+        linters:
+          - cyclop
+          - funlen
+          - gocognit
+          - gocyclo
+          - maintidx
+          # Deferred cleanup must be able to promote its failure into the process result.
+          - nonamedreturns
+      # A nil session with no error is the explicit transient-capacity result consumed as exit 124.
+      - path: ^internal/adapters/runtime/lease\.go$
+        linters:
+          - nilnil
+
+      # Tea's consumer interface mandates this return; helpers and other files still return concrete types.
+      - path: '^internal/adapters/tui/model\.go$'
+        text: '^Update returns interface \(charm\.land/bubbletea/v2\.Model\)$'
+        linters:
+          - ireturn
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+
+run:
+  modules-download-mode: readonly
+  relative-path-mode: gomod

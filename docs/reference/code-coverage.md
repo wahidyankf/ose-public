@@ -27,6 +27,10 @@ Do not create a second test invocation named `test:coverage`. Do not let a later
 on a report from an earlier invocation: an Nx cache hit, changed execution order, or clean checkout
 would make that dependency ambiguous.
 
+The `ayokoding-cli` Go project holds a 99% line floor over its deterministic core
+(`internal/domain/...` and `internal/application/...`) in `test:unit`, enforced by
+`apps/ayokoding-cli/scripts/coverage-gate.sh` (`COVERAGE_MINIMUM=99`).
+
 ## Static Test Coverage
 
 | Target                      | Static proof                                                                                  |

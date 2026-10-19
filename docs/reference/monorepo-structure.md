@@ -87,6 +87,8 @@ Flat structure - all apps at the same level, no subdirectories.
 - `ayokoding-www` - AyoKoding educational platform (Next.js 16 fullstack content platform, port 3101)
 - `ayokoding-www-be-e2e` - Playwright BE E2E tests for ayokoding-www tRPC API
 - `ayokoding-www-fe-e2e` - Playwright FE E2E tests for ayokoding-www UI
+- `ayokoding-cli` - AyoKoding course code-example harness (Go + Cobra CLI; validates, syncs,
+  runs, and covers course examples in pinned containers)
 - `crane-cli` - PDF-to-Markdown pipeline CLI (F# application)
 - `ferret-cli` - Local metadata-only telemetry CLI for coding-agent harnesses (Python 3.14 zipapp with `typekit`
   bundled inside; no separate library installation)
@@ -351,7 +353,7 @@ All projects use a standard four-dimension tag scheme:
 | ----------- | --------------------------------------------- | ------------------------ | ----------------------- |
 | `type:`     | `app`, `lib`, `e2e`                           | Yes                      | Project kind            |
 | `platform:` | `cli`, `nextjs`, `playwright`                 | For apps/e2e             | Framework/runtime       |
-| `lang:`     | `rust`, `ts`, `dotnet`                        | Where source code exists | Primary language        |
+| `lang:`     | `rust`, `ts`, `dotnet`, `go`                  | Where source code exists | Primary language        |
 | `domain:`   | `ayokoding`, `ose`, `organiclever`, `tooling` | Yes                      | Business/product domain |
 
 **Notes**:

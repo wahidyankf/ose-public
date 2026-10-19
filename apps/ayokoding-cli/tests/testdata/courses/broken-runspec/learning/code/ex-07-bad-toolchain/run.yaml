@@ -1,0 +1,8 @@
+schema: ayokoding.run/v1
+toolchain: cobol
+runs:
+  - name: main
+    command: [python3, example.py]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

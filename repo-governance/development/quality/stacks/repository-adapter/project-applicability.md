@@ -16,6 +16,7 @@ its reason. Stack IDs per project live in the inventory in `repo-config.yml`.
 - [ayokoding-www](../../../../../apps/ayokoding-www/README.md)
 - [ayokoding-www-be-e2e](../../../../../apps/ayokoding-www-be-e2e/README.md)
 - [ayokoding-www-fe-e2e](../../../../../apps/ayokoding-www-fe-e2e/README.md)
+- [ayokoding-cli](../../../../../apps/ayokoding-cli/README.md)
 - [crane-cli](../../../../../apps/crane-cli/README.md)
 - [ferret-cli](../../../../../apps/ferret-cli/README.md)
 - [ferret-cli-e2e](../../../../../apps/ferret-cli-e2e/README.md)
@@ -59,7 +60,7 @@ its reason. Stack IDs per project live in the inventory in `repo-config.yml`.
 - `nx`: the root `package.json`
 - `fsharp`, `aspnet-core`, `giraffe`: each project's `.fsproj` (target framework and package references), and its
   `global.json` (SDK version) where present
-- `golang`: no first-party project declares a version today
+- `golang`: `apps/ayokoding-cli/go.mod` (`go` directive and `toolchain` line)
 - `python`: `apps/ferret-cli/.python-version` and `apps/ferret-cli/pyproject.toml`, and the same files in
   `apps/ferret-cli-e2e`
 - `shell`: the host Bash; no tracked file pins it

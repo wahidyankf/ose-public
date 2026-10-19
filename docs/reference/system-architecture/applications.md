@@ -103,6 +103,16 @@ The platform consists of the following applications across its technology stacks
   - Hexagonal DDD architecture with 5 bounded contexts
   - OpenAPI 3.1 contract-first development (planned)
 
+### CLI Tools
+
+#### ayokoding-cli
+
+- **Purpose**: Example harness for AyoKoding courses — validates, syncs, runs, and covers
+  course code examples in pinned containers
+- **Technology**: Go + Cobra
+- **Run Command**: `./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run ayokoding-www:examples:check`
+- **Location**: `apps/ayokoding-cli/`
+
 ### E2E Test Suites (Playwright)
 
 #### ose-www-fe-e2e

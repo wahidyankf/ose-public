@@ -1,0 +1,9 @@
+schema: ayokoding.run/v1
+toolchain: python
+services: [postgres]
+runs:
+  - name: main
+    command: [python3, wait.py]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

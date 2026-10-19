@@ -1,0 +1,201 @@
+{
+  "name": "ayokoding-cli",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/ayokoding-cli",
+  "targets": {
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "go tool golangci-lint fmt --diff && go tool golangci-lint run && go tool nilaway -include-pkgs=github.com/wahidyankf/ose-public/apps/ayokoding-cli -pretty-print=false ./... && go tool shfmt -d scripts",
+        "cwd": "apps/ayokoding-cli"
+      },
+      "cache": true,
+      "inputs": ["{projectRoot}/**/*.go", "{projectRoot}/scripts/**/*", "{projectRoot}/go.mod", "{projectRoot}/go.sum"]
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "go build ./... && go test -count=1 -run '^$' ./...",
+        "cwd": "apps/ayokoding-cli"
+      },
+      "cache": true,
+      "inputs": ["{projectRoot}/**/*.go", "{projectRoot}/go.mod", "{projectRoot}/go.sum"]
+    },
+    "install": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "go mod download",
+        "cwd": "apps/ayokoding-cli"
+      },
+      "cache": false
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "go build -trimpath -o dist/ayokoding-cli ./cmd/ayokoding-cli",
+        "cwd": "apps/ayokoding-cli"
+      },
+      "outputs": ["{projectRoot}/dist"],
+      "cache": true,
+      "inputs": ["{projectRoot}/**/*.go", "{projectRoot}/go.mod", "{projectRoot}/go.sum"]
+    },
+    "run": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "./dist/ayokoding-cli",
+        "cwd": "apps/ayokoding-cli"
+      },
+      "dependsOn": ["build"],
+      "cache": false
+    },
+    "test:unit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "if grep -rn --include='*_test.go' -E '\\.Skip\\(' internal cmd tests; then echo 'test:unit forbids skipped tests' >&2; exit 1; fi; COVERAGE_MINIMUM=99 ./scripts/coverage-gate.sh",
+        "cwd": "apps/ayokoding-cli"
+      },
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/**/*.go",
+        "{projectRoot}/scripts/coverage-gate.sh",
+        "{projectRoot}/go.mod",
+        "{projectRoot}/go.sum",
+        "{workspaceRoot}/specs/apps/ayokoding/cli/behaviours/**/*.feature"
+      ]
+    },
+    "test:coverage:unit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/behaviour-coverage.mjs --config apps/ayokoding-cli/behaviour-coverage.json --adapter unit"
+      },
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/apps/ayokoding-cli/behaviour-coverage.json",
+        "{projectRoot}/tests/**/*.go",
+        "{projectRoot}/go.mod",
+        "{workspaceRoot}/specs/apps/ayokoding/cli/behaviours/**/*.feature"
+      ]
+    },
+    "test:coverage:integration": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/behaviour-coverage.mjs --config apps/ayokoding-cli/behaviour-coverage.json --adapter integration"
+      },
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/apps/ayokoding-cli/behaviour-coverage.json",
+        "{projectRoot}/tests/**/*.go",
+        "{projectRoot}/go.mod",
+        "{workspaceRoot}/specs/apps/ayokoding/cli/behaviours/**/*.feature"
+      ]
+    },
+    "test:coverage:e2e": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/behaviour-coverage.mjs --config apps/ayokoding-cli/behaviour-coverage.json --adapter e2e"
+      },
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/apps/ayokoding-cli/behaviour-coverage.json",
+        "{projectRoot}/tests/**/*.go",
+        "{projectRoot}/go.mod",
+        "{workspaceRoot}/specs/apps/ayokoding/cli/behaviours/**/*.feature"
+      ]
+    },
+    "test:coverage:behaviour": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/behaviour-coverage.mjs --config apps/ayokoding-cli/behaviour-coverage.json --adapter behaviour"
+      },
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/apps/ayokoding-cli/behaviour-coverage.json",
+        "{projectRoot}/tests/**/*.go",
+        "{projectRoot}/go.mod",
+        "{workspaceRoot}/specs/apps/ayokoding/cli/behaviours/**/*.feature"
+      ]
+    },
+    "test:integration": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "AYOKODING_BDD_ADAPTER=integration go test -count=1 ./tests/bdd ./tests/integration/...",
+        "cwd": "apps/ayokoding-cli"
+      },
+      "cache": false
+    },
+    "test:e2e": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "apps/ayokoding-cli/scripts/test-e2e.sh"
+      },
+      "cache": false
+    },
+    "test:quick": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          { "command": "npm exec -- nx run ayokoding-cli:lint", "forwardAllArgs": false },
+          { "command": "npm exec -- nx run ayokoding-cli:typecheck", "forwardAllArgs": false },
+          { "command": "npm exec -- nx run ayokoding-cli:test:unit", "forwardAllArgs": false },
+          { "command": "npm exec -- nx run ayokoding-cli:test:coverage", "forwardAllArgs": false }
+        ],
+        "parallel": false,
+        "forwardAllArgs": false
+      },
+      "cache": true,
+      "inputs": [
+        "default",
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/apps/ayokoding-cli/behaviour-coverage.json",
+        "{projectRoot}/**/*.go",
+        "{projectRoot}/scripts/**/*",
+        "{projectRoot}/go.mod",
+        "{projectRoot}/go.sum",
+        "{workspaceRoot}/specs/apps/ayokoding/cli/behaviours/**/*.feature"
+      ]
+    },
+    "deps:audit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "go tool govulncheck ./...",
+        "cwd": "apps/ayokoding-cli"
+      },
+      "cache": false
+    },
+    "compat:min-version": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "apps/ayokoding-cli/scripts/compat-min-version.sh"
+      },
+      "cache": true,
+      "inputs": ["{projectRoot}/go.mod", "{projectRoot}/scripts/compat-min-version.sh"]
+    },
+    "test:coverage": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          { "command": "npm exec -- nx run ayokoding-cli:test:coverage:unit", "forwardAllArgs": false },
+          { "command": "npm exec -- nx run ayokoding-cli:test:coverage:integration", "forwardAllArgs": false },
+          { "command": "npm exec -- nx run ayokoding-cli:test:coverage:e2e", "forwardAllArgs": false },
+          { "command": "npm exec -- nx run ayokoding-cli:test:coverage:behaviour", "forwardAllArgs": false }
+        ],
+        "parallel": false,
+        "forwardAllArgs": false
+      },
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/apps/ayokoding-cli/behaviour-coverage.json",
+        "{projectRoot}/tests/**/*.go",
+        "{projectRoot}/go.mod",
+        "{workspaceRoot}/specs/apps/ayokoding/cli/behaviours/**/*.feature"
+      ]
+    }
+  },
+  "tags": ["type:app", "platform:cli", "lang:go", "domain:ayokoding"]
+}

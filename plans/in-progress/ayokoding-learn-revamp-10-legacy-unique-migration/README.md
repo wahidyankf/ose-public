@@ -2,15 +2,13 @@
 
 Depends-on: [ayokoding-learn-revamp-05-code-harness]
 
-> **Status:** Backlog. Do not execute until both are true: the user gives an explicit execution
-> command, and plans 01 to 09 of this series have merged to `origin/main`. The 14 plans run strictly
-> one after another (series decision 42), so plan 09 is merged, deployed, verified, and cleaned up
-> before this plan starts, and plans 11 to 14 start only after this plan has merged.
+> **Status:** In Progress. Execution ordered by the user ahead of plans 06 to 09 (DAG
+> `P05 --> P10` allows it; plans 11 to 14 still start only after this plan has merged).
 >
-> **Plan quality gate:** not run yet, so no verdict exists. By the user's decision of 2026-10-09 it
-> was not run while the plan was written; it runs at the start of execution, as the first item of
-> Phase 0 in [delivery.md](./delivery.md#phase-0-worktree-environment-preconditions-and-baseline),
-> with `max-cycles` 2.
+> **Plan quality gate:** PASS. Three checker cycles cleared all findings (19 + 2 residues +
+> 2 LOW links fixed verbatim); the remaining order deviation (62 outline skeletons belong to
+> unexecuted plans 06 to 09) is recorded in Phase 0 evidence, not a blocker, per the user's
+> explicit execution order.
 
 `apps/ayokoding-www/content/en/learn/legacy/` holds 1,150 Markdown files (about 6.65 million words)
 self-described as "kept for reference while the course library fills". On 2026-10-09 this plan

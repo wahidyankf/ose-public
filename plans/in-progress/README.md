@@ -32,6 +32,8 @@ execution checklist.
   on 2026-10-19.
   The series continues with plans 10–13 (`legacy-unique-migration`, `audit-languages-and-tooling`,
   `audit-cs-systems-and-data`, `audit-product-security-ai`), which feed plan 14 (`legacy-removal`).
+- Plan 10 (legacy unique migration) is in progress at
+  [plans/in-progress/ayokoding-learn-revamp-10-legacy-unique-migration](./ayokoding-learn-revamp-10-legacy-unique-migration/README.md).
 
 ## Instructions
 

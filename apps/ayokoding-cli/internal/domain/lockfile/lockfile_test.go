@@ -24,11 +24,48 @@ func TestParseLine_pinsTheLockAgreement(t *testing.T) {
 		"a:b 94855942d4992f112946d3de1c334e709237b8126d8130bf07807c018a4a2120":     "two-part coordinate",
 		"a:b:c:d 94855942d4992f112946d3de1c334e709237b8126d8130bf07807c018a4a2120": "four-part coordinate",
 		"com.google.code.gson:gson:2.13.1 nothex":                                  "bad hash",
-		"com.google.code.gson:gson:2.13.1 9485 extra":                              "three fields",
+		"com.google.code.gson:gson:2.13.1 9485 extra":                              "bad hash and repository",
 		"com.google.code.gson:gson:2.13.1":                                         "one field",
 	} {
 		if _, _, err := lockfile.ParseLine(raw); err == nil {
 			t.Errorf("%s accepted: %q", want, raw)
+		}
+	}
+}
+
+// TestParseLine_acceptsTheRepositoryField drives the AC-1 grammar: an optional
+// third field naming the repository (`central`, the default, or `clojars`);
+// any other name is rejected.
+func TestParseLine_acceptsTheRepositoryField(t *testing.T) {
+	for _, raw := range []string{
+		"com.google.code.gson:gson:2.13.1 94855942d4992f112946d3de1c334e709237b8126d8130bf07807c018a4a2120 central",
+		"migratus:migratus:1.6.8 2bb23f04e4d0f03418ca5408782bcfc57004b5051a131e4f272627df43a7b34f clojars",
+	} {
+		line, ok, err := lockfile.ParseLine(raw)
+		if err != nil {
+			t.Errorf("repository line rejected: %q: %v", raw, err)
+			continue
+		}
+		if !ok {
+			t.Errorf("repository line reported as skipped: %q", raw)
+		}
+		if line.Repository == "" {
+			t.Errorf("repository lost: %q", raw)
+		}
+	}
+	central, _, err := lockfile.ParseLine("com.google.code.gson:gson:2.13.1 94855942d4992f112946d3de1c334e709237b8126d8130bf07807c018a4a2120")
+	if err != nil {
+		t.Fatalf("two-field line rejected: %v", err)
+	}
+	if central.Repository != "central" {
+		t.Errorf("missing repository does not default to central: %q", central.Repository)
+	}
+	for _, raw := range []string{
+		"migratus:migratus:1.6.8 2bb23f04e4d0f03418ca5408782bcfc57004b5051a131e4f272627df43a7b34f elsewhere",
+		"migratus:migratus:1.6.8 2bb23f04e4d0f03418ca5408782bcfc57004b5051a131e4f272627df43a7b34f CENTRAL",
+	} {
+		if _, _, err := lockfile.ParseLine(raw); err == nil {
+			t.Errorf("unknown repository accepted: %q", raw)
 		}
 	}
 }

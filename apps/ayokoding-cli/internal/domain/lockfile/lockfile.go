@@ -15,9 +15,16 @@ import (
 // Malformed-line sentinels. Each wraps the offending line as context, so the
 // finding names the line without creating a dynamic error.
 var (
-	ErrBadLine       = errors.New("lockfile: bad lock line (want '<group>:<artifact>:<version> <sha256>')")
+	ErrBadLine       = errors.New("lockfile: bad lock line (want '<group>:<artifact>:<version> <sha256> [<repository>]')")
 	ErrBadCoordinate = errors.New("lockfile: bad coordinate (want '<group>:<artifact>:<version>')")
 	ErrBadSHA        = errors.New("lockfile: bad sha256 (want 64 hex digits)")
+	ErrBadRepository = errors.New("lockfile: bad repository (want 'central' or 'clojars')")
+)
+
+// Repositories JarFetch serves. A missing field defaults to central.
+const (
+	RepositoryCentral = "central"
+	RepositoryClojars = "clojars"
 )
 
 // coordinate names one locked jar.
@@ -31,6 +38,7 @@ type coordinate struct {
 type Line struct {
 	Coordinate coordinate
 	SHA256     string
+	Repository string
 }
 
 var (
@@ -46,7 +54,7 @@ func ParseLine(raw string) (Line, bool, error) {
 		return Line{}, false, nil
 	}
 	fields := strings.Fields(trimmed)
-	if len(fields) != 2 {
+	if len(fields) < 2 || len(fields) > 3 {
 		return Line{}, true, fmt.Errorf("%w: %s", ErrBadLine, trimmed)
 	}
 	parts := strings.Split(fields[0], ":")
@@ -61,8 +69,16 @@ func ParseLine(raw string) (Line, bool, error) {
 	if !shaPattern.MatchString(fields[1]) {
 		return Line{}, true, fmt.Errorf("%w: %s", ErrBadSHA, trimmed)
 	}
+	repository := RepositoryCentral
+	if len(fields) == 3 {
+		repository = fields[2]
+	}
+	if repository != RepositoryCentral && repository != RepositoryClojars {
+		return Line{}, true, fmt.Errorf("%w: %s", ErrBadRepository, trimmed)
+	}
 	return Line{
 		Coordinate: coordinate{Group: parts[0], Artifact: parts[1], Version: parts[2]},
 		SHA256:     strings.ToLower(fields[1]),
+		Repository: repository,
 	}, true, nil
 }

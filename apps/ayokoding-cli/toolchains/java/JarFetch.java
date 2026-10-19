@@ -1,8 +1,11 @@
-// JarFetch fetches one Maven Central jar per lock line into a target folder,
-// checking SHA-256. Usage: JarFetch <lockfile> <target-dir>. A lock line is
-// `<group>:<artifact>:<version> <sha256>`; lines starting with `#` and blank
-// lines are ignored. Any hash difference, missing line, or failed download
-// fails the build naming the line, and the unit never starts.
+// JarFetch fetches one jar per lock line into a target folder, checking
+// SHA-256. Usage: JarFetch <lockfile> <target-dir>. A lock line is
+// `<group>:<artifact>:<version> <sha256> [<repository>]`, where `<repository>`
+// is `central` (the default, https://repo.maven.apache.org/maven2/) or
+// `clojars` (https://repo.clojars.org/); lines starting with `#` and blank
+// lines are ignored. Any hash difference, missing line, failed download, or
+// unknown repository fails the build naming the line, and the unit never
+// starts.
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -28,25 +31,25 @@ public class JarFetch {
         continue;
       }
       String[] fields = line.split("\\s+");
-      if (fields.length != 2) {
-        fail("bad lock line (want '<group>:<artifact>:<version> <sha256>'): " + line);
+      if (fields.length < 2 || fields.length > 3) {
+        fail("bad lock line (want '<group>:<artifact>:<version> <sha256> [<repository>]'): " + line);
       }
       String[] coord = fields[0].split(":");
       if (coord.length != 3) {
         fail("bad coordinate (want '<group>:<artifact>:<version>'): " + line);
       }
+      String repository = fields.length == 3 ? fields[2] : "central";
+      String base;
+      if (repository.equals("central")) {
+        base = "https://repo.maven.apache.org/maven2/";
+      } else if (repository.equals("clojars")) {
+        base = "https://repo.clojars.org/";
+      } else {
+        fail("unknown repository (want 'central' or 'clojars'): " + line);
+        return;
+      }
       String jar =
-        "https://repo.maven.apache.org/maven2/" +
-        coord[0].replace('.', '/') +
-        "/" +
-        coord[1] +
-        "/" +
-        coord[2] +
-        "/" +
-        coord[1] +
-        "-" +
-        coord[2] +
-        ".jar";
+        base + coord[0].replace('.', '/') + "/" + coord[1] + "/" + coord[2] + "/" + coord[1] + "-" + coord[2] + ".jar";
       HttpResponse<byte[]> response = http.send(
         HttpRequest.newBuilder(URI.create(jar)).GET().build(),
         HttpResponse.BodyHandlers.ofByteArray()

@@ -35,10 +35,17 @@ toolchains:
     kind: language
     version: "1.12.6"
     # Clojure 1.12.6 on Temurin JDK 25 with the three core jars named by its
-    # POM (hashes recorded 2026-10-20); no install recipe: no third-party
-    # Clojure library is used yet (AC-2 adds the recipe).
-    image: ayokoding-toolchain/clojure:bc662af97a005ef1d3911441953d20935744afb1fd2eafe37d1a44784abd978b@sha256:bc662af97a005ef1d3911441953d20935744afb1fd2eafe37d1a44784abd978b
+    # POM (hashes recorded 2026-10-20). Locked units build an environment
+    # image whose install argv fetches jars.lock into /deps/clojure (JARS);
+    # the wrapper puts the core jars first, then the locked jars in sorted
+    # file-name order as explicit entries.
+    image: ayokoding-toolchain/clojure:7c9b9f0df0192c6010d9225ee3db9b1b27b1713e5c02894f748b81824cba9b6c@sha256:7c9b9f0df0192c6010d9225ee3db9b1b27b1713e5c02894f748b81824cba9b6c
     build: clojure/Dockerfile
+    install:
+      lockfiles: [jars.lock]
+      command: [java, /opt/tools/JarFetch.java, /deps/lock/jars.lock, /deps/clojure]
+      env:
+        JARS: /deps/clojure
   - id: java
     kind: language
     version: "25.0.4.1+1"
@@ -46,8 +53,12 @@ toolchains:
     # installer. Units without a lockfile run on this image as before (the
     # default user is unchanged); locked units build an environment image
     # whose install argv fetches jars.lock into /deps/java (JARS).
-    image: ayokoding-toolchain/java:edf262024bba9e68a2a5820a2320952351ac24a308c7537d978c6a6f19aeebc6@sha256:edf262024bba9e68a2a5820a2320952351ac24a308c7537d978c6a6f19aeebc6
+    image: ayokoding-toolchain/java:d391a9a933425fb316e6e9583922deb8c137e8dfa8ce8b880a188447ab5138ab@sha256:d391a9a933425fb316e6e9583922deb8c137e8dfa8ce8b880a188447ab5138ab
     build: java/Dockerfile
+    # Hash-locked jar install: JarFetch fetches each jars.lock line into
+    # /deps/java (JARS). A line carries an optional third field naming the
+    # repository (`central`, the default, or `clojars`); anything else fails
+    # the build naming the line.
     install:
       lockfiles: [jars.lock]
       command: [java, /opt/tools/JarFetch.java, /deps/lock/jars.lock, /deps/java]

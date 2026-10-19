@@ -1,0 +1,5 @@
+sample: [2]
+clojure-1.12.6.jar
+core.specs.alpha-0.4.74.jar
+spec.alpha-0.5.238.jar
+test.check-1.1.3.jar

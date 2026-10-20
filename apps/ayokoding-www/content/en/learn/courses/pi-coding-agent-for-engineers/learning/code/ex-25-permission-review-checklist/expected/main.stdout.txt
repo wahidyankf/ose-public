@@ -1,0 +1,3 @@
+missing: []
+defaultTools: read,edit,write
+trust: ask

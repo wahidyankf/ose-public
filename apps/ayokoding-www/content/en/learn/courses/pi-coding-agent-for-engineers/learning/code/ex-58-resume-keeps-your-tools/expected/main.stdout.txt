@@ -1,0 +1,3 @@
+defaults: ['read', 'bash', 'edit', 'write']
+overrides: ['+grep', '+find']
+active: ['bash', 'edit', 'find', 'grep', 'read', 'write']

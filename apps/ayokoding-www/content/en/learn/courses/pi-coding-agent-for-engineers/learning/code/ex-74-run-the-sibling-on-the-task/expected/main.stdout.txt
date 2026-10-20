@@ -1,0 +1,5 @@
+tool: sibling agent
+task: add coupon total with test
+turns: 7
+tokens: 11200
+passed: True

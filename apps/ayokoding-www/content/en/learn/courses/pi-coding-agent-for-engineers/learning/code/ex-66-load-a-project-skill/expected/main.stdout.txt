@@ -1,0 +1,4 @@
+action: load
+package: shop-checkout-skill
+needs: ['read', 'bash']
+installed: True

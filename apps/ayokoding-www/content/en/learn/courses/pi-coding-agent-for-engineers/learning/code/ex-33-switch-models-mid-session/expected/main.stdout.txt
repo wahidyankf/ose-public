@@ -1,0 +1,3 @@
+before: anthropic/claude-default
+after: ollama/llama-local
+thinking-kept: False

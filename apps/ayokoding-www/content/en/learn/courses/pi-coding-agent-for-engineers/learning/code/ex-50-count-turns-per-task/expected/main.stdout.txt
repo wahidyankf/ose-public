@@ -1,0 +1,5 @@
+sound: 4 suspect: 0
+read | openapi.yaml endpoints
+read | client generator docs
+edit | regenerate client
+test | contract tests green

@@ -1,0 +1,13 @@
+plan: approved
+act: green
+corrections: 2
+trace lines: 9
+ | plan: read login.py
+ | plan: add check
+ | plan: fix attempts
+ | read: login.py
+ | edit: login.py +check
+ | edit: login.py attempts fix
+ | exec: pytest -q -> pass
+ | judge: narrowed scope to login.py
+ | judge: demanded red before green

@@ -1,0 +1,3 @@
+level: high
+budget: 9000
+fits: True

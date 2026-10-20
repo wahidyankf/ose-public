@@ -1,0 +1,3 @@
+missing: []
+providerId: shop-llm
+baseUrl: https://llm.shop/v1

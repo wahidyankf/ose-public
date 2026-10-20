@@ -1,0 +1,4 @@
+symptom: same edit proposed 3 times
+recovery: interrupt, branch at last good turn
+kept: ['src/cart/cart.py', 'tests/test_cart.py']
+recovered: True

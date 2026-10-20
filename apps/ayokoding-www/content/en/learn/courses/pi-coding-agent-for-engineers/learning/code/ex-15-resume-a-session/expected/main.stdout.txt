@@ -1,0 +1,4 @@
+op: /session resume shop-cart
+row: restored: 12 turns
+row: tools: read, bash, edit, write
+row: cwd: /srv/notes/shop

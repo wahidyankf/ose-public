@@ -1,0 +1,4 @@
+action: install
+package: pi-review-checklist
+needs: ['read', 'edit']
+installed: True

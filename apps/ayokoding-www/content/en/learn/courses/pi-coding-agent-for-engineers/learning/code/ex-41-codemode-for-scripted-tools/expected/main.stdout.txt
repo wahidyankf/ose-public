@@ -1,0 +1,3 @@
+defaults: ['read', 'bash', 'codemode']
+overrides: ['+tool_search']
+active: ['bash', 'codemode', 'read', 'tool_search']

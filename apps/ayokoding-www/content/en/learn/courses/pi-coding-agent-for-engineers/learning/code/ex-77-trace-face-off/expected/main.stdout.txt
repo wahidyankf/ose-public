@@ -1,0 +1,5 @@
+sound: 3 suspect: 1
+read | pi leg reads then edits
+edit | pi leg edits cart module
+edit | sibling edits before reading
+test | both legs gate green

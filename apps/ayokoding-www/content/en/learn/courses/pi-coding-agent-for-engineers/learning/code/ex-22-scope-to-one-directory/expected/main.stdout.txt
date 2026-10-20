@@ -1,0 +1,2 @@
+situation: fix the cart
+route: scope /srv/notes/shop/src/cart

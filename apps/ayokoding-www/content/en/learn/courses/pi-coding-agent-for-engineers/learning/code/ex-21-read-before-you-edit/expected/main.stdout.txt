@@ -1,0 +1,4 @@
+sound: 3 suspect: 0
+read | src/auth.py login handler
+read | tests/test_auth.py expectations
+edit | tighten password check

@@ -1,0 +1,4 @@
+op: /tree filter no-tools
+row: shown: user prompts only
+row: hidden: 41 tool calls
+row: bookmarks: 2 kept

@@ -1,0 +1,4 @@
+mode: print
+prompt: explain this regex
+reply: one-paragraph answer
+envelope: stdout only

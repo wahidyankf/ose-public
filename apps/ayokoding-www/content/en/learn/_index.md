@@ -51,6 +51,7 @@ description: "Follow a path from your first course to a finished project, or pic
   - [Self-Hosting Essentials](/en/learn/courses/self-hosting-essentials)
   - [Frontend Essentials](/en/learn/courses/frontend-essentials)
   - [Advanced Frontend](/en/learn/courses/advanced-frontend)
+  - [Frontend Unit Testing with Vitest and Testing Library](/en/learn/courses/frontend-unit-testing-with-vitest-and-testing-library)
   - [Software Testing](/en/learn/courses/software-testing)
   - [Build Automation and Task Runners](/en/learn/courses/build-automation-and-task-runners)
   - [Information Architecture and SEO](/en/learn/courses/information-architecture-and-seo)

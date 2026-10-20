@@ -95,9 +95,15 @@ toolchains:
     # Locked units build an environment image whose install argv restores
     # packages.lock.json into /deps/dotnet. NuGet's content hashes are not
     # nupkg checksums, so nothing but NuGet itself can check them: the
-    # recipe rebuilds the locked project in /tmp and restores it with
-    # --locked-mode (NU1403 on any tampered entry), then stages the
-    # downloaded nupkgs. Units restore --locked-mode from /deps/dotnet.
+    # recipe pins every lock entry (direct and transitive) as an exact
+    # PackageReference in /tmp and restores it — NuGet's lowest-match
+    # resolution reproduces the locked graph version for version — then
+    # stages the downloaded nupkgs. The restore here must NOT use
+    # --locked-mode: the rebuilt project lists transitive packages as
+    # direct references, so locked mode always fails with NU1004 on any
+    # lock that has transitive dependencies. The tamper gate stays where
+    # it belongs: units restore --locked-mode from /deps/dotnet (NU1403
+    # on any tampered entry).
     install:
       lockfiles: [packages.lock.json]
       command:
@@ -119,7 +125,7 @@ toolchains:
             done < "$work/refs.txt"
             printf '%s\n' '  </ItemGroup>' '</Project>'
           } > "$work/fetch.csproj"
-          dotnet restore "$work/fetch.csproj" --locked-mode
+          dotnet restore "$work/fetch.csproj"
           cp "$HOME/.nuget/packages/"*/*/*.nupkg "$dest"/
   - id: elixir
     kind: language
@@ -129,7 +135,7 @@ toolchains:
     # rebar3 follows upstream stable), then fetch.py resolves the locked
     # versions into HEX_HOME and verifies every tarball against the lock's
     # own checksum. Units resolve offline from that cache twice alike.
-    image: ayokoding-toolchain/elixir:12856e7c848828bee5592d1562b0f017e6eaf36e109b9fc2091556ce9c368214@sha256:12856e7c848828bee5592d1562b0f017e6eaf36e109b9fc2091556ce9c368214
+    image: ayokoding-toolchain/elixir:ad9cbcca22f1fdb9e79029f23ff1b4bf36b18d78131c7ac7127caddd24e2982a@sha256:ad9cbcca22f1fdb9e79029f23ff1b4bf36b18d78131c7ac7127caddd24e2982a
     build: elixir/Dockerfile
     install:
       lockfiles: [mix.lock]

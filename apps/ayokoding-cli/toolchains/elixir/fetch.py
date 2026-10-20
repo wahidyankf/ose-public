@@ -16,15 +16,73 @@ import re
 import subprocess
 import sys
 
-ENTRY = re.compile(
-    r'\{:hex, :([A-Za-z0-9_]+), "([^"]+)", "[0-9a-f]+",'
-    r' \[[^\]]*\], \[[^\]]*\], "[^"]+", "([0-9a-f]+)"\}'
-)
+ENTRY_START = re.compile(r"\{:hex, :([A-Za-z0-9_]+), \"([^\"]+)\",")
 
 
 def fail(message):
     print("fetch: " + message, file=sys.stderr)
     sys.exit(1)
+
+
+def split_tuple(lock, start):
+    """Split the `{...}` tuple at start into top-level fields.
+
+    Bracket depth is counted through nested `{...}` and `[...]` (lock
+    dependency specs nest option lists, which a flat `[^\\]]*` pattern
+    cannot cross) while quoted strings are opaque. Returns the field
+    list, or None when the tuple never closes.
+    """
+    fields = []
+    current = []
+    depth = 0
+    in_string = False
+    escaped = False
+    for char in lock[start:]:
+        if in_string:
+            current.append(char)
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == '"':
+                in_string = False
+            continue
+        if char == '"':
+            in_string = True
+            current.append(char)
+        elif char in "{[":
+            depth += 1
+            current.append(char)
+        elif char in "}]":
+            depth -= 1
+            current.append(char)
+            if depth == 0:
+                fields.append("".join(current))
+                return fields
+        elif char == "," and depth == 1:
+            fields.append("".join(current))
+            current = []
+        else:
+            current.append(char)
+    return None
+
+
+def parse_lock(lock):
+    """Return [(name, version, checksum)] for every hex lock entry."""
+    deps = []
+    for match in ENTRY_START.finditer(lock):
+        name, version = match.group(1), match.group(2)
+        fields = split_tuple(lock, match.start())
+        if fields is None or len(fields) != 8 or fields[0] != "{:hex":
+            fail("malformed lock entry for package %s" % name)
+        raw = fields[7].strip()
+        if not raw.startswith('"') or not raw.endswith('"}'):
+            fail("malformed lock entry for package %s" % name)
+        checksum = raw[1:-2]
+        if not re.fullmatch(r"[0-9a-f]+", checksum):
+            fail("malformed lock entry for package %s" % name)
+        deps.append((name, version, checksum))
+    return deps
 
 
 def main(argv):
@@ -36,7 +94,7 @@ def main(argv):
             lock = handle.read()
     except OSError as exc:
         fail("cannot read lockfile %s: %s" % (argv[1], exc))
-    deps = ENTRY.findall(lock)
+    deps = parse_lock(lock)
     if not deps:
         fail("lockfile %s names no hex packages" % argv[1])
     seed = "/tmp/hexseed"

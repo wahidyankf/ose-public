@@ -191,7 +191,7 @@ function openLearnHome(): void {
       manifests={MANIFESTS}
       contentMap={CONTENT_MAP}
       sequences={SEQUENCES}
-      catalogCounts={{ courses: 181, categories: 14 }}
+      catalogCounts={{ courses: 230, categories: 14 }}
     />,
   );
 }

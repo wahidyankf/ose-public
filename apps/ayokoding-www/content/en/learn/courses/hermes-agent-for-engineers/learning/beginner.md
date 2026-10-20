@@ -238,7 +238,11 @@ Vendor facts expire, so every version-specific claim carries its check date. Thi
 # => Pinning turns a silent lie into a loud, dated, checkable claim.
 verified_version = "hermes-2.4.1"  # => Hermes release checked on the date below
 access_date = "2026-10-20"
-claims = ["config keys", "default sandbox", "model routing"]  # => facts that expire with the version
+claims = [
+    "config keys",
+    "default sandbox",
+    "model routing",
+]  # => facts that expire with the version
 # => Every claim is printed beside its date so staleness is visible.
 # => A reader in two years checks the date first, the fact second.
 print("verified:", verified_version)  # => Output pins the release
@@ -378,7 +382,11 @@ flowchart TD
 # => A plan you can veto beats a diff you must revert.
 # => The shim freezes one proposed plan for a stated goal.
 goal = "migrate all dates to UTC"  # => the task in one sentence
-steps = ["scan repo", "rewrite 40 files", "migrate database"]  # => the proposed plan, in order
+steps = [
+    "scan repo",
+    "rewrite 40 files",
+    "migrate database",
+]  # => the proposed plan, in order
 files = ["src/a.py", "src/b.py", "db/schema.sql", "tests/test_dates.py"]
 # => A plan is reviewable only when its blast radius is listed.
 # => Count the files before you argue about the steps.
@@ -428,7 +436,11 @@ flowchart TD
 # => A tool-use trace is the agent's receipt: each call plus why.
 # => Reading it is how you tell a correct step from a confident bluff.
 # => The shim freezes one trace so every reader sees the same run.
-steps = [("read", "src/cart.py lines 1-40", True), ("edit", "add coupon field", True), ("test", "pytest tests/test_cart.py", True)]  # => the frozen trace, in call order
+steps = [
+    ("read", "src/cart.py lines 1-40", True),
+    ("edit", "add coupon field", True),
+    ("test", "pytest tests/test_cart.py", True),
+]  # => the frozen trace, in call order
 # => Walk the trace and mark each step good or suspect.
 # => A suspect step is not proof of failure, just where to look.
 bad = 0  # => count of steps that fail their own check
@@ -470,7 +482,11 @@ The tool-use trace is where you catch the agent being confidently wrong. This ex
 # => A tool-use trace is the agent's receipt: each call plus why.
 # => Reading it is how you tell a correct step from a confident bluff.
 # => The shim freezes one trace so every reader sees the same run.
-steps = [("edit", "rewrite pricing without reading it", False), ("test", "pytest collects 0 items", False), ("read", "src/pricing.py after the fact", True)]  # => the frozen trace, in call order
+steps = [
+    ("edit", "rewrite pricing without reading it", False),
+    ("test", "pytest collects 0 items", False),
+    ("read", "src/pricing.py after the fact", True),
+]  # => the frozen trace, in call order
 # => Walk the trace and mark each step good or suspect.
 # => A suspect step is not proof of failure, just where to look.
 bad = 0  # => count of steps that fail their own check
@@ -526,7 +542,11 @@ flowchart TD
 # => A tool-use trace is the agent's receipt: each call plus why.
 # => Reading it is how you tell a correct step from a confident bluff.
 # => The shim freezes one trace so every reader sees the same run.
-steps = [("read", "config to find the timeout key", True), ("edit", "raise timeout 5s to 30s", True), ("test", "replay the slow webhook", True)]  # => the frozen trace, in call order
+steps = [
+    ("read", "config to find the timeout key", True),
+    ("edit", "raise timeout 5s to 30s", True),
+    ("test", "replay the slow webhook", True),
+]  # => the frozen trace, in call order
 # => Walk the trace and mark each step good or suspect.
 # => A suspect step is not proof of failure, just where to look.
 bad = 0  # => count of steps that fail their own check
@@ -568,7 +588,11 @@ The tool-use trace is where you catch the agent being confidently wrong. This ex
 # => A tool-use trace is the agent's receipt: each call plus why.
 # => Reading it is how you tell a correct step from a confident bluff.
 # => The shim freezes one trace so every reader sees the same run.
-steps = [("read", "src/auth.py login handler", True), ("edit", "weaken password check to contains", False), ("test", "login tests skipped", False)]  # => the frozen trace, in call order
+steps = [
+    ("read", "src/auth.py login handler", True),
+    ("edit", "weaken password check to contains", False),
+    ("test", "login tests skipped", False),
+]  # => the frozen trace, in call order
 # => Walk the trace and mark each step good or suspect.
 # => A suspect step is not proof of failure, just where to look.
 bad = 0  # => count of steps that fail their own check
@@ -624,7 +648,12 @@ flowchart TD
 # => A tool-use trace is the agent's receipt: each call plus why.
 # => Reading it is how you tell a correct step from a confident bluff.
 # => The shim freezes one trace so every reader sees the same run.
-steps = [("read", "openapi.yaml endpoints", True), ("read", "client generator docs", True), ("edit", "regenerate client", True), ("test", "contract tests green", True)]  # => the frozen trace, in call order
+steps = [
+    ("read", "openapi.yaml endpoints", True),
+    ("read", "client generator docs", True),
+    ("edit", "regenerate client", True),
+    ("test", "contract tests green", True),
+]  # => the frozen trace, in call order
 # => Walk the trace and mark each step good or suspect.
 # => A suspect step is not proof of failure, just where to look.
 bad = 0  # => count of steps that fail their own check
@@ -666,7 +695,12 @@ The tool-use trace is where you catch the agent being confidently wrong. This ex
 # => A tool-use trace is the agent's receipt: each call plus why.
 # => Reading it is how you tell a correct step from a confident bluff.
 # => The shim freezes one trace so every reader sees the same run.
-steps = [("test", "run suite on unmodified code", True), ("read", "the failing module", True), ("edit", "fix the off-by-one", True), ("test", "suite green", True)]  # => the frozen trace, in call order
+steps = [
+    ("test", "run suite on unmodified code", True),
+    ("read", "the failing module", True),
+    ("edit", "fix the off-by-one", True),
+    ("test", "suite green", True),
+]  # => the frozen trace, in call order
 # => Walk the trace and mark each step good or suspect.
 # => A suspect step is not proof of failure, just where to look.
 bad = 0  # => count of steps that fail their own check
@@ -720,7 +754,11 @@ flowchart TD
 # => A tool-use trace is the agent's receipt: each call plus why.
 # => Reading it is how you tell a correct step from a confident bluff.
 # => The shim freezes one trace so every reader sees the same run.
-steps = [("read", "src/payments.py (file does not exist)", False), ("edit", "patch src/payments.py refund path", False), ("test", "pytest cannot collect target", False)]  # => the frozen trace, in call order
+steps = [
+    ("read", "src/payments.py (file does not exist)", False),
+    ("edit", "patch src/payments.py refund path", False),
+    ("test", "pytest cannot collect target", False),
+]  # => the frozen trace, in call order
 # => Walk the trace and mark each step good or suspect.
 # => A suspect step is not proof of failure, just where to look.
 bad = 0  # => count of steps that fail their own check
@@ -765,7 +803,11 @@ The tool-use trace is where you catch the agent being confidently wrong. This ex
 # => A tool-use trace is the agent's receipt: each call plus why.
 # => Reading it is how you tell a correct step from a confident bluff.
 # => The shim freezes one trace so every reader sees the same run.
-steps = [("read", "trace.json schema check", True), ("edit", "normalize tool field", True), ("test", "validate three sample lines", True)]  # => the frozen trace, in call order
+steps = [
+    ("read", "trace.json schema check", True),
+    ("edit", "normalize tool field", True),
+    ("test", "validate three sample lines", True),
+]  # => the frozen trace, in call order
 # => Walk the trace and mark each step good or suspect.
 # => A suspect step is not proof of failure, just where to look.
 bad = 0  # => count of steps that fail their own check
@@ -819,7 +861,11 @@ flowchart TD
 # => A tool-use trace is the agent's receipt: each call plus why.
 # => Reading it is how you tell a correct step from a confident bluff.
 # => The shim freezes one trace so every reader sees the same run.
-steps = [("read", "src/queue.py retry logic", True), ("edit", "cap retries at 3 with backoff", True), ("test", "retry storm simulation passes", True)]  # => the frozen trace, in call order
+steps = [
+    ("read", "src/queue.py retry logic", True),
+    ("edit", "cap retries at 3 with backoff", True),
+    ("test", "retry storm simulation passes", True),
+]  # => the frozen trace, in call order
 # => Walk the trace and mark each step good or suspect.
 # => A suspect step is not proof of failure, just where to look.
 bad = 0  # => count of steps that fail their own check
@@ -873,7 +919,11 @@ flowchart TD
 # => The shim models permissions as an ordered allow/deny table.
 # => First match wins, exactly like Hermes evaluates its own rules.
 # => Order matters more than count: broad allows go last, not first.
-rules = [("shell", "deny"), ("shell:pytest", "allow"), ("shell:git-status", "allow")]  # => the policy table, read top to bottom
+rules = [
+    ("shell", "deny"),
+    ("shell:pytest", "allow"),
+    ("shell:git-status", "allow"),
+]  # => the policy table, read top to bottom
 tool = "shell:pytest"  # => the tool call the agent is attempting
 # => Walk the table and keep the first matching decision.
 # => No match means deny: closed by default beats open by accident.
@@ -916,7 +966,10 @@ Hermes asks its permission table before every sensitive tool call. This example 
 # => The shim models permissions as an ordered allow/deny table.
 # => First match wins, exactly like Hermes evaluates its own rules.
 # => Order matters more than count: broad allows go last, not first.
-rules = [("read", "allow"), ("edit:docs", "allow")]  # => the policy table, read top to bottom
+rules = [
+    ("read", "allow"),
+    ("edit:docs", "allow"),
+]  # => the policy table, read top to bottom
 tool = "shell:curl"  # => the tool call the agent is attempting
 # => Walk the table and keep the first matching decision.
 # => No match means deny: closed by default beats open by accident.
@@ -1010,7 +1063,11 @@ Hermes asks its permission table before every sensitive tool call. This example 
 # => The shim models permissions as an ordered allow/deny table.
 # => First match wins, exactly like Hermes evaluates its own rules.
 # => Order matters more than count: broad allows go last, not first.
-rules = [("read", "allow"), ("edit", "deny"), ("shell", "deny")]  # => the policy table, read top to bottom
+rules = [
+    ("read", "allow"),
+    ("edit", "deny"),
+    ("shell", "deny"),
+]  # => the policy table, read top to bottom
 tool = "read"  # => the tool call the agent is attempting
 # => Walk the table and keep the first matching decision.
 # => No match means deny: closed by default beats open by accident.
@@ -1065,7 +1122,11 @@ flowchart TD
 # => The shim models permissions as an ordered allow/deny table.
 # => First match wins, exactly like Hermes evaluates its own rules.
 # => Order matters more than count: broad allows go last, not first.
-rules = [("read", "allow"), ("edit", "ask"), ("shell", "deny")]  # => the policy table, read top to bottom
+rules = [
+    ("read", "allow"),
+    ("edit", "ask"),
+    ("shell", "deny"),
+]  # => the policy table, read top to bottom
 tool = "edit"  # => the tool call the agent is attempting
 # => Walk the table and keep the first matching decision.
 # => No match means deny: closed by default beats open by accident.
@@ -1108,7 +1169,11 @@ Hermes asks its permission table before every sensitive tool call. This example 
 # => The shim models permissions as an ordered allow/deny table.
 # => First match wins, exactly like Hermes evaluates its own rules.
 # => Order matters more than count: broad allows go last, not first.
-rules = [("read", "allow"), ("edit", "deny"), ("shell", "deny")]  # => the policy table, read top to bottom
+rules = [
+    ("read", "allow"),
+    ("edit", "deny"),
+    ("shell", "deny"),
+]  # => the policy table, read top to bottom
 tool = "edit"  # => the tool call the agent is attempting
 # => Walk the table and keep the first matching decision.
 # => No match means deny: closed by default beats open by accident.
@@ -1151,7 +1216,11 @@ Hermes asks its permission table before every sensitive tool call. This example 
 # => The shim models permissions as an ordered allow/deny table.
 # => First match wins, exactly like Hermes evaluates its own rules.
 # => Order matters more than count: broad allows go last, not first.
-rules = [("edit:docs", "allow"), ("edit", "ask"), ("shell", "deny")]  # => the policy table, read top to bottom
+rules = [
+    ("edit:docs", "allow"),
+    ("edit", "ask"),
+    ("shell", "deny"),
+]  # => the policy table, read top to bottom
 tool = "edit:docs"  # => the tool call the agent is attempting
 # => Walk the table and keep the first matching decision.
 # => No match means deny: closed by default beats open by accident.
@@ -1206,7 +1275,11 @@ flowchart TD
 # => A tool-use trace is the agent's receipt: each call plus why.
 # => Reading it is how you tell a correct step from a confident bluff.
 # => The shim freezes one trace so every reader sees the same run.
-steps = [("read", "permission table for edit:src", True), ("edit", "approved edit lands with receipt", True), ("test", "receipt logged with rule id", True)]  # => the frozen trace, in call order
+steps = [
+    ("read", "permission table for edit:src", True),
+    ("edit", "approved edit lands with receipt", True),
+    ("test", "receipt logged with rule id", True),
+]  # => the frozen trace, in call order
 # => Walk the trace and mark each step good or suspect.
 # => A suspect step is not proof of failure, just where to look.
 bad = 0  # => count of steps that fail their own check

@@ -34,13 +34,18 @@ flowchart TD
 # => A task brief is a contract: scope, done condition, guardrails.
 # => Vague prompts breed confident wrong work; the brief prevents it.
 # => The shim scores a brief, standing in for your own review.
-task = "add email validation to signup"  # => one verb plus one object, never a paragraph
+task = (
+    "add email validation to signup"  # => one verb plus one object, never a paragraph
+)
 scope = "src/auth/"  # => the files the agent may touch
 done = "pytest tests/test_signup.py green"  # => the check that proves the work finished
 # => Guardrails are named limits: budget, approval, reversibility.
 # => Each guardrail below is one string the scorer can see.
 # => Limits turn advice into enforcement the session cannot skip.
-guardrails = ["ask before migrate", "budget 20 turns"]  # => the limits attached to this task
+guardrails = [
+    "ask before migrate",
+    "budget 20 turns",
+]  # => the limits attached to this task
 # => The scorer checks four slots: task, scope, done, guardrails.
 # => A missing slot is not style, it is an unenforceable contract.
 score = 0  # => count of contract slots actually filled
@@ -248,7 +253,11 @@ done = "migrate up and down cleanly"  # => the check that proves the work finish
 # => Guardrails are named limits: budget, approval, reversibility.
 # => Each guardrail below is one string the scorer can see.
 # => Limits turn advice into enforcement the session cannot skip.
-guardrails = ["backup first", "reversible only", "ask before deploy"]  # => the limits attached to this task
+guardrails = [
+    "backup first",
+    "reversible only",
+    "ask before deploy",
+]  # => the limits attached to this task
 # => The scorer checks four slots: task, scope, done, guardrails.
 # => A missing slot is not style, it is an unenforceable contract.
 score = 0  # => count of contract slots actually filled
@@ -290,7 +299,9 @@ A task brief turns a wish into a contract the agent cannot wiggle out of. This e
 # => The shim scores a brief, standing in for your own review.
 task = "reproduce cart total rounding error"  # => one verb plus one object, never a paragraph
 scope = "src/cart.py"  # => the files the agent may touch
-done = "failing test reproduces 1-cent drift"  # => the check that proves the work finished
+done = (
+    "failing test reproduces 1-cent drift"  # => the check that proves the work finished
+)
 # => Guardrails are named limits: budget, approval, reversibility.
 # => Each guardrail below is one string the scorer can see.
 # => Limits turn advice into enforcement the session cannot skip.
@@ -352,7 +363,10 @@ done = "new tests plus full suite green"  # => the check that proves the work fi
 # => Guardrails are named limits: budget, approval, reversibility.
 # => Each guardrail below is one string the scorer can see.
 # => Limits turn advice into enforcement the session cannot skip.
-guardrails = ["budget 30 turns", "ask before schema change"]  # => the limits attached to this task
+guardrails = [
+    "budget 30 turns",
+    "ask before schema change",
+]  # => the limits attached to this task
 # => The scorer checks four slots: task, scope, done, guardrails.
 # => A missing slot is not style, it is an unenforceable contract.
 score = 0  # => count of contract slots actually filled
@@ -394,11 +408,16 @@ A task brief turns a wish into a contract the agent cannot wiggle out of. This e
 # => The shim scores a brief, standing in for your own review.
 task = "triage slow query log"  # => one verb plus one object, never a paragraph
 scope = "db/"  # => the files the agent may touch
-done = "top-3 queries explained with plans"  # => the check that proves the work finished
+done = (
+    "top-3 queries explained with plans"  # => the check that proves the work finished
+)
 # => Guardrails are named limits: budget, approval, reversibility.
 # => Each guardrail below is one string the scorer can see.
 # => Limits turn advice into enforcement the session cannot skip.
-guardrails = ["budget 5 dollars", "read-only session"]  # => the limits attached to this task
+guardrails = [
+    "budget 5 dollars",
+    "read-only session",
+]  # => the limits attached to this task
 # => The scorer checks four slots: task, scope, done, guardrails.
 # => A missing slot is not style, it is an unenforceable contract.
 score = 0  # => count of contract slots actually filled
@@ -452,7 +471,9 @@ flowchart TD
 # => The shim scores a brief, standing in for your own review.
 task = "refactor auth (drifted into logging)"  # => one verb plus one object, never a paragraph
 scope = "src/auth/"  # => the files the agent may touch
-done = "auth tests green, logging untouched"  # => the check that proves the work finished
+done = (
+    "auth tests green, logging untouched"  # => the check that proves the work finished
+)
 # => Guardrails are named limits: budget, approval, reversibility.
 # => Each guardrail below is one string the scorer can see.
 # => Limits turn advice into enforcement the session cannot skip.
@@ -496,7 +517,10 @@ Every multi-file change deserves a read before it lands. This example sizes one 
 # => Never trust a diff you have not read: the agent drafts, you verify.
 # => The shim freezes one proposed diff as added/removed line counts.
 # => Counts cannot replace reading, but they route your attention.
-files = [("src/cart.py", 18, 6), ("tests/test_cart.py", 22, 3)]  # => path plus added and removed counts
+files = [
+    ("src/cart.py", 18, 6),
+    ("tests/test_cart.py", 22, 3),
+]  # => path plus added and removed counts
 # => Total the change: big diffs deserve slower, closer review.
 added = sum(a for _, a, _ in files)  # => every added line proposed
 removed = sum(r for _, _, r in files)  # => every removed line proposed
@@ -549,7 +573,18 @@ flowchart TD
 # => Never trust a diff you have not read: the agent drafts, you verify.
 # => The shim freezes one proposed diff as added/removed line counts.
 # => Counts cannot replace reading, but they route your attention.
-files = [("src/a.py", 30, 28), ("src/b.py", 30, 28), ("src/c.py", 30, 28), ("src/d.py", 30, 28), ("src/e.py", 30, 28), ("src/f.py", 30, 28), ("src/g.py", 30, 28), ("src/h.py", 30, 28), ("src/i.py", 30, 28), ("src/j.py", 30, 28)]  # => path plus added and removed counts
+files = [
+    ("src/a.py", 30, 28),
+    ("src/b.py", 30, 28),
+    ("src/c.py", 30, 28),
+    ("src/d.py", 30, 28),
+    ("src/e.py", 30, 28),
+    ("src/f.py", 30, 28),
+    ("src/g.py", 30, 28),
+    ("src/h.py", 30, 28),
+    ("src/i.py", 30, 28),
+    ("src/j.py", 30, 28),
+]  # => path plus added and removed counts
 # => Total the change: big diffs deserve slower, closer review.
 added = sum(a for _, a, _ in files)  # => every added line proposed
 removed = sum(r for _, _, r in files)  # => every removed line proposed
@@ -590,7 +625,10 @@ Every multi-file change deserves a read before it lands. This example sizes one 
 # => Never trust a diff you have not read: the agent drafts, you verify.
 # => The shim freezes one proposed diff as added/removed line counts.
 # => Counts cannot replace reading, but they route your attention.
-files = [("src/auth.py", 12, 9), ("src/session.py", 8, 4)]  # => path plus added and removed counts
+files = [
+    ("src/auth.py", 12, 9),
+    ("src/session.py", 8, 4),
+]  # => path plus added and removed counts
 # => Total the change: big diffs deserve slower, closer review.
 added = sum(a for _, a, _ in files)  # => every added line proposed
 removed = sum(r for _, _, r in files)  # => every removed line proposed
@@ -643,7 +681,11 @@ flowchart TD
 # => Never trust a diff you have not read: the agent drafts, you verify.
 # => The shim freezes one proposed diff as added/removed line counts.
 # => Counts cannot replace reading, but they route your attention.
-files = [("src/pricing.py", 45, 40), ("src/tax.py", 30, 25), ("src/coupon.py", 25, 20)]  # => path plus added and removed counts
+files = [
+    ("src/pricing.py", 45, 40),
+    ("src/tax.py", 30, 25),
+    ("src/coupon.py", 25, 20),
+]  # => path plus added and removed counts
 # => Total the change: big diffs deserve slower, closer review.
 added = sum(a for _, a, _ in files)  # => every added line proposed
 removed = sum(r for _, _, r in files)  # => every removed line proposed
@@ -684,7 +726,10 @@ Every multi-file change deserves a read before it lands. This example sizes one 
 # => Never trust a diff you have not read: the agent drafts, you verify.
 # => The shim freezes one proposed diff as added/removed line counts.
 # => Counts cannot replace reading, but they route your attention.
-files = [("src/queue.py", 15, 7), ("tests/test_queue.py", 30, 2)]  # => path plus added and removed counts
+files = [
+    ("src/queue.py", 15, 7),
+    ("tests/test_queue.py", 30, 2),
+]  # => path plus added and removed counts
 # => Total the change: big diffs deserve slower, closer review.
 added = sum(a for _, a, _ in files)  # => every added line proposed
 removed = sum(r for _, _, r in files)  # => every removed line proposed
@@ -737,7 +782,11 @@ flowchart TD
 # => Never trust a diff you have not read: the agent drafts, you verify.
 # => The shim freezes one proposed diff as added/removed line counts.
 # => Counts cannot replace reading, but they route your attention.
-files = [("db/schema.sql", 6, 2), ("src/models.py", 20, 10), ("tests/test_models.py", 14, 4)]  # => path plus added and removed counts
+files = [
+    ("db/schema.sql", 6, 2),
+    ("src/models.py", 20, 10),
+    ("tests/test_models.py", 14, 4),
+]  # => path plus added and removed counts
 # => Total the change: big diffs deserve slower, closer review.
 added = sum(a for _, a, _ in files)  # => every added line proposed
 removed = sum(r for _, _, r in files)  # => every removed line proposed
@@ -778,7 +827,10 @@ Every multi-file change deserves a read before it lands. This example sizes one 
 # => Never trust a diff you have not read: the agent drafts, you verify.
 # => The shim freezes one proposed diff as added/removed line counts.
 # => Counts cannot replace reading, but they route your attention.
-files = [("src/api.py", 25, 10), ("src/errors.py", 10, 5)]  # => path plus added and removed counts
+files = [
+    ("src/api.py", 25, 10),
+    ("src/errors.py", 10, 5),
+]  # => path plus added and removed counts
 # => Total the change: big diffs deserve slower, closer review.
 added = sum(a for _, a, _ in files)  # => every added line proposed
 removed = sum(r for _, _, r in files)  # => every removed line proposed
@@ -872,7 +924,11 @@ flowchart TD
 # => Never trust a diff you have not read: the agent drafts, you verify.
 # => The shim freezes one proposed diff as added/removed line counts.
 # => Counts cannot replace reading, but they route your attention.
-files = [("src/cart.py", 20, 8), ("src/totals.py", 16, 9), ("tests/test_totals.py", 24, 6)]  # => path plus added and removed counts
+files = [
+    ("src/cart.py", 20, 8),
+    ("src/totals.py", 16, 9),
+    ("tests/test_totals.py", 24, 6),
+]  # => path plus added and removed counts
 # => Total the change: big diffs deserve slower, closer review.
 added = sum(a for _, a, _ in files)  # => every added line proposed
 removed = sum(r for _, _, r in files)  # => every removed line proposed
@@ -913,7 +969,12 @@ Every multi-file change deserves a read before it lands. This example sizes one 
 # => Never trust a diff you have not read: the agent drafts, you verify.
 # => The shim freezes one proposed diff as added/removed line counts.
 # => Counts cannot replace reading, but they route your attention.
-files = [("src/a.py", 60, 20), ("src/b.py", 55, 25), ("src/c.py", 50, 30), ("db/schema.sql", 8, 1)]  # => path plus added and removed counts
+files = [
+    ("src/a.py", 60, 20),
+    ("src/b.py", 55, 25),
+    ("src/c.py", 50, 30),
+    ("db/schema.sql", 8, 1),
+]  # => path plus added and removed counts
 # => Total the change: big diffs deserve slower, closer review.
 added = sum(a for _, a, _ in files)  # => every added line proposed
 removed = sum(r for _, _, r in files)  # => every removed line proposed
@@ -1254,7 +1315,11 @@ flowchart TD
 # => A tool-use trace is the agent's receipt: each call plus why.
 # => Reading it is how you tell a correct step from a confident bluff.
 # => The shim freezes one trace so every reader sees the same run.
-steps = [("read", "config with API_KEY=*** redacted", True), ("edit", "rotate key reference, value never printed", True), ("test", "secret scanner passes on trace", True)]  # => the frozen trace, in call order
+steps = [
+    ("read", "config with API_KEY=*** redacted", True),
+    ("edit", "rotate key reference, value never printed", True),
+    ("test", "secret scanner passes on trace", True),
+]  # => the frozen trace, in call order
 # => Walk the trace and mark each step good or suspect.
 # => A suspect step is not proof of failure, just where to look.
 bad = 0  # => count of steps that fail their own check

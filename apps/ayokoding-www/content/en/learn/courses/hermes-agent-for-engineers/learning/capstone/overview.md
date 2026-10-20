@@ -64,15 +64,28 @@ Run `python3 main.py` from inside `learning/capstone/code/` and compare your out
 # => No network, no key, no live binary: the whole repo fits in dicts.
 repo = {"src/coupon.py": "v1", "tests/test_coupon.py": "v1"}  # => frozen repo snapshot
 # => Scope names the files; done names the gate; guardrails name the limits.
-brief = {"task": "coupons", "scope": "src+tests", "done": "suite green", "rails": ["ask-if-schema"]}  # => the contract
+brief = {
+    "task": "coupons",
+    "scope": "src+tests",
+    "done": "suite green",
+    "rails": ["ask-if-schema"],
+}  # => the contract
 # => Score the brief the same way the worked examples do: four slots.
 score = sum(1 for v in brief.values() if v)  # => filled-slot count
 plan = ["write repro", "add coupon", "fix rounding", "run suite"]  # => ordered moves
 # => Each tuple pairs the tool with its reason, the way real traces do.
-trace = [("read", "coupon path"), ("edit", "add coupon"), ("edit", "fix rounding"), ("test", "suite green")]  # => frozen replay
+trace = [
+    ("read", "coupon path"),
+    ("edit", "add coupon"),
+    ("edit", "fix rounding"),
+    ("test", "suite green"),
+]  # => frozen replay
 # => Diffs are sized per file so the review knows its surface.
 # => Two files touched, both named in the brief: no scope creep to chase.
-diff = {"src/coupon.py": (14, 3), "tests/test_coupon.py": (18, 2)}  # => added and removed per file
+diff = {
+    "src/coupon.py": (14, 3),
+    "tests/test_coupon.py": (18, 2),
+}  # => added and removed per file
 changed = sum(a + r for a, r in diff.values())  # => the surface to read
 # => Cost is priced at the pinned rates, same as every worked example.
 # => Fifteen turns of mixed reads and edits stay inside one dollar.

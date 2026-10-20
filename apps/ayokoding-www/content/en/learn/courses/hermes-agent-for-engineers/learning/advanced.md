@@ -34,7 +34,13 @@ flowchart TD
 # => A stuck loop repeats one action hoping for a different result.
 # => The shim freezes an action history and counts the repeats.
 # => Detecting the loop is step one; the recovery preserves work.
-actions = ["edit src/cart.py", "run tests", "edit src/cart.py", "run tests", "edit src/cart.py"]  # => the session history, oldest first
+actions = [
+    "edit src/cart.py",
+    "run tests",
+    "edit src/cart.py",
+    "run tests",
+    "edit src/cart.py",
+]  # => the session history, oldest first
 stuck_on = "edit src/cart.py"  # => the action repeating without progress
 # => Count repeats of the suspect action across the whole history.
 repeats = sum(1 for a in actions if a == stuck_on)  # => repeat count
@@ -75,7 +81,12 @@ Loops and stalls are normal; losing work to them is not. This example detects on
 # => A stuck loop repeats one action hoping for a different result.
 # => The shim freezes an action history and counts the repeats.
 # => Detecting the loop is step one; the recovery preserves work.
-actions = ["read src/totals.py", "edit src/totals.py", "read src/totals.py", "edit src/totals.py"]  # => the session history, oldest first
+actions = [
+    "read src/totals.py",
+    "edit src/totals.py",
+    "read src/totals.py",
+    "edit src/totals.py",
+]  # => the session history, oldest first
 stuck_on = "edit src/totals.py"  # => the action repeating without progress
 # => Count repeats of the suspect action across the whole history.
 repeats = sum(1 for a in actions if a == stuck_on)  # => repeat count
@@ -128,7 +139,14 @@ flowchart TD
 # => A stuck loop repeats one action hoping for a different result.
 # => The shim freezes an action history and counts the repeats.
 # => Detecting the loop is step one; the recovery preserves work.
-actions = ["edit src/auth.py", "run login tests", "edit src/auth.py", "run login tests", "edit src/auth.py", "escalate to human"]  # => the session history, oldest first
+actions = [
+    "edit src/auth.py",
+    "run login tests",
+    "edit src/auth.py",
+    "run login tests",
+    "edit src/auth.py",
+    "escalate to human",
+]  # => the session history, oldest first
 stuck_on = "edit src/auth.py"  # => the action repeating without progress
 # => Count repeats of the suspect action across the whole history.
 repeats = sum(1 for a in actions if a == stuck_on)  # => repeat count
@@ -169,7 +187,12 @@ Loops and stalls are normal; losing work to them is not. This example detects on
 # => A stuck loop repeats one action hoping for a different result.
 # => The shim freezes an action history and counts the repeats.
 # => Detecting the loop is step one; the recovery preserves work.
-actions = ["edit src/a.py", "edit src/b.py", "snapshot work", "interrupt session"]  # => the session history, oldest first
+actions = [
+    "edit src/a.py",
+    "edit src/b.py",
+    "snapshot work",
+    "interrupt session",
+]  # => the session history, oldest first
 stuck_on = "edit src/b.py"  # => the action repeating without progress
 # => Count repeats of the suspect action across the whole history.
 repeats = sum(1 for a in actions if a == stuck_on)  # => repeat count
@@ -222,7 +245,12 @@ flowchart TD
 # => A stuck loop repeats one action hoping for a different result.
 # => The shim freezes an action history and counts the repeats.
 # => Detecting the loop is step one; the recovery preserves work.
-actions = ["summarize session", "save open diffs", "open scoped session", "replay brief"]  # => the session history, oldest first
+actions = [
+    "summarize session",
+    "save open diffs",
+    "open scoped session",
+    "replay brief",
+]  # => the session history, oldest first
 stuck_on = "replay brief"  # => the action repeating without progress
 # => Count repeats of the suspect action across the whole history.
 repeats = sum(1 for a in actions if a == stuck_on)  # => repeat count
@@ -263,7 +291,12 @@ Loops and stalls are normal; losing work to them is not. This example detects on
 # => A stuck loop repeats one action hoping for a different result.
 # => The shim freezes an action history and counts the repeats.
 # => Detecting the loop is step one; the recovery preserves work.
-actions = ["run tests (fail)", "run tests (pass)", "run tests (fail)", "quarantine test"]  # => the session history, oldest first
+actions = [
+    "run tests (fail)",
+    "run tests (pass)",
+    "run tests (fail)",
+    "quarantine test",
+]  # => the session history, oldest first
 stuck_on = "run tests (fail)"  # => the action repeating without progress
 # => Count repeats of the suspect action across the whole history.
 repeats = sum(1 for a in actions if a == stuck_on)  # => repeat count
@@ -316,7 +349,12 @@ flowchart TD
 # => A stuck loop repeats one action hoping for a different result.
 # => The shim freezes an action history and counts the repeats.
 # => Detecting the loop is step one; the recovery preserves work.
-actions = ["propose rm -rf /tmp/cache", "deny by policy", "propose scoped clean", "approve scoped clean"]  # => the session history, oldest first
+actions = [
+    "propose rm -rf /tmp/cache",
+    "deny by policy",
+    "propose scoped clean",
+    "approve scoped clean",
+]  # => the session history, oldest first
 stuck_on = "propose rm -rf /tmp/cache"  # => the action repeating without progress
 # => Count repeats of the suspect action across the whole history.
 repeats = sum(1 for a in actions if a == stuck_on)  # => repeat count
@@ -357,7 +395,12 @@ Loops and stalls are normal; losing work to them is not. This example detects on
 # => A stuck loop repeats one action hoping for a different result.
 # => The shim freezes an action history and counts the repeats.
 # => Detecting the loop is step one; the recovery preserves work.
-actions = ["collect trace", "count repeats", "name wrong assumption", "record rule"]  # => the session history, oldest first
+actions = [
+    "collect trace",
+    "count repeats",
+    "name wrong assumption",
+    "record rule",
+]  # => the session history, oldest first
 stuck_on = "name wrong assumption"  # => the action repeating without progress
 # => Count repeats of the suspect action across the whole history.
 repeats = sum(1 for a in actions if a == stuck_on)  # => repeat count
@@ -410,7 +453,10 @@ flowchart TD
 # => Extensions add tools Hermes itself never shipped with.
 # => The shim models a registry: names mapped to capabilities.
 # => A missing capability is a lookup miss, never a silent stub.
-plugins = [("db-viewer", "schema-graph"), ("review-bot", "diff-summary")]  # => the frozen extension registry
+plugins = [
+    ("db-viewer", "schema-graph"),
+    ("review-bot", "diff-summary"),
+]  # => the frozen extension registry
 want = "diff-summary"  # => the capability this task needs
 # => Search the registry for a plugin providing the capability.
 # => First provider wins; ties are a config smell worth naming.
@@ -514,7 +560,10 @@ flowchart TD
 # => Extensions add tools Hermes itself never shipped with.
 # => The shim models a registry: names mapped to capabilities.
 # => A missing capability is a lookup miss, never a silent stub.
-plugins = [("review-bot", "diff-summary"), ("test-bot", "flaky-detect")]  # => the frozen extension registry
+plugins = [
+    ("review-bot", "diff-summary"),
+    ("test-bot", "flaky-detect"),
+]  # => the frozen extension registry
 want = "flaky-detect"  # => the capability this task needs
 # => Search the registry for a plugin providing the capability.
 # => First provider wins; ties are a config smell worth naming.
@@ -580,7 +629,9 @@ print("missing:", missing)  # => Output names exactly what is absent
 # => Reading it back proves the shim used the file, not a default.
 print("sandbox:", config["sandbox"])  # => Output echoes the mode
 # => The extra knob shows settings compose: base plus one override.
-print("plugin.test-bot.quarantine:", config["plugin.test-bot.quarantine"])  # => Output echoes the extra knob
+print(
+    "plugin.test-bot.quarantine:", config["plugin.test-bot.quarantine"]
+)  # => Output echoes the extra knob
 ```
 
 **Output** (`learning/code/ex-65-config-layering/expected/main.stdout.txt`):
@@ -612,7 +663,11 @@ Vendor facts expire, so every version-specific claim carries its check date. Thi
 # => Pinning turns a silent lie into a loud, dated, checkable claim.
 verified_version = "review-bot-1.9.0"  # => Hermes release checked on the date below
 access_date = "2026-10-20"
-claims = ["summary format", "max-lines default", "supported diff size"]  # => facts that expire with the version
+claims = [
+    "summary format",
+    "max-lines default",
+    "supported diff size",
+]  # => facts that expire with the version
 # => Every claim is printed beside its date so staleness is visible.
 # => A reader in two years checks the date first, the fact second.
 print("verified:", verified_version)  # => Output pins the release
@@ -707,7 +762,10 @@ Extensions teach Hermes tools it was never shipped with. This example resolves o
 # => Extensions add tools Hermes itself never shipped with.
 # => The shim models a registry: names mapped to capabilities.
 # => A missing capability is a lookup miss, never a silent stub.
-plugins = [("review-bot", "diff-summary"), ("test-bot", "flaky-detect")]  # => the frozen extension registry
+plugins = [
+    ("review-bot", "diff-summary"),
+    ("test-bot", "flaky-detect"),
+]  # => the frozen extension registry
 want = "diff-summary"  # => the capability this task needs
 # => Search the registry for a plugin providing the capability.
 # => First provider wins; ties are a config smell worth naming.
@@ -753,7 +811,10 @@ Every multi-file change deserves a read before it lands. This example sizes one 
 # => Never trust a diff you have not read: the agent drafts, you verify.
 # => The shim freezes one proposed diff as added/removed line counts.
 # => Counts cannot replace reading, but they route your attention.
-files = [("hermes.toml", 6, 2), ("hermes.plugins.toml", 10, 3)]  # => path plus added and removed counts
+files = [
+    ("hermes.toml", 6, 2),
+    ("hermes.plugins.toml", 10, 3),
+]  # => path plus added and removed counts
 # => Total the change: big diffs deserve slower, closer review.
 added = sum(a for _, a, _ in files)  # => every added line proposed
 removed = sum(r for _, _, r in files)  # => every removed line proposed
@@ -849,7 +910,11 @@ flowchart TD
 # => A plan you can veto beats a diff you must revert.
 # => The shim freezes one proposed plan for a stated goal.
 goal = "fix the coupon rounding bug"  # => the task in one sentence
-steps = ["write repro test", "fix rounding", "run suite"]  # => the proposed plan, in order
+steps = [
+    "write repro test",
+    "fix rounding",
+    "run suite",
+]  # => the proposed plan, in order
 files = ["src/coupon.py", "tests/test_coupon.py"]
 # => A plan is reviewable only when its blast radius is listed.
 # => Count the files before you argue about the steps.
@@ -887,8 +952,8 @@ Comparison is only fair on a shared, repeatable task. This example scores one sh
 # => One agent tool teaches habits; two teach judgement.
 # => Compare on a shared repeatable task, never on marketing claims.
 # => The shim freezes one scorecard so the method is auditable.
-tools = ['hermes', 'tool-b']  # => the contenders on the identical task
-criteria = ['repro', 'fix', 'tests']  # => what good means, fixed before scoring
+tools = ["hermes", "tool-b"]  # => the contenders on the identical task
+criteria = ["repro", "fix", "tests"]  # => what good means, fixed before scoring
 # => Scores are frozen integers: Hermes is scored like its peers.
 # => Freezing the numbers keeps the example honest about being a demo.
 scores = {  # => tool mapped to one score per criterion
@@ -943,8 +1008,8 @@ flowchart TD
 # => One agent tool teaches habits; two teach judgement.
 # => Compare on a shared repeatable task, never on marketing claims.
 # => The shim freezes one scorecard so the method is auditable.
-tools = ['hermes', 'tool-b']  # => the contenders on the identical task
-criteria = ['speed', 'diff-size', 'cost']  # => what good means, fixed before scoring
+tools = ["hermes", "tool-b"]  # => the contenders on the identical task
+criteria = ["speed", "diff-size", "cost"]  # => what good means, fixed before scoring
 # => Scores are frozen integers: Hermes is scored like its peers.
 # => Freezing the numbers keeps the example honest about being a demo.
 scores = {  # => tool mapped to one score per criterion
@@ -987,8 +1052,12 @@ Comparison is only fair on a shared, repeatable task. This example scores one sh
 # => One agent tool teaches habits; two teach judgement.
 # => Compare on a shared repeatable task, never on marketing claims.
 # => The shim freezes one scorecard so the method is auditable.
-tools = ['hermes', 'tool-b']  # => the contenders on the identical task
-criteria = ['coverage', 'flakiness', 'runtime']  # => what good means, fixed before scoring
+tools = ["hermes", "tool-b"]  # => the contenders on the identical task
+criteria = [
+    "coverage",
+    "flakiness",
+    "runtime",
+]  # => what good means, fixed before scoring
 # => Scores are frozen integers: Hermes is scored like its peers.
 # => Freezing the numbers keeps the example honest about being a demo.
 scores = {  # => tool mapped to one score per criterion
@@ -1031,8 +1100,12 @@ Comparison is only fair on a shared, repeatable task. This example scores one sh
 # => One agent tool teaches habits; two teach judgement.
 # => Compare on a shared repeatable task, never on marketing claims.
 # => The shim freezes one scorecard so the method is auditable.
-tools = ['hermes', 'tool-b']  # => the contenders on the identical task
-criteria = ['clarity', 'receipts', 'brevity']  # => what good means, fixed before scoring
+tools = ["hermes", "tool-b"]  # => the contenders on the identical task
+criteria = [
+    "clarity",
+    "receipts",
+    "brevity",
+]  # => what good means, fixed before scoring
 # => Scores are frozen integers: Hermes is scored like its peers.
 # => Freezing the numbers keeps the example honest about being a demo.
 scores = {  # => tool mapped to one score per criterion
@@ -1129,8 +1202,8 @@ flowchart TD
 # => One agent tool teaches habits; two teach judgement.
 # => Compare on a shared repeatable task, never on marketing claims.
 # => The shim freezes one scorecard so the method is auditable.
-tools = ['hermes', 'tool-b']  # => the contenders on the identical task
-criteria = ['migration', 'habits', 'proof']  # => what good means, fixed before scoring
+tools = ["hermes", "tool-b"]  # => the contenders on the identical task
+criteria = ["migration", "habits", "proof"]  # => what good means, fixed before scoring
 # => Scores are frozen integers: Hermes is scored like its peers.
 # => Freezing the numbers keeps the example honest about being a demo.
 scores = {  # => tool mapped to one score per criterion
@@ -1175,7 +1248,11 @@ Vendor facts expire, so every version-specific claim carries its check date. Thi
 # => Pinning turns a silent lie into a loud, dated, checkable claim.
 verified_version = "hermes-2.4.1"  # => Hermes release checked on the date below
 access_date = "2026-10-20"
-claims = ["coupon benchmark scores", "peer release versions", "price inputs used"]  # => facts that expire with the version
+claims = [
+    "coupon benchmark scores",
+    "peer release versions",
+    "price inputs used",
+]  # => facts that expire with the version
 # => Every claim is printed beside its date so staleness is visible.
 # => A reader in two years checks the date first, the fact second.
 print("verified:", verified_version)  # => Output pins the release

@@ -299,7 +299,9 @@ done = ""  # => TODO: state the done condition
 guardrails = []
 # => Score the four slots exactly like the worked examples do.
 # => Four of four is submittable; less means rewrite the brief.
-score = sum([bool(task), bool(scope), bool(done), bool(guardrails)])  # => count filled slots
+score = sum(
+    [bool(task), bool(scope), bool(done), bool(guardrails)]
+)  # => count filled slots
 # => Print the score so the starting point is on the record.
 print("brief-score:", score, "of 4")  # => Output grades the starter
 ```
@@ -317,7 +319,10 @@ done = "k6 p95 under 800ms for 10 minutes"  # => the check that proves the work 
 # => Guardrails are named limits: budget, approval, reversibility.
 # => Each guardrail below is one string the scorer can see.
 # => Limits turn advice into enforcement the session cannot skip.
-guardrails = ["no schema change", "budget 25 turns"]  # => the limits attached to this task
+guardrails = [
+    "no schema change",
+    "budget 25 turns",
+]  # => the limits attached to this task
 # => The scorer checks four slots: task, scope, done, guardrails.
 # => A missing slot is not style, it is an unenforceable contract.
 score = 0  # => count of contract slots actually filled
@@ -364,7 +369,11 @@ print("lines-changed:", added + removed)  # => Output sizes the review
 # => Never trust a diff you have not read: the agent drafts, you verify.
 # => The shim freezes one proposed diff as added/removed line counts.
 # => Counts cannot replace reading, but they route your attention.
-files = [("src/coupon.py", 22, 11), ("src/pricing.py", 9, 6), ("tests/test_coupon.py", 26, 4)]  # => path plus added and removed counts
+files = [
+    ("src/coupon.py", 22, 11),
+    ("src/pricing.py", 9, 6),
+    ("tests/test_coupon.py", 26, 4),
+]  # => path plus added and removed counts
 # => Total the change: big diffs deserve slower, closer review.
 added = sum(a for _, a, _ in files)  # => every added line proposed
 removed = sum(r for _, _, r in files)  # => every removed line proposed
@@ -411,7 +420,13 @@ print("repeats:", repeats)  # => Output is the evidence
 # => A stuck loop repeats one action hoping for a different result.
 # => The shim freezes an action history and counts the repeats.
 # => Detecting the loop is step one; the recovery preserves work.
-actions = ["edit src/queue.py", "run tests", "edit src/queue.py", "run tests", "edit src/queue.py"]  # => the session history, oldest first
+actions = [
+    "edit src/queue.py",
+    "run tests",
+    "edit src/queue.py",
+    "run tests",
+    "edit src/queue.py",
+]  # => the session history, oldest first
 stuck_on = "edit src/queue.py"  # => the action repeating without progress
 # => Count repeats of the suspect action across the whole history.
 repeats = sum(1 for a in actions if a == stuck_on)  # => repeat count
@@ -465,7 +480,11 @@ print("decision:", decision)  # => Output is allow or deny
 # => The shim models permissions as an ordered allow/deny table.
 # => First match wins, exactly like Hermes evaluates its own rules.
 # => Order matters more than count: broad allows go last, not first.
-rules = [("shell", "deny"), ("shell:pytest", "allow"), ("edit", "ask")]  # => the policy table, read top to bottom
+rules = [
+    ("shell", "deny"),
+    ("shell:pytest", "allow"),
+    ("edit", "ask"),
+]  # => the policy table, read top to bottom
 tool = "shell:pytest"  # => the tool call the agent is attempting
 # => Walk the table and keep the first matching decision.
 # => No match means deny: closed by default beats open by accident.
@@ -616,7 +635,10 @@ print("provider:", found or "none")  # => Output names the plugin
 # => Extensions add tools Hermes itself never shipped with.
 # => The shim models a registry: names mapped to capabilities.
 # => A missing capability is a lookup miss, never a silent stub.
-plugins = [("db-viewer", "schema-graph"), ("review-bot", "diff-summary")]  # => the frozen extension registry
+plugins = [
+    ("db-viewer", "schema-graph"),
+    ("review-bot", "diff-summary"),
+]  # => the frozen extension registry
 want = "schema-graph"  # => the capability this task needs
 # => Search the registry for a plugin providing the capability.
 # => First provider wins; ties are a config smell worth naming.
@@ -670,8 +692,8 @@ print("totals:", totals)  # => Output shows the whole table
 # => One agent tool teaches habits; two teach judgement.
 # => Compare on a shared repeatable task, never on marketing claims.
 # => The shim freezes one scorecard so the method is auditable.
-tools = ['hermes', 'tool-b']  # => the contenders on the identical task
-criteria = ['repro', 'fix', 'tests']  # => what good means, fixed before scoring
+tools = ["hermes", "tool-b"]  # => the contenders on the identical task
+criteria = ["repro", "fix", "tests"]  # => what good means, fixed before scoring
 # => Scores are frozen integers: Hermes is scored like its peers.
 # => Freezing the numbers keeps the example honest about being a demo.
 scores = {  # => tool mapped to one score per criterion

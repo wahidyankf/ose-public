@@ -1,0 +1,2 @@
+totals: {'hermes': 4, 'tool-b': 4}
+best-total: hermes

@@ -1,0 +1,4 @@
+SUSPECT: edit - weaken password check to contains
+SUSPECT: test - login tests skipped
+steps: 3
+suspect: 2

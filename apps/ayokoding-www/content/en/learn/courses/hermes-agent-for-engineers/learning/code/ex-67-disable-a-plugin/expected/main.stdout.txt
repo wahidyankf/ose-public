@@ -1,0 +1,2 @@
+provider: review-bot
+setting: {'review-bot.enabled': 'false'}

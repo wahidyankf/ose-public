@@ -1,0 +1,2 @@
+provider: db-viewer
+setting: {'db-viewer.depth': '3'}

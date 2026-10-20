@@ -1,0 +1,2 @@
+tool: shell:pytest
+decision: allow

@@ -124,7 +124,27 @@ toolchains:
   - id: elixir
     kind: language
     version: "1.20.4 (OTP 29.1.2)"
-    image: docker.io/library/elixir:1.20-otp-29@sha256:8241e27b8915d197eb8df4783f14490de9c9c335d03bd8a5d5613005cb2d7fc2
+    # Locked units build an environment image whose install argv seeds the
+    # Hex cache from mix.lock: hex and rebar3 install first (hex pinned;
+    # rebar3 follows upstream stable), then fetch.py resolves the locked
+    # versions into HEX_HOME and verifies every tarball against the lock's
+    # own checksum. Units resolve offline from that cache twice alike.
+    image: ayokoding-toolchain/elixir:12856e7c848828bee5592d1562b0f017e6eaf36e109b9fc2091556ce9c368214@sha256:12856e7c848828bee5592d1562b0f017e6eaf36e109b9fc2091556ce9c368214
+    build: elixir/Dockerfile
+    install:
+      lockfiles: [mix.lock]
+      command:
+        - sh
+        - -c
+        - |
+          set -eu
+          export HEX_HOME=/deps/hex-seed MIX_HOME=/deps/mix-seed
+          mkdir -p "$HEX_HOME" "$MIX_HOME"
+          mix local.hex --force 2.5.3
+          mix local.rebar --force
+          python3 /opt/tools/fetch.py /deps/lock/mix.lock
+      env:
+        HEX_OFFLINE: "1"
   - id: lua
     kind: language
     version: "5.5.1"

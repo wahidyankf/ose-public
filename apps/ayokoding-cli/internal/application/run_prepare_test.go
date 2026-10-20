@@ -510,3 +510,75 @@ func TestRunInvalidCopyDir(t *testing.T) {
 		t.Fatalf("calls=%d, want no execution without the copy", len(fake.calls))
 	}
 }
+
+// lockedNodeCourse carries one unit with a hash-locked npm lockfile.
+func lockedNodeCourse() map[string]string {
+	return map[string]string{
+		"demo/learning/code/ex-01-npm/run.yaml": `schema: ayokoding.run/v1
+toolchain: node
+dependencies:
+  lockfile: learning/code/package-lock.json
+runs:
+  - name: main
+    command: [vitest, run]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+`,
+		"demo/learning/code/ex-01-npm/example.test.js":          "test('a', () => {})\n",
+		"demo/learning/code/package-lock.json":                  "{\"name\": \"demo\", \"lockfileVersion\": 3}\n",
+		"demo/learning/code/ex-01-npm/expected/main.stdout.txt": "pass\n",
+	}
+}
+
+// lockedNodeCatalog carries the node toolchain with its install recipe
+// and the working-copy link runtimes resolving beside the code need.
+func lockedNodeCatalog() catalog.Catalog {
+	node := catalog.Toolchain{
+		ID:      "node",
+		Kind:    catalog.KindLanguage,
+		Version: "24.0.0",
+		Image:   "docker.io/library/node:24@sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+		Install: catalog.Install{
+			Lockfiles: []string{"package-lock.json"},
+			Command:   []string{"sh", "-c", "npm ci"},
+			Links:     []catalog.Link{{Name: "node_modules", Target: "/srv/node-deps/node_modules"}},
+		},
+	}
+	return catalog.Catalog{Toolchains: []catalog.Toolchain{node}}
+}
+
+// TestRunAddsInstallLinksToLockedUnits requires a locked unit to see its
+// toolchain install links beside the code when the container runs.
+func TestRunAddsInstallLinksToLockedUnits(t *testing.T) {
+	seen := map[string]string{}
+	fake := &scriptedRuntime{run: func(invoke containerplan.Invocation, _ []byte) (application.Execution, error) {
+		for _, arg := range invoke.Args {
+			const prefix = "type=bind,source="
+			if !strings.HasPrefix(arg, prefix) {
+				continue
+			}
+			source := strings.TrimSuffix(strings.TrimPrefix(arg, prefix), ",target=/work")
+			target, readErr := os.Readlink(filepath.Join(source, "learning/code/ex-01-npm", "node_modules"))
+			if readErr != nil {
+				seen["error"] = readErr.Error()
+				continue
+			}
+			seen["node_modules"] = target
+		}
+		return application.Execution{Exit: 0, Stdout: "pass\n"}, nil
+	}}
+	req := baseRunRequest(runContent(lockedNodeCourse()), fake)
+	req.Catalog = lockedNodeCatalog()
+	req.EnvBuilder = &fakeEnvBuilder{tag: "ayokoding-env/node:abc123"}
+	report, err := application.Run(context.Background(), req)
+	if err != nil {
+		t.Fatalf("Run=%v, want nil", err)
+	}
+	if len(report.Findings) != 0 {
+		t.Fatalf("findings=%+v, want none", report.Findings)
+	}
+	if seen["node_modules"] != "/srv/node-deps/node_modules" {
+		t.Fatalf("links=%v, want the install node_modules link live at execution", seen)
+	}
+}

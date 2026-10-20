@@ -8,4 +8,9 @@ RUN curl -fsSL -o /tmp/typescript-7.0.2.tgz https://registry.npmjs.org/typescrip
     && rm -f /tmp/typescript-7.0.2.tgz /tmp/typescript.tgz.sha256 \
     && npm cache clean --force \
     && tsc --version
+# A node-owned system path for locked-unit installs: the environment
+# Dockerfile template carries no USER directive, so the install recipe runs
+# as USER node and cannot create root-owned paths. Absolute /home paths are
+# barred from committed content, so the writable install root lives here.
+RUN mkdir -p /srv/node-deps && chown node:node /srv/node-deps
 USER node

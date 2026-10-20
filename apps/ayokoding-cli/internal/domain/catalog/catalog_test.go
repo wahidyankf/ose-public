@@ -332,3 +332,51 @@ func TestHashIdentifiesCatalogBytes(t *testing.T) {
 		t.Fatalf("different bytes gave the same hash")
 	}
 }
+
+// TestDecodeAcceptsInstallLinks requires the install recipe to carry
+// working-copy symlinks for runtimes that only resolve dependencies next
+// to the code.
+func TestDecodeAcceptsInstallLinks(t *testing.T) {
+	data := []byte("schema: ayokoding.toolchains/v1\ntoolchains:\n" + pinnedPython + `  - id: node
+    kind: language
+    version: "24.0.0"
+    image: docker.io/library/node:24@sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+    install:
+      lockfiles: [package-lock.json]
+      command: [sh, -c, "npm ci"]
+      links:
+        - name: node_modules
+          target: /srv/node-deps/node_modules
+`)
+	got, findings := catalog.Decode(data)
+	if len(findings) != 0 {
+		t.Fatalf("findings=%+v, want none", findings)
+	}
+	node, found := got.Lookup("node")
+	if !found {
+		t.Fatal("node lookup failed, want the language entry")
+	}
+	if len(node.Install.Links) != 1 || node.Install.Links[0].Name != "node_modules" || node.Install.Links[0].Target != "/srv/node-deps/node_modules" {
+		t.Fatalf("links=%+v, want the node_modules working-copy link", node.Install.Links)
+	}
+}
+
+// TestDecodeRefusesVagueInstallLinks requires install links to name a
+// repository-relative link and a container-absolute target.
+func TestDecodeRefusesVagueInstallLinks(t *testing.T) {
+	data := []byte("schema: ayokoding.toolchains/v1\ntoolchains:\n" + pinnedPython + `  - id: node
+    kind: language
+    version: "24.0.0"
+    image: docker.io/library/node:24@sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+    install:
+      lockfiles: [package-lock.json]
+      command: [sh, -c, "npm ci"]
+      links:
+        - name: ""
+          target: relative/path
+`)
+	_, findings := catalog.Decode(data)
+	if len(findings) == 0 {
+		t.Fatal("findings empty, want the vague link refusal")
+	}
+}

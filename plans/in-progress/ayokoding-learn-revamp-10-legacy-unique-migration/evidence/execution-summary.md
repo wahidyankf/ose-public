@@ -30,8 +30,11 @@ ledger (`local-tmp/ayokoding-learn/execution-ledger.md`) are the gate record.
   openclaw paths). Rebuilt tree verified byte-identical to the pre-surgery
   tree; range re-screened clean before the push.
 
-| Course                     | Mode       | Words  | Examples      | Katas | Diagrams | Capstone              | Harness        | Verdict |
-| -------------------------- | ---------- | ------ | ------------- | ----- | -------- | --------------------- | -------------- | ------- |
-| claude-code-for-engineers  | By Example | 39,127 | 78 (25/28/25) | 8     | 38       | 800+ words, run.yaml  | EX-CHECK 87/87 | DONE    |
-| hermes-agent-for-engineers | By Example | 39,237 | 78 (25/28/25) | 8     | 40       | 1,401 words, run.yaml | EX-CHECK 87/87 | DONE    |
-| openclaw-for-engineers     | By Example | 34,992 | 78 (25/28/25) | 8     | 34       | 800+ words, run.yaml  | EX-CHECK 87/87 | DONE    |
+| Course                                                | Mode       | Words  | Examples      | Katas | Diagrams | Capstone              | Harness        | Verdict |
+| ----------------------------------------------------- | ---------- | ------ | ------------- | ----- | -------- | --------------------- | -------------- | ------- |
+| claude-code-for-engineers                             | By Example | 39,127 | 78 (25/28/25) | 8     | 38       | 800+ words, run.yaml  | EX-CHECK 87/87 | DONE    |
+| hermes-agent-for-engineers                            | By Example | 39,237 | 78 (25/28/25) | 8     | 40       | 1,401 words, run.yaml | EX-CHECK 87/87 | DONE    |
+| openclaw-for-engineers                                | By Example | 34,992 | 78 (25/28/25) | 8     | 34       | 800+ words, run.yaml  | EX-CHECK 87/87 | DONE    |
+| pi-coding-agent-for-engineers                         | By Example | 41,240 | 78            | 8     | TBD      | run.yaml              | EX-CHECK 87/87 | DONE    |
+| playwright-end-to-end-testing                         | By Example | 46,926 | 78            | 8     | TBD      | run.yaml              | EX-CHECK 87/87 | DONE    |
+| frontend-unit-testing-with-vitest-and-testing-library | By Example | 62,220 | 78            | 8     | 33       | 4,090 words, run.yaml | EX-CHECK 87/87 | DONE    |

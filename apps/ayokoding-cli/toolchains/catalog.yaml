@@ -24,7 +24,7 @@ toolchains:
     # Locked units build an environment image whose install argv fetches
     # Cargo.lock into /deps/rust; the unit builds offline from that vendor
     # dir through --config source replacement twice alike.
-    image: ayokoding-toolchain/rust:5bb4098b8b5e995673e2adca1cfc5b706b2b4b82ea847feaa2630849ea81dfd5@sha256:5bb4098b8b5e995673e2adca1cfc5b706b2b4b82ea847feaa2630849ea81dfd5
+    image: ayokoding-toolchain/rust:b88b87d6f58a6abaae6460d74f2d54dee7ada9807ca170ae36637668b8791d0b@sha256:b88b87d6f58a6abaae6460d74f2d54dee7ada9807ca170ae36637668b8791d0b
     build: rust/Dockerfile
     install:
       lockfiles: [Cargo.lock]
@@ -92,6 +92,35 @@ toolchains:
       # and the harness HOME (/tmp/home) is never created. Point HOME at
       # the container /tmp, which always exists and is private per run.
       HOME: /tmp
+    # Locked units build an environment image whose install argv restores
+    # packages.lock.json into /deps/dotnet. NuGet's content hashes are not
+    # nupkg checksums, so nothing but NuGet itself can check them: the
+    # recipe rebuilds the locked project in /tmp and restores it with
+    # --locked-mode (NU1403 on any tampered entry), then stages the
+    # downloaded nupkgs. Units restore --locked-mode from /deps/dotnet.
+    install:
+      lockfiles: [packages.lock.json]
+      command:
+        - sh
+        - -c
+        - |
+          set -eu
+          lock=/deps/lock/packages.lock.json
+          dest=/deps/dotnet
+          work=/tmp/dotnet-fetch
+          mkdir -p "$dest" "$work"
+          cp "$lock" "$work/packages.lock.json"
+          tfm=$(grep -o '"net[0-9][0-9.]*"' "$lock" | head -n 1 | tr -d '"')
+          awk '/": \{$/ { key=$0 } /"resolved": "/ { line=key; sub(/^[^"]*"/, "", line); sub(/".*$/, "", line); name=line; ver=$0; sub(/^[^"]*"[^"]*"[^"]*"/, "", ver); sub(/".*$/, "", ver); print name" "ver }' "$lock" > "$work/refs.txt"
+          {
+            printf '%s\n' '<Project Sdk="Microsoft.NET.Sdk">' '  <PropertyGroup>' "    <TargetFramework>$tfm</TargetFramework>" '    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>' '  </PropertyGroup>' '  <ItemGroup>'
+            while read -r name ver; do
+              printf '    <PackageReference Include="%s" Version="%s" />\n' "$name" "$ver"
+            done < "$work/refs.txt"
+            printf '%s\n' '  </ItemGroup>' '</Project>'
+          } > "$work/fetch.csproj"
+          dotnet restore "$work/fetch.csproj" --locked-mode
+          cp "$HOME/.nuget/packages/"*/*/*.nupkg "$dest"/
   - id: elixir
     kind: language
     version: "1.20.4 (OTP 29.1.2)"

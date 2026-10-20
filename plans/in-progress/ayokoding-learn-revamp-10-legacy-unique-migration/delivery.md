@@ -786,15 +786,25 @@ by the Lock Generation Procedure. Record each result and the decision it forces 
 
 > All checks below must pass before starting Phase 2.
 
-- [ ] [AI] `TOOLCHAIN-LIST` includes `webassembly`, and the catalog's `clojure` and `kotlin` entries
+- [x] [AI] `TOOLCHAIN-LIST` includes `webassembly`, and the catalog's `clojure` and `kotlin` entries
       each have an `install` block (read the as-merged catalog file and record the two blocks).
-- [ ] [AI] The byte-identity unit passes over every `JarFetch.java` under `toolchains/`, and
+      Done 2026-10-20: list shows `webassembly` 1.12.0, `clojure` 1.12.6 and `kotlin` 2.4.21
+      with their `install` blocks (verified in `toolchains/catalog.yaml`).
+- [x] [AI] The byte-identity unit passes over every `JarFetch.java` under `toolchains/`, and
       `CLI-TEST` and `SMOKE` exit 0.
-- [ ] [AI] PR1 to PR6 are recorded `PASS` in `phase-1-probes.md`, or each failing one is recorded
+      Done 2026-10-20: `TestFetcherBlocksMatchSources` + `TestJarFetchCopiesAreIdentical`
+      pass, `test:quick` green, smoke `--all --shard 1/2 + 2/2` 24 + 20 passed / 0 failed.
+- [x] [AI] PR1 to PR6 are recorded `PASS` in `phase-1-probes.md`, or each failing one is recorded
       `BLOCKED` and reported (the gate stays open until the user decides).
-- [ ] [AI] `EX-CHECK-ALL` exited 0 on this branch, and the timing projection is recorded with either
+      Done 2026-10-20: PR1–PR6 all PASS in `evidence/phase-1-probes.md`, plus
+      supplementary SP1–SP4 (all PASS); no BLOCKED items.
+- [x] [AI] `EX-CHECK-ALL` exited 0 on this branch, and the timing projection is recorded with either
       "within budget" or a recorded response-ladder action.
-- [ ] [AI] `rtk git status --short` shows only the Phase 1 toolchain commits' paths plus `<plan>/`.
+      Done 2026-10-20: `examples check --all` exit 0 (0 opted-in per the Phase 0
+      baseline); projection in `evidence/phase-1-timing.md`: **within budget**.
+- [x] [AI] `rtk git status --short` shows only the Phase 1 toolchain commits' paths plus `<plan>/`.
+      Done 2026-10-20: tracked changes are the toolchain commits only; `<plan>/`
+      evidence and `local-tmp/` probes are untracked working state.
 
 > **Pause Safety**: every toolchain change is committed and smoke-tested; no course content exists yet.
 > Safe to stop. To resume: `TOOLCHAIN-LIST`, then `CLI-TEST`.
@@ -815,16 +825,16 @@ by the Lock Generation Procedure. Record each result and the decision it forces 
 
 ### 2.1 Gherkin first
 
-- [ ] [AI] Create `specs/apps/ayokoding/www/behaviours/backend/content/legacy-mapping-completeness.feature`
+- [x] [AI] Create `specs/apps/ayokoding/www/behaviours/backend/content/legacy-mapping-completeness.feature`
       with the 3 scenarios of [prd.md](./prd.md#new-backendcontentlegacy-mapping-completenessfeature),
       verbatim.
-- [ ] [AI] Create `specs/apps/ayokoding/www/behaviours/backend/content/legacy-migrated-course-completion.feature`
+- [x] [AI] Create `specs/apps/ayokoding/www/behaviours/backend/content/legacy-migrated-course-completion.feature`
       with the 4 scenarios of [prd.md](./prd.md#new-backendcontentlegacy-migrated-course-completionfeature),
       verbatim.
-- [ ] [AI] Create `specs/apps/ayokoding/www/behaviours/frontend/course-paths/catalog-count-after-migration.feature`
+- [x] [AI] Create `specs/apps/ayokoding/www/behaviours/frontend/course-paths/catalog-count-after-migration.feature`
       with the 1 scenario of [prd.md](./prd.md#new-frontendcourse-pathscatalog-count-after-migrationfeature),
       verbatim.
-- [ ] [AI] Run `specs-checker` on the three new feature files (at most 2 cycles). Acceptance: no open
+- [x] [AI] Run `specs-checker` on the three new feature files (at most 2 cycles). Acceptance: no open
       blocking finding; each exemption comment sits directly above its tag and names a real target and
       scenario (per the BDD contract).
 
@@ -835,14 +845,14 @@ by the Lock Generation Procedure. Record each result and the decision it forces 
 - **Outcome:** `<wtests>/unit/be-steps/legacy-mapping.steps.ts` binds all 3 scenarios and passes, because
   the mapping artifact this plan authored is already complete; this is the one AC in this phase that
   does not wait for Phase 3.
-- [ ] [AI] **RED:** write `<wtests>/unit/be-steps/legacy-mapping.steps.ts` (`loadFeature` +
+- [x] [AI] **RED:** write `<wtests>/unit/be-steps/legacy-mapping.steps.ts` (`loadFeature` +
       `describeFeature`), binding scenario 1 (every legacy file matched by exactly one row), scenario 2
       (every row's Target resolves to a real course directory or a dash), and scenario 3 (`learn/legacy`
       is untouched, diffed against the commit where plan 09 merged). Run
       `UNIT-NODE <wtests>/unit/be-steps/legacy-mapping.steps.ts`. Acceptance: it fails only because the
       step file is new and unbound test infrastructure does not exist yet (for example, a missing shared
       word-count helper); save the output.
-- [ ] [AI] **GREEN:** implement the shared helpers the step file needs (a legacy-tree walker, a mapping
+- [x] [AI] **GREEN:** implement the shared helpers the step file needs (a legacy-tree walker, a mapping
       table parser, a course-directory existence check, and a branch-diff helper for scenario 3). Rerun
       `MAPPING-GUARD`. Acceptance: all 3 scenarios pass immediately — scenarios 1 and 2 pass because the
       mapping table is already complete and every `new`-disposition slug already has a brief (though not
@@ -852,7 +862,7 @@ by the Lock Generation Procedure. Record each result and the decision it forces 
       row's directory to exist, mark scenario 2 **also** intentionally RED until Phase 4, and record which
       of the two readings applies in `<plan>/evidence/phase-2-tests.md`); scenario 3 passes because this
       branch has not touched `learn/legacy` yet.
-- [ ] [AI] **REFACTOR:** share the mapping-table parser with any later test that also reads
+- [x] [AI] **REFACTOR:** share the mapping-table parser with any later test that also reads
       `syllabus/legacy-to-course-mapping.md` (so the row-format parsing exists in exactly one place). Run
       `TYPECHECK`, `LINT`, and `MAPPING-GUARD`. Acceptance: exit 0, no behaviour change.
 - **Proof:** the RED and GREEN outputs in `<plan>/evidence/phase-2-tests.md`.
@@ -867,7 +877,7 @@ by the Lock Generation Procedure. Record each result and the decision it forces 
   the last content commit. **This extension is intentionally RED now** — none of the 48 directories
   exists yet — and turns GREEN incrementally through Phase 3 as each course lands, with full GREEN
   confirmed only at Phase 4's end-state gate.
-- [ ] [AI] **RED:** extend `<wtests>/unit/be-steps/course-metadata.steps.ts` to bind the 4 new scenarios
+- [x] [AI] **RED:** extend `<wtests>/unit/be-steps/course-metadata.steps.ts` to bind the 4 new scenarios
       against the 48 named slugs (the list in
       [syllabus/courses/README.md](./syllabus/courses/README.md)) and the 4 AI-agent slugs' date check.
       Run `CORPUS-GUARD`. Acceptance: it fails, naming all 48 missing course directories; save the
@@ -884,7 +894,7 @@ by the Lock Generation Procedure. Record each result and the decision it forces 
   the same real corpus) asserts the total is 230 and each of the 14 categories matches
   [tech-docs/004](./tech-docs/004-catalog-metadata-and-path-membership.md#category-totals-after-this-plan)'s
   "After" column. **Intentionally RED now** (the real corpus is still 182 courses).
-- [ ] [AI] **RED:** bind the scenario; update every hard-coded "181" and every stale per-category count
+- [x] [AI] **RED:** bind the scenario; update every hard-coded "181" and every stale per-category count
       found by `rtk git grep -rn "\b181\b" tests/ apps/ayokoding-www/src` to the 229 totals in the same
       commit as the binding. Run `CORPUS-GUARD`. Acceptance: it fails, reporting the real count (182) against
       the now-updated expectation (230); save the output.
@@ -893,7 +903,7 @@ by the Lock Generation Procedure. Record each result and the decision it forces 
 
 ### Commit
 
-- [ ] [AI] Run `TYPECHECK` and `LINT`. Acceptance: exit 0 (the new step files compile and lint clean
+- [x] [AI] Run `TYPECHECK` and `LINT`. Acceptance: exit 0 (the new step files compile and lint clean
       even while their assertions are red against the current corpus).
 - [ ] [AI] Commit `test(ayokoding-www): add the legacy-migration test extensions` (explicit paths: the
       3 new feature files, the new `legacy-mapping.steps.ts`, and the extended

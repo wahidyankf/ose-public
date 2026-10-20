@@ -1,0 +1,2 @@
+keep: ['login.py', 'auth.py']
+reject: ['schema.sql'] out of scope

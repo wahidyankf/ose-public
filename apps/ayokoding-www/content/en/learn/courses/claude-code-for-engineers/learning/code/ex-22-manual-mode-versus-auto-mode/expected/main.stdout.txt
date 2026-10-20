@@ -1,0 +1,3 @@
+manual prompts: 2
+auto prompts: 1
+auto held: ['edit schema.sql']

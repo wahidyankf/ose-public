@@ -1,0 +1,3 @@
+migration: ask
+code: ask
+other: ask

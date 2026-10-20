@@ -1,0 +1,3 @@
+lines: 3
+calls: 2
+decisions: 2

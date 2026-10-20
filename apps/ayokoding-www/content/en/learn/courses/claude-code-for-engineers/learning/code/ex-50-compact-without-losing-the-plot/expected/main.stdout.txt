@@ -1,0 +1,2 @@
+kept: ['decided: use check()', 'open: write test']
+ratio: 2 of 3 kept

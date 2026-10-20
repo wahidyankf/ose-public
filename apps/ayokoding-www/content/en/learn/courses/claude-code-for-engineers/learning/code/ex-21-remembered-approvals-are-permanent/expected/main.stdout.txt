@@ -1,0 +1,3 @@
+file: .claude/settings.local.json
+rules: 2
+1. allow exec: npm test

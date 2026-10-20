@@ -1,0 +1,4 @@
+tried: wide scope, narrow scope
+worked: narrow scope
+rule: scope narrow first
+lines: 3

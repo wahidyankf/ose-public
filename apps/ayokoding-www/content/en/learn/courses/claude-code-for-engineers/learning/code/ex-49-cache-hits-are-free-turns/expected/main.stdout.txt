@@ -1,0 +1,3 @@
+uncached: 52500
+cached: 7500
+saved: 45000

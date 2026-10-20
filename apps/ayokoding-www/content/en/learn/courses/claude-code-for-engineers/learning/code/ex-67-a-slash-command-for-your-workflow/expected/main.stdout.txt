@@ -1,0 +1,3 @@
+steps: ['diff', 'tests', 'verdict']
+known: ['/review']
+unknown: []

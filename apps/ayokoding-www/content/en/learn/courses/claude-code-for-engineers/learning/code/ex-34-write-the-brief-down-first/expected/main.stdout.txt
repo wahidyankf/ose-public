@@ -1,0 +1,4 @@
+scope: login.py
+done: pytest -q exits 0
+guard: no schema change
+complete: True

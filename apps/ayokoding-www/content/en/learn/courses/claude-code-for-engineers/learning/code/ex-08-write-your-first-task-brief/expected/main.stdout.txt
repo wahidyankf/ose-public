@@ -1,0 +1,3 @@
+vague missing: done, guardrails
+solid missing: []
+brief: login.py | done when tests pass | no schema change

@@ -1,0 +1,1 @@
+PASS: ex-04-truthiness-and-numbers (3 tests)

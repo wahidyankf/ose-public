@@ -1,0 +1,1 @@
+PASS: kata-03-targeted-not-snapshot (1 tests)

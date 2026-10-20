@@ -1,0 +1,16 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`full-DOM snapshot breaks on any change 1`] = `
+<article
+  class="card rounded shadow"
+>
+  <h2>
+    Sari
+  </h2>
+  <p
+    class="muted"
+  >
+    Cashier
+  </p>
+</article>
+`;

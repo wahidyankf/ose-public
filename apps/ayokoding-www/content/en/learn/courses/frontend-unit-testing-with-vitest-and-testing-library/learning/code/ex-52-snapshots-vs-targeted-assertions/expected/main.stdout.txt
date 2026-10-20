@@ -1,0 +1,1 @@
+PASS: ex-52-snapshots-vs-targeted-assertions (2 tests)

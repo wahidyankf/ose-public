@@ -1,0 +1,1 @@
+PASS: ex-27-scripted-return-values (1 tests)

@@ -1,0 +1,1 @@
+PASS: lines 100% >= floor 80%

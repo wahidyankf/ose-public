@@ -1,0 +1,1 @@
+PASS: ex-60-what-not-to-cover (1 tests)

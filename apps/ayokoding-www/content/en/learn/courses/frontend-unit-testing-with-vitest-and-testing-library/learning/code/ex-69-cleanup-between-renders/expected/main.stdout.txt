@@ -1,0 +1,1 @@
+PASS: ex-69-cleanup-between-renders (1 tests)

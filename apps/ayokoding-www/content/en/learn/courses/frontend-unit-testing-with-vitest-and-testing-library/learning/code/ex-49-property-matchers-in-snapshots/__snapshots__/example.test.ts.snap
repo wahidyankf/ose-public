@@ -1,0 +1,8 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`order shape is stable while the id varies 1`] = `
+{
+  "id": Any<Number>,
+  "item": "Rice",
+}
+`;

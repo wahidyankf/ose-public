@@ -1,0 +1,1 @@
+PASS: kata-04-fake-timer-instead-of-wait (1 tests)

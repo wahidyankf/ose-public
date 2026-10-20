@@ -1,0 +1,1 @@
+PASS: ex-38-find-by-waits-for-elements (1 tests)

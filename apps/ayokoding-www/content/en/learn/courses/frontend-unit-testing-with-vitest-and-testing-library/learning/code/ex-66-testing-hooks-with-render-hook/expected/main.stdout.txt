@@ -1,0 +1,1 @@
+PASS: ex-66-testing-hooks-with-render-hook (1 tests)

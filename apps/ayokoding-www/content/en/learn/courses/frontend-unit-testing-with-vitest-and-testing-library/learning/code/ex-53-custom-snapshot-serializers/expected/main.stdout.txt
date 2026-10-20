@@ -1,0 +1,1 @@
+PASS: ex-53-custom-snapshot-serializers (1 tests)

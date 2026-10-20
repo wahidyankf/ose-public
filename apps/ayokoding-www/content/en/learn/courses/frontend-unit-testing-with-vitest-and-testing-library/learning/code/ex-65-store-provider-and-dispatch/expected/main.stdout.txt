@@ -1,0 +1,1 @@
+PASS: ex-65-store-provider-and-dispatch (1 tests)

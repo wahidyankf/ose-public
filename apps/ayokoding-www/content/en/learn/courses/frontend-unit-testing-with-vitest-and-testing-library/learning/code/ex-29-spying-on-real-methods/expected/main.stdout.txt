@@ -1,0 +1,1 @@
+PASS: ex-29-spying-on-real-methods (2 tests)

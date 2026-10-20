@@ -1,0 +1,1 @@
+PASS: ex-18-clicking-a-button (1 tests)

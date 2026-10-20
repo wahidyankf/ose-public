@@ -1,0 +1,1 @@
+PASS: ex-02-grouping-with-describe (3 tests)

@@ -1,0 +1,1 @@
+PASS: ex-49-property-matchers-in-snapshots (1 tests)

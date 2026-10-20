@@ -1,0 +1,1 @@
+PASS: ex-26-recording-calls-with-vi-fn (1 tests)

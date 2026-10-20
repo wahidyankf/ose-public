@@ -1,0 +1,1 @@
+PASS: ex-21-checkboxes-and-radios (1 tests)

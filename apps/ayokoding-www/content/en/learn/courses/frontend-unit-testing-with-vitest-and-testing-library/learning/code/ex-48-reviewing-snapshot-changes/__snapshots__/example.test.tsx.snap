@@ -1,0 +1,10 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`warning alert matches the reviewed snapshot 1`] = `
+<p
+  data-tone="warning"
+  role="alert"
+>
+  Stock low
+</p>
+`;

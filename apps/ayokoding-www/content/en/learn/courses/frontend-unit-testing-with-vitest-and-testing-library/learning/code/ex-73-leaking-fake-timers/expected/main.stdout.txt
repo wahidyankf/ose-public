@@ -1,0 +1,1 @@
+PASS: ex-73-leaking-fake-timers (2 tests)

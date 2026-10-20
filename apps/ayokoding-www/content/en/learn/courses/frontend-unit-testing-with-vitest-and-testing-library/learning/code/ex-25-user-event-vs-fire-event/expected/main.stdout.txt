@@ -1,0 +1,1 @@
+PASS: ex-25-user-event-vs-fire-event (2 tests)

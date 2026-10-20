@@ -1,0 +1,1 @@
+PASS: ex-43-polling-hook-with-timers-and-fetch (1 tests)

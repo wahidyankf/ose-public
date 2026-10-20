@@ -1,0 +1,4 @@
+cookies: 0
+landed: /login
+protected answers: 302
+session really gone: true

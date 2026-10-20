@@ -1,0 +1,5 @@
+after fill: Oslo
+fill clears first: true
+typed value: mil
+keystrokes: m,i,l
+fill is one step: true

@@ -1,0 +1,3 @@
+passes: true
+cost ticks: 3
+saved: 7

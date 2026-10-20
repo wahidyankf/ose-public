@@ -1,0 +1,4 @@
+status: 200
+title: Acme Store
+heading: Acme Store
+goto ok: true

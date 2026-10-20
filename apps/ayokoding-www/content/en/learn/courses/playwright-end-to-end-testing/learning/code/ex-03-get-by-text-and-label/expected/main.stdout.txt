@@ -1,0 +1,5 @@
+control id: email
+label ok: true
+heading text found: true
+exact rejects substring: true
+missing label is null: true

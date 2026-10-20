@@ -1,0 +1,4 @@
+ran: one,two,three
+all three ran: true
+serial ran: one,two
+mode is a choice: true

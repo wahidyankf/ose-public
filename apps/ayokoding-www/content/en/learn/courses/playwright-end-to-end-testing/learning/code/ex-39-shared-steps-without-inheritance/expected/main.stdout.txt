@@ -1,0 +1,3 @@
+calls: payAs(guest),payAs(member)
+helper reused: true
+no base class: true

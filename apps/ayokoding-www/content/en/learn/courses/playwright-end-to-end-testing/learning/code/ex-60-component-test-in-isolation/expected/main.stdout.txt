@@ -1,0 +1,4 @@
+renders: count: 2
+after click: count: 3
+isolated: true
+no page needed: true

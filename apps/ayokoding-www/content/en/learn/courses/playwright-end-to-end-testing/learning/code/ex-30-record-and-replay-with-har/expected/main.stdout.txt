@@ -1,0 +1,4 @@
+cart: {"total":"$42.00"}
+user: {"name":"ada"}
+offline: true
+unrecorded refused: true

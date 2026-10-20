@@ -1,0 +1,4 @@
+order: seed coupon > spend coupon > verify empty
+in file order: true
+stopped after failure: true
+serial protects setup: true

@@ -1,0 +1,4 @@
+step attempts: 2
+cause named: coupon service hiccup
+whole runs burned: 0
+bounded and named: true

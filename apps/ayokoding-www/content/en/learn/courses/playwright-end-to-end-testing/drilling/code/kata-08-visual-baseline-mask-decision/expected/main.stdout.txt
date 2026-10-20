@@ -1,0 +1,3 @@
+clock ignored: true
+drift still red: true
+gate strict where it matters: true

@@ -1,0 +1,4 @@
+item: milk
+sale badge: true
+sale price: 2.4
+untouched keys kept: true

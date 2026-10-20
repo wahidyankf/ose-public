@@ -1,0 +1,7 @@
+PASS: navigate to catalog
+PASS: add milk by test id
+PASS: total settled at $5.00
+PASS: auth reused, no login typed
+PASS: receipt matches baseline
+PASS: trace recorded every step
+suite: 6 passed, 0 failed

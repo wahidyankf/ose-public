@@ -1,0 +1,4 @@
+attempts: 2
+total: $2.40
+step retried, test did not: true
+solid step runs once: true

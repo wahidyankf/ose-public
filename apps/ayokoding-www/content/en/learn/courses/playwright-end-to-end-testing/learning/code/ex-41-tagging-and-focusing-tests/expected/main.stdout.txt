@@ -1,0 +1,4 @@
+smoke: guest pays @smoke; member pays @smoke
+smoke count: 2
+slow excluded: true
+focus stays local: true

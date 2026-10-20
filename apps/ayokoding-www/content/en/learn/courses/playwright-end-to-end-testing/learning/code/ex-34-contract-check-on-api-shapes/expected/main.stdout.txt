@@ -1,0 +1,5 @@
+good errors: 0
+bad errors: missing key: total
+renamed field caught: true
+kind error: items is not a list
+contract holds: true

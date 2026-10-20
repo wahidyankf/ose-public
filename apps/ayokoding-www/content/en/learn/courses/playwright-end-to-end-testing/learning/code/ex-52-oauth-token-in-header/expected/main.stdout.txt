@@ -1,0 +1,4 @@
+header: Bearer t-1
+protected open: true
+no token refused: true
+header carries auth: true

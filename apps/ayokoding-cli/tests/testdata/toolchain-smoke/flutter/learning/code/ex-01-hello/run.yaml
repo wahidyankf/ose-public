@@ -14,3 +14,7 @@ runs:
     expect:
       exit: 0
       stdout: ignore
+      # The offline version check notes its read-only fetch failure to
+      # stderr on stale-stamp days and stays silent on fresh ones; the
+      # exit status is the check signal either way.
+      stderr: ignore

@@ -21,7 +21,14 @@ toolchains:
   - id: rust
     kind: language
     version: "1.99.1"
-    image: docker.io/library/rust:1.99@sha256:e259494b14672950a909b4c54527e19d29cae6ebf980672114c8bb85e5594e4a
+    # Locked units build an environment image whose install argv fetches
+    # Cargo.lock into /deps/rust; the unit builds offline from that vendor
+    # dir through --config source replacement twice alike.
+    image: ayokoding-toolchain/rust:5bb4098b8b5e995673e2adca1cfc5b706b2b4b82ea847feaa2630849ea81dfd5@sha256:5bb4098b8b5e995673e2adca1cfc5b706b2b4b82ea847feaa2630849ea81dfd5
+    build: rust/Dockerfile
+    install:
+      lockfiles: [Cargo.lock]
+      command: [python3, /opt/tools/fetch.py, /deps/lock/Cargo.lock, /deps/rust]
   - id: node
     kind: language
     version: "24.22.0"
@@ -128,7 +135,7 @@ toolchains:
   - id: flutter
     kind: language
     version: "3.41.5"
-    image: ayokoding-toolchain/flutter:cc4fd8e235a66b354d33632de23d2146af1722a40df631fcc55fa44189b3a4c8@sha256:cc4fd8e235a66b354d33632de23d2146af1722a40df631fcc55fa44189b3a4c8
+    image: ayokoding-toolchain/flutter:b531897761b022b21e7515a0428427fd42d52c646c7bcab88a5ebc4c1598add4@sha256:b531897761b022b21e7515a0428427fd42d52c646c7bcab88a5ebc4c1598add4
     build: flutter/Dockerfile
     # The SDK publishes a linux x64 archive only, so the harness builds
     # and runs this image for linux/amd64 on every host.

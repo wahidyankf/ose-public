@@ -88,3 +88,68 @@ func jarFetchBlock(recipe string) (string, bool) {
 	}
 	return "", false
 }
+
+// fetchEchoSuffix stages the Python fetcher through a temp file, mirroring
+// the JarFetch form with a fetcher-specific name so the JarFetch decoder
+// skips it.
+const fetchEchoSuffix = "' > /tmp/fetch.b64"
+
+// TestFetcherBlocksMatchSources pins the fetcher distribution invariant:
+// every fetch.py under a toolchain directory is embedded byte for byte in
+// that directory's Dockerfile fetcher line, so the image can never drift
+// from the reviewed source. Each toolchain's fetcher is its own source
+// (unlike the shared JarFetch.java), so the comparison pairs per directory.
+func TestFetcherBlocksMatchSources(t *testing.T) {
+	entries, err := os.ReadDir(toolchainDir)
+	if err != nil {
+		t.Fatalf("read toolchains: %v", err)
+	}
+	found := 0
+	for _, entry := range entries {
+		if !entry.IsDir() {
+			continue
+		}
+		dir := filepath.Join(toolchainDir, entry.Name())
+		source, err := os.ReadFile(filepath.Join(dir, "fetch.py"))
+		if err != nil {
+			continue
+		}
+		found++
+		recipe, err := os.ReadFile(filepath.Join(dir, "Dockerfile"))
+		if err != nil {
+			t.Errorf("%s has fetch.py but no Dockerfile", dir)
+			continue
+		}
+		block, ok := fetchBlock(string(recipe))
+		if !ok {
+			t.Errorf("%s embeds no fetch.py block", dir)
+			continue
+		}
+		if block != string(source) {
+			t.Errorf("%s embeds a fetch.py that differs from the checked-in source", dir)
+		}
+	}
+	if found == 0 {
+		t.Fatal("no fetch.py found under toolchains/")
+	}
+}
+
+// fetchBlock decodes the first base64 Python-fetcher line in the recipe.
+func fetchBlock(recipe string) (string, bool) {
+	for line := range strings.Lines(strings.TrimSpace(recipe)) {
+		_, rest, found := strings.Cut(line, jarFetchEchoPrefix)
+		if !found {
+			continue
+		}
+		encoded, _, found := strings.Cut(rest, fetchEchoSuffix)
+		if !found {
+			continue
+		}
+		decoded, err := base64.StdEncoding.DecodeString(encoded)
+		if err != nil {
+			return "", false
+		}
+		return string(decoded), true
+	}
+	return "", false
+}

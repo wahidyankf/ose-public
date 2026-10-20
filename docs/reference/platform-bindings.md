@@ -16,16 +16,18 @@ agent to this repository. Governance prose lives in `repo-governance/` (vendor-n
 bindings live in their own directories and are explicitly excluded from the
 [Governance Vendor-Independence Convention](../../repo-governance/conventions/structure/governance-vendor-independence.md).
 
-## Current stable v0.12 contract
+## Current stable v0.15 contract
 
-The checksum-pinned v0.12 Rhino configuration is authoritative. Canonical content is `AGENTS.md`,
+The checksum-pinned v0.15 Rhino configuration is authoritative. Canonical content is `AGENTS.md`,
 `agents/*.md`, and `.agents/skills/*/SKILL.md`. The current profiles generate only the
 declared routes: Claude receives `CLAUDE.md`, one route `.claude/agents/{name}.md` per canonical
 agent, and one pointer `.claude/skills/{name}/SKILL.md` per canonical skill; Codex receives
 `.codex/agents/` and OpenCode receives `.opencode/agents/` for every canonical agent, and OpenCode
 reads `.agents/skills/` natively. Command Code receives only the declared native leaf set under
 `.commandcode/agents/`; coordinating roles that need nested dispatch remain canonical main-session instructions.
-Command Code routes omit model and effort fields at every tier. Each Claude agent route
+Command Code routes omit model and effort fields at every tier. Muse receives one
+`.agents/agents/<id>/AGENT.md` adapter per canonical agent, carrying the `muse` profile's tier-mapped `model` and
+`effort`; only Muse reads that tree. Each Claude agent route
 carries `tools` from the agent's `capabilities`, `constraints`, and `dispatches`, `model` and `effort`
 from its `tier` through the Tier Registry, and its `skills` list; no route carries a color. No other mirror of a canonical skill
 exists. Run `./rhino harness adapters generate` followed by
@@ -37,7 +39,7 @@ for provenance, not as instructions for the current adapter layout.
 ## Platform Binding Directories
 
 The table below catalogs the five supported coding-agent harnesses — exactly the entries declared
-in `repo-config.yml` `harness:`, plus Muse, which ships a policy hook but no generated routes. Columns record every surface each harness exposes so contributors
+in `repo-config.yml` `harness:`, each with generated routes. Columns record every surface each harness exposes so contributors
 know which files to create or extend. Harnesses absent from the registry are not supported; adding
 one starts with a registry entry, not a row here.
 
@@ -52,7 +54,7 @@ adapter is added on 2026-10-12; its hook allow path is verified by the adapter t
 | OpenCode         | Yes                                               | `.opencode/agents/` (auto-synced); reads `.agents/skills/` natively         | `opencode.json`                                           | `.opencode/agents/*.md`                                                                                 | reads `.agents/skills/` **and** `.agents/skills/` | Active                                                                                            |
 | OpenAI Codex CLI | Yes (since Apr 2025)                              | `AGENTS.md`, `AGENTS.override.md` (overrides), `.codex/config.toml`[^trust] | `.codex/config.toml` `[mcp_servers]`[^mcp]                | `.codex/agents/<name>.toml` standalone files **and** `[agents.<name>]` tables in `config.toml`[^agents] | `.agents/skills/`[^skills]                        | Partial (custom agents do not spawn by name from `codex exec`, 0.160.0, 2026-10-03)[^codex-spawn] |
 | Command Code     | Yes; actual binding discovery still needs a probe | `.commandcode/settings.json`                                                | `.commandcode/settings.json` `mcpServers` when configured | `.commandcode/agents/*.md` native leaves                                                                | Canonical `.agents/skills/` references            | Declared; runtime support remains `probe_required`                                                |
-| Muse             | Yes; no shim shipped                              | `.muse/hooks.json` (PreToolUse policy hook only)                            | None shipped                                              | None shipped                                                                                            | None shipped                                      | Declared; policy adapter verified, no generated routes                                            |
+| Muse             | Yes; no shim shipped                              | `.muse/hooks.json` (PreToolUse policy hook only)                            | None shipped                                              | `.agents/agents/*/AGENT.md`                                                                             | `.agents/skills/` (native)                        | Active; policy adapter verified, generated routes validated                                       |
 
 [^codex-spawn]:
     The project `.codex/config.toml`, root `AGENTS.md`, and `.agents/skills/` load. On 2026-10-03, with codex-cli
@@ -207,9 +209,10 @@ Git settings. No optional instruction shim or duplicated skills tree is shipped.
 honors exit statuses and ignores Claude-style stdout JSON decisions, so an allow stays silent with exit 0
 while every denial and every endpoint failure becomes stderr plus exit 2. The endpoint allowlist in
 `scripts/agent-policy-endpoint.mjs` names `muse`, and the adapter's six behavior cases run in the
-`harness-adapters` gate beside the Command Code transport tests. Muse reads the root `AGENTS.md` natively,
-so no instruction shim, agent routes, skills surface, MCP config, or install and deploy flow changes are
-shipped; the model stays unpinned everywhere.
+`harness-adapters` gate beside the Command Code transport tests. Muse reads the root `AGENTS.md` and
+`.agents/skills/` natively, so no instruction shim, skills surface, MCP config, or install and deploy flow
+changes are shipped. Its project subagents are the generated `.agents/agents/<id>/AGENT.md` adapters, which carry
+the `muse` profile's tier-mapped model and effort; no other harness reads that tree.
 
 ### Provenance of pre-existing partial bindings
 
@@ -259,6 +262,9 @@ Every generated-tier harness in `repo-config.yml` receives its binding mechanica
   full config layer, so a `model` set there takes precedence over the session model; a grade with no
   Codex counterpart (`inherit`, a pinned vendor ID) omits the key and raises a conversion warning
   rather than guessing.
+- **`.agents/agents/*/AGENT.md`** — one generated adapter directory per canonical agent, carrying the
+  `muse` profile's tier-mapped `model` and `effort` and routing its body to the canonical agent.
+  Only Muse reads this tree as project subagents; no other harness reads it.
 - **`.codex/config.toml`** — registers, by hand, one `[agents.<name>]` table for each agent file
   the emitter generates under `.codex/agents/` (today the four plan agents; every other generated file
   loads standalone), beside the

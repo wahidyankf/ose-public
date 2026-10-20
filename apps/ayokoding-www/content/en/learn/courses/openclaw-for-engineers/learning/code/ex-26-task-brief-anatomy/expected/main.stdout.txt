@@ -1,0 +1,6 @@
+parts: 4 of 4
+goal: archive drafts older than 30 days
+scope: drafts/ only
+done: archive/ holds the moved files
+guardrails: never delete before copying
+sendable: True

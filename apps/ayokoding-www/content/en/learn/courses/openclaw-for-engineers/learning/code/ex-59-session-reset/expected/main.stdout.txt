@@ -1,0 +1,4 @@
+exported facts: 2
+session after reset: 0 keys
+fresh facts: keep 2026, archive, never delete
+reset clean: True

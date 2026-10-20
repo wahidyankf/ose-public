@@ -1,0 +1,6 @@
+ERROR: 2 lines
+WARN: 2 lines
+INFO: 2 lines
+DEBUG: 2 lines
+crash signal: ERROR
+slowdown signal: WARN

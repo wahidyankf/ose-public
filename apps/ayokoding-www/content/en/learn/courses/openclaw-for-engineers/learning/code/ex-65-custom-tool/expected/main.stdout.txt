@@ -1,0 +1,4 @@
+tool: wordcount wraps wc
+call ok: True
+call ok: False
+permitted: 1 of 2

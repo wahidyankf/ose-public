@@ -1,0 +1,5 @@
+exec x4 repeats [loop] -> interrupt and resume
+archive assumed empty [assumption] -> correct and replan
+delete originals proposed [unsafe] -> veto and continue
+triaged: 3
+every failure routed: True

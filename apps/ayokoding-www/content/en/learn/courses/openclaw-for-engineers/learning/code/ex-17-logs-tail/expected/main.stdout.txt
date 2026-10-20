@@ -1,0 +1,5 @@
+total lines: 6
+found: ERROR provider timeout
+found: ERROR queue full
+errors: 2
+routine hidden: 4

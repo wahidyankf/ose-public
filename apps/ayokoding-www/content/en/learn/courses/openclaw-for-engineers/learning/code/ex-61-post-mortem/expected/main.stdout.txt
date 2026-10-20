@@ -1,0 +1,5 @@
+failure: exec looped x4
+cause: missing file never checked
+recovery: interrupted, resumed from checkpoint
+prevention: check file exists before exec retries
+prevention is concrete: True

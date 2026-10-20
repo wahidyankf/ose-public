@@ -1,0 +1,4 @@
+tool: sibling
+tokens: openclaw=8400 sibling=11200
+turns: openclaw=6 sibling=9
+openclaw cheaper: True

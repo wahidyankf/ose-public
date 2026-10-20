@@ -1,0 +1,5 @@
+restored: goal
+restored: done
+restored: failure
+items restored: 3 of 3
+remembers failure: True

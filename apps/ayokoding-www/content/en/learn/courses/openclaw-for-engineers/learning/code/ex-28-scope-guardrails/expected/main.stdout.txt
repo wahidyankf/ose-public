@@ -1,0 +1,5 @@
+pairs: 2
+drafts/ | never delete before copying
+archive/ | never rename existing files
+conflict: True
+brief sendable: False

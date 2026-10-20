@@ -1,0 +1,3 @@
+read: allow
+browser: deny
+cron: ask

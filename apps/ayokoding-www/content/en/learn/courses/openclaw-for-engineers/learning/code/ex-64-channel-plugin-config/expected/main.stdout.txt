@@ -1,0 +1,4 @@
+channel: matrix-room
+token_ref: env:MATRIX_TOKEN
+group: public
+bare wiring refused: True

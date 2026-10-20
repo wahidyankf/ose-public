@@ -1,0 +1,4 @@
+entry fields: 3
+who: agent:ses-001
+what: exec: ls drafts
+complete: True

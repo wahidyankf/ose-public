@@ -1,0 +1,5 @@
+notes.md: size_ok=True coherent=True
+index.md: size_ok=True coherent=True
+deploy.sh: size_ok=False coherent=False
+approved: notes.md, index.md
+escalated: 1

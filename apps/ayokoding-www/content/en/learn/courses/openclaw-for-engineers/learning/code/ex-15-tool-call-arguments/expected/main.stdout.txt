@@ -1,0 +1,3 @@
+ls drafts -> True
+ls drafts; rm -rf / -> False
+rejected: 1

@@ -1,0 +1,3 @@
+models section present: False
+run: openclaw configure models
+config readable: False

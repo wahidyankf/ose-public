@@ -1,0 +1,4 @@
+proposed: list, move, verify
+executed: list, move, verify
+done: plan approved then executed unchanged
+plan fidelity: True

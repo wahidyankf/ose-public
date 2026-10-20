@@ -1,0 +1,18 @@
+# Scoped ruff config for this By Example course's runnable Python code
+# (learning/code/**, drilling/code/**, learning/capstone/code/**).
+#
+# Why this file exists: every example in this course carries a dense trailing
+# `# => ...` educational annotation on nearly every code line (the by-example
+# convention's 1.0-2.25 annotation-density requirement). The repo has no
+# root-level ruff config, so `ruff format` (run by the pre-commit
+# format-staged gate) uses its default line-length of 88, which wraps many of
+# these single-line statements across 2-5 physical lines -- once wrapped, the
+# extra unannotated physical lines silently pull annotation density below the
+# required 1.0-per-code-line floor without changing any logic, and the
+# markdown pages' embedded code blocks (kept byte-identical to these files)
+# drift out of sync. See `../agentic-coding/ruff.toml` for the same fix
+# applied to an earlier topic that hit this identical failure mode.
+#
+# 280 covers this course's longest annotated lines with headroom for future
+# edits, so `ruff format` stays a no-op here.
+line-length = 280

@@ -1,0 +1,4 @@
+notes.md: 5 changed, ok=True
+index.md: 55 changed, ok=False
+approved: notes.md
+escalated: 1

@@ -1,0 +1,4 @@
+brief: compare-001
+openclaw runs compare-001
+sibling runs compare-001
+task sealed: True

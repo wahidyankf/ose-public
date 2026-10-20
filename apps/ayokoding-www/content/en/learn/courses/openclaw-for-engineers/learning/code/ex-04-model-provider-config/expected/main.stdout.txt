@@ -1,0 +1,5 @@
+trying anthropic/claude
+trying openai/gpt
+chosen: openai/gpt
+fallbacks used: 1
+outage survived: True

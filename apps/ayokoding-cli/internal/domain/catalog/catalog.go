@@ -276,27 +276,41 @@ func walkMapping(check *checker, node *yaml.Node, scope, path string, positions 
 		positions[dotted] = key.Line
 		switch scope + "/" + name {
 		case "/toolchains":
-			if value.Kind == yaml.SequenceNode {
-				for i, item := range value.Content {
-					if item.Kind == yaml.MappingNode {
-						positions["toolchains."+strconv.Itoa(i)] = item.Line
-						walkMapping(check, item, "entry", "toolchains."+strconv.Itoa(i), positions)
-					}
-				}
-			}
+			walkToolchainEntries(check, value, positions)
 		case "entry/install":
 			if value.Kind == yaml.MappingNode {
 				walkMapping(check, value, "install", dotted, positions)
 			}
 		case "install/links":
-			if value.Kind == yaml.SequenceNode {
-				for _, item := range value.Content {
-					if item.Kind == yaml.MappingNode {
-						walkMapping(check, item, "link", dotted, positions)
-					}
-				}
-			}
+			walkInstallLinks(check, value, dotted, positions)
 		}
+	}
+}
+
+// walkToolchainEntries records each toolchain entry of a toolchains sequence.
+func walkToolchainEntries(check *checker, value *yaml.Node, positions map[string]int) {
+	if value.Kind != yaml.SequenceNode {
+		return
+	}
+	for i, item := range value.Content {
+		if item.Kind != yaml.MappingNode {
+			continue
+		}
+		positions["toolchains."+strconv.Itoa(i)] = item.Line
+		walkMapping(check, item, "entry", "toolchains."+strconv.Itoa(i), positions)
+	}
+}
+
+// walkInstallLinks records each install working-copy symlink of a links sequence.
+func walkInstallLinks(check *checker, value *yaml.Node, dotted string, positions map[string]int) {
+	if value.Kind != yaml.SequenceNode {
+		return
+	}
+	for _, item := range value.Content {
+		if item.Kind != yaml.MappingNode {
+			continue
+		}
+		walkMapping(check, item, "link", dotted, positions)
 	}
 }
 
@@ -370,7 +384,7 @@ func (check *checker) checkLinks(raw *toolchainYAML, positions map[string]int, p
 				"install link target %q must be container-absolute", rawLink.Target)
 			continue
 		}
-		links = append(links, Link{Name: rawLink.Name, Target: rawLink.Target})
+		links = append(links, Link(rawLink))
 	}
 	return links
 }

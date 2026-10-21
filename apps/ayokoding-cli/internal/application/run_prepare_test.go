@@ -539,11 +539,17 @@ func lockedNodeCatalog() catalog.Catalog {
 		Kind:    catalog.KindLanguage,
 		Version: "24.0.0",
 		Image:   "docker.io/library/node:24@sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+		Env:     nil,
 		Install: catalog.Install{
 			Lockfiles: []string{"package-lock.json"},
 			Command:   []string{"sh", "-c", "npm ci"},
 			Links:     []catalog.Link{{Name: "node_modules", Target: "/srv/node-deps/node_modules"}},
 		},
+		Build:        "",
+		Platform:     "",
+		Ready:        nil,
+		ReadyTimeout: "",
+		Connect:      nil,
 	}
 	return catalog.Catalog{Toolchains: []catalog.Toolchain{node}}
 }

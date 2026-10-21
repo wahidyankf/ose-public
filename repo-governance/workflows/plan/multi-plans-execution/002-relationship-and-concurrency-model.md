@@ -9,12 +9,12 @@ Everything about how a _single_ plan executes — the [Task-Checklist Synchroniz
 model](../plan-execution/008-task-checklist-synchronization.md), the [Atomic Sync
 Ritual](../plan-execution/010-atomic-sync-ritual.md), [Resume Reconciliation (disk is
 truth)](../plan-execution/011-resume-reconciliation.md), the [Iron
-Rules](../plan-execution/012-iron-rules-1-5.md), Steps 0–8, per-phase quality gates,
+Rules](../plan-execution/012-iron-rules-1-5.md), Steps 0–8, per-phase gates,
 post-push CI verification, manual behavioural assertions, and archival — is **inherited verbatim**
-from `plan-execution.md` and applied per plan. This document specifies only the multi-plan additions:
-the DAG (Phase A), the union granular Task list (Phase B), the ready-queue scheduler (Phase C), and
-failure isolation (Phase D). Where the two ever appear to conflict, `plan-execution.md`'s per-plan
-rules win for that plan's internal work; this document governs only cross-plan scheduling.
+from `plan-execution.md` and applied per plan. This document adds only the DAG (Phase A),
+union Task list (Phase B), ready-queue scheduler (Phase C), failure isolation (Phase D).
+Where the two ever appear to conflict, `plan-execution.md`'s per-plan rules win for that plan's
+work; this document governs only cross-plan scheduling.
 
 ## Overlap Model (no thread count)
 
@@ -52,12 +52,14 @@ delegating item work; it never counts threads or promotes a numeric ceiling. See
   it declares them (per outcome or phase); otherwise every node weighs `1`. Weighted progress is
   `sum(weights of completed nodes) / sum(weights of all nodes)`. State the source in the first update.
   If a node is queued on HIPPO, name it here with HIPPO's reason — report only; the scheduler keeps
-  queueing and never stops, quarantines, or fails a plan for deferral alone. CI keeps its separate
+  queueing and never stops, quarantines, or fails a plan for deferral alone. At each heartbeat, clear
+  owned subagents and processes of stuck work: a node with no progress since the last heartbeat and no
+  HIPPO or error reason is stuck — list it under blockers, nudge it once, and escalate as a human
+  blocker if it is still stuck at the next heartbeat. CI keeps its separate
   2-minute status-read cadence. See
   [Task List Discipline §Standard 6](../../../development/practice/task-list-discipline.md).
 - **Delivery is one natural unit per mode-specific integration**: under `*-to-pr`, each independent
-  node gets one branch and one PR, opened and merged as its boundary completes. Under a permitted
-  direct mode, it gets one direct integration checkpoint. Do not integrate at every phase or batch
-  ready units at plan end. Worktree modes reuse at most one worktree per repository per plan; main
-  modes use the primary checkout and provision none, per
+  node gets one branch and one PR. Under a permitted direct mode, it gets one direct integration
+  checkpoint. Do not integrate at every phase or batch ready units at plan end. Main modes use the
+  primary checkout and provision none, per
   [Plans Organization Convention §Worktree Cap](../../../conventions/structure/plans/worktree-cap.md#worktree-cap--one-worktree-per-repository-per-plan-hard-rule).

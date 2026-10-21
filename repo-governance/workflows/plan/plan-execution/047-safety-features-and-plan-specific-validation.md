@@ -26,7 +26,10 @@ when_to_use: Use when explaining what safety guarantees plan execution provides,
   or phase); otherwise every action weighs `1`. Weighted progress is
   `sum(weights of completed actions) / sum(weights of all actions)`. State the source in the first
   update. If a node is queued on HIPPO, name it here with HIPPO's reason — report only; execution
-  keeps queueing and never stops for deferral alone.
+  keeps queueing and never stops for deferral alone. At each heartbeat, also clear owned subagents
+  and processes of stuck work: an `in_progress` item with no progress since the last heartbeat and
+  no HIPPO or error reason is stuck — list it under blockers, nudge it once, and escalate as a
+  human blocker if it is still stuck at the next heartbeat.
 
 **Error Recovery**:
 

@@ -14,7 +14,9 @@ until the human confirms — other plans keep running); (c) its resource-set doe
 any currently in-flight node's resource-set (the resource-conflict guard); and (d) this run still
 holds the plan's lease at its current generation — re-read the issue record before starting any
 worktree node, and if an override superseded the generation, start nothing and hand over per
-[Frozen Scope Recovery](./004-phase-a-frozen-scope-recovery.md).
+[Frozen Scope Recovery](./004-phase-a-frozen-scope-recovery.md); and (e) this machine holds the
+node's required access — a machine-bound node parks where the machine lacks it (see [Step
+0's access check](../plan-execution/014-enter-worktree-preconditions-and-work-branch.md)).
 
 **C2. Fill ready nodes — `max-active-worktrees` at a time (default `1`).** Pull ready nodes into execution
 subject to the worktree locks and HIPPO admission, **with at most `max-active-worktrees`

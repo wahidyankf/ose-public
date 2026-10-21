@@ -1,0 +1,3 @@
+  indented line
+literal backslash-n: \n stays
+plain line

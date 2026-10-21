@@ -1,0 +1,4 @@
+honest_ratio: 1.27
+correlation: 0.9833
+verdict: kept the six weeks; removed the truncated axis and
+the causal arrow: co-movement is not a purchase receipt.

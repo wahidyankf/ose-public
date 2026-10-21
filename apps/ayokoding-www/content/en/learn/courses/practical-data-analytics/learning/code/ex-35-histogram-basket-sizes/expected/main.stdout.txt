@@ -1,0 +1,4 @@
+small 1-2  #### 4
+medium 3-4 ##### 5
+large 5+   ### 3
+baskets: 12 of 12

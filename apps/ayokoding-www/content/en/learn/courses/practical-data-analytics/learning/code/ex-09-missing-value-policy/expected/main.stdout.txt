@@ -1,0 +1,3 @@
+drop_total: 14
+fill_total: 17
+flagged_rows: 6 flagged: 1

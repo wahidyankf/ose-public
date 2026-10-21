@@ -1,0 +1,3 @@
+inner got 2 args
+arg: [first arg]
+arg: [second]

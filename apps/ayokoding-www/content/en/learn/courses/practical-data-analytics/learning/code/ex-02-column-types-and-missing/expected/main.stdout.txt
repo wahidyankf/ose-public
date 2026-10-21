@@ -1,0 +1,2 @@
+missing: {'order_id': 0, 'date': 0, 'product': 0, 'qty': 1, 'price': 0}
+numeric: order_id, qty, price

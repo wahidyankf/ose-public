@@ -1,0 +1,6 @@
+rows: 6
+columns: order_id, product, qty, price
+missing_cells: 1
+duplicate_rows: 1
+price_min: 17500
+price_max: 58500

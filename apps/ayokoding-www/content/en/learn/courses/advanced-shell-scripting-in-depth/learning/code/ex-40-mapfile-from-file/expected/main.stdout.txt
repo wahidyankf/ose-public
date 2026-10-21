@@ -1,0 +1,4 @@
+hosts: 3
+host: web-1
+host: db-1
+host: cache-1

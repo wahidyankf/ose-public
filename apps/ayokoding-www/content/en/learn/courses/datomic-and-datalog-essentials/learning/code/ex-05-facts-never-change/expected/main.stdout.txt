@@ -1,0 +1,3 @@
+price-facts: 2
+tx=4001 price=180
+tx=4002 price=175

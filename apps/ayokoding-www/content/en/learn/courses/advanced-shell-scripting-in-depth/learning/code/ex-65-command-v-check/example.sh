@@ -1,0 +1,10 @@
+# => Example 65: command -v tests PATH; print fixed verdicts, never paths.
+set -euo pipefail # => strict header first, as in every example
+# => WHY fixed labels: real tool paths vary per machine and break goldens.
+for tool in sort awk jq; do               # => every external tool this script needs
+	if command -v "${tool}" >/dev/null; then # => -v tests PATH, prints nothing
+		echo "${tool}: present"                 # => fixed label: never print the real path
+	else                                     # => tool missing from this environment
+		echo "${tool}: missing"                 # => fixed label names the gap
+	fi                                       # => closes the presence branch
+done                                      # => one verdict per required tool

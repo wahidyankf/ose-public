@@ -1,0 +1,2 @@
+1:echo $HOME   # => BAD: unquoted expansion splits and globs
+review done

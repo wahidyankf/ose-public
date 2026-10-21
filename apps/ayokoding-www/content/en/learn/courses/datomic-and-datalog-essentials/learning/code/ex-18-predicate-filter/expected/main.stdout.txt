@@ -1,0 +1,2 @@
+part=E-bike motor price=320
+part=Road wheel 700c price=180

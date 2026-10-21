@@ -1,0 +1,4 @@
+attributes: 3
+part/name type=string cardinality=one
+part/price type=long cardinality=one
+part/tags type=string cardinality=many

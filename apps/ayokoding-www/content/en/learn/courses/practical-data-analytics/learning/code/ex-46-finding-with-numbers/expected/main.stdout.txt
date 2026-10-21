@@ -1,0 +1,1 @@
+rice averages 3 units per September receipt (stdev 0.82, n=4).

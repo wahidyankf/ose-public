@@ -1,0 +1,20 @@
+profile_rows: 12
+profile_missing: 1
+profile_dupes: 1
+clean_rows: 11 filled: 1
+sales_orphans: []
+catalog_orphans: ['syrup-1l']
+by_category: [('staples', 929500), ('cooking', 144000), ('drinks', 132000)]
+by_month: [('2026-07', 8), ('2026-08', 12), ('2026-09', 14)]
+basket mean 3.09 (stdev 1.30, n=11).
+staples  ######### 929500
+cooking  # 144000
+drinks   # 132000
+small 1-2  #### 4
+medium 3-4 ##### 5
+large 5+   ## 2
+Q: restock two categories fully for October if September revenue tops 500000?
+M: sales.csv 12 rows; strip+lower, median-fill 1, newest-stamp; sqlite3 left join.
+F: staples leads at 929500; basket mean 3.09 (stdev 1.30, n=11).
+C: n=11, September-only, payday confound, syrup orphan unpriced.
+verdict: restock staples fully; cooking halfway; hold drinks.

@@ -1,0 +1,2 @@
+winners: ['rice-5kg', 'sugar-1kg']
+kept: 2 of 4

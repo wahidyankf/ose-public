@@ -1,0 +1,3 @@
+oil-2l n: 1 mean: 4 FLAG-SMALL
+rice-5kg n: 4 mean: 3 ok
+sugar-1kg n: 3 mean: 4 ok

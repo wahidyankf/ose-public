@@ -1,0 +1,3 @@
+columns: order_id, date, product, qty, price
+rows: 12
+n_columns: 5

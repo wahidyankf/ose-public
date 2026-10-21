@@ -1,0 +1,2 @@
+expanded: a.log b.log
+literal: [*.log]

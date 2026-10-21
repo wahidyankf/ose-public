@@ -1,0 +1,3 @@
+sales_rows: 2 joined_rows: 4
+dupe_keys: ['sugar-1kg']
+fanout: True

@@ -1,0 +1,3 @@
+double: hello deploy
+single: hello ${user}
+subst: hi

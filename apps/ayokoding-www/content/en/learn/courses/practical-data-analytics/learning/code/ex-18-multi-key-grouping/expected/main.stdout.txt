@@ -1,0 +1,10 @@
+oil-2l 2026-09 n: 1 sum: 1
+oil-2l 2026-10 n: 1 sum: 2
+rice-5kg 2026-09 n: 2 sum: 5
+rice-5kg 2026-10 n: 2 sum: 5
+sugar-1kg 2026-09 n: 2 sum: 9
+sugar-1kg 2026-10 n: 2 sum: 5
+tea-100g 2026-09 n: 1 sum: 2
+tea-100g 2026-10 n: 1 sum: 4
+piles: 8
+rice_2026-09_sum: 5

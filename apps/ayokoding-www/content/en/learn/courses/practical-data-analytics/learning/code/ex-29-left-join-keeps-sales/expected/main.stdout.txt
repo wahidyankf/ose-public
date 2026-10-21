@@ -1,0 +1,6 @@
+('2901', 'rice-5kg', 'staples')
+('2902', 'sugar-1kg', 'staples')
+('2903', 'oil-2l', 'cooking')
+('2904', 'rice-5kg', 'staples')
+('2905', 'mystery-box', 'UNMATCHED')
+rows: 5 unmatched: 1

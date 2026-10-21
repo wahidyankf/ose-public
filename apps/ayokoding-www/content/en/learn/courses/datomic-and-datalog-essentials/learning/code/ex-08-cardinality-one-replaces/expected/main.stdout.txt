@@ -1,0 +1,2 @@
+current: Road wheel 700c 32h
+history: ['Road wheel', 'Road wheel 700c', 'Road wheel 700c 32h']

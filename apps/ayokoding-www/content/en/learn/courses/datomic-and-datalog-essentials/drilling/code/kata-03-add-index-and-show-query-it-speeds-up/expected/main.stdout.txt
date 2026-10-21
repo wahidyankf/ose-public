@@ -1,0 +1,2 @@
+scan-cost: 4
+seek-cost: 2

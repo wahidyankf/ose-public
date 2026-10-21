@@ -1,0 +1,4 @@
+with_whopper mean: 6.9
+with_whopper median: 3.0
+without mean: 3.22
+pull: 3.68

@@ -1,0 +1,3 @@
+server: web-1
+server: web-2
+server: db-1

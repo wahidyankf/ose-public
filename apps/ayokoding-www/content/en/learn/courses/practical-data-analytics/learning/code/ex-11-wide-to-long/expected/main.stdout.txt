@@ -1,0 +1,3 @@
+tidy_rows: 8
+rice_q1: 120
+columns: product,quarter,revenue

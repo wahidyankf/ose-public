@@ -1,0 +1,9 @@
+# => Example 10: shift drops $1 so the next operand becomes the head.
+set -euo pipefail # => strict header first, as in every example
+# => WHY set -- here: demos install fixed argv so output never varies.
+set -- one two three # => demo queue of three operands
+# => Drain the queue: read the head, handle it, shift it away.
+while [ "$#" -gt 0 ]; do # => loop while operands remain
+	echo "item: $1"         # => handle the current head of the queue
+	shift                   # => drop $1; the next operand becomes the new $1
+done                     # => $# is zero: every operand was handled exactly once

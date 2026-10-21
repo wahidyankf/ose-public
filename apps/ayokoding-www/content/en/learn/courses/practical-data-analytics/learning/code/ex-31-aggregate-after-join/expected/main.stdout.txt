@@ -1,0 +1,3 @@
+cooking 96000
+staples 380000
+joined_rows: 4

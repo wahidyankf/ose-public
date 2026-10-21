@@ -1,0 +1,3 @@
+ok: two lines counted
+ok: literal matches
+failures: 0

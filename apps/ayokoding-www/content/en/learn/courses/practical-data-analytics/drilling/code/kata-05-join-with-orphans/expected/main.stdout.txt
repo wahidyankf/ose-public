@@ -1,0 +1,5 @@
+('1', 'rice-5kg', 'staples')
+('2', 'sugar-1kg', 'staples')
+('3', 'mystery-box', 'UNMATCHED')
+('4', 'rice-5kg', 'staples')
+orphans: ['mystery-box']

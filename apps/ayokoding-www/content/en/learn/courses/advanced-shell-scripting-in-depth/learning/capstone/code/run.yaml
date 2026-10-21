@@ -1,0 +1,8 @@
+schema: ayokoding.run/v1
+toolchain: shell
+runs:
+  - name: main
+    command: [bash, deploy.sh]
+    expect:
+      exit: 0
+      stdout: expected/main/main.stdout.txt

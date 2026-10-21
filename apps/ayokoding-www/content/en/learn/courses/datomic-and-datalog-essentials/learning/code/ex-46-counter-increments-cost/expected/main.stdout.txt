@@ -1,0 +1,3 @@
+counter-datoms: 1000
+rollup-datoms: 1
+mutable-cells: 1

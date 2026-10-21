@@ -1,0 +1,4 @@
+file exists
+file nonempty
+strings equal
+numbers ordered

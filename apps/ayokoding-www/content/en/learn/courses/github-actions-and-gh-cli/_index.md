@@ -7,7 +7,7 @@ prerequisites: ["version-control-and-git", "cicd-and-release-engineering", "just
 category: infrastructure-and-operations
 description: "Write workflows with matrices and caching, and drive releases with the gh CLI."
 format: by-example
-estimatedHours: 9
+estimatedHours: 10
 ---
 
 - [Overview](/en/learn/courses/github-actions-and-gh-cli/overview)

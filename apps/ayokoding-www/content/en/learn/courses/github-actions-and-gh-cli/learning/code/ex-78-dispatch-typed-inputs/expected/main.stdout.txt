@@ -1,0 +1,4 @@
+PASS: level/options-hold-default
+PASS: users/default-is-numeric
+PASS: dry-run/default-is-boolean
+inputs: 3/3

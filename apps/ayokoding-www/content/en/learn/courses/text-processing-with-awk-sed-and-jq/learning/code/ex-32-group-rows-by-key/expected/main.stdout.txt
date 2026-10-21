@@ -1,0 +1,18 @@
+[
+  [
+    {
+      "host": "web-01",
+      "dc": "east"
+    },
+    {
+      "host": "db-01",
+      "dc": "east"
+    }
+  ],
+  [
+    {
+      "host": "web-02",
+      "dc": "west"
+    }
+  ]
+]

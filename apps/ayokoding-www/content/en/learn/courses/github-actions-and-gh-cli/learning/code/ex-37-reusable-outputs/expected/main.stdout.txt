@@ -1,0 +1,6 @@
+FAIL: outputs declared
+PASS: version output named
+PASS: jobs context read
+PASS: needs edge set
+PASS: uses call present
+checks: 4/5

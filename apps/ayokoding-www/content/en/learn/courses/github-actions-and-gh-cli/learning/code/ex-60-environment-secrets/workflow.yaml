@@ -1,0 +1,11 @@
+# => Scoped credential: staging jobs receive the staging token only.
+# => Same secret name resolves to different values per environment.
+# => Production values never enter staging runs, even by accident.
+name: scoped-deploy # => workflow name shown in the Actions tab
+on: push # => run on every push while learning
+jobs: # => jobs block with the staging deploy job
+  deploy: # => single job proving the scoped secret
+    runs-on: ubuntu-latest # => hosted runner image
+    environment: staging # => scope secrets to the staging vault
+    steps: # => steps receiving the staging-scoped credential
+      - run: echo "deploying ${{ secrets.DEPLOY_TOKEN }} to staging" # => ref

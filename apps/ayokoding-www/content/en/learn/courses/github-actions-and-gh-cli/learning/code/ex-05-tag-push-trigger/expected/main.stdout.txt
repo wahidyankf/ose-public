@@ -1,0 +1,7 @@
+PASS: trigger names push
+PASS: tags filter present
+PASS: version glob used
+PASS: publish job exists
+PASS: runner pinned
+PASS: no branch filter on tags
+checks: 6/6

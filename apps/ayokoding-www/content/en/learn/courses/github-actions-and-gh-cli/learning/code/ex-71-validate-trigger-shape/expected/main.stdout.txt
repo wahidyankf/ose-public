@@ -1,0 +1,6 @@
+PASS: push event present
+PASS: pr event present
+PASS: branch filter placed
+PASS: types listed
+PASS: jobs block exists
+checks: 5/5

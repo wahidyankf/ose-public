@@ -1,0 +1,3 @@
+principal: 120000
+payment: 37040.24
+total: 148160.96

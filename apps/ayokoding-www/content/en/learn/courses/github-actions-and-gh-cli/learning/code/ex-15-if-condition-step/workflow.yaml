@@ -1,0 +1,12 @@
+# => Conditional notify: build always, announce only on main pushes.
+# => if expressions skip the step cleanly; skipped is not failure.
+# => Compare full refs (refs/heads/main), never bare branch names.
+name: conditional # => workflow name shown in the Actions tab
+on: push # => any push evaluates the condition
+jobs: # => jobs block with the conditional steps
+  build: # => single job proving conditional execution
+    runs-on: ubuntu-latest # => hosted runner image
+    steps: # => unconditional build plus conditional notify
+      - run: echo build-ok # => always runs, no if key
+      - if: github.event_name == 'push' && github.ref == 'refs/heads/main' # => gate
+        run: echo notify-ok # => runs only for pushes to main

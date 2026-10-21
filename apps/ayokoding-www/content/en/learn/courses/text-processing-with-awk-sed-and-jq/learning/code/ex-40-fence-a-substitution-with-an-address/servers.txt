@@ -1,0 +1,5 @@
+# web tier
+host=web-01
+host=web-02
+# db tier
+host=db-01

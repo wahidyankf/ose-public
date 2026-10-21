@@ -1,0 +1,7 @@
+region: east
+owner: adi
+requests: 4
+ok: 3
+fail: 1
+avg_ms: 123.75
+redacted_sample: 2026-10-21 web-01 OK   120 token=REDACTED

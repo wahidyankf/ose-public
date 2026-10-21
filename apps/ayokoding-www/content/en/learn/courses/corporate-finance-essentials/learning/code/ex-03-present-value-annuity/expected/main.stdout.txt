@@ -1,0 +1,3 @@
+payment: 2000
+factor: 3.9927
+value: 7985.42

@@ -1,0 +1,17 @@
+{
+  "number": 35,
+  "title": "Bump the deploy matrix",
+  "state": "open",
+  "author": "hubot",
+  "base": "main",
+  "head": "deploy-matrix",
+  "mergeable": "CONFLICTING",
+  "files": ["deploy.yaml"],
+  "additions": 18,
+  "deletions": 18,
+  "checks": [
+    { "name": "lint", "status": "completed", "conclusion": "success" },
+    { "name": "test (3.13)", "status": "completed", "conclusion": "failure" }
+  ],
+  "reviews": [{ "user": "octocat", "state": "CHANGES_REQUESTED" }]
+}

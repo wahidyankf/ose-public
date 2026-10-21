@@ -11,3 +11,11 @@ estimatedHours: 6
 ---
 
 - [Overview](/en/learn/courses/openclaw-for-engineers/overview)
+- [Learning](/en/learn/courses/openclaw-for-engineers/learning)
+  - [Overview](/en/learn/courses/openclaw-for-engineers/learning/overview)
+  - [Beginner Examples](/en/learn/courses/openclaw-for-engineers/learning/beginner)
+  - [Intermediate Examples](/en/learn/courses/openclaw-for-engineers/learning/intermediate)
+  - [Advanced Examples](/en/learn/courses/openclaw-for-engineers/learning/advanced)
+  - [Capstone](/en/learn/courses/openclaw-for-engineers/learning/capstone)
+- [Drilling](/en/learn/courses/openclaw-for-engineers/drilling)
+  - [Overview](/en/learn/courses/openclaw-for-engineers/drilling/overview)

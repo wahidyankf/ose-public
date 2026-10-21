@@ -1,0 +1,2 @@
+quick-assets: 240000
+quick-ratio: 1.20

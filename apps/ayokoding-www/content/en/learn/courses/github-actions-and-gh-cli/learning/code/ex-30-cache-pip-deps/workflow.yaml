@@ -1,0 +1,16 @@
+# => Warm installs: restore pip packages when the lockfile is unchanged.
+# => Key on the requirements hash: new deps miss once, then warm again.
+# => Cache hits skip install; misses install then save for next time.
+name: cached-python # => workflow name shown in the Actions tab
+on: push # => run on every push while learning
+jobs: # => jobs block with the cached-install job
+  test: # => single job proving the cache step
+    runs-on: ubuntu-latest # => hosted runner image
+    steps: # => checkout, restore, install, test
+      - uses: actions/checkout@v4 # => fetch the code first
+      - id: pip-cache # => addressable id for the cache outcome
+        uses: actions/cache@v4 # => restore or save the directory
+        with: # => action inputs for the cache
+          path: ~/.cache/pip # => directory to restore and save
+          key: pip-${{ hashFiles('requirements.txt') }} # => hash-keyed
+      - run: echo tests-ok # => placeholder suite proof

@@ -1,0 +1,6 @@
+PASS: call uses path
+PASS: version pinned
+PASS: caller job present
+PASS: uses key used
+FAIL: runner pinned
+checks: 4/5

@@ -1,0 +1,5 @@
+growth 0.03
+discount 0.10
+margin 0.0975
+pe 6.50
+tax 0.25

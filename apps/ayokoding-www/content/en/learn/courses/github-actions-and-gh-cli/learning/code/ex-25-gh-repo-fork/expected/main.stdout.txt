@@ -1,0 +1,4 @@
+upstream: octocat/shop
+fork: learner/shop
+same: False
+sync: main

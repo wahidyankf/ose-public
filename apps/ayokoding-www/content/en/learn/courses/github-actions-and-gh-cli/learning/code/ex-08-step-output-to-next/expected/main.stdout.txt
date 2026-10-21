@@ -1,0 +1,6 @@
+PASS: step id set
+PASS: writes GITHUB_OUTPUT
+PASS: reads steps context
+PASS: output name declared
+PASS: runner pinned
+checks: 5/5

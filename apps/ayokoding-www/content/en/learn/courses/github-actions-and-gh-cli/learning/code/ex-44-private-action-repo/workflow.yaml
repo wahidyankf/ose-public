@@ -1,0 +1,17 @@
+# => Private sharing: check out the actions repo, then use its path.
+# => The token needs only contents:read on the actions repository.
+# => Callers pin the actions repo ref so shared logic updates deliberately.
+name: private-lint # => workflow name shown in the Actions tab
+on: push # => run on every push while learning
+jobs: # => jobs block with the private-action job
+  lint: # => single job proving the private checkout
+    runs-on: ubuntu-latest # => hosted runner image
+    steps: # => fetch code, fetch actions, run the shared lint
+      - uses: actions/checkout@v4 # => fetch this repository first
+      - uses: actions/checkout@v4 # => fetch the private actions repo
+        with: # => inputs for the second checkout
+          repository: org/actions # => private repo holding shared actions
+          ref: v1 # => pinned shared-logic release
+          token: ${{ secrets.ACTIONS_TOKEN }} # => scoped read token
+          path: .actions # => keep it out of the working tree
+      - uses: ./.actions/lint # => run the shared lint by local path

@@ -1,0 +1,6 @@
+PASS: setup action used
+PASS: version pinned
+PASS: cache enabled
+PASS: pip cache chosen
+PASS: checkout first
+checks: 5/5

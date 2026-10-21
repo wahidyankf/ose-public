@@ -1,0 +1,15 @@
+# => Queue lane: the merge_group event batches PRs and tests the batch.
+# => checks_requested lists the validations the batch must pass to merge.
+# => Isolate the lane so ordinary pushes never cancel a queued batch.
+name: queue # => workflow name shown in the Actions tab
+on: # => trigger block for the merge queue
+  merge_group: # => runs when the queue forms a batch
+    types: [checks_requested] # => validate the batch before merging
+concurrency: # => overlap policy isolating the queue lane
+  group: queue-${{ github.ref }} # => one lane per queued ref
+  cancel-in-progress: false # => batches queue, never cancel
+jobs: # => jobs validating the queued batch
+  queue-checks: # => single job proving the batch validations
+    runs-on: ubuntu-latest # => hosted runner image
+    steps: # => steps of the batch validation
+      - run: echo queue-ok # => placeholder batch proof

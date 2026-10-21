@@ -1,0 +1,6 @@
+stream:
+login: adi
+logout: bima
+login: citra
+slurp count:
+3

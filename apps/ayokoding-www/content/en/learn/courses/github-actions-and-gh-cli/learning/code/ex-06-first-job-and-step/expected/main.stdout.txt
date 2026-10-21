@@ -1,0 +1,6 @@
+PASS: jobs block exists
+PASS: job id greet
+PASS: steps block exists
+PASS: run key used
+PASS: runner pinned
+checks: 5/5

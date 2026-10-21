@@ -1,0 +1,12 @@
+# => Context read: log who triggered what, on which ref.
+# => Expressions use ${{ }} and evaluate before the shell sees them.
+# => Logging context early makes every later failure easier to triage.
+name: context-demo # => workflow name shown in the Actions tab
+on: workflow_dispatch # => manual trigger for a deterministic demo
+jobs: # => jobs block with the context-printing job
+  show: # => single job proving the context reads
+    runs-on: ubuntu-latest # => hosted runner image
+    steps: # => echo steps read live run metadata
+      - run: echo "ref ${{ github.ref }}" # => full ref of the run
+      - run: echo "actor ${{ github.actor }}" # => login that triggered
+      - run: echo "event ${{ github.event_name }}" # => event that fired

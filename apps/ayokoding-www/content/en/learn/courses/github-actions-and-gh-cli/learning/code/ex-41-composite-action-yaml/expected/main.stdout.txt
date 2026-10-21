@@ -1,0 +1,6 @@
+PASS: name key present
+PASS: description present
+PASS: outputs block present
+PASS: branding present
+PASS: composite runner
+checks: 5/5

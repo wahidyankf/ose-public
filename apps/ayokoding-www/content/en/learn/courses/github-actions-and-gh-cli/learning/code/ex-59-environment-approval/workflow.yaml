@@ -1,0 +1,16 @@
+# => Guarded deploy: the production environment pauses for approval.
+# => Environments hold reviewers, secrets, and wait timers per target.
+# => Name the environment on the job; protection is configured server-side.
+name: guarded-deploy # => workflow name shown in the Actions tab
+on: push # => run on every push while learning
+jobs: # => test job plus the guarded deploy job
+  test: # => first: prove the change before anyone approves
+    runs-on: ubuntu-latest # => hosted runner image
+    steps: # => steps of the test job
+      - run: echo tests-ok # => placeholder suite proof
+  deploy: # => second: waits for tests, then for a human
+    needs: [test] # => green tests precede the approval request
+    runs-on: ubuntu-latest # => hosted runner image
+    environment: production # => pause for the configured reviewers
+    steps: # => steps running only after approval
+      - run: echo deploy-ok # => placeholder deploy proof

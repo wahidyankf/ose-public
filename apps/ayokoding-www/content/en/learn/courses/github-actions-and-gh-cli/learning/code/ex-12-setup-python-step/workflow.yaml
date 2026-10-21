@@ -1,0 +1,15 @@
+# => Pinned interpreter: test on 3.14 exactly, not whatever is newest.
+# => setup-python installs the version; cache: pip warms dependencies.
+# => Checkout stays first: setup reads requirements from the repo.
+name: python-ci # => workflow name shown in the Actions tab
+on: push # => run on every push while learning
+jobs: # => jobs block with the Python test job
+  test: # => single job proving the setup options
+    runs-on: ubuntu-latest # => hosted runner image
+    steps: # => checkout, setup, then test
+      - uses: actions/checkout@v4 # => fetch the code first
+      - uses: actions/setup-python@v5 # => install the pinned interpreter
+        with: # => action inputs for setup-python
+          python-version: "3.14" # => quoted: 3.10 would parse as 3.1
+          cache: pip # => warm the pip cache between runs
+      - run: echo tests-ok # => placeholder suite proof

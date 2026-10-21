@@ -1,0 +1,13 @@
+# => Checkout first: every later step reads the fetched files.
+# => Full history (depth 0) serves version stamps and changelogs.
+# => Shallow clones are faster; choose depth deliberately per job.
+name: checkout-demo # => workflow name shown in the Actions tab
+on: push # => run on every push while learning
+jobs: # => jobs block with the checkout job
+  fetch: # => single job proving the checkout options
+    runs-on: ubuntu-latest # => hosted runner image
+    steps: # => checkout must be the first step
+      - uses: actions/checkout@v4 # => fetch the triggering commit
+        with: # => action inputs for the checkout
+          fetch-depth: 0 # => full history for stamps and logs
+      - run: echo fetched-ok # => proof the files are present

@@ -1,0 +1,12 @@
+# => Composite greet: two steps packaged as one reusable action.
+# => Composite steps run on the caller runner: no new machine.
+# => Every run step in a composite must name its shell explicitly.
+name: greet # => action name shown in the marketplace listing
+description: "Greet a name across two steps." # => one-line purpose
+runs: # => the executable body of the action
+  using: composite # => step bundle, not docker or node
+  steps: # => ordered steps running on the caller runner
+    - run: echo "Hello from composite" # => first bundled step
+      shell: bash # => explicit shell, mandatory in composites
+    - run: echo greeting-done # => second bundled step
+      shell: bash # => explicit shell on every run step

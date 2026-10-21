@@ -1,0 +1,4 @@
+# infra checks
+ping ok
+# app checks
+health ok

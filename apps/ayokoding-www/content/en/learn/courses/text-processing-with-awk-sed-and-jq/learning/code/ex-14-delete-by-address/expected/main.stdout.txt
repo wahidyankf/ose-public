@@ -1,0 +1,3 @@
+host=db-01
+port=5432
+mode=prod

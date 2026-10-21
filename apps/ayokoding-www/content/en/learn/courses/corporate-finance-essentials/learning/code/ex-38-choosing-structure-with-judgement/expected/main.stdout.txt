@@ -1,0 +1,3 @@
+eps-winner: 2.34 1.80 A
+survives-halved-ebit: True True
+headroom-b-minus-a: 200000.00

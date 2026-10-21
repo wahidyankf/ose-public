@@ -5,4 +5,4 @@ draft: false
 weight: 900
 ---
 
-- [Overview](/en/learn/courses/playwright-end-to-end-testing/learning/capstone/overview)
+- [Capstone: Store Checkout Suite](/en/learn/courses/playwright-end-to-end-testing/learning/capstone/overview)

@@ -1,0 +1,14 @@
+# => Full report: every cell finishes even when one cell fails.
+# => fail-fast false trades minutes for the complete failure picture.
+# => Default is true; state the choice explicitly so readers see it.
+name: full-report # => workflow name shown in the Actions tab
+on: push # => run on every push while learning
+jobs: # => jobs block with the full-report matrix job
+  test: # => matrix job reporting every cell
+    runs-on: ubuntu-latest # => same image for every cell
+    strategy: # => fan-out plus failure policy
+      fail-fast: false # => let survivors finish and report
+      matrix: # => axes whose product becomes jobs
+        python-version: ["3.13", "3.14"] # => two versions, both report
+    steps: # => steps run once per cell
+      - run: echo tests-ok # => placeholder suite proof

@@ -1,0 +1,14 @@
+# => Chained job: checkout, set up, then test, in that order.
+# => Steps in one job share the runner filesystem top to bottom.
+# => Name every step: unnamed steps are unreadable in failure logs.
+name: chained # => workflow name shown in the Actions tab
+on: push # => run on every push while learning
+jobs: # => jobs block with a single chained job
+  build: # => the one job carrying all three steps
+    runs-on: ubuntu-latest # => one runner for all three steps
+    steps: # => ordered actions sharing one filesystem
+      - uses: actions/checkout@v4 # => step 1: fetch the code
+      - name: Set up Python # => step 2: named setup step
+        run: echo setup-ok # => placeholder toolchain proof
+      - name: Run tests # => step 3: named test step
+        run: echo tests-ok # => placeholder suite proof

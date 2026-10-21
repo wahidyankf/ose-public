@@ -1,0 +1,6 @@
+PASS: decision comment
+PASS: action referenced
+FAIL: inputs context read
+PASS: runner pinned
+PASS: no node setup
+checks: 4/5

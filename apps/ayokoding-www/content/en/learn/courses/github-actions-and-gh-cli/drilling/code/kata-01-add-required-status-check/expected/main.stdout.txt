@@ -1,0 +1,3 @@
+required: test
+gates: True
+merge-on-red: False

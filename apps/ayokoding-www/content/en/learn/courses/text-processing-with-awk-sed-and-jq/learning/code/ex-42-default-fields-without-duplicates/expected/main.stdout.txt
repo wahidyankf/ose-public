@@ -1,0 +1,3 @@
+{"name":"adi","role":"engineer"}
+{"name":"bima","role":"unknown"}
+stable: yes

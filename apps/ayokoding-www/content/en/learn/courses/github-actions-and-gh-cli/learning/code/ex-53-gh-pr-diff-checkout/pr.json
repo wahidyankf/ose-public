@@ -1,0 +1,21 @@
+{
+  "number": 34,
+  "title": "Add caching to the test job",
+  "state": "open",
+  "author": "octocat",
+  "base": "main",
+  "head": "cache-deps",
+  "mergeable": "MERGEABLE",
+  "files": ["test.yaml", "requirements.txt"],
+  "additions": 42,
+  "deletions": 7,
+  "checks": [
+    { "name": "lint", "status": "completed", "conclusion": "success" },
+    { "name": "test (3.13)", "status": "completed", "conclusion": "success" },
+    { "name": "test (3.14)", "status": "completed", "conclusion": "success" }
+  ],
+  "reviews": [
+    { "user": "hubot", "state": "APPROVED" },
+    { "user": "other", "state": "COMMENTED" }
+  ]
+}

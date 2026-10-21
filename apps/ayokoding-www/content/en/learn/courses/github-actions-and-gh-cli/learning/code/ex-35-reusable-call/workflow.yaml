@@ -1,0 +1,8 @@
+# => Shared test: one file maintained centrally, called from many repos.
+# => The caller job holds only uses: no steps beside a call job.
+# => Pin the callee to a release tag so updates are deliberate.
+name: caller # => workflow name shown in the Actions tab
+on: push # => run on every push while learning
+jobs: # => jobs block with the single call job
+  call-test: # => job whose whole body is the call
+    uses: octocat/shared/.github/workflows/test.yaml@v1 # => pinned call

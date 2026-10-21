@@ -1,0 +1,16 @@
+# => Token mint: the signed statement names repo, ref, and event.
+# => Providers verify the signature; no shared secret crosses the wire.
+# => Audiences scope the token: one audience per trusting provider.
+name: mint-token # => workflow name shown in the Actions tab
+on: workflow_dispatch # => manual trigger for a deterministic demo
+permissions: # => minimum token permissions for this workflow
+  id-token: write # => allow minting the federated token
+jobs: # => jobs block with the minting job
+  mint: # => single job proving the token request
+    runs-on: ubuntu-latest # => hosted runner image
+    steps: # => request the token, then show its subject shape
+      - id: token # => addressable id for the minting step
+        uses: actions/github-script@v7 # => request helper for the token
+        with: # => inputs naming the audience
+          audience: deployer # => provider expecting this audience
+      - run: echo "subject repo:octocat/shop ref:main event:dispatch" # => shape

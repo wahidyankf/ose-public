@@ -1,0 +1,16 @@
+# => Federated deploy: mint a token per run, assume the role, expire fast.
+# => id-token write is the permission that unlocks the OIDC minting.
+# => No access keys are stored: the role session lives for minutes.
+name: oidc-deploy # => workflow name shown in the Actions tab
+on: push # => run on every push while learning
+permissions: # => minimum token permissions for this workflow
+  id-token: write # => allow minting the federated token
+  contents: read # => checkout still needs repository reads
+jobs: # => jobs block with the federated deploy job
+  deploy: # => single job proving the OIDC assumption
+    runs-on: ubuntu-latest # => hosted runner image
+    steps: # => mint, assume, deploy
+      - uses: aws-actions/configure-aws-credentials@v4 # => trade token
+        with: # => action inputs for the credential trade
+          role-to-assume: arn:aws:iam::123456789012:role/deployer # => role
+      - run: echo deploy-ok # => placeholder deploy proof

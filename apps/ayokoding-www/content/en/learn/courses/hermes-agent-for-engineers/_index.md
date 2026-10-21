@@ -11,3 +11,11 @@ estimatedHours: 6
 ---
 
 - [Overview](/en/learn/courses/hermes-agent-for-engineers/overview)
+- [Learning](/en/learn/courses/hermes-agent-for-engineers/learning)
+  - [Overview](/en/learn/courses/hermes-agent-for-engineers/learning/overview)
+  - [Beginner Examples](/en/learn/courses/hermes-agent-for-engineers/learning/beginner)
+  - [Intermediate Examples](/en/learn/courses/hermes-agent-for-engineers/learning/intermediate)
+  - [Advanced Examples](/en/learn/courses/hermes-agent-for-engineers/learning/advanced)
+  - [Capstone](/en/learn/courses/hermes-agent-for-engineers/learning/capstone)
+- [Drilling](/en/learn/courses/hermes-agent-for-engineers/drilling)
+  - [Overview](/en/learn/courses/hermes-agent-for-engineers/drilling/overview)

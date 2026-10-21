@@ -1,0 +1,7 @@
+PASS: role assumed
+PASS: id-token requested
+PASS: migration noted
+PASS: runner pinned
+PASS: no stored key
+PASS: no secret key
+checks: 6/6

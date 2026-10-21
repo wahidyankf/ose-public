@@ -1,0 +1,3 @@
+cpu 42 pct
+mem 71 pct
+disk 55 pct

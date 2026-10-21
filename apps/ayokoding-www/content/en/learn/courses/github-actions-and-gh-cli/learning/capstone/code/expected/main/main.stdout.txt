@@ -1,0 +1,7 @@
+PASS: test.yaml
+PASS: build.yaml
+PASS: publish.yaml
+PASS: release v1.4.0
+assets: 2
+stages: 4/4
+ship: True

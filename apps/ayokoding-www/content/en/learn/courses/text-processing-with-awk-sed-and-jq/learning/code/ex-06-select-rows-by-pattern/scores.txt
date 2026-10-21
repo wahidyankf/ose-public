@@ -1,0 +1,5 @@
+adi 78 pass
+bima 41 fail
+citra 93 pass
+dewi 55 fail
+eko 88 pass

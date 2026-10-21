@@ -1,0 +1,6 @@
+web
+db
+web
+cache
+web
+db

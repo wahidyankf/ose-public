@@ -1,0 +1,14 @@
+# => Job defaults: strict bash in the service directory for every step.
+# => defaults.run applies to all run steps; one step may override.
+# => Strict flags turn silent mistakes into loud step failures.
+name: defaults-demo # => workflow name shown in the Actions tab
+on: push # => run on every push while learning
+jobs: # => jobs block with the defaults job
+  service: # => single job proving job-level defaults
+    runs-on: ubuntu-latest # => hosted runner image
+    defaults: # => shared settings for every run step below
+      run: # => defaults applying to run steps only
+        shell: bash -euo pipefail # => strict bash, no silent errors
+        working-directory: ./service # => start each step in the service dir
+    steps: # => steps inheriting both defaults
+      - run: echo service-ok # => runs in ./service under strict bash

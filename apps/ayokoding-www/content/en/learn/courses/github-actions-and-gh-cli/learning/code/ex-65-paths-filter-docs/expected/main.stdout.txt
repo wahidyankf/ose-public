@@ -1,0 +1,6 @@
+PASS: paths-ignore set
+PASS: docs glob
+PASS: test job present
+PASS: push trigger
+PASS: runner pinned
+checks: 5/5

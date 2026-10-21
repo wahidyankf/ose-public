@@ -1,0 +1,14 @@
+# => Validated triggers: push to main plus PR opened and synchronize.
+# => Event names come from a fixed vocabulary; typos never fire.
+# => Filters nest under their event, never beside the jobs block.
+name: dual # => workflow name shown in the Actions tab
+on: # => trigger block under validation
+  push: # => first event: pushes
+    branches: [main] # => filter nested under push
+  pull_request: # => second event: pull requests
+    types: [opened, synchronize] # => filter nested under pull_request
+jobs: # => jobs block following the validated triggers
+  test: # => single job proving the dual trigger
+    runs-on: ubuntu-latest # => hosted runner image
+    steps: # => steps of the test job
+      - run: echo tests-ok # => placeholder suite proof

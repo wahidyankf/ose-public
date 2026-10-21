@@ -1,0 +1,3 @@
+adi: ok
+bima: fever
+citra: fever

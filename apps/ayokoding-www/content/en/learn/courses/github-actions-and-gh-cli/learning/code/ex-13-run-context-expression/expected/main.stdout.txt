@@ -1,0 +1,6 @@
+PASS: ref path read
+PASS: actor path read
+PASS: event path read
+PASS: expression syntax used
+PASS: runner pinned
+checks: 5/5

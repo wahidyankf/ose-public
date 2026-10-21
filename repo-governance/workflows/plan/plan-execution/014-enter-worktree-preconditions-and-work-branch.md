@@ -22,6 +22,16 @@ Before starting, resolve every dependency the plan declares under
 [Plan-Order Graph](../../../conventions/structure/plans/plan-order-graph-and-legend.md): each must already be
 satisfied, or the run stops and names the unmet one. A missing declaration reads as no dependencies.
 
+**Access check — prove this machine holds the plan's scope before Phase 0.** Derive the access
+list from the plan's declared touchpoints alone — never a standing checklist — and prove each item
+through its authorized route on this machine: repository and branch scope, review and merge scope,
+and each secret through its wrapper. Claim nothing more: least privilege, and infra secrets only
+when the scope includes infra-apply. Never assume from the machine's name. Record each need
+portable or bound to named machines holding the secret, so any run knows what runs everywhere and
+what runs only there — a docs-only change runs anywhere, an infra-apply runs only where its secret
+lives. Missing access stops the run as a human blocker; a machine-bound node parks where the machine
+lacks its access until a capable machine claims it.
+
 Plan execution happens in the plan's declared designated worktree, synced to the latest
 `origin/main`. The resolved `worktree-to-pr` mode and `## Worktree` section determine that work
 location. An invocation-selected delivery-unit branch is valid only inside it; the primary checkout

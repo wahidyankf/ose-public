@@ -9,7 +9,7 @@ when_to_use: "Use to locate a plan-execution child document."
 - [How to Execute](./002-how-to-execute.md) — Tracing the ordered actions plan execution performs, from backlog promotion through complete worktree, branch, and build-output cleanup.
 - [Orchestration Model](./003-orchestration-model.md) — That the calling context orchestrates plan execution, routing substantive work to specialized agents.
 - [Agent Selection](./004-agent-selection.md) — Deciding which agent should execute a given delivery checklist item.
-- [Fan-Out, Ordering, and Delivery Shape](./005-fan-out-ordering-and-delivery-shape.md) — The N+1 fan-out model, DAG-first ordering, and the one-PR-per-delivery-unit / one-worktree-per-repo delivery shape.
+- [Fan-Out, Ordering, and Delivery Shape](./005-fan-out-ordering-and-delivery-shape.md) — DAG-first ordering bounded by the one-worktree-per-repo lock and HIPPO admission, and the one-PR-per-delivery-unit delivery shape.
 - [Surface-Conditional Tester Gates](./006-surface-conditional-tester-gates.md) — Determining which tester gates a plan's shipped surface requires before archival.
 - [Vercel MCP Availability (Surface-Conditional)](./007-vercel-mcp-availability.md) — How execution reconfirms Vercel MCP availability at Phase 0 for plans touching a Vercel-deployed surface.
 - [Task-Checklist Synchronization](./008-task-checklist-synchronization.md) — Proving the strict

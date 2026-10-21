@@ -15,7 +15,9 @@ Phase 0 is [Environment Setup and Baseline](./phases-as-natural-pauses.md#phases
 - merges **nothing**; and
 - has **no** CI run of its own to monitor.
 
-Its gate is the recorded clean baseline, and nothing more.
+Its gate is the recorded clean baseline, and nothing more. The pure move from `backlog/` is not Phase 0 work: it is
+delivered in its own promotion PR or commit and verified on `origin/main` before Phase 0 begins, under
+[Starting and Completing Work](./starting-and-completing-work.md#starting-work). Phase 0 itself still opens no PR.
 
 This is not an exception to [Delivery Checklists Express a DAG](./delivery-checklists-express-a-dag.md#delivery-checklists-express-a-dag-hard-rule) — it follows from it. That rule binds each independent DAG node **that produces changes**. Phase 0 produces none, so it is not a delivery node at all; it is the precondition every delivery node depends on.
 

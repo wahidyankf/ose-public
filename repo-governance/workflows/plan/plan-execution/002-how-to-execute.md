@@ -16,15 +16,22 @@ User: "Execute plan plans/in-progress/new-feature/plan.md"
 The calling context will:
 
 0. **Promote from `plans/backlog/` first, if needed**: if `plan-path` resolves inside
-   `plans/backlog/`, resolve the delivery mode and repository restrictions, then land the pure move
-   through the mandatory `worktree-to-pr` route before step 1, using and retaining its designated
-   worktree and merging the promotion PR. No other delivery mode is valid in `ose-public`. Follow the canonical
+   `plans/backlog/`, resolve the delivery mode and repository restrictions, then deliver the pure move to
+   `origin/main` in its own promotion pull request through the mandatory `worktree-to-pr` route (or permitted direct
+   commit), including the [Plan-Order Graph](../../../conventions/structure/plans/plan-order-graph-and-legend.md)
+   class, marker, and colour change, **before Phase 0** and before step 1. No other delivery mode is valid in `ose-public`.
+   Only then provision the plan's worktree from that fresh trunk. Follow the canonical
    [Starting Work procedure](../../../conventions/structure/plans/starting-and-completing-work.md#starting-work);
    never execute directly from `plans/backlog/`.
 1. **Enter the designated worktree** (Step 0): require the plan's `## Worktree` declaration, then
    enter or first-provision that one worktree. An invocation may select a delivery-unit branch only
    inside this declared location; it cannot choose the primary checkout or another worktree. Sync
    the selected work branch with the latest `origin/main` before implementation
+   to minimize merge collisions. Before implementation, resolve every dependency the plan
+   declares — whole-plan `Depends-on` lines and unit-level edges alike — and cross-check them against
+   this plan's node and edges in the Plan Order DAG in `plans/README.md`. Each must already be satisfied
+   (done, or earlier in the same scheduled pass), or stop and name the unmet one. If the diagram and
+   the declarations disagree, reconcile the diagram first; never execute against a stale map.
 2. Read the delivery checklist from the plan's `delivery.md` to understand all items. This step is
    mandatory even when the workflow is first invoked after implementation started or is reinvoked
    mid-run; never trust a prior conversational task list over disk.
@@ -32,7 +39,7 @@ The calling context will:
    checkbox, including separate RED/GREEN/REFACTOR actions; outcome-section Input/Outcome/Proof
    remains context. Before implementation, prove the full 1:1 mapping: checked action ↔ completed
    task when retained, unchecked action ↔ open task, and zero task orphans/duplicates.
-4. For each ready item (dependencies terminal), up to the concurrency cap: mark
+4. For each ready item (dependencies terminal), subject to its worktree lock and HIPPO admission: mark
    `in_progress`, **repo-ground its file paths and commands** (refuse-on-uncertainty if grounding
    fails), analyze it, **prefer the `_Suggested executor:_` annotation** if present (else fall back
    to Agent Selection heuristics), delegate to the chosen agent (or execute directly only work that is not

@@ -13,7 +13,7 @@ when_to_use: Use when checking which repo-governance conventions govern a specif
   rubric and both safety gates applied per plan (D4) and again in the cross-plan consolidation (D5).
 - **[Agent Workflow Orchestration](../../../development/agents/agent-workflow-orchestration.md)** and
   **[Subagent Orchestration Convention](../../../development/agents/subagent-orchestration.md)** —
-  concurrency never self-promoted above the harness cap.
+  overlap bounded by the worktree locks and HIPPO admission; there is no thread-count ceiling.
 - **[Linking Convention](../../../conventions/formatting/linking.md)** and **[Content Quality
   Principles](../../../conventions/writing/quality.md)** — GitHub-compatible `.md` links, single H1,
   proper heading nesting.
@@ -24,5 +24,5 @@ when_to_use: Use when checking which repo-governance conventions govern a specif
   cross-plan scheduling. When in doubt about a per-plan step, defer to `plan-execution.md`.
 - **Observable** — the union Task list plus the DAG and summary reports make the parallel schedule
   legible before, during, and after the run.
-- **Bounded** — `parallelism` and the harness cap bound concurrency; `max-cycles` (per plan, at most three)
+- **Bounded** — the worktree locks and HIPPO admission bound overlap; `max-cycles` (per plan, at most 3)
   bounds each plan's execute-check loop.

@@ -13,15 +13,16 @@ delegating each to the appropriate specialized agent.
 **Execution loop** — bounded-parallel over ready items. Rule 1 (granularity) and Rule 4 (atomic
 sync ritual) are enforced in this loop:
 
-Dispatch every action checkbox whose dependencies are terminal, up to the concurrency cap (the
-plan's declared N, default 3), reusing the plan's one worktree per repository; a failure blocks
+Dispatch every action checkbox whose dependencies are terminal, subject to its worktree lock
+and HIPPO admission (dependency order, not list position; outcome-section Input/Outcome/Proof stays
+as shared context). Reuse the plan's one worktree per repository across items. A failure blocks
 only its downstream items. An item blocked by something outside the plan is recorded as blocked,
 with what would unblock it, never skipped silently. A more optimal order found mid-run revises
 `delivery.md` first, keeping acceptance criteria and the end result; a material change re-passes
-the quality gate. Outcome-section Input/Outcome/Proof stays as shared context:
+the quality gate. See [Fan-Out, Ordering, and Delivery Shape](./005-fan-out-ordering-and-delivery-shape.md).
 
-1. **`TaskUpdate in_progress`** on the matching task. At most N `in_progress` at a time (the
-   concurrency cap).
+1. **`TaskUpdate in_progress`** on the matching task. At most one `in_progress` per worktree at a time, and every one of them
+   dependency-ready.
 2. **Pre-Item Repo-Grounding (HARD GATE — Anti-Hallucination)**: before delegating, repo-ground every claim in the checkbox per the [Plan Anti-Hallucination Convention §Repo-Grounding Rule](../../../development/quality/plan-anti-hallucination/repo-grounding-rule-hard.md#repo-grounding-rule-hard):
    - For each cited file path: `Bash test -f <path>`. If missing AND not marked `_New file_`: HALT the item, escalate to user with the failing path (do not invent a substitute).
    - For each cited Nx target: `jq -r '.targets | keys[]' apps/<project>/project.json | grep -qx '<target>'`. If missing AND not marked `_New target_`: HALT the item.

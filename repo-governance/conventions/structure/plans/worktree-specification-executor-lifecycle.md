@@ -13,7 +13,9 @@ provisioning and use the synced primary checkout):
 1. **Enter or provision**: for a worktree mode, execution happens inside the declared worktree. Enter
    it if present, or provision it from fresh `origin/main`. Reuse that same worktree for every unit;
    never provision a second one for the repo and plan. A main mode instead stays in the primary
-   checkout and provisions none.
+   checkout and provisions none. When the plan was resolved from `backlog/`, its promotion has already
+   landed on `origin/main` in its own promotion PR or commit before Phase 0, so the worktree is
+   provisioned from a trunk that already holds the plan under `plans/in-progress/`.
 2. **Freshness sync**: before any implementation, the worktree is synced with the latest `origin/main`
    (ff-merge, or rebase when the worktree carries local commits). Dirty state stops execution for an
    explicit user decision. Rebase conflicts follow [authorized task sync][authorized-task-sync]: only

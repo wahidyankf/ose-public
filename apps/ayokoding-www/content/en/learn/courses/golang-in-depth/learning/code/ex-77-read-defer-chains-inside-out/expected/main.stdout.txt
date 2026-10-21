@@ -1,0 +1,3 @@
+inner: close cursor
+inner: release lock
+outer: close session

@@ -1,0 +1,6 @@
+=== RUN   TestRoundTripKeepsBytes
+    ops_test.go:19: scratch verified clean
+--- PASS: TestRoundTripKeepsBytes
+=== RUN   TestExplicitCleanupShowsOrder
+--- PASS: TestExplicitCleanupShowsOrder
+PASS

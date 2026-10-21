@@ -1,0 +1,5 @@
+ada         98.50
+grace      100.00
+margaret    87.25
+success: 93.8%
+total: 1,234,567

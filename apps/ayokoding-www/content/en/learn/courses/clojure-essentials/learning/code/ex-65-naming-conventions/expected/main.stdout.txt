@@ -1,0 +1,5 @@
+shape => example
+function => total-price
+predicate => valid?
+conversion => edn->map
+danger => reset!

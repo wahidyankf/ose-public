@@ -1,0 +1,9 @@
+=== RUN   FuzzReverse
+=== RUN   FuzzReverse/seed#0
+=== RUN   FuzzReverse/seed#1
+=== RUN   FuzzReverse/seed#2
+--- PASS: FuzzReverse
+    --- PASS: FuzzReverse/seed#0
+    --- PASS: FuzzReverse/seed#1
+    --- PASS: FuzzReverse/seed#2
+PASS

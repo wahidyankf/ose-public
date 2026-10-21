@@ -1,0 +1,2 @@
+red: stub fails as expected
+green: fix passes

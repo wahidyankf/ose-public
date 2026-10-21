@@ -1,0 +1,10 @@
+;; => Maps pair keys to values; keywords are the idiomatic key type.
+(def user {:name "ada" :role :admin}) ;; => a two-entry map
+(println (:name user)) ;; => keyword lookup prints ada
+(println (get user :missing "n/a")) ;; => default prints n/a, no nil surprise
+;; => assoc returns a new map; the original binding never changes.
+(println (assoc user :active true)) ;; => prints three entries
+(println user) ;; => still the original two entries
+;; => Sets hold unique values; sort before printing for a stable transcript.
+(println (sort (conj #{1 2} 2 3))) ;; => prints (1 2 3), duplicate absorbed
+(println (contains? #{1 2 3} 2)) ;; => prints true

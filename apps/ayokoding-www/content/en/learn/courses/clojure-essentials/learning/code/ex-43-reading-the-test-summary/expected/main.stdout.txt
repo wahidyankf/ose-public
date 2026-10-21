@@ -1,0 +1,6 @@
+
+Testing user
+
+Ran 1 tests containing 2 assertions.
+0 failures, 0 errors.
+summary: {:test 1, :pass 2, :fail 0, :error 0}

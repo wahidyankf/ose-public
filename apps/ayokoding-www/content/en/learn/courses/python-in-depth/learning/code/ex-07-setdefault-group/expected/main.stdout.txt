@@ -1,0 +1,2 @@
+{'red': ['ada', 'margaret'], 'blue': ['grace']}
+True

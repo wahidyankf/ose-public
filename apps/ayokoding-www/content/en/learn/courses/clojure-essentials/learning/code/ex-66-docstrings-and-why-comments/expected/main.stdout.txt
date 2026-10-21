@@ -1,0 +1,2 @@
+Sums :price over items; empty input totals zero.
+5

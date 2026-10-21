@@ -1,0 +1,2 @@
+Item(sku='lamp', stock=3)
+Item(sku='lamp', stock=4)

@@ -1,0 +1,10 @@
+
+Testing user
+
+FAIL in (finite-lazy) (main.clj:4)
+expected: (= [0 1 2] (take 3 (map (fn* [p1__3#] (* p1__3# p1__3#)) (range))))
+  actual: (not (= [0 1 2] (0 1 4)))
+
+Ran 2 tests containing 2 assertions.
+1 failures, 0 errors.
+tests: 2 pass: 1 fail: 1 error: 0

@@ -1,0 +1,9 @@
+;; => Return data for expected failures, throw only for broken contracts.
+(defn parse-age [s] ;; => ages arrive as strings from the outside world
+  (try {:ok (Integer/parseInt s)} ;; => success wraps the value in :ok
+    (catch NumberFormatException _ {:error (str "not a number: " s)}))) ;; => failure wraps the reason
+(println (parse-age "36")) ;; => prints {:ok 36}
+(println (parse-age "old")) ;; => prints {:error not a number: old}
+;; => Callers branch on the key, never on a caught exception.
+(let [{age :ok problem :error} (parse-age "old")] ;; => destructure both outcomes
+  (println (or age problem))) ;; => prints the error text

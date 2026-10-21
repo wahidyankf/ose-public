@@ -1,0 +1,4 @@
+/data/a.txt
+archive.tar.gz
+['.tar', '.gz']
+archive.tar

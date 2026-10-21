@@ -1,0 +1,13 @@
+sari
+budi
+type Queue struct {
+	// Has unexported fields.
+}
+    Queue is a first-in first-out line with a hidden backing slice.
+
+    The zero value holds a nil slice; call NewQueue for the documented start.
+    Items enter at the back through Push and leave from the front through Pop.
+
+func NewQueue() *Queue
+func (q *Queue) Pop() (string, bool)
+func (q *Queue) Push(item string)

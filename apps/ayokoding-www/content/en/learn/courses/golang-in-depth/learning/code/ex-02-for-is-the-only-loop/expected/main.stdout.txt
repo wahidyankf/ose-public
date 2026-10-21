@@ -1,0 +1,3 @@
+counted: 10
+drained: 0
+broken: 3

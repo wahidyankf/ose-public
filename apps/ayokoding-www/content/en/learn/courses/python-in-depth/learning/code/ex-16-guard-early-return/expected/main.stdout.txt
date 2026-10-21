@@ -1,0 +1,4 @@
+name required
+age must be int
+age must fit
+registered ada (36)

@@ -1,0 +1,4 @@
+Clamp value into the closed range [low, high].
+5
+0
+10

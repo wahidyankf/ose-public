@@ -1,0 +1,6 @@
+=== RUN   TestShrinkBasic
+--- PASS: TestShrinkBasic
+=== RUN   TestShrinkExhaustive
+    ops_test.go:26: skipping exhaustive sweep in short mode
+--- SKIP: TestShrinkExhaustive
+PASS

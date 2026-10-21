@@ -1,0 +1,3 @@
+region: jakarta
+unset detected
+suffix:[]

@@ -1,0 +1,4 @@
+1
+rule broken
+{:error bad row 7}
+{:id 7}

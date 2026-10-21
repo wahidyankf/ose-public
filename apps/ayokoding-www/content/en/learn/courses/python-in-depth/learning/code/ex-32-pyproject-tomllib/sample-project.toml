@@ -1,0 +1,6 @@
+# => Example 32 fixture: one declarative metadata source.
+[project]
+name = "shapes"
+version = "1.2.3"
+requires-python = ">=3.10"
+dependencies = ["requests==2.32.3"]

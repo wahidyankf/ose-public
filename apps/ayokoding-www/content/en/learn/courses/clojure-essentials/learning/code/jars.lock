@@ -1,0 +1,13 @@
+# clojure-essentials direct libraries (recorded 2026-10-21): org.clojure:test.check 1.1.3,
+# org.clojure:core.async 1.9.865, both from Maven Central. Transitive closure resolved from
+# Maven Central POMs on 2026-10-21; the three core jars (org.clojure:clojure, spec.alpha,
+# core.specs.alpha) ship in /opt/clojure and are excluded.
+org.clojure:core.async:1.9.865 550de4244265f9e79a9a8682630c681a10102b2bf519fd64661e3e9f192b8284
+org.clojure:core.cache:1.1.234 ba9071044edb7b009288b2c5f800a7dcd918b0f1725c5ba800469238df972f63
+org.clojure:core.memoize:1.1.266 5792a21d6d90a1f5e68d4a10f65607aa21f6c484eb9d1a421cefc1f8ac26f18e
+org.clojure:data.priority-map:1.2.0 a4523626a1ccc4fce0d1efe6df16897fc3e34b58738f0462e4536af17dea02f0
+org.clojure:test.check:1.1.3 8b0637b13982734742fb3f4d129f0a9d9e3d752b1aec0c6f65ced4555f72b649
+org.clojure:tools.analyzer:1.2.0 7801a5a7ef4fd77f560c30a638594447c3aa71ee78b7f088553b7919bd0033bb
+org.clojure:tools.analyzer.jvm:1.3.3 71e270944ed3953643f8b6f6620351c7586b7430108885e2fbf0811454632431
+org.clojure:tools.reader:1.5.0 bfc8f709efb843f2ccc4daa93e2842ceb86e7b8d11d5544dc0ee68b6a0f4db3c
+org.ow2.asm:asm:9.2 b9d4fe4d71938df38839f0eca42aaaa64cf8b313d678da036f0cb3ca199b47f5

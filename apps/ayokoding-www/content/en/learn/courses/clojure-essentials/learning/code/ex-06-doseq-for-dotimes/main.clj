@@ -1,0 +1,11 @@
+;; => doseq runs side effects and returns nil; for builds values lazily.
+(doseq [x [:a :b]] ;; => one effect per element
+  (println "seen" x)) ;; => prints two lines
+(println (vec (for [x [1 2 3]] (* x 10)))) ;; => prints [10 20 30]
+;; => dotimes repeats n times with an index; while loops on a test.
+(dotimes [i 3] ;; => i runs 0, 1, 2
+  (println "tick" i)) ;; => prints three indexed lines
+(let [n (atom 3)] ;; => a counter the while test can drain
+  (while (pos? @n) ;; => loop while the counter stays positive
+    (println "left" @n) ;; => prints the current count
+    (swap! n dec))) ;; => drain one per pass

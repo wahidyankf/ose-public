@@ -1,0 +1,2 @@
+quotient: 5
+error: divide by zero

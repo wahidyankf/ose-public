@@ -1,0 +1,3 @@
+raised: ValueError
+message: insufficient funds
+success pinned

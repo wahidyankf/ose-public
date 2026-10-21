@@ -1,0 +1,4 @@
+positive
+non-positive
+odd!
+neg

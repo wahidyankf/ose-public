@@ -1,0 +1,8 @@
+lamp: 4 x 60.00
+chair: 2 x 45.00
+lines: 2
+units: 6
+value: 330.00
+skip: line 4: bad numbers
+skip: line 5: negative qty
+selftest: 5 passed

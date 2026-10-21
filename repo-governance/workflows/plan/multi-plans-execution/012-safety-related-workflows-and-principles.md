@@ -10,7 +10,7 @@ when_to_use: Use when verifying what safeguards a run relies on, navigating to a
 - **Work-location isolation** — worktrees isolate; a shared primary-checkout lock serializes.
 - **Byte-identity serialization** — plans sharing a declared byte-identity boundary never run concurrently.
 - **Quarantine, not cascade** — a blocker confines to its plan + dependents.
-- **Harness-cap respect** — effective concurrency never exceeds the platform agent limit.
+- **HIPPO admission respect** — compute never exceeds what HIPPO admits; queue and retry, never bypass.
 - **Disk-is-truth resume** — re-entry rebuilds the union Task list from every plan's `delivery.md`.
 - **Cross-plan learnings solidification** — a mandatory consolidation pass routes portfolio-level
   learnings to durable homes before `pass`, so recurring signal survives per-plan archival.
@@ -19,8 +19,8 @@ when_to_use: Use when verifying what safeguards a run relies on, navigating to a
 
 - [`plan-execution.md`](../plan-execution.md) — the per-plan lifecycle this workflow schedules; the
   single-plan case.
-- [`plan-quality-gate.md`](../../quality/plan-quality-gate.md) — the pre-execution gate every named plan must
-  pass before it is eligible (Phase A2).
+- [`plan-quality-gate.md`](../../quality/plan-quality-gate.md) — advisory history recorded per plan at
+  Phase A2, exactly as in single-plan execution; it never gates eligibility.
 - [PR Leak Review](../../quality/pr-leak-review.md) — the mandatory exact-current-head leak gate for each
   `*-to-pr` plan (D1).
 - [PR Review Cycle](../../quality/pr-review-quality-gate.md) — an optional semantic cycle, run only when the

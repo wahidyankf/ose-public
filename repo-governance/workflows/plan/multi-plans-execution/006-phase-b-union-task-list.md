@@ -32,5 +32,5 @@ the plan's declared work location: its worktree for `worktree-to-*`, or the prim
 tasks that disagree with disk. Never trust in-memory state over disk.
 
 **B5. At most one `in_progress` task PER PLAN.** The single-plan "at most one `in_progress`" invariant
-becomes **per-plan**: each plan advances one checkbox at a time, but up to `parallelism` _different_
+becomes **per-plan**: each plan advances one checkbox at a time, and different plans advance only while their worktree turn and HIPPO admission allow — by default one worktree at a time across _different_
 plans/nodes may be `in_progress` simultaneously. The scheduler (Phase C) enforces the global ceiling.

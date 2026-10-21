@@ -12,19 +12,27 @@ when_to_use: Use when executing a plan or locating one execution step.
 
 ## Goal and Termination
 
-**Goal**: Execute a project plan, validate its completion and quality, then repair and re-validate for at most three cycles until all requirements are met and archive to plans/done/
+**Goal**: Take one plan document from its checklist to a proven delivered state: every requirement traced to delivered proof, validated by the execution check, delivered through its mode, archived, cleaned up, and its learnings routed. Nothing counts as done on a tick alone.
 
-**Termination**: End-to-end requirement-to-proof trace is complete, no blocking finding remains, and plan moved to done/
+**Termination** — the run ends in exactly one state. `pass` is the only success:
+
+- **`pass`**: every substantive item is terminal; the terminal audit proves each requirement against the delivered head with zero findings; delivery is merged or pushed and verified; the plan sits in `plans/done/<date>__<id>/`; its worktree, branches, and plan-local build output are proven gone; every `learnings.md` entry is routed or discarded with a reason.
+- **`handed-off`**: all `[AI]` work and archival-in-PR are ready, the PR is green and leak-reviewed, and only a `[HUMAN]` merge gate remains. Not archived, not cleaned; cleanup follows merge confirmation, then the run resumes to `pass`.
+- **`partial`**: findings remain after `max-cycles`, or an infra-apply step is still unexecuted from the primary checkout. The plan stays in `plans/in-progress/` with its work location retained.
+- **`fail`**: a technical error prevents completion. The plan and work location stay for diagnosis.
+
+Only the [Execution Check](plan-execution-check.md), run through `plan-execution-checker`, permits `pass` and archival. The [Plan Quality Gate](../quality/plan-quality-gate.md) judges the draft only; this workflow never runs it.
 
 ## Inputs
 
 - **`plan-path`** (string, required) — Path to the plan file to execute (e.g., "plans/in-progress/new-feature/plan.md")
 - **`max-cycles`** (number, optional, `1`, `2`, or `3`, default `3`) — Maximum number of execute-check cycles; any other value refuses to start
-- **`max-concurrency`** (number, optional, default `3`) — Background agents run concurrently — the N in the N+1 model (1 main thread + N background agents = N+1 total). Raise only when independent work, machine capacity, and budget headroom all allow; lower under budget, runner, or disk pressure. Never self-promoted beyond the declared value.
+- **`max-worktrees-per-plan-repo`** (number, optional, default `1`) — Worktrees one plan may hold in one repository. Raise only when the user's explicit invocation says so; the orchestrator never self-promotes it.
+- **`max-active-worktrees`** (number, optional, default `1`) — Worktree-backed items executing at once. Raise only when the user's explicit invocation says so and only as far as HIPPO admits.
 
 ## Outputs
 
-- **`final-status`** (enum: pass, partial, fail) — Final execution and validation status
+- **`final-status`** (enum: `pass`, `handed-off`, `partial`, `fail`) — Terminal state above
 - **`cycles-completed`** (number) — Number of execute-check cycles performed
 - **`final-report`** (file, pattern `local-tmp/plan-execution/plan-execution__*__validation.md`) — Final validation report from plan-execution-checker
 
@@ -34,7 +42,7 @@ when_to_use: Use when executing a plan or locating one execution step.
 - [How to Execute](./plan-execution/002-how-to-execute.md) — 12 actions through complete three-class cleanup.
 - [Orchestration Model](./plan-execution/003-orchestration-model.md) — delegation rule.
 - [Agent Selection](./plan-execution/004-agent-selection.md) — picking heuristics.
-- [Fan-Out Shape](./plan-execution/005-fan-out-ordering-and-delivery-shape.md) — N+1, DAG.
+- [Fan-Out Shape](./plan-execution/005-fan-out-ordering-and-delivery-shape.md) — DAG, worktree lock, HIPPO.
 - [Tester Gates](./plan-execution/006-surface-conditional-tester-gates.md) — per-surface.
 - [Vercel MCP](./plan-execution/007-vercel-mcp-availability.md) — Phase 0 check.
 - [Task-Checklist Sync](./plan-execution/008-task-checklist-synchronization.md) — strict action-level

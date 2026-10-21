@@ -9,11 +9,13 @@ Continued from
 [Phase A — Scope and Nodes](./003-phase-a-scope-and-nodes.md).
 
 **A4. Add intra-plan edges (ordering within a plan).** Within a single plan, nodes are ordered by:
-(a) the declared work-location / setup step first; (b) TDD ordering — `RED` → `GREEN` → `REFACTOR`
-sub-steps are strictly sequential; (c) phase gates — a phase's gate node depends on all nodes in that
-phase, and the next phase depends on the gate; (d) the archival node last. The default is
-**sequential within a plan** unless the plan's own text explicitly marks two phases/steps as
-independent. This preserves every per-plan Iron Rule (TDD, one-`in_progress`-per-plan, atomic sync).
+(a) the declared work-location / setup step first; (b) batched-TDD ordering — each cohesive batch's
+`RED` → `GREEN` → `REFACTOR` nodes are strictly sequential, the GREEN selection stays frozen from
+its RED, and no production-code node precedes its batch's RED; (c) phase gates — a phase's gate node
+depends on all nodes in that phase, and the next phase depends on the gate; (d) the archival node
+last. The default is **sequential within a plan** unless the plan's own text explicitly marks two
+phases/steps as independent. This preserves every per-plan Iron Rule (TDD, one-`in_progress`-per-plan,
+atomic sync).
 
 **A5. Compute each node's resource-set (conservative).** From named paths and the plan's File-Impact
 Analysis, derive file/glob, Nx-project, target-repo, and work-location resources. Every `main-to-*`
@@ -23,7 +25,14 @@ An ambiguous footprint touches the whole declared impact set: uncertain nodes co
 
 **A6. Add inter-plan edges (Hybrid ordering).**
 
-1. **Explicit `Depends-on:` wins.** If a plan's `README.md` declares `Depends-on: [<plan-id>, …]`,
+0. **Start from the Plan Order DAG in `plans/README.md`.** That Mermaid diagram is the persistent
+   portfolio map: one node per live `backlog/`/`in-progress/` plan (class and marker show its stage),
+   solid edges are stated start/merge dependencies, dotted edges should land first without blocking.
+   Read it first, then cross-check every edge against each plan's `Depends-on:` line. The two must
+   agree; if they differ, stop and reconcile the diagram before scheduling — never schedule against
+   a stale portfolio map. This portfolio DAG is **not** the per-run execution DAG below (A7): the
+   execution DAG refines it to node level with resource sets.
+1. **Explicit `Depends-on:` wins and Plan Order solids.** If a plan's `README.md` declares `Depends-on: [<plan-id>, …]`,
    that whole plan is serialized after every named dependency (all of the dependency's nodes precede
    any of this plan's nodes). Explicit declarations are authoritative and never overridden by
    inference.
@@ -35,11 +44,16 @@ An ambiguous footprint touches the whole declared impact set: uncertain nodes co
 3. **Cycle check.** If explicit `Depends-on` declarations form a cycle, stop and report — a cyclic
    plan graph is a planning error, not something to schedule around.
 
-**A7. Emit the DAG / parallelizability report** to
+**A7. Emit the DAG / overlap report** to
 `local-tmp/multi-plans-execution/multi-plans-execution__<uuid>__<timestamp>__dag.md`: the node list per plan, the
-intra- and inter-plan edges, each node's resource-set, and — explicitly — which nodes are marked
-**PARALLELIZABLE** vs **SEQUENTIAL** and why. If `mode: plan-only`, STOP here and hand the report to
-the caller for review.
+intra- and inter-plan edges, each node's resource-set, and — explicitly — which nodes may **overlap**
+vs must stay **SEQUENTIAL** and why. **Confirm the DAG before any execution.** Show the report
+(nodes, edges, resource sets, overlap set, and the one-worktree default below), then stop in every
+mode until the user explicitly confirms it. If the user rejects or edits the graph, revise the nodes,
+edges, and resource sets, re-emit the **full** report, and confirm again — repeat until confirmed or
+the user cancels (cancellation ends the run with no node started). `plan-only` ends after confirmation
+without scheduling; `execute` proceeds to Phase B only after that confirmation. No node starts on an
+unconfirmed graph.
 
 ```mermaid
 flowchart TD

@@ -16,7 +16,7 @@ stranded in individual archived plan folders:
 1. **Gather.** Read every executed plan's final `learnings.md` (including quarantined plans — a
    quarantine reason is itself a learning) plus the DAG report (A7) and this workflow's own scheduling
    observations (mis-inferred dependency edges, resource conflicts that surprised the schedule,
-   parallelism that had to be dialed back).
+   overlap that had to be serialized).
 2. **Cluster into cross-cutting themes.** Identify learnings that appear in **two or more** plans, or
    that concern the multi-plan run itself (scheduling, byte-identity serialization, worktree
    contention, shared-toolchain effects). A theme seen once in a single plan stays that plan's own
@@ -37,10 +37,11 @@ This is the multi-plan analogue of the per-plan Knowledge Capture gate: D4 ensur
 loses its learnings; D5 ensures the **portfolio-level** signal (what these plans taught _together_)
 is not lost when each plan's folder is archived in isolation.
 
-**D6. Finalization.** When all plans have reached a terminal state AND cross-plan learnings
+**D6. Finalization.** Per-plan cleanup already ran under D1 and never waits for this step. When all
+plans have reached a terminal state AND cross-plan learnings
 solidification (D5) is complete, emit the summary report to
 `local-tmp/multi-plans-execution/multi-plans-execution__<uuid>__<timestamp>__summary.md`: per-plan terminal status
-(done / handed-off / quarantined / partial), the parallelism actually achieved, quarantines with
+(done / handed-off / quarantined / partial), the overlap actually achieved (worktrees used), quarantines with
 reasons, all preexisting fixes made, and the **consolidated cross-plan learnings** with their routing
 decisions (D5.4). Report `partial` if any plan was quarantined or hit `max-cycles`; `pass` only
 when every plan reached its clean terminal state **and** cross-plan learnings were solidified.

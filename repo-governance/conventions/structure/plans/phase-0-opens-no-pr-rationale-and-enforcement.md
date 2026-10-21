@@ -11,6 +11,11 @@ Continues [Phase 0 Opens No PR — the Earliest PR Is Phase 1](./phase-0-opens-n
 the first PR the plan opens, no earlier than Phase 1. Under a permitted direct mode, they land at the
 first direct checkpoint. A baseline artifact never justifies its own integration.
 
+The pure move from `backlog/` is the one exception the other way: it is delivered in
+its **own promotion PR or commit before Phase 0** under
+[Starting and Completing Work](./starting-and-completing-work.md#starting-work), so promoted plans can be
+worktreed in parallel; it is not Phase 0 work and does not make Phase 0 open a PR.
+
 **Why this is a hard rule**: a PR whose diff is empty, or holds only a baseline text file, still
 consumes PR CI and creates branch, merge, and cleanup obligations for no shippable increment. It
 also trains executors to treat "phase complete" and "PR merged" as synonyms, which is exactly the
@@ -22,5 +27,6 @@ conflation the [Delivery Mode](./delivery-mode-the-four-modes.md#delivery-mode) 
 step inside Phase 0. `plan-checker` flags any such step as **HIGH** regardless of delivery mode.
 The gate's repair pass removes the offending step and folds any Phase 0 evidence artifact into the first
 change-producing unit's mode-specific integration. `plan-execution-checker` flags a PR actually
-opened for Phase 0 as **HIGH**.
+opened for Phase 0 as **HIGH**, and flags a plan whose promotion was **not** landed on `origin/main` in
+its own promotion PR or commit before Phase 0 as **HIGH**.
 `repo-setup-manager` carries no push or PR step.

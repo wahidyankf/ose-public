@@ -1,11 +1,13 @@
 ---
-description: Six worked invocation examples — default parallelism, set-selectors, exclusions, parallelism overrides, plan-only mode, and an explicit Depends-on declaration.
+description: "Example Usage — split from multi-plans-execution.md for the word-budget gate (example usage, execute three plans one worktree at a time, select a whole bucket with a set-selector)."
 when_to_use: Use when you need a concrete invocation pattern to copy for running multi-plans-execution with a particular scope or mode.
 ---
 
-# Example Usage
+# Multi-Plans Execution Workflow — Example Usage
 
-## Execute three plans with default parallelism (3)
+## Example Usage
+
+### Execute three plans, one worktree at a time (default)
 
 ```text
 User: "Run multi-plans-execution for e2e-coverage-rule-feature-skip-fixme-gap
@@ -13,7 +15,7 @@ User: "Run multi-plans-execution for e2e-coverage-rule-feature-skip-fixme-gap
 ```
 
 The orchestrator loads the three plans, builds the DAG, materializes the union granular Task list, and
-schedules ≤3 nodes at a time through each plan's full lifecycle.
+schedules ready nodes through each plan's full lifecycle, one worktree at a time unless the user allowed more.
 
 In the real 2026-07-18 run of exactly these three plans, the DAG came out **more serial than a
 file-level reading suggests** — a worked illustration of why A5/A6 are re-derived per run rather than
@@ -52,17 +54,18 @@ User: "…for all-in-progress except flaky-migration"
 Each excluded name must be in the resolved set or the run reports a scope error (a mistyped exclusion
 never fails open into running a plan the caller meant to hold back).
 
-## Override the parallelism
+## Allow more worktrees (explicit user override only)
 
 ```text
-User: "…with parallelism 2"     # ceiling of 2 nodes in flight
-User: "…serially"               # parallelism 1 — dependency order only, no parallelism
+User: "…with max-active-worktrees 2"   # at most 2 worktree nodes at once
 ```
+
+The scheduler never raises either cap on its own; only the user's explicit invocation may.
 
 ## Review the schedule first
 
 ```text
-User: "…in plan-only mode"      # emit the DAG report and stop for review
+User: "…in plan-only mode"      # emit the DAG report, confirm it, and stop for review
 ```
 
 ## Explicit dependency in a plan

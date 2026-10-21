@@ -8,11 +8,18 @@ when_to_use: Use when driving one plan through its full lifecycle inside a multi
 Continued in
 [Phase D — Cross-Plan Knowledge Capture and Finalization](./009-phase-d-knowledge-capture-and-finalization.md).
 
-**D1. Full lifecycle per plan.** Each plan proceeds through the complete `plan-execution.md` arc:
-execute all `[AI]` items → validation via `plan-execution-checker` → at most three cycles until no blocking finding remains → for a
-`*-to-pr` plan, exact-head/base PR CI plus one current-head [`pr-leak-review`](../../quality/pr-leak-review.md)
-→ merge or `[HUMAN]` handoff per the plan's Delivery Mode → archival to `plans/done/`. Multi-plan
-scheduling changes _when_ these steps run relative to other plans, never _whether_ they run.
+**D1. Full lifecycle per plan — cleanup is per-plan and immediate.** Each plan proceeds through the
+complete `plan-execution.md` arc: execute all `[AI]` items → validation via
+`plan-execution-checker`, at most three cycles → for a `*-to-pr` plan, exact-head/base PR CI plus one
+current-head [`pr-leak-review`](../../quality/pr-leak-review.md) → merge or `[HUMAN]` handoff per the
+plan's Delivery Mode → archival to `plans/done/` → **that plan's own cleanup**. As soon as a plan
+reaches its terminal `pass` (merged or permitted direct push confirmed, terminal audit passing), run
+its [Worktree and Artifact Cleanup](../../../development/workflow/worktree-and-artifact-cleanup.md)
+immediately in the same session: remove its exact worktree, its eligible branches, and its plan-local
+regenerable build output. Do **not** wait for other plans or for the run's summary. A handed-off PR
+cleans up only after its merge is confirmed; a `partial`, `fail`, or quarantined plan retains its work
+location for resume. Multi-plan scheduling changes _when_ these steps run relative to other plans,
+never _whether_ they run.
 
 **D2. Shared-source plans propagate as a unit.** A plan that declares a local byte-identity
 boundary lands that boundary consistently across its named targets. Two such plans are always

@@ -57,7 +57,10 @@
     },
     "MD009": true, // Trailing spaces
     // Hard tabs, except inside fences for languages indented with tabs
-    "MD010": { "code_blocks": true, "ignore_code_languages": ["go"] },
+    // ("go" for gofmt; "bash"/"sh" for shfmt, which the format-staged hook
+    // runs with default tab indentation, mirrored byte-for-byte into fences
+    // by the harness sync check)
+    "MD010": { "code_blocks": true, "ignore_code_languages": ["go", "bash", "sh"] },
     "MD012": true, // Multiple consecutive blank lines
     "MD047": true, // Files should end with a single newline character
 

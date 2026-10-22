@@ -20,7 +20,10 @@ in. Two reasons under one status can need opposite responses, so read both.
 - Exit `126`, `127`: the guarded command cannot be executed, or is not there.
 - Exit `1`: the work ran and the answer is empty. This is a result, never a capacity signal.
 
-Never bypass HIPPO, weaken a gate, delete possibly live state, or raise mapped concurrency.
+Never bypass HIPPO, weaken a gate, delete possibly live state, or raise mapped concurrency. A pre-push hook the
+guard stopped before any check started may take the one-push exception in
+[Capacity-Held Hook](../../quality/code/capacity-held-hook.md); reaching it never bypasses this guard, and the guard's
+admission stays exactly as declared.
 Unreadable or corrupt shared state fails closed and `status` reports that error instead of a
 partial document. Child codes pass through, including ones colliding with a status HIPPO uses; only
 HIPPO's own failures write that `hippo:` line, and task-failed evidence without a new

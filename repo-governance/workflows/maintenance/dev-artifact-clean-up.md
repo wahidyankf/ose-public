@@ -38,7 +38,7 @@ the only copies, and nothing there is removable except regenerable build output.
    the [Worktree Cap](../../conventions/structure/plans/worktree-cap.md).
 2. **Run the pre-removal checks** — all six, before any removal:
    [Mandatory Pre-Removal Checks](../../development/workflow/worktree-and-artifact-cleanup/mandatory-pre-removal-checks.md).
-3. **Bring down the dev containers this session started**, before touching the worktree:
+3. **Bring down the dev containers this session started, and remove its leaked test containers**, before touching the worktree:
    [Docker-Artifact Cleanup](../../development/workflow/worktree-and-artifact-cleanup/docker-artifact-cleanup.md).
 4. **Remove the worktree**, then `git worktree prune`.
 5. **Delete the branches**, local and remote, under the proof gate:

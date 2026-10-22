@@ -1,0 +1,2 @@
+old=ada new=grace levels=[:debug, :info]
+owner=ada balance=150

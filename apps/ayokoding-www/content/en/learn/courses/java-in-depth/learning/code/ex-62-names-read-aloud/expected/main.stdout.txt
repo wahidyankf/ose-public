@@ -1,0 +1,3 @@
+july: 150
+within batch: true
+names read aloud: true

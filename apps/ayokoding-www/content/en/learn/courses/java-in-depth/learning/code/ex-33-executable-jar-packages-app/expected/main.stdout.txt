@@ -1,0 +1,3 @@
+members: 3
+total: 150
+ships as one jar: true

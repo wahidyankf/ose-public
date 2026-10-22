@@ -1,0 +1,20 @@
+# => Example 45: protocols dispatch on type; callers never branch.
+defprotocol Size do # => the counting contract protocol.
+  # => @doc on the protocol function documents the contract implementers meet.
+  @doc "Counts the meaningful elements of any sized value." # => the implementer contract.
+  def count(value) # => one function, every type answers.
+end # => the protocol closes; dispatch is now open.
+# => defimpl binds the List type to its recursive counting implementation.
+defimpl Size, for: List do # => the List implementation module.
+  def count(list), do: length(list) # => lists count elements.
+end # => the List impl closes.
+# => A second impl covers maps; dispatch picks it by the value's type.
+defimpl Size, for: Map do # => the Map implementation module.
+  def count(map), do: map_size(map) # => maps count keys.
+end # => the Map impl closes.
+# => BitString gets its own impl: bytes, not graphemes, like byte_size.
+defimpl Size, for: BitString do # => the BitString implementation module.
+  def count(bin), do: byte_size(bin) # => binaries count bytes.
+end # => the BitString impl closes.
+# => One call site serves every type; new types add impls, never branches.
+IO.puts("list=#{Size.count([1, 2, 3])} map=#{Size.count(%{a: 1})} bin=#{Size.count("héllo")}") # => three types, one call shape.

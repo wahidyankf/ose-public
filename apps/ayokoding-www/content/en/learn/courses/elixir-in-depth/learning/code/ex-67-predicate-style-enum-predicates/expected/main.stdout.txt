@@ -1,0 +1,2 @@
+every_atom=true has_admin=true member=true
+long=1

@@ -1,0 +1,6 @@
+PASS empty averages zero
+PASS single passes through
+PASS many average exactly
+PASS two need float division
+PASS negative averages honestly
+boundaries covered: 5

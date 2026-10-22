@@ -1,0 +1,2 @@
+contracts hold: 4 of 4
+run with -ea: true

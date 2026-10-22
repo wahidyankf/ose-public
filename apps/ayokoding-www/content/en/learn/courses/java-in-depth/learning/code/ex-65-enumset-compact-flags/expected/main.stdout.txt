@@ -1,0 +1,4 @@
+sari: [VERIFIED, PAID]
+budi complete: true
+sari lacks: [RECEIPTED]
+paid: 2

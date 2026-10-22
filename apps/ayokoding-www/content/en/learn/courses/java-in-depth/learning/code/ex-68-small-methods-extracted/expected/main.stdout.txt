@@ -1,0 +1,4 @@
+sari owes 50 settled=true
+budi owes 75 settled=true
+citra owes 25 settled=true
+helpers: 4

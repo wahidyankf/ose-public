@@ -1,0 +1,2 @@
+date=2026-01-15 qty=12 dates=["2026-01-15"]
+masked=order-2026-01-15 qty=N tokens=["order-2026-01-15", "qty", "N"]

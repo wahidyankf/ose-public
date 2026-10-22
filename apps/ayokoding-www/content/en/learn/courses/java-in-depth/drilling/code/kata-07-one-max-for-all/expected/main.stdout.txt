@@ -1,0 +1,3 @@
+max int: 75
+max string: sari
+one method: true

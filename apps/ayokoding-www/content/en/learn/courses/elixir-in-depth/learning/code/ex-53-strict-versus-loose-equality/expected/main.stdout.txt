@@ -1,0 +1,3 @@
+loose=true strict=false
+atom_string=false same_atom=true
+int=integer one float=numeric one other=other

@@ -1,0 +1,5 @@
+# => Sample lock for Example 77: one pinned package teaches the read path.
+# => Hashes below are illustrative placeholders, not registry checksums.
+%{
+  "jason" => {:hex, :jason, "1.4.10", "1917aa4d7b14a3c5a7f8f9e2c4b6d8e0f1a2b3c4d5e6f70819293a4b5c6d7e8f", [:mix], [], "hexpm", "c4d8e0f1a2b3c4d5e6f70819293a4b5c6d7e8f1917aa4d7b14a3c5a7f8f9e2c4b6d8e0"}
+}

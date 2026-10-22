@@ -1,0 +1,5 @@
+sari owes 50
+budi owes 125
+skip: 'oops-no-colon'
+citra owes 25
+pattern: (?<member>[a-z]+):(?<amount>[0-9]+)

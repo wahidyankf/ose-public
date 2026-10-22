@@ -1,0 +1,2 @@
+string=hello ada atom=hello ada, the atom
+impl_string=Greeter.BitString impl_atom=Greeter.Atom

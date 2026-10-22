@@ -1,0 +1,2 @@
+orig_items=1 added=["book", "pen"] priced=25
+old=25 bumped=26 deep=10

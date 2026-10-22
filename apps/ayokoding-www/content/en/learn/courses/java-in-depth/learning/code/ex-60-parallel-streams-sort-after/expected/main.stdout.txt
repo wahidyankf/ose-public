@@ -1,0 +1,3 @@
+[BUDI, CITRA, DEWI, EKA, GITA, SARI]
+letters: 24
+agree: true

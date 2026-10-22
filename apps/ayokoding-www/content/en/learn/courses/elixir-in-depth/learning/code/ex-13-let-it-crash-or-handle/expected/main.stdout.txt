@@ -1,0 +1,2 @@
+inside=3.5
+safe={:ok, 3.5} unsafe={:error, :zero_divisor}

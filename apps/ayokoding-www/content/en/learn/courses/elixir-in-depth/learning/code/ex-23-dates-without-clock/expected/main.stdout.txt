@@ -1,0 +1,1 @@
+release=2026-01-15 plus30=2026-02-14 span=30 order=lt week=7

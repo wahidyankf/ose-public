@@ -1,0 +1,7 @@
+RECEIPT
+member: sari
+amount: 50
+status: SETTLED
+sari,50
+budi,75
+lines: 4

@@ -1,0 +1,7 @@
+member    dues
+sari        50
+budi       125
+share: 0.29
+id: 0007
+hex: ff
+budi owes sari

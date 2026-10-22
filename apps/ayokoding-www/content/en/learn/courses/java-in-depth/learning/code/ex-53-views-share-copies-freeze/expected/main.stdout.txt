@@ -1,0 +1,6 @@
+window: [sari:50, budi:75]
+frozen: [sari:50, budi:75]
+window sees growth: [sari:50, budi:75, citra:25]
+frozen ignores growth: [sari:50, budi:75]
+view read-only: true
+live: 3, window: 3, frozen: 2

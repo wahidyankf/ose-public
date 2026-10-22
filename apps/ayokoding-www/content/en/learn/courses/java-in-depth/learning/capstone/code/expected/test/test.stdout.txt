@@ -1,0 +1,14 @@
+PASS parses member
+PASS parses amount
+PASS trims whitespace
+PASS no colon refused
+PASS blank member refused
+PASS text amount refused
+PASS negative refused
+PASS two members settled
+PASS total folds
+PASS two skipped
+PASS renders headcount
+PASS renders total
+failures: 0
+suite green: true

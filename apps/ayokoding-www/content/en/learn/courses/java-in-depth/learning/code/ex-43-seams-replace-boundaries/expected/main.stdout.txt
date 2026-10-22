@@ -1,0 +1,4 @@
+PASS two messages sent
+PASS first message exact
+PASS negative refused
+PASS refusal sent nothing

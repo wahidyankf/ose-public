@@ -1,0 +1,20 @@
+# => Kata 8 solution: the protocol opens dispatch; types add impls elsewhere.
+defprotocol KataSize do # => the size contract.
+  # => The protocol function is the only contract new types must meet.
+  def count(value) # => one function, every type counts.
+end # => the protocol closes.
+# => Each impl lives beside its type; the call site never branches again.
+defimpl KataSize, for: List do # => the list impl.
+  def count(list), do: length(list) # => lists count by length.
+end # => the List impl closes.
+defimpl KataSize, for: Map do # => the map impl.
+  def count(map), do: map_size(map) # => maps count by size.
+end # => the Map impl closes.
+defimpl KataSize, for: BitString do # => the binary impl.
+  def count(bin), do: byte_size(bin) # => binaries count by bytes.
+end # => the BitString impl closes.
+defimpl KataSize, for: Atom do # => the atom impl.
+  def count(_), do: 1 # => atoms always count one.
+end # => the Atom impl closes.
+# => New types add files, not clauses; the call site stays closed.
+IO.puts("list=#{KataSize.count([1, 2])} map=#{KataSize.count(%{a: 1})} bin=#{KataSize.count("ab")} other=#{KataSize.count(:x)}") # => list=2 map=1 bin=2 other=1.

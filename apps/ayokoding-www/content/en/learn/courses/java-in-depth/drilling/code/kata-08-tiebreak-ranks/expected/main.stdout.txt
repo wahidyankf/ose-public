@@ -1,0 +1,4 @@
+budi: 12
+sari: 12
+ada: 9
+tiebreak: name

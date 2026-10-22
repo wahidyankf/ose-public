@@ -1,0 +1,1 @@
+before=add( 1,2 ) after=add(1, 2) stable=true check=0

@@ -1,0 +1,2 @@
+parts=["Ada Lovelace", "1815"] starts=true first=Ada
+shaped=......ada_lovelace,_1815

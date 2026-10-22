@@ -1,0 +1,3 @@
+sari:50
+rejected: member must be non-blank
+rejected: amount must be >= 0, got -5

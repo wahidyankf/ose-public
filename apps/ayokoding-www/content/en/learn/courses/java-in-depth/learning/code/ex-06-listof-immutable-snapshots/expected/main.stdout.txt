@@ -1,0 +1,5 @@
+stops: 3
+first: ada
+frozen: UnsupportedOperationException
+copy: [ada, grace, sari, dewi]
+plan: [ada, grace, sari]

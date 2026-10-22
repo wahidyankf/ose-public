@@ -1,0 +1,1 @@
+total=8 big=["book", "pen"] names=["book", "pen", "ink"] many=["book", "pen"]

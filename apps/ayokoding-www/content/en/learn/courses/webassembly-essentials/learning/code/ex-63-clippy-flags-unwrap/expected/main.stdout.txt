@@ -1,0 +1,4 @@
+line 1: bare unwrap, handle the Err arm
+line 6: bare unwrap, handle the Err arm
+line 8: bare unwrap, handle the Err arm
+3 unwrap findings

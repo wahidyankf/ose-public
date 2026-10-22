@@ -1,0 +1,2 @@
+build: ["store", "ui", "app"]
+refused: cycle through a: ["a", "b"]

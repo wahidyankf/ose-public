@@ -1,0 +1,1 @@
+refused: lock block pins no name: "# Pinned dependency graph for ex-33-cargo-lock-pins-versions.\n# Abbreviated for teaching: each stanza keeps name, version, and source.\n# Real lockfiles add one checksum line per package pinning the exact bytes;\n# the checker in main.rs verifies names and versions, the same shape the\n# checksum rule takes one line further down."

@@ -1,0 +1,9 @@
+
+running 4 tests
+test tests::grade_tests::grades_band_edges ... ok
+test tests::grade_tests::zero_is_f ... ok
+test tests::parse_tests::parses_digits ... ok
+test tests::parse_tests::refuses_letters ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

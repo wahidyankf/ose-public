@@ -1,0 +1,9 @@
+farah: 95 (A)
+sari: 91 (A)
+citra: 88 (B)
+budi: 77 (C)
+irfan: 73 (C)
+hadi: 62 (D)
+refused: line 4: "deka" has no '='
+refused: line 5: score "many" is not a number
+refused: line 7: score 104 is outside 0..=100

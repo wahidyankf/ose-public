@@ -1,0 +1,2 @@
+parsed: [("sari", 91), ("budi", 77)]
+refused: catalog: "budi--77" has no '='

@@ -1,0 +1,6 @@
+Add("grade roster") -> Some(Open { title: "grade roster" })
+Start("sari") -> Some(Doing { title: "grade roster", by: "sari" })
+Finish -> Some(Done { title: "grade roster" })
+refused: Start("budi") on "grade roster" done
+refused: Drop("superseded") on "grade roster" done
+refused: "next roster" arrives while a task is open

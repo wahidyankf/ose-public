@@ -1,0 +1,2 @@
+sum: Some(42)
+name: Some("wasi")

@@ -1,0 +1,3 @@
+line 3: tab indentation, use four spaces
+line 4: 112 chars, wrap past 100
+2 layout findings

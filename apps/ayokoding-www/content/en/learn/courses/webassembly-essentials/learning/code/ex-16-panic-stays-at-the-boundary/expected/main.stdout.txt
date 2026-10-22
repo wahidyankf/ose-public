@@ -1,0 +1,4 @@
+200u8 + 100 overflows: refused, not trapped
+saturating 200 + 100 = 255
+square has 4 sides: contract holds
+3 - 5 underflows u32: refused, not trapped

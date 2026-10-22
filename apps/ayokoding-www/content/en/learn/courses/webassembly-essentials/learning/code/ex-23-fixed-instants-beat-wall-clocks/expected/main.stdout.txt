@@ -1,0 +1,3 @@
+launch=1792540800 ignition=1792540830 cutoff=1792541430 done=1792541730
+warmup=30s burn=600s cooldown=300s
+window=930s

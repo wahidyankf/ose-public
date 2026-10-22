@@ -1,0 +1,18 @@
+schema: ayokoding.run/v1
+toolchain: webassembly
+runs:
+  - name: main
+    command: [sh, -c, 'wazero run test.wasm | sed -e "s/finished in [0-9.]*s/finished in 0.00s/"']
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+  - name: verbose
+    command:
+      [
+        sh,
+        -c,
+        'wazero run test.wasm -- --nocapture --test-threads=1 | sed -e "s/finished in [0-9.]*s/finished in 0.00s/"',
+      ]
+    expect:
+      exit: 0
+      stdout: expected/verbose.stdout.txt

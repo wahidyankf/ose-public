@@ -1,0 +1,4 @@
+sari: 91
+citra: 88
+budi: 77
+eka: 77

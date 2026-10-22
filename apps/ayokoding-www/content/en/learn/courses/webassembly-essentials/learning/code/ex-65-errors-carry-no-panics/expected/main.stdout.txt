@@ -1,0 +1,3 @@
+line 4: panic!( in shipped code
+line 8: unreachable!( in shipped code
+2 trap findings

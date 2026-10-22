@@ -1,0 +1,3 @@
+sari -> A
+budi -> C
+refused: "many" is not a score

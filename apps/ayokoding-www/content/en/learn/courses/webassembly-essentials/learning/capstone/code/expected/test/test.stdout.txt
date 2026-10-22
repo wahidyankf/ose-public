@@ -1,0 +1,10 @@
+
+running 5 tests
+test tests::grades_all_bands ... ok
+test tests::parses_clean_row ... ok
+test tests::ranks_ties_by_name ... ok
+test tests::refuses_out_of_range ... ok
+test tests::refuses_shapeless_row ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

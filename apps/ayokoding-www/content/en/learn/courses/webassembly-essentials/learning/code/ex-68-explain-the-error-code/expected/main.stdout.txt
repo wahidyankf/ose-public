@@ -1,0 +1,8 @@
+NotFound: check the path: the file or mount is missing
+PermissionDenied: write to /tmp: the unit folder is read-only
+Unsupported: fall back: the runtime does not implement this
+InvalidInput: fix the input: the value itself is shapeless
+BrokenPipe: the other end is gone: reconnect or degrade
+TimedOut: lengthen the timeout or shrink the work
+WriteZero: the write landed nowhere: clean /tmp and retry
+Other: unexpected kind: match on it explicitly before shipping

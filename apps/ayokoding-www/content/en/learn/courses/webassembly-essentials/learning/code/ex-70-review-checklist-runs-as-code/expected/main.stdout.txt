@@ -1,0 +1,7 @@
+before: line 1: CamelCase fn name
+before: line 2: tab indentation
+before: line 2: bare unwrap
+before: line 6: panic in shipped code
+before: no doc comment
+before: 5 findings
+after: 0 findings

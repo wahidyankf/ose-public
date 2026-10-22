@@ -1,0 +1,9 @@
+
+running 4 tests
+test tests::century_is_not_leap ... ok
+test tests::four_hundredth_year_is_leap ... ok
+test tests::leap_year_divisible_by_4 ... ok
+test tests::ordinary_year_is_not_leap ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

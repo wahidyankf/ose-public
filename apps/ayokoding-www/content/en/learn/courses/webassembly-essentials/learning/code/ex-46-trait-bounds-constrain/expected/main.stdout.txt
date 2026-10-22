@@ -1,0 +1,4 @@
+scores max: 91
+winner reused: 91
+ratios max: 9.1
+best reused: 9.1

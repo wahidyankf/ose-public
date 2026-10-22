@@ -1,0 +1,8 @@
+joined: "learning/code/ex-25-paths-join-safely/main.rs"
+extension: Some("rs")
+stem: Some("main")
+part: Normal("learning")
+part: Normal("code")
+part: Normal("ex-25-paths-join-safely")
+part: Normal("main.rs")
+sibling: "learning/code/ex-25-paths-join-safely/main.wasm"

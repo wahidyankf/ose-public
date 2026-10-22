@@ -1,0 +1,6 @@
+pushed 21: len=1 cap=2
+pushed 22: len=2 cap=2
+pushed 23: len=3 cap=4
+pushed 24: len=4 cap=4
+popped 24: len=3
+first reading: 21

@@ -1,0 +1,1 @@
+Map<Filter<std::slice::Iter<'_, u32>, {closure@apps/ayokoding-www/content/en/learn/courses/webassembly-essentials/learning/code/ex-07-iterators-replace-loops//main.rs:16:17: 16:24}>, {closure@apps/ayokoding-www/content/en/learn/courses/webassembly-essentials/learning/code/ex-07-iterators-replace-loops//main.rs:17:14: 17:21}>

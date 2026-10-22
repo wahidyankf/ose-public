@@ -1,0 +1,1 @@
+shops=1 visits=1

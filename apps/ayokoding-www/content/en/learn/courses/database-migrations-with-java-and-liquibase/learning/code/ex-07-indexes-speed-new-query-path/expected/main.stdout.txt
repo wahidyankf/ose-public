@@ -1,0 +1,2 @@
+members indexes recorded: 1
+lookup by handle finds: citra

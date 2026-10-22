@@ -1,0 +1,3 @@
+duplicate handle rejected: true
+not-null rules recorded: 2
+unique rules recorded: 1

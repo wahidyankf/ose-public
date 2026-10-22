@@ -1,0 +1,2 @@
+short migration applied: 1
+locked after short run: false

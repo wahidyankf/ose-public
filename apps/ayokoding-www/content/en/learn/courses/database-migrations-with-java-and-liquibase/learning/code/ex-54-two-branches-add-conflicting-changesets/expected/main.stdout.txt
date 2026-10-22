@@ -1,0 +1,2 @@
+branch conflict failure: CommandExecutionException
+winning branch rows: 1

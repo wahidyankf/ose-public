@@ -1,0 +1,2 @@
+loaded rows: 4
+maluku rows: 2

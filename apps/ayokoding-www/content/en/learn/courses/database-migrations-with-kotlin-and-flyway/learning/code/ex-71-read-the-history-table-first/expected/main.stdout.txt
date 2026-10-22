@@ -1,0 +1,2 @@
+1 create clinics SQL true
+2 create visits SQL true

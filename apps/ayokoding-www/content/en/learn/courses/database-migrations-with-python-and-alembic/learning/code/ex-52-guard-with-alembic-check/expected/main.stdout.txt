@@ -1,0 +1,4 @@
+No new upgrade operations detected.
+check clean: True
+check after drift: failed as designed
+cleaned: yes

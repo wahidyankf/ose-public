@@ -1,0 +1,3 @@
+heads: ex10a2
+columns: id, name, price_cents
+cleaned: yes

@@ -1,0 +1,17 @@
+schema: ayokoding.run/v1
+toolchain: kotlin
+services: [postgres]
+dependencies:
+  lockfile: learning/code/jars.lock
+runs:
+  - name: main
+    command:
+      [
+        sh,
+        -c,
+        'CP=$(echo /deps/kotlin/*.jar | tr '' '' '':''); kotlinc after/Solution.kt -cp "$CP" -include-runtime -d main.jar 2>/dev/null && java -cp "main.jar:$CP" SolutionKt',
+      ]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+      stderr: ignore

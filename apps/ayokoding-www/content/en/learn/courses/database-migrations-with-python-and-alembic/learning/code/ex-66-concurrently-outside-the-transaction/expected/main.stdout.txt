@@ -1,0 +1,3 @@
+in transaction: refused as designed
+concurrently: True
+cleaned: yes

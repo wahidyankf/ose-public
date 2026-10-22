@@ -1,0 +1,4 @@
+old query rows: 1
+old query name: sprocket
+columns: id, name, nickname
+cleaned: yes

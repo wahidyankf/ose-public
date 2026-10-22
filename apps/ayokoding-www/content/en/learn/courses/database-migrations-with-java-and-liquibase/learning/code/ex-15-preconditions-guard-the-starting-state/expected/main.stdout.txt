@@ -1,0 +1,3 @@
+precondition failure: CommandExecutionException
+ledger table present: 1
+changesets applied: 2

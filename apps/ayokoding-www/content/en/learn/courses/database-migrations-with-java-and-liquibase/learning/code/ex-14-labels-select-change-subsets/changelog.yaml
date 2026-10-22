@@ -1,0 +1,34 @@
+databaseChangeLog: # => Root key required for every YAML changelog
+  - changeSet: # => The v1 changeset ships with the first release train
+      id: 001-make-carts
+      # => carts belong to the release the program selects below
+      author: course
+      # => one author keeps the identity triples in this file uniform
+      labels: v1
+      # => label v1 marks this changeset for the first release only
+      changes:
+        - createTable: # => Declarative table creation, the YAML counterpart of DDL
+            tableName: carts
+            # => the v1 table the verification below must find
+            columns:
+              - column: # => One entry per column, name and type together
+                  name: id
+                  type: SERIAL
+                  constraints:
+                    primaryKey: true
+  - changeSet: # => The v2 changeset waits for its own release train
+      id: 002-make-coupons
+      # => coupons ship later, so this changeset stays pending for now
+      author: course
+      labels: v2
+      # => label v2 excludes this changeset from the v1 expression run
+      changes:
+        - createTable:
+            tableName: coupons
+            # => absence of this table below proves the label held
+            columns:
+              - column:
+                  name: id
+                  type: SERIAL
+                  constraints:
+                    primaryKey: true

@@ -1,0 +1,3 @@
+001-make-upsilon | course | 001-make-upsilon.sql | order 1 | EXECUTED
+002-make-phi | course | 002-make-phi.sql | order 2 | EXECUTED
+003-make-chi | course | 003-make-chi.sql | order 3 | EXECUTED

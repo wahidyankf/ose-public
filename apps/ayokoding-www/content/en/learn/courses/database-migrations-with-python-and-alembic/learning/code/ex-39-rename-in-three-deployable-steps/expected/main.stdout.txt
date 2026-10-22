@@ -1,0 +1,4 @@
+heads: ex39a3
+columns: id, full_name
+renamed: Ada Lovelace
+cleaned: yes

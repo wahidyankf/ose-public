@@ -1,0 +1,2 @@
+title and body columns present: 2
+old rows kept: 1

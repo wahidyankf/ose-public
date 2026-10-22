@@ -1,0 +1,4 @@
+valid=true
+1 << Flyway Baseline >> true
+2 add channel true
+3 add total true

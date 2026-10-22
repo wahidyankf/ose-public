@@ -1,0 +1,2 @@
+edited migration failure: CommandExecutionException
+merged rows intact: 2

@@ -1,0 +1,43 @@
+// Example 53: From Baseline to Green Pipeline.
+// stamp, migrate, validate: all green.
+import org.flywaydb.core.Flyway // => the entry point: configure, then migrate
+import java.sql.DriverManager // => plain JDBC for the verification queries
+
+fun dbUrl(): String { // => one URL builder shared by Flyway and JDBC
+    val host = System.getenv("PGHOST") ?: "localhost" // => service alias on the unit network
+    val db = System.getenv("PGDATABASE") ?: "postgres" // => the service's database name
+    return "jdbc:postgresql://" + host + "/" + db // => trust auth needs no password
+} // => helper ends: every connection string flows through here
+
+fun dbUser(): String { // => one user lookup shared by Flyway and JDBC
+    return System.getenv("PGUSER") ?: "postgres" // => postgres superuser in the service container
+} // => helper ends: a single place if the service user ever changes
+
+fun main() { // => the entry point the harness runs
+    DriverManager.getConnection(dbUrl(), dbUser(), null).use { conn -> // => connect before Flyway exists
+        conn.createStatement().use { st -> // => plain DDL outside any migration
+            st.executeUpdate("CREATE TABLE IF NOT EXISTS legacy_orders (id SERIAL PRIMARY KEY, item TEXT NOT NULL)") // => the pre-Flyway schema
+            st.executeUpdate("DELETE FROM legacy_orders") // => reset to the pre-import state
+            st.executeUpdate("INSERT INTO legacy_orders (item) VALUES ('nails')") // => real data the baseline must keep
+        } // => statement closed here
+    } // => connection closed: the legacy store stands ready
+    val flyway = Flyway.configure() // => start from a clean configuration
+        .dataSource(dbUrl(), dbUser(), null) // => trust auth: user with no password
+        .locations("filesystem:migrations") // => SQL files live beside the program
+        .load() // => freeze the configuration into a Flyway instance
+    try { // => first run stamps; re-runs find the stamp already there
+        flyway.baseline() // => step one: stamp the past
+    } catch (e: Exception) { // => the stamp persists, so later runs stand down
+    } // => either path converges on the same stamped history
+    flyway.migrate() // => apply pending migrations; re-runs find nothing new
+    println("valid=" + flyway.validateWithResult().validationSuccessful) // => step three: prove coherence
+    DriverManager.getConnection(dbUrl(), dbUser(), null).use { conn -> // => open one JDBC connection
+        conn.createStatement().use { st -> // => a statement for the history query
+            st.executeQuery("SELECT version, description, success FROM flyway_schema_history ORDER BY installed_rank").use { rs -> // => history rows in apply order
+                while (rs.next()) { // => walk every recorded migration
+                    println(rs.getString(1) + " " + rs.getString(2) + " " + rs.getBoolean(3)) // => one line per migration
+                } // => loop ends after the last applied migration
+            } // => result set closed here
+        } // => statement closed here
+    } // => connection closed here
+} // => main ends: every check printed

@@ -1,0 +1,4 @@
+stamped: ex45a1
+after new migration: ex45a2
+columns: id, name, price_cents
+cleaned: yes

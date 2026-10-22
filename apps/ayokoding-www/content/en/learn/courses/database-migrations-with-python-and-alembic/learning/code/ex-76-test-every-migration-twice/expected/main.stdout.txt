@@ -1,0 +1,5 @@
+first run tables: 1
+after teardown: 0
+second run tables: 1
+stable: True
+cleaned: yes

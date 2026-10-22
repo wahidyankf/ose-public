@@ -1,0 +1,5 @@
+## Example code for database-migrations-with-kotlin-and-flyway
+
+One folder per worked example: `ex-NN-<slug>/` holds `Main.kt`, a `migrations/` directory with the versioned SQL files (plus extra directories where an example compares two file sets), its `run.yaml` (`toolchain: kotlin`, the `kotlin` install recipe with a course-relative `dependencies.lockfile`, a real pinned PostgreSQL 18 service container, no network), and the recorded output under `expected/`. Multi-file units anchor every file in the lesson; every unit is deterministic: fixed inputs, trust-auth connections to the per-run service alias, no clocks, no timings, no paths or addresses in output. Flyway's own log lines go to stderr and never enter the golden transcript.
+
+Kata starters are intentionally imperfect -- they exist to be fixed -- and only the `after/` solutions run green in the harness. The capstone migrates an order-management schema through eight migrations and asserts the final schema and data with a golden query output.

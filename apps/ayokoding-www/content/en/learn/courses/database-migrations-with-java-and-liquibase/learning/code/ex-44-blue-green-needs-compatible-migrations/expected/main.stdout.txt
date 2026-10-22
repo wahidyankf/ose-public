@@ -1,0 +1,2 @@
+rows the old read still sees: 1
+new tag column present: 1

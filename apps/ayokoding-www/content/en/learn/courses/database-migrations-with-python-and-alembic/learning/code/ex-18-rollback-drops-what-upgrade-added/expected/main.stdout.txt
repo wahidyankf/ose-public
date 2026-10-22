@@ -1,0 +1,3 @@
+heads: ex18a1
+columns: id, name
+cleaned: yes

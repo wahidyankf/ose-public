@@ -1,0 +1,6 @@
+databaseChangeLog: # => Root key required for every YAML changelog
+  - includeAll: # => Discovers every changelog file in one directory
+      path: ledger/
+      # => path is relative to this master file, not to the classpath
+      # => Liquibase sorts the discovered files alphabetically before running
+      # => Three audited files are the release the audit below lists

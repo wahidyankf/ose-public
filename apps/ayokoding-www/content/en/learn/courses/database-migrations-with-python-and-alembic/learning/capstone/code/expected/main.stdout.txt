@@ -1,0 +1,9 @@
+migrations: 8
+heads: 1
+current: cap2d1
+customers: 2
+orders: 3
+total: 748
+memos: fragile,gift,rush
+note gone: True
+capstone ok

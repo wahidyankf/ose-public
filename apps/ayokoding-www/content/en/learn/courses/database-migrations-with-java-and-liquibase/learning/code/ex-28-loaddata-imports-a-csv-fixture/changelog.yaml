@@ -1,0 +1,34 @@
+databaseChangeLog: # => Root key required for every YAML changelog
+  - changeSet: # => The structure changeset creates the spices table first
+      id: 001-make-spices
+      # => loads always target a table an earlier changeset created
+      author: course
+      # => one author keeps the identity triples in this file uniform
+      changes:
+        - createTable: # => Declarative table creation, the YAML counterpart of DDL
+            tableName: spices
+            # => the spices the CSV load below fills
+            columns:
+              - column: # => One entry per column, name and type together
+                  name: id
+                  type: SERIAL
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: VARCHAR(60)
+              - column:
+                  name: origin
+                  type: VARCHAR(60)
+  - changeSet: # => The data changeset loads the CSV file in one move
+      id: 002-load-spices
+      # => reruns skip it as applied, so the rows never duplicate
+      author: course
+      changes:
+        - loadData: # => loadData maps CSV headers onto table columns
+            tableName: spices
+            # => the table the four CSV rows land in
+            file: seeds.csv
+            # => the fixture lives beside this changelog in the unit folder
+            relativeToChangelogFile: true
+            # => relative resolution keeps the unit portable across machines

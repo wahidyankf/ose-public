@@ -1,0 +1,3 @@
+check: True
+rows: 3
+kata ok

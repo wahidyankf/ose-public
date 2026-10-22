@@ -1,0 +1,2 @@
+gate refusal: CommandExecutionException
+history rows recorded by gate: 0

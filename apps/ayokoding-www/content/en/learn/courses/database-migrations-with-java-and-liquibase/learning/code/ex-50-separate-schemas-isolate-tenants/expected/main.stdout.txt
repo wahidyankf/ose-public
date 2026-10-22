@@ -1,0 +1,2 @@
+tenant_a invoices: 1
+tenant_b invoices: 1

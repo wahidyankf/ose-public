@@ -1,0 +1,3 @@
+after one: id, name
+after two: id, name, price_cents
+cleaned: yes

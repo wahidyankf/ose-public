@@ -1,0 +1,4 @@
+done=Done
+new=New
+paid=Paid
+sent=Sent

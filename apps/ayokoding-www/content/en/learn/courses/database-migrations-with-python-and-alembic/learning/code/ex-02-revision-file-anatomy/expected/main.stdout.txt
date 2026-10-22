@@ -1,0 +1,5 @@
+revision: ex02a1
+down_revision: None
+doc: create ex02 gadgets.
+module: ex02a1_create_gadgets_py
+path ends with: ex02a1_create_gadgets.py

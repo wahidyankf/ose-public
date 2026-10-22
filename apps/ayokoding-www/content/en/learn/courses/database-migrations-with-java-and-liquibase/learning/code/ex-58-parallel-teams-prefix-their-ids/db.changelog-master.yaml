@@ -1,0 +1,6 @@
+databaseChangeLog: # => Root key required for every YAML changelog
+  - includeAll: # => Discovers every changelog file in one directory
+      path: teams/
+      # => path is relative to this master file, not to the classpath
+      # => Liquibase sorts the discovered files alphabetically before running
+      # => Team prefixes keep both id spaces disjoint inside one history

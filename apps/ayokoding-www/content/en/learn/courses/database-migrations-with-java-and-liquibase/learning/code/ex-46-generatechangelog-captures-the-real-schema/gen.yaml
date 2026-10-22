@@ -1,0 +1,202 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1792649329280-1
+      author: course
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: orders_pkey
+                  name: id
+                  startWith: 2
+                  type: INTEGER
+              - column:
+                  constraints:
+                    nullable: false
+                  name: total_cents
+                  type: INTEGER
+            tableName: orders
+  - changeSet:
+      id: 1792649329280-2
+      author: course
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: events_pkey
+                  name: id
+                  startWith: 2
+                  type: INTEGER
+              - column:
+                  constraints:
+                    nullable: false
+                  name: code
+                  type: VARCHAR(20)
+            tableName: events
+  - changeSet:
+      id: 1792649329280-3
+      author: course
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: purchase_orders_pkey
+                  name: id
+                  startWith: 3
+                  type: INTEGER
+              - column:
+                  constraints:
+                    nullable: false
+                  name: customer
+                  type: VARCHAR(60)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: item
+                  type: VARCHAR(60)
+            tableName: purchase_orders
+  - changeSet:
+      id: 1792649329280-4
+      author: course
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: order_lines_pkey
+                  name: id
+                  startWith: 3
+                  type: INTEGER
+              - column:
+                  constraints:
+                    nullable: false
+                  name: order_id
+                  type: INTEGER
+              - column:
+                  constraints:
+                    nullable: false
+                  name: item
+                  type: VARCHAR(60)
+            tableName: order_lines
+  - changeSet:
+      id: 1792649329280-5
+      author: course
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: feature_flags_pkey
+                  name: name
+                  type: VARCHAR(60)
+              - column:
+                  constraints:
+                    nullable: false
+                  defaultValueBoolean: false
+                  name: enabled
+                  type: BOOLEAN
+            tableName: feature_flags
+  - changeSet:
+      id: 1792649329280-6
+      author: course
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: goods_pkey
+                  name: id
+                  startWith: 2
+                  type: INTEGER
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: VARCHAR(60)
+              - column:
+                  name: tag
+                  type: VARCHAR(30)
+            tableName: goods
+  - changeSet:
+      id: 1792649329280-7
+      author: course
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: legacy_invoices_pkey
+                  name: id
+                  startWith: 2
+                  type: INTEGER
+              - column:
+                  name: total_cents
+                  type: INTEGER
+            tableName: legacy_invoices
+  - changeSet:
+      id: 1792649329280-8
+      author: course
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: legacy_widgets_pkey
+                  name: id
+                  type: INTEGER
+              - column:
+                  name: sku
+                  type: VARCHAR(30)
+            tableName: legacy_widgets
+  - changeSet:
+      id: 1792649329280-9
+      author: course
+      changes:
+        - createIndex:
+            columns:
+              - column:
+                  name: code
+            indexName: ix_events_code
+            tableName: events
+            using: btree
+  - changeSet:
+      id: 1792649329280-10
+      author: course
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: order_id
+            baseTableName: order_lines
+            constraintName: order_lines_order_id_fkey
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: purchase_orders
+            validate: true

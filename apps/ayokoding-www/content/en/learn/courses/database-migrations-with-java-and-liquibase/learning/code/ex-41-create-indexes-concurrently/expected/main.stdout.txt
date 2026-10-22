@@ -1,0 +1,2 @@
+concurrent indexes recorded: 1
+rows found through the index: 1

@@ -1,0 +1,2 @@
+1 create publishers true
+2 create magazines true

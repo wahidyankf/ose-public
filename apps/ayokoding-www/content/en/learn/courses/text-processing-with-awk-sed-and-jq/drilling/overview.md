@@ -408,8 +408,8 @@ grep 'engineer' employees.txt | cut -d: -f1
 # => Kata 1 solution: one awk program selects and projects together.
 # => co-01: -F: splits records; $2 == "engineer" tests the role exactly.
 # => co-02: the pattern admits engineers; the action prints their names.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-awk -F: '$2 == "engineer" { print $1 }' employees.txt  # => one program, no pipe
+set -euo pipefail                                     # => strict mode: fail fast on errors and unset names
+awk -F: '$2 == "engineer" { print $1 }' employees.txt # => one program, no pipe
 # => exact equality beats grep here: "engineer" never matches "engineering".
 ```
 
@@ -446,8 +446,8 @@ sed 's/version 1/version 2/' releases.txt
 # => Kata 2 solution: the $ anchor confines the edit to a trailing version 1.
 # => co-14: the second run finds no trailing "version 1", so output is stable.
 # => co-06: the s command still does the replacing; the anchor guards it.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-sed -E 's/version 1$/version 2/' releases.txt  # => upgrade exactly version 1, rerun-safe
+set -euo pipefail                             # => strict mode: fail fast on errors and unset names
+sed -E 's/version 1$/version 2/' releases.txt # => upgrade exactly version 1, rerun-safe
 # => "version 10" survives because 1 is not trailing there; "version 2" is done.
 ```
 
@@ -486,8 +486,8 @@ jq '.groups[].members' nested.json
 # => Kata 3 solution: the second .[] walks each group's members too.
 # => co-09: .groups[].members[] streams every member as one value.
 # => co-10: -r unwraps each value to a raw line for the next shell tool.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-jq -r '.groups[].members[]' nested.json  # => flatten two levels into member lines
+set -euo pipefail                       # => strict mode: fail fast on errors and unset names
+jq -r '.groups[].members[]' nested.json # => flatten two levels into member lines
 # => one .[] per nesting level: groups, then members inside each group.
 ```
 
@@ -527,8 +527,8 @@ cut -d, -f1 stock.csv
 # => Kata 4 solution: jq reads raw lines and builds one object per row.
 # => co-11: {sku, qty} constructs the object; tonumber keeps qty numeric.
 # => co-09: -R feeds raw CSV lines in; select drops the header row.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-jq -R -c 'split(",") | select(.[0] != "sku") | {sku: .[0], qty: (.[1] | tonumber)}' stock.csv  # => one object per row
+set -euo pipefail                                                                             # => strict mode: fail fast on errors and unset names
+jq -R -c 'split(",") | select(.[0] != "sku") | {sku: .[0], qty: (.[1] | tonumber)}' stock.csv # => one object per row
 # => compact -c output keeps one object per line: JSON lines, ready to stream.
 ```
 
@@ -567,8 +567,8 @@ sed 's/abc123/REDACTED/' config.txt
 # => Kata 5 solution: match the key shape, not any single secret value.
 # => co-14: rewriting REDACTED to REDACTED is a no-op, so reruns are safe.
 # => co-06: one s command redacts every secret line in a single pass.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-sed -E 's/^(token|key)=.*/\1=REDACTED/' config.txt  # => redact by key name, not by value
+set -euo pipefail                                  # => strict mode: fail fast on errors and unset names
+sed -E 's/^(token|key)=.*/\1=REDACTED/' config.txt # => redact by key name, not by value
 # => user=adi survives: its key is outside the (token|key) group.
 ```
 

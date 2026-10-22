@@ -54,7 +54,7 @@ Without `-u`, `$OUTPT_DIR` is an empty string and `rm -rf "$OUTPT_DIR"/` targets
 
 ```bash
 # => Example 2: -u turns a misspelled variable into a loud failure.
-set -euo pipefail      # => strict header first, as in every example
+set -euo pipefail # => strict header first, as in every example
 # shellcheck disable=SC2034 # rationale: demo references the misspelled name to trigger -u
 output_dir="build/out" # => the real variable the script means to use
 # => WHY a subshell: the typo must fail without killing this demo script.

@@ -47,11 +47,11 @@ flowchart TD
 #!/bin/bash
 # => Worked Example 39: anchor patterns so reruns change nothing.
 # => co-14: v1$ matches only a trailing v1, so v10 and v2 never match.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-first=$(sed -E 's/v1$/v2/' deps.txt)  # => first pass: v1 becomes v2, v10 untouched
-second=$(printf '%s\n' "$first" | sed -E 's/v1$/v2/')  # => second pass over the result
-printf '%s\n' "$first"  # => the edited text, printed once
-if [ "$first" = "$second" ]; then echo "stable: yes"; else echo "stable: no"; fi  # => rerun proof
+set -euo pipefail                                                                # => strict mode: fail fast on errors and unset names
+first=$(sed -E 's/v1$/v2/' deps.txt)                                             # => first pass: v1 becomes v2, v10 untouched
+second=$(printf '%s\n' "$first" | sed -E 's/v1$/v2/')                            # => second pass over the result
+printf '%s\n' "$first"                                                           # => the edited text, printed once
+if [ "$first" = "$second" ]; then echo "stable: yes"; else echo "stable: no"; fi # => rerun proof
 # => command substitution carries text between passes; no file is rewritten.
 ```
 
@@ -100,8 +100,8 @@ Theme C becomes the safety fence for the substitution from Theme D.
 # => Worked Example 40: confine edits to addressed lines.
 # => co-14: the range address fences the substitution; lines outside keep host=.
 # => co-05: /# web/,/# db/ selects exactly the web-tier block.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-sed -E '/# web/,/# db/s/host=/node=/' servers.txt  # => rename host= only inside the web block
+set -euo pipefail                                 # => strict mode: fail fast on errors and unset names
+sed -E '/# web/,/# db/s/host=/node=/' servers.txt # => rename host= only inside the web block
 # => the db line keeps host= because it sits outside the addressed range.
 ```
 
@@ -152,11 +152,11 @@ asserting it.
 #!/bin/bash
 # => Worked Example 41: run an awk cleanup twice, prove stability.
 # => co-14: rebuilding fields with OFS converges: the second run is a no-op.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-first=$(awk '{$1=$1; print}' messy.txt)  # => first pass: collapse every whitespace run
-second=$(printf '%s\n' "$first" | awk '{$1=$1; print}')  # => second pass over the result
-printf '%s\n' "$first"  # => the cleaned text, printed once
-if [ "$first" = "$second" ]; then echo "stable: yes"; else echo "stable: no"; fi  # => rerun proof
+set -euo pipefail                                                                # => strict mode: fail fast on errors and unset names
+first=$(awk '{$1=$1; print}' messy.txt)                                          # => first pass: collapse every whitespace run
+second=$(printf '%s\n' "$first" | awk '{$1=$1; print}')                          # => second pass over the result
+printf '%s\n' "$first"                                                           # => the cleaned text, printed once
+if [ "$first" = "$second" ]; then echo "stable: yes"; else echo "stable: no"; fi # => rerun proof
 # => normalized text rebuilds to itself, so the cleanup is safe to repeat.
 ```
 
@@ -202,18 +202,18 @@ JSON version of the anchored substitution -- the edit carries its own guard.
 # => Worked Example 42: fill missing JSON fields idempotently.
 # => co-14: //= writes the default only when the field is missing or null.
 # => co-09: the filter selects each role field, defaulting exactly one gap.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-first=$(jq -c '.[] | (.role //= "unknown")' users.json)  # => first pass: default the missing role
-second=$(printf '%s\n' "$first" | jq -c '.role //= "unknown"')  # => second pass over the result
-printf '%s\n' "$first"  # => the defaulted objects, printed once
-if [ "$first" = "$second" ]; then echo "stable: yes"; else echo "stable: no"; fi  # => rerun proof
+set -euo pipefail                                                                # => strict mode: fail fast on errors and unset names
+first=$(jq -c '.[] | (.role //= "unknown")' users.json)                          # => first pass: default the missing role
+second=$(printf '%s\n' "$first" | jq -c '.role //= "unknown"')                   # => second pass over the result
+printf '%s\n' "$first"                                                           # => the defaulted objects, printed once
+if [ "$first" = "$second" ]; then echo "stable: yes"; else echo "stable: no"; fi # => rerun proof
 # => existing values survive both passes; only the gap was ever filled.
 ```
 
 **Input** (`learning/code/ex-42-default-fields-without-duplicates/users.json`):
 
 ```text
-[{"name": "adi", "role": "engineer"}, {"name": "bima"}]
+[{ "name": "adi", "role": "engineer" }, { "name": "bima" }]
 ```
 
 **Output** (`learning/code/ex-42-default-fields-without-duplicates/expected/main.stdout.txt`):
@@ -262,11 +262,11 @@ flowchart TD
 #!/bin/bash
 # => Worked Example 43: print the diff-like preview, change nothing.
 # => co-14: previewing first means the edit runs only after eyes approve it.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-echo "original:"  # => label the untouched fixture below
-cat draft.txt  # => show the file exactly as it sits on disk
-echo "proposed:"  # => label the edit that has not happened yet
-sed 's/^TODO:/DONE:/' draft.txt  # => show what the substitution would produce
+set -euo pipefail               # => strict mode: fail fast on errors and unset names
+echo "original:"                # => label the untouched fixture below
+cat draft.txt                   # => show the file exactly as it sits on disk
+echo "proposed:"                # => label the edit that has not happened yet
+sed 's/^TODO:/DONE:/' draft.txt # => show what the substitution would produce
 # => stdout carries both views; the fixture file is never rewritten.
 ```
 

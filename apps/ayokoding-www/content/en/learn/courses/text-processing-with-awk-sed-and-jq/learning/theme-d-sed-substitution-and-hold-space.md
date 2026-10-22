@@ -35,8 +35,8 @@ get without asking for anything extra.
 #!/bin/bash
 # => Worked Example 16: substitute once per line on purpose.
 # => co-06: s/hello/hi/ without a flag replaces only the first match.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-sed 's/hello/hi/' greet.txt  # => replace the first hello on each line
+set -euo pipefail           # => strict mode: fail fast on errors and unset names
+sed 's/hello/hi/' greet.txt # => replace the first hello on each line
 # => later matches on the same line survive: first-only is the default.
 ```
 
@@ -79,8 +79,8 @@ what the flag means.
 #!/bin/bash
 # => Worked Example 17: substitute globally with the g flag.
 # => co-06: the trailing g repeats the replacement for every match.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-sed 's/hello/hi/g' greet.txt  # => replace every hello on each line
+set -euo pipefail            # => strict mode: fail fast on errors and unset names
+sed 's/hello/hi/g' greet.txt # => replace every hello on each line
 # => compare with Example 16: the flag is the only difference.
 ```
 
@@ -137,8 +137,8 @@ flowchart TD
 # => Worked Example 18: reorder columns with capture groups.
 # => co-07: (first) and (second) capture words; \2 and \1 reuse them swapped.
 # => co-06: the s command still does the replacing; groups decide the order.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-sed -E 's/([a-z]+) ([a-z]+)/\2 \1/' names.txt  # => swap the two lowercase words per line
+set -euo pipefail                             # => strict mode: fail fast on errors and unset names
+sed -E 's/([a-z]+) ([a-z]+)/\2 \1/' names.txt # => swap the two lowercase words per line
 # => -E selects extended expressions, so groups are plain parentheses.
 ```
 
@@ -182,8 +182,8 @@ them in day/month/year order with new separators.
 #!/bin/bash
 # => Worked Example 19: reshape dates with back-references.
 # => co-07: three groups capture year, month, day; \3/\2/\1 reorders them.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-sed -E 's/([0-9]{4})-([0-9]{2})-([0-9]{2})/\3\/\2\/\1/' dates.txt  # => rewrite each ISO date as day/month/year
+set -euo pipefail                                                 # => strict mode: fail fast on errors and unset names
+sed -E 's/([0-9]{4})-([0-9]{2})-([0-9]{2})/\3\/\2\/\1/' dates.txt # => rewrite each ISO date as day/month/year
 # => \/ is an escaped separator inside the replacement; groups do the moving.
 ```
 
@@ -243,8 +243,8 @@ flowchart TD
 #!/bin/bash
 # => Worked Example 20: pair lines using the hold space.
 # => co-08: h parks line one in hold space; H appends line two below it.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-sed -n 'h;n;H;g;s/\n/,/p' pairs.txt  # => join every two lines with a comma
+set -euo pipefail                   # => strict mode: fail fast on errors and unset names
+sed -n 'h;n;H;g;s/\n/,/p' pairs.txt # => join every two lines with a comma
 # => g pulls both lines back, the substitution merges them, p prints.
 ```
 
@@ -290,8 +290,8 @@ no trailing backslash remains, merging three physical lines into one logical lin
 #!/bin/bash
 # => Worked Example 21: join wrapped lines with N.
 # => co-08: N appends the next line, so one substitution sees both halves.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-sed -e ':join' -e '/\\$/N' -e 's/\\\n//' -e 't join' wrapped.txt  # => merge backslash-continued lines
+set -euo pipefail                                                # => strict mode: fail fast on errors and unset names
+sed -e ':join' -e '/\\$/N' -e 's/\\\n//' -e 't join' wrapped.txt # => merge backslash-continued lines
 # => the loop repeats while a line ends with a backslash, then prints whole.
 ```
 

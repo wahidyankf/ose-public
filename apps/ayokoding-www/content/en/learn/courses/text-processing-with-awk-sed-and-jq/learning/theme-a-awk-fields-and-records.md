@@ -48,8 +48,8 @@ flowchart TD
 #!/bin/bash
 # => Worked Example 1: print one column from colon-separated rows.
 # => co-01: each line is a record, each colon chunk is a field.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-awk -F: '{ print $2 }' users.txt  # => split every record on colons, print field 2
+set -euo pipefail                # => strict mode: fail fast on errors and unset names
+awk -F: '{ print $2 }' users.txt # => split every record on colons, print field 2
 # => $2 is the role column here; $1 would be the name, $3 the team.
 ```
 
@@ -101,8 +101,8 @@ skips the header row that would otherwise pollute the result.
 # => Worked Example 2: parse comma-separated values with -F.
 # => co-01: CSV rows are records, comma chunks are fields.
 # => co-03: NR counts records, so NR > 1 skips the header row.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-awk -F, 'NR > 1 { print $2 ": " $3 }' orders.csv  # => skip header, print customer and total
+set -euo pipefail                                # => strict mode: fail fast on errors and unset names
+awk -F, 'NR > 1 { print $2 ": " $3 }' orders.csv # => skip header, print customer and total
 # => -F, sets the field separator to a comma for this whole program.
 ```
 
@@ -150,8 +150,8 @@ this is streaming (co-13), not loading.
 # => Worked Example 3: stream line numbers without loading the file.
 # => co-03: NR is the current record number, maintained by awk itself.
 # => co-13: awk reads one record at a time, so this streams.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-awk '{ printf "%d: %s\n", NR, $0 }' hosts.txt  # => prefix every line with its number
+set -euo pipefail                             # => strict mode: fail fast on errors and unset names
+awk '{ printf "%d: %s\n", NR, $0 }' hosts.txt # => prefix every line with its number
 # => $0 is the whole record; printf formats the number and the line.
 ```
 
@@ -213,8 +213,8 @@ flowchart TD
 # => Worked Example 4: spot ragged rows by field count.
 # => co-03: NF is the field count of the current record only.
 # => co-01: rows with fewer or more fields break column assumptions.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-awk '{ print NF ": " $0 }' ragged.txt  # => print each row prefixed by its field count
+set -euo pipefail                     # => strict mode: fail fast on errors and unset names
+awk '{ print NF ": " $0 }' ragged.txt # => print each row prefixed by its field count
 # => the 2-field row stands out next to the 3-field and 5-field rows.
 ```
 
@@ -261,8 +261,8 @@ any field (`$1 = $1`) forces awk to rebuild the record with it.
 # => Worked Example 5: rebuild delimited rows with a new separator.
 # => co-03: OFS is the separator awk puts between output fields.
 # => co-01: assigning to $1 forces awk to rebuild the record with OFS.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-awk 'BEGIN { OFS="," } { $1=$1; print }' metrics.txt  # => rebuild each row comma-separated
+set -euo pipefail                                    # => strict mode: fail fast on errors and unset names
+awk 'BEGIN { OFS="," } { $1=$1; print }' metrics.txt # => rebuild each row comma-separated
 # => $1=$1 touches a field, so awk rejoins all fields using OFS.
 ```
 

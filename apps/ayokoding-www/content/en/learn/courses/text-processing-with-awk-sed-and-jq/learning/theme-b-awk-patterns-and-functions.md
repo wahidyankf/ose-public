@@ -46,8 +46,8 @@ flowchart TD
 #!/bin/bash
 # => Worked Example 6: keep rows matching a regular expression.
 # => co-02: the /fail/ pattern tests each record; the action runs on matches.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-awk '/fail/ { print $1 }' scores.txt  # => print the name field of failing rows only
+set -euo pipefail                    # => strict mode: fail fast on errors and unset names
+awk '/fail/ { print $1 }' scores.txt # => print the name field of failing rows only
 # => rows without "fail" never reach the action; nothing prints for them.
 ```
 
@@ -94,8 +94,8 @@ one rule extracts exactly the marked section.
 #!/bin/bash
 # => Worked Example 7: keep rows between two patterns.
 # => co-02: a two-pattern range turns the action on at BEGIN, off after END.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-awk '/BEGIN/,/END/' report.txt  # => print every record from the BEGIN line to the END line
+set -euo pipefail              # => strict mode: fail fast on errors and unset names
+awk '/BEGIN/,/END/' report.txt # => print every record from the BEGIN line to the END line
 # => lines before BEGIN and after END never match, so they never print.
 ```
 
@@ -159,8 +159,8 @@ flowchart TD
 # => Worked Example 8: aggregate in END after the stream ends.
 # => co-02: END is a pattern that matches once, after the last record.
 # => co-03: total accumulates field 2 across every record.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-awk '{ total += $2 } END { print total }' sales.txt  # => add each amount, print the sum once
+set -euo pipefail                                   # => strict mode: fail fast on errors and unset names
+awk '{ total += $2 } END { print total }' sales.txt # => add each amount, print the sum once
 # => no per-record action prints; the single END action prints the total.
 ```
 
@@ -205,8 +205,8 @@ third use costs nothing.
 #!/bin/bash
 # => Worked Example 9: factor repeated logic into an awk function.
 # => co-04: function status(t) names the fever rule once, reused per row.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-awk 'function status(t) { if (t >= 38) return "fever"; return "ok" } { print $1 ": " status($2) }' temps.txt  # => label every temperature
+set -euo pipefail                                                                                            # => strict mode: fail fast on errors and unset names
+awk 'function status(t) { if (t >= 38) return "fever"; return "ok" } { print $1 ": " status($2) }' temps.txt # => label every temperature
 # => the function reads like the rulebook; the action stays one line.
 ```
 
@@ -252,8 +252,8 @@ anyone downstream trusts it.
 #!/bin/bash
 # => Worked Example 10: trim and normalize with string built-ins.
 # => co-04: gsub, tolower, and length are built-in awk functions.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-awk '{ clean = $0; gsub(/ /, "", clean); clean = tolower(clean); print clean " (" length(clean) ")" }' messy.txt  # => strip spaces, fold case, count
+set -euo pipefail                                                                                                # => strict mode: fail fast on errors and unset names
+awk '{ clean = $0; gsub(/ /, "", clean); clean = tolower(clean); print clean " (" length(clean) ")" }' messy.txt # => strip spaces, fold case, count
 # => gsub edits in place; tolower returns the folded copy; length counts it.
 ```
 

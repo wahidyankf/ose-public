@@ -44,15 +44,15 @@ flowchart TD
 #!/bin/bash
 # => Worked Example 22: read one value out of an object.
 # => co-09: .host is a filter selecting the host field, nothing else.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-jq '.host' server.json  # => print the host value, quoted as JSON
+set -euo pipefail      # => strict mode: fail fast on errors and unset names
+jq '.host' server.json # => print the host value, quoted as JSON
 # => every filter takes JSON in and emits JSON out, even a single string.
 ```
 
 **Input** (`learning/code/ex-22-pick-a-field/server.json`):
 
 ```text
-{"host": "db-01", "port": 5432, "tls": true}
+{ "host": "db-01", "port": 5432, "tls": true }
 ```
 
 **Output** (`learning/code/ex-22-pick-a-field/expected/main.stdout.txt`):
@@ -87,8 +87,8 @@ stream the next filter receives one item at a time.
 #!/bin/bash
 # => Worked Example 23: iterate array elements with .[].
 # => co-09: .[] explodes one array into a stream of its elements.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-jq '.[]' hosts.json  # => emit each array element as its own JSON value
+set -euo pipefail   # => strict mode: fail fast on errors and unset names
+jq '.[]' hosts.json # => emit each array element as its own JSON value
 # => three elements in, three values out, in the same order.
 ```
 
@@ -133,15 +133,19 @@ two that are up, and `.name` projects their names.
 # => Worked Example 24: filter objects with select.
 # => co-09: select(.up == true) keeps the object or drops it entirely.
 # => co-10: the pipe feeds each object from .[] into select, then .name.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-jq '.[] | select(.up == true) | .name' services.json  # => name every service that is up
+set -euo pipefail                                    # => strict mode: fail fast on errors and unset names
+jq '.[] | select(.up == true) | .name' services.json # => name every service that is up
 # => select emits its input unchanged or nothing at all: a true filter.
 ```
 
 **Input** (`learning/code/ex-24-keep-rows-with-select/services.json`):
 
 ```text
-[{"name": "web", "up": true}, {"name": "db", "up": false}, {"name": "cache", "up": true}]
+[
+  { "name": "web", "up": true },
+  { "name": "db", "up": false },
+  { "name": "cache", "up": true }
+]
 ```
 
 **Output** (`learning/code/ex-24-keep-rows-with-select/expected/main.stdout.txt`):
@@ -189,15 +193,19 @@ flowchart TD
 #!/bin/bash
 # => Worked Example 25: pass values left to right through |.
 # => co-10: each pipe hands the previous filter's output to the next filter.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-jq '.[] | "\(.customer): \(.total)"' orders.json  # => format every order as one string
+set -euo pipefail                                # => strict mode: fail fast on errors and unset names
+jq '.[] | "\(.customer): \(.total)"' orders.json # => format every order as one string
 # => string interpolation builds the line; the pipe delivers each order to it.
 ```
 
 **Input** (`learning/code/ex-25-chain-filters-with-pipe/orders.json`):
 
 ```text
-[{"customer": "adi", "total": 250}, {"customer": "bima", "total": 89}, {"customer": "citra", "total": 412}]
+[
+  { "customer": "adi", "total": 250 },
+  { "customer": "bima", "total": 89 },
+  { "customer": "citra", "total": 412 }
+]
 ```
 
 **Output** (`learning/code/ex-25-chain-filters-with-pipe/expected/main.stdout.txt`):
@@ -234,15 +242,15 @@ incomplete records without a conditional.
 #!/bin/bash
 # => Worked Example 26: survive missing fields with //.
 # => co-09: .role // "unknown" emits the field, or the default when absent.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-jq '.[] | "\(.name): \(.role // "unknown")"' users.json  # => label every user, defaulting the missing role
+set -euo pipefail                                       # => strict mode: fail fast on errors and unset names
+jq '.[] | "\(.name): \(.role // "unknown")"' users.json # => label every user, defaulting the missing role
 # => // fires on null and on absent alike, so ragged objects format evenly.
 ```
 
 **Input** (`learning/code/ex-26-fall-back-with-defaults/users.json`):
 
 ```text
-[{"name": "adi", "role": "engineer"}, {"name": "bima"}]
+[{ "name": "adi", "role": "engineer" }, { "name": "bima" }]
 ```
 
 **Output** (`learning/code/ex-26-fall-back-with-defaults/expected/main.stdout.txt`):
@@ -279,15 +287,15 @@ that `awk`, `sort`, or `cut` can consume directly.
 # => Worked Example 27: print shell-ready lines with -r.
 # => co-09: the string filter builds the line; -r unwraps its JSON quotes.
 # => co-10: the pipe carries each object into the formatting filter.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-jq -r '.[] | "\(.name),\(.role // "none")"' users.json  # => emit raw comma-separated lines
+set -euo pipefail                                      # => strict mode: fail fast on errors and unset names
+jq -r '.[] | "\(.name),\(.role // "none")"' users.json # => emit raw comma-separated lines
 # => raw output drops the quotes, so downstream tools see plain columns.
 ```
 
 **Input** (`learning/code/ex-27-emit-raw-text/users.json`):
 
 ```text
-[{"name": "adi", "role": "engineer"}, {"name": "bima"}]
+[{ "name": "adi", "role": "engineer" }, { "name": "bima" }]
 ```
 
 **Output** (`learning/code/ex-27-emit-raw-text/expected/main.stdout.txt`):

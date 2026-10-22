@@ -1,0 +1,3 @@
+INFO server started on port 8080
+INFO serving requests from ./static
+INFO shutting down cleanly

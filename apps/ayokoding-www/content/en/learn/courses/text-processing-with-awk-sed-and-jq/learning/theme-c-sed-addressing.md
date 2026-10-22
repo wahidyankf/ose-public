@@ -46,8 +46,8 @@ flowchart TD
 #!/bin/bash
 # => Worked Example 11: print a single line by number.
 # => co-05: the 3 address selects only line 3; -n suppresses the rest.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-sed -n '3p' planets.txt  # => print only line 3, nothing else
+set -euo pipefail       # => strict mode: fail fast on errors and unset names
+sed -n '3p' planets.txt # => print only line 3, nothing else
 # => -n turns off automatic printing; p prints the addressed line.
 ```
 
@@ -93,8 +93,8 @@ spreadsheet, applied to a stream.
 #!/bin/bash
 # => Worked Example 12: print a slice of numbered lines.
 # => co-05: the 2,4 address selects lines 2 through 4, inclusive.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-sed -n '2,4p' planets.txt  # => print lines 2, 3, and 4; skip lines 1 and 5
+set -euo pipefail         # => strict mode: fail fast on errors and unset names
+sed -n '2,4p' planets.txt # => print lines 2, 3, and 4; skip lines 1 and 5
 # => both ends of a line range are inclusive in sed.
 ```
 
@@ -142,8 +142,8 @@ sits in the file.
 #!/bin/bash
 # => Worked Example 13: print lines by pattern instead of number.
 # => co-05: the /down/ address selects lines by content, not position.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-sed -n '/down/p' services.txt  # => print every line containing "down"
+set -euo pipefail             # => strict mode: fail fast on errors and unset names
+sed -n '/down/p' services.txt # => print every line containing "down"
 # => line numbers may shift between runs; the pattern still finds its lines.
 ```
 
@@ -202,8 +202,8 @@ flowchart TD
 # => Worked Example 14: drop header and comment lines safely.
 # => co-05: the /^#/ address selects every line starting with a hash.
 # => co-14: sed prints to stdout here; config.txt on disk is untouched.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-sed '/^#/d' config.txt  # => delete comment lines, print everything else
+set -euo pipefail      # => strict mode: fail fast on errors and unset names
+sed '/^#/d' config.txt # => delete comment lines, print everything else
 # => no -i flag means the file is read, never rewritten: safe to rerun.
 ```
 
@@ -250,8 +250,8 @@ Sometimes the exception is easier to name than the rule: "everything except line
 #!/bin/bash
 # => Worked Example 15: print everything the address does not match.
 # => co-05: the ! after an address negates it: match the complement.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-sed -n '2,3!p' planets.txt  # => print every line except lines 2 and 3
+set -euo pipefail          # => strict mode: fail fast on errors and unset names
+sed -n '2,3!p' planets.txt # => print every line except lines 2 and 3
 # => the excluded middle stays out no matter how long the file grows.
 ```
 

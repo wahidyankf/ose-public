@@ -1,0 +1,4 @@
+2026-10-21 web-01 OK   120 token=abc123
+2026-10-21 web-02 FAIL 045 token=def456
+2026-10-21 db-01  OK   200 token=ghi789
+2026-10-21 web-01 OK   130 token=abc123

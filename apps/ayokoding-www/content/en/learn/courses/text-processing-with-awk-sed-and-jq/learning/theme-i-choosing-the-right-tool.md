@@ -27,8 +27,8 @@ attempt ends in a second tool anyway. Start where the whole job fits.
 # => Worked Example 44: columnar math stays in awk.
 # => co-15: fields plus arithmetic is awk's home ground, not sed's.
 # => co-01: $3 selects the total column that the average needs.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-awk -F, 'NR > 1 { sum += $3; n++ } END { print sum / n }' orders.csv  # => average the total column
+set -euo pipefail                                                    # => strict mode: fail fast on errors and unset names
+awk -F, 'NR > 1 { sum += $3; n++ } END { print sum / n }' orders.csv # => average the total column
 # => sed could delete commas but cannot divide; awk fields and divides.
 ```
 
@@ -74,8 +74,8 @@ tokens what sed's `d` says in one. Brevity here is clarity, not golf.
 # => Worked Example 45: line surgery stays in sed.
 # => co-15: deleting addressed lines is sed's home ground, not awk's.
 # => co-05: the /REMOVE/ address selects exactly the lines to drop.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-sed '/REMOVE/d' notes.txt  # => delete every line containing REMOVE
+set -euo pipefail         # => strict mode: fail fast on errors and unset names
+sed '/REMOVE/d' notes.txt # => delete every line containing REMOVE
 # => awk could test the same pattern, but d states the intent directly.
 ```
 
@@ -125,15 +125,22 @@ and adds exactly the numbers that belong together.
 # => Worked Example 46: nested structure stays in jq.
 # => co-15: navigating objects-inside-objects is jq's home ground, not grep's.
 # => co-09: .store.books[].price walks two levels down to every price.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-jq '[.store.books[].price] | add' deep.json  # => sum every book price in the store
+set -euo pipefail                           # => strict mode: fail fast on errors and unset names
+jq '[.store.books[].price] | add' deep.json # => sum every book price in the store
 # => grep sees the word price but cannot pair it with its number safely.
 ```
 
 **Input** (`learning/code/ex-46-json-means-jq/deep.json`):
 
 ```text
-{"store": {"books": [{"title": "A", "price": 8}, {"title": "B", "price": 12}]}}
+{
+  "store": {
+    "books": [
+      { "title": "A", "price": 8 },
+      { "title": "B", "price": 12 }
+    ]
+  }
+}
 ```
 
 **Output** (`learning/code/ex-46-json-means-jq/expected/main.stdout.txt`):
@@ -182,8 +189,8 @@ flowchart TD
 # => Worked Example 47: whole-file awk aggregation and its limits.
 # => co-15: the median needs every value at once, which strains the toolbox.
 # => co-13: sorting forces whole-file memory; nothing here can stream.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-awk '{ v[NR] = $1 } END { n = NR; for (i = 1; i <= n; i++) for (j = i + 1; j <= n; j++) if (v[j] < v[i]) { t = v[i]; v[i] = v[j]; v[j] = t } if (n % 2 == 1) print v[(n + 1) / 2]; else print (v[n / 2] + v[n / 2 + 1]) / 2 }' values.txt  # => median via a hand-rolled sort
+set -euo pipefail                                                                                                                                                                                                                         # => strict mode: fail fast on errors and unset names
+awk '{ v[NR] = $1 } END { n = NR; for (i = 1; i <= n; i++) for (j = i + 1; j <= n; j++) if (v[j] < v[i]) { t = v[i]; v[i] = v[j]; v[j] = t } if (n % 2 == 1) print v[(n + 1) / 2]; else print (v[n / 2] + v[n / 2 + 1]) / 2 }' values.txt # => median via a hand-rolled sort
 # => this works, and the hand-rolled sort is exactly the smell: reach further here.
 ```
 
@@ -248,13 +255,13 @@ flowchart TD
 # => Worked Example 48: route three tasks to three tools, then verify.
 # => co-15: columns go to awk, addressed lines to sed, nested JSON to jq.
 # => co-16: one script chains all three tools, each owning its shape.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-echo "task columns:"  # => columns mean awk: count the finished rows
-awk -F, 'NR > 1 && $3 == "done" { n++ } END { print "done: " n }' tasks.csv  # => two rows carry done
-echo "task lines:"  # => addressed lines mean sed: drop the comment lines
-sed '/^#/d' checklist.txt | awk '{ print $1 }'  # => print the first word of each check
-echo "task json:"  # => nested structure means jq: read the deploy status
-jq '.deploy' status.json  # => one field out of the status object
+set -euo pipefail                                                           # => strict mode: fail fast on errors and unset names
+echo "task columns:"                                                        # => columns mean awk: count the finished rows
+awk -F, 'NR > 1 && $3 == "done" { n++ } END { print "done: " n }' tasks.csv # => two rows carry done
+echo "task lines:"                                                          # => addressed lines mean sed: drop the comment lines
+sed '/^#/d' checklist.txt | awk '{ print $1 }'                              # => print the first word of each check
+echo "task json:"                                                           # => nested structure means jq: read the deploy status
+jq '.deploy' status.json                                                    # => one field out of the status object
 # => three shapes, three tools, zero contortions: the checklist works.
 ```
 
@@ -279,7 +286,7 @@ health ok
 **Input** (`learning/code/ex-48-run-the-decision-checklist/status.json`):
 
 ```text
-{"deploy": "done", "backup": "todo"}
+{ "deploy": "done", "backup": "todo" }
 ```
 
 **Output** (`learning/code/ex-48-run-the-decision-checklist/expected/main.stdout.txt`):

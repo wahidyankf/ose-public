@@ -45,15 +45,15 @@ flowchart TD
 #!/bin/bash
 # => Worked Example 28: assemble a new object from parts.
 # => co-11: {name, team} builds an object keeping only the named fields.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-jq '{name, team}' user.json  # => project the user down to two fields
+set -euo pipefail           # => strict mode: fail fast on errors and unset names
+jq '{name, team}' user.json # => project the user down to two fields
 # => shorthand {name} means {name: .name}: same value, new shape.
 ```
 
 **Input** (`learning/code/ex-28-build-an-object/user.json`):
 
 ```text
-{"name": "adi", "role": "engineer", "team": "platform"}
+{ "name": "adi", "role": "engineer", "team": "platform" }
 ```
 
 **Output** (`learning/code/ex-28-build-an-object/expected/main.stdout.txt`):
@@ -91,15 +91,18 @@ array at once.
 #!/bin/bash
 # => Worked Example 29: remap keys across every object.
 # => co-11: {first: .fn} renames a key while copying its value over.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-jq 'map({first: .fn, last: .ln})' rows.json  # => rename fn/ln to first/last everywhere
+set -euo pipefail                           # => strict mode: fail fast on errors and unset names
+jq 'map({first: .fn, last: .ln})' rows.json # => rename fn/ln to first/last everywhere
 # => the value expressions run per object; the new keys are literal names.
 ```
 
 **Input** (`learning/code/ex-29-rename-keys-in-bulk/rows.json`):
 
 ```text
-[{"fn": "adi", "ln": "pratama"}, {"fn": "bima", "ln": "sakti"}]
+[
+  { "fn": "adi", "ln": "pratama" },
+  { "fn": "bima", "ln": "sakti" }
+]
 ```
 
 **Output** (`learning/code/ex-29-rename-keys-in-bulk/expected/main.stdout.txt`):
@@ -143,8 +146,8 @@ counter, no off-by-one.
 #!/bin/bash
 # => Worked Example 30: reshape every element with map.
 # => co-12: map runs the filter on each element, collecting the results.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-jq 'map(. * 2)' nums.json  # => double every number, keeping the array shape
+set -euo pipefail         # => strict mode: fail fast on errors and unset names
+jq 'map(. * 2)' nums.json # => double every number, keeping the array shape
 # => one array in, one array out: map never changes the element count.
 ```
 
@@ -205,8 +208,8 @@ flowchart TD
 #!/bin/bash
 # => Worked Example 31: fold an array into one number.
 # => co-12: reduce walks the stream carrying an accumulator, starting at 0.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-jq 'reduce .[] as $x (0; . + $x)' sales.json  # => add every element into one total
+set -euo pipefail                            # => strict mode: fail fast on errors and unset names
+jq 'reduce .[] as $x (0; . + $x)' sales.json # => add every element into one total
 # => $x is the current element, . is the running total: same shape as awk's sum.
 ```
 
@@ -249,15 +252,19 @@ or one group splits in two; when it does not, pipe through `sort_by` first.
 # => Worked Example 32: bucket objects with group_by.
 # => co-12: group_by(.dc) gathers equal-key objects into sub-arrays.
 # => the fixture arrives sorted by dc, which group_by requires.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-jq 'group_by(.dc)' fleet.json  # => collect hosts into one array per data center
+set -euo pipefail             # => strict mode: fail fast on errors and unset names
+jq 'group_by(.dc)' fleet.json # => collect hosts into one array per data center
 # => unsorted input would split one dc into two groups: sort_by first then.
 ```
 
 **Input** (`learning/code/ex-32-group-rows-by-key/fleet.json`):
 
 ```text
-[{"host": "web-01", "dc": "east"}, {"host": "db-01", "dc": "east"}, {"host": "web-02", "dc": "west"}]
+[
+  { "host": "web-01", "dc": "east" },
+  { "host": "db-01", "dc": "east" },
+  { "host": "web-02", "dc": "west" }
+]
 ```
 
 **Output** (`learning/code/ex-32-group-rows-by-key/expected/main.stdout.txt`):
@@ -310,8 +317,8 @@ reader never wonders whether the output order is accidental.
 # => Worked Example 33: order rows and drop repeats.
 # => co-12: unique sorts the values and emits each distinct one once.
 # => co-10: the pipe sorts explicitly first, so the intent reads twice.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-jq 'sort | unique' tags.json  # => sort the tags, then keep one of each
+set -euo pipefail            # => strict mode: fail fast on errors and unset names
+jq 'sort | unique' tags.json # => sort the tags, then keep one of each
 # => unique alone would sort too; naming sort states the contract up front.
 ```
 

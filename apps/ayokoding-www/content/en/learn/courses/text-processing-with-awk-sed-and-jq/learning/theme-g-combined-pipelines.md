@@ -34,8 +34,8 @@ result, normalizing `uniq`'s padding so the output is identical on every machine
 #!/bin/bash
 # => Worked Example 34: rank values with sort and uniq.
 # => co-16: sort orders, uniq -c counts, awk normalizes the padding.
-export LC_ALL=C  # => byte order for sort, identical on every machine
-sort deploys.txt | uniq -c | awk '{ print $2 ": " $1 }'  # => count each distinct value
+export LC_ALL=C                                         # => byte order for sort, identical on every machine
+sort deploys.txt | uniq -c | awk '{ print $2 ": " $1 }' # => count each distinct value
 # => awk splits on whitespace runs, so uniq's padding width never matters.
 ```
 
@@ -98,15 +98,19 @@ flowchart TD
 #!/bin/bash
 # => Worked Example 35: flatten JSON to columns, then aggregate.
 # => co-16: jq -r exits JSON into text; awk totals the numeric column.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-jq -r '.[] | "\(.customer) \(.total)"' orders.json | awk '{ total += $2 } END { print "orders: " NR ", total: " total }'  # => count orders and sum totals
+set -euo pipefail                                                                                                        # => strict mode: fail fast on errors and unset names
+jq -r '.[] | "\(.customer) \(.total)"' orders.json | awk '{ total += $2 } END { print "orders: " NR ", total: " total }' # => count orders and sum totals
 # => NR counts the flattened rows; $2 carries each row's total into the sum.
 ```
 
 **Input** (`learning/code/ex-35-feed-jq-into-awk/orders.json`):
 
 ```text
-[{"customer": "adi", "total": 250}, {"customer": "bima", "total": 89}, {"customer": "citra", "total": 412}]
+[
+  { "customer": "adi", "total": 250 },
+  { "customer": "bima", "total": 89 },
+  { "customer": "citra", "total": 412 }
+]
 ```
 
 **Output** (`learning/code/ex-35-feed-jq-into-awk/expected/main.stdout.txt`):
@@ -142,8 +146,8 @@ receives pure JSON on stdin.
 #!/bin/bash
 # => Worked Example 36: strip log prefixes, then parse with jq.
 # => co-16: sed returns each line to pure JSON; jq selects among objects.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-sed -E 's/^[^ ]+ \[[^]]+\] //' mixed.log | jq -r 'select(.ok == true) | .host'  # => name the healthy hosts
+set -euo pipefail                                                              # => strict mode: fail fast on errors and unset names
+sed -E 's/^[^ ]+ \[[^]]+\] //' mixed.log | jq -r 'select(.ok == true) | .host' # => name the healthy hosts
 # => the sed address of record is the prefix shape; everything after it is JSON.
 ```
 
@@ -188,8 +192,8 @@ statuses -- filter first, format second, each tool doing one job.
 #!/bin/bash
 # => Worked Example 37: filter lines fast, then reformat.
 # => co-16: grep narrows by content; awk shapes the survivors into columns.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-grep 'POST' access.log | awk '{ print $2 ": " $3 }'  # => show path and status of POST requests
+set -euo pipefail                                   # => strict mode: fail fast on errors and unset names
+grep 'POST' access.log | awk '{ print $2 ": " $3 }' # => show path and status of POST requests
 # => grep exits 0 because POST lines exist; awk never sees the GET noise.
 ```
 
@@ -249,11 +253,11 @@ flowchart TD
 #!/bin/bash
 # => Worked Example 38: process one object per line without slurping.
 # => co-13: jq reads a stream of values; -s would load them all at once.
-set -euo pipefail  # => strict mode: fail fast on errors and unset names
-echo "stream:"  # => label the streaming pass, which holds one object at a time
-jq -r '"\(.event): \(.user)"' events.jsonl  # => format each object as it arrives
-echo "slurp count:"  # => label the whole-file pass, which loads everything first
-jq -s 'length' events.jsonl  # => count the objects after loading the full array
+set -euo pipefail                          # => strict mode: fail fast on errors and unset names
+echo "stream:"                             # => label the streaming pass, which holds one object at a time
+jq -r '"\(.event): \(.user)"' events.jsonl # => format each object as it arrives
+echo "slurp count:"                        # => label the whole-file pass, which loads everything first
+jq -s 'length' events.jsonl                # => count the objects after loading the full array
 # => same file, two memory profiles: stream for pipelines, slurp for totals.
 ```
 

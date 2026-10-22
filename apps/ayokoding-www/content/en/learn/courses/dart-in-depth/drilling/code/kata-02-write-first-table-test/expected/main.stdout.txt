@@ -1,0 +1,2 @@
+  ok: freight bills by table
+passed: 1

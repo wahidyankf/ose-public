@@ -1,0 +1,5 @@
+row 0: empty batch
+row 1: single member
+row 5: small batch
+row 50: large batch
+row 500: reject: too many

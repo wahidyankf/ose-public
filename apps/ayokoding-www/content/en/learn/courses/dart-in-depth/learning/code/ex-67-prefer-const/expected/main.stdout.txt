@@ -1,0 +1,3 @@
+site: east, quota: 50
+first: [oat, 12]
+oat cap: 50

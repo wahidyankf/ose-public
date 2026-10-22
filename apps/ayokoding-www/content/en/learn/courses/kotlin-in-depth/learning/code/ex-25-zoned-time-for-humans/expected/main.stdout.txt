@@ -1,0 +1,4 @@
+jakarta: 19:00
+utc: 12:00
+inside: true
+day: SUNDAY

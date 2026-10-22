@@ -1,0 +1,2 @@
+route: oat>tea>rice>salt
+stops: 4

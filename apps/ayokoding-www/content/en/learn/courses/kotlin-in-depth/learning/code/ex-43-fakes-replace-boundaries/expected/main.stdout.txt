@@ -1,0 +1,3 @@
+PASS: noon inside
+PASS: open edge inside
+PASS: close edge outside

@@ -1,0 +1,2 @@
+age 27: adult band
+age unknown: no band assigned

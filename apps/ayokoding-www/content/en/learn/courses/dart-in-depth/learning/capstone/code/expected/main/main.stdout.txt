@@ -1,0 +1,6 @@
+Sari: A (95)
+Budi: C (72)
+skip line 3: empty name
+skip line 4: bad score 'many'
+Agus: F (58)
+Rina: B (88)

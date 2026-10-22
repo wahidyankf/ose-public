@@ -1,0 +1,6 @@
+PASS: row 0 [50] -> 50
+PASS: row 1 [0] -> 0
+PASS: row 2 [75] -> 75
+PASS: row 3 [xx] -> null
+PASS: row 4 [-5] -> null
+PASS: row 5 [] -> null

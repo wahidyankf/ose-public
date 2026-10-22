@@ -1,0 +1,8 @@
+schema: ayokoding.run/v1
+toolchain: dart
+runs:
+  - name: main
+    command: [dart, main.dart]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

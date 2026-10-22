@@ -1,0 +1,2 @@
+error: name is empty
+hello, Sari

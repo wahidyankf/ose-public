@@ -1,0 +1,4 @@
+sari: 50
+guest: VISITOR
+kept: budi
+missing: 0

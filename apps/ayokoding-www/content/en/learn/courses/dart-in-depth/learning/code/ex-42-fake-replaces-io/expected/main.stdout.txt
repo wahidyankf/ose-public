@@ -1,0 +1,3 @@
+  ok: oat renders twelve
+  ok: salt renders unstocked
+passed: 2

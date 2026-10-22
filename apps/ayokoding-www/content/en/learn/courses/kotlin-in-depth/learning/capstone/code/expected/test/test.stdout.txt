@@ -1,0 +1,14 @@
+PASS: parses a good line
+PASS: refuses lines without a colon
+PASS: refuses blank members
+PASS: refuses wordy amounts
+PASS: refuses negative dues
+PASS: totals per member
+PASS: counts skips honestly
+PASS: sorts members for stability
+PASS: renders member lines
+PASS: renders the grand total
+PASS: renders the skip count
+PASS: empty input settles zero
+PASS: all-bad input skips all
+checks: 14 failed: 0

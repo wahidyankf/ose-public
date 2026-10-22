@@ -1,0 +1,3 @@
+ascending: [dewi, sari, budi, citra]
+ranked: [budi, citra, sari, dewi]
+untouched: {budi=75, citra=75, dewi=25, sari=50}

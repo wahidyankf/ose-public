@@ -1,0 +1,7 @@
+member: sari
+dues: 50
+status: settled
+---
+member: dewi
+dues: 20
+status: owing

@@ -1,0 +1,13 @@
+schema: ayokoding.run/v1
+toolchain: kotlin
+runs:
+  - name: main
+    command:
+      [
+        sh,
+        -c,
+        "kotlinc Lib.kt -include-runtime -d lib.jar 2>/dev/null && javac -cp lib.jar Caller.java && java -cp lib.jar:. Caller",
+      ]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

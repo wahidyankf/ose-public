@@ -1,0 +1,4 @@
+PASS: settlement of two members totals 125
+PASS: empty ledger settles zero
+PASS: unknown member reads as zero dues
+specified: 3

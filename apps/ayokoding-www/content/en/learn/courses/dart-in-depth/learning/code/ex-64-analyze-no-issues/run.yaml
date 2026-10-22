@@ -1,0 +1,8 @@
+schema: ayokoding.run/v1
+toolchain: dart
+runs:
+  - name: analyze-check
+    command: [sh, -c, "dart analyze 2>&1 | grep -q 'No issues found' && dart main.dart"]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

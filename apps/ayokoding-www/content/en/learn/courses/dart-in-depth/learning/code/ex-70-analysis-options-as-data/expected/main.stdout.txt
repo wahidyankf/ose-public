@@ -1,0 +1,2 @@
+extra rules: [prefer_const_constructors, prefer_final_fields, always_declare_return_types]
+base: include: package:lints/recommended.yaml

@@ -1,0 +1,11 @@
+count: 1
+count: 2
+count: 3
+slot: 0
+slot: 1
+slot: 2
+retry in: 6
+retry in: 5
+retry in: 4
+allowed: true
+allowed: false

@@ -1,0 +1,4 @@
+oat stocked: true
+tea stocked: false
+report: oat:true
+both honest: true

@@ -1,0 +1,4 @@
+first: Due(member=sari, amount=50)
+second: Due(member=sari, amount=75)
+third: Due(member=budi, amount=75)
+chain: 200

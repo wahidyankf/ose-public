@@ -1,0 +1,8 @@
+sari:50
+budi:75
+oops
+citra:25
+:40
+dewi:xx
+sari:25
+eko:100

@@ -1,0 +1,3 @@
+for-in: 10
+indexed: 10
+forEach: 10

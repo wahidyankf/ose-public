@@ -1,0 +1,3 @@
+area: 28.27
+bigger: 20
+order: oat x5

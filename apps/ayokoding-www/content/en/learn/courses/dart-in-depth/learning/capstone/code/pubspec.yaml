@@ -1,0 +1,4 @@
+name: gradebook_cli
+description: Capstone CLI for dart-in-depth. Standard library only.
+environment:
+  sdk: ^3.0.0

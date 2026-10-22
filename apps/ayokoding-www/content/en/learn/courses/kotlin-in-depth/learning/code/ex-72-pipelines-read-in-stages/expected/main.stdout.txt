@@ -1,0 +1,4 @@
+dewi=100
+budi=75
+sari=50
+stages: 4 survivors: 4

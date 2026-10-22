@@ -1,0 +1,5 @@
+equal: true
+hash: true
+raised: Due(member=sari, amount=75)
+kept: Due(member=sari, amount=50)
+parts: sari+75

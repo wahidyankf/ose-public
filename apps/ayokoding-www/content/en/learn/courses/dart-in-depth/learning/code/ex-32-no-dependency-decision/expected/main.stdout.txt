@@ -1,0 +1,2 @@
+totals: {oat: 20, tea: 4, rice: 20}
+refused: grouping package (fold already groups)

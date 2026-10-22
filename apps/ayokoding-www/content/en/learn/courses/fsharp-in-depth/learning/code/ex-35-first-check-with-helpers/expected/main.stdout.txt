@@ -1,0 +1,3 @@
+PASS double 21
+PASS double 0
+suite: 2 tests, 0 failures

@@ -1,0 +1,2 @@
+refused: empty order
+failed: kitchen closed

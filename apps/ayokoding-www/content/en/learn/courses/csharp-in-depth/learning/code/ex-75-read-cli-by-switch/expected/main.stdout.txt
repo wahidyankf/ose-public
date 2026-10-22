@@ -1,0 +1,3 @@
+rice, rendang, sambal
+12000
+usage: menu | price <dish>

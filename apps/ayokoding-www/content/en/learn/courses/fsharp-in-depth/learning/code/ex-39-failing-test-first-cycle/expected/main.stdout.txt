@@ -1,0 +1,4 @@
+PASS bulk starts at ten
+PASS nine pays full
+PASS eleven discounted
+suite: 3 tests, 0 failures

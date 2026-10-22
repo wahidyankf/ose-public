@@ -1,0 +1,15 @@
+schema: ayokoding.run/v1
+toolchain: dotnet
+runs:
+  - name: debug
+    command: [sh, -c, "dotnet build --nologo -v q > /dev/null && dotnet bin/Debug/net10.0/app.dll"]
+    expect:
+      exit: 0
+      stdout: expected/debug.stdout.txt
+      stderr: ignore
+  - name: release
+    command: [sh, -c, "dotnet build -c Release --nologo -v q > /dev/null && dotnet bin/Release/net10.0/app.dll"]
+    expect:
+      exit: 0
+      stdout: expected/release.stdout.txt
+      stderr: ignore

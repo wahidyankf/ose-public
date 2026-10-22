@@ -1,0 +1,3 @@
+rendang: 25000
+37000
+pricey: True

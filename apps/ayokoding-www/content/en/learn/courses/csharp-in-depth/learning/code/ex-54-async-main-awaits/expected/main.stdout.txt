@@ -1,0 +1,2 @@
+kitchen open
+ready: 2

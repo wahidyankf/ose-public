@@ -1,0 +1,2 @@
+struct kept: 2
+class shared: 9

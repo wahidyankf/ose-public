@@ -1,0 +1,3 @@
+PASS: total sums two lines
+PASS: order holds two lines
+passed: 2

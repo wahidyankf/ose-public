@@ -1,0 +1,4 @@
+dish: rendang
+|     rendang|
+25,000
+rendang x2

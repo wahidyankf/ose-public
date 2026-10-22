@@ -1,0 +1,2 @@
+left=70
+short=20 balance=10 amount=30

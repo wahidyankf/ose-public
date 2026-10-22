@@ -1,0 +1,5 @@
+PASS parses 36
+PASS parses 0
+PASS rejects old
+PASS rejects empty
+suite: 4 tests, 0 failures

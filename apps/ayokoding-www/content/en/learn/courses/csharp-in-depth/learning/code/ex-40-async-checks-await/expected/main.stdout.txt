@@ -1,0 +1,2 @@
+PASS: async total sums two lines
+passed: 1

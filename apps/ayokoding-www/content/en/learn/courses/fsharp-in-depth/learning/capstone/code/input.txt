@@ -1,0 +1,8 @@
+ada:95
+grace:88
+lin:72
+hopper:64
+turing:91
+lovelace:58
+hopper2:77
+babbage:83

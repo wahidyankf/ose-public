@@ -1,0 +1,1 @@
+table=["ada"; "grace"; "lin"] winner=ada duel=5

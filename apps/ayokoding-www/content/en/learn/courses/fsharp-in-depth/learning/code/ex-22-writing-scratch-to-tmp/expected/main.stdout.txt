@@ -1,0 +1,1 @@
+lines=2 bytes=14 removed=true

@@ -1,0 +1,4 @@
+PASS bulk rate
+PASS small rate
+PASS bulk total
+suite: 3 tests, 0 failures

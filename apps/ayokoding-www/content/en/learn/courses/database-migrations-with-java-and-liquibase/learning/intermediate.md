@@ -5,7 +5,7 @@ draft: false
 weight: 20
 ---
 
-Examples 26-53 migrate real data on live tables. Backfills fill new columns without losing rows (Examples 26-34), zero-downtime splits expand before they contract so no deploy needs a maintenance window (Examples 35-44), and baselining imports legacy databases under version control (Examples 45-53). Every example is a complete, runnable Java program under `learning/code/` driving Liquibase against the pinned PostgreSQL 18 service container; run each with the command in its own `run.yaml`.
+Examples 26–53 migrate real data on live tables. Backfills fill new columns without losing rows (Examples 26–34), zero-downtime splits expand before they contract so no deploy needs a maintenance window (Examples 35–44), and baselining imports legacy databases under version control (Examples 45–53). Every example is a complete, runnable Java program under `learning/code/` driving Liquibase against the pinned PostgreSQL 18 service container; run each with the command in its own `run.yaml`.
 
 ---
 

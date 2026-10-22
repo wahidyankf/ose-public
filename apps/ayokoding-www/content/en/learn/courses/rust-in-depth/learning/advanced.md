@@ -5,7 +5,7 @@ draft: false
 weight: 10
 ---
 
-Examples 54-78 survey Rust at professional depth and teach reading it: concurrency primitives first (Examples 54-61), showing spawn-and-join, channels with pinned transcripts, scoped borrowing, mutex sharing, read-write locks, lock-free atomics, poison recovery, and `Send` bounds; then tooling, linting, and style (Examples 62-70), covering `rustfmt` checks, Clippy idioms, build context, doc examples, naming law, compiler-error reading, loud boundaries, tested docs, and the project map; finally reading idiomatic code in layers (Examples 71-78), from fold pipelines and trait objects through closures, process boundaries, builders, recursive types, C calls, and whole module trees. Every example is a complete, runnable Rust program under `learning/code/`; run each with the command in its own `run.yaml`.
+Examples 54–78 survey Rust at professional depth and teach reading it: concurrency primitives first (Examples 54–61), showing spawn-and-join, channels with pinned transcripts, scoped borrowing, mutex sharing, read-write locks, lock-free atomics, poison recovery, and `Send` bounds; then tooling, linting, and style (Examples 62–70), covering `rustfmt` checks, Clippy idioms, build context, doc examples, naming law, compiler-error reading, loud boundaries, tested docs, and the project map; finally reading idiomatic code in layers (Examples 71–78), from fold pipelines and trait objects through closures, process boundaries, builders, recursive types, C calls, and whole module trees. Every example is a complete, runnable Rust program under `learning/code/`; run each with the command in its own `run.yaml`.
 
 ---
 

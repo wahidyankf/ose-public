@@ -5,7 +5,7 @@ draft: false
 weight: 20
 ---
 
-Examples 26-53 organize code the way every shared project does: modules and Mix projects with hash-locked dependencies, the standard ExUnit testing workflow, and the generalization tools — protocols, behaviours, streams, and value semantics — that turn one-off scripts into reusable libraries. Three clusters carry the level: modules, packages, and dependencies (Examples 26-34), testing convention (Examples 35-44), and generics with value semantics (Examples 45-53). Every script runs as `elixir main.exs` on the pinned Elixir 1.20.4 toolchain with no network; outputs are recorded golden files.
+Examples 26–53 organize code the way every shared project does: modules and Mix projects with hash-locked dependencies, the standard ExUnit testing workflow, and the generalization tools — protocols, behaviours, streams, and value semantics — that turn one-off scripts into reusable libraries. Three clusters carry the level: modules, packages, and dependencies (Examples 26–34), testing convention (Examples 35–44), and generics with value semantics (Examples 45–53). Every script runs as `elixir main.exs` on the pinned Elixir 1.20.4 toolchain with no network; outputs are recorded golden files.
 
 ### Example 26: Module Anatomy That Names the Unit
 

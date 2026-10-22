@@ -25,7 +25,7 @@ TypeScript is the shared frontend and tooling language across much of this catal
 
 ## How this course is organized
 
-[Beginner](/en/learn/courses/typescript-in-depth/learning/beginner) (Examples 1-25) installs idiomatic control flow and collections, the error-handling idiom, and standard-library text, files, and time. [Intermediate](/en/learn/courses/typescript-in-depth/learning/intermediate) (Examples 26-53) organizes modules and packages, declares and pins dependencies, tests with the standard `node:test` convention, and types generic, value-shaped code. [Advanced](/en/learn/courses/typescript-in-depth/learning/advanced) (Examples 54-78) surveys concurrency primitives, configures tooling and style, and trains systematic reading of idiomatic code. The [capstone](/en/learn/courses/typescript-in-depth/learning/capstone/overview) ships a report CLI with embedded selftests and a golden transcript, and [drilling](/en/learn/courses/typescript-in-depth/drilling/overview) turns the sixteen concepts into recall, katas, and checklists.
+[Beginner](/en/learn/courses/typescript-in-depth/learning/beginner) (Examples 1–25) installs idiomatic control flow and collections, the error-handling idiom, and standard-library text, files, and time. [Intermediate](/en/learn/courses/typescript-in-depth/learning/intermediate) (Examples 26–53) organizes modules and packages, declares and pins dependencies, tests with the standard `node:test` convention, and types generic, value-shaped code. [Advanced](/en/learn/courses/typescript-in-depth/learning/advanced) (Examples 54–78) surveys concurrency primitives, configures tooling and style, and trains systematic reading of idiomatic code. The [capstone](/en/learn/courses/typescript-in-depth/learning/capstone/overview) ships a report CLI with embedded selftests and a golden transcript, and [drilling](/en/learn/courses/typescript-in-depth/drilling/overview) turns the sixteen concepts into recall, katas, and checklists.
 
 ## About the runtime
 
@@ -45,7 +45,7 @@ flowchart TD
 
 ## Examples by Level
 
-### Beginner (Examples 1-25)
+### Beginner (Examples 1–25)
 
 - [Example 1: Truthy Guards and Defaults](/en/learn/courses/typescript-in-depth/learning/beginner#example-1-truthy-guards-and-defaults)
 - [Example 2: Optional Chaining at Depth](/en/learn/courses/typescript-in-depth/learning/beginner#example-2-optional-chaining-at-depth)
@@ -73,7 +73,7 @@ flowchart TD
 - [Example 24: Intl Dates and Zones](/en/learn/courses/typescript-in-depth/learning/beginner#example-24-intl-dates-and-zones)
 - [Example 25: Intl Numbers and Text Bytes](/en/learn/courses/typescript-in-depth/learning/beginner#example-25-intl-numbers-and-text-bytes)
 
-### Intermediate (Examples 26-53)
+### Intermediate (Examples 26–53)
 
 - [Example 26: Named ESM Exports](/en/learn/courses/typescript-in-depth/learning/intermediate#example-26-named-esm-exports)
 - [Example 27: import type Erasure](/en/learn/courses/typescript-in-depth/learning/intermediate#example-27-import-type-erasure)
@@ -104,7 +104,7 @@ flowchart TD
 - [Example 52: Branded Units](/en/learn/courses/typescript-in-depth/learning/intermediate#example-52-branded-units)
 - [Example 53: ReadonlyArray Inputs](/en/learn/courses/typescript-in-depth/learning/intermediate#example-53-readonlyarray-inputs)
 
-### Advanced (Examples 54-78)
+### Advanced (Examples 54–78)
 
 - [Example 54: Promise Chains](/en/learn/courses/typescript-in-depth/learning/advanced#example-54-promise-chains)
 - [Example 55: async-await Flattening](/en/learn/courses/typescript-in-depth/learning/advanced#example-55-async-await-flattening)

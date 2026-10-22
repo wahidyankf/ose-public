@@ -5,7 +5,7 @@ draft: false
 weight: 30
 ---
 
-Examples 54-78 survey what fluency touches next: concurrency primitives first (Examples 54-61), showing async Main, fan-out joins, cancellation, locks, concurrent tables, channels, bounded parallelism, and atomic adds, all deterministic; then tooling, linting, and style (Examples 62-70), covering nullable analysis, warning gates, naming, file-scoped layout, modern syntax, small functions, flat control flow, interop sizes, and argument contracts; finally reading and explaining idiomatic code (Examples 71-78), walking LINQ stages, awaits, constructors, asserts, switches, attributes, using chains, and whole programs. Every example is a complete, runnable .NET console project under `learning/code/`; run each with the command in its own `run.yaml`.
+Examples 54–78 survey what fluency touches next: concurrency primitives first (Examples 54–61), showing async Main, fan-out joins, cancellation, locks, concurrent tables, channels, bounded parallelism, and atomic adds, all deterministic; then tooling, linting, and style (Examples 62–70), covering nullable analysis, warning gates, naming, file-scoped layout, modern syntax, small functions, flat control flow, interop sizes, and argument contracts; finally reading and explaining idiomatic code (Examples 71–78), walking LINQ stages, awaits, constructors, asserts, switches, attributes, using chains, and whole programs. Every example is a complete, runnable .NET console project under `learning/code/`; run each with the command in its own `run.yaml`.
 
 ---
 

@@ -25,7 +25,7 @@ Alembic is the migration companion to SQLAlchemy, and this course assumes both t
 
 ## How this course is organized
 
-[Beginner](/en/learn/courses/database-migrations-with-python-and-alembic/learning/beginner) (Examples 1-25) writes first migrations and rolls them back: file anatomy, chain ordering, history stamps, and rollback basics. [Intermediate](/en/learn/courses/database-migrations-with-python-and-alembic/learning/intermediate) (Examples 26-53) backfills data, splits breaking changes into zero-downtime steps, and adopts legacy databases with stamps and drift checks. [Advanced](/en/learn/courses/database-migrations-with-python-and-alembic/learning/advanced) (Examples 54-78) resolves branch conflicts, shrinks locking blast radius, and diagnoses failures from the version table. The [capstone](/en/learn/courses/database-migrations-with-python-and-alembic/learning/capstone/overview) evolves an order-management schema through eight realistic migrations with a golden verification query, and [drilling](/en/learn/courses/database-migrations-with-python-and-alembic/drilling/overview) turns the sixteen concepts into recall, katas, and checklists.
+[Beginner](/en/learn/courses/database-migrations-with-python-and-alembic/learning/beginner) (Examples 1–25) writes first migrations and rolls them back: file anatomy, chain ordering, history stamps, and rollback basics. [Intermediate](/en/learn/courses/database-migrations-with-python-and-alembic/learning/intermediate) (Examples 26–53) backfills data, splits breaking changes into zero-downtime steps, and adopts legacy databases with stamps and drift checks. [Advanced](/en/learn/courses/database-migrations-with-python-and-alembic/learning/advanced) (Examples 54–78) resolves branch conflicts, shrinks locking blast radius, and diagnoses failures from the version table. The [capstone](/en/learn/courses/database-migrations-with-python-and-alembic/learning/capstone/overview) evolves an order-management schema through eight realistic migrations with a golden verification query, and [drilling](/en/learn/courses/database-migrations-with-python-and-alembic/drilling/overview) turns the sixteen concepts into recall, katas, and checklists.
 
 ## About the runtime
 
@@ -45,7 +45,7 @@ flowchart TD
 
 ## Examples by Level
 
-### Beginner (Examples 1-25)
+### Beginner (Examples 1–25)
 
 - [Example 1: First Revision Creates a Table](/en/learn/courses/database-migrations-with-python-and-alembic/learning/beginner#example-1-first-revision-creates-a-table)
 - [Example 2: Revision File Anatomy](/en/learn/courses/database-migrations-with-python-and-alembic/learning/beginner#example-2-revision-file-anatomy)
@@ -73,7 +73,7 @@ flowchart TD
 - [Example 24: Idempotent Drops](/en/learn/courses/database-migrations-with-python-and-alembic/learning/beginner#example-24-idempotent-drops)
 - [Example 25: Rerun Upgrade Is Safe](/en/learn/courses/database-migrations-with-python-and-alembic/learning/beginner#example-25-rerun-upgrade-is-safe)
 
-### Intermediate (Examples 26-53)
+### Intermediate (Examples 26–53)
 
 - [Example 26: Backfill Fills the New Column](/en/learn/courses/database-migrations-with-python-and-alembic/learning/intermediate#example-26-backfill-fills-the-new-column)
 - [Example 27: Schema First, Data Second](/en/learn/courses/database-migrations-with-python-and-alembic/learning/intermediate#example-27-schema-first-data-second)
@@ -99,12 +99,12 @@ flowchart TD
 - [Example 47: Reflect Existing Tables](/en/learn/courses/database-migrations-with-python-and-alembic/learning/intermediate#example-47-reflect-existing-tables)
 - [Example 48: Detect Schema Drift](/en/learn/courses/database-migrations-with-python-and-alembic/learning/intermediate#example-48-detect-schema-drift)
 - [Example 49: Drift Report Table by Table](/en/learn/courses/database-migrations-with-python-and-alembic/learning/intermediate#example-49-drift-report-table-by-table)
-- [Example 50: Draft a Revision with Autogenerate](/en/learn/courses/database-migrations-with-python-and-alembic/learning/intermediate#example-50-draft-a-revision-with-autogenerate)
+- [Example 50: Draft a Revision from Autogenerate](/en/learn/courses/database-migrations-with-python-and-alembic/learning/intermediate#example-50-draft-a-revision-from-autogenerate)
 - [Example 51: Review Autogenerate Before Trust](/en/learn/courses/database-migrations-with-python-and-alembic/learning/intermediate#example-51-review-autogenerate-before-trust)
 - [Example 52: Guard with Alembic Check](/en/learn/courses/database-migrations-with-python-and-alembic/learning/intermediate#example-52-guard-with-alembic-check)
 - [Example 53: Record Script Hashes](/en/learn/courses/database-migrations-with-python-and-alembic/learning/intermediate#example-53-record-script-hashes)
 
-### Advanced (Examples 54-78)
+### Advanced (Examples 54–78)
 
 - [Example 54: Two Branches, Two Heads](/en/learn/courses/database-migrations-with-python-and-alembic/learning/advanced#example-54-two-branches-two-heads)
 - [Example 55: Merge Resolves Heads](/en/learn/courses/database-migrations-with-python-and-alembic/learning/advanced#example-55-merge-resolves-heads)

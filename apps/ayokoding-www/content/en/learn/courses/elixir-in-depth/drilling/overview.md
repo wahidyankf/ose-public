@@ -676,30 +676,30 @@ list=2 map=1 bin=2 other=1
 
 Twenty-four "I can ..." items, at least one per concept. Check each honestly; an unchecked item names the example to revisit.
 
-1. I can bind by shape, rebind, and pin with the match operator instead of assigning. (co-01, Examples 1-3)
+1. I can bind by shape, rebind, and pin with the match operator instead of assigning. (co-01, Examples 1–3)
 2. I can flatten nested matches into a `with` chain with specific-first else branches. (co-01, Examples 3, 17)
 3. I can carry expected failures as `{:error, reason}` tuples through pipes and chains. (co-02, Examples 9, 12, 14)
 4. I can raise structured exceptions for broken contracts and rescue them with context at the edge. (co-02, Examples 10, 13)
 5. I can bound every wait and every retry with an explicit budget that the transcript proves. (co-02, Examples 11, 15, 55)
-6. I can choose the `Enum` function by the shape of the question with no loops. (co-03, Examples 6-8)
+6. I can choose the `Enum` function by the shape of the question with no loops. (co-03, Examples 6–8)
 7. I can pick maps, keywords, or structs by their open, optional, or fixed contracts. (co-03, Examples 5, 28)
 8. I can build output as IO lists, format columns with `:io_lib`, and keep fixtures beside the code. (co-04, Examples 20, 21)
 9. I can keep regexes small and composed with plain `String` functions doing the simple jobs. (co-04, Examples 18, 19, 22)
-10. I can construct dates and times as fixed values and compute without ever reading the clock. (co-05, Examples 23-25)
+10. I can construct dates and times as fixed values and compute without ever reading the clock. (co-05, Examples 23–25)
 11. I can lay out modules with clauses, guards, docs, and private helpers in their places. (co-06, Examples 26, 28)
 12. I can scaffold with `mix new`, use `alias`/`import`/`require` precisely, and separate compile-time from runtime config. (co-06, Examples 27, 29, 32, 33)
 13. I can read a `mix.lock` as data and state what each pinned entry guarantees. (co-07, Examples 30, 77)
 14. I can write version requirements that admit patches and refuse minors, and choose deps by the stdlib-first ranking. (co-07, Examples 31, 34)
 15. I can write ExUnit suites with deterministic summaries and gate downstream work on the counts. (co-08, Examples 35, 43, 44)
-16. I can organize suites with setup, tags, doubles, and bounds that each prove one fact. (co-08, Examples 36-42)
-17. I can choose tasks, agents, GenServers, supervisors, and registries from the failure story. (co-09, Examples 54-61)
-18. I can write concurrent scripts that never print pids and sort every collected result. (co-09, Examples 54-60)
+16. I can organize suites with setup, tags, doubles, and bounds that each prove one fact. (co-08, Examples 36–42)
+17. I can choose tasks, agents, GenServers, supervisors, and registries from the failure story. (co-09, Examples 54–61)
+18. I can write concurrent scripts that never print pids and sort every collected result. (co-09, Examples 54–60)
 19. I can replace type conditionals with protocols and module contracts with behaviours. (co-10, Examples 45, 46, 74)
 20. I can fuse pipelines with streams and measure laziness with counters instead of hoping. (co-10, co-15, Examples 48, 52)
 21. I can use strict and loose equality on purpose and update immutably with shared structure. (co-11, Examples 49, 50, 53)
 22. I can format by tool, read compiler diagnostics as data, and check small rules with small scripts. (co-12, Examples 62, 63, 69)
 23. I can call Erlang modules, open ports with pinned correlation, and encode terms for the wire. (co-13, Examples 64, 70)
-24. I can write pipes that read top to bottom, names that carry contracts, docs that state them, and read any sample in kind-surface-dependencies-flow-question order. (co-14, co-16, Examples 65-68, 71-78)
+24. I can write pipes that read top to bottom, names that carry contracts, docs that state them, and read any sample in kind-surface-dependencies-flow-question order. (co-14, co-16, Examples 65–68, 71-78)
 
 ## Elaborative interrogation & self-explanation
 
@@ -711,7 +711,7 @@ Model answer: tuples keep the common path flat and the failure reasons matchable
 
 ### Why an Agent for plain shared state — and why not a GenServer?
 
-Model answer: an Agent serializes state access behind a function API with no callbacks to write, which is exactly the need when nothing must restart and no messages need selective matching (Examples 56, 61). A GenServer would add `init`, `handle_call`, and `handle_cast` ceremony with no failure story to justify it. But the Agent is wrong the moment state must survive crashes — only a supervised GenServer replays the start argument — or the moment callers need named access across restarts, which is the Registry's job (Examples 58-60). Complexity follows the failure story, never anticipation.
+Model answer: an Agent serializes state access behind a function API with no callbacks to write, which is exactly the need when nothing must restart and no messages need selective matching (Examples 56, 61). A GenServer would add `init`, `handle_call`, and `handle_cast` ceremony with no failure story to justify it. But the Agent is wrong the moment state must survive crashes — only a supervised GenServer replays the start argument — or the moment callers need named access across restarts, which is the Registry's job (Examples 58–60). Complexity follows the failure story, never anticipation.
 
 ### Why a Stream for large inputs — and why not everywhere?
 
@@ -727,4 +727,4 @@ Model answer: the summary map — total, failures, excluded, skipped — lets sc
 
 ### Why read types before code — and why not dive into implementation?
 
-Model answer: naming each stage's input and output types builds the skeleton that details hang on, whether the unit is a pipe chain, a `with` chain, a GenServer, or a protocol call (Examples 71-78). Divers who start with implementation drown in details with no frame for judging them. The five-step order — kind, surface, dependencies, flow, question — turns every unfamiliar file into the same procedure, and the procedure works because types change slower than code.
+Model answer: naming each stage's input and output types builds the skeleton that details hang on, whether the unit is a pipe chain, a `with` chain, a GenServer, or a protocol call (Examples 71–78). Divers who start with implementation drown in details with no frame for judging them. The five-step order — kind, surface, dependencies, flow, question — turns every unfamiliar file into the same procedure, and the procedure works because types change slower than code.

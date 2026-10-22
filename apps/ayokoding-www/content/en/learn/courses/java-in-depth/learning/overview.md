@@ -25,7 +25,7 @@ Java is the enterprise backbone across much of this catalog: backend courses bui
 
 ## How this course is organized
 
-[Beginner](/en/learn/courses/java-in-depth/learning/beginner) (Examples 1-25) installs idiomatic control flow and collections, the error-handling idiom, and standard-library text, files, and time. [Intermediate](/en/learn/courses/java-in-depth/learning/intermediate) (Examples 26-53) organizes modules and packages, declares and pins dependencies, tests with assertions and hand-rolled runners, and types generic, value-shaped code. [Advanced](/en/learn/courses/java-in-depth/learning/advanced) (Examples 54-78) surveys concurrency primitives, configures tooling and style, and trains systematic reading of idiomatic code. The [capstone](/en/learn/courses/java-in-depth/learning/capstone/overview) ships a dues-settlement CLI with a thirteen-check suite and a golden transcript, and [drilling](/en/learn/courses/java-in-depth/drilling/overview) turns the sixteen concepts into recall, katas, and checklists.
+[Beginner](/en/learn/courses/java-in-depth/learning/beginner) (Examples 1–25) installs idiomatic control flow and collections, the error-handling idiom, and standard-library text, files, and time. [Intermediate](/en/learn/courses/java-in-depth/learning/intermediate) (Examples 26–53) organizes modules and packages, declares and pins dependencies, tests with assertions and hand-rolled runners, and types generic, value-shaped code. [Advanced](/en/learn/courses/java-in-depth/learning/advanced) (Examples 54–78) surveys concurrency primitives, configures tooling and style, and trains systematic reading of idiomatic code. The [capstone](/en/learn/courses/java-in-depth/learning/capstone/overview) ships a dues-settlement CLI with a thirteen-check suite and a golden transcript, and [drilling](/en/learn/courses/java-in-depth/drilling/overview) turns the sixteen concepts into recall, katas, and checklists.
 
 ## About the runtime
 
@@ -44,14 +44,14 @@ flowchart TD
 
 ## Examples by Level
 
-### Beginner (Examples 1-25)
+### Beginner (Examples 1–25)
 
 - [Example 1: Switch Expressions Choose Values](/en/learn/courses/java-in-depth/learning/beginner#example-1-switch-expressions-choose-values)
 - [Example 2: The Enhanced for Loop Over Indexes](/en/learn/courses/java-in-depth/learning/beginner#example-2-the-enhanced-for-loop-over-indexes)
 - [Example 3: Guard Clauses Flatten Nesting](/en/learn/courses/java-in-depth/learning/beginner#example-3-guard-clauses-flatten-nesting)
 - [Example 4: ArrayList Grows on Add](/en/learn/courses/java-in-depth/learning/beginner#example-4-arraylist-grows-on-add)
 - [Example 5: HashMap Counts with getOrDefault](/en/learn/courses/java-in-depth/learning/beginner#example-5-hashmap-counts-with-getordefault)
-- [Example 6: List.of Snapshots That Cannot Change](/en/learn/courses/java-in-depth/learning/beginner#example-6-list-of-snapshots-that-cannot-change)
+- [Example 6: List.of Snapshots That Cannot Change](/en/learn/courses/java-in-depth/learning/beginner#example-6-listof-snapshots-that-cannot-change)
 - [Example 7: Sorting with Comparators](/en/learn/courses/java-in-depth/learning/beginner#example-7-sorting-with-comparators)
 - [Example 8: Streams Replace Accumulator Loops](/en/learn/courses/java-in-depth/learning/beginner#example-8-streams-replace-accumulator-loops)
 - [Example 9: try-with-resources Closes for You](/en/learn/courses/java-in-depth/learning/beginner#example-9-try-with-resources-closes-for-you)
@@ -72,7 +72,7 @@ flowchart TD
 - [Example 24: Instants and Durations from Fixed Points](/en/learn/courses/java-in-depth/learning/beginner#example-24-instants-and-durations-from-fixed-points)
 - [Example 25: Zoned Time for Humans](/en/learn/courses/java-in-depth/learning/beginner#example-25-zoned-time-for-humans)
 
-### Intermediate (Examples 26-53)
+### Intermediate (Examples 26–53)
 
 - [Example 26: One Class, One Job](/en/learn/courses/java-in-depth/learning/intermediate#example-26-one-class-one-job)
 - [Example 27: Packages Group Related Code](/en/learn/courses/java-in-depth/learning/intermediate#example-27-packages-group-related-code)
@@ -103,7 +103,7 @@ flowchart TD
 - [Example 52: equals, hashCode, and compareTo Agree](/en/learn/courses/java-in-depth/learning/intermediate#example-52-equals-hashcode-and-compareto-agree)
 - [Example 53: Views Share, Copies Freeze](/en/learn/courses/java-in-depth/learning/intermediate#example-53-views-share-copies-freeze)
 
-### Advanced (Examples 54-78)
+### Advanced (Examples 54–78)
 
 - [Example 54: Threads Join Before Printing](/en/learn/courses/java-in-depth/learning/advanced#example-54-threads-join-before-printing)
 - [Example 55: Executor invokeAll Orders Results](/en/learn/courses/java-in-depth/learning/advanced#example-55-executor-invokeall-orders-results)
@@ -117,7 +117,7 @@ flowchart TD
 - [Example 63: StringBuilder in Loops](/en/learn/courses/java-in-depth/learning/advanced#example-63-stringbuilder-in-loops)
 - [Example 64: Size Collections Upfront](/en/learn/courses/java-in-depth/learning/advanced#example-64-size-collections-upfront)
 - [Example 65: EnumSet Flags Stay Compact](/en/learn/courses/java-in-depth/learning/advanced#example-65-enumset-flags-stay-compact)
-- [Example 66: Lint-clean Under -Xlint](/en/learn/courses/java-in-depth/learning/advanced#example-66-lint-clean-under-xlint)
+- [Example 66: Lint-clean Under -Xlint](/en/learn/courses/java-in-depth/learning/advanced#example-66-lint-clean-under--xlint)
 - [Example 67: Comments Explain Why, Not What](/en/learn/courses/java-in-depth/learning/advanced#example-67-comments-explain-why-not-what)
 - [Example 68: Small Methods, Extracted Early](/en/learn/courses/java-in-depth/learning/advanced#example-68-small-methods-extracted-early)
 - [Example 69: Config Through System Properties](/en/learn/courses/java-in-depth/learning/advanced#example-69-config-through-system-properties)

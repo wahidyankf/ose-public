@@ -5,7 +5,7 @@ draft: false
 weight: 10
 ---
 
-Examples 54-78 cover production Kotlin: a concurrency survey that stays deterministic (Examples 54-61), from threads and joins through atomic counters, synchronized totals, blocking queues, countdown latches, parallel map-then-sort, immutable cross-thread messages, and thread confinement; then tooling, style, and interop (Examples 62-70), from names that read aloud through why-comments, small functions, staged deprecations, mechanical formatting, deferred sequences, buildString economics, Kotlin-calls-Java, and Java-calls-Kotlin-back; finally reading idiomatic code (Examples 71-78), from handlers and pipelines through seams, spec tables, CLI anatomy, data contracts, cleanup order, and one whole program top-down. Every example is a complete, runnable Kotlin program under `learning/code/`; run each with the command in its own `run.yaml`.
+Examples 54–78 cover production Kotlin: a concurrency survey that stays deterministic (Examples 54–61), from threads and joins through atomic counters, synchronized totals, blocking queues, countdown latches, parallel map-then-sort, immutable cross-thread messages, and thread confinement; then tooling, style, and interop (Examples 62–70), from names that read aloud through why-comments, small functions, staged deprecations, mechanical formatting, deferred sequences, buildString economics, Kotlin-calls-Java, and Java-calls-Kotlin-back; finally reading idiomatic code (Examples 71–78), from handlers and pipelines through seams, spec tables, CLI anatomy, data contracts, cleanup order, and one whole program top-down. Every example is a complete, runnable Kotlin program under `learning/code/`; run each with the command in its own `run.yaml`.
 
 ---
 

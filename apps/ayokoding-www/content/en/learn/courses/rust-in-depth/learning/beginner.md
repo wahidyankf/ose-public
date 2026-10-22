@@ -5,7 +5,7 @@ draft: false
 weight: 10
 ---
 
-Examples 1-25 build Rust fluency from the ground up: idiomatic control flow and collections first (Examples 1-8), showing `if let`, value-carrying loops, draining while-lets, match priority, capacity doubling, the entry API, and fused iterator pipelines; then the error-handling idiom in full (Examples 9-17), from `Result` returns through `?` propagation, defaults, context wrapping, custom enums, combinators, boxed errors, asserts, and fail-fast collection; finally the standard library for daily text, file, and time work (Examples 18-25), covering string building, line pipelines, format verbs, temp-file I/O, buffered streaming, portable paths, fixed-instant arithmetic, and human duration rendering. Every example is a complete, runnable single-file Rust program under `learning/code/`; run each with the command in its own `run.yaml`.
+Examples 1–25 build Rust fluency from the ground up: idiomatic control flow and collections first (Examples 1–8), showing `if let`, value-carrying loops, draining while-lets, match priority, capacity doubling, the entry API, and fused iterator pipelines; then the error-handling idiom in full (Examples 9–17), from `Result` returns through `?` propagation, defaults, context wrapping, custom enums, combinators, boxed errors, asserts, and fail-fast collection; finally the standard library for daily text, file, and time work (Examples 18–25), covering string building, line pipelines, format verbs, temp-file I/O, buffered streaming, portable paths, fixed-instant arithmetic, and human duration rendering. Every example is a complete, runnable single-file Rust program under `learning/code/`; run each with the command in its own `run.yaml`.
 
 ---
 

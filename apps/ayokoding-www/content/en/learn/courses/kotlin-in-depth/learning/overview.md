@@ -25,7 +25,7 @@ Kotlin is the Android and modern-JVM language across much of this catalog: backe
 
 ## How this course is organized
 
-[Beginner](/en/learn/courses/kotlin-in-depth/learning/beginner) (Examples 1-25) installs idiomatic control flow and collections, the error-handling idiom, and standard-library text, files, and time. [Intermediate](/en/learn/courses/kotlin-in-depth/learning/intermediate) (Examples 26-53) organizes modules and packages, declares and pins dependencies, tests with checks and hand-rolled runners, and types generic, value-shaped code. [Advanced](/en/learn/courses/kotlin-in-depth/learning/advanced) (Examples 54-78) surveys concurrency primitives, configures tooling and style, bridges the Java interop boundary both ways, and trains systematic reading of idiomatic code. The [capstone](/en/learn/courses/kotlin-in-depth/learning/capstone/overview) ships a tally CLI with a fourteen-check suite and a golden transcript, and [drilling](/en/learn/courses/kotlin-in-depth/drilling/overview) turns the sixteen concepts into recall, katas, and checklists.
+[Beginner](/en/learn/courses/kotlin-in-depth/learning/beginner) (Examples 1–25) installs idiomatic control flow and collections, the error-handling idiom, and standard-library text, files, and time. [Intermediate](/en/learn/courses/kotlin-in-depth/learning/intermediate) (Examples 26–53) organizes modules and packages, declares and pins dependencies, tests with checks and hand-rolled runners, and types generic, value-shaped code. [Advanced](/en/learn/courses/kotlin-in-depth/learning/advanced) (Examples 54–78) surveys concurrency primitives, configures tooling and style, bridges the Java interop boundary both ways, and trains systematic reading of idiomatic code. The [capstone](/en/learn/courses/kotlin-in-depth/learning/capstone/overview) ships a tally CLI with a fourteen-check suite and a golden transcript, and [drilling](/en/learn/courses/kotlin-in-depth/drilling/overview) turns the sixteen concepts into recall, katas, and checklists.
 
 ## About the runtime
 
@@ -44,7 +44,7 @@ flowchart TD
 
 ## Examples by Level
 
-### Beginner (Examples 1-25)
+### Beginner (Examples 1–25)
 
 - [Example 1: When Expressions Choose Values](/en/learn/courses/kotlin-in-depth/learning/beginner#example-1-when-expressions-choose-values)
 - [Example 2: For Loops Iterate Elements](/en/learn/courses/kotlin-in-depth/learning/beginner#example-2-for-loops-iterate-elements)
@@ -62,17 +62,17 @@ flowchart TD
 - [Example 14: Sealed Hierarchies for Errors](/en/learn/courses/kotlin-in-depth/learning/beginner#example-14-sealed-hierarchies-for-errors)
 - [Example 15: Exceptions Carry Causes](/en/learn/courses/kotlin-in-depth/learning/beginner#example-15-exceptions-carry-causes)
 - [Example 16: Elvis at Boundaries](/en/learn/courses/kotlin-in-depth/learning/beginner#example-16-elvis-at-boundaries)
-- [Example 17: Per-Item Failure Granularity](/en/learn/courses/kotlin-in-depth/learning/beginner#example-17-peritem-failure-granularity)
+- [Example 17: Per-Item Failure Granularity](/en/learn/courses/kotlin-in-depth/learning/beginner#example-17-per-item-failure-granularity)
 - [Example 18: Multiline Strings for Templates](/en/learn/courses/kotlin-in-depth/learning/beginner#example-18-multiline-strings-for-templates)
 - [Example 19: Format Verbs for Tables](/en/learn/courses/kotlin-in-depth/learning/beginner#example-19-format-verbs-for-tables)
 - [Example 20: Regex with Named Groups](/en/learn/courses/kotlin-in-depth/learning/beginner#example-20-regex-with-named-groups)
-- [Example 21: Files Read and Write in UTF-8](/en/learn/courses/kotlin-in-depth/learning/beginner#example-21-files-read-and-write-in-utf8)
+- [Example 21: Files Read and Write in UTF-8](/en/learn/courses/kotlin-in-depth/learning/beginner#example-21-files-read-and-write-in-utf-8)
 - [Example 22: CSV Quotes Need a Parser](/en/learn/courses/kotlin-in-depth/learning/beginner#example-22-csv-quotes-need-a-parser)
 - [Example 23: Properties Config at the Edge](/en/learn/courses/kotlin-in-depth/learning/beginner#example-23-properties-config-at-the-edge)
 - [Example 24: Instants and Durations, Fixed](/en/learn/courses/kotlin-in-depth/learning/beginner#example-24-instants-and-durations-fixed)
 - [Example 25: Zoned Time for Humans](/en/learn/courses/kotlin-in-depth/learning/beginner#example-25-zoned-time-for-humans)
 
-### Intermediate (Examples 26-53)
+### Intermediate (Examples 26–53)
 
 - [Example 26: One File One Job](/en/learn/courses/kotlin-in-depth/learning/intermediate#example-26-one-file-one-job)
 - [Example 27: Packages Group Related Code](/en/learn/courses/kotlin-in-depth/learning/intermediate#example-27-packages-group-related-code)
@@ -84,7 +84,7 @@ flowchart TD
 - [Example 33: Executable Jar Packages the App](/en/learn/courses/kotlin-in-depth/learning/intermediate#example-33-executable-jar-packages-the-app)
 - [Example 34: Version Gates Guard APIs](/en/learn/courses/kotlin-in-depth/learning/intermediate#example-34-version-gates-guard-apis)
 - [Example 35: Check States Contracts](/en/learn/courses/kotlin-in-depth/learning/intermediate#example-35-check-states-contracts)
-- [Example 36: Hand-Rolled Check Runner](/en/learn/courses/kotlin-in-depth/learning/intermediate#example-36-handrolled-check-runner)
+- [Example 36: Hand-Rolled Check Runner](/en/learn/courses/kotlin-in-depth/learning/intermediate#example-36-hand-rolled-check-runner)
 - [Example 37: Fresh Fixtures per Test](/en/learn/courses/kotlin-in-depth/learning/intermediate#example-37-fresh-fixtures-per-test)
 - [Example 38: Table Tests Cover Cases](/en/learn/courses/kotlin-in-depth/learning/intermediate#example-38-table-tests-cover-cases)
 - [Example 39: Tests Pin Failure Contracts](/en/learn/courses/kotlin-in-depth/learning/intermediate#example-39-tests-pin-failure-contracts)
@@ -103,7 +103,7 @@ flowchart TD
 - [Example 52: Equals and HashCode Agree](/en/learn/courses/kotlin-in-depth/learning/intermediate#example-52-equals-and-hashcode-agree)
 - [Example 53: Views Share, Copies Freeze](/en/learn/courses/kotlin-in-depth/learning/intermediate#example-53-views-share-copies-freeze)
 
-### Advanced (Examples 54-78)
+### Advanced (Examples 54–78)
 
 - [Example 54: Threads Join Before Print](/en/learn/courses/kotlin-in-depth/learning/advanced#example-54-threads-join-before-print)
 - [Example 55: Atomic Counters Share Safely](/en/learn/courses/kotlin-in-depth/learning/advanced#example-55-atomic-counters-share-safely)

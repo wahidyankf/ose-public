@@ -5,7 +5,7 @@ draft: false
 weight: 10
 ---
 
-Examples 1-25 build the habits every later example assumes: truthiness and optional chaining instead of guard pyramids, unions and narrowing instead of assertions, and the standard library for text, files, and time. Three clusters carry the level: idiomatic control flow and collections (Examples 1-8), the error-handling idiom (Examples 9-17), and standard-library text, files, and time (Examples 18-25). Every program compiles under `tsc --strict` and runs on the pinned Node.js toolchain with the standard library only; every output is a fixed transcript.
+Examples 1–25 build the habits every later example assumes: truthiness and optional chaining instead of guard pyramids, unions and narrowing instead of assertions, and the standard library for text, files, and time. Three clusters carry the level: idiomatic control flow and collections (Examples 1–8), the error-handling idiom (Examples 9–17), and standard-library text, files, and time (Examples 18–25). Every program compiles under `tsc --strict` and runs on the pinned Node.js toolchain with the standard library only; every output is a fixed transcript.
 
 ### Example 1: Truthy Guards and Defaults
 

@@ -5,7 +5,7 @@ draft: false
 weight: 20
 ---
 
-Examples 26-53 organize code for reuse and prove it works: module boundaries and package maps, declared and pinned dependencies, the standard `node:test` testing convention, and generic, value-shaped types. Three clusters carry the level: modules, packages, and dependencies (Examples 26-34), the testing convention (Examples 35-44), and generics with value semantics (Examples 45-53). Multi-file units anchor every file; the `node.d.ts` declarations appear once, in Example 13 of Beginner, and repeat wherever Node.js built-ins are touched.
+Examples 26–53 organize code for reuse and prove it works: module boundaries and package maps, declared and pinned dependencies, the standard `node:test` testing convention, and generic, value-shaped types. Three clusters carry the level: modules, packages, and dependencies (Examples 26–34), the testing convention (Examples 35–44), and generics with value semantics (Examples 45–53). Multi-file units anchor every file; the `node.d.ts` declarations appear once, in Example 13 of Beginner, and repeat wherever Node.js built-ins are touched.
 
 ### Example 26: Named ESM Exports
 

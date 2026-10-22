@@ -5,7 +5,7 @@ draft: false
 weight: 20
 ---
 
-Examples 26-53 move from single-table changes to production realities: filling new columns from old data, splitting breaking changes into zero-downtime steps, and adopting databases that predate their history. Three clusters carry the level: backfills and data migrations (Examples 26-34), zero-downtime migration splitting (Examples 35-44), and baselining an existing database (Examples 45-53). Every program runs against the real pinned PostgreSQL 18 container; every output is a fixed transcript.
+Examples 26–53 move from single-table changes to production realities: filling new columns from old data, splitting breaking changes into zero-downtime steps, and adopting databases that predate their history. Three clusters carry the level: backfills and data migrations (Examples 26–34), zero-downtime migration splitting (Examples 35–44), and baselining an existing database (Examples 45–53). Every program runs against the real pinned PostgreSQL 18 container; every output is a fixed transcript.
 
 ### Example 26: Backfill Fills the New Column
 

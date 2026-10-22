@@ -5,7 +5,7 @@ draft: false
 weight: 20
 ---
 
-Examples 26-53 organize the fluency Beginner installed: modules and projects with pinned dependencies, the standard testing workflow with tabulated cases, and generics with value semantics. Three clusters carry the level: modules, packages, and dependencies (Examples 26-34); testing convention (Examples 35-44); generics and value semantics (Examples 45-53). Every script runs as `dotnet fsi main.fsx` on the pinned .NET 10.0.402 toolchain with no network; outputs are recorded golden files.
+Examples 26–53 organize the fluency Beginner installed: modules and projects with pinned dependencies, the standard testing workflow with tabulated cases, and generics with value semantics. Three clusters carry the level: modules, packages, and dependencies (Examples 26–34); testing convention (Examples 35–44); generics and value semantics (Examples 45–53). Every script runs as `dotnet fsi main.fsx` on the pinned .NET 10.0.402 toolchain with no network; outputs are recorded golden files.
 
 ### Example 26: Modules Organize Functions
 

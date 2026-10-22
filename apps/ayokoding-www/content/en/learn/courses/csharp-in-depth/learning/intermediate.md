@@ -5,7 +5,7 @@ draft: false
 weight: 20
 ---
 
-Examples 26-53 move from writing C# to shipping it: modules, packages, and dependencies first (Examples 26-34), showing namespaces, one-type-per-file layout, access modifiers, the classic Program shape, framework pins, stdlib-only builds, version stamps, XML docs, and build modes; then the testing convention in full (Examples 35-44), from first checks through failing-first, data rows, helpers, throws-testing, async checks, fakes, slow-suite opt-outs, fixtures, and sequence comparison; finally generics with value semantics (Examples 45-53), covering generic methods, constraints, generic collections, inference, struct copies, records, lazy iterators, and frozen lookups. Every example is a complete, runnable .NET console project under `learning/code/`; run each with the command in its own `run.yaml`.
+Examples 26–53 move from writing C# to shipping it: modules, packages, and dependencies first (Examples 26–34), showing namespaces, one-type-per-file layout, access modifiers, the classic Program shape, framework pins, stdlib-only builds, version stamps, XML docs, and build modes; then the testing convention in full (Examples 35–44), from first checks through failing-first, data rows, helpers, throws-testing, async checks, fakes, slow-suite opt-outs, fixtures, and sequence comparison; finally generics with value semantics (Examples 45–53), covering generic methods, constraints, generic collections, inference, struct copies, records, lazy iterators, and frozen lookups. Every example is a complete, runnable .NET console project under `learning/code/`; run each with the command in its own `run.yaml`.
 
 ---
 

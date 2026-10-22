@@ -17,7 +17,7 @@ After this course you can use C#'s idiomatic control flow, collections, and erro
 
 ## How this course is organized
 
-[Learning](/en/learn/courses/csharp-in-depth/learning/overview) holds 78 worked examples in three levels: Beginner (Examples 1-25) covers control flow, collections, error handling, and standard-library text, files, and time; Intermediate (Examples 26-53) covers modules and packages, the testing convention, and generics with value semantics; Advanced (Examples 54-78) surveys concurrency primitives, tooling and style, and reading idiomatic code. The [capstone](/en/learn/courses/csharp-in-depth/learning/capstone/overview) builds a small receipt-ledger CLI with checks and a golden transcript, and [drilling](/en/learn/courses/csharp-in-depth/drilling/overview) turns the sixteen concepts into recall questions, applied problems, katas, and checklists.
+[Learning](/en/learn/courses/csharp-in-depth/learning/overview) holds 78 worked examples in three levels: Beginner (Examples 1–25) covers control flow, collections, error handling, and standard-library text, files, and time; Intermediate (Examples 26–53) covers modules and packages, the testing convention, and generics with value semantics; Advanced (Examples 54–78) surveys concurrency primitives, tooling and style, and reading idiomatic code. The [capstone](/en/learn/courses/csharp-in-depth/learning/capstone/overview) builds a small receipt-ledger CLI with checks and a golden transcript, and [drilling](/en/learn/courses/csharp-in-depth/drilling/overview) turns the sixteen concepts into recall questions, applied problems, katas, and checklists.
 
 ## Prerequisites
 

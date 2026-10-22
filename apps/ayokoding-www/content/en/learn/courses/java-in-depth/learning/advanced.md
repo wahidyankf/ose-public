@@ -5,7 +5,7 @@ draft: false
 weight: 10
 ---
 
-Examples 54-78 cover production Java: a concurrency survey that stays deterministic (Examples 54-61), from threads and joins through executor fan-out, ordered futures, synchronized totals, blocking queues, CompletableFuture pipelines, parallel streams, and atomics; then tooling, style, and interop (Examples 62-70), from names that read aloud through StringBuilder economics, upfront sizing, EnumSet flags, -Xlint-clean builds, why-comments, extracted methods, system-property config, and ProcessBuilder calls; finally reading idiomatic code (Examples 71-78), from handlers and pipelines through seams, spec tables, CLIs, data contracts, cleanup order, and one whole program top-down. Every example is a complete, runnable Java program under `learning/code/`; run each with the command in its own `run.yaml`.
+Examples 54–78 cover production Java: a concurrency survey that stays deterministic (Examples 54–61), from threads and joins through executor fan-out, ordered futures, synchronized totals, blocking queues, CompletableFuture pipelines, parallel streams, and atomics; then tooling, style, and interop (Examples 62–70), from names that read aloud through StringBuilder economics, upfront sizing, EnumSet flags, -Xlint-clean builds, why-comments, extracted methods, system-property config, and ProcessBuilder calls; finally reading idiomatic code (Examples 71–78), from handlers and pipelines through seams, spec tables, CLIs, data contracts, cleanup order, and one whole program top-down. Every example is a complete, runnable Java program under `learning/code/`; run each with the command in its own `run.yaml`.
 
 ---
 

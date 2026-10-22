@@ -5,7 +5,7 @@ draft: false
 weight: 30
 ---
 
-Examples 54-78 survey what working TypeScript developers touch weekly: concurrency primitives, the strictness and style tooling that guards real codebases, and the systematic reading of idiomatic code written by others. Three clusters carry the level: concurrency primitives at survey depth (Examples 54-61), tooling, linting, and style (Examples 62-70), and reading and explaining idiomatic code (Examples 71-78). Every concurrent program joins its work and prints ordered results; no output carries timings.
+Examples 54–78 survey what working TypeScript developers touch weekly: concurrency primitives, the strictness and style tooling that guards real codebases, and the systematic reading of idiomatic code written by others. Three clusters carry the level: concurrency primitives at survey depth (Examples 54–61), tooling, linting, and style (Examples 62–70), and reading and explaining idiomatic code (Examples 71–78). Every concurrent program joins its work and prints ordered results; no output carries timings.
 
 ### Example 54: Promise Chains
 

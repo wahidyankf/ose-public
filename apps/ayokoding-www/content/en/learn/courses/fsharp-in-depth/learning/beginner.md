@@ -5,7 +5,7 @@ draft: false
 weight: 10
 ---
 
-Examples 1-25 build the fluency every later page assumes: idiomatic control flow and the core collections, the error-handling style that keeps failures informative, and the standard-library text, file, and time tools a working developer reaches for daily. Three clusters carry the level: control flow and collections (Examples 1-8), error-handling idiom (Examples 9-17), and text, files, and time (Examples 18-25). Every script runs as `dotnet fsi main.fsx` on the pinned .NET 10.0.402 toolchain with no network; outputs are recorded golden files.
+Examples 1–25 build the fluency every later page assumes: idiomatic control flow and the core collections, the error-handling style that keeps failures informative, and the standard-library text, file, and time tools a working developer reaches for daily. Three clusters carry the level: control flow and collections (Examples 1–8), error-handling idiom (Examples 9–17), and text, files, and time (Examples 18–25). Every script runs as `dotnet fsi main.fsx` on the pinned .NET 10.0.402 toolchain with no network; outputs are recorded golden files.
 
 ### Example 1: if Expressions Choose Values
 

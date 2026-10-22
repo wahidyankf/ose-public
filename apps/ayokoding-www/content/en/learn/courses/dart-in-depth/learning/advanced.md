@@ -5,7 +5,7 @@ draft: false
 weight: 10
 ---
 
-Examples 54-78 survey the professional edges: concurrency primitives first (Examples 54-61), covering Futures, async-await, Future.wait, streams, stream operators, broadcast flows, async-star generators, and StreamController bridges; then tooling, linting, and style (Examples 62-70), covering the toolchain pin, format checks, analyzer verdicts, naming cases, doc coverage, const preference, live lints, import bands, and analysis options; finally reading idiomatic code (Examples 71-78), from shape-first reading through pipelines, Result chains, event buses, retry patterns, caches, extensions, and the five-line explanation drill. Every example is a complete, runnable Dart program under `learning/code/`; run each with the command in its own `run.yaml`.
+Examples 54–78 survey the professional edges: concurrency primitives first (Examples 54–61), covering Futures, async-await, Future.wait, streams, stream operators, broadcast flows, async-star generators, and StreamController bridges; then tooling, linting, and style (Examples 62–70), covering the toolchain pin, format checks, analyzer verdicts, naming cases, doc coverage, const preference, live lints, import bands, and analysis options; finally reading idiomatic code (Examples 71–78), from shape-first reading through pipelines, Result chains, event buses, retry patterns, caches, extensions, and the five-line explanation drill. Every example is a complete, runnable Dart program under `learning/code/`; run each with the command in its own `run.yaml`.
 
 ---
 

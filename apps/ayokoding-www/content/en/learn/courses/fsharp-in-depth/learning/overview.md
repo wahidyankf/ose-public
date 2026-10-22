@@ -25,7 +25,7 @@ F# is the functional-first .NET language of this series: the `just-enough-fsharp
 
 ## How this course is organized
 
-[Beginner](/en/learn/courses/fsharp-in-depth/learning/beginner) (Examples 1-25) installs idiomatic control flow and collections, the error-handling idiom, and standard-library text, file, and time tools. [Intermediate](/en/learn/courses/fsharp-in-depth/learning/intermediate) (Examples 26-53) organizes modules and projects, declares and pins dependencies, tests with the standard check-helper workflow, and generalizes with generics and value semantics. [Advanced](/en/learn/courses/fsharp-in-depth/learning/advanced) (Examples 54-78) surveys concurrency primitives, configures tooling and style, and trains systematic reading of idiomatic code. The [capstone](/en/learn/courses/fsharp-in-depth/learning/capstone/overview) ships a grade-book summarizer with an embedded suite and a golden transcript, and [drilling](/en/learn/courses/fsharp-in-depth/drilling/overview) turns the sixteen concepts into recall, katas, and checklists.
+[Beginner](/en/learn/courses/fsharp-in-depth/learning/beginner) (Examples 1–25) installs idiomatic control flow and collections, the error-handling idiom, and standard-library text, file, and time tools. [Intermediate](/en/learn/courses/fsharp-in-depth/learning/intermediate) (Examples 26–53) organizes modules and projects, declares and pins dependencies, tests with the standard check-helper workflow, and generalizes with generics and value semantics. [Advanced](/en/learn/courses/fsharp-in-depth/learning/advanced) (Examples 54–78) surveys concurrency primitives, configures tooling and style, and trains systematic reading of idiomatic code. The [capstone](/en/learn/courses/fsharp-in-depth/learning/capstone/overview) ships a grade-book summarizer with an embedded suite and a golden transcript, and [drilling](/en/learn/courses/fsharp-in-depth/drilling/overview) turns the sixteen concepts into recall, katas, and checklists.
 
 ## About the runtime
 
@@ -130,7 +130,7 @@ One row per `ex-NN`: title, level, runtime, task, check, and concept refs. Every
 
 ## Examples by Level
 
-### Beginner (Examples 1-25)
+### Beginner (Examples 1–25)
 
 - [Example 1: if Expressions Choose Values](/en/learn/courses/fsharp-in-depth/learning/beginner#example-1-if-expressions-choose-values)
 - [Example 2: match With Literals and Guards](/en/learn/courses/fsharp-in-depth/learning/beginner#example-2-match-with-literals-and-guards)
@@ -158,7 +158,7 @@ One row per `ex-NN`: title, level, runtime, task, check, and concept refs. Every
 - [Example 24: Dates Are Constructed, Never Read](/en/learn/courses/fsharp-in-depth/learning/beginner#example-24-dates-are-constructed-never-read)
 - [Example 25: Parsing Dates With TryParseExact](/en/learn/courses/fsharp-in-depth/learning/beginner#example-25-parsing-dates-with-tryparseexact)
 
-### Intermediate (Examples 26-53)
+### Intermediate (Examples 26–53)
 
 - [Example 26: Modules Organize Functions](/en/learn/courses/fsharp-in-depth/learning/intermediate#example-26-modules-organize-functions)
 - [Example 27: Namespaces and Accessibility](/en/learn/courses/fsharp-in-depth/learning/intermediate#example-27-namespaces-and-accessibility)
@@ -189,7 +189,7 @@ One row per `ex-NN`: title, level, runtime, task, check, and concept refs. Every
 - [Example 52: StringBuilder at Scale, Proven by Count](/en/learn/courses/fsharp-in-depth/learning/intermediate#example-52-stringbuilder-at-scale-proven-by-count)
 - [Example 53: Choosing Generic or Concrete](/en/learn/courses/fsharp-in-depth/learning/intermediate#example-53-choosing-generic-or-concrete)
 
-### Advanced (Examples 54-78)
+### Advanced (Examples 54–78)
 
 - [Example 54: async Workflows That Run in Order](/en/learn/courses/fsharp-in-depth/learning/advanced#example-54-async-workflows-that-run-in-order)
 - [Example 55: Async.Parallel Joins Independent Work](/en/learn/courses/fsharp-in-depth/learning/advanced#example-55-asyncparallel-joins-independent-work)

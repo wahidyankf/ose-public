@@ -15,11 +15,11 @@ Prerequisites for this course: [just-enough-java](/en/learn/courses/just-enough-
 
 ## How this course is organized
 
-Beginner (Examples 1-25) writes first migrations, reads the history tables Liquibase keeps, and practices rollback until it is boring. Intermediate (Examples 26-53) moves data as well as schema, splits breaking changes into zero-downtime steps, and adopts databases that predate Liquibase. Advanced (Examples 54-78) resolves the conflicts parallel teams create, contains locking migrations, and diagnoses failed or partial runs from the history tables. Every example runs for real: Java driving Liquibase against the pinned PostgreSQL 18 service container, with the golden output recorded beside the program.
+Beginner (Examples 1–25) writes first migrations, reads the history tables Liquibase keeps, and practices rollback until it is boring. Intermediate (Examples 26–53) moves data as well as schema, splits breaking changes into zero-downtime steps, and adopts databases that predate Liquibase. Advanced (Examples 54–78) resolves the conflicts parallel teams create, contains locking migrations, and diagnoses failed or partial runs from the history tables. Every example runs for real: Java driving Liquibase against the pinned PostgreSQL 18 service container, with the golden output recorded beside the program.
 
 ## Examples by Level
 
-### Beginner (Examples 1-25)
+### Beginner (Examples 1–25)
 
 - [Example 1: Run Your First Changelog](/en/learn/courses/database-migrations-with-java-and-liquibase/learning/beginner#example-1-run-your-first-changelog)
 - [Example 2: A Master Changelog Includes the Rest](/en/learn/courses/database-migrations-with-java-and-liquibase/learning/beginner#example-2-a-master-changelog-includes-the-rest)
@@ -47,7 +47,7 @@ Beginner (Examples 1-25) writes first migrations, reads the history tables Liqui
 - [Example 24: Count-Based Rollbacks Span Files](/en/learn/courses/database-migrations-with-java-and-liquibase/learning/beginner#example-24-count-based-rollbacks-span-files)
 - [Example 25: Validate Catches Errors Before Update](/en/learn/courses/database-migrations-with-java-and-liquibase/learning/beginner#example-25-validate-catches-errors-before-update)
 
-### Intermediate (Examples 26-53)
+### Intermediate (Examples 26–53)
 
 - [Example 26: Inserts Seed Reference Data](/en/learn/courses/database-migrations-with-java-and-liquibase/learning/intermediate#example-26-inserts-seed-reference-data)
 - [Example 27: Updates Backfill a New Column](/en/learn/courses/database-migrations-with-java-and-liquibase/learning/intermediate#example-27-updates-backfill-a-new-column)
@@ -78,7 +78,7 @@ Beginner (Examples 1-25) writes first migrations, reads the history tables Liqui
 - [Example 52: Views Version the Read Contract](/en/learn/courses/database-migrations-with-java-and-liquibase/learning/intermediate#example-52-views-version-the-read-contract)
 - [Example 53: Squash Old Migrations into One Baseline](/en/learn/courses/database-migrations-with-java-and-liquibase/learning/intermediate#example-53-squash-old-migrations-into-one-baseline)
 
-### Advanced (Examples 54-78)
+### Advanced (Examples 54–78)
 
 - [Example 54: Two Branches Add Conflicting Changesets](/en/learn/courses/database-migrations-with-java-and-liquibase/learning/advanced#example-54-two-branches-add-conflicting-changesets)
 - [Example 55: Merged Histories Keep One Order](/en/learn/courses/database-migrations-with-java-and-liquibase/learning/advanced#example-55-merged-histories-keep-one-order)

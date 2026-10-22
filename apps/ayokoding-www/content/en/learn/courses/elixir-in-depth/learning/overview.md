@@ -25,7 +25,7 @@ Elixir is the fault-tolerant functional language of this series: the `just-enoug
 
 ## How this course is organized
 
-[Beginner](/en/learn/courses/elixir-in-depth/learning/beginner) (Examples 1-25) installs idiomatic control flow and collections, the error-handling idiom, and standard-library text, files, and time. [Intermediate](/en/learn/courses/elixir-in-depth/learning/intermediate) (Examples 26-53) organizes modules and Mix projects, declares and pins dependencies, tests with the standard ExUnit workflow, and generalizes with protocols, behaviours, streams, and value semantics. [Advanced](/en/learn/courses/elixir-in-depth/learning/advanced) (Examples 54-78) surveys concurrency primitives, configures tooling and style, and trains systematic reading of idiomatic code. The [capstone](/en/learn/courses/elixir-in-depth/learning/capstone/overview) ships a log-summarizer CLI with an embedded suite and a golden transcript, and [drilling](/en/learn/courses/elixir-in-depth/drilling/overview) turns the sixteen concepts into recall, katas, and checklists.
+[Beginner](/en/learn/courses/elixir-in-depth/learning/beginner) (Examples 1–25) installs idiomatic control flow and collections, the error-handling idiom, and standard-library text, files, and time. [Intermediate](/en/learn/courses/elixir-in-depth/learning/intermediate) (Examples 26–53) organizes modules and Mix projects, declares and pins dependencies, tests with the standard ExUnit workflow, and generalizes with protocols, behaviours, streams, and value semantics. [Advanced](/en/learn/courses/elixir-in-depth/learning/advanced) (Examples 54–78) surveys concurrency primitives, configures tooling and style, and trains systematic reading of idiomatic code. The [capstone](/en/learn/courses/elixir-in-depth/learning/capstone/overview) ships a log-summarizer CLI with an embedded suite and a golden transcript, and [drilling](/en/learn/courses/elixir-in-depth/drilling/overview) turns the sixteen concepts into recall, katas, and checklists.
 
 ## About the runtime
 
@@ -133,7 +133,7 @@ One row per `ex-NN`: title, level, runtime, task, check, and concept refs. Every
 ### Beginner (Examples 1–25)
 
 - [Example 1: Match Binds Shape, Not Assignment](/en/learn/courses/elixir-in-depth/learning/beginner#example-1-match-binds-shape-not-assignment)
-- [Example 2: case, cond, if, and unless in Their Places](/en/learn/courses/elixir-in-depth/learning/beginner#example-2-case-cond-if-unless-in-their-places)
+- [Example 2: case, cond, if, and unless in Their Places](/en/learn/courses/elixir-in-depth/learning/beginner#example-2-case-cond-if-and-unless-in-their-places)
 - [Example 3: with Chains the Happy Path](/en/learn/courses/elixir-in-depth/learning/beginner#example-3-with-chains-the-happy-path)
 - [Example 4: Lists Hold Terms, Binaries Hold Text](/en/learn/courses/elixir-in-depth/learning/beginner#example-4-lists-hold-terms-binaries-hold-text)
 - [Example 5: Maps, Keywords, and Structs in Their Places](/en/learn/courses/elixir-in-depth/learning/beginner#example-5-maps-keywords-and-structs-in-their-places)
@@ -164,10 +164,10 @@ One row per `ex-NN`: title, level, runtime, task, check, and concept refs. Every
 - [Example 27: alias, import, and require Side by Side](/en/learn/courses/elixir-in-depth/learning/intermediate#example-27-alias-import-and-require-side-by-side)
 - [Example 28: Structs That Name the Shape](/en/learn/courses/elixir-in-depth/learning/intermediate#example-28-structs-that-name-the-shape)
 - [Example 29: A Mix Project Scaffold Read as Data](/en/learn/courses/elixir-in-depth/learning/intermediate#example-29-a-mix-project-scaffold-read-as-data)
-- [Example 30: Reading a Hash-Locked mix.lock](/en/learn/courses/elixir-in-depth/learning/intermediate#example-30-reading-a-hash-locked-mix-lock)
+- [Example 30: Reading a Hash-Locked mix.lock](/en/learn/courses/elixir-in-depth/learning/intermediate#example-30-reading-a-hash-locked-mixlock)
 - [Example 31: Exact Pins Instead of Latest](/en/learn/courses/elixir-in-depth/learning/intermediate#example-31-exact-pins-instead-of-latest)
 - [Example 32: Project Layout Every Tool Expects](/en/learn/courses/elixir-in-depth/learning/intermediate#example-32-project-layout-every-tool-expects)
-- [Example 33: Compile-Time Config Versus Runtime Config](/en/learn/courses/elixir-in-depth/learning/intermediate#example-33-compile-time-versus-runtime-config)
+- [Example 33: Compile-Time Config Versus Runtime Config](/en/learn/courses/elixir-in-depth/learning/intermediate#example-33-compile-time-config-versus-runtime-config)
 - [Example 34: Choosing Dependencies by Strict Preference](/en/learn/courses/elixir-in-depth/learning/intermediate#example-34-choosing-dependencies-by-strict-preference)
 - [Example 35: ExUnit and assert: the Standard Test Shape](/en/learn/courses/elixir-in-depth/learning/intermediate#example-35-exunit-and-assert-the-standard-test-shape)
 - [Example 36: setup Blocks That Wrap Each Test](/en/learn/courses/elixir-in-depth/learning/intermediate#example-36-setup-blocks-that-wrap-each-test)

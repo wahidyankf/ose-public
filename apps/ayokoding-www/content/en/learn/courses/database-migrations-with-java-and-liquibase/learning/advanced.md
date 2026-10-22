@@ -5,7 +5,7 @@ draft: false
 weight: 30
 ---
 
-Examples 54-78 run migrations the way teams do: resolving branch conflicts without rewriting history (Examples 54-61), serializing runners behind the changelog lock (Examples 62-70), and diagnosing failures from history evidence (Examples 71-78). Every example is a complete, runnable Java program under `learning/code/` driving Liquibase against the pinned PostgreSQL 18 service container; run each with the command in its own `run.yaml`.
+Examples 54–78 run migrations the way teams do: resolving branch conflicts without rewriting history (Examples 54–61), serializing runners behind the changelog lock (Examples 62–70), and diagnosing failures from history evidence (Examples 71–78). Every example is a complete, runnable Java program under `learning/code/` driving Liquibase against the pinned PostgreSQL 18 service container; run each with the command in its own `run.yaml`.
 
 ---
 

@@ -5,7 +5,7 @@ draft: false
 weight: 10
 ---
 
-Examples 1-25 build the habits every later example assumes: writing revisions with forward and reverse steps, ordering them into one linear history, and rolling them back without losing unrelated data. Three clusters carry the level: first migrations that create and alter (Examples 1-8), migration history and ordering (Examples 9-17), and rollback basics (Examples 18-25). Every program runs against the real pinned PostgreSQL 18 container; every output is a fixed transcript.
+Examples 1–25 build the habits every later example assumes: writing revisions with forward and reverse steps, ordering them into one linear history, and rolling them back without losing unrelated data. Three clusters carry the level: first migrations that create and alter (Examples 1–8), migration history and ordering (Examples 9–17), and rollback basics (Examples 18–25). Every program runs against the real pinned PostgreSQL 18 container; every output is a fixed transcript.
 
 ### Example 1: First Revision Creates a Table
 

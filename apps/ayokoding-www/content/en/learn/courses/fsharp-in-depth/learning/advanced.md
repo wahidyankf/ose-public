@@ -5,7 +5,7 @@ draft: false
 weight: 30
 ---
 
-Examples 54-78 spend the fluency Intermediate organized: a concurrency survey that stays deterministic, tooling and style as a layered posture, and systematic reading of idiomatic code. Three clusters carry the level: concurrency primitives (Examples 54-61); tooling, linting, and style (Examples 62-70); reading and explaining idiomatic code (Examples 71-78). Every script runs as `dotnet fsi main.fsx` on the pinned .NET 10.0.402 toolchain with no network; outputs are recorded golden files.
+Examples 54–78 spend the fluency Intermediate organized: a concurrency survey that stays deterministic, tooling and style as a layered posture, and systematic reading of idiomatic code. Three clusters carry the level: concurrency primitives (Examples 54–61); tooling, linting, and style (Examples 62–70); reading and explaining idiomatic code (Examples 71–78). Every script runs as `dotnet fsi main.fsx` on the pinned .NET 10.0.402 toolchain with no network; outputs are recorded golden files.
 
 ### Example 54: async Workflows That Run in Order
 
@@ -1020,7 +1020,7 @@ adult error:not-a-number error:out-of-range
 
 Read project files top-down: SDK, framework, sources, then the dependency census. (Concepts: co-16, co-07, co-06.)
 
-Example 77 reads the same sample project and lock files from Examples 31-32 as a stranger would: SDK first, then framework, then source list, then the dependency census with its zero count. The transcript prints the four facts in reading order, modeling the checklist a newcomer runs on any unfamiliar project.
+Example 77 reads the same sample project and lock files from Examples 31–32 as a stranger would: SDK first, then framework, then source list, then the dependency census with its zero count. The transcript prints the four facts in reading order, modeling the checklist a newcomer runs on any unfamiliar project.
 
 Project reading is archaeological skill: the files declare what the project is before any source explains what it does. SDK names the toolchain, framework names the runtime, sources name the compilation order — F# compiles in order, so the file list is also a dependency story — and the lock names the outside world the project trusts.
 

@@ -23,7 +23,7 @@ Rust grew out of systems work at Mozilla: memory safety without a garbage collec
 
 ## How this course is organized
 
-[Beginner](/en/learn/courses/rust-in-depth/learning/beginner) (Examples 1-25) covers control flow, collections, error handling, and standard-library text, file, and time work. [Intermediate](/en/learn/courses/rust-in-depth/learning/intermediate) (Examples 26-53) covers modules and packages, the testing convention, and generics with value semantics. [Advanced](/en/learn/courses/rust-in-depth/learning/advanced) (Examples 54-78) surveys concurrency deterministically, then tooling, style, and interop, and finishes by reading idiomatic code. The [capstone](/en/learn/courses/rust-in-depth/learning/capstone/overview) ships a tested zakat-ledger CLI with a golden transcript, and [drilling](/en/learn/courses/rust-in-depth/drilling/overview) turns the sixteen concepts into recall, katas, and checklists.
+[Beginner](/en/learn/courses/rust-in-depth/learning/beginner) (Examples 1–25) covers control flow, collections, error handling, and standard-library text, file, and time work. [Intermediate](/en/learn/courses/rust-in-depth/learning/intermediate) (Examples 26–53) covers modules and packages, the testing convention, and generics with value semantics. [Advanced](/en/learn/courses/rust-in-depth/learning/advanced) (Examples 54–78) surveys concurrency deterministically, then tooling, style, and interop, and finishes by reading idiomatic code. The [capstone](/en/learn/courses/rust-in-depth/learning/capstone/overview) ships a tested zakat-ledger CLI with a golden transcript, and [drilling](/en/learn/courses/rust-in-depth/drilling/overview) turns the sixteen concepts into recall, katas, and checklists.
 
 ## About the runtime
 
@@ -31,7 +31,7 @@ Every example is a single-file Rust program using the standard library only, wit
 
 ## Examples by Level
 
-### Beginner (Examples 1-25)
+### Beginner (Examples 1–25)
 
 - [Example 1: If Let Replaces a Nested Match](/en/learn/courses/rust-in-depth/learning/beginner#example-1-if-let-replaces-a-nested-match)
 - [Example 2: Loop Returns Its Value](/en/learn/courses/rust-in-depth/learning/beginner#example-2-loop-returns-its-value)
@@ -59,7 +59,7 @@ Every example is a single-file Rust program using the standard library only, wit
 - [Example 24: SystemTime and Duration Arithmetic](/en/learn/courses/rust-in-depth/learning/beginner#example-24-systemtime-and-duration-arithmetic)
 - [Example 25: Human Duration Formatting](/en/learn/courses/rust-in-depth/learning/beginner#example-25-human-duration-formatting)
 
-### Intermediate (Examples 26-53)
+### Intermediate (Examples 26–53)
 
 - [Example 26: Inline Modules Organize Code](/en/learn/courses/rust-in-depth/learning/intermediate#example-26-inline-modules-organize-code)
 - [Example 27: Use Brings Names Close, Pub Use Re-Exports](/en/learn/courses/rust-in-depth/learning/intermediate#example-27-use-brings-names-close-pub-use-re-exports)
@@ -90,7 +90,7 @@ Every example is a single-file Rust program using the standard library only, wit
 - [Example 52: Rc and RefCell Share Ownership](/en/learn/courses/rust-in-depth/learning/intermediate#example-52-rc-and-refcell-share-ownership)
 - [Example 53: From and Into Conversions](/en/learn/courses/rust-in-depth/learning/intermediate#example-53-from-and-into-conversions)
 
-### Advanced (Examples 54-78)
+### Advanced (Examples 54–78)
 
 - [Example 54: Spawn and Join Returns a Value](/en/learn/courses/rust-in-depth/learning/advanced#example-54-spawn-and-join-returns-a-value)
 - [Example 55: Channel Collects, Sort Pins Order](/en/learn/courses/rust-in-depth/learning/advanced#example-55-channel-collects-sort-pins-order)

@@ -5,7 +5,7 @@ draft: false
 weight: 10
 ---
 
-Examples 1-25 build Dart fluency from the ground up: idiomatic control flow and collections first (Examples 1-8), covering early returns, the three loop shapes, while and switch, lists, maps, sets, and lazy iterables; then the error-handling idiom in full (Examples 9-17), from try-catch through specific catches, rethrow, finally, custom exceptions, sealed Results, null safety, asserts, and async failures; finally the standard library for daily text, file, and time work (Examples 18-25), covering StringBuffer, RegExp, JSON, URIs, DateTime, file IO, Durations, and string shaping. Every example is a complete, runnable Dart program under `learning/code/`; run each with the command in its own `run.yaml`.
+Examples 1–25 build Dart fluency from the ground up: idiomatic control flow and collections first (Examples 1–8), covering early returns, the three loop shapes, while and switch, lists, maps, sets, and lazy iterables; then the error-handling idiom in full (Examples 9–17), from try-catch through specific catches, rethrow, finally, custom exceptions, sealed Results, null safety, asserts, and async failures; finally the standard library for daily text, file, and time work (Examples 18–25), covering StringBuffer, RegExp, JSON, URIs, DateTime, file IO, Durations, and string shaping. Every example is a complete, runnable Dart program under `learning/code/`; run each with the command in its own `run.yaml`.
 
 ---
 

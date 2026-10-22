@@ -5,7 +5,7 @@ draft: false
 weight: 30
 ---
 
-Examples 54-78 handle the work that separates migration users from migration owners: resolving branch conflicts without rewriting history, shrinking locking blast radius on hot tables, and diagnosing failures from evidence. Three clusters carry the level: conflict resolution (Examples 54-61), locking and concurrent access (Examples 62-70), and diagnosing failed or partial migrations (Examples 71-78). Every program runs against the real pinned PostgreSQL 18 container; every output is a fixed transcript.
+Examples 54–78 handle the work that separates migration users from migration owners: resolving branch conflicts without rewriting history, shrinking locking blast radius on hot tables, and diagnosing failures from evidence. Three clusters carry the level: conflict resolution (Examples 54–61), locking and concurrent access (Examples 62–70), and diagnosing failed or partial migrations (Examples 71–78). Every program runs against the real pinned PostgreSQL 18 container; every output is a fixed transcript.
 
 ### Example 54: Two Branches, Two Heads
 

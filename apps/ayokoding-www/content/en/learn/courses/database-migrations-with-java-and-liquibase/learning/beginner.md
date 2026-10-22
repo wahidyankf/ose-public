@@ -5,7 +5,7 @@ draft: false
 weight: 10
 ---
 
-Examples 1-25 build Liquibase fluency from the ground up: first migrations that create and alter tables (Examples 1-8), from a first changelog and master-file includes through author conventions, YAML declarations, added columns, constraints, indexes, and foreign keys; then the history model in full (Examples 9-17), from the DATABASECHANGELOG table and idempotent reruns through checksums, ordering, contexts, labels, preconditions, parameters, and status previews; finally rollback basics (Examples 18-25), from single-changeset rollback and tags through rollback blocks, data rollbacks, loud failures, count-based rollbacks, and pre-update validation. Every example is a complete, runnable Java program under `learning/code/` driving Liquibase against the pinned PostgreSQL 18 service container; run each with the command in its own `run.yaml`.
+Examples 1–25 build Liquibase fluency from the ground up: first migrations that create and alter tables (Examples 1–8), from a first changelog and master-file includes through author conventions, YAML declarations, added columns, constraints, indexes, and foreign keys; then the history model in full (Examples 9–17), from the DATABASECHANGELOG table and idempotent reruns through checksums, ordering, contexts, labels, preconditions, parameters, and status previews; finally rollback basics (Examples 18–25), from single-changeset rollback and tags through rollback blocks, data rollbacks, loud failures, count-based rollbacks, and pre-update validation. Every example is a complete, runnable Java program under `learning/code/` driving Liquibase against the pinned PostgreSQL 18 service container; run each with the command in its own `run.yaml`.
 
 ---
 

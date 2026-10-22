@@ -19,7 +19,7 @@ A single `capstone.py` that writes eight revision files at runtime and runs them
 
 ## How the pieces compose
 
-Schema base (Examples 1-8) creates the tables; the default-carrying column (Example 7) and the nullable add (Example 35) keep the base deployable; the three-step rename (Examples 35-39) moves `note` to `memo` without a flag day; the status backfill (Examples 26-27) fills money after the fact; the receipt checks (Examples 12, 17, 78) verify the ending. No new technique appears here — composition is the test. Read the program top to bottom and name the example each section comes from; if a section has no ancestor, it does not belong.
+Schema base (Examples 1–8) creates the tables; the default-carrying column (Example 7) and the nullable add (Example 35) keep the base deployable; the three-step rename (Examples 35–39) moves `note` to `memo` without a flag day; the status backfill (Examples 26–27) fills money after the fact; the receipt checks (Examples 12, 17, 78) verify the ending. No new technique appears here — composition is the test. Read the program top to bottom and name the example each section comes from; if a section has no ancestor, it does not belong.
 
 ```mermaid
 flowchart TD

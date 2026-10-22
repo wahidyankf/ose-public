@@ -5,7 +5,7 @@ draft: false
 weight: 10
 ---
 
-Examples 1-25 build C# fluency from the ground up: idiomatic control flow and collections first (Examples 1-8), showing guard clauses, switch expressions, foreach over anything enumerable, lists, dictionaries, deferred LINQ pipelines, ordinal sorting, and deterministic disposal; then the error-handling idiom in full (Examples 9-17), from throwing for the exceptional through the Try-pattern, exception filters, custom types, inner chains, null guards, aggregates, boundary catches, and disposal that outlives failure; finally the standard library for daily text, file, and time work (Examples 18-25), covering builders, interpolation, regular expressions, file round-trips, JSON, calendar types, durations, and offsets. Every example is a complete, runnable .NET console project under `learning/code/`; run each with the command in its own `run.yaml`.
+Examples 1–25 build C# fluency from the ground up: idiomatic control flow and collections first (Examples 1–8), showing guard clauses, switch expressions, foreach over anything enumerable, lists, dictionaries, deferred LINQ pipelines, ordinal sorting, and deterministic disposal; then the error-handling idiom in full (Examples 9–17), from throwing for the exceptional through the Try-pattern, exception filters, custom types, inner chains, null guards, aggregates, boundary catches, and disposal that outlives failure; finally the standard library for daily text, file, and time work (Examples 18–25), covering builders, interpolation, regular expressions, file round-trips, JSON, calendar types, durations, and offsets. Every example is a complete, runnable .NET console project under `learning/code/`; run each with the command in its own `run.yaml`.
 
 ---
 

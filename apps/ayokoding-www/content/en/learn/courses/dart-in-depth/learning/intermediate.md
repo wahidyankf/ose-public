@@ -5,7 +5,7 @@ draft: false
 weight: 10
 ---
 
-Examples 26-53 take Dart programs from scripts to projects: modules, packages, and dependencies first (Examples 26-34), covering import prefixes, show and hide, part files, export barrels, pubspec pinning, version rules, the no-dependency decision, doc comments, and initialization order; then the testing convention in full (Examples 35-44), from the first failing test through groups, matchers, setup and teardown, edge tables, async tests, pure cores, fakes, sentence names, and injected clocks; finally generics and value semantics (Examples 45-53), covering generic functions, generic classes, bounded parameters, const canonical values, final fields, copyWith, value equality, unmodifiable views, and records. Every example is a complete, runnable Dart program under `learning/code/`; run each with the command in its own `run.yaml`.
+Examples 26–53 take Dart programs from scripts to projects: modules, packages, and dependencies first (Examples 26–34), covering import prefixes, show and hide, part files, export barrels, pubspec pinning, version rules, the no-dependency decision, doc comments, and initialization order; then the testing convention in full (Examples 35–44), from the first failing test through groups, matchers, setup and teardown, edge tables, async tests, pure cores, fakes, sentence names, and injected clocks; finally generics and value semantics (Examples 45–53), covering generic functions, generic classes, bounded parameters, const canonical values, final fields, copyWith, value equality, unmodifiable views, and records. Every example is a complete, runnable Dart program under `learning/code/`; run each with the command in its own `run.yaml`.
 
 ---
 

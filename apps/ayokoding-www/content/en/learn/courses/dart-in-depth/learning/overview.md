@@ -23,7 +23,7 @@ Dart grew out of the need for a productive, familiar language for fast client de
 
 ## How this course is organized
 
-[Beginner](/en/learn/courses/dart-in-depth/learning/beginner) (Examples 1-25) covers control flow, collections, error handling, and standard-library text, file, and time work. [Intermediate](/en/learn/courses/dart-in-depth/learning/intermediate) (Examples 26-53) covers modules and packages, the testing convention, and generics with value semantics. [Advanced](/en/learn/courses/dart-in-depth/learning/advanced) (Examples 54-78) surveys concurrency deterministically, then tooling, style, and interop, and finishes by reading idiomatic code. The [capstone](/en/learn/courses/dart-in-depth/learning/capstone/overview) ships a small gradebook CLI with checks and a golden transcript, and [drilling](/en/learn/courses/dart-in-depth/drilling/overview) turns the sixteen concepts into recall, katas, and checklists.
+[Beginner](/en/learn/courses/dart-in-depth/learning/beginner) (Examples 1–25) covers control flow, collections, error handling, and standard-library text, file, and time work. [Intermediate](/en/learn/courses/dart-in-depth/learning/intermediate) (Examples 26–53) covers modules and packages, the testing convention, and generics with value semantics. [Advanced](/en/learn/courses/dart-in-depth/learning/advanced) (Examples 54–78) surveys concurrency deterministically, then tooling, style, and interop, and finishes by reading idiomatic code. The [capstone](/en/learn/courses/dart-in-depth/learning/capstone/overview) ships a small gradebook CLI with checks and a golden transcript, and [drilling](/en/learn/courses/dart-in-depth/drilling/overview) turns the sixteen concepts into recall, katas, and checklists.
 
 ## About the runtime
 
@@ -31,7 +31,7 @@ Every example is a Dart program using the standard library only, with no depende
 
 ## Examples by Level
 
-### Beginner (Examples 1-25)
+### Beginner (Examples 1–25)
 
 - [Example 1: Hello with an Early Return](/en/learn/courses/dart-in-depth/learning/beginner#example-1-hello-with-an-early-return)
 - [Example 2: For Loops Come in Three Shapes](/en/learn/courses/dart-in-depth/learning/beginner#example-2-for-loops-come-in-three-shapes)
@@ -59,7 +59,7 @@ Every example is a Dart program using the standard library only, with no depende
 - [Example 24: Durations Add, Compare, and Budget Time](/en/learn/courses/dart-in-depth/learning/beginner#example-24-durations-add-compare-and-budget-time)
 - [Example 25: String Cases, Padding, and Splitting Shape Text](/en/learn/courses/dart-in-depth/learning/beginner#example-25-string-cases-padding-and-splitting-shape-text)
 
-### Intermediate (Examples 26-53)
+### Intermediate (Examples 26–53)
 
 - [Example 26: Imports Arrive with Prefixes](/en/learn/courses/dart-in-depth/learning/intermediate#example-26-imports-arrive-with-prefixes)
 - [Example 27: Show and Hide Tame Wide Imports](/en/learn/courses/dart-in-depth/learning/intermediate#example-27-show-and-hide-tame-wide-imports)
@@ -90,7 +90,7 @@ Every example is a Dart program using the standard library only, with no depende
 - [Example 52: Unmodifiable Views Share Safely](/en/learn/courses/dart-in-depth/learning/intermediate#example-52-unmodifiable-views-share-safely)
 - [Example 53: Records Carry Shaped Tuples](/en/learn/courses/dart-in-depth/learning/intermediate#example-53-records-carry-shaped-tuples)
 
-### Advanced (Examples 54-78)
+### Advanced (Examples 54–78)
 
 - [Example 54: Futures Are Values for Later](/en/learn/courses/dart-in-depth/learning/advanced#example-54-futures-are-values-for-later)
 - [Example 55: Async-Await Reads Sequentially](/en/learn/courses/dart-in-depth/learning/advanced#example-55-async-await-reads-sequentially)

@@ -73,7 +73,7 @@ end # => the case closes; one path ran.
 
 ## How the pieces compose
 
-Line classification (Examples 1-2, 76) feeds counting; `Enum.frequencies` over the classified lines builds the map (Examples 6, 47); `sort_by` with the count-then-name comparator ranks deterministically (Example 51's ordering lesson); the ExUnit summary-as-data gate from Examples 43-44 blocks the report when red; the error-tuple thinking from Examples 9-17 shapes the missing-file branch; the sample lock read from Examples 30 and 77 declares the pinning posture. No new idioms appear here: composition is the test. Read the script top to bottom and name the example each section comes from; if a section has no ancestor, it does not belong.
+Line classification (Examples 1–2, 76) feeds counting; `Enum.frequencies` over the classified lines builds the map (Examples 6, 47); `sort_by` with the count-then-name comparator ranks deterministically (Example 51's ordering lesson); the ExUnit summary-as-data gate from Examples 43–44 blocks the report when red; the error-tuple thinking from Examples 9–17 shapes the missing-file branch; the sample lock read from Examples 30 and 77 declares the pinning posture. No new idioms appear here: composition is the test. Read the script top to bottom and name the example each section comes from; if a section has no ancestor, it does not belong.
 
 ```mermaid
 flowchart TD
@@ -115,4 +115,4 @@ Run the unit twice and diff the transcripts: identical bytes, because the input 
 
 ## What graduating means
 
-You can take a pile of lines and turn it into a verified report: parse with patterns, count with the standard vocabulary, rank deterministically, gate on the suite summary, and fail loudly on missing input. More importantly, you can point at each line of the capstone and name the example that taught it. If a line has no ancestor in Examples 1-78, it does not belong — and neither does any line you add without a test that fails first.
+You can take a pile of lines and turn it into a verified report: parse with patterns, count with the standard vocabulary, rank deterministically, gate on the suite summary, and fail loudly on missing input. More importantly, you can point at each line of the capstone and name the example that taught it. If a line has no ancestor in Examples 1–78, it does not belong — and neither does any line you add without a test that fails first.

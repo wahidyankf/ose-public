@@ -5,7 +5,7 @@ draft: false
 weight: 30
 ---
 
-Examples 54-78 survey the concurrency primitives at one example each, standardize tooling and style, and teach a systematic way to read idiomatic code written by someone else. Three clusters carry the level: concurrency primitives survey (Examples 54-61), tooling, linting, and style with the platform boundary (Examples 62-70), and reading idiomatic code (Examples 71-78). Every script runs as `elixir main.exs` on the pinned Elixir 1.20.4 toolchain with no network; outputs are recorded golden files.
+Examples 54–78 survey the concurrency primitives at one example each, standardize tooling and style, and teach a systematic way to read idiomatic code written by someone else. Three clusters carry the level: concurrency primitives survey (Examples 54–61), tooling, linting, and style with the platform boundary (Examples 62–70), and reading idiomatic code (Examples 71–78). Every script runs as `elixir main.exs` on the pinned Elixir 1.20.4 toolchain with no network; outputs are recorded golden files.
 
 ### Example 54: spawn and Message Passing
 

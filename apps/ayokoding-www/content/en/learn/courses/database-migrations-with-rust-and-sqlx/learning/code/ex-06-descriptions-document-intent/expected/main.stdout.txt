@@ -1,0 +1,2 @@
+1 create customers
+2 add customer email nullable

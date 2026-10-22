@@ -1,0 +1,2 @@
+rows: 200 min: 2 max: 400
+cleaned: yes

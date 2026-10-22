@@ -1,0 +1,2 @@
+checkout live: true
+search live: false

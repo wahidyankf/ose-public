@@ -1,0 +1,2 @@
+stale branch failed on version 2 as expected
+rebased versions: 1 2

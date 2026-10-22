@@ -1,0 +1,2 @@
+stamps: 2 2 2
+cleaned: yes

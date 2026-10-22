@@ -1,0 +1,3 @@
+migration 1 failed as recorded
+halves present: false
+wholes present: false

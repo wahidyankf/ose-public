@@ -1,0 +1,6 @@
+order: ada 1 3500 paid
+order: ada 2 1500 open
+order: grace 3 1000 paid
+lines: 4
+applied: 8
+cleaned: yes

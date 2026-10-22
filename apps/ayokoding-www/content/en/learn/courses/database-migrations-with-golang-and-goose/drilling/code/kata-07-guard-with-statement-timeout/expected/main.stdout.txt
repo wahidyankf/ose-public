@@ -1,0 +1,2 @@
+stopped: true
+cleaned: yes

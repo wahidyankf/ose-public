@@ -1,0 +1,1 @@
+ready index: shipments_tracking_idx

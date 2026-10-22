@@ -73,8 +73,10 @@ async function readCourseFrontmatter(slug: string): Promise<Record<string, unkno
 }
 
 /** A directory is a harness unit when it directly holds code: anything that is
- *  not `run.yaml` and not prose (`*.md`). `before/`/`after/` fixture children
- *  are exempt — only code roots and their direct children are units. */
+ *  not `run.yaml`, not prose (`*.md`), and not a lockfile (`*.lock`, which
+ *  documents pinned transitives rather than runnable code). `before/`/`after/`
+ *  fixture children are exempt — only code roots and their direct children
+ *  are units. */
 async function findUnitsWithoutRunYaml(codeRoot: string): Promise<string[]> {
   const missing: string[] = [];
   const isUnit = async (dir: string, isRoot: boolean, isDirectChild: boolean): Promise<void> => {
@@ -84,7 +86,9 @@ async function findUnitsWithoutRunYaml(codeRoot: string): Promise<string[]> {
     } catch {
       return;
     }
-    const holdsCode = entries.some((e) => e.isFile() && e.name !== "run.yaml" && !e.name.endsWith(".md"));
+    const holdsCode = entries.some(
+      (e) => e.isFile() && e.name !== "run.yaml" && !e.name.endsWith(".md") && !e.name.endsWith(".lock"),
+    );
     if (holdsCode && (isRoot || isDirectChild) && !entries.some((e) => e.isFile() && e.name === "run.yaml")) {
       missing.push(path.relative(coursesRoot, dir));
     }

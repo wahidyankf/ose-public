@@ -65,6 +65,10 @@ export async function scanCourseEffort(courseDir: string): Promise<CourseEffortC
   return { proseWords, inlineCodeLines, codeFileLines };
 }
 
+/** Build-output directories (gitignored `bin/`/`obj/`, e.g. .NET compiler
+ *  artefacts accidentally left under course `code/` folders) are never effort. */
+const SKIPPED_BUILD_OUTPUT_DIRS = new Set(["bin", "obj"]);
+
 async function walkFiles(dir: string): Promise<string[]> {
   let entries: import("node:fs").Dirent[];
   try {
@@ -76,6 +80,7 @@ async function walkFiles(dir: string): Promise<string[]> {
   for (const entry of entries) {
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) {
+      if (SKIPPED_BUILD_OUTPUT_DIRS.has(entry.name)) continue;
       files.push(...(await walkFiles(full)));
     } else if (entry.isFile()) {
       files.push(full);

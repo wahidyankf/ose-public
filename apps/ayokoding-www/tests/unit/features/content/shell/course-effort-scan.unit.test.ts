@@ -31,6 +31,23 @@ describe("scanCourseEffort", () => {
     }
   });
 
+  it("skips gitignored build-output directories under code/", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "effort-scan-obj-"));
+    try {
+      const course = join(dir, "course");
+      await mkdir(join(course, "code", "obj"), { recursive: true });
+      await mkdir(join(course, "code", "bin"), { recursive: true });
+      await writeFile(join(course, "code", "main.py"), "print(1)\n");
+      await writeFile(join(course, "code", "obj", "project.assets.json"), '{\n"version": 3\n}\n');
+      await writeFile(join(course, "code", "bin", "app.dll.txt"), "binary-ish\noutput\n");
+
+      const counts = await scanCourseEffort(course);
+      expect(counts).toEqual({ proseWords: 0, inlineCodeLines: 0, codeFileLines: 1 });
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
   it("counts a titled page inside code/ as a page and zeros a missing directory", async () => {
     const dir = await mkdtemp(join(tmpdir(), "effort-scan-titled-"));
     try {

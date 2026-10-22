@@ -6,8 +6,8 @@ weight: 104
 ---
 
 - [Overview](/en/learn/courses/csharp-in-depth/learning/overview)
-- [Advanced Examples](/en/learn/courses/csharp-in-depth/learning/advanced)
 - [Beginner Examples](/en/learn/courses/csharp-in-depth/learning/beginner)
 - [Intermediate Examples](/en/learn/courses/csharp-in-depth/learning/intermediate)
+- [Advanced Examples](/en/learn/courses/csharp-in-depth/learning/advanced)
 - [Capstone](/en/learn/courses/csharp-in-depth/learning/capstone)
   - [Overview](/en/learn/courses/csharp-in-depth/learning/capstone/overview)

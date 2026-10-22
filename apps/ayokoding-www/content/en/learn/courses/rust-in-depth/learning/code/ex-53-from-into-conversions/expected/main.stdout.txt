@@ -1,0 +1,5 @@
+Ok(Due { amount: 50 })
+Err("bad amount: xyz")
+Err("negative refused: -5")
+ledger: sari
+ledger: budi

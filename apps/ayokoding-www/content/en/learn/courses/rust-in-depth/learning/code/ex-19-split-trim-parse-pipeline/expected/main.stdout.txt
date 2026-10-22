@@ -1,0 +1,4 @@
+sari owes 50
+skip: oops
+skip: budi: xyz
+citra owes 25

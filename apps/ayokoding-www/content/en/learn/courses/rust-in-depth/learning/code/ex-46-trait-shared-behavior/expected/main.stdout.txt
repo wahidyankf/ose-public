@@ -1,0 +1,2 @@
+cash: 50
+transfer: 52

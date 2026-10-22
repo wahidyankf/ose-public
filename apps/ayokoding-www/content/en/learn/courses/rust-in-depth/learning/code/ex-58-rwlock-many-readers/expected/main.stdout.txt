@@ -1,0 +1,4 @@
+reader 0 saw 2
+reader 1 saw 2
+reader 2 saw 2
+rate now 3

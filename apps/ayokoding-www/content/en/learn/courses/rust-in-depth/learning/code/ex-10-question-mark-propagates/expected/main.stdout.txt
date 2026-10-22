@@ -1,0 +1,2 @@
+sum: 75
+fail: bad amount: xyz

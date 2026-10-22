@@ -1,0 +1,3 @@
+skip: bad amount: xyz
+total: 50
+skipped: 1

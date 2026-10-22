@@ -1,0 +1,3 @@
+Due { member: "sari", amount: 50 }
+equal: true
+same text: true

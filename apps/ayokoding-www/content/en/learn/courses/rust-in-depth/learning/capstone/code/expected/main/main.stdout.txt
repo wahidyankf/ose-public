@@ -1,0 +1,6 @@
+package: zakat-ledger 0.2.0
+lines: 8 kept: 5 skipped: 3
+budi: 100
+citra: 25
+sari: 60
+grand: 185

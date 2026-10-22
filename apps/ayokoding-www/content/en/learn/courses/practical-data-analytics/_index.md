@@ -7,7 +7,7 @@ prerequisites: ["just-enough-python", "sql-essentials"]
 category: data-and-databases
 description: "Explore, clean, aggregate, and visualize tabular data to answer analytical questions."
 format: annotated-concept
-estimatedHours: 5
+estimatedHours: 6
 ---
 
 - [Overview](/en/learn/courses/practical-data-analytics/overview)

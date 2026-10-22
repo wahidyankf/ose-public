@@ -7,7 +7,7 @@ prerequisites: ["just-enough-kotlin", "sql-essentials"]
 category: data-and-databases
 description: "Run ordered, reversible Flyway migrations in Kotlin against PostgreSQL."
 format: by-example
-estimatedHours: 10
+estimatedHours: 11
 ---
 
 - [Overview](/en/learn/courses/database-migrations-with-kotlin-and-flyway/overview)

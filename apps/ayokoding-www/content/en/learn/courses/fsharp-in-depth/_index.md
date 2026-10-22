@@ -7,7 +7,7 @@ prerequisites: ["just-enough-fsharp"]
 category: programming-languages
 description: "Write fluent F# with the standard library, tests, and tooling."
 format: by-example
-estimatedHours: 9
+estimatedHours: 6
 ---
 
 - [Overview](/en/learn/courses/fsharp-in-depth/overview)

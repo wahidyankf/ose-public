@@ -84,7 +84,7 @@ public class Main {
         "db.changelog-master.yaml",
         // => DirectoryResourceAccessor is the current file-based accessor
         new DirectoryResourceAccessor(new java.io.File(".").getAbsoluteFile()),
-        // => rooting at the capstone folder keeps releases beside the program
+        // => rooting at the capstone folder keeps db beside the program
         database
       );
       runQuiet(liquibase, false);

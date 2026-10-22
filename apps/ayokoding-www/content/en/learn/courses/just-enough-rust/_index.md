@@ -7,7 +7,7 @@ prerequisites: []
 category: programming-languages
 description: "Learn Rust ownership, borrowing, traits, and Cargo before systems programming in Rust."
 format: primer
-estimatedHours: 2
+estimatedHours: 1
 ---
 
 - [Overview](/en/learn/courses/just-enough-rust/overview)

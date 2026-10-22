@@ -1,6 +1,6 @@
 databaseChangeLog: # => Root key required for every YAML changelog
   - includeAll: # => Discovers every release file in one directory
-      path: releases/
+      path: db/releases/
       # => path is relative to this master file, not to the classpath
       # => Liquibase sorts the discovered files alphabetically before running
       # => Eight prefixed releases are the capstone the checks below prove

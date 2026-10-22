@@ -7,7 +7,7 @@ prerequisites: ["just-enough-java", "enterprise-java-and-the-jvm"]
 category: programming-languages
 description: "Write idiomatic Java with the standard library, testing, and tooling."
 format: by-example
-estimatedHours: 8
+estimatedHours: 9
 ---
 
 - [Overview](/en/learn/courses/java-in-depth/overview)

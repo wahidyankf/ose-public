@@ -136,7 +136,7 @@ public class Main {
         "db.changelog-master.yaml",
         // => DirectoryResourceAccessor is the current file-based accessor
         new DirectoryResourceAccessor(new java.io.File(".").getAbsoluteFile()),
-        // => rooting at the capstone folder keeps releases beside the program
+        // => rooting at the capstone folder keeps db beside the program
         database
       );
       runQuiet(liquibase, false);
@@ -173,9 +173,9 @@ public class Main {
 }
 ```
 
-**Releases** (`learning/capstone/code/releases/`): 001 creates customers and seeds two rows; 002 creates orders and seeds two rows by name lookup; 003 adds priority with backfill; 004 adds display_name; 005 copies names; 006 drops name; 007 adds the priority check; 008 builds the lookup index concurrently outside a transaction.
+**Releases** (`learning/capstone/code/db/releases/`): 001 creates customers and seeds two rows; 002 creates orders and seeds two rows by name lookup; 003 adds priority with backfill; 004 adds display_name; 005 copies names; 006 drops name; 007 adds the priority check; 008 builds the lookup index concurrently outside a transaction.
 
-**Output** (`learning/capstone/code/expected/main.stdout.txt`):
+**Output** (`learning/capstone/code/expected/main/main.stdout.txt`):
 
 ```text
 capstone changesets applied: 8

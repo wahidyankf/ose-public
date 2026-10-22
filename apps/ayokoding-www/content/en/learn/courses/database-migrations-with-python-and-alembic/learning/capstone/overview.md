@@ -265,7 +265,7 @@ if __name__ == "__main__":  # => WHY guard: import-safe module
     main()  # => single entry point
 ```
 
-**Output** (`learning/capstone/code/expected/main.stdout.txt`):
+**Output** (`learning/capstone/code/expected/main/main.stdout.txt`):
 
 ```text
 migrations: 8

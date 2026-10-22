@@ -7,7 +7,7 @@ prerequisites: ["just-enough-java", "sql-essentials"]
 category: data-and-databases
 description: "Version, order, and roll back PostgreSQL schemas with Liquibase in Java."
 format: by-example
-estimatedHours: 8
+estimatedHours: 23
 ---
 
 - [Overview](/en/learn/courses/database-migrations-with-java-and-liquibase/overview)

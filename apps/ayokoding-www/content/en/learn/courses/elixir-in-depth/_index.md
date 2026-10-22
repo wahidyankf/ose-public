@@ -7,7 +7,7 @@ prerequisites: ["just-enough-elixir", "actor-model-concurrency"]
 category: programming-languages
 description: "Write fluent Elixir with the standard library, tests, and tooling."
 format: by-example
-estimatedHours: 9
+estimatedHours: 6
 ---
 
 - [Overview](/en/learn/courses/elixir-in-depth/overview)

@@ -7,7 +7,7 @@ prerequisites: ["just-enough-python", "sql-essentials"]
 category: data-and-databases
 description: "Evolve PostgreSQL schemas safely with versioned Alembic migrations."
 format: by-example
-estimatedHours: 6
+estimatedHours: 19
 ---
 
 - [Overview](/en/learn/courses/database-migrations-with-python-and-alembic/overview)

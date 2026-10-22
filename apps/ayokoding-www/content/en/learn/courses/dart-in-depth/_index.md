@@ -7,7 +7,7 @@ prerequisites: ["just-enough-dart"]
 category: programming-languages
 description: "Write idiomatic Dart with the standard library, tests, and tooling."
 format: by-example
-estimatedHours: 8
+estimatedHours: 9
 ---
 
 - [Overview](/en/learn/courses/dart-in-depth/overview)

@@ -7,7 +7,7 @@ prerequisites: ["just-enough-rust"]
 category: programming-languages
 description: "Write idiomatic Rust with the standard library, tests, and tooling."
 format: by-example
-estimatedHours: 7
+estimatedHours: 8
 ---
 
 - [Overview](/en/learn/courses/rust-in-depth/overview)

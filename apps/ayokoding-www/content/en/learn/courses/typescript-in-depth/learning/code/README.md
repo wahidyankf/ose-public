@@ -1,0 +1,5 @@
+## Example code for typescript-in-depth
+
+One folder per worked example: `ex-NN-<slug>/` holds `main.ts` (plus helper modules, fixtures, or a `node.d.ts` where the topic needs more than one file), its `run.yaml` (`toolchain: typescript`, standard library only, no network), and the recorded output under `expected/`. Multi-file units anchor every file in the lesson; single-file units anchor the program and its output. Every unit is deterministic: fixed inputs, no live system reads, no clocks, no timings, no paths or addresses in output, temporary files only in scratch with fixed labels printed.
+
+The pinned toolchain ships no network-installed type packages, so units that touch Node.js built-ins carry a small `node.d.ts` of ambient declarations instead of an install. Testing examples run the real `node:test` runner and its `node:assert/strict` assertions, discarding the reporter's timing lines and echoing one fixed `PASS` line so transcripts stay byte-stable. Kata starters are intentionally imperfect — they exist to be fixed — and only the `after/` solutions run green in the harness.

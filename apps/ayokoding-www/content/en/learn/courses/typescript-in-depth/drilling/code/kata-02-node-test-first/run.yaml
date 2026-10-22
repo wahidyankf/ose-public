@@ -1,0 +1,19 @@
+schema: ayokoding.run/v1
+toolchain: typescript
+runs:
+  - name: build
+    kind: check
+    command: [tsc, --strict, --target, es2022, --module, commonjs, after/solution.ts, after/solution.test.ts]
+    expect:
+      exit: 0
+      stdout: ignore
+  - name: main
+    command:
+      [
+        sh,
+        -c,
+        "tsc --strict --target es2022 --module commonjs after/solution.ts after/solution.test.ts && if node --test after/solution.test.js >unit.log 2>&1; then echo 'PASS: kata-02-node-test-first (2 checks)'; else cat unit.log; exit 1; fi",
+      ]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

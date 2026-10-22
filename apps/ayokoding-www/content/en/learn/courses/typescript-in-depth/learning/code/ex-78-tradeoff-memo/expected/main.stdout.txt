@@ -1,0 +1,3 @@
+16 16 25
+computed: 2
+skip memo when: inputs rarely repeat, results are cheap, or memory is tight

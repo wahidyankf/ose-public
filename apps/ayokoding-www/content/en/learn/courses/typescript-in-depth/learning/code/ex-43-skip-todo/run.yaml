@@ -1,0 +1,19 @@
+schema: ayokoding.run/v1
+toolchain: typescript
+runs:
+  - name: build
+    kind: check
+    command: [tsc, --strict, --target, es2022, --module, commonjs, main.ts, main.test.ts]
+    expect:
+      exit: 0
+      stdout: ignore
+  - name: main
+    command:
+      [
+        sh,
+        -c,
+        "tsc --strict --target es2022 --module commonjs main.ts main.test.ts && if node --test main.test.js >unit.log 2>&1; then echo 'PASS: ex-43-skip-todo (1 check)'; else cat unit.log; exit 1; fi",
+      ]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

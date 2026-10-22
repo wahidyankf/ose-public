@@ -1,0 +1,2 @@
+lockfileVersion: 3
+vitest: 5.2.8

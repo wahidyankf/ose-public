@@ -1,0 +1,1 @@
+tickets=2 escalated-cols=0

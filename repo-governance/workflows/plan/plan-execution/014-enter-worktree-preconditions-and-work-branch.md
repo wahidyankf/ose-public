@@ -5,13 +5,15 @@ when_to_use: Use when resolving which branch or worktree a plan executes on befo
 
 # 0. Enter the Designated Worktree (Sequential, Hard Gate)
 
-**Precondition — backlog promotion already resolved `plan-path`**: if the plan being executed
+**Precondition — backlog promotion already landed `plan-path` on the trunk**: if the plan being executed
 originally resolved inside `plans/backlog/`, the delivery-mode-aware
 [Starting Work procedure](../../../conventions/structure/plans/starting-and-completing-work.md#starting-work)
-MUST have landed the pure move on `origin/main` before this step begins. `worktree-to-pr` completes
-and merges the move from its dedicated worktree; `main-to-pr` does so from the synced primary
-checkout. A direct push is valid only under a permitted selected direct-push mode. `plan-path` now
-resolves to `plans/in-progress/`. A direct caller, including
+MUST have delivered the pure move to `origin/main` in its own promotion pull request (or permitted direct
+commit), including the [Plan-Order Graph](../../../conventions/structure/plans/plan-order-graph-and-legend.md)
+class, marker, and colour change, **before Phase 0** and before any implementation commit. The promotion
+branch is deleted after its merge; it is not this step's worktree. `plan-path` now resolves to
+`plans/in-progress/` on `origin/main`. This step then provisions or re-enters the plan's one worktree from
+that fresh trunk; the worktree is never replaced. A direct caller, including
 [`multi-plans-execution.md`](../multi-plans-execution.md) with an `all-backlog` selector, MUST
 perform that same procedure for each backlog plan first. See
 [Execute Plan from Backlog](./046-example-usage-and-iteration-example.md#execute-plan-from-backlog) for the full worked example.
@@ -19,6 +21,16 @@ perform that same procedure for each backlog plan first. See
 Before starting, resolve every dependency the plan declares under
 [Plan-Order Graph](../../../conventions/structure/plans/plan-order-graph-and-legend.md): each must already be
 satisfied, or the run stops and names the unmet one. A missing declaration reads as no dependencies.
+
+**Access check — prove this machine holds the plan's scope before Phase 0.** Derive the access
+list from the plan's declared touchpoints alone — never a standing checklist — and prove each item
+through its authorized route on this machine: repository and branch scope, review and merge scope,
+and each secret through its wrapper. Claim nothing more: least privilege, and infra secrets only
+when the scope includes infra-apply. Never assume from the machine's name. Record each need
+portable or bound to named machines holding the secret, so any run knows what runs everywhere and
+what runs only there — a docs-only change runs anywhere, an infra-apply runs only where its secret
+lives. Missing access stops the run as a human blocker; a machine-bound node parks where the machine
+lacks its access until a capable machine claims it.
 
 Plan execution happens in the plan's declared designated worktree, synced to the latest
 `origin/main`. The resolved `worktree-to-pr` mode and `## Worktree` section determine that work

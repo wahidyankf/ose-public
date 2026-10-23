@@ -21,17 +21,16 @@ in each archived plan folder.
 
 **When to use**:
 
-- You have two or more ready plans (each already passed [`plan-quality-gate`](../../quality/plan-quality-gate.md))
-  and want them driven together instead of one-at-a-time.
-- The plans are partly independent, so parallelizing their delivery steps saves wall-clock.
+- You have two or more ready plans and want them driven together instead of one-at-a-time. A
+  [`plan-quality-gate`](../../quality/plan-quality-gate.md) verdict, when recorded, is advisory history
+  exactly as in `plan-execution.md`: `FAIL`, `BLOCKED`, or missing never stops the run.
+- The plans are partly independent, so overlapping their delivery steps saves wall-clock.
 - You want a single live observability surface showing all plans' progress at once, with clear
-  marking of which work is running in parallel.
+  marking of which work is running in overlapping worktrees.
 
 **When NOT to use**:
 
 - A single plan → use [`plan-execution.md`](../plan-execution.md) directly.
-- Plans that have not passed `plan-quality-gate` → gate them first; this workflow refuses to execute
-  an unvetted plan (see Phase A).
 
 > **Pre-Execution Requirement**: Before scheduling, invoke the `grill-me` skill
 > (`.agents/skills/grill-me/SKILL.md`) to stress-test any unresolved cross-plan ordering assumptions

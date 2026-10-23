@@ -7,7 +7,7 @@ when_to_use: Use when deciding whether the orchestrator may pause between items,
 
 **Continues** [Initial Execution — Verify, Capture, and Atomic Sync](./022-initial-execution-items-5-8.md).
 
-**Progress streaming**: keep the live Task list fresh by executing the ritual after every item. Never queue up two or three item's worth of `completed` updates. After each phase boundary, emit a one-line user-visible status (phase, items ticked / total, files changed, preexisting fixes).
+**Progress streaming**: keep the live Task list fresh by executing the ritual after every item. Never queue up two or three item's worth of `completed` updates. After each phase boundary, emit a one-line user-visible status (phase, items ticked / total, files changed, preexisting fixes). Independently, send the five-line 20-minute heartbeat from [Safety Features](./047-safety-features-and-plan-specific-validation.md) (weighted progress, steps left, blockers, decisions, next `[HUMAN]` timing) without being asked.
 
 **Output**: `{execution-started}` — all delivery checklist items completed, checklist updated, Task list shows disk truth.
 

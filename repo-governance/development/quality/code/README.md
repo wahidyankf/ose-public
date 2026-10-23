@@ -14,6 +14,7 @@ when_to_use: "Read this index to find the right Code Quality Convention child do
 - [Git Hook Workflow: Pre-commit Hook (What It Validates)](./git-hook-workflow-pre-commit-what-it-validates.md) — What the pre-commit hook validates. Use when debugging a pre-commit check failure.
 - [Git Hook Workflow: Commit-msg and Pre-push Hooks](./git-hook-workflow-commit-msg-and-pre-push-hooks.md) — What the commit-msg and pre-push hooks validate. Use when debugging a commit-msg or pre-push hook.
 - [Bypassing Hooks (Not Recommended)](./bypassing-hooks-not-recommended.md) — Why bypassing a hook is discouraged. Use before bypassing a git hook.
+- [Capacity-Held Hook](./capacity-held-hook.md) — The one-push exception for a hook stopped before any check started. Use when the compute guard reports a never-started stop.
 - [Troubleshooting: Prettier, Commitlint, and Hooks Not Running](./troubleshooting-prettier-commitlint-hooks.md) — Fixes for Prettier, commitlint, and non-running hooks. Use when Prettier, commitlint, or a hook misbehaves.
 - [Troubleshooting: Pre-push Hook](./troubleshooting-pre-push-hook.md) — Fixes for a slow or failing pre-push hook. Use when pre-push is slow or a check fails.
 - [Adding New File Types](./adding-new-file-types.md) — How to add a new file type to the pipeline. Use when a new file type needs lint coverage.

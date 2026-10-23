@@ -7,17 +7,24 @@ when_to_use: Use when composing plan execution with other workflows, or when tra
 
 This workflow can be composed with:
 
-- **plan-quality-gate**: Validate plan quality before executing (recommended pre-step)
+- **plan-quality-gate** (`repo-governance/workflows/quality/plan-quality-gate.md`): judges the **draft**
+  only. It is an optional, manually invoked step **outside** this workflow. Execution never runs it;
+  a recorded verdict is advisory history, and a missing verdict is
+  `plan-quality-gate: not run (manual-only)`, never a stop.
 - Content creation workflows: Execute content-focused plans
 - Release workflows: Execute release plans with deployment
-- **rules-quality-gate**: Validate repository consistency after plan execution
+- **plan-execution-check** (`repo-governance/workflows/plan/plan-execution-check.md`): judges the
+  **delivered work**. This workflow runs it at the end of every cycle through the
+  `plan-execution-checker` agent; only its permitting verdict allows archival.
+- **rules-quality-gate**: Validate repository consistency after plan execution, when the plan changed rules.
 
-**Recommended Workflow Sequence**:
+**Workflow Sequence**:
 
 ```
-1. plan-quality-gate → Validate plan completeness and accuracy
-2. plan-execution    → Execute validated plan
-3. rules-quality-gate → Ensure repository consistency
+0. (optional, manual, outside execution) plan-quality-gate → judge the draft
+1. plan-execution    → execute (starts with or without a verdict)
+2. plan-execution-check via plan-execution-checker → judge delivered work; archive only on permit
+3. rules-quality-gate → only when rule work landed
 ```
 
 ## Success Metrics

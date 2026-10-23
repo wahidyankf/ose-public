@@ -18,6 +18,7 @@ This convention documents the automated code-quality toolchain -- Prettier, Husk
 - [Git Hook Workflow: Pre-commit Hook (What It Validates)](./code/git-hook-workflow-pre-commit-what-it-validates.md) — What the pre-commit hook validates. Use when debugging a pre-commit check failure.
 - [Git Hook Workflow: Commit-msg and Pre-push Hooks](./code/git-hook-workflow-commit-msg-and-pre-push-hooks.md) — What the commit-msg and pre-push hooks validate. Use when debugging a commit-msg or pre-push hook.
 - [Bypassing Hooks (Not Recommended)](./code/bypassing-hooks-not-recommended.md) — Why bypassing a hook is discouraged. Use before bypassing a git hook.
+- [Capacity-Held Hook](./code/capacity-held-hook.md) — The one-push exception for a hook stopped before any check started. Use when the compute guard reports a never-started stop.
 - [Troubleshooting: Prettier, Commitlint, and Hooks Not Running](./code/troubleshooting-prettier-commitlint-hooks.md) — Fixes for Prettier, commitlint, and non-running hooks. Use when Prettier, commitlint, or a hook misbehaves.
 - [Troubleshooting: Pre-push Hook](./code/troubleshooting-pre-push-hook.md) — Fixes for a slow or failing pre-push hook. Use when pre-push is slow or a check fails.
 - [Adding New File Types](./code/adding-new-file-types.md) — How to add a new file type to the pipeline. Use when a new file type needs lint coverage.

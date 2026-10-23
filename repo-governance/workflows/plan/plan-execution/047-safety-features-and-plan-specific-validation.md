@@ -17,6 +17,19 @@ when_to_use: Use when explaining what safety guarantees plan execution provides,
 - Task status updated in real time via TaskCreate/TaskUpdate
 - Each cycle builds on previous work
 - Validation history preserved in local-tmp/plan-execution/
+- **20-minute heartbeat (unprompted)**: during active execution, send a user-visible update at least
+  every **20 minutes**, even when no state changed, plus at each phase boundary and terminal state.
+  Every update carries five lines: (1) **weighted progress** for the whole plan so far, (2) **steps
+  left** in grand-scheme order, (3) **blockers needing human intervention**, (4) **decisions needed
+  from the user**, and (5) **when the next `[HUMAN]` step is required** (time or condition, or "none
+  expected before \<milestone\>"). Weights come from `delivery.md` when it declares them (per outcome
+  or phase); otherwise every action weighs `1`. Weighted progress is
+  `sum(weights of completed actions) / sum(weights of all actions)`. State the source in the first
+  update. If a node is queued on HIPPO, name it here with HIPPO's reason — report only; execution
+  keeps queueing and never stops for deferral alone. At each heartbeat, also clear owned subagents
+  and processes of stuck work: an `in_progress` item with no progress since the last heartbeat and
+  no HIPPO or error reason is stuck — list it under blockers, nudge it once, and escalate as a
+  human blocker if it is still stuck at the next heartbeat.
 
 **Error Recovery**:
 

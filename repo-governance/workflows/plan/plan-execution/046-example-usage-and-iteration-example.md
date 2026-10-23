@@ -37,22 +37,25 @@ The AI will invoke agents with a reduced cycle limit:
 User: "Execute plan plans/backlog/future-feature/plan.md"
 ```
 
-The AI runs Step 0 before any implementation begins. With the default `worktree-to-pr` mode, it:
+The AI delivers the promotion before Step 0 and any implementation. With the default `worktree-to-pr`
+mode, it:
 
 - Resolves the delivery mode and confirms the repository restrictions.
-- Creates a dedicated worktree branch from current `origin/main`.
-- Moves `plans/backlog/future-feature/` to `plans/in-progress/future-feature/` and updates the two
-  required indexes, with no implementation or ride-along changes.
-- Pushes the branch, opens the pure-move PR, completes its PR quality gate, and merges it into
-  `origin/main`.
-- Refreshes the implementation branch from that merge, resolves `plan-path` to
-  `plans/in-progress/future-feature/plan.md`, and continues with Step 1.
+- Moves `plans/backlog/future-feature/` to `plans/in-progress/future-feature/` on its own promotion branch,
+  updates the two required indexes and the plan's node in the Plan-Order Graph (class, marker, and colour
+  change with it), and makes only the forced edits its `Status` line and relative links need.
+- Opens a promotion-only pull request carrying that sole commit, passes its gates and leak review, and
+  merges it, so `origin/main` now holds only the `plans/in-progress/` path. Fuelling parallel worktrees is
+  the point.
+- Fetches, resolves `plan-path` to `plans/in-progress/future-feature/plan.md`, and provisions the plan's
+  one worktree from that fresh trunk; Step 0 then re-enters it without ever provisioning a second one.
 - Implement plan requirements via orchestrated specialized agents
 - Won't move to done while a blocking finding remains
 - Plan archived to plans/done/ only on complete success
 
-Only a selected direct-push mode that the repository permits replaces the promotion PR with a
-direct push. Execution never runs from `plans/backlog/`; see the canonical
+Only a selected direct-push mode that the repository permits pushes the pure move as its own direct commit
+before Phase 0, from its explicit `N/A` primary checkout. Execution never runs from `plans/backlog/`;
+see the canonical
 [Starting Work procedure](../../../conventions/structure/plans/starting-and-completing-work.md#starting-work).
 
 ## Quick Validation Only

@@ -81,12 +81,14 @@ if (!version || !config.includes(expected)) {
 
 # Direct compute leaves carry one outer admission. Composite and lifecycle
 # aliases delegate to those leaves, so they must not add a nested admission.
-# The removed Rhino-CLI package aliases must stay absent rather than acquiring
-# a local compatibility implementation.
+# Markdown-only leaves (lint:md, lint:md:fix, format:md, format:md:check) are
+# deliberately unguarded: their passes are bounded and restartable, so they need
+# no HIPPO admission. The removed Rhino-CLI package aliases must stay absent
+# rather than acquiring a local compatibility implementation.
 node -e '
 const scripts = require("./package.json").scripts;
 const guarded = [
-  "build", "test", "lint", "lint:md", "lint:md:fix", "format:md", "format:md:check",
+  "build", "test", "lint",
   "affected:build", "affected:test", "affected:lint", "graph", "nx", "nx:show",
   "organiclever:dev", "organiclever:dev:reset", "dev:ayokoding-www", "dev:ose-www",
   "dev:organiclever", "test:validators"
@@ -95,6 +97,15 @@ for (const name of guarded) {
   const command = scripts[name];
   if (typeof command !== "string" || !command.startsWith("./hippo run ")) process.exit(1);
   if ((command.match(/\.\/hippo run /g) || []).length !== 1) process.exit(1);
+}
+const markdownOnly = {
+  "lint:md": `markdownlint-cli2 "**/*.md"`,
+  "lint:md:fix": `markdownlint-cli2 --fix "**/*.md"`,
+  "format:md": `prettier --write "**/*.md"`,
+  "format:md:check": `prettier --check "**/*.md"`
+};
+for (const [name, command] of Object.entries(markdownOnly)) {
+  if (scripts[name] !== command || scripts[name].includes("./hippo run")) process.exit(1);
 }
 for (const name of ["prepare", "postinstall", "organiclever:dev:restart"]) {
   if (scripts[name].includes("./hippo run ")) process.exit(1);

@@ -1,0 +1,3 @@
+upgrade=true
+journal-first=d72_001_create_first.sql
+tables-first=1

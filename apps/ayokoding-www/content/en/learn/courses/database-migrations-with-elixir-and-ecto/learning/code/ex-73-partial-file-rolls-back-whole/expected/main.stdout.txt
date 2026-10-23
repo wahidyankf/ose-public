@@ -1,0 +1,3 @@
+raised: Postgrex.Error
+survived: 0
+cleaned: yes

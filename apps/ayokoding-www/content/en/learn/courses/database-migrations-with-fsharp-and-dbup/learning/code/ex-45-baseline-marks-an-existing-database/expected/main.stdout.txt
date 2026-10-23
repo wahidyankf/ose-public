@@ -1,0 +1,3 @@
+upgrade=true
+legacy-rows=2
+journaled=1

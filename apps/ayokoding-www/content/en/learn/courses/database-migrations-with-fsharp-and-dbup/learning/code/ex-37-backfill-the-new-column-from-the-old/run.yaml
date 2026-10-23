@@ -1,0 +1,33 @@
+schema: ayokoding.run/v1
+toolchain: dotnet
+dependencies:
+  lockfile: learning/code/ex-37-backfill-the-new-column-from-the-old/packages.lock.json
+services: [postgres]
+resources:
+  memory: 2g
+runs:
+  - name: main
+    # Offline hardening: the run container has a Docker DNS that blackholes
+    # external names, and NuGet's per-package online checks (certificate
+    # revocation) stall on it. Revocation in offline mode plus telemetry and
+    # first-run opt-outs keeps restore fully local.
+    env:
+      NUGET_CERT_REVOCATION_MODE: offline
+      DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: "1"
+      DOTNET_NOLOGO: "1"
+    # Locked restore from /deps/dotnet (the install recipe stages the locked
+    # nupkgs), then build and run the compiled F# assembly.
+    command:
+      [
+        sh,
+        -c,
+        "dotnet restore --locked-mode > /dev/null && dotnet build --nologo -v q --no-restore > /dev/null && dotnet bin/Debug/net10.0/app.dll",
+      ]
+    timeout: 600s
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+      # DbUp writes no logs unless asked; the exit status and the golden
+      # transcript are the check signals.
+      stderr: ignore

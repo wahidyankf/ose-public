@@ -1,0 +1,5 @@
+upgrade=true
+upgrade=true
+second-apply=true
+tables=1
+history=d03_001_create_notes.sql

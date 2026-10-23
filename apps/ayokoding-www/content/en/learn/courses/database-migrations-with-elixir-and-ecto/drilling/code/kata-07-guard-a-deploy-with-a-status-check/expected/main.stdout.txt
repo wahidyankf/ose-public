@@ -1,0 +1,3 @@
+gate: blocked
+gate: clear
+cleaned: yes

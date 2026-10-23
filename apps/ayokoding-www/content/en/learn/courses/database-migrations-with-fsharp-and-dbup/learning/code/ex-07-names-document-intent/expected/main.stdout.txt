@@ -1,0 +1,8 @@
+upgrade=true
+upgrade=true
+upgrade=true
+scripts=3
+documented=true
+history=d07_001_create_stock.sql
+history=d07_002_add_quantity.sql
+history=d07_003_add_price.sql

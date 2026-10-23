@@ -1,0 +1,3 @@
+migrator: up
+drift: sneaky
+cleaned: yes

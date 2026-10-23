@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net10.0": {
+      "dbup-postgresql": {
+        "type": "Direct",
+        "requested": "[7.0.1, )",
+        "resolved": "7.0.1",
+        "contentHash": "mRnmENWWPuuMZ538gOd1mZnzucx6FQk0anmw3EABjGfcbp24FDb9QdGepYrDiaM8K9s5/gd49+5cmBOlniH/lg==",
+        "dependencies": {
+          "Npgsql": "10.0.1",
+          "dbup-core": "6.1.1"
+        }
+      },
+      "FSharp.Core": {
+        "type": "Direct",
+        "requested": "[10.0.113, )",
+        "resolved": "10.0.113",
+        "contentHash": "x+9djZzV154V8BsDP21XT4pXTHZIu3ZJW/+eYGNRwQnFhYGDgERFw2d97FpfZ/ByO5CaxrXTqCT6earZ3QmpDQ=="
+      },
+      "dbup-core": {
+        "type": "Transitive",
+        "resolved": "6.1.1",
+        "contentHash": "kgpuyJVEFJHoIj/slnc994Go88aoeZqNDfGHDBr4sh7CsEWwJhOTCt/FJqO4ziUImL5L0NEY0kxxOiNgPKI2Fw==",
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.0"
+        }
+      },
+      "Microsoft.Extensions.DependencyInjection.Abstractions": {
+        "type": "Transitive",
+        "resolved": "10.0.0",
+        "contentHash": "L3AdmZ1WOK4XXT5YFPEwyt0ep6l8lGIPs7F5OOBZc77Zqeo01Of7XXICy47628sdVl0v/owxYJTe86DTgFwKCA=="
+      },
+      "Microsoft.Extensions.Logging.Abstractions": {
+        "type": "Transitive",
+        "resolved": "10.0.0",
+        "contentHash": "FU/IfjDfwaMuKr414SSQNTIti/69bHEMb+QKrskRb26oVqpx3lNFXMjs/RC9ZUuhBhcwDM2BwOgoMw+PZ+beqQ==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.0"
+        }
+      },
+      "Npgsql": {
+        "type": "Transitive",
+        "resolved": "10.0.1",
+        "contentHash": "XyUcxEfqlFomhNTG/ZdGlec+uSOQArKz0Mzz8jYKP/Jj9GM2YabU5CVZtp0yiC4f9hRp+tRZTnHMatJeJ3rwgw==",
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "10.0.0"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,6 @@
+upgrade=true
+upgrade=true
+upgrade=true
+cols=id,name
+rows=1
+history-len=3

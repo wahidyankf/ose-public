@@ -1,0 +1,7 @@
+upgrade=true
+upgrade=true
+upgrade=true
+handles=ada,grace,lin
+history=d26_001_create_users.sql
+history=d26_002_add_handle.sql
+history=d26_003_fill_handle.sql

@@ -1,0 +1,4 @@
+upgrade=true
+journal=schemaversions
+cols=schemaversionsid,scriptname,applied
+rows=1

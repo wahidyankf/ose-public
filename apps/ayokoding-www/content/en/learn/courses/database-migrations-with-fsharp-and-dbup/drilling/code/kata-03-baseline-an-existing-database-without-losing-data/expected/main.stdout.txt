@@ -1,0 +1,5 @@
+upgrade=true
+upgrade=true
+items=book,pen
+stocked=2
+adopted=2

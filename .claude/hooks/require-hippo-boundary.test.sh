@@ -105,6 +105,47 @@ cmd_denies "the exact fan-out that exhausted the host" "rtk npm exec nx -- run-m
 cmd_denies "unguarded npx" "rtk npx nx run ose-app-web:build"
 cmd_denies "unguarded npx playwright" "npx playwright test"
 
+# --- prettier and markdownlint-cli2 without HIPPO admission ------------------------------------------
+# Only these two tools, and only through a spelling that refuses to install a missing tool. Verified
+# with npm 11: `npx --no-install` and `npm exec --no` cancel the fetch, but `npm exec --no-install` only
+# warns and still installs, so it does not qualify. File arguments are never inspected.
+cmd_allows "npx no-install prettier check" "npx --no-install prettier --check x.md"
+cmd_allows "rtk npx no-install markdownlint-cli2" "rtk npx --no-install markdownlint-cli2 '**/*.md'"
+cmd_allows "npm exec no separator markdownlint-cli2" 'npm exec --no -- markdownlint-cli2 "**/*.md"'
+cmd_allows "npm exec no-flag prettier without separator" "npm exec --no prettier -- --help"
+cmd_allows "rtk npm exec no-flag prettier with separator" "rtk npm exec --no -- prettier --check ."
+cmd_allows "env assignment before an admitted tool" "CI=1 npx --no-install prettier --check ."
+cmd_allows "path-qualified npx before an admitted tool" "/usr/bin/npx --no-install prettier --check ."
+cmd_allows "admitted prettier with an output redirect" "npx --no-install prettier --check . >/tmp/prettier.log"
+# `npx --no` exits 0 without running the tool when the tool is missing, so it is not an accepted spelling.
+cmd_denies "npx --no prettier write" "npx --no prettier --write ."
+cmd_denies "rtk npx --no markdownlint-cli2" "rtk npx --no markdownlint-cli2 '**/*.md'"
+cmd_denies "npx prettier without a no-install flag" "npx prettier --check x.md"
+cmd_denies "npm exec prettier without a no-install flag" "npm exec -- prettier --check ."
+cmd_denies "npm exec no-install spelling still installs" "npm exec --no-install -- prettier --check ."
+cmd_denies "npx no-install other tool" "npx --no-install eslint ."
+cmd_denies "npx no-install markdownlint without cli2" "npx --no-install markdownlint --check ."
+cmd_denies "npx no-install versioned prettier" "npx --no-install prettier@3 --check ."
+cmd_denies "npx no-install tool by path" "npx --no-install ./node_modules/.bin/prettier --check ."
+cmd_denies "npx no-install separator is not accepted" "npx --no-install -- prettier --check ."
+cmd_denies "npx no-install with no tool" "npx --no-install"
+cmd_denies "bare npx" "npx"
+cmd_denies "npm exec no-flag other tool" "npm exec --no -- some-other-tool"
+cmd_denies "npx no-install extra flag before the tool" "npx --no-install --package=evil prettier --check ."
+cmd_denies "npm exec no-flag extra flag before the tool" 'npm exec --no --call="npm ci" -- prettier'
+cmd_denies "allowed prettier chained with unguarded npx" "npx --no-install prettier --check . && npx eslint ."
+cmd_denies "allowed prettier chained with unguarded npm exec" "npm exec --no -- prettier --check . ; npm exec nx -- run app:build"
+cmd_denies "allowed prettier then unguarded npm ci by or" "npx --no-install prettier --check . || npm ci"
+cmd_denies "allowed prettier piped to unguarded exec" "npx --no-install prettier --check . | npm exec nx -- run app:build"
+cmd_denies "allowed prettier with an unguarded substitution" "npx --no-install prettier --check . \$(npm ci)"
+cmd_denies "allowed prettier with an unguarded backtick" "npx --no-install prettier --check . \`npm ci\`"
+cmd_denies "allowed prettier then unguarded command on a new line" "npx --no-install prettier --check .
+npm ci"
+# Direct calls were never guarded, and stay unaffected by the no-install exemption.
+cmd_allows "direct prettier is not guarded" "prettier --check ."
+cmd_allows "direct markdownlint-cli2 is not guarded" 'markdownlint-cli2 "**/*.md"'
+cmd_allows "node_modules prettier is not guarded" "./node_modules/.bin/prettier --check ."
+
 # --- bare nx through a PATH shim -------------------------------------------------------------------
 cmd_denies "bare nx run" "rtk nx run ose-app-web:build"
 cmd_denies "bare nx affected" "nx affected -t test:quick"

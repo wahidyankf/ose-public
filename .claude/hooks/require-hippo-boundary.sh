@@ -69,6 +69,27 @@ JSON
 	exit 0
 }
 
+# Only these two tools run without HIPPO admission, and only through a no-install spelling that fails closed when the
+# tool is missing: `npx --no-install <tool>`, or `npm exec --no -- <tool>` where the `--` is optional. Verified with
+# npm 11: `npx --no` exits 0 without running a missing tool, and `npm exec --no-install` only warns and still
+# installs, so neither spelling is accepted. A version suffix, a path, any other flag, or any other tool stays guarded.
+# File arguments are never inspected.
+unadmitted_tool() {
+	# $1 is the no-install flag, $2 is `yes` when `--` may follow it, and the rest are the words after the launcher.
+	local flag="$1" separator="$2" seen=0
+	shift 2
+	while [ "${1:-}" = "$flag" ]; do
+		shift
+		seen=1
+	done
+	[ "$seen" -eq 1 ] || return 1
+	if [ "$separator" = yes ] && [ "${1:-}" = "--" ]; then shift; fi
+	case "${1:-}" in
+	prettier | markdownlint-cli2) return 0 ;;
+	esac
+	return 1
+}
+
 # The boundary may legitimately appear anywhere in the line, including behind `rtk` and after a
 # `cd ... &&`. Its presence anywhere is treated as covering the line: the realistic failure this
 # guard exists to stop is a line with NO boundary at all, and a stricter per-segment parse would
@@ -129,6 +150,8 @@ while IFS= read -r seg; do
 	--version | --help | -h | -V) continue ;;
 	esac
 
+	# The words of this command, for the one exemption that reads its arguments.
+	read -ra words <<<"$seg"
 	case "$first" in
 	npm)
 		# Named explicitly by the rule: "npm install and npm exec are not scripts and do
@@ -141,12 +164,16 @@ while IFS= read -r seg; do
 		# reports `normal` — a failure that reads as a hang, not as a policy error, which is
 		# why this carve-out is load-bearing rather than a convenience.
 		case "$second" in
-		exec | install | ci) deny "'npm $second'" ;;
+		exec)
+			# `npm exec --no -- <tool>` is the admitted spelling; every other exec takes the boundary.
+			unadmitted_tool --no yes "${words[@]:2}" || deny "'npm exec'"
+			;;
+		install | ci) deny "'npm $second'" ;;
 		esac
 		;;
 	npx)
-		# npm exec under another name; takes the boundary identically.
-		deny "'npx'"
+		# npm exec under another name; takes the boundary identically, except the no-install spelling above.
+		unadmitted_tool --no-install no "${words[@]:1}" || deny "'npx'"
 		;;
 	nx)
 		# A bare `nx` through a PATH shim expands into the same task graph as `npm exec nx`,

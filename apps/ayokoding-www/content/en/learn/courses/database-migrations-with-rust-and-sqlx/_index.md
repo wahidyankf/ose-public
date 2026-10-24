@@ -7,7 +7,7 @@ prerequisites: ["just-enough-rust", "sql-essentials"]
 category: data-and-databases
 description: "Run ordered, reversible sqlx migrations in Rust against PostgreSQL."
 format: by-example
-estimatedHours: 10
+estimatedHours: 16
 ---
 
 - [Overview](/en/learn/courses/database-migrations-with-rust-and-sqlx/overview)

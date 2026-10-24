@@ -7,7 +7,7 @@ prerequisites: ["just-enough-fsharp", "sql-essentials"]
 category: data-and-databases
 description: "Evolve PostgreSQL schemas safely with versioned DbUp migrations in F#."
 format: by-example
-estimatedHours: 28
+estimatedHours: 31
 ---
 
 - [Overview](/en/learn/courses/database-migrations-with-fsharp-and-dbup/overview)

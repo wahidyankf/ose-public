@@ -7,7 +7,7 @@ prerequisites: ["just-enough-csharp", "sql-essentials"]
 category: data-and-databases
 description: "Evolve PostgreSQL schemas safely with versioned EF Core migrations in C#."
 format: by-example
-estimatedHours: 50
+estimatedHours: 52
 ---
 
 - [Overview](/en/learn/courses/database-migrations-with-csharp-and-ef-core/overview)

@@ -257,3 +257,30 @@ trade-offs accepted, the consequences, and what would make this plan revisit the
   pre-existing courses inflated their scanner counts (`just-enough-csharp` read 108h); the scanner
   counts ignored files, so residue must be deleted, not worked around. The one tracked Rust
   `src/bin` dir was verified and kept.
+
+## Decision D10: the `go` entry gains an `install` recipe (`go.mod` lockfile, baked module cache)
+
+- **Selected:** the `go` toolchain entry (pinned `golang:1.27`, unchanged image) gains an `install`
+  block naming `go.mod`: the install argv downloads the course lockfile's requirements into
+  `/deps/gomod` (build time, the only phase with network), and run-time `GOMODCACHE=/deps/gomod/cache`
+  plus `GOPROXY=off` makes unit `go build` runs hermetic. Method follows tech-docs/003
+  §"Install recipes for the other toolchains" (same RED, GREEN, REFACTOR steps as the `kotlin` change).
+- **Why not `vendor/`:** the gin maker vendored Gin per unit (87 dirs, 83k files); vendored
+  `LICENSE.md` files fail the `md-naming` kebab gate (whole-tree scan, 25 findings) and the commit
+  would carry 83 thousand third-party files. All vendor dirs deleted; nothing vendored in the repo.
+- **Course side:** `web-backends-in-go-with-gin` keeps one shared `learning/code/go.mod` (+ `go.sum`)
+  as the env lock; all 87 units point at it with `dependencies: lockfile: learning/code/go.mod`
+  while keeping their own per-unit `go.mod`/`go.sum` for resolution. The shared lock covers the full
+  gin closure (verified: units import only gin + its transitive deps). `estimatedHours` follows the
+  drift message: 32.
+- **Alternative B — `services: [postgres]` for network:** rejected; the units use no database, and the
+  service network has no external route anyway (run contract §Network).
+- **Evidence:** `run_execute.go` ("Units without services run on --network none"), run contract
+  ("no route out" even with services), env planner (`BuildEnvironment` hashes image + lock bytes +
+  install argv), sibling recipes (rust `Cargo.lock` → `/deps/rust`; typescript `package-lock.json` →
+  `/srv/node-deps`). Single-unit harness run passed, then full course EX-CHECK exit 0 (87/87).
+- **Trade-off accepted:** `toolchains/catalog.yaml` changes, so the PR examples check runs in full
+  mode (plan 05 rule) and the CLI must be rebuilt from source (embedded catalog).
+- **Latent note (same as D9):** the env tag still ignores install `env`; only image/lock/argv hash.
+- **Revisit if:** a second Go course needs third-party modules (it reuses this recipe with its own
+  course lock), or Go modules ever need a private proxy (extend the recipe, never the units).

@@ -7,7 +7,7 @@ prerequisites: ["just-enough-elixir", "sql-essentials"]
 category: data-and-databases
 description: "Evolve PostgreSQL schemas safely with versioned Ecto migrations."
 format: by-example
-estimatedHours: 29
+estimatedHours: 30
 ---
 
 - [Overview](/en/learn/courses/database-migrations-with-elixir-and-ecto/overview)

@@ -40,6 +40,23 @@ jobs:
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-go
       - uses: ./.github/actions/setup-docker-cache
+      - name: Build the CLI
+        run: >-
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
+          npx nx run ayokoding-cli:build
+      # The ayokoding-toolchain/* images live in no registry: each shard job
+      # builds them into the local store from the repo Dockerfiles, so the
+      # check never pulls them. Only entries still naming the local namespace
+      # are built; pinned public images keep flowing through `docker pull`.
+      - name: Build the toolchain images locally
+        env:
+          AYOKODING_BUILDX_CACHE: /tmp/.buildx-cache
+        run: |
+          set -euo pipefail
+          mapfile -t ids < <(apps/ayokoding-cli/dist/ayokoding-cli toolchains list --output json \
+            | jq -r '.toolchains[] | select(.image | startswith("ayokoding-toolchain/")) | .id')
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- \
+            apps/ayokoding-cli/dist/ayokoding-cli toolchains build "${ids[@]}"
       - name: Run the examples check
         env:
           AYOKODING_SHARD: ${{ matrix.shard }}/${{ inputs.shard-total }}

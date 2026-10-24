@@ -1,0 +1,3 @@
+changed columns: 3
+neighbor columns: 2
+migrations applied: 2

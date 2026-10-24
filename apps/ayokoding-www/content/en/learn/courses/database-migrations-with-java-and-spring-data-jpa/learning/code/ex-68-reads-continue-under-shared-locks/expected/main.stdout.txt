@@ -1,0 +1,2 @@
+rows read under lock: 2
+migrations applied: 1

@@ -1,0 +1,3 @@
+archived rows: 1
+live rows: 1
+migrations applied: 2

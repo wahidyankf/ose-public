@@ -1,0 +1,2 @@
+agreed rows: 1
+migrations applied: 2

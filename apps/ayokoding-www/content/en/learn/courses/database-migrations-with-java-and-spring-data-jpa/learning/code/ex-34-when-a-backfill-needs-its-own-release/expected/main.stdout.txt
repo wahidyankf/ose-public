@@ -1,0 +1,2 @@
+promotion order: 001 002 003
+nicknames set: 2

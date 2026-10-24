@@ -1,0 +1,4 @@
+baselined versions: 001 002
+accounts table present: 1
+status column present: 1
+legacy customers: 1

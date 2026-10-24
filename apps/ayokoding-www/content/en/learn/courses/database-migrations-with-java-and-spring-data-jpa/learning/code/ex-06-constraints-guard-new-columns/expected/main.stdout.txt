@@ -1,0 +1,2 @@
+violating inserts rejected: 1
+orders rows: 0

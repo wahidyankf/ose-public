@@ -1,0 +1,3 @@
+audited rows: 1
+audit mode: ShareRowExclusiveLock
+migrations applied: 2

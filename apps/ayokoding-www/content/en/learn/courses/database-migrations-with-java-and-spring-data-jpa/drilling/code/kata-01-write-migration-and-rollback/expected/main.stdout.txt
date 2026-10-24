@@ -1,0 +1,6 @@
+forward table present: 1
+forward ledger rows: 1
+rollback table present: 0
+rollback ledger rows: 0
+reapply table present: 1
+reapply ledger rows: 1

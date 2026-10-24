@@ -1,0 +1,2 @@
+drifted tables: ex48_orphan
+migrations applied: 2

@@ -1,0 +1,3 @@
+rollback refused: no down file for version 001
+table present: 1
+ledger rows: 1

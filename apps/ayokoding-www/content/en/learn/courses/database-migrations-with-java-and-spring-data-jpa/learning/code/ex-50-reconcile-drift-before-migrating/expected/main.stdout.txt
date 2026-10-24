@@ -1,0 +1,3 @@
+drift before reconcile: 1
+drift after reconcile: 0
+migrations applied: 2

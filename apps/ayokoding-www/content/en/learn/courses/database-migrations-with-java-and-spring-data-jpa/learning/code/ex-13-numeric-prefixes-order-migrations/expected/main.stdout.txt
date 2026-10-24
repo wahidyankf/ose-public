@@ -1,0 +1,3 @@
+chain rows: 10
+last step: 10
+migrations applied: 10

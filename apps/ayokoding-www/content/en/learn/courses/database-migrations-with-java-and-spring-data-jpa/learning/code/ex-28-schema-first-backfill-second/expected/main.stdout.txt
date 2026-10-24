@@ -1,0 +1,2 @@
+totals: 1000,2100
+migrations applied: 2

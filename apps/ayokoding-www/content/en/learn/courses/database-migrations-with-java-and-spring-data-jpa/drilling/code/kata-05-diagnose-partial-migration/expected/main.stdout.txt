@@ -1,0 +1,3 @@
+partial rows: 1
+repaired rows: 2
+migrations applied: 2

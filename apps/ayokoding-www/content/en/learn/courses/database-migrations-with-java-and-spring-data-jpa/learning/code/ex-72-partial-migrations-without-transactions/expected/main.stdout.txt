@@ -1,0 +1,3 @@
+migration failed: 23505
+partial rows: 1
+ledger rows: 1

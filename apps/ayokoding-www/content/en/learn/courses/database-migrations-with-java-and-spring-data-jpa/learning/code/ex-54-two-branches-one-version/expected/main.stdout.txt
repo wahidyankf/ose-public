@@ -1,0 +1,3 @@
+version collision: 003 (branch-a vs branch-b)
+resolved columns: 2
+migrations applied: 4

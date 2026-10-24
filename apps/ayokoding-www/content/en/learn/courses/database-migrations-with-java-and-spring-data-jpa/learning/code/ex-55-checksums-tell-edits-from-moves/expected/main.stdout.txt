@@ -1,0 +1,2 @@
+branch-a 001: identical
+branch-b 001: diverged

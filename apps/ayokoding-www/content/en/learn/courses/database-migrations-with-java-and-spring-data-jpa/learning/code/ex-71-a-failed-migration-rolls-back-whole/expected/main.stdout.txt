@@ -1,0 +1,3 @@
+migration failed: 23505
+strict rows: 0
+ledger rows: 1

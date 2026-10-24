@@ -7,7 +7,7 @@ prerequisites: ["just-enough-csharp", "backend-essentials"]
 category: application-development
 description: "Serve HTTP backends in C# with ASP.NET Core: routing, middleware, and testing."
 format: by-example
-estimatedHours: 19
+estimatedHours: 20
 ---
 
 - [Overview](/en/learn/courses/web-backends-in-csharp-with-aspnetcore/overview)

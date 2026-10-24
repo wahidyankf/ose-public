@@ -1,0 +1,4 @@
+GET /a -> 200 route a
+GET /a -> 200 route a
+GET /b -> 200 route b
+GET /counts -> 200 {"a":2,"b":1}

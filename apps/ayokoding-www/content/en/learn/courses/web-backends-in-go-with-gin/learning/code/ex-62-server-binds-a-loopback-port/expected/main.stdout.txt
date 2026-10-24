@@ -1,0 +1,1 @@
+GET /ping -> 200 pong

@@ -1,0 +1,3 @@
+token=  -> 401 blocked at guard {"error":"no entry"}
+token= guess -> 401 blocked at guard {"error":"no entry"}
+token= s3cret -> 200 served as sari

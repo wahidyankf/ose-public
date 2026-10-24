@@ -1,0 +1,1 @@
+GET /guarded -> 200 in-outer,in-inner,handler,out-inner,out-outer

@@ -1,0 +1,3 @@
+GET /widgets/w1 form=  -> 200 {"id":"w1","value":"gear"}
+GET /widgets/w9 form=  -> 404 {"error":{"code":"no_widget","message":"no widget w9"}}
+POST /widgets form= name=+ -> 422 {"error":{"code":"empty_name","message":"name must not be empty"}}

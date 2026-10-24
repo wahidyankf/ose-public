@@ -1,0 +1,5 @@
+route GET /healthz
+route GET /users
+route GET /users/:id
+route POST /users
+GET /users/7 -> 200 one

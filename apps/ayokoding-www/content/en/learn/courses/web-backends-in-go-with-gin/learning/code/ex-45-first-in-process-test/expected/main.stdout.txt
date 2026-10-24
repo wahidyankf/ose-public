@@ -1,0 +1,3 @@
+PASS /hello/Sari
+FAIL /hello/Sari body {"message":"hello, Sari"} want {"message":"hello, Budi"}
+FAIL /goodbye status 404 want 200

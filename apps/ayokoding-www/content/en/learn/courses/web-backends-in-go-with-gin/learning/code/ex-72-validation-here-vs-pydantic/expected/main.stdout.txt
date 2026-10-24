@@ -1,0 +1,4 @@
+POST /strict {"name":"Sari","email":"sari@example.com","age":30} -> 201 {"name":"Sari","email":"sari@example.com","age":30}
+POST /strict {"name":"Sari","email":"nope","age":30} -> 400 {"error":"bad member"}
+POST /loose {"name":"Sari","email":"nope","age":30} -> 201 {"age":30,"email":"nope","name":"Sari"}
+POST /loose {"name": -> 400 {"error":"bad json"}

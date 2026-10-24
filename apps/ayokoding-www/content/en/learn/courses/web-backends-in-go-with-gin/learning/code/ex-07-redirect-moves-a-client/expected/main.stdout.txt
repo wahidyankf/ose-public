@@ -1,0 +1,3 @@
+GET /old-docs -> 301 /docs
+POST /submit -> 307 /received
+GET /docs -> 200

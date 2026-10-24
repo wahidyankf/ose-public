@@ -1,0 +1,3 @@
+POST /signup {"name":"Sari","email":"sari@example.com","seats":2} -> 201 {"name":"Sari","email":"sari@example.com","seats":2}
+POST /signup {"name":"S","email":"sari@example.com","seats":2} -> 400 {"error":"bad signup"}
+POST /signup {"name":"Sari","email":"not-an-email","seats":0} -> 400 {"error":"bad signup"}

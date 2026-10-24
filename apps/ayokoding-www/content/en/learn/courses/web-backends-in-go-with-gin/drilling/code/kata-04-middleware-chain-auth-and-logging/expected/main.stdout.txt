@@ -1,0 +1,2 @@
+token=  -> 401 {"error":"no entry"} count= 0
+token= s3cret -> 200 served count= 1

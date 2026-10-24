@@ -1,0 +1,4 @@
+POST /divide {"a":7,"b":2} -> 200 {"result":3.5}
+POST /divide {"a":7, -> 400 {"error":{"code":"bad_input","message":"send numbers a and b"}}
+POST /divide {"a":7,"b":0} -> 422 {"error":{"code":"zero_divisor","message":"b must not be zero"}}
+POST /divide {"a":-7,"b":2} -> 403 {"error":{"code":"negative_dividend","message":"a must not be negative"}}

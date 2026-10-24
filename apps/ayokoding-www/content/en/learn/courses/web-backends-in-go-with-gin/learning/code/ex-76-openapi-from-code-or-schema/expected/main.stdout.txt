@@ -1,0 +1,2 @@
+GET /items -> 200 ["bolt"]
+GET /openapi.json -> 200 {"openapi":"3.0.3","info":{"title":"shop api","version":"1.4.2"},"paths":{"/items":{"get":{"summary":"list items"}},"/orders":{"get":{"summary":"list orders"}}}}

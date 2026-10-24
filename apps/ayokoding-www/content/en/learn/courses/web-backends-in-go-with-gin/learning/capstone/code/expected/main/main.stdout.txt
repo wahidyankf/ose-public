@@ -1,0 +1,9 @@
+POST /orders -> 201 {"id":"o1","item":"book","qty":2,"status":"placed"}
+POST /orders -> 400 {"error":{"code":"bad_order","message":"send id, item, and positive qty"}}
+GET /orders -> 200 [{"id":"o1","item":"book","qty":2,"status":"placed"}]
+GET /orders/o1 -> 200 {"id":"o1","item":"book","qty":2,"status":"placed"}
+PATCH /orders/o1/status -> 200 {"id":"o1","item":"book","qty":2,"status":"paid"}
+PATCH /orders/o1/status -> 422 {"error":{"code":"bad_status","message":"status must be placed, paid, shipped, or cancelled"}}
+DELETE /orders/o1 -> 204
+DELETE /orders/o1 -> 404 {"error":{"code":"no_order","message":"no order o1"}}
+GET /healthz -> 200 {"ok":true}

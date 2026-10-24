@@ -1,0 +1,4 @@
+GET /bolts -> 200 {"answer":"hex","resource":"bolts"}
+GET /nuts -> 200 {"answer":"wing","resource":"nuts"}
+GET /washers -> 200 {"answer":"flat","resource":"washers"}
+GET /nuts/ping -> 200 nuts ok

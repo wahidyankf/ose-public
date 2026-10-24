@@ -1,0 +1,3 @@
+GET /search?tag=go&tag=web -> 200 {"tags":["go","web"]}
+GET /search?tag=go -> 200 {"tags":["go"]}
+GET /search -> 200 {"tags":[]}

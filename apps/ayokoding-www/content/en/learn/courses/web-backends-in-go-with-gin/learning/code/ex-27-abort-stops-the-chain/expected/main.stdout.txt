@@ -1,0 +1,4 @@
+GET /profile token=  -> 401 {"error":"missing or bad token"}
+GET /profile token= guess -> 401 {"error":"missing or bad token"}
+GET /profile token= s3cret -> 200 {"user":"sari"}
+GET /public token=  -> 200 everyone

@@ -1,0 +1,3 @@
+GET /ping -> 200 pong
+GET /missing -> 404 {"error":{"code":"not_found","message":"no route for /missing"}}
+POST /ping -> 405 {"error":{"code":"method_not_allowed","message":"GET /ping only"}}

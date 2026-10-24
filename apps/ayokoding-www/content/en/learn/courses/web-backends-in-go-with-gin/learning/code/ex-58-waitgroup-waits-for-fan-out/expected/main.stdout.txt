@@ -1,0 +1,1 @@
+GET /page -> 200 {"body":"content-of-body","foot":"content-of-foot","head":"content-of-head"}

@@ -1,0 +1,6 @@
+GET /orders -> 200 []
+POST /orders -> 201 {"id":"o1","item":"book","count":2}
+POST /orders -> 201 {"id":"o1","item":"book","count":5}
+GET /orders -> 200 [{"id":"o1","item":"book","count":5}]
+DELETE /orders/o1 -> 204
+DELETE /orders/o1 -> 404 {"error":"no order"}

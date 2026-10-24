@@ -1,0 +1,3 @@
+GET /stock/bolt -> 200 {"qty":4,"sku":"bolt"}
+POST /stock/bolt/add/3 -> 201 {"qty":7,"sku":"bolt"}
+GET /stock/bolt -> 200 {"qty":7,"sku":"bolt"}

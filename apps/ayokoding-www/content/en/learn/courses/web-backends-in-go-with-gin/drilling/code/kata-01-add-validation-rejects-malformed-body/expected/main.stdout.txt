@@ -1,0 +1,2 @@
+POST /orders {"id":"o1","item":"book","qty":2} -> 201 {"id":"o1","item":"book","qty":2}
+POST /orders {"id":"o2","item":"pen","qty":0} -> 400 {"error":"bad order"}

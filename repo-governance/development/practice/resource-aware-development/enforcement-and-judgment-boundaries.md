@@ -44,13 +44,16 @@ exports and nothing else does — so bypassing the boundary discards the clamp a
 accounting.
 
 `npm run <script>` is outside the guard by design: those scripts carry their own boundary, and an
-outer one makes the inner call wait on its own ancestor's lease. The four Markdown-only scripts carry
-none, because their runs need no admission.
+outer one makes the inner call wait on its own ancestor's lease. The four Markdown scripts carry
+none, because runs of `prettier` and `markdownlint-cli2` need no admission.
 
-`.github/scripts/test-hippo-consumer.sh` covers that exemption: it fails if a Markdown-only script gains
-a boundary or any other direct leaf loses its single one. Whether an ad hoc run is Markdown-only is
-**unenforced by decision**, because the hook matches command words, not file kinds, and so still
-refuses `npm exec` and `npx` even on a Markdown file.
+`.github/scripts/test-hippo-consumer.sh` covers that exemption: it fails if one of those scripts gains
+a boundary or any other direct leaf loses its single one. Whether an ad hoc run is such a run is
+**unenforced by decision**. The guard and the hook allow exactly two spellings: `npx --no-install <tool>`
+and `npm exec --no -- <tool>` (the `--` optional). `npx --no` is denied because it exits 0 without
+running a missing tool, so a `--check` gate would pass falsely; `npm exec --no-install` is denied
+because npm only warns and installs. Versions, paths, other tools, and lines with another guarded
+segment stay denied.
 
 Two residual gaps, recorded rather than hidden. A command reached through an intermediary — a shell
 script, a Makefile target, an alias, an interpreter — still passes; text matching cannot close that

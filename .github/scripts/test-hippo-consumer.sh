@@ -81,9 +81,9 @@ if (!version || !config.includes(expected)) {
 
 # Direct compute leaves carry one outer admission. Composite and lifecycle
 # aliases delegate to those leaves, so they must not add a nested admission.
-# Markdown-only leaves (lint:md, lint:md:fix, format:md, format:md:check) are
-# deliberately unguarded: their passes are bounded and restartable, so they need
-# no HIPPO admission. The removed Rhino-CLI package aliases must stay absent
+# Leaves that only run `prettier` or `markdownlint-cli2` (the four Markdown ones
+# below) are deliberately unguarded, since those tools need no HIPPO admission in
+# any mode. The removed Rhino-CLI package aliases must stay absent
 # rather than acquiring a local compatibility implementation.
 node -e '
 const scripts = require("./package.json").scripts;

@@ -1,0 +1,4 @@
+applied: 2
+player: ada, 0
+player: bob, 0
+cleaned: yes

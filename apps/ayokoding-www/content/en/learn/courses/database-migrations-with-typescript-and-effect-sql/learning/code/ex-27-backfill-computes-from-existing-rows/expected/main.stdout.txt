@@ -1,0 +1,4 @@
+applied: 2
+member: ada -> ada!
+member: bob -> bob!
+cleaned: yes

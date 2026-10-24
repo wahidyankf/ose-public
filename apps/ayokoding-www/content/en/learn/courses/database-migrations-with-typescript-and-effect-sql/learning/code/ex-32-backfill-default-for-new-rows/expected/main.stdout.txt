@@ -1,0 +1,4 @@
+applied: 3
+invoice: 100 USD
+invoice: 200 USD
+cleaned: yes

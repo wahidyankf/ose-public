@@ -1,0 +1,4 @@
+applied: 1_first_table
+applied: 2_second_table
+applied: 10_tenth_table
+cleaned: yes

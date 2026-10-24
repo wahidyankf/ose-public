@@ -1,0 +1,5 @@
+first: 1
+tables: 2
+recorded: 2
+pending: 0
+cleaned: yes

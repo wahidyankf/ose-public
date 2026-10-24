@@ -1,0 +1,4 @@
+applied: 2_create_ex47_orders
+table: ex47_customers
+table: ex47_orders
+cleaned: yes

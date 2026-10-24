@@ -1,0 +1,4 @@
+applied: 1
+columns: id, a, b
+drift: extra column b
+cleaned: yes

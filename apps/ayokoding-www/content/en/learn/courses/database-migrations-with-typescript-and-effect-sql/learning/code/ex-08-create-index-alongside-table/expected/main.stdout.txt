@@ -1,0 +1,5 @@
+applied: 1_create_orders
+applied: 2_index_status
+index: ex08_orders_pkey
+index: ex08_orders_status_idx
+cleaned: yes

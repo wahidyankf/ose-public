@@ -62,12 +62,15 @@ repo_root="$(git rev-parse --show-toplevel 2>/dev/null || true)"
 deny() {
 	# `permissionDecisionReason` is the only text the model reliably sees, so it carries the
 	# correction inline rather than pointing at a document the model then has to go read.
-	local what="$1"
+	local what="$1" hint="${2:-}"
 	cat <<JSON
-{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"Repo policy (resource-aware-development): $what must run inside one outer HIPPO boundary. Re-run it as: rtk ./hippo run --class <ephemeral|service|transactional> --resource-tier <light|standard|heavy> --disk-path . -- <command>. Pick ephemeral for restartable work, service for attached long-running work, and transactional only for authorized mutations that must not be interrupted. Use light for narrow checks, standard for ordinary work, and heavy only for full builds or suites. Do NOT wrap 'npm run <script>' — those scripts already carry their own guard, and double-guarding stalls the run at near-zero CPU while hippo status still reports normal. Prefer sequential per-project runs over a run-many fan-out: each target is itself a nested chain, so one fan-out expands into dozens of concurrent processes."}}
+{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"Repo policy (resource-aware-development): $what must run inside one outer HIPPO boundary. Re-run it as: rtk ./hippo run --class <ephemeral|service|transactional> --resource-tier <light|standard|heavy> --disk-path . -- <command>. Pick ephemeral for restartable work, service for attached long-running work, and transactional only for authorized mutations that must not be interrupted. Use light for narrow checks, standard for ordinary work, and heavy only for full builds or suites. $hint Do NOT wrap 'npm run <script>' in a second boundary when the script already runs ./hippo run itself: double-guarding stalls the run at near-zero CPU while hippo status still reports normal. Prefer sequential per-project runs over a run-many fan-out: each target is itself a nested chain, so one fan-out expands into dozens of concurrent processes."}}
 JSON
 	exit 0
 }
+
+launcher_hint="Run the program itself inside the boundary, not behind xargs or find -exec, which this guard cannot classify. Only echo, or prettier or markdownlint-cli2 named directly or in an allowed no-install spelling, may run behind them."
+wrapper_hint="Run the program itself inside the boundary, without the wrapper or its options, because they hide the program from this guard."
 
 # Only these two tools run without HIPPO admission, and only through a no-install spelling that fails closed when the
 # tool is missing: `npx --no-install <tool>`, or `npm exec --no -- <tool>` where the `--` is optional. Verified with
@@ -88,6 +91,88 @@ unadmitted_tool() {
 	prettier | markdownlint-cli2) return 0 ;;
 	esac
 	return 1
+}
+
+# An intermediary that runs a program of its own is judged by that program. The words it appends come from stdin
+# or from find, so only the fixed words before them may decide. Harmless: `echo`, or one of the two tools in an
+# allowed spelling. Anything else, including no program at all, is refused.
+launched_safe() {
+	case "${1:-}" in
+	echo | prettier | markdownlint-cli2) return 0 ;;
+	npx) unadmitted_tool --no-install no "${@:2}" ;;
+	npm) [ "${2:-}" = exec ] && unadmitted_tool --no yes "${@:3}" ;;
+	*) return 1 ;;
+	esac
+}
+
+# xargs runs the words after its options, and appends the words it reads from stdin. `-I` and `-i` can take the
+# program itself from stdin, and an option this list does not know may hide it, so both are refused.
+xargs_safe() {
+	local -a argv=("$@")
+	local i=0 word letters extra letter position
+	while [ "$i" -lt "${#argv[@]}" ]; do
+		word="${argv[$i]}"
+		case "$word" in
+		--)
+			i=$((i + 1))
+			break
+			;;
+		--replace*) return 1 ;;
+		--null | --no-run-if-empty | --verbose | --interactive | --exit | --show-limits | --help | --version | --open-tty)
+			i=$((i + 1))
+			;;
+		--eof | --eof=* | --max-lines | --max-lines=*) i=$((i + 1)) ;;
+		--arg-file | --delimiter | --max-args | --max-procs | --max-chars | --process-slot-var) i=$((i + 2)) ;;
+		--arg-file=* | --delimiter=* | --max-args=* | --max-procs=* | --max-chars=* | --process-slot-var=*) i=$((i + 1)) ;;
+		--*) return 1 ;;
+		-?*)
+			letters="${word#-}"
+			extra=0
+			for ((position = 0; position < ${#letters}; position++)); do
+				letter="${letters:position:1}"
+				case "$letter" in
+				0 | p | r | t | x) ;;
+				e | l) break ;;
+				a | d | E | L | n | P | s)
+					if [ "$position" -eq $((${#letters} - 1)) ]; then extra=1; fi
+					break
+					;;
+				*) return 1 ;;
+				esac
+			done
+			i=$((i + 1 + extra))
+			;;
+		*) break ;;
+		esac
+	done
+	# No program at all means xargs runs echo.
+	if [ "$i" -ge "${#argv[@]}" ]; then return 0; fi
+	launched_safe "${argv[@]:$i}"
+}
+
+# find runs one command for each -exec, -execdir, -ok or -okdir, up to a `;` or a `+`. Quotes and backslashes are
+# removed before the comparison, so a quoted "-exec" is still seen as -exec.
+find_exec_safe() {
+	local -a exec_words=()
+	local word bare collecting=0
+	for word in "$@"; do
+		bare="${word//[\"\'\\]/}"
+		if [ "$collecting" -eq 1 ] && { [ "$bare" = ";" ] || [ "$bare" = "+" ]; }; then
+			launched_safe "${exec_words[@]}" || return 1
+			collecting=0
+		elif [ "$collecting" -eq 1 ]; then
+			exec_words+=("$word")
+		else
+			case "$bare" in
+			-exec | -execdir | -ok | -okdir)
+				collecting=1
+				exec_words=()
+				;;
+			esac
+		fi
+	done
+	if [ "$collecting" -eq 1 ]; then launched_safe "${exec_words[@]}" || return 1; fi
+	return 0
 }
 
 # The boundary may legitimately appear anywhere in the line, including behind `rtk` and after a
@@ -113,7 +198,7 @@ fi
 # `bash -lc ...`, a Makefile target, an alias) is not in command position here and passes. That is
 # the same intermediary gap the enforcement disposition already records; text matching cannot close
 # it in principle, and closing it by matching argument text would reintroduce the false positives
-# above.
+# above. The launchers xargs and find -exec are the exception: they are judged by the program they run.
 segments="$(printf '%s' "$cmd" | sed -E 's/\$\(/\n/g; s/[|;&()`]/\n/g')"
 
 while IFS= read -r seg; do
@@ -121,20 +206,43 @@ while IFS= read -r seg; do
 	seg="${seg#"${seg%%[![:space:]]*}"}"
 	[ -z "$seg" ] && continue
 
-	# Strip prefixes that wrap a command without being one: environment assignments and the
-	# pass-through launchers. `rtk` matters most here — every command in these repositories is
-	# typed through it, so without this the first word is always `rtk` and nothing ever matches.
-	while [[ "$seg" =~ ^([A-Za-z_][A-Za-z0-9_]*=[^[:space:]]*|rtk|sudo|time|env|nice|command|exec|builtin)[[:space:]]+ ]]; do
+	# Strip prefixes that wrap a command without being one: environment assignments, the shell keywords that
+	# introduce a command, and the pass-through launchers. `rtk` matters most here — every command in these
+	# repositories is typed through it, so without this the first word is always `rtk` and nothing ever matches.
+	# A launcher followed by an option hides the program behind that option (`env -i`, `nice -n 5`), so it is
+	# refused rather than guessed at.
+	wrapper=""
+	while [[ "$seg" =~ ^([A-Za-z_][A-Za-z0-9_]*=[^[:space:]]*|([^[:space:]]*/)?(rtk|sudo|time|env|nice|command|exec|builtin)|if|then|else|elif|do|while|until|!|\{)[[:space:]]+ ]]; do
+		prefix="${BASH_REMATCH[1]}"
 		seg="${seg#"${BASH_REMATCH[0]}"}"
 		seg="${seg#"${seg%%[![:space:]]*}"}"
+		case "${prefix##*/}" in
+		rtk | sudo | time | env | nice | command | exec | builtin)
+			if [[ "$seg" == -* ]]; then wrapper="${prefix##*/}"; fi
+			;;
+		esac
 	done
+	if [ -n "$wrapper" ]; then deny "'$wrapper' with an option" "$wrapper_hint"; fi
 	[ -z "$seg" ] && continue
 
+	# Quotes and backslashes do not change the program the shell runs, so they are removed before the match.
 	first_raw="${seg%%[[:space:]]*}"
-	first="${first_raw##*/}" # a PATH-qualified call is the same program
+	first_bare="${first_raw//[\"\'\\]/}"
+	first="${first_bare##*/}" # a PATH-qualified call is the same program
 	rest="${seg#"$first_raw"}"
 	rest="${rest#"${rest%%[![:space:]]*}"}"
-	second="${rest%%[[:space:]]*}"
+	second_raw="${rest%%[[:space:]]*}"
+	second="${second_raw//[\"\'\\]/}"
+
+	# The words of this command, for the exemptions that read their arguments and for the launchers.
+	read -ra words <<<"$seg"
+
+	# Launchers are judged before the trivial-invocation carve-out below. A metadata-looking tail can still be the
+	# argument list that a launcher hands to a program it runs.
+	if [ "$first" = xargs ]; then
+		xargs_safe "${words[@]:1}" || deny "'xargs' (its program cannot be classified)" "$launcher_hint"
+	fi
+	find_exec_safe "${words[@]}" || deny "'find -exec' (its program cannot be classified)" "$launcher_hint"
 
 	# Trivial-invocation carve-out, per segment. A metadata query spawns no build graph, no
 	# server and no test host. `-v` is excluded deliberately: it means verbosity, not version,
@@ -144,14 +252,12 @@ while IFS= read -r seg; do
 	esac
 	# ...and the same for `<tool> <subcommand> --help`, but only when the flag is the last word,
 	# so `nx run app:build --help-ish-arg extra` is still a real invocation.
-	third="${rest#"$second"}"
+	third="${rest#"$second_raw"}"
 	third="${third#"${third%%[![:space:]]*}"}"
 	case "$third" in
 	--version | --help | -h | -V) continue ;;
 	esac
 
-	# The words of this command, for the one exemption that reads its arguments.
-	read -ra words <<<"$seg"
 	case "$first" in
 	npm)
 		# Named explicitly by the rule: "npm install and npm exec are not scripts and do

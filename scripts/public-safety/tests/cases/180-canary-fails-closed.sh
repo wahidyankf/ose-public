@@ -81,6 +81,14 @@ malformed) printf '{broken\n'; exit 183 ;;
 esac
 SH
 	chmod +x "$scanner" || return 1
+	# The wrapper accepts a cache entry only with the stamp a real extraction writes,
+	# so the fixture carries the digest of the fault scanner it stands in for.
+	if command -v shasum >/dev/null 2>&1; then
+		scanner_digest=$(shasum -a 256 "$scanner" | cut -d' ' -f1)
+	else
+		scanner_digest=$(sha256sum "$scanner" | cut -d' ' -f1)
+	fi
+	printf '%s\n' "$scanner_digest" >"$scanner.sha256" || return 1
 	real_jq=$(command -v jq)
 	cat >"$bin/jq" <<'SH'
 #!/usr/bin/env bash

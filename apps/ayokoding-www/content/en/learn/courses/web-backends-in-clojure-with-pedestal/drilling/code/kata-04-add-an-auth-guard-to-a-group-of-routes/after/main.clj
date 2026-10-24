@@ -1,0 +1,33 @@
+;; => Kata: Add an Auth Guard to a Group of Routes.
+;; => Guard the api group with a token while health stays open for load balancers.
+(System/setProperty "org.slf4j.simpleLogger.defaultLogLevel" "error") ;; => only errors reach the log
+(System/setProperty "org.slf4j.simpleLogger.showDateTime" "false") ;; => no timestamps leak into output
+(System/setProperty "org.slf4j.simpleLogger.showThreadName" "false") ;; => no thread names leak into output
+(System/setProperty "org.slf4j.simpleLogger.showLogName" "false") ;; => no logger names leak into output
+(System/setProperty "org.slf4j.simpleLogger.showShortLogName" "false") ;; => short names stay off too
+(require '[io.pedestal.connector :as conn]) ;; => connector maps are the 0.8 service description
+(require '[io.pedestal.connector.test :as t]) ;; => response-for tests with no socket
+(require '[io.pedestal.http.jetty :as jetty]) ;; => create-connector builds the testable connector
+(require '[io.pedestal.interceptor :as interceptor]) ;; => interceptor builds records from maps
+(require '[io.pedestal.service.interceptors :as interceptors]) ;; => not-found turns misses into 404
+;; => The guard opens health and the token opens everything else.
+(def guard (interceptor/interceptor ;; => maps become interceptor records
+             {:name ::guard ;; => names show in traces and errors
+              :enter (fn [ctx] ;; => the guard runs before routing reaches the handler
+                       (let [request (:request ctx)] ;; => the incoming request decides the gate
+                         (if (or (= "/health" (:uri request)) ;; => health stays open for load balancers
+                                 (= "Bearer secret" (get-in request [:headers "authorization"]))) ;; => the one valid token
+                           ctx ;; => open and valid callers pass through untouched
+                           (assoc ctx :response {:status 401 :body "unauthorized"}))))})) ;; => strangers stop here
+(def data (fn [_] {:status 200 :body "shared"})) ;; => the guarded payload
+(def health (fn [_] {:status 200 :body "ok"})) ;; => readiness answers one word
+(def routes #{["/api/data" :get data :route-name :data] ;; => the guarded group member
+              ["/health" :get health :route-name :health]}) ;; => health stays outside the gate
+(def service (-> (conn/default-connector-map 8080) ;; => the port stays unbound; tests use no socket
+                 (conn/with-interceptors [interceptors/not-found ;; => unknown paths answer 404 instead of nil
+                                           guard]) ;; => the guard wraps the group
+                 (conn/with-routes routes))) ;; => router plus path-params decoder join the chain
+(def connector (jetty/create-connector service {})) ;; => the unstarted connector answers test requests
+(println "open:" (:body (t/response-for connector :get "/health"))) ;; => Output: open: ok
+(println "valid:" (:body (t/response-for connector :get "/api/data" :headers {"authorization" "Bearer secret"}))) ;; => Output: valid: shared
+(println "blocked:" (:status (t/response-for connector :get "/api/data"))) ;; => Output: blocked: 401

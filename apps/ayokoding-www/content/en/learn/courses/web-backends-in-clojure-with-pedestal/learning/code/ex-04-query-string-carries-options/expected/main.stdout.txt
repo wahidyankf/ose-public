@@ -1,0 +1,2 @@
+full: q=pedestal limit=5
+defaults: q=none limit=10

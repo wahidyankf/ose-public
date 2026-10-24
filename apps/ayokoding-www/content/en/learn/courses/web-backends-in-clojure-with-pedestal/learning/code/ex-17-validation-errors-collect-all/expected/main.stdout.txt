@@ -1,0 +1,3 @@
+valid: member ada
+all-broken: ["missing field: name" "age must not be negative"]
+one-broken: ["age must be a number"]

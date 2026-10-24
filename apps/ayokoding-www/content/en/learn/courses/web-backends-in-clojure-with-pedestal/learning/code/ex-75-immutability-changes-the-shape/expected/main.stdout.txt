@@ -1,0 +1,3 @@
+first: qty 2
+second: qty 3
+new: qty 1

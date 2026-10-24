@@ -1,0 +1,27 @@
+;; => Ex-9: Query Params Arrive Decoded.
+;; => Percent-encoding and plus signs decode; repeated keys keep the last value.
+;; => Silence framework logging so the transcript holds only our lines.
+(System/setProperty "org.slf4j.simpleLogger.defaultLogLevel" "error") ;; => only errors reach the log
+(System/setProperty "org.slf4j.simpleLogger.showDateTime" "false") ;; => no timestamps leak into output
+(System/setProperty "org.slf4j.simpleLogger.showThreadName" "false") ;; => no thread names leak into output
+(System/setProperty "org.slf4j.simpleLogger.showLogName" "false") ;; => no logger names leak into output
+(System/setProperty "org.slf4j.simpleLogger.showShortLogName" "false") ;; => short names stay off too
+;; => Load the connector stack plus the route namespace for query decoding.
+(require '[io.pedestal.connector :as conn]) ;; => connector maps are the 0.8 service description
+(require '[io.pedestal.connector.test :as t]) ;; => response-for tests with no socket
+(require '[io.pedestal.http.jetty :as jetty]) ;; => create-connector builds the testable connector
+(require '[io.pedestal.http.route :as route]) ;; => query-params decodes the query string
+(require '[io.pedestal.service.interceptors :as interceptors]) ;; => not-found turns misses into 404
+;; => The handler prints the decoded map with sorted keys for stability.
+(def echo-params (fn [request] ;; => one handler mirrors the query back
+                   {:status 200 :body (pr-str (into (sorted-map) (:query-params request)))})) ;; => sorted keys print stable
+;; => The route table needs no query declaration; the interceptor does the work.
+(def routes #{["/echo" :get echo-params :route-name :echo-params]}) ;; => one entry mirrors every query
+;; => The connector map decodes queries before routing runs the handler.
+(def service (-> (conn/default-connector-map 8080) ;; => the port stays unbound; tests use no socket
+                 (conn/with-interceptors [interceptors/not-found ;; => unknown paths answer 404 instead of nil
+                                           route/query-params]) ;; => query string becomes :query-params
+                 (conn/with-routes routes))) ;; => router plus path-params decoder join the chain
+(def connector (jetty/create-connector service {})) ;; => the unstarted connector answers test requests
+(println "decoded:" (:body (t/response-for connector :get "/echo?name=ada+lovelace&tag=a%26b"))) ;; => Output: decoded: {:name "ada lovelace", :tag "a&b"}
+(println "empty:" (:body (t/response-for connector :get "/echo"))) ;; => Output: empty: {}

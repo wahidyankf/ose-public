@@ -1,0 +1,2 @@
+fact: jetty-pool-min-8
+parallel: ("jetty-pool-min-8" "jetty-pool-min-8" "jetty-pool-min-8" "jetty-pool-min-8")

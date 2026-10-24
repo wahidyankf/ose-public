@@ -1,0 +1,30 @@
+;; => Ex-45: First In-Process Test.
+;; => The test asserts status and body with plain = checks; failures print the mismatch.
+;; => Silence framework logging so the transcript holds only our lines.
+(System/setProperty "org.slf4j.simpleLogger.defaultLogLevel" "error") ;; => only errors reach the log
+(System/setProperty "org.slf4j.simpleLogger.showDateTime" "false") ;; => no timestamps leak into output
+(System/setProperty "org.slf4j.simpleLogger.showThreadName" "false") ;; => no thread names leak into output
+(System/setProperty "org.slf4j.simpleLogger.showLogName" "false") ;; => no logger names leak into output
+(System/setProperty "org.slf4j.simpleLogger.showShortLogName" "false") ;; => short names stay off too
+;; => Load the connector stack: description, in-process tests, and Jetty.
+(require '[io.pedestal.connector :as conn]) ;; => connector maps are the 0.8 service description
+(require '[io.pedestal.connector.test :as t]) ;; => response-for tests with no socket
+(require '[io.pedestal.http.jetty :as jetty]) ;; => create-connector builds the testable connector
+(require '[io.pedestal.service.interceptors :as interceptors]) ;; => not-found turns misses into 404
+;; => The handler answers the health word the test asserts.
+(def health (fn [_] {:status 200 :body "ok"})) ;; => readiness answers one word
+;; => The route table declares the tested endpoint.
+(def routes #{["/health" :get health :route-name :health]}) ;; => one entry gets tested
+;; => The connector map stacks cross-cutting interceptors under routing.
+(def service (-> (conn/default-connector-map 8080) ;; => the port stays unbound; tests use no socket
+                 (conn/with-interceptors [interceptors/not-found]) ;; => unknown paths answer 404 instead of nil
+                 (conn/with-routes routes))) ;; => router plus path-params decoder join the chain
+(def connector (jetty/create-connector service {})) ;; => the unstarted connector answers test requests
+;; => The test helper compares expected and actual, and prints PASS or the mismatch.
+(def check (fn [label expected actual] ;; => one helper checks every assertion
+             (if (= expected actual) ;; => equality decides the verdict
+               (println label "PASS") ;; => matches print PASS
+               (println label "FAIL expected" (pr-str expected) "got" (pr-str actual))))) ;; => mismatches print both sides
+(check "status-is-200" 200 (:status (t/response-for connector :get "/health"))) ;; => Output: status-is-200 PASS
+(check "body-is-ok" "ok" (:body (t/response-for connector :get "/health"))) ;; => Output: body-is-ok PASS
+(check "miss-is-404" 404 (:status (t/response-for connector :get "/missing"))) ;; => Output: miss-is-404 PASS

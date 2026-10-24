@@ -1,0 +1,4 @@
+create: member ada
+greet: hello ada
+stranger: 404
+health: ok

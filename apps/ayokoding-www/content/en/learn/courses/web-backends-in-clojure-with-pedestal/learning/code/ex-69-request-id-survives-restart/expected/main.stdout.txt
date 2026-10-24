@@ -1,0 +1,3 @@
+first: you-are:req-1
+second: you-are:req-2
+audits: ["req-1" "req-2"]

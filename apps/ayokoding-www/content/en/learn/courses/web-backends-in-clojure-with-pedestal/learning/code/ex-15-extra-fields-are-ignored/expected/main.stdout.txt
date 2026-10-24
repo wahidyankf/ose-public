@@ -1,0 +1,2 @@
+clean: {:name "ada", :plan "team"}
+minimal: {:name "grace"}

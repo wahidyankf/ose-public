@@ -1,0 +1,2 @@
+signup: name=ada plan=team
+get-rejected: 404

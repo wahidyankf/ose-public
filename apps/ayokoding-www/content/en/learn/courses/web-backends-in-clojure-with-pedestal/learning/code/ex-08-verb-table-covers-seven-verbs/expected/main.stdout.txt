@@ -1,0 +1,3 @@
+verbs: ["got" "posted" "put" "patched" "deleted"]
+head: 200
+options: allowed

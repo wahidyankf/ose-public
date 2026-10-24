@@ -1,0 +1,10 @@
+health-ok PASS
+seed-listed PASS
+seed-total PASS
+seed-read PASS
+miss-404 PASS
+invalid-422 PASS
+created PASS
+moved PASS
+bad-move PASS
+total-two PASS

@@ -1,0 +1,2 @@
+stock: item-book-in-stock
+other: item-pen-in-stock

@@ -1,0 +1,3 @@
+ok: user ada
+rejected: 400
+why: missing field: name

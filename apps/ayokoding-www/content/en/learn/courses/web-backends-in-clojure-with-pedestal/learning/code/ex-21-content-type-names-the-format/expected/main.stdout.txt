@@ -1,0 +1,4 @@
+text-type: text/plain
+text-body: plain words
+edn-type: application/edn
+edn-body: {:a 1}

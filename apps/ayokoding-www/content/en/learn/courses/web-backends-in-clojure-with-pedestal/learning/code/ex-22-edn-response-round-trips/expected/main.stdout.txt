@@ -1,0 +1,4 @@
+raw: {:name "ada", :roles [:admin :user]}
+name: ada
+roles: [:admin :user]
+type: application/edn

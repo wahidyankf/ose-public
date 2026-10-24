@@ -1,0 +1,2 @@
+body: hi
+trace: [:queued :served :released]

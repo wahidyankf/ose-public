@@ -1,0 +1,3 @@
+link: /orders/42
+index: /orders
+visit: order 42

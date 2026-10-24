@@ -1,0 +1,5 @@
+name: triage-inbox
+inputs: ['inbox_path', 'rules']
+guidance: read first, then summarise
+rules: never delete originals
+loadable: True

@@ -1,0 +1,2 @@
+tag: sari:50
+rejected: tag file must not be blank: blank.txt

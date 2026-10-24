@@ -1,0 +1,4 @@
+GET /items -> 200 listed
+POST /items -> 201 stored
+GET /nope -> 404 404 page not found
+DELETE /items -> 405 405 method not allowed

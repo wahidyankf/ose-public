@@ -1,0 +1,3 @@
+POST /schedules {"order_id":"o1","day":"Mon"} -> 201 {"order_id":"o1","day":"Mon"}
+POST /schedules {"order_id":"o2","day":"Sat"} -> 400 {"error":"bad schedule"}
+POST /schedules {"day":"Tue"} -> 400 {"error":"bad schedule"}

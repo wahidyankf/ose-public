@@ -1,0 +1,3 @@
+TODO: write intro
+TODO: add diagram
+done: write outro

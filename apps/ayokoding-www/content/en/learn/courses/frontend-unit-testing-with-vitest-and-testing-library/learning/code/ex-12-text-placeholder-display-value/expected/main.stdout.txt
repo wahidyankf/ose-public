@@ -1,0 +1,1 @@
+PASS: ex-12-text-placeholder-display-value (1 tests)

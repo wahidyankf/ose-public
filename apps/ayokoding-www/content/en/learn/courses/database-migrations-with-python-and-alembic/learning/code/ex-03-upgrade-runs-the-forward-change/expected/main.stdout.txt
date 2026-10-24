@@ -1,0 +1,4 @@
+heads: ex03a1
+columns: id, name
+price missing: True
+cleaned: yes

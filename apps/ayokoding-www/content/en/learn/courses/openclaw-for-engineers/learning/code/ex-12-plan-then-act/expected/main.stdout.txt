@@ -1,0 +1,5 @@
+goal: archive old drafts
+direct steps: 3
+checkpoints: 1
+executed steps: 3
+checkpoint approved: True

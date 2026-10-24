@@ -1,0 +1,6 @@
+PASS: upload action used
+PASS: artifact named
+PASS: path set
+PASS: dist packaged
+PASS: retention set
+checks: 5/5

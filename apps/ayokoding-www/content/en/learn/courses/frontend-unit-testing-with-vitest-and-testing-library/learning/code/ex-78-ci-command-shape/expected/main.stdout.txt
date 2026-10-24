@@ -1,0 +1,1 @@
+PASS: ex-78-ci-command-shape (1 tests)

@@ -1,0 +1,8 @@
+schema: ayokoding.run/v1
+toolchain: java
+runs:
+  - name: main
+    command: [sh, -c, "javac -d classes after/Solution.java && java -ea -cp classes Solution"]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

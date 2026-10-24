@@ -1,0 +1,5 @@
+3101 -> 3101
+31x01 -> refused: not a u32
+0xC1D -> 3101
+0b101 -> 5
+4294967296 -> refused: not a u32

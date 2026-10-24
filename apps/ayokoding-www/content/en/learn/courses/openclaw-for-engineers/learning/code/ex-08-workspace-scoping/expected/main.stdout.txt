@@ -1,0 +1,5 @@
+candidates: 4
+accepted: 2
+ok: /srv/notes/inbox.md
+ok: /srv/notes/drafts/a.md
+fence holds: True

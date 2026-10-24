@@ -1,0 +1,2 @@
+balances: 200,400,600
+migrations applied: 2

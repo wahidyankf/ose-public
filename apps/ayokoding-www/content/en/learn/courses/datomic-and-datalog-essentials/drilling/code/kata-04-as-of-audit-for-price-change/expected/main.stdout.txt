@@ -1,0 +1,2 @@
+friday-price: 180
+today-price: 175

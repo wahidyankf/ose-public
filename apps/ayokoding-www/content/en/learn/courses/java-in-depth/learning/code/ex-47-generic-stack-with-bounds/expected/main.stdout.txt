@@ -1,0 +1,3 @@
+pop: sari
+max: citra
+max due: 125

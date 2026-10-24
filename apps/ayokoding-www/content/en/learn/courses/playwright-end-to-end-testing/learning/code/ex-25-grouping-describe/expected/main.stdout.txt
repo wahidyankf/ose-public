@@ -1,0 +1,4 @@
+checkout: 2 tests
+search: 1 tests
+total: 3
+scoped hooks stay inside: true

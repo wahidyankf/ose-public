@@ -1,0 +1,3 @@
+real GET /stock/bolt -> 200 {"qty":4,"sku":"bolt"}
+broken GET /stock/bolt -> 503 {"error":"stock unavailable"}
+broken GET /stock/nut -> 503 {"error":"stock unavailable"}

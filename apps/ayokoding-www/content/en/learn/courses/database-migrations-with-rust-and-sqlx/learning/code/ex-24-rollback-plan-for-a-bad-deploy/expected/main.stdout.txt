@@ -1,0 +1,2 @@
+with feature: id name nickname
+without feature: id name

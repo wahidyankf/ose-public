@@ -1,0 +1,6 @@
+ada
+n/a
+{:name ada, :role :admin, :active true}
+{:name ada, :role :admin}
+(1 2 3)
+true

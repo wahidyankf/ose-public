@@ -1,0 +1,3 @@
+GET /slow/1 -> 200 {"id":1,"ready":true}
+GET /slow/2 -> 200 {"id":2,"ready":true}
+GET /slow/3 -> 200 {"id":3,"ready":true}

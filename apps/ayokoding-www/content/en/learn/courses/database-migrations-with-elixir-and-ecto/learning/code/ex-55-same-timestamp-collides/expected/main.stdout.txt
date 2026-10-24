@@ -1,0 +1,2 @@
+outcome: raised Ecto.MigrationError
+cleaned: yes

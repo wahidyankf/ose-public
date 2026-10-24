@@ -1,0 +1,5 @@
+pantry: rice
+pantry: rendang
+plate: rice
+plate: rendang
+plate: sambal

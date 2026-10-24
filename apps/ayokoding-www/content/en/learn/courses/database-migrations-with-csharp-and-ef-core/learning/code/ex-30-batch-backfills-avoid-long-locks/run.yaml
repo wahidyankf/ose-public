@@ -1,0 +1,33 @@
+schema: ayokoding.run/v1
+toolchain: dotnet
+dependencies:
+  lockfile: learning/code/ex-30-batch-backfills-avoid-long-locks/packages.lock.json
+services: [postgres]
+resources:
+  memory: 2g
+runs:
+  - name: main
+    # Offline hardening: the run container has a Docker DNS that blackholes
+    # external names, and NuGet's per-package online checks (certificate
+    # revocation) stall on it for ~50s per package. Revocation in offline
+    # mode plus telemetry/first-run opt-outs keeps restore fully local.
+    env:
+      NUGET_CERT_REVOCATION_MODE: offline
+      DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: "1"
+      DOTNET_NOLOGO: "1"
+    # Same offline locked restore + build shape as the phase-1 EF probe;
+    # the EF migration applies at runtime via Database.Migrate(), so no
+    # dotnet-ef CLI tool is needed inside the offline run container.
+    command:
+      [
+        sh,
+        -c,
+        "dotnet restore --locked-mode > /dev/null && dotnet build --nologo -v q --no-restore > /dev/null && dotnet bin/Debug/net10.0/app.dll",
+      ]
+    timeout: 600s
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+      # Offline workload verification notes to stderr on every invocation.
+      stderr: ignore

@@ -1,0 +1,2 @@
+working-capital: 250000
+cash-cycle-days: 91.25

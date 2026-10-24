@@ -1,0 +1,5 @@
+rows: 3
+milk rows: 1
+milk row has button: true
+bread row has button: true
+chain narrows: true

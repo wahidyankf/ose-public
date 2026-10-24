@@ -1,0 +1,4 @@
+response url: /api/cart
+status: 200
+waited ticks: 2
+settled before assert: true

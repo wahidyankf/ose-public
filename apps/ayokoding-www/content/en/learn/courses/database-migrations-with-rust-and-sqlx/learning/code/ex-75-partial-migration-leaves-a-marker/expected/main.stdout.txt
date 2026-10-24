@@ -1,0 +1,3 @@
+no-transaction run failed on version 1 as expected
+leftover table present: false
+versions recorded: 0

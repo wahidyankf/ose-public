@@ -1,0 +1,3 @@
+means: 10 10
+ranges: 2 16
+stdevs: 0.82 8.0

@@ -1,0 +1,3 @@
+upgrade=true
+books=1
+history=d01_001_create_books.sql

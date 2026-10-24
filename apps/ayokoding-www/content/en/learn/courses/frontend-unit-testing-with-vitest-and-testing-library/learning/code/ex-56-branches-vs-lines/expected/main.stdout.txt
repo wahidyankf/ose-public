@@ -1,0 +1,1 @@
+PASS: ex-56-branches-vs-lines (2 tests)

@@ -1,0 +1,4 @@
+steps: 3
+pauses marked: true
+first: goto /cart +500ms
+debug aid, not setting: true

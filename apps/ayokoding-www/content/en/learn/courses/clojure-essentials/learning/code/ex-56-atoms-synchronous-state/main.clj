@@ -1,0 +1,9 @@
+;; => Atoms hold synchronous state; swap! applies a function atomically, always.
+(def counter (atom 0)) ;; => shared counter, starts at zero
+(swap! counter + 5) ;; => add five atomically
+(swap! counter inc) ;; => add one more
+(println @counter) ;; => prints 6
+;; => reset! sets outright; compare-and-set! swaps only from the expected value.
+(reset! counter 10) ;; => back to ten
+(println (compare-and-set! counter 10 11)) ;; => prints true, swap happened
+(println @counter) ;; => prints 11

@@ -1,0 +1,4 @@
+human: {7 1500}
+debug: main.Order{ID:7, Total:1500}
+repeat: 7 twice 7
+order-7

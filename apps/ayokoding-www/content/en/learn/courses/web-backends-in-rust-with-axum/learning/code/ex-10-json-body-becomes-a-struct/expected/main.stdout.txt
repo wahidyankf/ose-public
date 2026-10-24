@@ -1,0 +1,1 @@
+POST /orders {"id":"o-1","item":"pen","qty":2} -> 201 Created {"id":"o-1","item":"pen","qty":2}

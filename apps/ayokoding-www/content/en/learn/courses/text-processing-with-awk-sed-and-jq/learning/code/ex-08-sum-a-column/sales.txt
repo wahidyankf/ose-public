@@ -1,0 +1,4 @@
+adi 250
+bima 89
+citra 412
+dewi 130

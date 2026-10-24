@@ -1,0 +1,2 @@
+member=true fetch={:ok, 1}
+bang=1

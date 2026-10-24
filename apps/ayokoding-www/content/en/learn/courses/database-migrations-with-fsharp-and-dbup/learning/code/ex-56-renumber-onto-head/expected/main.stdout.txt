@@ -1,0 +1,5 @@
+upgrade=true
+upgrade=true
+upgrade=true
+order=d56_001_base.sql,d56_002_alice.sql,d56_003_priya_was_002.sql
+both-present=2

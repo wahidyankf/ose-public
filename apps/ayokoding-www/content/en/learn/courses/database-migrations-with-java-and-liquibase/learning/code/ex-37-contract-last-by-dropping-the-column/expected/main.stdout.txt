@@ -1,0 +1,2 @@
+old title column present: 0
+rows missing the new value: 0

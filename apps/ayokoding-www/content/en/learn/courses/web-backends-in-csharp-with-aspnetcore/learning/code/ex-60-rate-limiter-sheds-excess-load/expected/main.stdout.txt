@@ -1,0 +1,5 @@
+GET /tight -> 200 {"admitted":true}
+GET /tight -> 200 {"admitted":true}
+GET /tight -> 429
+GET /tight -> 429
+GET /loose -> 200 {"admitted":true}

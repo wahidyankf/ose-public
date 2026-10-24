@@ -1,0 +1,3 @@
+ebit: 180000
+interest: 24000
+coverage: 7.50

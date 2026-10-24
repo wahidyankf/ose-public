@@ -1,0 +1,2 @@
+merge conflict: 002 differs across siblings
+merged ledger: 001 002 003

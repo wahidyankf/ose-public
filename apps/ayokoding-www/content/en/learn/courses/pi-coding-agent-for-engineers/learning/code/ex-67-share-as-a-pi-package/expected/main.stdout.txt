@@ -1,0 +1,4 @@
+action: publish
+package: pi-team-brief-pack
+needs: ['read']
+installed: True

@@ -1,0 +1,4 @@
+signal received: SIGTERM; broadcast stop to 3 workers
+worker-1 stopped
+worker-2 stopped
+worker-3 stopped

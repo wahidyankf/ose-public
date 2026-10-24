@@ -1,0 +1,1 @@
+PASS: ex-72-act-warnings-are-flakes (1 tests)

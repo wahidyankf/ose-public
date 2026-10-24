@@ -1,0 +1,6 @@
+Sari,95
+Budi,72
+,81
+Dewi,many
+Agus,58
+Rina,88

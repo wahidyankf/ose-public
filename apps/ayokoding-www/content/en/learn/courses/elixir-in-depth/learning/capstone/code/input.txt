@@ -1,0 +1,8 @@
+INFO server started
+WARN disk at 80 percent
+INFO request served
+ERROR timeout upstream
+INFO request served
+WARN disk at 85 percent
+ERROR timeout upstream
+INFO health ok

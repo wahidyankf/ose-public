@@ -1,0 +1,25 @@
+schema: ayokoding.run/v1
+toolchain: typescript
+dependencies:
+  lockfile: package-lock.json
+runs:
+  - name: main
+    command:
+      [
+        sh,
+        -c,
+        "if vitest run --fsModuleCachePath=/tmp/.vitest-cache --no-color >unit.log 2>&1; then echo 'PASS: ex-77-machine-readable-ci-report (2 tests)'; else cat unit.log; exit 1; fi",
+      ]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+  - name: report
+    command:
+      [
+        sh,
+        -c,
+        "if vitest run --fsModuleCachePath=/tmp/.vitest-cache --no-color --reporter=json --outputFile=report.json >unit.log 2>&1 && node parse.mjs >report.out 2>report.err; then cat report.out; else cat unit.log report.out report.err 2>/dev/null; exit 1; fi",
+      ]
+    expect:
+      exit: 0
+      stdout: expected/report.stdout.txt

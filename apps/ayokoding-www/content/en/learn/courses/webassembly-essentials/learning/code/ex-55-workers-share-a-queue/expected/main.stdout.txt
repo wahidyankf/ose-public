@@ -1,0 +1,5 @@
+queue left: 0
+task 1: 91 (A)
+task 2: 58 (F)
+task 3: 77 (C)
+task 4: 88 (B)

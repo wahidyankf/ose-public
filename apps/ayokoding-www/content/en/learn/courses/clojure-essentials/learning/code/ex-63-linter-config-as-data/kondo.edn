@@ -1,0 +1,1 @@
+{:linters {:unresolved-symbol {:level :error} :unused-binding {:level :warning}}}

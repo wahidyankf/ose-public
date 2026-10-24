@@ -1,0 +1,4 @@
+action: scaffold
+package: pi-changelog-digest
+needs: ['fetch', 'write']
+installed: True

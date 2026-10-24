@@ -1,0 +1,12 @@
+schema: ayokoding.run/v1
+toolchain: java
+services: [postgres]
+dependencies:
+  lockfile: learning/code/jars.lock
+runs:
+  - name: main
+    command: [sh, -c, 'javac -cp "$JARS/*" after/Solution.java course/*.java && java -cp ".:after:$JARS/*" Solution']
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+      stderr: ignore

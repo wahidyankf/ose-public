@@ -1,0 +1,6 @@
+repo: octocat/shop
+visibility: public
+branch: main
+issues: 2
+stars: 128
+clone: True

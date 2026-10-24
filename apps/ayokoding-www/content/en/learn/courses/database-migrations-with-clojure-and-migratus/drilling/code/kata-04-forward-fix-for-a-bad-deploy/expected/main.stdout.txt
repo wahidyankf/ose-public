@@ -1,0 +1,6 @@
+migrate: nil
+completed: ["create-accounts" "seed-accounts" "grant-bonus"]
+balances: [["sari" 9999] ["tono" 50]]
+migrate: nil
+completed: ["create-accounts" "seed-accounts" "grant-bonus" "fix-bonus"]
+balances: [["sari" 100] ["tono" 50]]

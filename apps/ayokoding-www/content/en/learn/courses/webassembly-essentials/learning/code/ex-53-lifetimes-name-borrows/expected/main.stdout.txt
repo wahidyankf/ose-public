@@ -1,0 +1,3 @@
+longer roll: citra dewi eka
+"sari 91 pass" -> "sari"
+"  padded" -> "padded"

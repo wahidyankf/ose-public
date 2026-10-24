@@ -1,0 +1,2 @@
+total: 50 filled: 50
+cleaned: yes

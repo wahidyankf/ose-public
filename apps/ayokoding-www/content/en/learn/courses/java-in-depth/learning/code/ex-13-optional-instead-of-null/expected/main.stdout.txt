@@ -1,0 +1,5 @@
+sari: 50
+dewi: 0
+budi paid: 75
+present: true
+empty: true

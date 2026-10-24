@@ -1,0 +1,8 @@
+schema: ayokoding.run/v1
+toolchain: dart
+runs:
+  - name: format-check
+    command: [sh, -c, "dart format --output=none --set-exit-if-changed main.dart >/dev/null 2>&1 && dart main.dart"]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

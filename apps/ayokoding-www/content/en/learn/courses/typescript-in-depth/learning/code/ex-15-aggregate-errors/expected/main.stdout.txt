@@ -1,0 +1,4 @@
+ok: task a ok
+bad: task b failed
+ok: task c ok
+batch failed with 1 causes

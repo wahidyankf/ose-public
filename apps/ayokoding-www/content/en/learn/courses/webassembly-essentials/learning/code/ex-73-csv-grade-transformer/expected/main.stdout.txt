@@ -1,0 +1,6 @@
+sari,91,A
+budi,77,C
+citra,88,B
+refused: line 4: "deka" has no comma
+refused: line 5: score "many" is not a number
+refused: line 6: score 104 is outside 0..=100

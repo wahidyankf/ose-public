@@ -1,0 +1,4 @@
+products: milk,bread
+requests seen: 1
+mock served: true
+no backend needed: true

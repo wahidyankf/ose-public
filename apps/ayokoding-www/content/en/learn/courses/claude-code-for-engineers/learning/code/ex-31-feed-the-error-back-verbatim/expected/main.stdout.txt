@@ -1,0 +1,3 @@
+para facts: 0
+verbatim facts: 8
+send verbatim: True

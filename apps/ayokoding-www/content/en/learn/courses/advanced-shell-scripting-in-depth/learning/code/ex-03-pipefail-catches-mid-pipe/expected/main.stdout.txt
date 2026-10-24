@@ -1,0 +1,3 @@
+grep alone exits: 1
+masked pipeline exits: 0
+honest pipeline exits: 1

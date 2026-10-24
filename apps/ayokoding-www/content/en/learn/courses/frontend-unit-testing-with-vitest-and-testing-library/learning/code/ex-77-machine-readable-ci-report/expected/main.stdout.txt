@@ -1,0 +1,1 @@
+PASS: ex-77-machine-readable-ci-report (2 tests)

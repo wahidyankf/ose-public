@@ -1,0 +1,7 @@
+brief-score: 4 of 4
+plan-steps: 4
+trace-steps: 4
+lines-changed: 37
+session-cost: 0.3600
+corrected: split schema out of plan
+gate: suite green

@@ -1,0 +1,9 @@
+;; => nil flows through seq functions instead of throwing NullPointerException.
+(println (map inc nil)) ;; => prints (), not an error
+(println (first nil)) ;; => prints nil
+;; => some-> threads only while each step stays non-nil, stopping at nil.
+(println (some-> {:user {:name "ada"}} :user :name)) ;; => prints ada
+(println (some-> {:user nil} :user :name)) ;; => prints nil, no lookup on nil
+;; => get with a default and fnil turn missing values into workable ones.
+(println (get {:a 1} :b :fallback)) ;; => prints :fallback, named and explicit
+(println ((fnil + 0 0) nil nil)) ;; => prints 0, nils become zeros

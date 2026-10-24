@@ -1,0 +1,3 @@
+wrote: draft
+caught: simulated failure
+cleaned: true

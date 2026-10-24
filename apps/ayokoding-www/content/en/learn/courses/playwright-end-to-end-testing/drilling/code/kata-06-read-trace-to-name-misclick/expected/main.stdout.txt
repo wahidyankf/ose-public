@@ -1,0 +1,4 @@
+aimed: pay-button
+hit: promo-overlay
+locator innocent: true
+fix the overlay: true

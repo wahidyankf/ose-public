@@ -1,0 +1,3 @@
+result: green
+tried: 3
+cap: 5

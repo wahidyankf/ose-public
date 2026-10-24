@@ -1,0 +1,2 @@
+stubbed curl: -s https://example.invalid/status
+no network used

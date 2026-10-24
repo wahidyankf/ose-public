@@ -1,0 +1,3 @@
+method: squash
+blockers: conflicts,check:test (3.13),review-changes-requested
+merge: False

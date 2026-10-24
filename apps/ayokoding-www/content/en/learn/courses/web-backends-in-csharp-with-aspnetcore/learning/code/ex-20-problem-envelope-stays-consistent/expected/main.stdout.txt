@@ -1,0 +1,2 @@
+GET /books/99 -> 404 {"code":404,"error":"book-not-found","hint":"no book has id 99"}
+POST /books -> 422 {"code":422,"error":"title-is-required","hint":"send a JSON body with a title"}

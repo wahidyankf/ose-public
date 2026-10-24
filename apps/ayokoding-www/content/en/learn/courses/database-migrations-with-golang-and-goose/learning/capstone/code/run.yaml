@@ -1,0 +1,9 @@
+schema: ayokoding.run/v1
+toolchain: go
+services: [postgres]
+runs:
+  - name: main
+    command: [sh, -c, "go build -o main main.go && ./main"]
+    expect:
+      exit: 0
+      stdout: expected/main/main.stdout.txt

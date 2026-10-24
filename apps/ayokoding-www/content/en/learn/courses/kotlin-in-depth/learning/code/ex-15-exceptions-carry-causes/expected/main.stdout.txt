@@ -1,0 +1,2 @@
+ledger: cannot settle no-such-ledger.txt
+cause: FileNotFoundException

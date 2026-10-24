@@ -1,0 +1,4 @@
+23505 unique_violation
+23502 not_null_violation
+42P01 undefined_table
+ledger rows: 1

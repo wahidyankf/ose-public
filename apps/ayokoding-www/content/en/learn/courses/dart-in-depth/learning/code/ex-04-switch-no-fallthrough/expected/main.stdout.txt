@@ -1,0 +1,2 @@
+grade: B
+day: weekend

@@ -1,0 +1,13 @@
+# => Total group: ref when present, workflow name when the ref is empty.
+# => The || operator substitutes the right side for empty left values.
+# => A missing group key fails the run; a fallback keeps every event safe.
+name: nightly-guarded # => workflow name shown in the Actions tab
+on: workflow_dispatch # => manual runs always carry a ref here
+concurrency: # => overlap policy safe for ref-less events too
+  group: ${{ github.ref || github.workflow }}-nightly # => fallback key
+  cancel-in-progress: true # => newest run wins within the lane
+jobs: # => jobs governed by the fallback lane
+  nightly: # => single job proving the fallback key
+    runs-on: ubuntu-latest # => hosted runner image
+    steps: # => steps of the nightly job
+      - run: echo nightly-ok # => placeholder nightly proof

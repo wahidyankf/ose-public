@@ -1,0 +1,3 @@
+shared table present: 1
+dev seed present: 1
+prod seed present: 0

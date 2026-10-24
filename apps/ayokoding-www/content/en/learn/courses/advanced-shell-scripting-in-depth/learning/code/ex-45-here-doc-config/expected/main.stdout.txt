@@ -1,0 +1,3 @@
+host=db-1
+port=5432
+config written

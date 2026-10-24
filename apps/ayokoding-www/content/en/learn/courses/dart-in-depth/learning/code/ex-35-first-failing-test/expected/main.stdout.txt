@@ -1,0 +1,3 @@
+  ok: doubles a positive count
+  ok: doubles zero to zero
+passed: 2

@@ -1,0 +1,6 @@
+minutes: 30
+seconds: 1800
+deadline: 2026-10-01T09:35:00Z
+half: 15
+before: true
+epoch: 1970-01-01T00:00:00Z

@@ -1,0 +1,2 @@
+GET /orders/7 -> 200 OK {"id":7,"status":"placed"}
+GET /orders/abc -> 400 Bad Request Invalid URL: Cannot parse `abc` to a `u32`

@@ -1,0 +1,3 @@
+failed=true
+nothing-left=0
+journaled=0

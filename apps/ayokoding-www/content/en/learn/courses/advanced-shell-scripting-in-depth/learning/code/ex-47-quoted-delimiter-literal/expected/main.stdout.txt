@@ -1,0 +1,3 @@
+cost: $5
+home: $HOME
+template kept

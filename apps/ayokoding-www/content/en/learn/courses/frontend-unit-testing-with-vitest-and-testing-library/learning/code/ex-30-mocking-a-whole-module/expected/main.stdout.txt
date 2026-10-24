@@ -1,0 +1,1 @@
+PASS: ex-30-mocking-a-whole-module (1 tests)

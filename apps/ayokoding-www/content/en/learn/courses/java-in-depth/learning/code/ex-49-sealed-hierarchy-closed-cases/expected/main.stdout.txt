@@ -1,0 +1,3 @@
+settled sari:50
+shortfall budi missing 25
+skipped 'xx' (no colon)

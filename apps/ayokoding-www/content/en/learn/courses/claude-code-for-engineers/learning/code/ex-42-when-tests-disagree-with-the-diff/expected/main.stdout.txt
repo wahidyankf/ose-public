@@ -1,0 +1,3 @@
+clean pass -> none
+clean fail -> the diff
+dirty pass -> the tests

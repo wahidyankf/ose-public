@@ -1,0 +1,5 @@
+budi: 75
+citra: 25
+sari: 50
+chars: 28
+lines: 3

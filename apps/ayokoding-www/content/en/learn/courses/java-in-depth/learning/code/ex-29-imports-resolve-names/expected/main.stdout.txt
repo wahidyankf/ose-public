@@ -1,0 +1,4 @@
+dues day: 2026-10-01
+legacy: 2026-10-01
+max: 75
+sorted: [budi, sari]

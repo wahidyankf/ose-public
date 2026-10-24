@@ -1,0 +1,6 @@
+calls: 3
+step 1: read(inbox.md)
+step 2: exec(wc -w inbox.md)
+step 3: message(ses-001: 42 words)
+sequence: read > exec > message
+read before act: True

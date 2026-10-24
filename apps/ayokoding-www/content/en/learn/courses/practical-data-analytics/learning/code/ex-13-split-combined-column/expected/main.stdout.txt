@@ -1,0 +1,5 @@
+rice 5kg 2
+sugar 1kg 5
+tea 1x 4
+oil 2l 1
+items: 4

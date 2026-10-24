@@ -1,0 +1,2 @@
+GET /hello -> 200 {"message":"hello"}
+GET /missing -> 404 {"error":"status-404"}

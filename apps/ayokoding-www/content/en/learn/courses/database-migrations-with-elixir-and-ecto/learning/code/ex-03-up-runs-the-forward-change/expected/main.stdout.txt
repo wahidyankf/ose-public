@@ -1,0 +1,2 @@
+columns: id, sku
+cleaned: yes

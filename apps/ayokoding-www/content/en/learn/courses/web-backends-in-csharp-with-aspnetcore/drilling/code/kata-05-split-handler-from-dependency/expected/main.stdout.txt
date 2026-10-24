@@ -1,0 +1,2 @@
+GET /greet/ada -> 200 {"greeting":"hello, ada"}
+GET /greet/linus -> 200 {"greeting":"hello, linus"}

@@ -1,0 +1,4 @@
+missing exits: 2
+good exits: 0
+bad exits: 1
+contract holds

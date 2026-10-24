@@ -1,0 +1,4 @@
+quote: [10, 12]
+report: [10, 12]
+mailer: [10, 12]
+ruled: [10, 12]

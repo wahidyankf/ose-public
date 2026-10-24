@@ -1,0 +1,3 @@
+input tokens: 4000
+output tokens: 1600
+heaviest turn: 3

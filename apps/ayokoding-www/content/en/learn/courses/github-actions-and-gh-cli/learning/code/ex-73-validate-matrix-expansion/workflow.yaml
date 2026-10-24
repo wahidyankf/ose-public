@@ -1,0 +1,14 @@
+# => Four cells: two versions times two modes, counted before billing.
+# => Expansion is pure math: axes in, cells out, no runner needed.
+# => Count the cells in review; grids grow faster than intuition.
+name: mode-grid # => workflow name shown in the Actions tab
+on: push # => run on every push while learning
+jobs: # => jobs block with the expanded matrix job
+  test: # => one definition becoming four runners
+    runs-on: ubuntu-latest # => same image for every cell
+    strategy: # => fan-out configuration for this job
+      matrix: # => axes whose product becomes jobs
+        python-version: ["3.13", "3.14"] # => two versions
+        mode: [fast, full] # => two modes
+    steps: # => steps run once per cell
+      - run: echo "testing ${{ matrix.mode }}" # => mode-aware proof

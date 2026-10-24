@@ -1,0 +1,3 @@
+GET /hello cookie= -> 401 set= {"error":"login first"}
+POST /login cookie= -> 200 set=session=sari; ... logged in as sari
+GET /hello cookie=session=sari -> 200 set= hello, sari

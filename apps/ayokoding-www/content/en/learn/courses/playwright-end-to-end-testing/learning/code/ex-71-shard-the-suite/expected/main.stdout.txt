@@ -1,0 +1,4 @@
+shard one: login,cart,orders,admin
+shard two: search,checkout,profile,logout
+no overlap: true
+full coverage: true

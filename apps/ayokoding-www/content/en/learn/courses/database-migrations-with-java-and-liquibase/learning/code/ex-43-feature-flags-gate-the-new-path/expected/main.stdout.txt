@@ -1,0 +1,2 @@
+new checkout path enabled: true
+new report path enabled: false

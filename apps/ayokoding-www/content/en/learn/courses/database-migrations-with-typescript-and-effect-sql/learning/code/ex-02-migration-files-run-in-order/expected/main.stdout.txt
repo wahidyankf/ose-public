@@ -1,0 +1,6 @@
+applied: 1_create_authors
+applied: 2_add_email
+history: 1_create_authors
+history: 2_add_email
+columns: id, name, email
+cleaned: yes

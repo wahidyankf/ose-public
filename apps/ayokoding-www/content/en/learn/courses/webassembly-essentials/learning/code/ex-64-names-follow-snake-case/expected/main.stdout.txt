@@ -1,0 +1,5 @@
+fn "GradeScore" breaks convention
+let "TotalCount" breaks convention
+type "roster_entry" breaks convention
+const "maxScore" breaks convention
+4 naming findings

@@ -1,0 +1,9 @@
+schema: ayokoding.run/v1
+toolchain: shell
+runs:
+  - name: main
+    command: [bash, example.sh]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+      stderr: ignore

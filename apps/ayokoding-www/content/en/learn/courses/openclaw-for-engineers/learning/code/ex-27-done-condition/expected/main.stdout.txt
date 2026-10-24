@@ -1,0 +1,5 @@
+DROP tidy up a bit
+KEEP archive/ holds 4 moved files
+DROP make it nice
+kept: 1 of 3
+finish is checkable: True

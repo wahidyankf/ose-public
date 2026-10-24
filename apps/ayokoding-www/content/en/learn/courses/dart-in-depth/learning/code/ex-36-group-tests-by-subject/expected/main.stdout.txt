@@ -1,0 +1,7 @@
+## fresh stock
+  ok: six days is fresh
+  ok: eight days is stored
+## stored discount
+  ok: stored halves the price
+  ok: fresh keeps the price
+passed: 4

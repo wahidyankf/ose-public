@@ -1,0 +1,3 @@
+discounted-inflows: 302306.10
+npv: 62306.10
+accept: True

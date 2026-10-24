@@ -1,0 +1,4 @@
+default budget: -1
+custom budget lands at tick: 8
+slow render needs budget: true
+global still 5: true

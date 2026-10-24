@@ -1,0 +1,4 @@
+[sari, 50]
+[santoso, budi, 75]
+[citra, 25]
+naive: 3

@@ -1,0 +1,4 @@
+GET /boom -> 500 oops:bang
+GET /fine -> 200 fine
+GET /boom -> 500 oops:bang
+GET /fine -> 200 fine

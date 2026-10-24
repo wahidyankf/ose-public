@@ -1,0 +1,2 @@
+inside-scope: True
+rule: action must start with scope

@@ -1,0 +1,4 @@
+GET /report -> 200 attachment; filename="report.csv" text/csv month,total
+jan,40
+feb,55
+

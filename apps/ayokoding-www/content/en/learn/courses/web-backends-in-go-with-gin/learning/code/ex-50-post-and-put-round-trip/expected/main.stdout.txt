@@ -1,0 +1,4 @@
+POST /notes -> 201 {"id":"n1","text":"first"}
+PUT /notes/n1 -> 200 {"id":"n1","text":"second"}
+GET /notes/n1 -> 200 {"id":"n1","text":"second"}
+GET /notes/n9 -> 404 {"error":"no note"}

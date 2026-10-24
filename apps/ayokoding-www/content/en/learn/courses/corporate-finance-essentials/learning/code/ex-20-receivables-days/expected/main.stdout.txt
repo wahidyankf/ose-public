@@ -1,0 +1,2 @@
+receivables: 150000
+days: 45.62

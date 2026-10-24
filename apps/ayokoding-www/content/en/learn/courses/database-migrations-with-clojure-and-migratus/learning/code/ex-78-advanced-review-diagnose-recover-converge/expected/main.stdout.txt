@@ -1,0 +1,4 @@
+deploy: "threw: ERROR: current transaction is aborted, commands ignored until end of transaction block"
+completed: ["make-order" "make-item"]
+recover: nil
+completed: ["make-order" "make-item" "make-broken"]

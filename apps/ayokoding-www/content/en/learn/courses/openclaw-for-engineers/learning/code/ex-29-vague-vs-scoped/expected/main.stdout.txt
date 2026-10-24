@@ -1,0 +1,3 @@
+vague score: 1 of 4
+scoped score: 4 of 4
+gap closed: 3

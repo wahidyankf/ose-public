@@ -1,0 +1,6 @@
+# => Sample lock for the capstone: the project ships zero third-party deps.
+# => Hashes below are illustrative placeholders, not registry checksums.
+%{
+  "mime" => {:hex, :mime, "2.0.6", "1917aa4d7b14a3c5a7f8f9e2c4b6d8e0f1a2b3c4d5e6f70819293a4b5c6d7e8f", [:mix], [], "hexpm", "c4d8e0f1a2b3c4d5e6f70819293a4b5c6d7e8f1917aa4d7b14a3c5a7f8f9e2c4b6d8e0"},
+  "plug" => {:hex, :plug, "1.16.1", "a2b3c4d5e6f70819293a4b5c6d7e8f1917aa4d7b14a3c5a7f8f9e2c4b6d8e0f1a2b3", [:mix], [{:mime, "~> 2.0", [hex: :mime, repo: "hexpm", optional: false]}], "hexpm", "f70819293a4b5c6d7e8f1917aa4d7b14a3c5a7f8f9e2c4b6d8e0f1a2b3c4d5e6f7a2b3"}
+}

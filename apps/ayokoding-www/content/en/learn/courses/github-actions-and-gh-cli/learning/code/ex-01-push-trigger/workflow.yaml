@@ -1,0 +1,13 @@
+# => Minimal CI: run the verify job on every push to main.
+# => Trigger first, jobs second; order keeps the file skimmable.
+# => Branch filters stop feature-branch noise from running this file.
+name: ci # => workflow name shown in the Actions tab
+on: # => trigger block: every key here is an event name
+  push: # => run when commits are pushed
+    branches: [main] # => only the default branch triggers this file
+jobs: # => one or more jobs run when the trigger fires
+  verify: # => job id, lowercase with dashes
+    runs-on: ubuntu-latest # => hosted runner image for this job
+    steps: # => ordered actions inside the job
+      - uses: actions/checkout@v4 # => check out the triggering commit
+      - run: echo verified # => placeholder proof step

@@ -1,0 +1,3 @@
+action: APPROVE on 34
+approvals: hubot
+count: 1

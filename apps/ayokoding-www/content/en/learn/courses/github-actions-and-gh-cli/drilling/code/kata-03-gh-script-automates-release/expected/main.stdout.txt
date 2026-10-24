@@ -1,0 +1,4 @@
+tag: v1.4.0
+match: True
+assets: 1
+publish: True

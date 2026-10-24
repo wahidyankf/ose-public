@@ -1,0 +1,6 @@
+ada 98
+grace 100
+[('ada', 98), ('grace', 100)]
+ada 98
+grace 100
+strict: length mismatch

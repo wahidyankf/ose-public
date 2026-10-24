@@ -1,0 +1,4 @@
+1 create tickets true
+2 add priority true
+3 add assignee true
+4 drop assignee true

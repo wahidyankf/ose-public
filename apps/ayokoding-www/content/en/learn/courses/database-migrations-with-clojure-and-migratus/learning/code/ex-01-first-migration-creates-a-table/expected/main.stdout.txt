@@ -1,0 +1,3 @@
+migrate: nil
+completed: ["create-books"]
+columns: ["id" "title"]

@@ -1,0 +1,2 @@
+GET /books/1 -> 200 {"author":"Pradnya","title":"Akar","year":2021}
+GET /books/2 -> 404 {"error":"book-not-found"}

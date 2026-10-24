@@ -1,0 +1,4 @@
+pending=2
+2 add capacity
+3 add stage
+gate=open

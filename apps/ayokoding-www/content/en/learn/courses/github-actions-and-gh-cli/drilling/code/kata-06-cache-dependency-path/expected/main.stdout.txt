@@ -1,0 +1,3 @@
+path: ~/.cache/pip
+key: pip-hash-requirements
+warm: True

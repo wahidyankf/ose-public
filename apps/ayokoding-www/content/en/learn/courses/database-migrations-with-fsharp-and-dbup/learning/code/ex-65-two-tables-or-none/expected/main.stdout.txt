@@ -1,0 +1,2 @@
+paired=true
+both=2

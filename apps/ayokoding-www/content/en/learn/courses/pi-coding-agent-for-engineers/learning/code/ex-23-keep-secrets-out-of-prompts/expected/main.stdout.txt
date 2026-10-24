@@ -1,0 +1,4 @@
+sound: 2 suspect: 1
+read | config template with KEY=xxx
+edit | paste real key into prompt draft
+deny | secret pattern in prompt

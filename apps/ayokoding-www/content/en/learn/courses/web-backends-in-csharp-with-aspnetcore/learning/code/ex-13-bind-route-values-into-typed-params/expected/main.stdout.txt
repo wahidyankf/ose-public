@@ -1,0 +1,3 @@
+GET /tickets/42 -> 200 {"ticket":42}
+GET /tickets/abc -> 404
+GET /refs/3fa85f64-5717-4562-b3fc-2c963f66afa6 -> 200 {"reference":"3fa85f64-5717-4562-b3fc-2c963f66afa6"}

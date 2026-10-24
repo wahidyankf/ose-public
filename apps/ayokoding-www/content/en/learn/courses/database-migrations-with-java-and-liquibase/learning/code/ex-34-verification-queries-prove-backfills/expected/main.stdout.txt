@@ -1,0 +1,3 @@
+total rows: 6
+graded bands: 3
+ungraded rows: 0

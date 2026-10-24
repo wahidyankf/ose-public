@@ -1,0 +1,2 @@
+situation: macOS or Linux
+route: curl install.sh

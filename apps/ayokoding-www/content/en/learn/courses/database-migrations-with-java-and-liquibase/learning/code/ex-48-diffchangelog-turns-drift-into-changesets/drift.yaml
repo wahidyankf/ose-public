@@ -1,0 +1,62 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1792649339078-1
+      author: alami (generated)
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: order_lines
+            constraintName: order_lines_order_id_fkey
+  - changeSet:
+      id: 1792649339078-2
+      author: alami (generated)
+      changes:
+        - dropTable:
+            tableName: drift_orders
+  - changeSet:
+      id: 1792649339078-3
+      author: alami (generated)
+      changes:
+        - dropTable:
+            tableName: events
+  - changeSet:
+      id: 1792649339078-4
+      author: alami (generated)
+      changes:
+        - dropTable:
+            tableName: feature_flags
+  - changeSet:
+      id: 1792649339078-5
+      author: alami (generated)
+      changes:
+        - dropTable:
+            tableName: goods
+  - changeSet:
+      id: 1792649339078-6
+      author: alami (generated)
+      changes:
+        - dropTable:
+            tableName: legacy_invoices
+  - changeSet:
+      id: 1792649339078-7
+      author: alami (generated)
+      changes:
+        - dropTable:
+            tableName: legacy_widgets
+  - changeSet:
+      id: 1792649339078-8
+      author: alami (generated)
+      changes:
+        - dropTable:
+            tableName: order_lines
+  - changeSet:
+      id: 1792649339078-9
+      author: alami (generated)
+      changes:
+        - dropTable:
+            tableName: orders
+  - changeSet:
+      id: 1792649339078-10
+      author: alami (generated)
+      changes:
+        - dropTable:
+            tableName: purchase_orders

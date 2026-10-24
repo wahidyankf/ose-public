@@ -1,0 +1,4 @@
+team-chat [internal]: read, write
+announce [public]: read
+ops [admin]: read, write, exec
+public can exec: False

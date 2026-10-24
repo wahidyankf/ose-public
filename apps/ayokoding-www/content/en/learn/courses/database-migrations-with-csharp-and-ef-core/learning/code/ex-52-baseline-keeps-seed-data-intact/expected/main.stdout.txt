@@ -1,0 +1,1 @@
+seeds=dana:40,kas:30

@@ -1,0 +1,6 @@
+PASS: paths key set
+PASS: service glob
+PASS: scoped job present
+PASS: push trigger
+PASS: runner pinned
+checks: 5/5

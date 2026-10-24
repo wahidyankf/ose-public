@@ -1,0 +1,6 @@
+PASS: environment named
+PASS: production targeted
+PASS: deploy job present
+PASS: needs edge set
+PASS: runner pinned
+checks: 5/5

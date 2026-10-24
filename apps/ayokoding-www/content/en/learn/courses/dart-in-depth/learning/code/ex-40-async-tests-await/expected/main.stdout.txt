@@ -1,0 +1,3 @@
+  ok: oat delivers 12
+  ok: salt failure is catchable
+passed: 2

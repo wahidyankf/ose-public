@@ -1,0 +1,5 @@
+sample 1: queue=2 errors=0 alarm=False
+sample 2: queue=48 errors=3 alarm=True
+sample 3: queue=1 errors=0 alarm=False
+alarms: 1 of 3
+calm confirmed: 2

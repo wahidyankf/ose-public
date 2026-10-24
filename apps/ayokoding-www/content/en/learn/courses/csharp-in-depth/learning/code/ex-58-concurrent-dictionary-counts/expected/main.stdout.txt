@@ -1,0 +1,3 @@
+rendang: 1
+rice: 3
+sambal: 1

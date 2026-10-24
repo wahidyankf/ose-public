@@ -1,0 +1,3 @@
+[sari:50, budi:75]
+kept: 2
+warnings: 0

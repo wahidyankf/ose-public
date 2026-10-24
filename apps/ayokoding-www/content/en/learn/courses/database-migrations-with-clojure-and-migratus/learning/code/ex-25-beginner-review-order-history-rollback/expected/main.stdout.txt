@@ -1,0 +1,5 @@
+pending: 3
+migrate: nil
+completed: ["make-author" "make-book" "make-review"]
+rollback: nil
+completed: ["make-author" "make-book"]

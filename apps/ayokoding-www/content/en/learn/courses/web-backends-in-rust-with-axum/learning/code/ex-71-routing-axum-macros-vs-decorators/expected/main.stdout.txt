@@ -1,0 +1,2 @@
+GET /orders -> 200 OK {"orders":["o-1"]}
+POST /orders -> 201 Created {"created":true}

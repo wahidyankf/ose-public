@@ -1,0 +1,7 @@
+## Example code for webassembly-essentials
+
+One folder per worked example: `ex-NN-<slug>/` holds the Rust source, its `run.yaml` (`toolchain: webassembly`, standard library only), the compiled `.wasm` fixture, and the recorded output under `expected/`. Single-file units compile with `rustc --edition 2021 --target wasm32-wasi -O -C strip=symbols -C debuginfo=0 main.rs -o main.wasm` (fixtures built with rustc 1.80.0, `wasm32-wasi` being the pre-rename name of the `wasm32-wasip1` target); multi-source units (Example 27) compile the same way from `main.rs` with siblings beside it. Testing-convention units additionally build `test.wasm` with `rustc --test` and run it with timing normalized out of the transcript; the tooling chapter runs checkers-as-programs where the lesson is about the tool itself. No example needs the network, the clock, or random seeds: fixed inputs keep every run byte-deterministic.
+
+Units that read files mount their own folder read-only at `/data` (Examples 21, 32, 33 and the capstone); units that write use `/tmp` (Example 22 and the capstone). Maps are always sorted before printing, because HashMap iteration order varies run to run and goldens must be byte-identical.
+
+The `.rs` files are heavily annotated in the `// =>` notation, except fixture files (`input.txt`, `Cargo.toml`, `Cargo.lock`, `roster.txt`) and doc-comment units, which keep their genuine shapes so the lesson quotes exactly what a reader would see. The lesson pages embed every file byte-identically; fixture files appear as text blocks beside their units.

@@ -1,0 +1,5 @@
+process: up
+port: 18789
+sessions: 2
+queue: 3
+go: True

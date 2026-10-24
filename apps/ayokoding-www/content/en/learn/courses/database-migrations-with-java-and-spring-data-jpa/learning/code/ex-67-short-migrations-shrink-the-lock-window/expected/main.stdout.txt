@@ -1,0 +1,2 @@
+narrow rows: 1
+migrations applied: 3

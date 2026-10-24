@@ -1,0 +1,3 @@
+3: adi 25 engineer
+2: bima designer
+5: citra 30 manager platform lead

@@ -1,0 +1,4 @@
+rows: 2
+receipts: 1
+clean: true
+cleaned: yes

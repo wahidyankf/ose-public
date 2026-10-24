@@ -1,0 +1,4 @@
+GET /hello -> 200 hello
+GET /admin -> 403 forbidden
+GET /admin?key=s3cr3t -> 200 s3cr3t-hi
+log=GET /hello;GET /admin;GET /admin?key=s3cr3t

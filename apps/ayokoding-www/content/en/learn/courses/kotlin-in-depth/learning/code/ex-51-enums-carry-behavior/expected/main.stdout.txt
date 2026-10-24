@@ -1,0 +1,4 @@
+standard: 100.0
+prompt: 90.0
+late: 110.00000000000001
+tiers: 3

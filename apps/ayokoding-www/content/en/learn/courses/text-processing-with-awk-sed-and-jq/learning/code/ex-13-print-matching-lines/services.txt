@@ -1,0 +1,4 @@
+web:up
+db:down
+cache:up
+queue:down

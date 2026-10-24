@@ -1,0 +1,2 @@
+execution order: 001-make-shelves,002-stock-shelves
+stocked rows: 2

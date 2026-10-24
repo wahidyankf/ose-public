@@ -1,0 +1,11 @@
+(require '[clojure.string :as str]) ;; => string helpers used for the final join
+;; => Vectors are indexed; conj appends at the end, effectively O(1).
+(def scores [3 1 2]) ;; => a vector of three numbers
+(println (conj scores 4)) ;; => prints [3 1 2 4], original untouched
+(println (nth scores 0)) ;; => prints 3, indexed access
+;; => Lists grow at the front; conj prepends instead of appending.
+(println (conj '(2 3) 1)) ;; => prints (1 2 3)
+;; => first, rest, and count work over both: the seq abstraction at work.
+(println (first scores)) ;; => prints 3
+(println (count scores)) ;; => prints 3
+(println (str/join "-" scores)) ;; => prints 3-1-2

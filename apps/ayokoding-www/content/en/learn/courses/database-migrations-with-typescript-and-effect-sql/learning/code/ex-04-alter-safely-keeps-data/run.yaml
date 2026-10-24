@@ -1,0 +1,19 @@
+schema: ayokoding.run/v1
+toolchain: typescript
+services: [postgres]
+dependencies:
+  lockfile: learning/code/package-lock.json
+resources:
+  memory: 2g
+runs:
+  - name: build
+    kind: check
+    command: [tsc, --strict, --target, es2022, --module, commonjs, --types, node, main.ts]
+    expect:
+      exit: 0
+      stdout: ignore
+  - name: main
+    command: [sh, -c, "tsc --strict --target es2022 --module commonjs --types node main.ts && node main.js"]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

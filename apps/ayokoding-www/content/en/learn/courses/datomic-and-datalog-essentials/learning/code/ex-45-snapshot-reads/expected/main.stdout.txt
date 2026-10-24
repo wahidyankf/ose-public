@@ -1,0 +1,3 @@
+snapshot-parts: 5
+ignored-writes: 3
+lock-waits: 0

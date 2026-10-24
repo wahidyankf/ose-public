@@ -1,0 +1,1 @@
+PASS: ex-51-snapshot-of-thrown-errors (1 tests)

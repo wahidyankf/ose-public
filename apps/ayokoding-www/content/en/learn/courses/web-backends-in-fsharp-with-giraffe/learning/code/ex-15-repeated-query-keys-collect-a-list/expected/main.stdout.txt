@@ -1,0 +1,2 @@
+GET /tags?tag=b&tag=a&tag=c -> 200 tags=a,b,c
+GET /tags -> 200 tags=

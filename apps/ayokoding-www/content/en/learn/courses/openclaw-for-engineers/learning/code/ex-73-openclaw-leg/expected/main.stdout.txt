@@ -1,0 +1,5 @@
+tool: openclaw
+correct: True
+tokens: 8400
+turns: 6
+leg recorded: True

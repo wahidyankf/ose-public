@@ -1,0 +1,2 @@
+visited: mill>depot>stall>home
+found: depot

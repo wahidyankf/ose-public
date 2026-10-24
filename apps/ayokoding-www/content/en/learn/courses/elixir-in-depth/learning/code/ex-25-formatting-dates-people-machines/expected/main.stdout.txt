@@ -1,0 +1,1 @@
+human=January 15, 2026 machine=2026-01-15 roundtrip=true weekday=4

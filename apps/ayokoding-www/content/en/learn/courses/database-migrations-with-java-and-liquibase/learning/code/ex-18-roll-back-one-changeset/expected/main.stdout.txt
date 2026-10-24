@@ -1,0 +1,3 @@
+depots table present: 1
+routes table present: 0
+history rows after rollback: 1

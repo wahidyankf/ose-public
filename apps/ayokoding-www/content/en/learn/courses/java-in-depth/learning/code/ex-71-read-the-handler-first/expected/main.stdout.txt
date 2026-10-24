@@ -1,0 +1,4 @@
+settled: 'sari:50'
+skip: 'oops'
+refused: 'budi:-5'
+settled: 'citra:25'

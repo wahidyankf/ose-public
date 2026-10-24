@@ -1,0 +1,1 @@
+list=3 map=1 bin=6

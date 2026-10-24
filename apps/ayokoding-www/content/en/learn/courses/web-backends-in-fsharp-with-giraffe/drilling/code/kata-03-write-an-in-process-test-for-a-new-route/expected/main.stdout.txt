@@ -1,0 +1,3 @@
+GET /new ok=true
+GET /old ok=true
+GET /nope ok=true

@@ -1,0 +1,2 @@
+categorized rows: 200
+migrations applied: 2

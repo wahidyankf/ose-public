@@ -1,0 +1,2 @@
+Err("bad amount: xyz")
+Ok([50, 75, 25])

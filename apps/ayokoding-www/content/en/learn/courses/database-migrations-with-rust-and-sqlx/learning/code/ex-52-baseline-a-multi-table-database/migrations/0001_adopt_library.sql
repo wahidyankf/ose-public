@@ -1,0 +1,9 @@
+-- 0001: adopt the whole library base. -- => one floor version for every legacy table
+CREATE TABLE IF NOT EXISTS legacy_authors ( -- => succeeds whether the table exists or not
+    id SERIAL PRIMARY KEY, -- => surrogate key: the row identity never changes
+    name TEXT NOT NULL -- => seeded names stay exactly as seeded
+); -- => the definition closes here
+CREATE TABLE IF NOT EXISTS legacy_books ( -- => succeeds whether the table exists or not
+    id SERIAL PRIMARY KEY, -- => surrogate key: the row identity never changes
+    title TEXT NOT NULL -- => seeded titles stay exactly as seeded
+); -- => the definition closes here

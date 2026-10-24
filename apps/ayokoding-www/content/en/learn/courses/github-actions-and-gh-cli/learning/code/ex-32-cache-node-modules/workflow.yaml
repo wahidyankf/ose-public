@@ -1,0 +1,15 @@
+# => Bundled cache: setup-node warms npm with one input line.
+# => Prefer the bundled cache over a manual cache step when offered.
+# => The lockfile hash is computed for you; no hashFiles needed.
+name: cached-node # => workflow name shown in the Actions tab
+on: push # => run on every push while learning
+jobs: # => jobs block with the Node test job
+  test: # => single job proving the bundled cache
+    runs-on: ubuntu-latest # => hosted runner image
+    steps: # => checkout, setup with cache, test
+      - uses: actions/checkout@v4 # => fetch the code first
+      - uses: actions/setup-node@v4 # => install Node plus cache
+        with: # => action inputs for setup-node
+          node-version: "20" # => quoted LTS line
+          cache: npm # => warm node_modules from the lockfile hash
+      - run: echo tests-ok # => placeholder suite proof

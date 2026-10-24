@@ -1,0 +1,3 @@
+listening on 127.0.0.1 port=(ephemeral)
+GET /ping -> 200 {"pong":true}
+GET /missing -> 404

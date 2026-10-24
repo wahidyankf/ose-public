@@ -1,0 +1,4 @@
+failed: Failed
+kind: Failed
+retry: 1
+cleaned: yes

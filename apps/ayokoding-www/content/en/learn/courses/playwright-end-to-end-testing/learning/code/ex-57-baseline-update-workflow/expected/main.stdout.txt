@@ -1,0 +1,4 @@
+mismatch: true
+baseline now: receipt|milk,$2.40
+red means review: true
+gate green again: true

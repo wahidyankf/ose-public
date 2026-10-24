@@ -1,0 +1,4 @@
+action: install
+package: pi-bug-report-template
+needs: ['read']
+installed: True

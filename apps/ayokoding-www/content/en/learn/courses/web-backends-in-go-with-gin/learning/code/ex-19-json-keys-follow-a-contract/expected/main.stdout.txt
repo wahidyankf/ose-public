@@ -1,0 +1,1 @@
+GET /users/u1 -> 200 {"ID":"u1","name":"Sari"}

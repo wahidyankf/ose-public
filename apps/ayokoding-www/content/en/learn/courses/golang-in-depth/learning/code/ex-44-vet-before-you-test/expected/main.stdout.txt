@@ -1,0 +1,9 @@
+=== RUN   TestTotal
+=== RUN   TestTotal/single_row
+=== RUN   TestTotal/two_rows
+=== RUN   TestTotal/negative_refused
+--- PASS: TestTotal
+    --- PASS: TestTotal/single_row
+    --- PASS: TestTotal/two_rows
+    --- PASS: TestTotal/negative_refused
+PASS

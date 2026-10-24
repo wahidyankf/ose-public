@@ -1,0 +1,2 @@
+'INFO deploy gate passed\nWARNING deploy disk filling\n'
+True

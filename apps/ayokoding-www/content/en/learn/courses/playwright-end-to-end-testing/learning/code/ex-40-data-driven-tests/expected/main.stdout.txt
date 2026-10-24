@@ -1,0 +1,3 @@
+passed: pays guest; pays member
+all rows ran: true
+one body, two cases: true

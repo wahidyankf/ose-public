@@ -1,0 +1,3 @@
+rollback failure: CommandExecutionException
+unreversed column present: 1
+history rows intact: 2

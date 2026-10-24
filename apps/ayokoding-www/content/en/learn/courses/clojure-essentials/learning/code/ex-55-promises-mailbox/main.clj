@@ -1,0 +1,10 @@
+;; => promise is a one-shot mailbox: deliver once, deref anywhere, many times.
+(let [p (promise)] ;; => empty mailbox
+  (deliver p 42) ;; => exactly one delivery fills it
+  (println @p) ;; => prints 42
+  (println @p)) ;; => prints 42 again, values replay freely
+;; => A second delivery keeps the first value: first writer wins, always.
+(let [p (promise)] ;; => another empty mailbox
+  (deliver p :first) ;; => fills it
+  (deliver p :second) ;; => ignored, mailbox already full
+  (println @p)) ;; => prints :first

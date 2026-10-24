@@ -1,0 +1,4 @@
+symptom: runaway multi-tool burst
+recovery: double Escape opens tree view
+kept: ['transcript to turn 11', 'staged diff']
+recovered: True

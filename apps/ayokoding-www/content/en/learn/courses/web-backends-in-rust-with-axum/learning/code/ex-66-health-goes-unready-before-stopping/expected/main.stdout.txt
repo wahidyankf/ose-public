@@ -1,0 +1,3 @@
+serving -> 200 OK {"ready":true}
+signal received: SIGTERM; probe flips to unready, balancer drains
+retiring -> 503 Service Unavailable {"ready":false}

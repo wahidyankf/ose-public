@@ -1,0 +1,4 @@
+GET /users/new -> 200 {"form":"new"}
+GET /users/42 -> 200 {"user":"42"}
+GET /users/ada -> 200 {"user":"ada"}
+GET /teams/42 -> 404

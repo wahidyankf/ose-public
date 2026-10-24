@@ -1,0 +1,7 @@
+read: allow
+exec: allow
+browser: deny
+cron: ask
+exec-admin: deny
+message: allow
+policy judged: 6

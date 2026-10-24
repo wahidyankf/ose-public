@@ -1,0 +1,7 @@
+lit stove
+lit wok
+lit oil
+frying
+out oil
+out wok
+out stove

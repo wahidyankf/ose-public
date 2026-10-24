@@ -1,0 +1,4 @@
+GET /search -> 200 ["gin","fiber","echo","chi"]
+GET /search?q=gi -> 200 ["gin"]
+GET /search?limit=2 -> 200 ["gin","fiber"]
+GET /search?limit=many -> 200 ["gin","fiber","echo","chi"]

@@ -1,0 +1,4 @@
+abrupt alive: pong
+abrupt closed
+patient alive: pong
+patient shutdown clean

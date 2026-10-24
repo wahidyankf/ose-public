@@ -1,0 +1,2 @@
+columns: id, label, nickname
+cleaned: yes

@@ -1,0 +1,2 @@
+before signal -> 200 OK {"message":"hello, axum"}
+signal received: SIGTERM; accepting stops, 0 in-flight, exiting

@@ -1,0 +1,2 @@
+points: bigint
+cleaned: yes

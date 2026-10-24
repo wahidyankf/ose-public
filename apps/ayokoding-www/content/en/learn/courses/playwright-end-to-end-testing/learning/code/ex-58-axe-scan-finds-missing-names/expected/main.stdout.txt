@@ -1,0 +1,4 @@
+violations: 2
+first rule: image-alt
+second rule: button-name
+scan names culprits: true

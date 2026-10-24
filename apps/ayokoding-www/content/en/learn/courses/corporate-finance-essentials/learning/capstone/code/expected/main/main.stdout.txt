@@ -1,0 +1,4 @@
+npv-a: 68062.34
+npv-b: 71496.28
+irr: 14.66
+recommend: expand under structure B within covenant

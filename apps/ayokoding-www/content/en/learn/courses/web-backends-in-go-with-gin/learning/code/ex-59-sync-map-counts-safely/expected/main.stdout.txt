@@ -1,0 +1,4 @@
+POST /vote/anna -> 200 {"name":"anna","votes":1}
+POST /vote/bo -> 200 {"name":"bo","votes":1}
+POST /vote/anna -> 200 {"name":"anna","votes":2}
+GET /tally -> 200 {"anna":2,"bo":1}

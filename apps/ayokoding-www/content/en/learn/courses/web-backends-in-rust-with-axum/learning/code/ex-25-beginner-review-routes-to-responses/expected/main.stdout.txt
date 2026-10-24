@@ -1,0 +1,2 @@
+GET /orders/o-1 -> 200 OK {"id":"o-1","status":"placed"}
+GET /orders/o-9 -> 404 Not Found {"error":"no_order","id":"o-9"}

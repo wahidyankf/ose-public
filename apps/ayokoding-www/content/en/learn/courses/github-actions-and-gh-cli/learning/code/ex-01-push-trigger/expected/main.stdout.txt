@@ -1,0 +1,6 @@
+PASS: trigger names push
+PASS: branch filter to main
+PASS: jobs block exists
+PASS: runner pinned
+PASS: checkout step present
+checks: 5/5

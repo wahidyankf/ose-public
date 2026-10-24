@@ -1,0 +1,5 @@
+  ok: 95 earns A
+  ok: 90 earns A
+  ok: 75 earns B
+  ok: 59 earns F
+passed: 4

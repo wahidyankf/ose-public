@@ -1,0 +1,4 @@
+rice mean: 5 sugar mean: 5
+rice range: 2 sugar range: 6
+rice stdev: 1.0
+sugar stdev: 3.0

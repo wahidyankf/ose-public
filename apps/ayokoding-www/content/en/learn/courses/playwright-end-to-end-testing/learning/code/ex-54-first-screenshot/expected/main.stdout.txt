@@ -1,0 +1,4 @@
+render: orders|milk,bread
+matches baseline: true
+change detected: true
+pixel gate holds: true

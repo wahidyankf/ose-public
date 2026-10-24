@@ -1,0 +1,4 @@
+name: ada
+nick: missing
+label: anonymous
+kept: 0

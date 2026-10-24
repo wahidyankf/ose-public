@@ -1,0 +1,1 @@
+label=all areas band=full note=root open=open

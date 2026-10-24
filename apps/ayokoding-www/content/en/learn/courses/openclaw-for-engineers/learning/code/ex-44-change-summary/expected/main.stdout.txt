@@ -1,0 +1,5 @@
+files: a.md, b.md (2 changed)
+tests: link checker passes
+risks: index rebuild may lag
+rollback: snapshot ses-001-42
+review-ready: True

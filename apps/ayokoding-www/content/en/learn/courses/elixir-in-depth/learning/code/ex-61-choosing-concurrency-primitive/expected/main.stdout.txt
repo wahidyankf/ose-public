@@ -1,0 +1,3 @@
+parallel=task
+shared=agent
+durable=genserver named=registry

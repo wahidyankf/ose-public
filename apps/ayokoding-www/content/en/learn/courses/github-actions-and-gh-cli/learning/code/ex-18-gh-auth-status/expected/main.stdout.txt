@@ -1,0 +1,6 @@
+host: example.com
+user: octocat
+match: True
+scopes: read:org,repo,workflow
+missing: none
+ready: True

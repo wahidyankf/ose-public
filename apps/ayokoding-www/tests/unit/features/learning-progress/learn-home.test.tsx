@@ -89,7 +89,7 @@ function renderHome() {
       manifests={[CAREERS, SKILLS]}
       contentMap={CONTENT_MAP}
       sequences={SEQUENCES}
-      catalogCounts={{ courses: 181, categories: 14 }}
+      catalogCounts={{ courses: 230, categories: 14 }}
     />,
   );
 }
@@ -143,7 +143,7 @@ describe("LearnHome — a landing page, not a list of courses (S27)", () => {
 
     expect(screen.getByRole("link", { name: /Browse all courses/ }).getAttribute("href")).toBe("/en/learn/courses");
     expect(screen.getByRole("link", { name: /Browse all courses/ }).textContent).toContain(
-      "181 courses in 14 categories.",
+      "230 courses in 14 categories.",
     );
 
     const coursePageLinks = Array.from(document.querySelectorAll("a"))

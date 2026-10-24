@@ -1,0 +1,3 @@
+harbours table present: 1
+piers table present: 0
+ferries table present: 0

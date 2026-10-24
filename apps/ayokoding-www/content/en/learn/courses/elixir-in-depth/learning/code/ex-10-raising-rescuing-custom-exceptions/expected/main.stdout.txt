@@ -1,0 +1,1 @@
+left=70 report=refused balance=10 amount=30

@@ -1,0 +1,3 @@
+line: [  indented line]
+line: [literal backslash-n: \n stays]
+line: [plain line]

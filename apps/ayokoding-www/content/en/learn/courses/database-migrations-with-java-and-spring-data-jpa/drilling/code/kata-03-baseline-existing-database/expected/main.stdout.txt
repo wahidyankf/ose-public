@@ -1,0 +1,3 @@
+baselined versions: 001
+stock rows: 1
+quantity column present: 1

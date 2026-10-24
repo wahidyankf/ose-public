@@ -1,0 +1,2 @@
+validated rules recorded: 1
+old rows kept: 1

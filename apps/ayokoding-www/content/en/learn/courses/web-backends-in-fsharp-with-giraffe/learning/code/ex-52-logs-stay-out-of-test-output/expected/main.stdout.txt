@@ -1,0 +1,3 @@
+GET /a -> 200 a
+GET /b -> 200 b
+log-lines=2

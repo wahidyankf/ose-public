@@ -1,0 +1,2 @@
+mill scale zeroed
+25 kg on mill

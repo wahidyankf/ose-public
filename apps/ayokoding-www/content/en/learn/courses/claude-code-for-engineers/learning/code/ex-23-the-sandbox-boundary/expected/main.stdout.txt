@@ -1,0 +1,2 @@
+allowed: 2
+denied: ['/etc/passwd']

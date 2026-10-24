@@ -1,0 +1,3 @@
+POST /login -> 200 cookie=session=s3cr3t
+GET /me -> 200 anonymous
+GET /me + cookie -> 200 session=s3cr3t

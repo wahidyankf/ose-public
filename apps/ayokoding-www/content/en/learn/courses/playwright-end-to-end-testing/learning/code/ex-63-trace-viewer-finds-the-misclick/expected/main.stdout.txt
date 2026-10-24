@@ -1,0 +1,4 @@
+aimed at pay: true
+hit overlay: promo-overlay
+locator innocent: true
+fix the overlay: true

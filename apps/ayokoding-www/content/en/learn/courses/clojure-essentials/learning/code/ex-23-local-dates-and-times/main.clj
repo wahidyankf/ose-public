@@ -1,0 +1,9 @@
+(import '[java.time LocalDate LocalTime]) ;; => the JDK date and time types
+;; => of constructs fixed dates; plus and minus shift them; getters read fields.
+(let [day (LocalDate/of 2026 10 21)] ;; => a fixed Wednesday
+  (println (str day)) ;; => prints 2026-10-21
+  (println (str (.getDayOfWeek day))) ;; => prints WEDNESDAY
+  (println (str (.plusDays day 10)))) ;; => prints 2026-10-31
+(let [noon (LocalTime/of 12 0)] ;; => fixed noon, no clock read
+  (println (str noon)) ;; => prints 12:00
+  (println (str (.plusHours noon 9)))) ;; => prints 21:00, same day

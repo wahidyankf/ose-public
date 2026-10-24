@@ -1,0 +1,3 @@
+GET /public -> 200 open
+GET /admin -> 401 {"error":"unauthorized"}
+GET /admin + token -> 200 secret

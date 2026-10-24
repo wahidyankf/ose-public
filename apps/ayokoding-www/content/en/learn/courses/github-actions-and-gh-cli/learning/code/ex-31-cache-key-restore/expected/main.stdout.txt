@@ -1,0 +1,6 @@
+PASS: primary key set
+PASS: restore-keys set
+PASS: os prefix fallback
+PASS: hash in key
+PASS: cache action used
+checks: 5/5

@@ -1,0 +1,5 @@
+job: 3.13/fast
+job: 3.14/fast
+job: 3.13/full
+job: 3.14/full
+jobs: 4

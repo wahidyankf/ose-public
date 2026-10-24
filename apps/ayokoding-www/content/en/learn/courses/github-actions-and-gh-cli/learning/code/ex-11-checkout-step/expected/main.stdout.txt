@@ -1,0 +1,6 @@
+PASS: checkout action used
+PASS: version pinned
+PASS: fetch depth set
+PASS: full history chosen
+PASS: runner pinned
+checks: 5/5

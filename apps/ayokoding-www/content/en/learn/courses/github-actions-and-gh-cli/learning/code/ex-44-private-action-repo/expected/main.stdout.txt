@@ -1,0 +1,6 @@
+PASS: token referenced
+PASS: action repo checked
+PASS: path set
+PASS: local action used
+PASS: checkout used twice
+checks: 5/5

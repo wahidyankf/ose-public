@@ -1,0 +1,3 @@
+group: ci-${{ github.ref }}
+cancel: True
+live: True

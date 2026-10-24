@@ -1,0 +1,2 @@
+migrate: "threw: ERROR: current transaction is aborted, commands ignored until end of transaction block"
+completed: ["make-order"]

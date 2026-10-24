@@ -1,0 +1,5 @@
+destroyed: nil
+staged: ("20260101006001-keep-this.down.sql" "20260101006001-keep-this.up.sql")
+pending: ("keep-this")
+migrate: nil
+completed: ["keep-this"]

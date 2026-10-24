@@ -1,0 +1,6 @@
+PASS: call trigger present
+PASS: input typed
+PASS: input required
+PASS: secret required
+PASS: outputs declared
+checks: 5/5

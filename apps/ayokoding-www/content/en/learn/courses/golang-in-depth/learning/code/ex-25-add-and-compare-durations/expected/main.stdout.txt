@@ -1,0 +1,3 @@
+remaining: 1h15m0s
+dispatch: fits
+hours left: 1.25

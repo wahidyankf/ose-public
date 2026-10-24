@@ -1,0 +1,2 @@
+cases: 6
+all pass

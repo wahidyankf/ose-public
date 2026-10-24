@@ -1,0 +1,6 @@
+tag: v1.4.0
+name: Cache and concurrency release
+draft: False prerelease: False
+asset: shop-1.4.0.tar.gz 48210
+asset: checksums.txt 128
+downloads: 14

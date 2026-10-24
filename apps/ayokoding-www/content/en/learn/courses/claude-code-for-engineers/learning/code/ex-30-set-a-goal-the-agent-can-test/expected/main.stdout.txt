@@ -1,0 +1,2 @@
+login rejects wrong passwords [pytest tests/test_login.py -q]: open
+login rejects wrong passwords [pytest tests/test_login.py -q]: met

@@ -1,0 +1,6 @@
+PASS: concurrency set
+PASS: queue mode
+PASS: main keyed
+PASS: environment targeted
+PASS: runner pinned
+checks: 5/5

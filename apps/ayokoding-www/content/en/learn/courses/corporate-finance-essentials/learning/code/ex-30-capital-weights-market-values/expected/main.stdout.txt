@@ -1,0 +1,3 @@
+equity-value: 760000.00
+equity-weight: 0.6667
+debt-weight: 0.3333

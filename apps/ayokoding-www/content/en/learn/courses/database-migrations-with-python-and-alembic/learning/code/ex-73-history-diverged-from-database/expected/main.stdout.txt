@@ -1,0 +1,4 @@
+expected: id, name
+found: id, name, status
+diverged: True
+cleaned: yes

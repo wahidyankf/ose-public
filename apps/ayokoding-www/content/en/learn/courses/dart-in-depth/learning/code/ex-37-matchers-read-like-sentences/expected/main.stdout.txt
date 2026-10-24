@@ -1,0 +1,5 @@
+  ok: count equals 12
+  ok: count clears the minimum
+  ok: tags hold dry
+  ok: big dry harvest
+passed: 4

@@ -1,0 +1,4 @@
+check tables exist: true
+check history complete: true
+check checksums stored: true
+check lock free: true

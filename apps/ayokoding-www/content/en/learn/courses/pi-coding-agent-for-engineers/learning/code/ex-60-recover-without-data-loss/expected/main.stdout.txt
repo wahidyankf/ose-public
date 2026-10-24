@@ -1,0 +1,4 @@
+suite: pytest tests/ -q
+before: fail
+after: pass
+gate: True

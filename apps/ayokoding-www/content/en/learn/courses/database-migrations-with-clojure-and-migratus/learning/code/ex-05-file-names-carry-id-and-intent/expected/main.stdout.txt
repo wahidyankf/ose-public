@@ -1,0 +1,3 @@
+files: ("20260101000501-create-customer.down.sql" "20260101000501-create-customer.up.sql" "20260101000502-add-email.down.sql" "20260101000502-add-email.up.sql")
+migrate: nil
+completed: ["create-customer" "add-email"]

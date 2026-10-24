@@ -1,0 +1,4 @@
+GET /status -> 200 {"service":"shop-staging"}
+GET /items -> 200 {"items":["bolt","nut"],"service":"shop-staging"}
+GET /status -> 200 {"service":"shop"}
+GET /items -> 200 {"items":["bolt","nut","washer","pin","ring"],"service":"shop"}

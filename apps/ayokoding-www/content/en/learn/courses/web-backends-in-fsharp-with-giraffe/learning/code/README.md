@@ -1,0 +1,5 @@
+## Example code for web-backends-in-fsharp-with-giraffe
+
+78 worked examples plus the capstone share one layout per unit: `app.fsproj` pins the framework and the three locked packages (Giraffe 8.3.0, TestHost 10.0.13, FSharp.Core 10.0.113), `NuGet.Config` clears the defaults so restores stay offline against `/deps/dotnet`, `Program.fs` is the complete runnable service, `run.yaml` locks the restore and runs the assembly, `packages.lock.json` freezes the closure, and `expected/main.stdout.txt` holds the golden transcript the harness compares byte-for-byte.
+
+Units never import from each other: every file repeats its imports and helpers so each example reads standalone. Annotations follow the `// =>` pattern with 1.0 to 2.25 comment lines per code line — trailing notes on simple lines, standalone elaborations above complex ones. Examples are numbered 1–78 in course order across `beginner.md`, `intermediate.md`, and `advanced.md`; the capstone lives under `learning/capstone/code/` with the same layout and a `main.stdout.txt` golden file.

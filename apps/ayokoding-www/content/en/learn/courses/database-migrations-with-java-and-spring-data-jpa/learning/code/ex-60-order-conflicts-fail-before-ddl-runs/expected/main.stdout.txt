@@ -1,0 +1,3 @@
+disputed plan refused: 002
+base tables: 1
+ledger rows: 1

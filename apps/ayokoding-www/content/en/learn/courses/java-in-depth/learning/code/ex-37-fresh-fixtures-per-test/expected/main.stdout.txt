@@ -1,0 +1,5 @@
+PASS add grows the ledger
+PASS second starts pristine
+PASS same contents
+PASS distinct objects
+isolation holds: true

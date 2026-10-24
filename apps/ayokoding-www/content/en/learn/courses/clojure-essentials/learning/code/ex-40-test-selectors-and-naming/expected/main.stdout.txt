@@ -1,0 +1,10 @@
+true
+true
+true
+true
+
+Testing user
+
+Ran 2 tests containing 2 assertions.
+0 failures, 0 errors.
+green: true

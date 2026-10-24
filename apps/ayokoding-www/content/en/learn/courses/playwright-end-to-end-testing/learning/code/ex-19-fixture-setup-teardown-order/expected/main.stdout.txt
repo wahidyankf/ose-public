@@ -1,0 +1,4 @@
+order: setup page > test body > teardown page
+setup first: true
+teardown last: true
+teardown after failure: true

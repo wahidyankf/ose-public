@@ -1,0 +1,17 @@
+# => Two axes multiply: 3 systems times 2 versions is 6 jobs.
+# => runs-on reads the os cell, setup reads the version cell.
+# => Windows paths differ; keep steps portable or split the file.
+name: os-grid # => workflow name shown in the Actions tab
+on: push # => run on every push while learning
+jobs: # => jobs block with the two-axis matrix job
+  test: # => one definition becoming six runners
+    runs-on: ${{ matrix.os }} # => runner image from the os cell
+    strategy: # => fan-out configuration for this job
+      matrix: # => axes whose product becomes jobs
+        os: [ubuntu-latest, macos-latest, windows-latest] # => 3 systems
+        python-version: ["3.13", "3.14"] # => 2 versions
+    steps: # => steps run once per cell
+      - uses: actions/setup-python@v5 # => install the cell interpreter
+        with: # => action inputs reading the matrix value
+          python-version: ${{ matrix.python-version }} # => cell value
+      - run: echo tests-ok # => placeholder suite proof

@@ -1,0 +1,2 @@
+marks: {'repeat': 3, 'ignored': 2, 'drift': 2}
+mode: repeat

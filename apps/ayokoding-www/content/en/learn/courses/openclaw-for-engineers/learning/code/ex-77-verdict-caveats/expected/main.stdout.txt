@@ -1,0 +1,5 @@
+verdict: openclaw wins compare-001
+limit: fixture shims, not live tools
+limit: single task, not a suite
+signed off: True
+published: True

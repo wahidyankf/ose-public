@@ -1,0 +1,4 @@
+junit-jupiter 5.11.0 -> reproducible
+assertj 3.26.3 -> reproducible
+mockito 5.x -> FLOATS
+locked libraries: 3

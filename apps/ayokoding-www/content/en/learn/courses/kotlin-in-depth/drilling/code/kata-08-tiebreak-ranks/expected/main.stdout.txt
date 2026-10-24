@@ -1,0 +1,2 @@
+[budi, citra, sari]
+tiebreak: name

@@ -1,0 +1,2 @@
+deleted-lines: 2
+surviving-customers: [20]

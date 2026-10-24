@@ -1,0 +1,40 @@
+databaseChangeLog: # => Root key required for every YAML changelog
+  - changeSet: # => The squash folds three files into one tracked baseline
+      id: 001-squashed-harbours
+      # => fresh installs run this single changeset instead of the old three
+      author: course
+      # => the squash author signs the folded baseline like any changeset
+      changes:
+        - createTable: # => The folded end state: all three tables at once
+            tableName: harbours
+            # => the first table the old history built file by file
+            columns:
+              - column: # => One entry per column, name and type together
+                  name: id
+                  type: SERIAL
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: VARCHAR(60)
+        - createTable:
+            tableName: piers
+            # => the second table the old history built file by file
+            columns:
+              - column:
+                  name: id
+                  type: SERIAL
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: VARCHAR(60)
+        - createTable:
+            tableName: ferries
+            # => the third table the old history built file by file
+            columns:
+              - column:
+                  name: id
+                  type: SERIAL
+                  constraints:
+                    primaryKey: true

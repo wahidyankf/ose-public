@@ -1,0 +1,2 @@
+refused: 7 is odd, cannot halve exactly
+half of 8: 4

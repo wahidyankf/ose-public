@@ -1,0 +1,2 @@
+GET /hello -> 200 {"message":"hello"}
+GET /goodbye -> 404 Not Found

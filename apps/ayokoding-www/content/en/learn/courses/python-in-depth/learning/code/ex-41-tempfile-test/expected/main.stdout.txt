@@ -1,0 +1,3 @@
+True
+note.txt
+scratch gone

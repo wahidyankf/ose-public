@@ -1,0 +1,1 @@
+PASS: ex-68-scoping-queries-with-base-element (1 tests)

@@ -1,0 +1,3 @@
+first: SARI touched=1
+ordered: [budi, citra, dewi, sari]
+source: [sari, budi, citra, dewi]

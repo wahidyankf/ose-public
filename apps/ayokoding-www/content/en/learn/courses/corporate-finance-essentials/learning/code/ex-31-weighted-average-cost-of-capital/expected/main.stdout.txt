@@ -1,0 +1,2 @@
+wacc: 8.82
+weights-sum-one: True

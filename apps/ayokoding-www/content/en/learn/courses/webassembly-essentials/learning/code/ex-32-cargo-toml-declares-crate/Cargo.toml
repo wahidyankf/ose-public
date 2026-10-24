@@ -1,0 +1,6 @@
+[package]
+name = "ex-32-cargo-toml-declares-crate"
+version = "1.0.0"
+edition = "2021"
+
+[dependencies]

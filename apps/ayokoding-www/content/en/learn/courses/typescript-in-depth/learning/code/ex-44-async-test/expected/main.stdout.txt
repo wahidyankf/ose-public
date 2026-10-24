@@ -1,0 +1,1 @@
+PASS: ex-44-async-test (2 checks)

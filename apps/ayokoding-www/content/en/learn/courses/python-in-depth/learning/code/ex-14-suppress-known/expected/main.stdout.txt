@@ -1,0 +1,3 @@
+{'ada': 1}
+{}
+cleanup tolerated

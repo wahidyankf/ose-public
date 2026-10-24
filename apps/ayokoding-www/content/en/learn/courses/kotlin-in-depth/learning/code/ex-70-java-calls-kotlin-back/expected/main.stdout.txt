@@ -1,0 +1,3 @@
+total: 125
+sari: 50
+dewi: 0

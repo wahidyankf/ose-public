@@ -1,0 +1,4 @@
+first: nil
+locked: :ignore
+released: nil
+completed: ["make-thing" "make-second"]

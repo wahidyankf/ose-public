@@ -1,0 +1,4 @@
+matched: $42.00
+matched at tick: 3
+single read sees: ''
+retry wins: true

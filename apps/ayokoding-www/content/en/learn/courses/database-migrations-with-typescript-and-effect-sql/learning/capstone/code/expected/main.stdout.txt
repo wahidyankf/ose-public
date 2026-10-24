@@ -1,0 +1,4 @@
+applied: 8
+ada ordered widget x2 placed 199
+recorded: 8
+cleaned: yes

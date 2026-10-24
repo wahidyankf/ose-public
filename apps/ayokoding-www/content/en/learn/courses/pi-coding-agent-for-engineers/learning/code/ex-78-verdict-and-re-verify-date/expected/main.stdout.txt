@@ -1,0 +1,4 @@
+task: add coupon total with test
+criteria: ['correctness', 'turns', 'cost', 'trace clarity']
+totals: {'pi': 12, 'sibling': 9}
+winner: pi

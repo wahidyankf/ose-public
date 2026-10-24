@@ -1,0 +1,6 @@
+GET /json -> 200 {"name":"gin","version":"1.12.0","stable":true}
+GET /xml -> 200 <Release><name>gin</name><version>1.12.0</version><stable>true</stable></Release>
+GET /yaml -> 200 name: gin
+version: 1.12.0
+stable: true
+

@@ -1,0 +1,4 @@
+sari: 50
+dewi: 0
+shout: 75
+present: true

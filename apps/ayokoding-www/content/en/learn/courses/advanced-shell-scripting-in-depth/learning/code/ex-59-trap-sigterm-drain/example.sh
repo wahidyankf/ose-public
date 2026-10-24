@@ -1,0 +1,10 @@
+# => Example 59: a TERM handler drains the in-flight work, then reports.
+set -euo pipefail # => strict header first, as in every example
+# => WHY drain on TERM: orchestrators stop with SIGTERM, not SIGKILL.
+drain() {                       # => the TERM handler: finish the write, then report
+	echo "draining: one item left" # => fixed drain report, no paths
+	echo "drained"                 # => fixed marker: the drain completed
+}                               # => closes the TERM handler
+trap drain TERM                 # => SIGTERM drains instead of dying mid-write
+kill -TERM $$                   # => self-signal: the deterministic stand-in for stop
+echo "still alive"              # => reached: TERM was handled, not fatal

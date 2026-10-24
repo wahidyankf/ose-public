@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <!-- Pin the F# runtime explicitly: the SDK-implicit FSharp.Core floats
+    with the SDK patch (401 locally versus 402 in the toolchain image), and
+    the 10.1.401 nupkg itself ships in two different builds (SDK-bundled
+    versus feed), so only an explicit feed-only line restores byte-identical
+    everywhere. 10.0.113 rides no SDK bundle on either side. -->
+    <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="dbup-postgresql" Version="7.0.1" />
+    <PackageReference Include="FSharp.Core" Version="10.0.113" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+
+</Project>

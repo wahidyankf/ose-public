@@ -1,0 +1,18 @@
+schema: ayokoding.run/v1
+toolchain: go
+dependencies:
+  lockfile: learning/code/go.mod
+resources:
+  memory: 2g
+runs:
+  - name: test
+    command:
+      [
+        sh,
+        -c,
+        'go test -c -o ./unittest . && ./unittest -test.v -test.count=1 > gotest.out 2>&1; status=$?; sed -E -e "s/ \\([0-9.]+s\\)//g" -e "/^ok /d" gotest.out; exit $status',
+      ]
+    timeout: 300s
+    expect:
+      exit: 0
+      stdout: expected/test.stdout.txt

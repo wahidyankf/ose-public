@@ -1,0 +1,3 @@
+parsed: [("sari", 91), ("budi", 77)]
+refused: line 2: "budi:many" has no '='
+refused: line 2: score "many" is not a number

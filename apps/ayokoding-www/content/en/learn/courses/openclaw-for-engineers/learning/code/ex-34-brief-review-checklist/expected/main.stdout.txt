@@ -1,0 +1,7 @@
+PASS goal stated
+PASS scope bounded
+PASS done observable
+PASS guardrails set
+FAIL report target set
+failed checks: report target set
+send blocked: True

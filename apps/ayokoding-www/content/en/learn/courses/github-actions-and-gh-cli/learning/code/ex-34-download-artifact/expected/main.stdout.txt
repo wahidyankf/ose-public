@@ -1,0 +1,6 @@
+PASS: download action used
+PASS: name matches
+PASS: needs edge set
+PASS: producer named
+PASS: consumer step present
+checks: 5/5

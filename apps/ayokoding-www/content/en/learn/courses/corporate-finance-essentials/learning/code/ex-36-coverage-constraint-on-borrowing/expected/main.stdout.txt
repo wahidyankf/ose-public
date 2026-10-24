@@ -1,0 +1,3 @@
+max-interest: 60000.00
+max-debt: 857142.86
+headroom: 477142.86

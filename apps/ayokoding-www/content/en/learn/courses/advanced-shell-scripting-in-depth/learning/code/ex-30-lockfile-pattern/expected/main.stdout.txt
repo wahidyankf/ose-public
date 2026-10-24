@@ -1,0 +1,2 @@
+lock acquired
+working under lock

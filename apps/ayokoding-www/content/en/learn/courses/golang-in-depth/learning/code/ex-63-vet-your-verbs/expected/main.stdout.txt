@@ -1,0 +1,2 @@
+receipt "oat-1": 1500 cents
+rice x2

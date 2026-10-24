@@ -201,3 +201,86 @@ trade-offs accepted, the consequences, and what would make this plan revisit the
   that plan 09's Java units still pass; the Clojars field is unused by every Java and Kotlin course.
 - **Revisit if:** a course needs a repository other than Maven Central and Clojars (add another named
   repository to the same field), or a Clojure course needs a library with a native (non-jar) component.
+
+## Decision D9: `typescript` gains an npm lock recipe plus install links for node_modules resolution
+
+- **Selected:** give the `typescript` catalog entry an `install` recipe (`lockfiles:
+[package-lock.json]`, an `sh -c` argv that derives a `package.json` from the course lock and runs
+  `npm ci` into `/srv/node-deps`, `PATH` extended with the install `.bin`, and one install link
+  `node_modules` to `/srv/node-deps/node_modules`), and wire install links into every locked unit's
+  working copy in the CLI (`unitLinks`: caller links first, install links added for locked units only,
+  caller wins a name clash). The course `frontend-unit-testing-with-vitest-and-testing-library` commits
+  one `learning/code/package-lock.json`; all 78 units declare it via `dependencies.lockfile`.
+- **Alternative A — bake vitest and Testing Library into the typescript base image.** Rejected: same
+  reason as D8 Alternative B; every non-frontend TypeScript course would carry a test stack it never
+  uses, and a version bump would rebuild the shared image instead of one course lock.
+- **Alternative B — per-unit vendored node_modules committed to the repo.** Rejected: thousands of
+  generated files per unit would drown review, and the wave template bans generated files in units.
+- **Alternative C — install into `/deps` like the root-user toolchains.** Rejected: the typescript image
+  ends `USER node`, and the environment Dockerfile template carries no `USER` directive, so the install
+  argv cannot create root-owned paths; `/srv/node-deps` is pre-created node-owned in the image's Dockerfile.
+- **Evidence:** the course brief states "the pinned versions in the node toolchain lockfile are the
+  source of truth", but no lockfile existed and `examples check` failed 87/87 on the bare typescript
+  image; the harness already materialized caller-supplied working-copy symlinks
+  (`TestRunMaterializesLinks`) but nothing wired them end to end; runs are `--read-only` under a host
+  uid, so dependencies must resolve from a world-readable install beside the unit, which the link
+  provides for ESM imports that ignore `NODE_PATH`.
+- **Trade-off accepted:** `npm ci` runs at environment-image build (network on) while units run offline;
+  the derived `package.json` is build-local and never committed, so the lock stays the single source of
+  truth. Vitest cache writes go to the writable working copy, not the read-only install.
+- **Consequence:** first toolchain to exercise the locked-unit path end to end; `catalog.Link`,
+  `Install.Links`, and `unitLinks` are covered by `TestDecodeAcceptsInstallLinks`,
+  `TestDecodeRefusesVagueInstallLinks`, and `TestRunAddsInstallLinksToLockedUnits`.
+- **Revisit if:** a second npm course needs a different stack (add its own lock; the recipe is shared),
+  or a toolchain needs links for unlocked units (extend `unitLinks` past the lockfile guard).
+
+## Decision D9 follow-up: vitest 5 read-only adaptations and detector compliance
+
+- **Vitest 5 needs three read-only adaptations** (found by running the first locked unit, not by
+  reading docs): `XDG_DATA_HOME=/tmp/ayokoding-data` in the recipe `env` (the v5 API-token file
+  defaults under `~/.local/share`, unwritable when runs are `--read-only` with `HOME=/`);
+  `--fsModuleCachePath=/tmp/.vitest-cache` on every unit command (the v5 module cache defaults to
+  `node_modules/.vitest-cache`, read-only through the link); `--outputFile=report.json` for the
+  machine-readable-report unit (v5 writes `--reporter=json` to `.vitest/json/output.json` instead
+  of stdout, which broke `parse.mjs`). Full course: EX-CHECK 87/87 green.
+- **Phase-2 detector compliance (no detector changes):** the course lock lives at the course root
+  (`<course>/package-lock.json`, refs `lockfile: package-lock.json`) because the
+  unit-without-run.yaml detector flags any code-root holding a non-markdown file; the capstone
+  `expected/main.stdout.txt` nests one deeper (`expected/main/main.stdout.txt`) exactly like the
+  wave-1 capstones, since only root and direct-child dirs are checked. `estimatedHours` follows the
+  brief (`from the drift test message`): 12 after the lock moved out of the scanned `code/` tree.
+- **Latent note (not fixed here):** the environment-image tag hashes the toolchain image, the lock
+  bytes, and the install command, but not the install `env` or links — a recipe-env change alone
+  reuses a stale image. Remedy applied locally: delete the stale `ayokoding-env` image so the next
+  locked run rebuilds. Revisit if a recipe env change ever needs automatic invalidation.
+- **Worktree hygiene learned:** 196 gitignored `obj/`/`bin/` dirs (dotnet build residue) under two
+  pre-existing courses inflated their scanner counts (`just-enough-csharp` read 108h); the scanner
+  counts ignored files, so residue must be deleted, not worked around. The one tracked Rust
+  `src/bin` dir was verified and kept.
+
+## Decision D10: the `go` entry gains an `install` recipe (`go.mod` lockfile, baked module cache)
+
+- **Selected:** the `go` toolchain entry (pinned `golang:1.27`, unchanged image) gains an `install`
+  block naming `go.mod`: the install argv downloads the course lockfile's requirements into
+  `/deps/gomod` (build time, the only phase with network), and run-time `GOMODCACHE=/deps/gomod/cache`
+  plus `GOPROXY=off` makes unit `go build` runs hermetic. Method follows tech-docs/003
+  §"Install recipes for the other toolchains" (same RED, GREEN, REFACTOR steps as the `kotlin` change).
+- **Why not `vendor/`:** the gin maker vendored Gin per unit (87 dirs, 83k files); vendored
+  `LICENSE.md` files fail the `md-naming` kebab gate (whole-tree scan, 25 findings) and the commit
+  would carry 83 thousand third-party files. All vendor dirs deleted; nothing vendored in the repo.
+- **Course side:** `web-backends-in-go-with-gin` keeps one shared `learning/code/go.mod` (+ `go.sum`)
+  as the env lock; all 87 units point at it with `dependencies: lockfile: learning/code/go.mod`
+  while keeping their own per-unit `go.mod`/`go.sum` for resolution. The shared lock covers the full
+  gin closure (verified: units import only gin + its transitive deps). `estimatedHours` follows the
+  drift message: 32.
+- **Alternative B — `services: [postgres]` for network:** rejected; the units use no database, and the
+  service network has no external route anyway (run contract §Network).
+- **Evidence:** `run_execute.go` ("Units without services run on --network none"), run contract
+  ("no route out" even with services), env planner (`BuildEnvironment` hashes image + lock bytes +
+  install argv), sibling recipes (rust `Cargo.lock` → `/deps/rust`; typescript `package-lock.json` →
+  `/srv/node-deps`). Single-unit harness run passed, then full course EX-CHECK exit 0 (87/87).
+- **Trade-off accepted:** `toolchains/catalog.yaml` changes, so the PR examples check runs in full
+  mode (plan 05 rule) and the CLI must be rebuilt from source (embedded catalog).
+- **Latent note (same as D9):** the env tag still ignores install `env`; only image/lock/argv hash.
+- **Revisit if:** a second Go course needs third-party modules (it reuses this recipe with its own
+  course lock), or Go modules ever need a private proxy (extend the recipe, never the units).

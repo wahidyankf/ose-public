@@ -1,0 +1,4 @@
+# Smoke lock: one Maven Central jar and one Clojars-only jar (recorded 2026-10-20).
+# The third field names the repository; lines without it default to central.
+com.google.code.gson:gson:2.13.1 94855942d4992f112946d3de1c334e709237b8126d8130bf07807c018a4a2120
+migratus:migratus:1.6.8 2bb23f04e4d0f03418ca5408782bcfc57004b5051a131e4f272627df43a7b34f clojars

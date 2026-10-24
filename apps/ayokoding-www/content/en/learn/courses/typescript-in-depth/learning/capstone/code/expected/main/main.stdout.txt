@@ -1,0 +1,5 @@
+selftest: 4/4 passed
+skip: bad qty in: pen,0,3
+lines: 2
+total: 350
+wrote: report.txt (4 lines)

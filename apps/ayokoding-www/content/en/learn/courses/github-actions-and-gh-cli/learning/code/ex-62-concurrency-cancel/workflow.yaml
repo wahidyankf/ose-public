@@ -1,0 +1,13 @@
+# => Cancel stale: a new push kills the older run in its group.
+# => Groups key on ref so branches never cancel each other.
+# => cancel-in-progress true trades partial logs for current results.
+name: ci # => workflow name shown in the Actions tab
+on: push # => every push regroups and possibly cancels
+concurrency: # => overlap policy for this workflow
+  group: ci-${{ github.ref }} # => one lane per branch
+  cancel-in-progress: true # => newest push wins, older runs die
+jobs: # => jobs governed by the concurrency lane
+  test: # => single job proving the cancel policy
+    runs-on: ubuntu-latest # => hosted runner image
+    steps: # => steps of the test job
+      - run: echo tests-ok # => placeholder suite proof

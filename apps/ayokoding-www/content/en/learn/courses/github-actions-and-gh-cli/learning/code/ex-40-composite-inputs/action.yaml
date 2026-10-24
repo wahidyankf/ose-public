@@ -1,0 +1,15 @@
+# => Parameterized greet: callers pass who, world is the default.
+# => inputs context reads arrive before any shell word splitting.
+# => Defaults keep the common call to one line with no with block.
+name: greet-name # => action name shown in the marketplace listing
+description: "Greet a configurable name." # => one-line purpose
+inputs: # => parameters callers pass via with:
+  who: # => the single parameter of this action
+    description: "Name to greet." # => help text for callers
+    default: world # => common case needs no with block
+    required: false # => default covers the missing case
+runs: # => the executable body of the action
+  using: composite # => step bundle on the caller runner
+  steps: # => steps reading the inputs context
+    - run: echo "Hello, ${{ inputs.who }}" # => greet the parameter
+      shell: bash # => explicit shell, mandatory in composites

@@ -1,0 +1,3 @@
+no gaps in history: true
+recorded matches embedded: true
+nothing pending: true

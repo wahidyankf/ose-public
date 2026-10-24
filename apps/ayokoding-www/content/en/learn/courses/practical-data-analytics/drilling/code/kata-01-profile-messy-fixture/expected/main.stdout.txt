@@ -1,0 +1,4 @@
+rows: 6
+missing: 1
+dupes: 1
+price: 17500 480000

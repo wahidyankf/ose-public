@@ -1,0 +1,2 @@
+12 sq units (edge 14)
+refused: sides must be positive

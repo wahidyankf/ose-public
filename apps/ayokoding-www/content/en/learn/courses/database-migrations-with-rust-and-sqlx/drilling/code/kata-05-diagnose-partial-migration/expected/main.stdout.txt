@@ -1,0 +1,3 @@
+doomed run failed on version 1 as expected
+stray table present: false
+versions recorded: 0

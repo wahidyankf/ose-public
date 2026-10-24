@@ -1,0 +1,19 @@
+schema: ayokoding.run/v1
+toolchain: elixir
+dependencies:
+  lockfile: learning/code/ex-01-hellothoas/mix.lock
+runs:
+  - name: main
+    # Without the install recipe neither hex nor rebar3 nor the package
+    # cache exists, so deps.get must reach the network, which the run
+    # blocks. With the recipe the unit copies the image Hex seed to a fresh
+    # home (hex persists the registry on every resolution, which the
+    # read-only image layer refuses) while rebar3 stays in the image
+    # (/tmp refuses execution), then resolves offline from that copy and
+    # compiles thoas through rebar3 twice alike. Get and compile noise
+    # stays off the compared stream; the program output is what this run
+    # proves.
+    command: [sh, -c, "export HEX_HOME=$(mktemp -d) MIX_HOME=/deps/mix-seed && cp -r /deps/hex-seed/. \"$HEX_HOME/\" && mix deps.get > /dev/null && mix compile > /dev/null && mix run --no-compile -e \"IO.puts(:thoas.encode(%{answer: 42}))\""]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

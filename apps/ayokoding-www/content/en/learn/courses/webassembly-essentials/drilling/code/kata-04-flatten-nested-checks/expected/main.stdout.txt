@@ -1,0 +1,4 @@
+admitted
+waitlisted: age below 17
+waitlisted: score below 60
+waitlisted: no seat

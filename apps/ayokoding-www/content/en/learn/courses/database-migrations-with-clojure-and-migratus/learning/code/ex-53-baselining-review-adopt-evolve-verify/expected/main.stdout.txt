@@ -1,0 +1,4 @@
+migrate: nil
+completed: ["baseline-gadget" "track-stock"]
+rows: [["g-1" 10] ["g-2" 10]]
+drift: ["m53_gadget"]

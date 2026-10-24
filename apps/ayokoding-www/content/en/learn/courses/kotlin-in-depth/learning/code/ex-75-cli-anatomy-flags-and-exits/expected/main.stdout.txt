@@ -1,0 +1,2 @@
+member: everyone
+limit: 10

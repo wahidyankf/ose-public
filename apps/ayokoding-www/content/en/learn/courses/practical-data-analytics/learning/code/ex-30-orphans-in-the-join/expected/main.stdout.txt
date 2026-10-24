@@ -1,0 +1,2 @@
+sales_orphans: ['mystery-box']
+catalog_orphans: ['tea-100g']

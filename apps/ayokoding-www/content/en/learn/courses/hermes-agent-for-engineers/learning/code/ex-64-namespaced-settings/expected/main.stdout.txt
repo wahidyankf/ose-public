@@ -1,0 +1,2 @@
+provider: test-bot
+setting: {'test-bot.quarantine': 'true'}

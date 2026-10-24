@@ -1,0 +1,2 @@
+POST /orders -> 201 {"id":7,"title":"dune","qty":2}
+POST /orders -> 201 {"id":8,"title":"hyperion","qty":1}

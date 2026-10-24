@@ -1,0 +1,1 @@
+PASS: ex-40-mock-fn-calls (1 check)

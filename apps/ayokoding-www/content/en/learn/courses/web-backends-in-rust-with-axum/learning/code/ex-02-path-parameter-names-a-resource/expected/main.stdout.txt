@@ -1,0 +1,2 @@
+GET /users/42 -> 200 OK {"id":42,"name":"user-42"}
+GET /users/abc -> 400 Bad Request Invalid URL: Cannot parse `abc` to a `u32`

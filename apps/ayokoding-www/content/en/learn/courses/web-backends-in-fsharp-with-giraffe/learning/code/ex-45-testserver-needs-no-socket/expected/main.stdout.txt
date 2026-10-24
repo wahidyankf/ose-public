@@ -1,0 +1,3 @@
+GET /ping -> 200 pong
+GET /version -> 200 {"version":"1.0.0"}
+base=http://localhost/

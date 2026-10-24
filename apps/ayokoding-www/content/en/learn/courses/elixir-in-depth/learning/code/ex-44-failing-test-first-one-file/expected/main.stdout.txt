@@ -1,0 +1,2 @@
+red: stub says fizz
+green: 1 tests, 0 failures

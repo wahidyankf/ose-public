@@ -1,0 +1,3 @@
+GET /vault -> 403 forbidden
+GET /vault?key=s3cr3t -> 200 gold
+GET /door?key=s3cr3t -> 200 wood

@@ -1,0 +1,6 @@
+databaseChangeLog: # => Root key required for every YAML changelog
+  - includeAll: # => Discovers every changelog file in one directory
+      path: merged/
+      # => path is relative to this master file, not to the classpath
+      # => Liquibase sorts the discovered files alphabetically before running
+      # => The duplicate sorts first here, ahead of the table it guards on

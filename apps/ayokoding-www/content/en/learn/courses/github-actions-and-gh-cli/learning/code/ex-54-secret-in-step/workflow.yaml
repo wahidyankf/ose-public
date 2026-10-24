@@ -1,0 +1,10 @@
+# => Referenced secret: the file names DEPLOY_TOKEN, the runner holds it.
+# => References print as *** in logs; literal values would print raw.
+# => Declare every secret the workflow needs; undeclared refs fail review.
+name: secret-deploy # => workflow name shown in the Actions tab
+on: push # => run on every push while learning
+jobs: # => jobs block with the secret-consuming job
+  deploy: # => single job proving the secret reference
+    runs-on: ubuntu-latest # => hosted runner image
+    steps: # => steps receiving the masked credential
+      - run: echo "deploying with token ${{ secrets.DEPLOY_TOKEN }}" # => ref

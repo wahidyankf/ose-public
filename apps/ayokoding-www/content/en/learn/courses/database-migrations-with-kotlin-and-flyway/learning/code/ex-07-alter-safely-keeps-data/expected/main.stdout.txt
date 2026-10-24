@@ -1,0 +1,3 @@
+rows=2
+stock=0
+stock=0

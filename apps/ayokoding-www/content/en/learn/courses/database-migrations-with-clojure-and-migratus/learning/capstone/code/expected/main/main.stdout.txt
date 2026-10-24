@@ -1,0 +1,6 @@
+migrate: nil
+completed: ["create-customers" "create-orders" "create-order-items" "seed-demo-data" "expand-add-email" "backfill-email" "expand-add-grand-total" "contract-drop-total"]
+customers: [["Sari" "sari@example.com"] ["Tono" "tono@example.com"]]
+orders: [[1 "open" 1500] [2 "paid" 2999]]
+items: 3
+columns: ["id" "customer_id" "status" "grand_total_cents"]

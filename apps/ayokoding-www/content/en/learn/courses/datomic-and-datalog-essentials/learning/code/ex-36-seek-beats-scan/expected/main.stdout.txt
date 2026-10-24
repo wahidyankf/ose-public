@@ -1,0 +1,3 @@
+scan-cost: 6
+seek-cost: 2
+name: Track cog 16t

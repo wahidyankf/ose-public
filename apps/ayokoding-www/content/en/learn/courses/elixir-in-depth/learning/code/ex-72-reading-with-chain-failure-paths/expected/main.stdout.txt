@@ -1,0 +1,2 @@
+good={:ok, 42} partial={:error, :not_a_number}
+missing={:error, :missing} bad={:error, :missing}

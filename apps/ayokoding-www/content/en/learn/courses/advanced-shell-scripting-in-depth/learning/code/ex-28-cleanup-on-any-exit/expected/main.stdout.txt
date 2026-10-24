@@ -1,0 +1,4 @@
+working
+cleaned: ok-path
+working
+cleaned: fail-path

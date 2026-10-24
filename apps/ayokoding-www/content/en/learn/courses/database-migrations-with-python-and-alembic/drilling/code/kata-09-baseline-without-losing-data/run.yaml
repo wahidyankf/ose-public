@@ -1,0 +1,11 @@
+schema: ayokoding.run/v1
+toolchain: python
+services: [postgres]
+dependencies:
+  lockfile: learning/code/requirements.lock
+runs:
+  - name: main
+    command: [python3, after/solution.py]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

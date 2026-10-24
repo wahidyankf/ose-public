@@ -1,0 +1,2 @@
+answer: 24
+steps end at: 24

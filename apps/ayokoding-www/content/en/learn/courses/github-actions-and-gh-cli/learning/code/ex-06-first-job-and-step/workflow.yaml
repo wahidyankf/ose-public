@@ -1,0 +1,10 @@
+# => Hello workflow: the smallest complete unit of automation.
+# => One workflow holds one job; one job holds one step.
+# => runs-on is mandatory: every job names its machine first.
+name: hello # => workflow name shown in the Actions tab
+on: workflow_dispatch # => manual trigger keeps this example cheap
+jobs: # => mapping of job ids to job definitions
+  greet: # => the single job in this workflow
+    runs-on: ubuntu-latest # => hosted runner image for the job
+    steps: # => ordered list of actions in the job
+      - run: echo hello-actions # => the single step, a shell line

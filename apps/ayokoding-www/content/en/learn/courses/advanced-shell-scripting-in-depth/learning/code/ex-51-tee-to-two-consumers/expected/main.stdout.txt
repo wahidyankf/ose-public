@@ -1,0 +1,6 @@
+copy a:
+one
+two
+copy b:
+one
+two

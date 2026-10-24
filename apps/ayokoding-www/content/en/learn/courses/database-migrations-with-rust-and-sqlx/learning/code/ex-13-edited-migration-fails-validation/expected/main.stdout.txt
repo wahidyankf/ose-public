@@ -1,0 +1,1 @@
+second run failed: migration 1 was previously applied but has been modified

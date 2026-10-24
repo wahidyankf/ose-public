@@ -1,0 +1,12 @@
+=== RUN   TestGreeting
+=== RUN   TestGreeting/sari_is_greeted
+    app_test.go:42: contract holds: /hello/Sari -> 200 {"message":"hello, Sari"}
+=== RUN   TestGreeting/budi_is_greeted
+    app_test.go:42: contract holds: /hello/Budi -> 200 {"message":"hello, Budi"}
+=== RUN   TestGreeting/unknown_is_404
+    app_test.go:42: contract holds: /goodbye -> 404 404 page not found
+--- PASS: TestGreeting
+    --- PASS: TestGreeting/sari_is_greeted
+    --- PASS: TestGreeting/budi_is_greeted
+    --- PASS: TestGreeting/unknown_is_404
+PASS

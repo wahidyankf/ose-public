@@ -1,0 +1,3 @@
+real logins: 1
+saved user: admin
+one login serves all: true

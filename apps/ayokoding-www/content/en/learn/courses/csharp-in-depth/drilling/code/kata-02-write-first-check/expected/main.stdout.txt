@@ -1,0 +1,1 @@
+PASS: total sums two lines

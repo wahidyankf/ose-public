@@ -1,0 +1,6 @@
+members: 3
+budi: 100
+citra: 25
+sari: 75
+total: 200
+skipped: 3

@@ -1,0 +1,1 @@
+PASS: ex-70-shared-test-utils-module (2 tests)

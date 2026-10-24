@@ -1,0 +1,1 @@
+PASS: ex-64-i18n-dictionary-wrapper (2 tests)

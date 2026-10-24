@@ -1,0 +1,5 @@
+need => reach for
+one counter => atom plus swap!
+two accounts => refs plus dosync
+background log => agent plus send
+pipeline stages => core.async channels

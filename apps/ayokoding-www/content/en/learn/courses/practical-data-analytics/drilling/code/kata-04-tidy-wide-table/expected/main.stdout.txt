@@ -1,0 +1,7 @@
+rice-5kg m1 120
+rice-5kg m2 135
+rice-5kg m3 128
+sugar-1kg m1 90
+sugar-1kg m2 95
+sugar-1kg m3 88
+tidy_rows: 6

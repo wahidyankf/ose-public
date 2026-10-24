@@ -1,0 +1,6 @@
+PASS: id-token requested
+FAIL: token requested
+PASS: audience set
+PASS: subject claim
+PASS: runner pinned
+checks: 4/5

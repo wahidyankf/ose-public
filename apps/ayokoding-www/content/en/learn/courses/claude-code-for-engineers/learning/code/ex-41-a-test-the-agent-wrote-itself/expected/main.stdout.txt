@@ -1,0 +1,3 @@
+real test: strong
+tautology: tautology
+kills mutant: True

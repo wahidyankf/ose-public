@@ -1,0 +1,5 @@
+exit 0: healthy -> send work
+exit 1: config error -> run openclaw configure
+exit 2: gateway down -> restart gateway
+exit 3: provider unreachable -> check fallbacks
+tonight: restart gateway

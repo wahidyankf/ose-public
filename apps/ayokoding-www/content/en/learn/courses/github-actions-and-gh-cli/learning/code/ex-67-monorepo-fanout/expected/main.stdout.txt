@@ -1,0 +1,6 @@
+PASS: detector job present
+PASS: output declared
+PASS: fromJSON used
+PASS: matrix reads output
+PASS: needs edge set
+checks: 5/5

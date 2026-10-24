@@ -1,0 +1,4 @@
+step1: clone https://example.com/octocat/shop.git
+step2: checkout main
+depth: 1
+branch: main

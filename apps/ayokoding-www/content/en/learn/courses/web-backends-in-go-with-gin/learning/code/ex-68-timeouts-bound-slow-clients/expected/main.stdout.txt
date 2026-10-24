@@ -1,0 +1,4 @@
+read 5s
+write 10s
+idle 1m0s
+GET /ping -> 200

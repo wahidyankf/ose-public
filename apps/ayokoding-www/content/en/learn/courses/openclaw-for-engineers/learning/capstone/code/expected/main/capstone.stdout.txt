@@ -1,0 +1,9 @@
+brief goal: add word counts to the digest
+plan steps: 4
+trace calls: 4
+diffs small: True
+gate: 3 of 3
+corrected: scoped the brief after a vague first draft
+corrected: vetoed one exec with chained flags
+corrected: re-ran the gate after fixing a link
+shipped: True

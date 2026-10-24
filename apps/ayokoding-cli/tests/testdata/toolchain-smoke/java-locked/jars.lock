@@ -1,0 +1,3 @@
+# Smoke lock: two small Maven Central jars (recorded 2026-10-20).
+com.google.code.gson:gson:2.13.1 94855942d4992f112946d3de1c334e709237b8126d8130bf07807c018a4a2120
+org.slf4j:slf4j-api:2.0.17 7b751d952061954d5abfed7181c1f645d336091b679891591d63329c622eb832

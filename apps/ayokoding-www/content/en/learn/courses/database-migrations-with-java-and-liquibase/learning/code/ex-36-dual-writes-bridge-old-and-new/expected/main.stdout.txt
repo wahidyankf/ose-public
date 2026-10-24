@@ -1,0 +1,2 @@
+rows where old and new agree: 1
+total rows bridged: 1

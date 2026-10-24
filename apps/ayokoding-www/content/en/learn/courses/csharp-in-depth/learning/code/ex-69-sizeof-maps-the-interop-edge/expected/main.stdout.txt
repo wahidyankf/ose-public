@@ -1,0 +1,5 @@
+int: 4
+long: 8
+char: 1
+byte: 1
+guid: 16

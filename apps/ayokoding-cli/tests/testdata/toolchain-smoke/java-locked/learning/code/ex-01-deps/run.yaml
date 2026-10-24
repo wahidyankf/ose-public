@@ -1,0 +1,14 @@
+schema: ayokoding.run/v1
+toolchain: java
+dependencies:
+  lockfile: jars.lock
+resources:
+  memory: 2g
+runs:
+  - name: main
+    # Each execution gets a fresh working copy, so the run recompiles
+    # before executing the class the install recipe provides jars for.
+    command: [sh, -c, "javac -cp \"$JARS/*\" Deps.java && java -cp \".:$JARS/*\" Deps"]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

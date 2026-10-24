@@ -1,0 +1,10 @@
+-- 0001: squads and players arrive together. -- => neither table makes sense without the other
+CREATE TABLE squads ( -- => commits with players or not at all
+    id SERIAL PRIMARY KEY, -- => surrogate key: the row identity never changes
+    name TEXT NOT NULL -- => every squad must be named
+); -- => the definition closes here
+CREATE TABLE players ( -- => commits with squads or not at all
+    id SERIAL PRIMARY KEY, -- => surrogate key: the row identity never changes
+    squad_id INTEGER NOT NULL REFERENCES squads (id), -- => every player trains with a squad
+    handle TEXT NOT NULL -- => every player picks a handle
+); -- => the definition closes here

@@ -1,0 +1,7 @@
+deploying 1.2.3 to staging
+staging: auth-service
+staging: billing-worker
+staging: web-frontend
+received TERM: finishing current step
+verified: 3 packages staged
+deploy complete

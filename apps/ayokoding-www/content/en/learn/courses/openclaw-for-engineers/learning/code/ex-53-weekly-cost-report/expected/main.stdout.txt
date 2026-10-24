@@ -1,0 +1,4 @@
+days: 5 spent: 27600
+budget: 30000
+headroom: 2400
+within budget: True

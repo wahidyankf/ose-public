@@ -1,0 +1,4 @@
+sound: 2 suspect: 1
+read | src/app.py handler
+edit | write /srv/notes/../secrets.env
+deny | path outside project root

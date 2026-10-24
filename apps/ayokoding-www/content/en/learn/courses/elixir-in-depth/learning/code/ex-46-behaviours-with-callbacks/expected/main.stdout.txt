@@ -1,0 +1,2 @@
+fetch={:ok, 1} miss={:error, :missing}
+keys=["a", "b"]

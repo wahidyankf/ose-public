@@ -1,0 +1,1 @@
+list=2 map=1 bin=2 other=1

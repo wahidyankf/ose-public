@@ -1,0 +1,4 @@
+SUSPECT: edit - rewrite pricing without reading it
+SUSPECT: test - pytest collects 0 items
+steps: 3
+suspect: 2

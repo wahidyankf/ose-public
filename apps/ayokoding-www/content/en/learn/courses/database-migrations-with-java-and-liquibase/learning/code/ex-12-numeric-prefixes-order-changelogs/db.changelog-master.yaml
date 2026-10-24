@@ -1,0 +1,7 @@
+databaseChangeLog: # => Root key required for every YAML changelog
+  - includeAll: # => Discovers every changelog file in one directory
+      path: changes/
+      # => path is relative to this master file, not to the classpath
+      # => Liquibase sorts the discovered files alphabetically before running
+      # => Numeric prefixes (001-, 002-, 003-) make alphabetical order match intent
+      # => A new migration is a new file here; this master never changes

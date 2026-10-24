@@ -1,0 +1,6 @@
+PASS: failing command present
+PASS: ordered steps
+PASS: second step exists
+PASS: no continue-on-error
+PASS: must not allow failure
+checks: 5/5

@@ -1,0 +1,5 @@
+{
+  "typeCheckingMode": "strict",
+  "pythonVersion": "3.14",
+  "include": ["learning/code", "drilling/code", "learning/capstone/code"]
+}

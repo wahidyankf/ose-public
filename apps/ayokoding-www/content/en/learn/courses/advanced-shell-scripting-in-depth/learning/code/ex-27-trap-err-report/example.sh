@@ -1,0 +1,11 @@
+# => Example 27: an ERR trap names the command that just failed.
+set -euo pipefail # => strict header first, as in every example
+# => WHY a trap: -e aborts, but rarely says WHICH command broke.
+report() {                      # => the ERR handler: name the failing command
+	echo "failed: ${BASH_COMMAND}" # => BASH_COMMAND holds the failing text
+}                               # => closes the error reporter
+trap report ERR                 # => run report after any failing command
+set +e                          # => let the demo failure happen without aborting
+false                           # => the deliberate failure the trap will report
+set -e                          # => strict again after the demonstration
+echo "continued"                # => the script survives its reported failure

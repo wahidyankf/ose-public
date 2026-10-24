@@ -1,0 +1,22 @@
+# => Marketplace envelope: name, description, branding, outputs.
+# => Description is the listing blurb; keep it to one sentence.
+# => Outputs wire step values to the action boundary for callers.
+name: greet-action # => action name for the marketplace listing
+description: "Greet a name and return the greeting." # => listing blurb
+branding: # => icon and color for the marketplace card
+  icon: smile # => icon name from the allowed set
+  color: green # => card accent color
+inputs: # => parameters callers pass via with:
+  who: # => the single parameter of this action
+    description: "Name to greet." # => help text for callers
+    default: world # => common case needs no with block
+    required: false # => default covers the missing case
+outputs: # => values returned to the calling workflow
+  greeting: # => the single returned value
+    value: ${{ steps.say.outputs.greeting }} # => step output wiring
+runs: # => the executable body of the action
+  using: composite # => step bundle on the caller runner
+  steps: # => steps with an id for the output wiring
+    - id: say # => addressable id for the output step
+      run: echo "greeting=Hello" >> "$GITHUB_OUTPUT" # => publish value
+      shell: bash # => explicit shell, mandatory in composites

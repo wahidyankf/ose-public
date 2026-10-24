@@ -1,0 +1,4 @@
+masked first: orders [time] milk
+masked equal: true
+unmasked differs: true
+mask stabilizes: true

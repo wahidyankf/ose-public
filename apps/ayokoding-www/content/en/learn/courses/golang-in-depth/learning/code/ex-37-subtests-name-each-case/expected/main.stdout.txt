@@ -1,0 +1,9 @@
+=== RUN   TestDecide
+=== RUN   TestDecide/immediate_success
+=== RUN   TestDecide/retry_while_budget_lasts
+=== RUN   TestDecide/exhausted_at_the_limit
+--- PASS: TestDecide
+    --- PASS: TestDecide/immediate_success
+    --- PASS: TestDecide/retry_while_budget_lasts
+    --- PASS: TestDecide/exhausted_at_the_limit
+PASS

@@ -1,0 +1,9 @@
+=== RUN   TestDouble
+=== RUN   TestDouble/seven_doubles_to_fourteen
+    router_test.go:40: holds: /double/7 -> 200 {"doubled":14}
+=== RUN   TestDouble/unknown_is_404
+    router_test.go:40: holds: /halve/7 -> 404 404 page not found
+--- PASS: TestDouble
+    --- PASS: TestDouble/seven_doubles_to_fourteen
+    --- PASS: TestDouble/unknown_is_404
+PASS

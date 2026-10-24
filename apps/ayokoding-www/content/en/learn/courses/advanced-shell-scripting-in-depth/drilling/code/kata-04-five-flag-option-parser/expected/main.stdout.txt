@@ -1,0 +1,5 @@
+verbose: yes
+output: report.txt
+count: 3
+dry-run: yes
+mode: fast

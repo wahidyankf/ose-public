@@ -1,0 +1,8 @@
+{
+  "store": {
+    "books": [
+      { "title": "A", "price": 8 },
+      { "title": "B", "price": 12 }
+    ]
+  }
+}

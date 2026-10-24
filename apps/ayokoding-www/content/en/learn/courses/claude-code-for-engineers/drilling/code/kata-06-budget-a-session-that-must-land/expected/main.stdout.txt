@@ -1,0 +1,2 @@
+now: ['fix', 'test', 'docs', 'refactor', 'deploy']
+waiting: ['notify', 'log']

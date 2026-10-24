@@ -1,0 +1,2 @@
+list?=true text=abc
+bytes=6 graphemes=5 doubled=[0, 2, 4, 6]

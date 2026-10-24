@@ -1,0 +1,3 @@
+used: 120000
+free: 80000
+fits 90000: False

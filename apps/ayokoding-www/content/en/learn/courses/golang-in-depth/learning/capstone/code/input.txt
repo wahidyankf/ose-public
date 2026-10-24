@@ -1,0 +1,8 @@
+sari:50
+budi:75
+oops-no-colon
+citra:25
+budi:25
+:40
+sari:xyz
+sari:10

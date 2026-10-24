@@ -1,0 +1,8 @@
+PASS valid(sari:50)==true
+PASS amount(sari:50)==50
+PASS valid(budi:0)==true
+PASS amount(budi:0)==0
+PASS valid(oops-no-colon)==false
+PASS valid(citra:xx)==false
+PASS valid(dewi:-5)==false
+rows: 5

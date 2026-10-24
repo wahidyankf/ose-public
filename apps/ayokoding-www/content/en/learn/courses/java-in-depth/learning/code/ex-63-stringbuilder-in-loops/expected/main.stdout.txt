@@ -1,0 +1,5 @@
+sari:50
+budi:75
+citra:25
+identical: true
+chars: 25

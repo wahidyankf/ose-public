@@ -1,0 +1,3 @@
+GET /secret token=s3cret -> 200 OK {"secret":"the-cake-is-documented"}
+GET /secret token=nope -> 401 Unauthorized {"error":"unauthorized"}
+GET /secret token=(none) -> 401 Unauthorized {"error":"unauthorized"}

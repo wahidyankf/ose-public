@@ -1,0 +1,2 @@
+rows missing a tier: 0
+distinct derived tiers: 2

@@ -1,0 +1,3 @@
+"alpha\nbravo\ncharlie\n"
+3
+total: 3

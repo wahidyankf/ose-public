@@ -1,0 +1,2 @@
+GET /job -> 503 cancelled
+GET /quick -> 200 quick-ok

@@ -1,0 +1,3 @@
+SIGTERM #1: draining with a deadline
+SIGTERM #2: deadline skipped; forcing the exit
+exited after 2 signals: graceful first, forced second

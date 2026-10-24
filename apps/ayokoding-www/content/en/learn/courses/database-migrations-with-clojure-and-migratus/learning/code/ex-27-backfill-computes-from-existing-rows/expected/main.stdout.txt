@@ -1,0 +1,4 @@
+migrate: nil
+completed: ["make-line" "fill-total"]
+rows: [[2 100 200] [3 50 150] [1 999 999]]
+sum: [1349]

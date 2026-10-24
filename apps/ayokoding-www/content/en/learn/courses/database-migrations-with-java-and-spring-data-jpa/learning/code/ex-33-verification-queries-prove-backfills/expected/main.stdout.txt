@@ -1,0 +1,3 @@
+uncovered clubs: 0
+distinct slugs: 3
+migrations applied: 2

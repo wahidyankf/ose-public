@@ -1,0 +1,4 @@
+events: 3
+first: goto /orders
+ordered: goto /orders > click Pay > assert total
+replayable: true

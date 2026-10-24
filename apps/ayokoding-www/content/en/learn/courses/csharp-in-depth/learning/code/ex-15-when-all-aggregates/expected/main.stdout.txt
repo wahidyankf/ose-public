@@ -1,0 +1,2 @@
+fault: burner cold
+fault: rice short

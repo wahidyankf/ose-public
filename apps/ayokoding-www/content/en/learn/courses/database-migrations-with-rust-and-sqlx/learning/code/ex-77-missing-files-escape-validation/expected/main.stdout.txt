@@ -1,0 +1,2 @@
+strict run failed: migration 2 was previously applied but is missing
+lenient run passed with missing versions ignored

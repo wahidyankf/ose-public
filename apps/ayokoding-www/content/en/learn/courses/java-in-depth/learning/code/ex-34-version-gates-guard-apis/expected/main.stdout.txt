@@ -1,0 +1,3 @@
+formatted: sari owes 50
+strip: 'sari'
+gated, never crashed: true

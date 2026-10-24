@@ -1,0 +1,22 @@
+schema: ayokoding.run/v1
+toolchain: dotnet
+dependencies:
+  lockfile: learning/code/ex-01-hellodotnet/packages.lock.json
+resources:
+  memory: 2g
+runs:
+  - name: main
+    # Without the install recipe the local package source is missing, so
+    # restore must reach the network, which the run blocks. With the
+    # recipe the unit restores --locked-mode from /deps/dotnet (pinned by
+    # the committed NuGet.Config, which clears the default sources) and
+    # rebuilds twice alike;
+    # each execution gets a fresh working copy, so obj/ never dirties the
+    # repo. Restore and build noise stays off both compared streams; the
+    # program output is what this run proves.
+    command: [sh, -c, "dotnet restore --locked-mode > /dev/null && dotnet build --nologo -v q --no-restore > /dev/null && dotnet bin/Debug/net10.0/hellodotnet.dll"]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+      # Offline workload verification notes to stderr on every invocation.
+      stderr: ignore

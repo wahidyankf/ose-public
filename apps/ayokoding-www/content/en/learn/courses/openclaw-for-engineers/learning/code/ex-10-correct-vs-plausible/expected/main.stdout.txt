@@ -1,0 +1,4 @@
+inbox.md: True
+summary.md: False
+wrong steps: 1
+trace trustworthy: False

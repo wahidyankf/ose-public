@@ -1,0 +1,3 @@
+GET /meta id= req-1 version= v2 -> 200 {"RequestID":"req-1","Version":"v2"}
+GET /meta id= req-2 version=  -> 200 {"RequestID":"req-2","Version":"v1"}
+GET /meta id=  version= v2 -> 400 {"error":"bad headers"}

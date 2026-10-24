@@ -1,0 +1,3 @@
+GET /items/w1 -> 200 {"id":"w1","value":"gear"}
+GET /items/w9 -> 404 {"error":{"code":"no_item","message":"no item w9"}}
+GET /items/w2 -> 410 {"error":{"code":"retired","message":"item w2 retired"}}

@@ -1,0 +1,2 @@
+history rows after repair: 2
+stale rewritten checksums: 0

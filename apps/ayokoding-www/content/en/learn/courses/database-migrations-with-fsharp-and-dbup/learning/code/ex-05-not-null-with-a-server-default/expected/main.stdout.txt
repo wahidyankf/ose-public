@@ -1,0 +1,5 @@
+upgrade=true
+upgrade=true
+nicknames=anon,anon
+history=d05_001_create_users.sql
+history=d05_002_nickname_default.sql

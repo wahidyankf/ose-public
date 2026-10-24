@@ -1,0 +1,3 @@
+attempt 1 after 0s: failed
+attempt 2 after 1s: failed
+attempt 3 after 2s: ok

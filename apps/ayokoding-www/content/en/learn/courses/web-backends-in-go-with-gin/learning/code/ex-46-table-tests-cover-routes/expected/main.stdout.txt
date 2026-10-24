@@ -1,0 +1,5 @@
+PASS ping answers pong
+PASS capture echoes id
+PASS echo repeats say
+PASS missing say is 400
+PASS unknown path is 404

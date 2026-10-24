@@ -1,0 +1,3 @@
+GET /users/ada -> 200 {"user":"ada"}
+GET /add/2/3 -> 200 5
+GET /add/2/x -> 404 Not Found

@@ -1,0 +1,5 @@
+upgrade=true
+upgrade=true
+columns=id,handle,email
+history=d02_001_create_members.sql
+history=d02_002_add_email.sql

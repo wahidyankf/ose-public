@@ -1,0 +1,4 @@
+global exec: allow
+merged exec: deny
+session widened anything: False
+tighten-only holds: True

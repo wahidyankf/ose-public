@@ -1,0 +1,4 @@
+step one
+step two
+published complete result only
+build failed: nothing published

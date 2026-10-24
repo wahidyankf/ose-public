@@ -1,0 +1,3 @@
+files: 2
+added: 2 removed: 13
+verdict: reject: weakens check, drops tests

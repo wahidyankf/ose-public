@@ -1,0 +1,31 @@
+schema: ayokoding.run/v1
+toolchain: typescript
+runs:
+  - name: build
+    kind: check
+    command:
+      [
+        tsc,
+        --strict,
+        --target,
+        es2022,
+        --module,
+        commonjs,
+        main.ts,
+        shapes/circle.ts,
+        shapes/square.ts,
+        shapes/index.ts,
+      ]
+    expect:
+      exit: 0
+      stdout: ignore
+  - name: main
+    command:
+      [
+        sh,
+        -c,
+        "tsc --strict --target es2022 --module commonjs main.ts shapes/circle.ts shapes/square.ts shapes/index.ts && node main.js",
+      ]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

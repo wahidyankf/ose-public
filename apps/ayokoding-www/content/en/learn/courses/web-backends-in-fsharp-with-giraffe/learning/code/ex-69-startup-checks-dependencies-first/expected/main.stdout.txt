@@ -1,0 +1,2 @@
+GET /deps -> 200 deps-ok
+GET /items/seed -> 200 {"k":"seed","v":"seed-value"}

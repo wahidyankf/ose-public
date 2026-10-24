@@ -1,0 +1,2 @@
+migrate: nil
+completed: ["keep-first" "new-collides"]

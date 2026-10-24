@@ -1,0 +1,5 @@
+upgrade=true
+upgrade=true
+tables=d06_customers,d06_orders
+history=d06_001_create_customers.sql
+history=d06_002_create_orders.sql

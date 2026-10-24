@@ -1,0 +1,3 @@
+step failure: CommandExecutionException
+committed step present: 1
+committed history rows: 1

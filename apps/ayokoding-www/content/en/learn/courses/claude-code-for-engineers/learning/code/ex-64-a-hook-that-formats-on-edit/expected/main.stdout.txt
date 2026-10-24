@@ -1,0 +1,2 @@
+on edit: ['format login.py']
+on stop: ['notify done']

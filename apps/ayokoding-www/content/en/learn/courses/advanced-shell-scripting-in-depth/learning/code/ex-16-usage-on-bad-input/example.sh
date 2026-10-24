@@ -1,0 +1,21 @@
+# => Example 16: the misuse path runs in a subshell; the report survives.
+set -euo pipefail                                         # => strict header first, as in every example
+usage() {                                                 # => one function owns the whole usage contract
+	echo "usage: backup [--output FILE] SOURCE" >&2          # => synopsis first
+	echo "  --output FILE  write here instead of stdout" >&2 # => one line per flag
+}                                                         # => closes the usage contract
+# => WHY a subshell: exit 2 must end the probe, not the whole demo.
+set +e # => the misuse probe must fail without aborting the demo
+( # => subshell takes the bad-input path below
+	set -- --bogus # => demo feeds an unknown flag on purpose
+	case "$1" in   # => minimal parse: anything unknown is misuse
+	--output)      # => the one flag this demo tool accepts
+		;;            # => accepted here; real handling lives in later examples
+	*)
+		usage                 # => unknown input prints the contract to stderr
+		exit 2                # => usage errors exit 2, per the course contract
+		;;                    # => ends the misuse branch (unreachable past exit)
+	esac                   # => closes the minimal parse
+)                       # => subshell exits 2: the harness unit stays green
+echo "misuse exits: $?" # => 2: the contract, observed without dying
+set -e                  # => strict again: the demonstration section is over

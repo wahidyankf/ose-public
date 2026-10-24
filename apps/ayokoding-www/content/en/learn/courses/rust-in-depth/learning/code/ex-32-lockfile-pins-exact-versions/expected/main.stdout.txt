@@ -1,0 +1,3 @@
+audit-trail 0.9.1
+dues-ledger 0.2.0
+ledger-kit 1.4.0

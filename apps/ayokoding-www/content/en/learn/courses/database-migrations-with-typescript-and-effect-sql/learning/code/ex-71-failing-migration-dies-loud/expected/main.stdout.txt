@@ -1,0 +1,4 @@
+outcome: migration-failed
+recorded: 0
+tables: 0
+cleaned: yes

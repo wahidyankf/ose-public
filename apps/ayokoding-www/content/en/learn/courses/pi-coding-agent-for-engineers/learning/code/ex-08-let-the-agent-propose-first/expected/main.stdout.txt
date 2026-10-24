@@ -1,0 +1,3 @@
+goal: rename one helper
+files: 1
+verdict: approved

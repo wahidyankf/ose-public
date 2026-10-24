@@ -1,0 +1,2 @@
+GET /orders/7?limit=3 -> 200 OK {"id":7,"limit":3}
+GET /orders/7 -> 200 OK {"id":7,"limit":10}

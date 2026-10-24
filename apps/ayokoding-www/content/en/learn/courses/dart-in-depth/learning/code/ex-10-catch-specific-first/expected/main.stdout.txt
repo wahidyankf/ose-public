@@ -1,0 +1,4 @@
+bad number: not digits
+empty input: nothing to parse
+unexpected: Exception: boom
+parsed 10

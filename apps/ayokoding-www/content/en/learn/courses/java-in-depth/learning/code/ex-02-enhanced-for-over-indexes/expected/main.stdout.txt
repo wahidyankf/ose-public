@@ -1,0 +1,7 @@
+hello, ada
+hello, grace
+hello, sari
+letters: 12
+0: ada
+1: grace
+2: sari

@@ -1,0 +1,10 @@
+schema: ayokoding.run/v1
+toolchain: clojure
+dependencies:
+  lockfile: learning/code/jars.lock
+runs:
+  - name: main
+    command: [clojure, wordfreq.clj]
+    expect:
+      exit: 0
+      stdout: expected/main/main.stdout.txt

@@ -1,0 +1,11 @@
+# => Declared pair: DEPLOY_TOKEN for deploys, NOTIFY_KEY for alerts.
+# => Both references resolve; the rollup below prints clean true.
+# => Add the secret to the vault before adding its reference here.
+name: two-secrets # => workflow name shown in the Actions tab
+on: push # => run on every push while learning
+jobs: # => jobs block with the two-secret job
+  ship: # => single job proving both declarations
+    runs-on: ubuntu-latest # => hosted runner image
+    steps: # => steps using the two declared secrets
+      - run: echo "deploying ${{ secrets.DEPLOY_TOKEN }}" # => first ref
+      - run: echo "notifying ${{ secrets.NOTIFY_KEY }}" # => second ref

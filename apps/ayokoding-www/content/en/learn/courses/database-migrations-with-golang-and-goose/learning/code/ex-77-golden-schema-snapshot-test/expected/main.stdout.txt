@@ -1,0 +1,2 @@
+snapshot: true
+cleaned: yes

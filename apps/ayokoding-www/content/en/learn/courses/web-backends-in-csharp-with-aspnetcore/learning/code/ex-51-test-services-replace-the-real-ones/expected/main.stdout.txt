@@ -1,0 +1,2 @@
+[real] GET /hour -> 200 sane=yes
+PASS [fake] GET /hour -> 200 {"hour":9}

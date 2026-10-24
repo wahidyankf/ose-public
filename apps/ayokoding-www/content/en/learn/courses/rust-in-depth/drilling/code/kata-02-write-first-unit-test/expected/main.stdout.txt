@@ -1,0 +1,4 @@
+three dues: 150 == 150 -> true
+empty: 0 == 0 -> true
+pair: 125 == 125 -> true
+passed: 3/3

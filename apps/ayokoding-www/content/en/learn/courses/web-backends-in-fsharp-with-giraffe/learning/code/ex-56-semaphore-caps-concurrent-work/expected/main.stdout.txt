@@ -1,0 +1,2 @@
+GET /limited -> 429 shed
+GET /limited -> 200 in

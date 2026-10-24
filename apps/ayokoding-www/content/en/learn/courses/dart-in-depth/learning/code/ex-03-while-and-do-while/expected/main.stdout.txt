@@ -1,0 +1,2 @@
+while drained: 0
+do-while attempts: 2

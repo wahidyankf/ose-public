@@ -1,0 +1,8 @@
+schema: ayokoding.run/v1
+toolchain: java
+runs:
+  - name: main
+    command: [sh, -c, "javac Main.java && java -Ddues.region=surabaya Main"]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

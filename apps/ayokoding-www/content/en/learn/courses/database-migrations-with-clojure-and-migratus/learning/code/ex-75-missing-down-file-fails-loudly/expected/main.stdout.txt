@@ -1,0 +1,4 @@
+migrate: nil
+completed: ["solo-up"]
+rollback: "threw: SQL :down commands not found for 20260101007501"
+completed: ["solo-up"]

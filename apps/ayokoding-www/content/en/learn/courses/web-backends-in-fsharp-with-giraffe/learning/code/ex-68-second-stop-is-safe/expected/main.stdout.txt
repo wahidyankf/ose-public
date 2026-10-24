@@ -1,0 +1,3 @@
+GET /a -> 200 a
+stopped-once
+stopped-twice

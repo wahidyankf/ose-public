@@ -1,0 +1,3 @@
+blocked: true
+columns: 3
+cleaned: yes

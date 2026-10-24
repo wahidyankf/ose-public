@@ -1,0 +1,4 @@
+ok sari=50
+skip blank
+skip malformed: oops
+skip malformed: budi:xx

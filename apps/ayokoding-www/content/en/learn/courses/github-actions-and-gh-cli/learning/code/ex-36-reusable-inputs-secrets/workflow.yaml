@@ -1,0 +1,12 @@
+# => Typed call: inputs carry data, secrets carry credentials, separately.
+# => with passes plain values; secrets passes masked references only.
+# => Never inline a secret value: reference the secrets context instead.
+name: typed-caller # => workflow name shown in the Actions tab
+on: push # => run on every push while learning
+jobs: # => jobs block with the typed call job
+  call-test: # => job calling the shared workflow with arguments
+    uses: octocat/shared/.github/workflows/test.yaml@v1 # => pinned call
+    with: # => plain inputs to the reusable workflow
+      node-version: "20" # => quoted version string
+    secrets: # => masked credentials for the reusable workflow
+      deploy-token: ${{ secrets.DEPLOY_TOKEN }} # => reference, never value

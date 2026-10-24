@@ -1,0 +1,2 @@
+GET /ticket -> 200 {"ticket":"T-1"}
+GET /ticket -> 200 {"ticket":"T-2"}

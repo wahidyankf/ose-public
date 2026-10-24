@@ -1,0 +1,5 @@
+testid found: true
+testid tag: button
+css survives redesign: false
+testid survives redesign: true
+stable strategy: testid

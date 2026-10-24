@@ -1,0 +1,13 @@
+schema: ayokoding.run/v1
+toolchain: java
+runs:
+  - name: main
+    command:
+      [
+        sh,
+        -c,
+        "javac Main.java && jar --create --file dues.jar --main-class Main -C . Main.class && java -jar dues.jar",
+      ]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

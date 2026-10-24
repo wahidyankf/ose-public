@@ -1,0 +1,3 @@
+openclaw: tokens=8400 review=10min true=9400
+sibling: tokens=5000 review=60min true=11000
+cheapest to own: openclaw

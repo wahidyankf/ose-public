@@ -1,0 +1,6 @@
+PASS: group keyed
+PASS: workflow in key
+PASS: ref in key
+PASS: cancel set
+PASS: jobs block exists
+checks: 5/5

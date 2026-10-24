@@ -1,0 +1,4 @@
+DEPLOY_TOKEN: declared
+NOTIFY_KEY: declared
+refs: 2 declared: 2
+clean: True

@@ -1,0 +1,3 @@
+GET /sqrt?n=16 -> 200 {"root":4}
+GET /sqrt?n=many -> 400 {"error":"n-must-be-an-integer"}
+GET /sqrt -> 400 {"error":"n-required"}

@@ -1,0 +1,2 @@
+log GET /a -> 200
+log GET /b -> 200

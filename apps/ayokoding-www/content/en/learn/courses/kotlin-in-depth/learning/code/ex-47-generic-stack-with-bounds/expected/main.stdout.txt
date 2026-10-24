@@ -1,0 +1,3 @@
+max: 75
+pop: 25
+names: null

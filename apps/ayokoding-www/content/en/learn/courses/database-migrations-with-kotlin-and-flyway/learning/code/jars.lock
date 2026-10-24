@@ -1,0 +1,10 @@
+# database-migrations-with-kotlin-and-flyway direct libraries (recorded 2026-10-22): org.flywaydb:flyway-core 13.10.0,
+# org.flywaydb:flyway-database-postgresql 13.10.0, org.postgresql:postgresql 42.7.14, all from Maven Central.
+# Transitive closure resolved from Maven Central POMs on 2026-10-22 (includes flyway-database-cockroachdb,
+# jackson-annotations, checker-qual pulled by the direct libraries).
+org.checkerframework:checker-qual:3.55.1 857658c8bdcbff794949a8d9922f88d63ee3751c203c7cd7d21ea97f9e745288
+org.flywaydb:flyway-core:13.10.0 e45a2ff698e42070d223e5edce579921710fcd94ac195bd3a57d676af04b1a88
+org.flywaydb:flyway-database-cockroachdb:13.10.0 d4f981515a68761f81be992f69d7fff5ff78eac11fc3da435029ca546b816fe8
+org.flywaydb:flyway-database-postgresql:13.10.0 b564729935c122546dd97d30d32c3d258703dbc7821b47aebb4d909b52faf477
+com.fasterxml.jackson.core:jackson-annotations:2.22 21ddb598807d3a51a876704eb979d9296e1c6a6f47ab1826ff88c6d6a127a2d0
+org.postgresql:postgresql:42.7.14 73914527305a40cce504b0d3d90b23caf565136912d607ae8ae7c5895512332c

@@ -1,0 +1,1 @@
+PASS: ex-28-implementations-and-rejections (2 tests)

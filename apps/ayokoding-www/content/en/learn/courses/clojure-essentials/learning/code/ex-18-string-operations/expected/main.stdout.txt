@@ -1,0 +1,6 @@
+CLOJURE
+a, b, c
+[a b c]
+padded
+true
+bbb

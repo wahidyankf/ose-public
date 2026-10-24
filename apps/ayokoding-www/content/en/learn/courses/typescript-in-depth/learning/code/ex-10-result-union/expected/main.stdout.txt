@@ -1,0 +1,2 @@
+value: 3.5
+error: division by zero

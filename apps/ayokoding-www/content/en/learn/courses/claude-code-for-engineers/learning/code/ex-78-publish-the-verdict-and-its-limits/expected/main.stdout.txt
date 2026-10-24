@@ -1,0 +1,4 @@
+verdict: A leads on turns, ties on correctness
+limit: 2 runs each
+limit: one task
+limit: shim stand-ins

@@ -1,0 +1,25 @@
+schema: ayokoding.run/v1
+toolchain: typescript
+dependencies:
+  lockfile: package-lock.json
+runs:
+  - name: main
+    command:
+      [
+        sh,
+        -c,
+        "if vitest run --fsModuleCachePath=/tmp/.vitest-cache --no-color >unit.log 2>&1; then echo 'PASS: ex-61-coverage-gate-script (2 tests)'; else cat unit.log; exit 1; fi",
+      ]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+  - name: gate
+    command:
+      [
+        sh,
+        -c,
+        "if vitest run --fsModuleCachePath=/tmp/.vitest-cache --no-color --coverage --coverage.reporter=json-summary >unit.log 2>&1 && node scripts/check-coverage.mjs >gate.out 2>gate.err; then cat gate.out; else cat unit.log gate.out gate.err 2>/dev/null; exit 1; fi",
+      ]
+    expect:
+      exit: 0
+      stdout: expected/gate.stdout.txt

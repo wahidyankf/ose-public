@@ -1,0 +1,3 @@
+accept: sari=50
+reject: budi:xx
+reject: no-colon-here

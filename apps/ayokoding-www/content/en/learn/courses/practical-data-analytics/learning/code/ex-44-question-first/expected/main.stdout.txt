@@ -1,0 +1,3 @@
+decision: restock staples for October
+population: staples receipts in September
+metric: mean basket qty above 3

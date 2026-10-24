@@ -1,0 +1,6 @@
+PASS: lint job exists
+PASS: typecheck job exists
+PASS: jobs block exists
+PASS: runner pinned twice
+PASS: no ordering edge
+checks: 5/5

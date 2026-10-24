@@ -1,0 +1,2 @@
+indexes: ex66_members_name_index, ex66_members_pkey
+cleaned: yes

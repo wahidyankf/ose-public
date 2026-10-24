@@ -1,0 +1,3 @@
+PASS: total is 37000
+PASS: empty menu is 0
+passed: 2

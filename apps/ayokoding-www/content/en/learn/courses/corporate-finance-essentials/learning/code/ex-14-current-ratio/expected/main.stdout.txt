@@ -1,0 +1,3 @@
+current-assets: 450000
+current-liabilities: 200000
+current-ratio: 2.25

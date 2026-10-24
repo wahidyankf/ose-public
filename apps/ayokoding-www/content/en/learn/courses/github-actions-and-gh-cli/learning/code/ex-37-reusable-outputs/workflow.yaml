@@ -1,0 +1,13 @@
+# => Return value: the callee publishes built-version for followers.
+# => The caller job needs an id so needs.<id>.outputs has an address.
+# => Readers declare needs on the call job before touching its outputs.
+name: version-flow # => workflow name shown in the Actions tab
+on: push # => run on every push while learning
+jobs: # => call job plus a follower reading its output
+  call-test: # => addressable id for the call job
+    uses: octocat/shared/.github/workflows/build.yaml@v1 # => pinned call
+  report: # => follower job consuming the returned value
+    needs: [call-test] # => wait for the call to finish first
+    runs-on: ubuntu-latest # => hosted runner image
+    steps: # => steps reading the returned output
+      - run: echo "built ${{ needs.call-test.outputs.built-version }}" # => read

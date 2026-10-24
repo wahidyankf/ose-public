@@ -1,0 +1,2 @@
+GET /hello/Sari -> 200 hello, Sari
+GET /hello/Sari -> 200 halo, Sari

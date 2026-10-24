@@ -1,0 +1,6 @@
+orders: [10, 11]
+totals: [(10, 700), (11, 525)]
+eligible: [10, 11]
+bandung-orders: [10]
+wheel-then: 180
+wheel-history: [(90001, 180), (90002, 175)]

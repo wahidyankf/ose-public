@@ -1,0 +1,2 @@
+GET /work -> 200 done
+GET /last -> 200 measured

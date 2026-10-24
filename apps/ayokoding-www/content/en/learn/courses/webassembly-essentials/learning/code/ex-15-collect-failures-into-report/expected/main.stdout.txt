@@ -1,0 +1,4 @@
+passed: [91, 77, 62, 88]
+refused: score -4 is outside 0..=100
+refused: score 104 is outside 0..=100
+refused: score -1 is outside 0..=100

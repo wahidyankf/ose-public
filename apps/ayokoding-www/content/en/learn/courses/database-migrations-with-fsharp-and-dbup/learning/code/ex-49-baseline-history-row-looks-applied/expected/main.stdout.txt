@@ -1,0 +1,5 @@
+upgrade=true
+row=d49_001_baseline_hist.sql
+applied-set=true
+upgrade=true
+repeat-runs-zero=true

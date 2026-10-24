@@ -1,0 +1,3 @@
+goal: drop legacy column
+files: 2
+verdict: approved after human gate

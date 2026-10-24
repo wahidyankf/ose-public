@@ -1,0 +1,3 @@
+real: ex47_managed ex47_wild
+managed: 1
+cleaned: yes

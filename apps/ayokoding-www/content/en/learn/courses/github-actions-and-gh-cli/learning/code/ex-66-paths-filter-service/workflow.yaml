@@ -1,0 +1,13 @@
+# => Scoped suite: billing tests run only for billing changes.
+# => paths lists globs; a push must touch one to start the file.
+# => One workflow per service keeps minutes proportional to change size.
+name: billing-tests # => workflow name shown in the Actions tab
+on: # => trigger block with the service inclusion
+  push: # => pushes touching the billing tree only
+    paths: # => globs that start this workflow
+      - billing/** # => the whole billing service tree
+jobs: # => jobs scoped to the billing service
+  billing-test: # => single job proving the scoped filter
+    runs-on: ubuntu-latest # => hosted runner image
+    steps: # => steps of the billing suite
+      - run: echo billing-ok # => placeholder suite proof

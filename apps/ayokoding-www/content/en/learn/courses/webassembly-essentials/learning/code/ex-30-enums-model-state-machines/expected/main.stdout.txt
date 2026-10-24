@@ -1,0 +1,3 @@
+done: order 7 total 250 via tiki
+ship refused: order 8 is unpaid, cannot ship
+cancelled: order 9 (duplicate)

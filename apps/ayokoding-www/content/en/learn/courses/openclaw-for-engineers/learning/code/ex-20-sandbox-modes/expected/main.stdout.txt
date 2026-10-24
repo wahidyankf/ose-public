@@ -1,0 +1,5 @@
+read inbox -> open
+run tests -> supervised
+migrate database -> locked
+modes known: 3
+session ceiling: locked

@@ -1,0 +1,3 @@
+branch conflict failure: CommandExecutionException
+merged history rows: 2
+resolution indexes: 1

@@ -1,0 +1,2 @@
+squads present: true
+players present: true

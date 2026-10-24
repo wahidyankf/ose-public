@@ -1,0 +1,3 @@
+all: [oat, tea, rice, sugar]
+staples: [oat, tea]
+ordered: [oat, pepper, salt, tea]

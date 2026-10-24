@@ -1,0 +1,4 @@
+health open -> 200 {"ok":true}
+health draining -> 503 {"ok":false}
+drained slowly done
+shutdown clean

@@ -1,0 +1,5 @@
+PASS given one due when adding budi:75 then size is 2
+PASS given two dues when clearing then ledger is empty
+PASS given empty ledger when totaling then sum is 0
+PASS given sari:50 when parsing then member is sari
+spec lines: 4

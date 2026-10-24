@@ -1,0 +1,6 @@
+daily report
+BEGIN
+task one
+task two
+END
+notes

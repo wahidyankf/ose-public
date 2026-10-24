@@ -1,0 +1,4 @@
+step1: lint
+step2: test
+step3: deploy
+jobs: 3 edges: 3

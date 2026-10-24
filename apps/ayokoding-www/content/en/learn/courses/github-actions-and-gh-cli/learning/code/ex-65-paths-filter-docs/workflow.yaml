@@ -1,0 +1,13 @@
+# => Docs skip: changes under docs/ never start the test suite.
+# => paths-ignore lists globs; matching-only pushes skip the file.
+# => Keep a separate link-check workflow for docs so they stay verified.
+name: code-tests # => workflow name shown in the Actions tab
+on: # => trigger block with the docs exclusion
+  push: # => pushes except docs-only changes
+    paths-ignore: # => globs that skip this workflow
+      - docs/** # => the whole documentation tree
+jobs: # => jobs skipped for docs-only pushes
+  test: # => single job proving the skip filter
+    runs-on: ubuntu-latest # => hosted runner image
+    steps: # => steps of the test job
+      - run: echo tests-ok # => placeholder suite proof

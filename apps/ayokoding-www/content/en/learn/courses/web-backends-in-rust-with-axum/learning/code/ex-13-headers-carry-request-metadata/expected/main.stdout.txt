@@ -1,0 +1,2 @@
+GET /whoami x-user=ada -> 200 OK {"caller":"ada"}
+GET /whoami x-user=(none) -> 200 OK {"caller":"anonymous"}

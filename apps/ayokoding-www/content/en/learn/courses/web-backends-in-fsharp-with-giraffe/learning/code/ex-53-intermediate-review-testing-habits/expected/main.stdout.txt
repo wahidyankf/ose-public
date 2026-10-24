@@ -1,0 +1,4 @@
+GET /items -> 200 [{"id":1,"name":"book"},{"id":2,"name":"pen"}]
+POST /items -> 201 {"id":3,"name":"ruler"}
+POST /items -> 400 {"error":"name-required"}
+GET /boom -> 500 oops

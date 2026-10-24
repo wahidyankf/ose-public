@@ -1,0 +1,2 @@
+north depot holds 120 sacks
+north depot released 30, keeps 70

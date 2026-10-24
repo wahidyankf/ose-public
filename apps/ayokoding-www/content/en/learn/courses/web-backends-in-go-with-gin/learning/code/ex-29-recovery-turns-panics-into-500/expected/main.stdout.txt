@@ -1,0 +1,2 @@
+GET /boom -> 500 {"error":"internal failure"}
+GET /fine -> 200 still standing

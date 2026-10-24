@@ -1,0 +1,4 @@
+PASS roster loads sorted
+PASS round trip exact
+PASS scratch removed
+suite: 3 tests, 0 failures

@@ -1,0 +1,4 @@
+enter stamp
+handler
+exit stamp
+served GET /hello with the stamp layer

@@ -1,0 +1,2 @@
+situation: one directory
+route: approve with tests

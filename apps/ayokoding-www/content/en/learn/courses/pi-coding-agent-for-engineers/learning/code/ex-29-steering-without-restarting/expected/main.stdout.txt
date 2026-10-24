@@ -1,0 +1,4 @@
+op: steer one-at-a-time
+row: queued: 2 messages
+row: delivered: first only
+row: session: uninterrupted

@@ -1,0 +1,3 @@
+applied: 2
+check: ex41_positive_balance, validated: false
+cleaned: yes

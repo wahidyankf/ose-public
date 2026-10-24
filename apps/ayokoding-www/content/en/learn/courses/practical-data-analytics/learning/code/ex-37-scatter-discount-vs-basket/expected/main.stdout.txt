@@ -1,0 +1,7 @@
+. . . . .
+. . . . *
+. . * * *
+. * * . .
+* . . . .
+correlation: 0.9623
+caveat: slope shows togetherness, not cause.

@@ -1,0 +1,8 @@
+migrate: nil
+completed: ["create-flags"]
+gate: ready
+gate: blocked: 1 pending
+pending: ("add-color")
+migrate: nil
+completed: ["create-flags" "add-color"]
+gate: ready

@@ -1,0 +1,3 @@
+half pi: 1.571
+cap: 30
+shown: pi, max

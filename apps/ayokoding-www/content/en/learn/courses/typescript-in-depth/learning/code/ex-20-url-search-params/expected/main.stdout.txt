@@ -1,0 +1,4 @@
+api.example.com /search
+ts,node
+generics & types
+https://api.example.com/items?q=generics+%26+types

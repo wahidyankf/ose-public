@@ -1,0 +1,4 @@
+cookie sent: true
+theme not sent: true
+theme readable in page: dark
+cookie httpOnly-safe: true

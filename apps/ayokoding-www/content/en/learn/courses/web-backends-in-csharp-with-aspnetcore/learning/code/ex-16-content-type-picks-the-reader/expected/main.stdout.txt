@@ -1,0 +1,2 @@
+POST /notes [application/json] -> 201 {"note":"ship it"}
+POST /notes [text/plain] -> 201 {"note":"ship it"}

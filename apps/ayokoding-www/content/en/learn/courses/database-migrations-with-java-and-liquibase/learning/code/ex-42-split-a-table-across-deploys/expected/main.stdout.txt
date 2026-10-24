@@ -1,0 +1,2 @@
+rows in the old table: 2
+rows in the new table: 2

@@ -1,0 +1,6 @@
+
+Testing user
+
+Ran 1 tests containing 1 assertions.
+0 failures, 0 errors.
+stubbed: 7.5 green: true

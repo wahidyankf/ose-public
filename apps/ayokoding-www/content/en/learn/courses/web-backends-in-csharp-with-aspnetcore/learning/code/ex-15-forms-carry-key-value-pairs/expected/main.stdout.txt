@@ -1,0 +1,2 @@
+POST /login -> 200 {"user":"ada"}
+POST /login -> 400 {"error":"username-and-password-required"}

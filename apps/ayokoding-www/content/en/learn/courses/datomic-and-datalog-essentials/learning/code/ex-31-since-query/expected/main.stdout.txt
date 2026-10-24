@@ -1,0 +1,3 @@
+new-datoms: 2
+tx=30402 e=2 a=part/name v=Track cog 16t
+tx=30403 e=2 a=part/price v=25

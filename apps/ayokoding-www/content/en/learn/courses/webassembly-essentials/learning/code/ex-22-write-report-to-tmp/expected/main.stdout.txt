@@ -1,0 +1,4 @@
+budi: 77 (C)
+citra: 88 (B)
+sari: 91 (A)
+wrote 40 bytes to /tmp/report.txt

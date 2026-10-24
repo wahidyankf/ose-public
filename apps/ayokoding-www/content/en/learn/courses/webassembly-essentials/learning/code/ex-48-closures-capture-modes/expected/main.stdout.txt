@@ -1,0 +1,3 @@
+passed: [91, 77, 88]
+curved: [92, 78], bonus left: 3
+curve applied: [92, 78]

@@ -1,0 +1,5 @@
+# managed by ops
+host=db-01
+port=5432
+# end of managed block
+mode=prod

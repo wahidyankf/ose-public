@@ -237,7 +237,7 @@ func (flow *runner) executeRun(ctx context.Context, prep preparedUnit, run runsp
 // parent context propagates for the 130 mapping, the elapsed timeout
 // becomes the timed-out marker, and anything else keeps its error.
 func (flow *runner) executeOnce(ctx context.Context, prep preparedUnit, run runspec.Run, seq int, stdin []byte) (Execution, error) {
-	work, err := flow.workingCopy(prep.files, prep.unit)
+	work, err := flow.workingCopy(prep.files, prep.unit, prep.links)
 	if err != nil {
 		return Execution{}, err
 	}
@@ -303,7 +303,7 @@ func (flow *runner) runConfig(prep preparedUnit, run runspec.Run, seq, exec int)
 		CPUs: prep.spec.CPUs, MemoryBytes: prep.spec.MemoryBytes,
 		UID: os.Getuid(), GID: os.Getgid(),
 		ToolchainEnv: toolchain.Env, ServiceEnv: serviceEnv, RunEnv: run.Env,
-		Network: network, Seed: seed, Links: flow.req.Links,
+		Network: network, Seed: seed, Links: prep.links,
 	}
 }
 

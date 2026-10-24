@@ -1,0 +1,3 @@
+POST /notes -> 201 {"id":1,"text":"ship it"}
+GET /notes/1 -> 200 {"id":1,"text":"ship it"}
+GET /notes/2 -> 404 {"error":"note-not-found"}

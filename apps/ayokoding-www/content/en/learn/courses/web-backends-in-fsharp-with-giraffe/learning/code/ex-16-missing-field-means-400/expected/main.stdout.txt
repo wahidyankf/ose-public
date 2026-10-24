@@ -1,0 +1,2 @@
+POST /register -> 400 {"error":"name-required"}
+POST /register -> 201 {"name":"ada"}

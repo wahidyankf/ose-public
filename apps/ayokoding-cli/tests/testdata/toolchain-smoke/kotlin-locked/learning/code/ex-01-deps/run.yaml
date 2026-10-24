@@ -1,0 +1,18 @@
+schema: ayokoding.run/v1
+toolchain: kotlin
+dependencies:
+  lockfile: jars.lock
+resources:
+  memory: 2g
+runs:
+  - name: main
+    # kotlinc and the kotlin runner do not resolve a bare `$JARS/*` wildcard
+    # here, so the shell expands the locked jars to explicit sorted entries
+    # first; every entry still comes from $JARS, never a hardcoded path.
+    command: [sh, -c, "CP=$(ls \"$JARS\" | sort | sed \"s|^|$JARS/|\" | paste -sd: -) && kotlinc -cp \"$CP\" main.kt -d /tmp/out && kotlin -cp \"/tmp/out:$CP\" MainKt"]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+      # kotlinc notes its jansi native-library extraction to stderr on every
+      # invocation with a run-specific temp path; the exit status is the check.
+      stderr: ignore

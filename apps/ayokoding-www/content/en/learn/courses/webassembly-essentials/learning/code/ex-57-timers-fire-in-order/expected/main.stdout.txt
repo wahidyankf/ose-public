@@ -1,0 +1,4 @@
+tick 30: sensors armed
+tick 30: warmup done
+tick 330: first burn done
+tick 630: cooldown

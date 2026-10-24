@@ -1,0 +1,4 @@
+current: k09b1
+rows: 2
+columns: ['email', 'id', 'name']
+kata ok

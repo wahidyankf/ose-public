@@ -1,0 +1,4 @@
+upgrade=true
+journal=d73_001_create_div.sql
+catalog=id,ghost
+diverged=true

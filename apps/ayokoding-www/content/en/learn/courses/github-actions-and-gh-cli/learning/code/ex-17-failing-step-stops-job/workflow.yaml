@@ -1,0 +1,11 @@
+# => Fail-fast proof: the exit 1 step fails the job; the next never runs.
+# => continue-on-error stays absent, so the default strict contract holds.
+# => Later examples opt back in explicitly; the default stays strict here.
+name: fail-fast # => workflow name shown in the Actions tab
+on: workflow_dispatch # => manual trigger for a deterministic demo
+jobs: # => jobs block with the failing job
+  strict: # => single job proving the stop-on-failure contract
+    runs-on: ubuntu-latest # => hosted runner image
+    steps: # => first step fails, second step is skipped by the runner
+      - run: exit 1 # => nonzero exit fails the step and the job
+      - run: echo never-runs # => unreachable while the default holds

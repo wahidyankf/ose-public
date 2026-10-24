@@ -1,0 +1,3 @@
+old name present: 0
+new name value: striker9
+migrations applied: 3

@@ -1,0 +1,2 @@
+bounded rows: 1
+migrations applied: 2

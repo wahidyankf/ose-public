@@ -1,0 +1,6 @@
+step: python3 -m venv .venv
+step: source .venv/bin/activate
+step: pip install -r pins.txt
+prefix set: True
+outside system: True
+sep: /

@@ -1,0 +1,4 @@
+soft ran all: 3
+soft failures: 1
+hard stopped at: second line
+soft sees more: true

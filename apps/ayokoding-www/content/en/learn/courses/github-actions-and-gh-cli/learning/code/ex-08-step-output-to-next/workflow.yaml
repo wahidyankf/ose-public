@@ -1,0 +1,12 @@
+# => Step outputs: stamp computes, announce consumes, same job.
+# => GITHUB_OUTPUT is the only channel; plain echo stays local.
+# => The id turns the step into an addressable value in steps context.
+name: stamp-flow # => workflow name shown in the Actions tab
+on: workflow_dispatch # => manual trigger for a deterministic demo
+jobs: # => jobs block with the two cooperating steps
+  stamp: # => single job so the filesystem and context are shared
+    runs-on: ubuntu-latest # => hosted runner image
+    steps: # => ordered pair: producer first, consumer second
+      - id: stamp # => addressable id for the producer step
+        run: echo "release-date=2026-10-20" >> "$GITHUB_OUTPUT" # => publish
+      - run: echo "shipping ${{ steps.stamp.outputs.release-date }}" # => read

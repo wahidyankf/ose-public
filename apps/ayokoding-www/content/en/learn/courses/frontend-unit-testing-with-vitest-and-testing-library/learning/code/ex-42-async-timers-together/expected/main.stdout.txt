@@ -1,0 +1,1 @@
+PASS: ex-42-async-timers-together (1 tests)

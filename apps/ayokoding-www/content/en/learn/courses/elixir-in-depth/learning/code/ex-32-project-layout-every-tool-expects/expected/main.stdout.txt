@@ -1,0 +1,6 @@
+entries=5
+lib
+lib/sample_proj.ex
+mix.exs
+test
+test/sample_proj_test.exs

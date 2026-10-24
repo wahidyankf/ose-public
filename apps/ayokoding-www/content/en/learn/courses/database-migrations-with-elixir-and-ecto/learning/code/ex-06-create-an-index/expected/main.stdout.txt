@@ -1,0 +1,2 @@
+indexes: ex06_products_pkey, ex06_products_sku_index
+cleaned: yes

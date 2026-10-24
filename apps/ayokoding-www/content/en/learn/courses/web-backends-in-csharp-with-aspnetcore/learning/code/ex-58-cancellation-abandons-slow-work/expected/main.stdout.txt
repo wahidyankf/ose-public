@@ -1,0 +1,2 @@
+cancelled -> client-gave-up
+patient -> 200 {"done":true}

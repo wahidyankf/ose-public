@@ -1,0 +1,2 @@
+GET /items/k1 -> 200 {"k":"k1","v":"v1"}
+GET /items/k9 -> 404 {"error":"item-not-found"}

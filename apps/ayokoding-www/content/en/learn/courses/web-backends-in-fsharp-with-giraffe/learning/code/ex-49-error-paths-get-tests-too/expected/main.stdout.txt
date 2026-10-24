@@ -1,0 +1,4 @@
+POST /divide -> 200 {"q":3}
+POST /divide -> 400 {"error":"divide-by-zero"}
+GET /boom -> 500 oops
+GET /ok -> 200 fine

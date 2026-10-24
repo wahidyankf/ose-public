@@ -1,0 +1,5 @@
+project: com.ayokoding
+artifact: dues-reporter
+version: 1.0.0
+artifact: junit-jupiter
+version: 5.11.0

@@ -1,0 +1,5 @@
+equal: true
+same object: false
+text: Due[member=sari, amount=50]
+member: sari
+refused: amount must be >= 0

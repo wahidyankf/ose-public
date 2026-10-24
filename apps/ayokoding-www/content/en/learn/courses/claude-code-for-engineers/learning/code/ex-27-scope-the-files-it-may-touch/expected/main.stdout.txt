@@ -1,0 +1,2 @@
+inside: ['login.py']
+trespass: ['settings.py']

@@ -1,0 +1,1 @@
+PASS: ex-19-typing-into-inputs (1 tests)

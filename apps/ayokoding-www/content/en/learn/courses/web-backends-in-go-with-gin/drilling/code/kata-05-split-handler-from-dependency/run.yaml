@@ -1,0 +1,13 @@
+schema: ayokoding.run/v1
+toolchain: go
+dependencies:
+  lockfile: learning/code/go.mod
+resources:
+  memory: 2g
+runs:
+  - name: main
+    command: [sh, -c, "go build -o main ./after && ./main"]
+    timeout: 300s
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

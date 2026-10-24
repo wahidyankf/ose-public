@@ -1,0 +1,3 @@
+quays table present: 1
+docks table present: 0
+marinas table present: 0

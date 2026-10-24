@@ -1,0 +1,4 @@
+applied: 2
+type: numeric
+amount: 1.99
+cleaned: yes

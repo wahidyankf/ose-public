@@ -1,0 +1,6 @@
+turn 1: 1200 tokens, running 1200
+turn 2: 3400 tokens, running 4600
+turn 3: 9800 tokens, running 14400
+turn 4: 2100 tokens, running 16500
+session total: 16500
+costliest turn: 3

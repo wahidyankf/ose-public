@@ -1,0 +1,3 @@
+GET /orders/o1 -> 200 {"id":"o1","item":"book"}
+GET /orders/o9 -> 404 {"detail":"order o9 does not exist","instance":"/orders/o9","status":404,"title":"No such order","type":"https://api.example.com/problems/no-order"}
+GET /orders?status=lost -> 400 {"detail":"status must be open or shut","instance":"/orders","status":400,"title":"Bad status filter","type":"https://api.example.com/problems/bad-filter"}

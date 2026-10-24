@@ -1,0 +1,3 @@
+basket holds one item
+sank one item
+variance: both directions compile

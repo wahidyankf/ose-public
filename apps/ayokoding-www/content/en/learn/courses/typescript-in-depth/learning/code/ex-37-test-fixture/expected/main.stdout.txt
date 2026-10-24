@@ -1,0 +1,1 @@
+PASS: ex-37-test-fixture (2 checks)

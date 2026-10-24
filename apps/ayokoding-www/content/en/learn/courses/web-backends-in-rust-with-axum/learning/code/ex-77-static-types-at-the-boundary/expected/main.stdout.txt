@@ -1,0 +1,2 @@
+POST /orders {"id":"o-1","item":"pen","qty":2} -> 201 Created {"order":{"id":"o-1","item":"pen","qty":2}}
+POST /orders {"id":"o-2","item":"pen","qty":"many"} -> 422 Unprocessable Entity Failed to deserialize the JSON body into the target type: qty: invalid type: string "many", expected u32 at line 1 column 37

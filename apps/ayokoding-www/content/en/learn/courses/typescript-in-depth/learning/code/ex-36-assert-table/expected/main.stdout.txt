@@ -1,0 +1,4 @@
+PASS: "  Hello World  " -> hello-world
+PASS: "Ada" -> ada
+PASS: "a  b" -> a-b
+passed: 3/3

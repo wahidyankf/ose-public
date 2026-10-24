@@ -1,0 +1,3 @@
+OPTIONS /data origin=https://app.example.com -> 204 allow=https://app.example.com
+GET /data origin=https://app.example.com -> 200 allow=https://app.example.com {"rows":3}
+GET /data origin=https://evil.example.com -> 200 allow= {"rows":3}

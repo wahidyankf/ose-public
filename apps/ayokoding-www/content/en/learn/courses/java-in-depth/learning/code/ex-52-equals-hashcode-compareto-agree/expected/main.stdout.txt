@@ -1,0 +1,5 @@
+equals: true
+hashes: true
+compare: true
+unique: 2
+board: [sari:50, budi:75]

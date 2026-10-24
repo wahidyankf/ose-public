@@ -1,0 +1,5 @@
+post("sari", 50) = 50
+params: 2
+returns: int
+public: true
+contract holds: true

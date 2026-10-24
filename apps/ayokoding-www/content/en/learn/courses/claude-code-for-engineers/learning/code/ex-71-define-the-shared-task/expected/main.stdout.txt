@@ -1,0 +1,2 @@
+task: login.py | pytest -q exits 0
+identical: True

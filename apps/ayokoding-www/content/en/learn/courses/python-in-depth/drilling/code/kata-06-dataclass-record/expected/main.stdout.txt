@@ -1,0 +1,3 @@
+lamp
+4
+True

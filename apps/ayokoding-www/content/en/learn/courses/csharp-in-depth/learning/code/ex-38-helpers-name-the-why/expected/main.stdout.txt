@@ -1,0 +1,3 @@
+PASS: total sums two lines
+PASS: dish name is not empty
+passed: 2

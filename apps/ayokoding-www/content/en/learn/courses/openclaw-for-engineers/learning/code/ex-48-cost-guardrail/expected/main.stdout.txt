@@ -1,0 +1,6 @@
+triage spent, total 6000
+draft spent, total 15000
+research: needs approval at 27000
+approved crossing: True
+research spent, total 27000
+limit: 20000 spent: 27000

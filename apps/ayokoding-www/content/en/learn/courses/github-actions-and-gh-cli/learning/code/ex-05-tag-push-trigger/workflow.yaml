@@ -1,0 +1,13 @@
+# => Release on tag: pushing v1.4.0 publishes exactly once.
+# => Tags and branches are different refs; filter tags here, not branches.
+# => A branch filter on a tag push never matches, so it must be absent.
+name: release # => workflow name shown on the tag push
+on: # => trigger block for tag pushes
+  push: # => tags arrive as pushes of tag refs
+    tags: [v*] # => version tags only, glob quoted
+jobs: # => jobs for the release run
+  publish: # => single publish job
+    runs-on: ubuntu-latest # => hosted runner image
+    steps: # => steps of the publish job
+      - uses: actions/checkout@v4 # => fetch the tagged commit
+      - run: echo publish-ok # => placeholder publish proof

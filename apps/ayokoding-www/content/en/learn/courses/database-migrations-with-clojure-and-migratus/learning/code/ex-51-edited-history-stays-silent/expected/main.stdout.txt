@@ -1,0 +1,4 @@
+migrate: nil
+rerun: nil
+pending: ()
+columns: ["id" "name"]

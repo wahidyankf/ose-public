@@ -1,0 +1,4 @@
+migrate: nil
+stuck: :ignore
+squatter: [-1]
+recovered: nil

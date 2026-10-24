@@ -1,0 +1,5 @@
+## Example code for web-backends-in-rust-with-axum
+
+One folder per worked example: `ex-NN-<slug>/` holds `Cargo.toml` (the shared `axum-example` package depending on axum 0.8 with the `tokio`, `tower`, `serde`, `serde_json`, and `tower-http` companions), `src/main.rs`, its `run.yaml` (`toolchain: rust`, the `rust` install recipe with the course-relative `dependencies.lockfile`, no service container, no network), and the recorded output under `expected/`. Multi-file units anchor every file in the lesson; every unit is deterministic: fixed inputs, in-process requests through `tower::ServiceExt::oneshot` with no socket and no port, no clocks, no timings, no paths or addresses in output. Compiler output stays silent under `--quiet`, so goldens hold only program lines.
+
+Kata starters are intentionally imperfect — they exist to be fixed — and only the `after/` solutions run green in the harness. The capstone builds the order-tracking service through nine lifecycle legs and asserts each leg with one golden line.

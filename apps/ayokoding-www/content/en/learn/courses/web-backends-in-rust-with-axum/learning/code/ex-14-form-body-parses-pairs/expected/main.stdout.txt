@@ -1,0 +1,2 @@
+POST /login username=ada&password=s3cret -> 200 OK {"welcome":"ada"}
+POST /login username=bob&password=nope -> 401 Unauthorized {"error":"bad_credentials"}

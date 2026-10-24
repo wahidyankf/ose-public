@@ -1,0 +1,2 @@
+GET /fast -> 200 OK {"speed":"fast"}
+GET /slow -> 408 Request Timeout (empty body)

@@ -1,0 +1,2 @@
+{"event":"request","method":"GET","path":"/hello","status":200}
+{"event":"request","method":"GET","path":"/hello","status":200}

@@ -1,0 +1,3 @@
+both free -> 200 OK {"inside":true}
+both held -> 503 Service Unavailable {"error":"busy"}
+bound: 2 permits admit overlap; the third call meets 503, not a queue

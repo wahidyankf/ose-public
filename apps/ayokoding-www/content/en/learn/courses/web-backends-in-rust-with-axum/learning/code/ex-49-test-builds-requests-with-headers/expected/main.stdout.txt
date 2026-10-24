@@ -1,0 +1,3 @@
+GET /whoami x-user=ada accept=application/json -> 200 OK {"caller":"ada","format":"application/json"}
+GET /whoami x-user=ada accept=(none) -> 200 OK {"caller":"ada","format":"default"}
+GET /whoami x-user=(none) accept=(none) -> 200 OK {"caller":"guest","format":"default"}

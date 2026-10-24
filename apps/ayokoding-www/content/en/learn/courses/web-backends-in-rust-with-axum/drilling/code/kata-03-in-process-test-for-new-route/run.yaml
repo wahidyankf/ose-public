@@ -1,0 +1,18 @@
+schema: ayokoding.run/v1
+toolchain: rust
+dependencies:
+  lockfile: learning/code/Cargo.lock
+resources:
+  memory: 4g
+runs:
+  - name: main
+    command:
+      [
+        sh,
+        -c,
+        'cargo run --offline --quiet --config ''source.crates-io.replace-with="vendored"'' --config ''source.vendored.directory="/deps/rust"'' --manifest-path after/Cargo.toml',
+      ]
+    timeout: 600s
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

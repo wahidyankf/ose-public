@@ -1,0 +1,3 @@
+GET /api/v1/users -> 200 OK {"users":["ada"]}
+GET /api/v1/orders -> 200 OK {"orders":["o-1"]}
+GET /users -> 404 Not Found (empty body)

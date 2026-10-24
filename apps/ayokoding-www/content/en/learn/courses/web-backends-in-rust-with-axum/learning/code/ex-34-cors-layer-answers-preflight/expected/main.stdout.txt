@@ -1,0 +1,2 @@
+OPTIONS /hello origin=https://app.example -> 200 OK allow_origin=https://app.example
+OPTIONS /hello origin=https://evil.example -> 200 OK allow_origin=(none)

@@ -1,0 +1,3 @@
+gate open -> 200 OK {"served":true}
+signal received: SIGTERM; gate closed, draining
+gate shut -> 503 Service Unavailable {"error":"shutting_down"}

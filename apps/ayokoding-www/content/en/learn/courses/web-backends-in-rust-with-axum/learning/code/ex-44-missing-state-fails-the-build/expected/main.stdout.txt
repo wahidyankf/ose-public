@@ -1,0 +1,2 @@
+GET /price -> 200 OK {"currency":"IDR"}
+unwired: Router::new().route("/price", get(price)) fails E0308, not a request

@@ -1,0 +1,2 @@
+GET /read -> 404 Not Found {"code":"no_order","message":"request failed: no_order"}
+GET /promote -> 422 Unprocessable Entity {"code":"bad_status","message":"request failed: bad_status"}

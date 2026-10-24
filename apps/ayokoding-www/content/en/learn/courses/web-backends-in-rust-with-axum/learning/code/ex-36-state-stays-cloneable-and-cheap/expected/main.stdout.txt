@@ -1,0 +1,1 @@
+GET /holders -> 200 OK {"holders":3}

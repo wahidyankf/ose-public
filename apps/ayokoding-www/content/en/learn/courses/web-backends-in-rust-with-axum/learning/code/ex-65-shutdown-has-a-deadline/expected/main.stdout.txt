@@ -1,0 +1,3 @@
+before signal -> 200 OK {"message":"hello, axum"}
+signal received: SIGTERM; draining with a 50ms deadline
+deadline hit: 1 task abandoned; exiting on time

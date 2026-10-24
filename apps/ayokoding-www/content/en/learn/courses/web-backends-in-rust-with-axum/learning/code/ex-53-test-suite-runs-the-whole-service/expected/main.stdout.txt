@@ -1,0 +1,3 @@
+holds GET /orders -> 200 {"orders":["o-1","o-2"]}
+holds GET /healthz -> 200 {"status":"ok"}
+holds GET /nope -> 404

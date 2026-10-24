@@ -1,0 +1,8 @@
+GET /healthz -> 200 OK {"ready":true}
+GET /work -> 200 OK {"served":true}
+signal received: SIGTERM; running the retirement checklist
+GET /healthz -> 503 Service Unavailable {"ready":false}
+GET /work -> 503 Service Unavailable {"error":"shutting_down"}
+drained 0 in-flight; nothing to wait for
+flushed 2 rows: o-1,o-2
+shutdown complete: unready, gated, drained, flushed

@@ -1,0 +1,3 @@
+GET /items -> 200 OK {"items":["pen","paper"]}
+POST /items -> 201 Created {"created":true}
+PUT /items -> 405 Method Not Allowed (empty body)

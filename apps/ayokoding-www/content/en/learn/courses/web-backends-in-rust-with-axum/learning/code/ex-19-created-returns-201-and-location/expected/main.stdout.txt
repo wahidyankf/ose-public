@@ -1,0 +1,1 @@
+POST /orders {"id":"o-1","item":"pen"} -> 201 Created location=/orders/o-1 {"id":"o-1"}

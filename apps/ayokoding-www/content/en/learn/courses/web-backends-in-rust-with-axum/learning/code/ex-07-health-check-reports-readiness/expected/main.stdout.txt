@@ -1,0 +1,2 @@
+GET /healthz -> 200 OK {"status":"ok"}
+GET /readyz -> 200 OK {"ready":true}

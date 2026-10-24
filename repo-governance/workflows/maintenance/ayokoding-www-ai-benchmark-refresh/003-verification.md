@@ -40,9 +40,9 @@ The regenerated `docs/reference/ai-model-benchmarks.md` ships in the same PR.
 
 Run the
 [`ai-benchmark.feature`](../../../../specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature)
-scenarios through the `heavy` tier, which
+scenarios through the `heavy` tier, because this Playwright project starts a dev server and a browser behind it, as
 [Guarded Admission and Parallelism](../../../development/practice/resource-aware-development/guarded-admission-and-parallelism.md)
-assigns to full builds and browser suites:
+describes:
 
 ```bash
 ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npm exec nx -- run ayokoding-www-fe-e2e:test:e2e

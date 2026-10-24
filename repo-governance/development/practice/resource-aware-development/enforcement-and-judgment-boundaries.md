@@ -7,7 +7,7 @@ when_to_use: Use when asking how a resource-aware obligation is enforced, or why
 
 Bootstrap, config, entrypoint, mapping, smoke, and upstream scheduler tests gate the executable
 contract. Plan validation checks guards, classes, edges, and justified serialization. Novel class
-choice and safe human retry remain **unenforced by decision** because they require intent, and
+choice, resource tier choice, and safe human retry remain **unenforced by decision** because they require intent, and
 container init because no OSE container runs HIPPO yet.
 
 ## Boundary presence is enforced; boundary class is not
@@ -33,7 +33,7 @@ Existing compute-admission exemptions remain governed by each checkout's owning 
 An unadmitted node is invisible to the ledger, so the host can reach critical pressure while
 `hippo status` still reports `normal`: nothing on the HIPPO side can defer or shed work it was never
 told about. That failure is unrecoverable after the fact, which is why presence is refused rather
-than reported. A wrong _class_, by contrast, still admits the work and still accounts for it, and so
+than reported. A wrong _class_ or tier, by contrast, still admits the work and still accounts for what was asked, and so
 stays unenforced by decision alongside the judgments named above.
 
 A reservation is also not a hard RSS limit — the ledger knows what an owner _asked for_, not what it

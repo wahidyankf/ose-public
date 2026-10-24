@@ -1,0 +1,2 @@
+GET /notes -> 200 {"notes":[]}
+POST /notes -> 201 {"created":true}

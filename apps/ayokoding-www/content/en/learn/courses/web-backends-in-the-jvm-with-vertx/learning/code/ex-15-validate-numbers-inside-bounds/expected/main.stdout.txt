@@ -1,0 +1,3 @@
+POST /gadgets {"watts":40} -> 200 {"watts":40}
+POST /gadgets {"watts":0} -> 422 {"error":{"code":422,"message":"watts must be 1..1000"}}
+POST /gadgets {"watts":1001} -> 422 {"error":{"code":422,"message":"watts must be 1..1000"}}

@@ -1,0 +1,1 @@
+GET /boom -> 500 {"error":{"code":500,"message":"internal error"}}

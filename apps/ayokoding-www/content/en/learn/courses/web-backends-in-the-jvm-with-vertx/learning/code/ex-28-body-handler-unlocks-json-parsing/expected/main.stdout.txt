@@ -1,0 +1,2 @@
+POST /echo {"name":"gopher"} -> 200 {"router":"with","body-bytes":17,"name":"gopher"}
+POST /echo {"name":"gopher"} -> 200 {"router":"without","body-bytes":0,"name":"(empty)"}

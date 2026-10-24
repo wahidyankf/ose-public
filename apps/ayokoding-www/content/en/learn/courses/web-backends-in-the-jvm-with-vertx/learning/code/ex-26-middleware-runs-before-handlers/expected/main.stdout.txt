@@ -1,0 +1,1 @@
+GET /hello -> 200 x-handler=greet {"message":"hello, vertx"}

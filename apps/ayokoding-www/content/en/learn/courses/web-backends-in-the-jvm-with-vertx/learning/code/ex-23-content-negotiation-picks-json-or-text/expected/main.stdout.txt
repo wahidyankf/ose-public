@@ -1,0 +1,2 @@
+GET /status accept=text/plain -> 200 text/plain gadget 1 is ok
+GET /status accept=null -> 200 application/json {"gadget":1,"status":"ok"}

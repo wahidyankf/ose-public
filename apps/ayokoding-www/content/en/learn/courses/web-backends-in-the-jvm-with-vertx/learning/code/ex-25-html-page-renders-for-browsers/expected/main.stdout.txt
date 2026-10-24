@@ -1,0 +1,1 @@
+GET /dashboard -> 200 text/html titled=true

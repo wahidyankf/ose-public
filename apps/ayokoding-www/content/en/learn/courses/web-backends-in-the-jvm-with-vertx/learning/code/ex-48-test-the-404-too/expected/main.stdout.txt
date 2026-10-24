@@ -1,0 +1,2 @@
+PASS GET /hello status == 200
+PASS GET /nowhere status == 404

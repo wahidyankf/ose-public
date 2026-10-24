@@ -1,0 +1,2 @@
+GET /healthz -> 200 {"status":"ok"}
+GET /hello -> 200 {"message":"hello, vertx"}

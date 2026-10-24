@@ -1,0 +1,2 @@
+GET /hello anon -> 401 x-chain=null {"error":{"code":401,"message":"token required"}}
+GET /hello token -> 200 x-chain=auth,stamp {"message":"hello, vertx"}

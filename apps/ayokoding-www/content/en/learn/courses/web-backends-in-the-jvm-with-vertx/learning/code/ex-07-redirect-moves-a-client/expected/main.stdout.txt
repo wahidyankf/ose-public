@@ -1,0 +1,2 @@
+GET /welcome -> 302 location=/hello
+GET /hello -> 200 {"message":"hello, vertx"}

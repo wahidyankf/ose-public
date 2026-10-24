@@ -1,0 +1,2 @@
+OPTIONS /gadgets -> 204 allow-origin=* allow-methods=GET,POST,OPTIONS
+GET /gadgets -> 200 allow-origin=* allow-methods=GET,POST,OPTIONS

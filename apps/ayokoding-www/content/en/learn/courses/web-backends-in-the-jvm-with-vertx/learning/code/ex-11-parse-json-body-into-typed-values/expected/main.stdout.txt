@@ -1,0 +1,2 @@
+POST /gadgets {"name":"drill","watts":40} -> 200 {"name":"drill","watts":40}
+POST /gadgets {} -> 200 {"name":"unnamed","watts":0}

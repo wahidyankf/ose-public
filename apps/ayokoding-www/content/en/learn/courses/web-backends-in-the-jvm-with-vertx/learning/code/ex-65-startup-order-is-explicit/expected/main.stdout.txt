@@ -1,0 +1,2 @@
+started routes=2 ready=true
+GET /hello -> 200 {"message":"hello, vertx"}

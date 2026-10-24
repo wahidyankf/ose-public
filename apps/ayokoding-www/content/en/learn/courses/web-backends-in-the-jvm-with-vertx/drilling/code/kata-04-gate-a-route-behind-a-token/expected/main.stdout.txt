@@ -1,0 +1,3 @@
+GET /public token=null -> 200 {"open":true}
+GET /private/notes token=null -> 401 {"error":{"code":401,"message":"token required"}}
+GET /private/notes token=Bearer s3cret -> 200 {"notes":[]}

@@ -1,0 +1,2 @@
+GET /visit cookie=null -> 200 set-cookie=visitor=gopher; Path=/ {"visit":"first"}
+GET /visit cookie=visitor=gopher -> 200 set-cookie=visitor=gopher; Path=/ {"visit":"returning"}

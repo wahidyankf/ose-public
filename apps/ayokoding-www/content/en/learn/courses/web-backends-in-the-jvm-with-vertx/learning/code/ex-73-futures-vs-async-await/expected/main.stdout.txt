@@ -1,0 +1,2 @@
+GET /gadgets/1 -> 200 {"id":1,"name":"drill","orders":2}
+GET /gadgets/9 -> 404 {"error":{"code":404,"message":"gadget 9 not found"}}

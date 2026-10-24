@@ -1,0 +1,2 @@
+POST /login full -> 200 {"user":"gopher"}
+POST /login empty -> 200 {"user":"nobody"}

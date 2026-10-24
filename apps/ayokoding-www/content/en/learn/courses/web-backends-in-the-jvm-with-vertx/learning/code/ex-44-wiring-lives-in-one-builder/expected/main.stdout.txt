@@ -1,0 +1,2 @@
+GET /api/gadgets -> 200 {"gadgets":2}
+GET /api/healthz -> 200 {"ready":true}

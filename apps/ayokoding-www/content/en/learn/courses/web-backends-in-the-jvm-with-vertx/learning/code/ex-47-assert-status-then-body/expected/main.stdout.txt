@@ -1,0 +1,2 @@
+PASS status == 200
+PASS body == {"message":"hello, vertx"}

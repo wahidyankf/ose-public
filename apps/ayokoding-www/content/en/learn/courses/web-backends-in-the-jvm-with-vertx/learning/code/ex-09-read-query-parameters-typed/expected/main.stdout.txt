@@ -1,0 +1,3 @@
+GET /items -> 200 {"limit":2,"offset":0}
+GET /items?limit=1&offset=2 -> 200 {"limit":1,"offset":2}
+GET /items?limit=many -> 200 {"limit":2,"offset":0}

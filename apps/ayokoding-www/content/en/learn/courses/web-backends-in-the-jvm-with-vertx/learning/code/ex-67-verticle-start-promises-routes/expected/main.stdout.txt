@@ -1,0 +1,2 @@
+deployed routes=1
+GET /hello -> 200 {"message":"hello, vertx"}

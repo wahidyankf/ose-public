@@ -1,0 +1,3 @@
+probe starting -> 503 {"status":"starting"}
+probe ready -> 200 {"status":"ok"}
+probe draining -> 503 {"status":"starting"}

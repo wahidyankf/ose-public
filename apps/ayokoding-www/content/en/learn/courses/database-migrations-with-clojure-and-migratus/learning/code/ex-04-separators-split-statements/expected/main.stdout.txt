@@ -1,0 +1,3 @@
+migrate: nil
+completed: ["create-catalogue"]
+tables: ["m04_author" "m04_book"]

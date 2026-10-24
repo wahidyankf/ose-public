@@ -1,0 +1,4 @@
+created: ["add-widget.up.sql" "add-widget.down.sql"]
+staged: ("add-widget.down.sql" "add-widget.up.sql")
+destroyed: nil
+empty: true

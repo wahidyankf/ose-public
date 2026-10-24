@@ -1,0 +1,3 @@
+migrate: nil
+completed: ["create-member" "add-age"]
+default: [["age" "0"]]

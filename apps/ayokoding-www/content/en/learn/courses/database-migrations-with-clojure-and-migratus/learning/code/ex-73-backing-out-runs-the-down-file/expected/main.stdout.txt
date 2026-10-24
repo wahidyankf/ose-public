@@ -1,0 +1,3 @@
+migrate: "threw: ERROR: relation \"m73_half\" already exists"
+completed: []
+tables: []

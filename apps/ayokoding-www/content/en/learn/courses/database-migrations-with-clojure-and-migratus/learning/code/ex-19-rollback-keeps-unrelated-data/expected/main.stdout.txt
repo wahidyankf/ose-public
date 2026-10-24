@@ -1,0 +1,4 @@
+migrate: nil
+rollback: nil
+rows: ["precious"]
+completed: ["make-keep"]

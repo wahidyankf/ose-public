@@ -1,0 +1,4 @@
+migrate: nil
+completed: ["make-order" "expand-display-status" "migrate-statuses" "contract-status"]
+statuses: ["open" "shipped"]
+columns: ["id" "display_status"]

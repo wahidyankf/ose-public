@@ -1,0 +1,4 @@
+migrate: nil
+completed: ["make-hot" "index-hot"]
+rows: ["a@x.io" "b@x.io"]
+valid: [true]

@@ -1,0 +1,3 @@
+migrate: nil
+team: ["make-widget"]
+default: []

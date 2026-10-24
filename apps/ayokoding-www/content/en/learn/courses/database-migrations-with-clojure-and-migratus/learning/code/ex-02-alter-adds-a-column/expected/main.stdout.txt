@@ -1,0 +1,6 @@
+migrate: nil
+completed: ["create-books" "add-year"]
+columns: ["id" "title" "year"]
+rollback: nil
+columns: ["id" "title"]
+completed: ["create-books"]

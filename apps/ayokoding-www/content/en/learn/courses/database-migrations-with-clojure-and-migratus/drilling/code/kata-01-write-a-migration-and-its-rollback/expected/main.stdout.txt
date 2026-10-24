@@ -1,0 +1,6 @@
+migrate: nil
+completed: ["create-posts" "add-subtitle"]
+columns: ["id" "title" "subtitle"]
+rollback: nil
+completed: ["create-posts"]
+columns: ["id" "title"]

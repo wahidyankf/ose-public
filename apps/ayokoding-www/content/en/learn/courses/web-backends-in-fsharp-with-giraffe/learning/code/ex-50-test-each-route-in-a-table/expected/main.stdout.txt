@@ -1,0 +1,5 @@
+GET /a ok=true
+POST /a ok=true
+GET /b ok=true
+GET /c ok=true
+GET /nope ok=true

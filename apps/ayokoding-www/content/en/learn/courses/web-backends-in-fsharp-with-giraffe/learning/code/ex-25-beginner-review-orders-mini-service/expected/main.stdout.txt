@@ -1,0 +1,4 @@
+GET /orders -> 200 [{"id":1,"item":"book","qty":2},{"id":2,"item":"pen","qty":5}]
+POST /orders -> 201 loc=/orders/3 {"id":3,"item":"ruler","qty":1}
+GET /orders/1 -> 200 {"id":1,"item":"book","qty":2}
+GET /orders/7 -> 404 {"error":"order-not-found"}

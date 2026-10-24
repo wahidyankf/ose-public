@@ -1,0 +1,3 @@
+GET /healthz -> 200 {"status":"ok"}
+GET /app -> 200 app-ok
+GET /missing -> 404 Not Found

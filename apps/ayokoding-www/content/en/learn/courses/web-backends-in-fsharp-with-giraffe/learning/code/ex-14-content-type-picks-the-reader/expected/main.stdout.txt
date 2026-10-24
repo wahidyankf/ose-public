@@ -1,0 +1,6 @@
+POST /ingest -> 200 {"item":"book","qty":2}
+POST /ingest form -> 200 {"name":"ada"}
+POST /ingest text -> 415 unsupported-media-type
+GET /offer -> 200 {"id":9,"qty":2}
+GET /offer + accept csv -> 200 id,qty
+9,2

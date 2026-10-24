@@ -1,0 +1,3 @@
+POST /orders -> 400 {"error":"item-required"}
+POST /orders -> 400 {"error":"qty-positive"}
+POST /orders -> 201 {"item":"book","qty":2}

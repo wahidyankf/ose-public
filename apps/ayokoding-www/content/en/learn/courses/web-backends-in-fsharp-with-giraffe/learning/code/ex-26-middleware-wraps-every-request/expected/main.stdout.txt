@@ -1,0 +1,3 @@
+GET /a -> 200 marked=yes a
+GET /b -> 200 marked=yes b
+GET /nope -> 404 marked=yes Not Found

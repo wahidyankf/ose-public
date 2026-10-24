@@ -1,0 +1,2 @@
+GET /feed -> 200 cache=max-age=60 {"items":[1,2]}
+GET /live -> 200 cache=no-store {"items":[3]}

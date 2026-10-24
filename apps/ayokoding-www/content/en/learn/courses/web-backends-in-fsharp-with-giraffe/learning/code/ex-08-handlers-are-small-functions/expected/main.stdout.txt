@@ -1,0 +1,2 @@
+GET /hello -> 200 {"message":"hello"}
+GET /version -> 200 {"version":"1.0.0"}

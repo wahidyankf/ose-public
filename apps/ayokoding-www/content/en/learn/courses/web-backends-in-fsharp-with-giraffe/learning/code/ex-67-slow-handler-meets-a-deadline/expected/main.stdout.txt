@@ -1,0 +1,2 @@
+GET /slow -> 503 deadline
+GET /quick -> 200 quick-ok

@@ -1,0 +1,2 @@
+POST /orders -> 201 loc=/orders/9 {"id":9,"item":"book"}
+GET /orders/9 -> 200 {"id":9,"item":"book"}

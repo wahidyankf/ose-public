@@ -1,0 +1,2 @@
+GET /report accept=none -> 200 file=attachment; filename=report.csv a,b
+GET /report accept=application/json -> 200 file=inline {"rows":[["a","b"]]}

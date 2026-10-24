@@ -1,0 +1,2 @@
+GET /orders/1 -> 200 {"id":1,"item":"book"}
+GET /orders/9 -> 404 {"error":"order-not-found"}

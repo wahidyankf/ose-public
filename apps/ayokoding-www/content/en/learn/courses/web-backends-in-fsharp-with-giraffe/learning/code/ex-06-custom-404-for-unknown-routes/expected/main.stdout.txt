@@ -1,0 +1,2 @@
+GET /known -> 200 here
+GET /missing -> 404 {"error":"not-found"}

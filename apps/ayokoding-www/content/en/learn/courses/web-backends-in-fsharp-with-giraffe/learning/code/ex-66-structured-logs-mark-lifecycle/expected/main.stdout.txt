@@ -1,0 +1,3 @@
+GET /a -> 200 a
+log=method=GET path=/a
+event=stopped

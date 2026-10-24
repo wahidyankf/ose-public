@@ -1,0 +1,4 @@
+GET /a -> 200 pass=true
+GET /b -> 200 pass=true
+GET /nope -> 404 pass=true
+POST /a -> 404 pass=true

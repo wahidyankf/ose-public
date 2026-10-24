@@ -1,0 +1,5 @@
+GET /notes -> 200 list-notes
+POST /notes -> 200 create-note
+PUT /notes -> 200 replace-notes
+DELETE /notes -> 200 drop-notes
+PATCH /notes -> 404 Not Found

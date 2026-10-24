@@ -1,0 +1,3 @@
+GET /admin [(none)] -> 401
+GET /admin [admin-1] -> 200 {"area":"admin"}
+GET /public [(none)] -> 200 {"area":"public"}

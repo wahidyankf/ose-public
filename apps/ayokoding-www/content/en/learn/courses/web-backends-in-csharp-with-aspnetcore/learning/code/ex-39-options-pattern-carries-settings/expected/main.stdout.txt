@@ -1,0 +1,1 @@
+GET /settings -> 200 {"shop":"corner-shop","max":50}

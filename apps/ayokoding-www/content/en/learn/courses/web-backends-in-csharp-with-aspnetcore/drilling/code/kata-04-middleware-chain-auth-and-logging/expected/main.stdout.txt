@@ -1,0 +1,4 @@
+GET /admin [(none)] -> 401 {"error":"unauthorized"}
+GET /admin [admin-1] -> 200 {"area":"admin"}
+log GET /admin -> 200
+log GET /admin -> 401

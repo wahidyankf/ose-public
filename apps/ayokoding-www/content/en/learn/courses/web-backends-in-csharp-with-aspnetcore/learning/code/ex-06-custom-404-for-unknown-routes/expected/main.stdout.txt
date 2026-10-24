@@ -1,0 +1,2 @@
+GET /hello -> 200 {"message":"hello"}
+GET /nowhere -> 404 {"error":"unknown-route"}

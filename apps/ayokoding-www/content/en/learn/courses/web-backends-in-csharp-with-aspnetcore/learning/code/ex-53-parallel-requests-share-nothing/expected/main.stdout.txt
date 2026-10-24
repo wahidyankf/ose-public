@@ -1,0 +1,2 @@
+parallel=10 distinct=10
+first={"ticket":"T-1"} last={"ticket":"T-9"}

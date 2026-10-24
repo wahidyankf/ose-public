@@ -1,0 +1,3 @@
+GET /books -> 200 {"books":["dune","hyperion","foundation"],"count":3}
+GET /books?prefix=h -> 200 {"books":["hyperion"],"count":1}
+GET /books?prefix=z -> 200 {"books":[],"count":0}

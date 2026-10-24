@@ -1,0 +1,1 @@
+GET /report -> 200 {"report":"weekly:42"}

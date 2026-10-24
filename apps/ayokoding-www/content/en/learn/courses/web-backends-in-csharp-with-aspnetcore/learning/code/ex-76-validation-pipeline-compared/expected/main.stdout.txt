@@ -1,0 +1,3 @@
+POST /orders -> 201 {"id":1,"title":"dune","qty":2}
+POST /orders -> 400 {"error":"title-is-required"}
+fastapi: order: Order validates before the handler

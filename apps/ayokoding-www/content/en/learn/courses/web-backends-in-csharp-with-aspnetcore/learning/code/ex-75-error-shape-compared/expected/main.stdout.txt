@@ -1,0 +1,3 @@
+GET /books/99 -> 404 {"code":404,"error":"book-not-found","hint":"check the id and retry"}
+POST /books -> 400 {"code":400,"error":"title-is-required","hint":"send a JSON body with a title"}
+fastapi: {"detail": "book not found"}

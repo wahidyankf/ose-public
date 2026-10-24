@@ -1,0 +1,3 @@
+GET /shelf -> 200 {"books":["dune"]}
+POST /shelf -> 201 {"title":"hyperion"}
+GET /shelf/count -> 200 {"count":2}

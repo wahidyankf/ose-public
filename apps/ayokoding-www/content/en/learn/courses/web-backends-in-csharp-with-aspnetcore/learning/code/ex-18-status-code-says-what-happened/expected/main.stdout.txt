@@ -1,0 +1,4 @@
+GET /items -> 200 {"mode":"list"}
+POST /items -> 201 {"id":1}
+DELETE /items/1 -> 204
+GET /boom -> 400 {"error":"bad-item"}

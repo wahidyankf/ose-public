@@ -1,0 +1,3 @@
+POST /books -> 400 {"error":"title-is-required"}
+GET /books/99 -> 404 {"error":"book-not-found"}
+DELETE /books/1 -> 405

@@ -1,0 +1,2 @@
+GET /book [application/json] -> 200 application/json {"title":"Dune","author":"Frank Herbert","year":1965}
+GET /book [text/csv] -> 200 text/plain Dune,1965

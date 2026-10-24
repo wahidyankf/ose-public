@@ -1,0 +1,2 @@
+GET /health -> 200 {"status":"ok"}
+GET /health -> 503 {"status":"draining"}

@@ -1,0 +1,2 @@
+GET /who [checkout] -> 200 {"caller":"checkout"}
+GET /who [(none)] -> 200 {"caller":"anonymous"}

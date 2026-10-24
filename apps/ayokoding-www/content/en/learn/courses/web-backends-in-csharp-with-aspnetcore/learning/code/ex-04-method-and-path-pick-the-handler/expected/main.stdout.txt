@@ -1,0 +1,4 @@
+GET /orders -> 200 {"mode":"list"}
+POST /orders -> 200 {"mode":"create"}
+GET /orders/7 -> 200 {"mode":"one","id":7}
+DELETE /orders -> 405

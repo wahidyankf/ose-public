@@ -1,0 +1,5 @@
+GET /health -> 200 {"status":"ok"}
+GET /v1/orders -> 200 [{"id":1,"title":"dune"}]
+GET /v1/orders/9 -> 404 {"error":"order-not-found"}
+POST /v1/orders -> 400 {"error":"qty-must-be-positive"}
+POST /v1/orders -> 201 {"id":2,"title":"hyperion","qty":3}

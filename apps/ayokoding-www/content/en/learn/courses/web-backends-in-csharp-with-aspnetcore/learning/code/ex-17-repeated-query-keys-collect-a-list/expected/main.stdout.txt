@@ -1,0 +1,3 @@
+GET /search?tag=rust&tag=go&tag=csharp -> 200 {"count":3,"tags":["csharp","go","rust"]}
+GET /search?tag=go -> 200 {"count":1,"tags":["go"]}
+GET /search -> 200 {"count":0,"tags":[]}

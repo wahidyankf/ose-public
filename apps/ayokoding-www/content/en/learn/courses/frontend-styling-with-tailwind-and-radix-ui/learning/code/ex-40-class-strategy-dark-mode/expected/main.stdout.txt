@@ -1,0 +1,3 @@
+light root: ''
+dark root: 'dark'
+per-component theme props: 0

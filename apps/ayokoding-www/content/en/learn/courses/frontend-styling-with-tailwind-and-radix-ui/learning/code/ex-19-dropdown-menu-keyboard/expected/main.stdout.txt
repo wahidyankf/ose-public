@@ -1,0 +1,4 @@
+ArrowDown from 0: Settings
+ArrowDown from 2: Profile
+End from 0: Logout
+Enter keeps: Settings

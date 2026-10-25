@@ -1,0 +1,3 @@
+open: rounded-lg bg-white p-6 data-[state=open]:animate-in
+closed: rounded-lg bg-white p-6 data-[state=closed]:animate-out
+hand-written state CSS lines: 0

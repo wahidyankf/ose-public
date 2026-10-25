@@ -1,0 +1,3 @@
+focus was: settings-button
+focus now: dialog-content
+tab stays inside while open: true

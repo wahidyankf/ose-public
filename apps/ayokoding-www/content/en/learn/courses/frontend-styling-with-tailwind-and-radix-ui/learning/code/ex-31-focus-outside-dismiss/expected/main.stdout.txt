@@ -1,0 +1,3 @@
+overlay press: closed, focus now: settings-button
+content press: stays open, focus unchanged
+trigger press: stays open, focus unchanged

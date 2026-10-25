@@ -1,0 +1,4 @@
+right from 0: Password
+right from 2: Account
+left from 0: Team
+tab stops in the tab row: 1

@@ -1,0 +1,4 @@
+brand = #4f46e5
+blue-600 still = #2563eb
+token count: 3
+arbitrary hex still blocked: true

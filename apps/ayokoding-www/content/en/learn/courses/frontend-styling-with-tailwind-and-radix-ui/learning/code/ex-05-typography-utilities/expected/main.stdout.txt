@@ -1,0 +1,3 @@
+size: 1.125rem
+weight: 600
+leading: 1.75rem

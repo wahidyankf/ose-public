@@ -1,0 +1,4 @@
+focus shows: true
+escape hides: false
+blur hides: false
+hover shows: true

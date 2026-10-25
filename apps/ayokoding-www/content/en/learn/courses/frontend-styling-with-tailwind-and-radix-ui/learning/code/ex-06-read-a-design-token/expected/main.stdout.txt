@@ -1,0 +1,3 @@
+blue-600 = #2563eb
+slate-900 = #0f172a
+blue-650 throws: true

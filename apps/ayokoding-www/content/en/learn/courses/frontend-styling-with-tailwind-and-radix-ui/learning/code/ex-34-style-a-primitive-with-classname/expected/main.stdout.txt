@@ -1,0 +1,3 @@
+behavior: focus-trap+escape+portal
+classes: rounded-lg bg-white p-6 shadow-lg
+behavior props passed: 0

@@ -1,0 +1,3 @@
+dialog closed
+focus now: settings-button
+closed dialog ignores escape: dialog already closed: nothing to do

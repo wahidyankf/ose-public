@@ -1,0 +1,3 @@
+card: max-w-sm rounded-lg border p-6 shadow
+parts: layout=max-w-sm surface=rounded-lg,border,shadow spacing=p-6
+extra: max-w-sm rounded-lg border p-6 shadow bg-white

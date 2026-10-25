@@ -1,0 +1,3 @@
+top: data-[state=open]:slide-in-from-top
+center: data-[state=open]:fade-in
+closing: data-[state=closed]:animate-out

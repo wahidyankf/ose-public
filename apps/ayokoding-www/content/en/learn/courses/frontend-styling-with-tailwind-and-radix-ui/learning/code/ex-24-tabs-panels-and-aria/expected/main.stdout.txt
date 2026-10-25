@@ -1,0 +1,2 @@
+active: role=tab selected=true controls=panel-account
+idle: role=tab selected=false controls=panel-password

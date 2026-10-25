@@ -1,0 +1,3 @@
+375px: text-sm
+1024px: text-lg
+base covers small screens: true

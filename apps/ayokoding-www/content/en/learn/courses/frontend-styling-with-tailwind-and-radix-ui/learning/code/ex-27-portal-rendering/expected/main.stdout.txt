@@ -1,0 +1,3 @@
+trigger inside card: body (default mount)
+trigger inside overflow-hidden: body (escapes the clip)
+overlay clipped by ancestor: false

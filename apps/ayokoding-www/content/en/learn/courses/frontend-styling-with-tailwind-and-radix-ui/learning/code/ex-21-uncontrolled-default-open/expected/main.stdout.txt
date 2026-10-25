@@ -1,0 +1,3 @@
+starts open: true
+ends open: false
+parent votes cast: 0

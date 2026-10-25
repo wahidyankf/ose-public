@@ -1,0 +1,4 @@
+bg-blue-600: true
+bg-[#123456]: false
+w-[3px] allowlisted: true
+drift caught at review time: true

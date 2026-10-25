@@ -1,0 +1,23 @@
+schema: ayokoding.run/v1
+toolchain: elixir
+dependencies:
+  lockfile: learning/code/mix.lock
+resources:
+  memory: 2g
+runs:
+  - name: main
+    # Same offline Hex-seed shape as the Ecto course: fresh HEX_HOME
+    # from the seed, offline deps.get, compile, then run the script.
+    command:
+      [
+        sh,
+        -c,
+        'export HEX_HOME=$(mktemp -d) MIX_HOME=/deps/mix-seed && cp -r /deps/hex-seed/. "$HEX_HOME/" && mix deps.get > /dev/null && mix compile > /dev/null && mix run --no-compile priv/main.exs',
+      ]
+    timeout: 600s
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+      # Phoenix and LiveView dependencies report compile notes on
+      # stderr; unit stderr stays unasserted.
+      stderr: ignore

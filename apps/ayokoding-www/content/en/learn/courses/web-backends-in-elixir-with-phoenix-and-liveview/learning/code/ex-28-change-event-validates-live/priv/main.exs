@@ -1,0 +1,84 @@
+# => Example 28: Change Event Validates Live
+Logger.configure(level: :warning)
+# => warnings only; LiveView stays silent below this
+Code.compiler_options(ignore_module_conflict: true)
+# => reloaded modules stay silent on double runs
+
+# => one schema module names the handle field
+defmodule Ex28.Handle do
+  # => schema and changeset macros live here
+  use Ecto.Schema
+  # => cast and validate helpers live here
+  import Ecto.Changeset
+
+  # => handles persist under this source name
+  schema "handles" do
+    # => the unique name a member chooses
+    field(:handle, :string)
+  end
+
+  # => three characters minimum, as before
+  def changeset(handle, attrs) do
+    # => cast first, then require, then bound
+    handle
+    |> cast(attrs, [:handle])
+    |> validate_required([:handle])
+    |> validate_length(:handle, min: 3)
+
+    # => end changeset: every keystroke re-runs this
+  end
+
+  # => module boundary stays explicit
+end
+
+# => one LiveView module validates each keystroke
+defmodule Ex28.Form do
+  # => mount, event, and render callbacks live here
+  use Phoenix.LiveView
+
+  # => mount starts from an empty changeset
+  def mount(_params, _session, socket) do
+    # => the form assign carries the first errors
+    {:ok, assign(socket, errors: [])}
+    # => end mount: empty form, empty errors
+  end
+
+  # => the validate event re-checks the typed handle
+  def handle_event("validate", %{"handle" => handle}, socket) do
+    # => the changeset runs on the fresh input
+    cs = Ex28.Handle.changeset(struct(Ex28.Handle), %{handle: handle})
+    # => traverse_errors turns tuples into sentences
+    errors = Ecto.Changeset.traverse_errors(cs, fn {msg, _opts} -> msg end)
+    # => the error list becomes the next state
+    {:noreply, assign(socket, errors: errors[:handle] || [])}
+    # => end event: keystroke in, errors out
+  end
+
+  # => the template counts the error lines
+  def render(assigns), do: ~H"<p>errors: {length(@errors)}</p>"
+  # => end view: errors shape the page
+end
+
+# => run/0 holds the whole example narrative
+defmodule Ex28.Main do
+  # => single entry point the last line calls
+  def run do
+    # => mount first, so the errors assign exists
+    {:ok, socket} = Ex28.Form.mount(%{}, %{}, struct(Phoenix.LiveView.Socket))
+    # => the visitor types a two-letter handle
+    {:noreply, bad} = Ex28.Form.handle_event("validate", %{"handle" => "ab"}, socket)
+    # => Output: short: 1
+    IO.puts("short: #{length(bad.assigns.errors)}")
+    # => the visitor completes a five-letter handle
+    {:noreply, good} = Ex28.Form.handle_event("validate", %{"handle" => "adanya"}, bad)
+    # => Output: fixed: 0
+    IO.puts("fixed: #{length(good.assigns.errors)}")
+
+    # => end run: the narrative returns here
+  end
+
+  # => module boundary stays explicit
+end
+
+# => the entry point runs exactly once per execution
+Ex28.Main.run()

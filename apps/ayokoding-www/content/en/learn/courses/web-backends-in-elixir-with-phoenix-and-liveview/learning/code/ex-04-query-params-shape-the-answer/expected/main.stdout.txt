@@ -1,0 +1,2 @@
+full: q=phoenix page=2
+default: q=liveview page=1

@@ -7,7 +7,7 @@ authoring change. Mix is Elixir's build and dependency tool. The library exists 
 [BeaverNest's source snapshot](https://github.com/wahidyankf/beaver-nest/tree/8ec64d79958f5c260101283ec16443f95376174d/libs/ex-bdd).
 It has not yet been copied into this repository.
 
-The [backlog plan](../../../plans/backlog/ayokoding-app-web/README.md) carries the intended import,
+The [rewrite plan](../../../plans/in-progress/ayokoding-app-web/README.md) carries the intended import,
 dependency integration, adapter design, and local verification commands. Its proposed components
 do not constitute an as-built OSE architecture.
 

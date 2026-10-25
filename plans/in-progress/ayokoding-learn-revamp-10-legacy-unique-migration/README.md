@@ -171,7 +171,7 @@ open until the user decides. See [tech-docs/006](./tech-docs/006-execution-model
 
 ## Parallel Phoenix Rewrite
 
-The [AyoKoding Phoenix LiveView rewrite](../../backlog/ayokoding-app-web/README.md) runs
+The [AyoKoding Phoenix LiveView rewrite](../ayokoding-app-web/README.md) runs
 independently while this migration continues. This plan retains ownership of course authoring,
 catalog metadata, the legacy mapping, and code-example toolchains; its existing dependencies and
 authorized execution order stay in force. Phoenix reads the current corpus in place and owns

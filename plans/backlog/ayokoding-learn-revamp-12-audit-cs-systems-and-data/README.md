@@ -144,7 +144,7 @@ commit, and the branch is pushed four times, with a draft PR from the first push
 
 ## Parallel Phoenix Rewrite
 
-The [AyoKoding Phoenix LiveView rewrite](../ayokoding-app-web/README.md) runs independently of
+The [AyoKoding Phoenix LiveView rewrite](../../in-progress/ayokoding-app-web/README.md) runs independently of
 this plan. Keep this plan's existing execution order and ownership of CS/systems/data content,
 prerequisites, metadata, capstone work, the audited-course registry, filler baseline, and example
 harness. The rewrite owns reconciling these changes after they merge while reading the existing

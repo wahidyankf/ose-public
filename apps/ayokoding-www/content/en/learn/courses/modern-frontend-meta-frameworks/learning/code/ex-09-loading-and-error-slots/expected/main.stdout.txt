@@ -1,0 +1,6 @@
+next loading => skeleton: loading shelf...
+start loading => pending: loading shelf...
+next ready => shelf: Kopi Toraja 250g, Teh Melati 100g
+start ready => shelf: Kopi Toraja 250g, Teh Melati 100g
+next failed => fallback: shelf unavailable, retry
+start failed => error: shelf unavailable, retry

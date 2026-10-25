@@ -1,0 +1,3 @@
+first visit -> 200 MISS renders=1 <ul><li>Kopi Toraja 250g</li><li>Teh Melati 100g</li></ul>
+second visit -> 200 HIT renders=1 <ul><li>Kopi Toraja 250g</li><li>Teh Melati 100g</li></ul>
+third visit -> 200 HIT renders=1 <ul><li>Kopi Toraja 250g</li><li>Teh Melati 100g</li></ul>

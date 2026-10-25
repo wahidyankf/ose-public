@@ -1,0 +1,3 @@
+loader: Teh Melati 100g 32000
+loader: missing productId
+loader: unknown susu-009

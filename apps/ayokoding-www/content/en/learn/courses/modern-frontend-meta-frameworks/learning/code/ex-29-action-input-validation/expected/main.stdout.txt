@@ -1,0 +1,4 @@
+valid: []
+unknown id: [{"field":"id","rule":"unknown product"}]
+bad qty: [{"field":"qty","rule":"must be 1 to 9"}]
+both bad: [{"field":"id","rule":"unknown product"},{"field":"qty","rule":"must be 1 to 9"}]

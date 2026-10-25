@@ -1,0 +1,2 @@
+link: /products/kopi-001
+link: /products/teh-002

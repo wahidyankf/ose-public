@@ -1,0 +1,4 @@
+blocking late => wait then serve fresh HTML for susu-009
+true late => serve shell, swap in susu-009 later
+false late => 404 for susu-009
+blocking built => serve built HTML

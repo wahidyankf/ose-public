@@ -1,0 +1,14 @@
+schema: ayokoding.run/v1
+toolchain: typescript
+runs:
+  - name: build
+    kind: check
+    command: [tsc, --strict, --target, es2022, --module, commonjs, after/kata.ts]
+    expect:
+      exit: 0
+      stdout: ignore
+  - name: main
+    command: [sh, -c, "tsc --strict --target es2022 --module commonjs after/kata.ts && node after/kata.js"]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

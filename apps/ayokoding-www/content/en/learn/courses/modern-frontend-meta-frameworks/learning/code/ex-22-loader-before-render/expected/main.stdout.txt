@@ -1,0 +1,3 @@
+GET /next/detail/kopi-001 -> 200 next: Kopi Toraja 250g 68000
+GET /start/detail/kopi-001 -> 200 start: Kopi Toraja 250g 68000
+GET /next/detail/susu-009 -> 404 next: product not found

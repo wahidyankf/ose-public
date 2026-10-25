@@ -1,0 +1,4 @@
+chunk: <header>NusaMart</header>
+chunk: <ul><li>Kopi Toraja 250g</li></ul>
+chunk: <p>4.8 from 212 tasters</p>
+assembled: <header>NusaMart</header><ul><li>Kopi Toraja 250g</li></ul><p>4.8 from 212 tasters</p>

@@ -1,0 +1,3 @@
+t10: <ul><li>Kopi Toraja 250g</li></ul> renders=1
+t20: <ul><li>Kopi Toraja 250g</li></ul> renders=1
+t90: <ul><li>Kopi Toraja 250g</li></ul> renders=2

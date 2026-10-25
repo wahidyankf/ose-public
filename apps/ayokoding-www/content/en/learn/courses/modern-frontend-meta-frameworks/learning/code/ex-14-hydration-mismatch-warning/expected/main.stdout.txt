@@ -1,0 +1,2 @@
+hydrate silent
+hydrate warn: server <p>68,000</p> vs client <p>68000</p>

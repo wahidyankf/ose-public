@@ -1,0 +1,8 @@
+next pages: 3
+next /products/kopi-001 => <h1>kopi-001</h1>
+next /products/teh-002 => <h1>teh-002</h1>
+next /products/gula-003 => <h1>gula-003</h1>
+start pages: 3
+start /products/kopi-001 => <h1>kopi-001</h1>
+start /products/teh-002 => <h1>teh-002</h1>
+start /products/gula-003 => <h1>gula-003</h1>

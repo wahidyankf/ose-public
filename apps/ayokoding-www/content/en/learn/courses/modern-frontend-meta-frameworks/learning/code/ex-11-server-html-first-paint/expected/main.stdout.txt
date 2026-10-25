@@ -1,0 +1,2 @@
+GET /next/ssr -> 200 paints-kopi=true
+GET /start/ssr -> 200 paints-kopi=true

@@ -1,0 +1,3 @@
+bought 1 x kopi-001
+fallback [out-of-stock]: kopi-001 has 1
+fallback [bad-qty]: qty 0

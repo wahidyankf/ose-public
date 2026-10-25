@@ -1,0 +1,7 @@
+files: /index.html,/products.html,/products/kopi-001.html,/products/teh-002.html,/about.html
+sitemap entries: 5
+<url><loc>https://fictional-nusamart.example/</loc></url>
+<url><loc>https://fictional-nusamart.example/products</loc></url>
+<url><loc>https://fictional-nusamart.example/products/kopi-001</loc></url>
+<url><loc>https://fictional-nusamart.example/products/teh-002</loc></url>
+<url><loc>https://fictional-nusamart.example/about</loc></url>

@@ -1,0 +1,4 @@
+POST /next/cart/add kopi-001 x2 -> 200 next cart: count 2 total 136000
+POST /next/cart/add teh-002 x1 -> 200 next cart: count 3 total 168000
+POST /start/cart/add kopi-001 x2 -> 200 start cart: count 2 total 136000
+POST /next/cart/add susu-009 x1 -> 422 next cart: unknown susu-009

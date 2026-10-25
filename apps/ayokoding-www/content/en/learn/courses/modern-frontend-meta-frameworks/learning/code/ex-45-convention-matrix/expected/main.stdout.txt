@@ -1,0 +1,10 @@
+route file: next=app/.../page.tsx start=routes/.../index.tsx differ
+dynamic segment: next=[id] start=$productId differ
+catch-all: next=[...slug] start=$ splat differ
+shared shell: next=layout.tsx + children start=__root + Outlet agree
+server data: next=async Server Component start=route loader agree
+mutation: next=server action start=server function POST agree
+param types: next=inferred from files start=inferred from tree agree
+deploy target: next=node server or static start=node server or static agree
+agree: 5
+differ: 3

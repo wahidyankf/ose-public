@@ -13,7 +13,6 @@ CREATE TABLE buoys (
 
 -- rollback DROP TABLE buoys;
 -- => dropping the table reverses exactly what this changeset built
-
 -- changeset course:002-make-beacons
 -- => the second merged changeset creates the beacons table
 -- => the rival branch edits this changeset after merging: the tamper below

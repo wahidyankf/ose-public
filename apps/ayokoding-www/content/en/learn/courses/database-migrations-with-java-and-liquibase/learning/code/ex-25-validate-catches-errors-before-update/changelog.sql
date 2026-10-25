@@ -13,7 +13,6 @@ CREATE TABLE beacons (
 
 -- rollback DROP TABLE beacons;
 -- => this reverse never runs: validation refuses before any update
-
 -- changeset course:001-make-beacons
 -- => DELIBERATE BREAK: the same author and id as the changeset above
 -- => two identities collide, so validation must refuse the whole changelog

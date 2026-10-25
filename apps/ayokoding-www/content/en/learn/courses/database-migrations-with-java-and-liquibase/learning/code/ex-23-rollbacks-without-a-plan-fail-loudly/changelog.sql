@@ -12,10 +12,11 @@ CREATE TABLE crates (
 
 -- rollback DROP TABLE crates;
 -- => this reverse exists but never runs: the failure below fires first
-
 -- changeset course:002-seal-crates
 -- => raw SQL with deliberately no rollback block and no inferable reverse
 -- => ADD COLUMN on raw SQL cannot be reversed automatically, by design
-ALTER TABLE crates ADD COLUMN seal VARCHAR(20);
+ALTER TABLE crates
+ADD COLUMN seal VARCHAR(20);
+
 -- => the missing reverse is the whole lesson: rolling this back must fail
 -- => a data-preserving reverse would need a compensating changeset instead

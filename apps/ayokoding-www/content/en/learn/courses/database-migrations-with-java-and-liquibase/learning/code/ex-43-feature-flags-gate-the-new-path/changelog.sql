@@ -10,16 +10,24 @@ CREATE TABLE feature_flags (
   enabled BOOLEAN NOT NULL DEFAULT FALSE
   -- => new paths start disabled: shipping the schema enables nothing
 );
-INSERT INTO feature_flags (name) VALUES ('new_checkout'), ('new_reports');
--- => two dark flags; the flip below lights exactly one of them
 
+INSERT INTO
+  feature_flags (name)
+VALUES
+  ('new_checkout'),
+  ('new_reports');
+
+-- => two dark flags; the flip below lights exactly one of them
 -- rollback DROP TABLE feature_flags;
 -- => dropping the table reverses the flags and the flip together
-
 -- changeset course:002-flip-checkout
 -- => the flip changeset lights the ready path once readers can take it
 -- => flipping is data, so it ships as a tracked changeset like the rest
-UPDATE feature_flags SET enabled = TRUE WHERE name = 'new_checkout';
+UPDATE feature_flags
+SET
+  enabled = TRUE
+WHERE
+  name = 'new_checkout';
 
 -- rollback UPDATE feature_flags SET enabled = FALSE WHERE name = 'new_checkout';
 -- => unflipping restores the dark default without dropping the flag

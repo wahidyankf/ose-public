@@ -134,11 +134,15 @@ CREATE TABLE cultivars (
 
 -- rollback DROP TABLE cultivars;
 -- => dropping the table reverses exactly what this changeset built
-
 -- changeset course:002-seed-cultivars
 -- => the data changeset inserts exactly three reference rows
 -- => reruns skip it as applied, so the rows never duplicate
-INSERT INTO cultivars (name) VALUES ('arabica'), ('robusta'), ('liberica');
+INSERT INTO
+  cultivars (name)
+VALUES
+  ('arabica'),
+  ('robusta'),
+  ('liberica');
 
 -- rollback DELETE FROM cultivars;
 -- => the declared delete removes exactly the rows this changeset added
@@ -270,25 +274,35 @@ CREATE TABLE subscribers (
   email VARCHAR(120) NOT NULL
   -- => the email domain below decides each row's derived tier
 );
-INSERT INTO subscribers (email) VALUES ('budi@kampus.edu'), ('sari@mail.id'), ('agus@kampus.edu');
+
+INSERT INTO
+  subscribers (email)
+VALUES
+  ('budi@kampus.edu'),
+  ('sari@mail.id'),
+  ('agus@kampus.edu');
+
 -- => three seeded rows: two edu addresses and one regular address
 -- => reruns skip this changeset as applied, so the rows never duplicate
-
 -- rollback DROP TABLE subscribers;
 -- => dropping the table reverses exactly what this changeset built
-
 -- changeset course:002-add-tier
 -- => the schema changeset adds the tier column, nullable for now
 -- => old rows hold NULL until the backfill below derives their values
-ALTER TABLE subscribers ADD COLUMN tier VARCHAR(20);
+ALTER TABLE subscribers
+ADD COLUMN tier VARCHAR(20);
 
 -- rollback ALTER TABLE subscribers DROP COLUMN tier;
 -- => dropping the column reverses exactly what this changeset added
-
 -- changeset course:003-backfill-tier
 -- => the data changeset derives every row's tier from its email domain
 -- => reruns skip it as applied, so values never double-derive
-UPDATE subscribers SET tier = CASE WHEN email LIKE '%@kampus.edu' THEN 'pro' ELSE 'basic' END;
+UPDATE subscribers
+SET
+  tier = CASE
+    WHEN email LIKE '%@kampus.edu' THEN 'pro'
+    ELSE 'basic'
+  END;
 
 -- rollback UPDATE subscribers SET tier = NULL;
 -- => nulling the column un-derives every row without dropping the column
@@ -590,32 +604,50 @@ CREATE TABLE parcels (
   score INTEGER
   -- => scores start NULL; each batch below fills its own two rows
 );
-INSERT INTO parcels (code) VALUES ('B-1'), ('B-2'), ('B-3'), ('B-4'), ('B-5'), ('B-6');
--- => six seeded rows in three natural pairs for the three batches
 
+INSERT INTO
+  parcels (code)
+VALUES
+  ('B-1'),
+  ('B-2'),
+  ('B-3'),
+  ('B-4'),
+  ('B-5'),
+  ('B-6');
+
+-- => six seeded rows in three natural pairs for the three batches
 -- rollback DROP TABLE parcels;
 -- => dropping the table reverses the seed and every batch above it
-
 -- changeset course:002-score-first-batch
 -- => the first batch scores only the B-1 and B-2 rows
 -- => a narrow WHERE keeps the locked row set small and brief
-UPDATE parcels SET score = 10 WHERE code IN ('B-1', 'B-2');
+UPDATE parcels
+SET
+  score = 10
+WHERE
+  code IN ('B-1', 'B-2');
 
 -- rollback UPDATE parcels SET score = NULL WHERE code IN ('B-1', 'B-2');
 -- => nulling exactly the batch's rows reverses this batch alone
-
 -- changeset course:003-score-second-batch
 -- => the second batch scores only the B-3 and B-4 rows
 -- => interruption between batches leaves completed bands committed
-UPDATE parcels SET score = 20 WHERE code IN ('B-3', 'B-4');
+UPDATE parcels
+SET
+  score = 20
+WHERE
+  code IN ('B-3', 'B-4');
 
 -- rollback UPDATE parcels SET score = NULL WHERE code IN ('B-3', 'B-4');
 -- => each batch carries its own reverse, independent of its neighbours
-
 -- changeset course:004-score-third-batch
 -- => the third batch scores the final B-5 and B-6 rows
 -- => three small commits beat one six-row lock for live tables
-UPDATE parcels SET score = 30 WHERE code IN ('B-5', 'B-6');
+UPDATE parcels
+SET
+  score = 30
+WHERE
+  code IN ('B-5', 'B-6');
 
 -- rollback UPDATE parcels SET score = NULL WHERE code IN ('B-5', 'B-6');
 -- => the last batch reverses first when the release rolls back
@@ -756,11 +788,14 @@ CREATE TABLE shelves (
 
 -- rollback DROP TABLE shelves;
 -- => dropping the table reverses the schema and orphans the backfill
-
 -- changeset course:002-stock-shelves
 -- => the data changeset stocks exactly two rows into the prepared table
 -- => running second is load-bearing: the table must exist by now
-INSERT INTO shelves (code) VALUES ('S-1'), ('S-2');
+INSERT INTO
+  shelves (code)
+VALUES
+  ('S-1'),
+  ('S-2');
 
 -- rollback DELETE FROM shelves;
 -- => the declared delete un-stocks without dropping the prepared schema
@@ -889,16 +924,24 @@ CREATE TABLE scopes (
   kind VARCHAR(20) NOT NULL
   -- => the kind column is what the retirement changeset filters on
 );
-INSERT INTO scopes (model, kind) VALUES ('OA-101', 'analog'), ('OA-102', 'analog'), ('OD-201', 'digital'), ('OD-202', 'digital');
--- => four seeded rows: the analog pair is already scheduled for retirement
 
+INSERT INTO
+  scopes (model, kind)
+VALUES
+  ('OA-101', 'analog'),
+  ('OA-102', 'analog'),
+  ('OD-201', 'digital'),
+  ('OD-202', 'digital');
+
+-- => four seeded rows: the analog pair is already scheduled for retirement
 -- rollback DROP TABLE scopes;
 -- => dropping the table reverses the seed and the retirement together
-
 -- changeset course:002-retire-analog
 -- => the retirement changeset deletes exactly the analog rows
 -- => a narrow WHERE keeps the digital rows untouched and reviewable
-DELETE FROM scopes WHERE kind = 'analog';
+DELETE FROM scopes
+WHERE
+  kind = 'analog';
 
 -- rollback INSERT INTO scopes (model, kind) VALUES ('OA-101', 'analog'), ('OA-102', 'analog');
 -- => the reverse re-inserts the retired rows by their known values
@@ -1043,16 +1086,21 @@ CREATE TABLE members (
   name VARCHAR(60) NOT NULL
   -- => member names are required from the first migration
 );
-INSERT INTO members (name) VALUES ('budi'), ('sari');
--- => two seeded rows that must inherit the default below
 
+INSERT INTO
+  members (name)
+VALUES
+  ('budi'),
+  ('sari');
+
+-- => two seeded rows that must inherit the default below
 -- rollback DROP TABLE members;
 -- => dropping the table reverses the seed and the default together
-
 -- changeset course:002-default-status
 -- => the default changeset adds the status column defaulting to active
 -- => PostgreSQL fills existing rows with the default in the same statement
-ALTER TABLE members ADD COLUMN status VARCHAR(20) DEFAULT 'active';
+ALTER TABLE members
+ADD COLUMN status VARCHAR(20) DEFAULT 'active';
 
 -- rollback ALTER TABLE members DROP COLUMN status;
 -- => dropping the column reverses exactly what this changeset added
@@ -1193,7 +1241,6 @@ CREATE TABLE coupons (
 
 -- rollback DROP TABLE coupons;
 -- => this reverse never runs here; only the data changes roll back
-
 -- changeset course:002-make-prices
 -- => the second table changeset creates prices with one seeded row
 CREATE TABLE prices (
@@ -1202,22 +1249,32 @@ CREATE TABLE prices (
   amount_cents INTEGER NOT NULL
   -- => the seeded price the correction below will change and restore
 );
-INSERT INTO prices (amount_cents) VALUES (5000);
--- => one seeded row at the original value the strategies must restore
 
+INSERT INTO
+  prices (amount_cents)
+VALUES
+  (5000);
+
+-- => one seeded row at the original value the strategies must restore
 -- rollback DROP TABLE prices;
 -- => this reverse never runs here either; tables outlive data reverses
-
 -- changeset course:003-batch-coupons
 -- => strategy one: an inserted batch reverses with a matching delete
-INSERT INTO coupons (code) VALUES ('HEMAT-10'), ('HEMAT-20');
+INSERT INTO
+  coupons (code)
+VALUES
+  ('HEMAT-10'),
+  ('HEMAT-20');
 
 -- rollback DELETE FROM coupons;
 -- => the delete removes exactly the batch this changeset inserted
-
 -- changeset course:004-correct-price
 -- => strategy two: a corrected value reverses with a compensating update
-UPDATE prices SET amount_cents = 7500 WHERE amount_cents = 5000;
+UPDATE prices
+SET
+  amount_cents = 7500
+WHERE
+  amount_cents = 5000;
 
 -- rollback UPDATE prices SET amount_cents = 5000 WHERE amount_cents = 7500;
 -- => the compensating update writes back the exact original value
@@ -1365,17 +1422,31 @@ CREATE TABLE circuits (
   grade VARCHAR(10)
   -- => grades start NULL; the backfill below derives all six
 );
-INSERT INTO circuits (code) VALUES ('C-1'), ('C-2'), ('C-3'), ('C-4'), ('C-5'), ('C-6');
--- => six seeded rows awaiting the grades the next changeset assigns
 
+INSERT INTO
+  circuits (code)
+VALUES
+  ('C-1'),
+  ('C-2'),
+  ('C-3'),
+  ('C-4'),
+  ('C-5'),
+  ('C-6');
+
+-- => six seeded rows awaiting the grades the next changeset assigns
 -- rollback DROP TABLE circuits;
 -- => dropping the table reverses the seed and the backfill together
-
 -- changeset course:002-grade-circuits
 -- => the backfill changeset grades every row from its code band
-UPDATE circuits SET grade = CASE WHEN code IN ('C-1', 'C-2') THEN 'A' WHEN code IN ('C-3', 'C-4') THEN 'B' ELSE 'C' END;
--- => three bands of two: the verification queries below recount them
+UPDATE circuits
+SET
+  grade = CASE
+    WHEN code IN ('C-1', 'C-2') THEN 'A'
+    WHEN code IN ('C-3', 'C-4') THEN 'B'
+    ELSE 'C'
+  END;
 
+-- => three bands of two: the verification queries below recount them
 -- rollback UPDATE circuits SET grade = NULL;
 -- => nulling the grades un-derives every row without dropping the column
 ```
@@ -1518,16 +1589,20 @@ CREATE TABLE articles (
   title VARCHAR(120) NOT NULL
   -- => the old column the running application still reads and writes
 );
-INSERT INTO articles (title) VALUES ('Migrasi Tanpa Henti');
--- => one seeded row the expand below must carry over untouched
 
+INSERT INTO
+  articles (title)
+VALUES
+  ('Migrasi Tanpa Henti');
+
+-- => one seeded row the expand below must carry over untouched
 -- rollback DROP TABLE articles;
 -- => dropping the table reverses the seed and the expand together
-
 -- changeset course:002-add-body
 -- => the expand changeset adds the body column, nullable and unused
 -- => old code keeps running: it simply never reads the new column yet
-ALTER TABLE articles ADD COLUMN body TEXT;
+ALTER TABLE articles
+ADD COLUMN body TEXT;
 
 -- rollback ALTER TABLE articles DROP COLUMN body;
 -- => dropping the column un-expands without touching the old column
@@ -1801,16 +1876,20 @@ CREATE TABLE bulletins (
   body TEXT NOT NULL
   -- => the new column, fully bridged before the contract below runs
 );
-INSERT INTO bulletins (title, body) VALUES ('Jadwal', 'Jadwal');
--- => one bridged row where old and new already agree
 
+INSERT INTO
+  bulletins (title, body)
+VALUES
+  ('Jadwal', 'Jadwal');
+
+-- => one bridged row where old and new already agree
 -- rollback DROP TABLE bulletins;
 -- => dropping the table reverses the bridge and the contract together
-
 -- changeset course:002-drop-title
 -- => the contract changeset drops the old column last of all
 -- => safe exactly now: no reader needs the old name anymore
-ALTER TABLE bulletins DROP COLUMN title;
+ALTER TABLE bulletins
+DROP COLUMN title;
 
 -- rollback ALTER TABLE bulletins ADD COLUMN title VARCHAR(120);
 -- => re-adding restores the structure but not the retired values
@@ -1957,26 +2036,33 @@ CREATE TABLE members (
   name VARCHAR(60) NOT NULL
   -- => the old name every running deploy still reads
 );
-INSERT INTO members (name) VALUES ('budi');
--- => one seeded row the migrate step below will copy
 
+INSERT INTO
+  members (name)
+VALUES
+  ('budi');
+
+-- => one seeded row the migrate step below will copy
 -- rollback DROP TABLE members;
 -- => dropping the table reverses all three releases together
-
 -- changeset course:002-expand-display-name
 -- => release two expands: the new column lands beside the old one
-ALTER TABLE members ADD COLUMN display_name VARCHAR(60);
+ALTER TABLE members
+ADD COLUMN display_name VARCHAR(60);
 
 -- rollback ALTER TABLE members DROP COLUMN display_name;
 -- => dropping the new column un-expands back to the old name alone
-
 -- changeset course:003-migrate-and-contract
 -- => release three migrates the value, then contracts the old column
-UPDATE members SET display_name = name;
--- => the copy must land before the drop below removes the source
-ALTER TABLE members DROP COLUMN name;
--- => the old name goes only after its value safely moved across
+UPDATE members
+SET
+  display_name = name;
 
+-- => the copy must land before the drop below removes the source
+ALTER TABLE members
+DROP COLUMN name;
+
+-- => the old name goes only after its value safely moved across
 -- rollback ALTER TABLE members ADD COLUMN name VARCHAR(60);
 -- => re-adding restores the structure but not the retired values
 ```
@@ -2099,19 +2185,29 @@ CREATE TABLE clients (
   name VARCHAR(60) NOT NULL
   -- => the seeded name both names below must keep reading
 );
-INSERT INTO clients (name) VALUES ('budi');
--- => one seeded row the rename must carry across to the new table
 
+INSERT INTO
+  clients (name)
+VALUES
+  ('budi');
+
+-- => one seeded row the rename must carry across to the new table
 -- rollback DROP TABLE clients;
 -- => dropping the table reverses the seed and the rename together
-
 -- changeset course:002-rename-to-customers
 -- => the rename moves the table, then restores the old name as a view
-ALTER TABLE clients RENAME TO customers;
--- => the rename moves rows and constraints; only the name changes
-CREATE VIEW clients AS SELECT id, name FROM customers;
--- => the compatibility view keeps old queries reading during the move
+ALTER TABLE clients
+RENAME TO customers;
 
+-- => the rename moves rows and constraints; only the name changes
+CREATE VIEW clients AS
+SELECT
+  id,
+  name
+FROM
+  customers;
+
+-- => the compatibility view keeps old queries reading during the move
 -- rollback DROP VIEW clients;
 -- rollback ALTER TABLE customers RENAME TO clients;
 -- => rollback drops the view first, then restores the old table name
@@ -2255,12 +2351,15 @@ CREATE TABLE orders (
   total_cents INTEGER NOT NULL
   -- => the seeded total already satisfies the rule below
 );
-INSERT INTO orders (total_cents) VALUES (5000);
--- => one seeded row the validation step must accept, never reject
 
+INSERT INTO
+  orders (total_cents)
+VALUES
+  (5000);
+
+-- => one seeded row the validation step must accept, never reject
 -- rollback DROP TABLE orders;
 -- => dropping the table reverses the seed and the rule together
-
 -- changeset course:002-add-rule-not-valid
 -- => the rule changeset guards new writes without scanning old rows
 -- => NOT VALID skips the table scan, so writers never block on this deploy
@@ -2268,7 +2367,6 @@ ALTER TABLE orders ADD CONSTRAINT ck_orders_total_positive CHECK (total_cents > 
 
 -- rollback ALTER TABLE orders DROP CONSTRAINT ck_orders_total_positive;
 -- => dropping the rule reverses exactly what this changeset added
-
 -- changeset course:003-validate-rule
 -- => the validation changeset checks old rows under a weaker lock
 -- => writes continue during validation; only the rule's promise waits
@@ -2404,18 +2502,21 @@ CREATE TABLE events (
   code VARCHAR(20) NOT NULL
   -- => the code column the concurrent index below will serve
 );
-INSERT INTO events (code) VALUES ('E-1');
--- => one seeded row the indexed lookup below must find
 
+INSERT INTO
+  events (code)
+VALUES
+  ('E-1');
+
+-- => one seeded row the indexed lookup below must find
 -- rollback DROP TABLE events;
 -- => dropping the table reverses the seed and the index together
-
 -- changeset course:002-index-concurrent runInTransaction:false
 -- => CONCURRENTLY refuses transactions, so this changeset opts out of the
 -- => wrapper: runInTransaction false lets the build commit in its own steps
 CREATE INDEX CONCURRENTLY ix_events_code ON events (code);
--- => the concurrent build takes no write lock; writers proceed throughout
 
+-- => the concurrent build takes no write lock; writers proceed throughout
 -- rollback DROP INDEX ix_events_code;
 -- => plain DROP INDEX reverses the concurrent build symmetrically
 ```
@@ -2556,12 +2657,16 @@ CREATE TABLE purchase_orders (
   item VARCHAR(60) NOT NULL
   -- => the line half below moves out into its own table
 );
-INSERT INTO purchase_orders (customer, item) VALUES ('budi', 'kopi'), ('sari', 'teh');
--- => two wide rows the split below copies line by line
 
+INSERT INTO
+  purchase_orders (customer, item)
+VALUES
+  ('budi', 'kopi'),
+  ('sari', 'teh');
+
+-- => two wide rows the split below copies line by line
 -- rollback DROP TABLE purchase_orders;
 -- => dropping the table reverses the seed and the split together
-
 -- changeset course:002-split-lines-out
 -- => the split creates the lines table and copies every line across
 CREATE TABLE order_lines (
@@ -2572,9 +2677,16 @@ CREATE TABLE order_lines (
   item VARCHAR(60) NOT NULL
   -- => the copied item text the verification below recounts
 );
-INSERT INTO order_lines (order_id, item) SELECT id, item FROM purchase_orders;
--- => INSERT SELECT copies all rows in one statement, nothing hand-moved
 
+INSERT INTO
+  order_lines (order_id, item)
+SELECT
+  id,
+  item
+FROM
+  purchase_orders;
+
+-- => INSERT SELECT copies all rows in one statement, nothing hand-moved
 -- rollback DROP TABLE order_lines;
 -- => dropping the new table un-splits back to the wide shape alone
 ```
@@ -2705,16 +2817,24 @@ CREATE TABLE feature_flags (
   enabled BOOLEAN NOT NULL DEFAULT FALSE
   -- => new paths start disabled: shipping the schema enables nothing
 );
-INSERT INTO feature_flags (name) VALUES ('new_checkout'), ('new_reports');
--- => two dark flags; the flip below lights exactly one of them
 
+INSERT INTO
+  feature_flags (name)
+VALUES
+  ('new_checkout'),
+  ('new_reports');
+
+-- => two dark flags; the flip below lights exactly one of them
 -- rollback DROP TABLE feature_flags;
 -- => dropping the table reverses the flags and the flip together
-
 -- changeset course:002-flip-checkout
 -- => the flip changeset lights the ready path once readers can take it
 -- => flipping is data, so it ships as a tracked changeset like the rest
-UPDATE feature_flags SET enabled = TRUE WHERE name = 'new_checkout';
+UPDATE feature_flags
+SET
+  enabled = TRUE
+WHERE
+  name = 'new_checkout';
 
 -- rollback UPDATE feature_flags SET enabled = FALSE WHERE name = 'new_checkout';
 -- => unflipping restores the dark default without dropping the flag
@@ -2863,16 +2983,20 @@ CREATE TABLE goods (
   name VARCHAR(60) NOT NULL
   -- => the old shape every blue-deploy query still names
 );
-INSERT INTO goods (name) VALUES ('kopi');
--- => one seeded row both deploys must keep reading through the switch
 
+INSERT INTO
+  goods (name)
+VALUES
+  ('kopi');
+
+-- => one seeded row both deploys must keep reading through the switch
 -- rollback DROP TABLE goods;
 -- => dropping the table reverses the seed and the addition together
-
 -- changeset course:002-add-tag
 -- => the compatible change adds a nullable column and nothing else
 -- => nullable means old inserts without the column keep working untouched
-ALTER TABLE goods ADD COLUMN tag VARCHAR(30);
+ALTER TABLE goods
+ADD COLUMN tag VARCHAR(30);
 
 -- rollback ALTER TABLE goods DROP COLUMN tag;
 -- => dropping the column un-adds without touching the old shape
@@ -3948,7 +4072,9 @@ public class Main {
 -- => one changeset houses both tenants with identical invoice tables
 -- => schema-qualified names keep the twins disjoint from birth
 CREATE SCHEMA tenant_a;
+
 CREATE SCHEMA tenant_b;
+
 -- => both schemas exist before either table references them below
 CREATE TABLE tenant_a.invoices (
   id SERIAL PRIMARY KEY,
@@ -3956,16 +4082,25 @@ CREATE TABLE tenant_a.invoices (
   total_cents INTEGER NOT NULL
   -- => tenant_a's row below never leaks into tenant_b's table
 );
+
 CREATE TABLE tenant_b.invoices (
   id SERIAL PRIMARY KEY,
   -- => twin tables share names but never share rows across schemas
   total_cents INTEGER NOT NULL
   -- => tenant_b's row below never leaks into tenant_a's table
 );
-INSERT INTO tenant_a.invoices (total_cents) VALUES (1000);
-INSERT INTO tenant_b.invoices (total_cents) VALUES (2000);
--- => one seeded row per tenant: the isolation the program recounts
 
+INSERT INTO
+  tenant_a.invoices (total_cents)
+VALUES
+  (1000);
+
+INSERT INTO
+  tenant_b.invoices (total_cents)
+VALUES
+  (2000);
+
+-- => one seeded row per tenant: the isolation the program recounts
 -- rollback DROP SCHEMA tenant_a CASCADE;
 -- rollback DROP SCHEMA tenant_b CASCADE;
 -- => cascading drops reverse both schemas with their tables and rows
@@ -4099,14 +4234,15 @@ CREATE TABLE produce (
 
 -- rollback DROP TABLE produce;
 -- => dropping the table reverses the documents and their queries together
-
 -- changeset course:002-seed-produce
 -- => the seed changeset stores two documents with nested origins
-INSERT INTO produce (name, attrs) VALUES
+INSERT INTO
+  produce (name, attrs)
+VALUES
   ('cengkeh', '{"origin": "Maluku", "grade": "AB"}'),
   ('lada', '{"origin": "Lampung", "grade": "FAQ"}');
--- => single-quoted JSON inside SQL strings: the path query below reads it
 
+-- => single-quoted JSON inside SQL strings: the path query below reads it
 -- rollback DELETE FROM produce;
 -- => the declared delete un-stores both documents without dropping the table
 ```
@@ -4248,19 +4384,34 @@ CREATE TABLE teas (
   origin VARCHAR(60)
   -- => the new column only v2 readers may name
 );
-INSERT INTO teas (name, origin) VALUES ('teh melati', 'Maluku');
--- => one seeded row both view versions below must keep reading
 
+INSERT INTO
+  teas (name, origin)
+VALUES
+  ('teh melati', 'Maluku');
+
+-- => one seeded row both view versions below must keep reading
 -- rollback DROP TABLE teas;
 -- => dropping the table reverses the rows and both versions together
-
 -- changeset course:002-version-views
 -- => the version changeset freezes one read shape per reader generation
-CREATE VIEW teas_v1 AS SELECT id, name FROM teas;
--- => v1 hides the new column: old readers never see a shape they lack
-CREATE VIEW teas_v2 AS SELECT id, name, origin FROM teas;
--- => v2 exposes the new column: migrated readers move here at leisure
+CREATE VIEW teas_v1 AS
+SELECT
+  id,
+  name
+FROM
+  teas;
 
+-- => v1 hides the new column: old readers never see a shape they lack
+CREATE VIEW teas_v2 AS
+SELECT
+  id,
+  name,
+  origin
+FROM
+  teas;
+
+-- => v2 exposes the new column: migrated readers move here at leisure
 -- rollback DROP VIEW teas_v2;
 -- rollback DROP VIEW teas_v1;
 -- => dropping the new version first restores the single-shape past

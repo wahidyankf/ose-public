@@ -12,7 +12,6 @@ CREATE TABLE signals (
 
 -- rollback DROP TABLE signals;
 -- => this reverse never runs: the gate refuses before any update
-
 -- changeset kata:001-make-signals
 -- => DELIBERATE BREAK: the same author and id as the changeset above
 -- => two identities collide, so validation must refuse the whole file

@@ -13,11 +13,15 @@ CREATE TABLE cultivars (
 
 -- rollback DROP TABLE cultivars;
 -- => dropping the table reverses exactly what this changeset built
-
 -- changeset course:002-seed-cultivars
 -- => the data changeset inserts exactly three reference rows
 -- => reruns skip it as applied, so the rows never duplicate
-INSERT INTO cultivars (name) VALUES ('arabica'), ('robusta'), ('liberica');
+INSERT INTO
+  cultivars (name)
+VALUES
+  ('arabica'),
+  ('robusta'),
+  ('liberica');
 
 -- rollback DELETE FROM cultivars;
 -- => the declared delete removes exactly the rows this changeset added

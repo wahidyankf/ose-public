@@ -11,8 +11,15 @@ CREATE TABLE ingots (
   grade VARCHAR(10)
   -- => grades start NULL; the backfill step derives all four
 );
-INSERT INTO ingots (weight_kg) VALUES (10), (20), (30), (40);
--- => four ungraded rows awaiting the wired backfill step
 
+INSERT INTO
+  ingots (weight_kg)
+VALUES
+  (10),
+  (20),
+  (30),
+  (40);
+
+-- => four ungraded rows awaiting the wired backfill step
 -- rollback DROP TABLE ingots;
 -- => this reverse never runs here; the kata wires forward only

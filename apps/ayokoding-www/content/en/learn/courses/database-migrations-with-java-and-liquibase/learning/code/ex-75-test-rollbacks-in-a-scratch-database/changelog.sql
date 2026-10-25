@@ -10,6 +10,7 @@ CREATE TABLE sigma (
   name VARCHAR(60) NOT NULL
   -- => sigma names are required from the first migration
 );
+
 CREATE TABLE IF NOT EXISTS rb_proof (
   id SERIAL PRIMARY KEY,
   -- => the proof table outlives reversals: traces persist after re-apply
@@ -22,7 +23,6 @@ CREATE TABLE IF NOT EXISTS rb_proof (
 -- => the test cycle runs this reverse, then rebuilds sigma after
 -- => rb_proof has no reverse: the proof table is test scaffolding that
 -- => outlives every reversal so traces persist after the re-apply
-
 -- changeset course:002-make-tau
 -- => the second tested changeset creates the tau table
 -- => its reverse writes the trace row that proves reverses really ran

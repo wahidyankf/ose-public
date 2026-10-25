@@ -552,7 +552,6 @@ CREATE TABLE buoys (
 
 -- rollback DROP TABLE buoys;
 -- => dropping the table reverses exactly what this changeset built
-
 -- changeset course:002-make-beacons
 -- => the second merged changeset creates the beacons table
 -- => the rival branch edits this changeset after merging: the tamper below
@@ -720,13 +719,12 @@ CREATE TABLE yard (
 
 -- rollback DROP TABLE yard;
 -- => dropping the table reverses the table and the appended fix together
-
 -- changeset course:002-add-yard-index
 -- => the fix arrives appended, never inserted: history stays append-only
 -- => a new changeset runs everywhere; an edit would fail checksums
 CREATE INDEX ix_yard_code ON yard (code);
--- => the late-arriving index lands last in history, exactly where it ran
 
+-- => the late-arriving index lands last in history, exactly where it ran
 -- rollback DROP INDEX ix_yard_code;
 -- => dropping the index un-appends the fix without touching the table
 ```
@@ -1498,7 +1496,6 @@ CREATE TABLE deltas (
 
 -- rollback DROP TABLE deltas;
 -- => this reverse never runs here; previews execute nothing at all
-
 -- changeset course:002-make-epsilons
 -- => the second reviewed changeset creates the epsilons table
 -- => the preview counts this CREATE alongside the first one
@@ -1782,8 +1779,8 @@ public class Main {
 -- changeset course:001-lock-rescue-marker
 -- => a marker changeset keeps the handle valid without building anything
 CREATE TABLE IF NOT EXISTS lock_rescue_log (id SERIAL PRIMARY KEY);
--- => the marker table records that a rescue happened on this database
 
+-- => the marker table records that a rescue happened on this database
 -- rollback DROP TABLE lock_rescue_log;
 -- => this reverse never runs here; rescues release locks, not tables
 ```
@@ -2050,10 +2047,14 @@ CREATE TABLE zeta (
   name VARCHAR(60) NOT NULL
   -- => the create succeeds, then the insert below fails beside it
 );
-INSERT INTO missing_table (name) VALUES ('ghost');
+
+INSERT INTO
+  missing_table (name)
+VALUES
+  ('ghost');
+
 -- => the insert cannot succeed: no such table exists anywhere here
 -- => the transaction undoes the create above together with this failure
-
 -- rollback DROP TABLE zeta;
 -- => this reverse never runs: the failed changeset recorded nothing
 ```
@@ -2239,11 +2240,13 @@ CREATE TABLE eta (
 
 -- rollback DROP TABLE eta;
 -- => this reverse never runs here; the failure below stops first
-
 -- changeset course:002-impossible-insert
 -- => the failing changeset inserts into a table that does not exist
 -- => its failure commits nothing, and uncommits nothing before it either
-INSERT INTO missing_table (name) VALUES ('ghost');
+INSERT INTO
+  missing_table (name)
+VALUES
+  ('ghost');
 
 -- rollback DELETE FROM missing_table WHERE name = 'ghost';
 -- => this reverse never runs: the failed changeset recorded nothing
@@ -2460,7 +2463,6 @@ CREATE TABLE theta (
 
 -- rollback DROP TABLE theta;
 -- => this reverse never runs: the contender never reaches past the lock
-
 -- changeset course:002-make-iota
 -- => the pending changeset creates the iota table the contender wants
 -- => pending work forces lock acquisition; nothing pending would skip it
@@ -2607,7 +2609,6 @@ CREATE TABLE atolls (
 
 -- rollback DROP TABLE atolls;
 -- => dropping the table reverses the audited change with its audit intact
-
 -- changeset course:002-make-audit
 -- => the audit changeset creates the audit table beside the audited one
 CREATE TABLE migration_audit (
@@ -2761,7 +2762,6 @@ CREATE TABLE iota (
 
 -- rollback DROP TABLE iota;
 -- => dropping the table reverses exactly what this changeset built
-
 -- changeset course:002-make-kappa
 -- => the second timed changeset creates the kappa table
 CREATE TABLE kappa (
@@ -2773,7 +2773,6 @@ CREATE TABLE kappa (
 
 -- rollback DROP TABLE kappa;
 -- => each changeset carries its own reverse, independent of its neighbours
-
 -- changeset course:003-make-lambda
 -- => the third timed changeset creates the lambda table
 CREATE TABLE lambda (
@@ -2927,12 +2926,15 @@ CREATE TABLE gauges (
 
 -- rollback DROP TABLE gauges;
 -- => dropping the table reverses the seed the pipeline tests below
-
 -- changeset course:002-seed-gauges
 -- => the seed changeset inserts exactly the two rows the test demands
-INSERT INTO gauges (code) VALUES ('G-1'), ('G-2');
--- => two seeded rows: the pipeline test fails the build on any other count
+INSERT INTO
+  gauges (code)
+VALUES
+  ('G-1'),
+  ('G-2');
 
+-- => two seeded rows: the pipeline test fails the build on any other count
 -- rollback DELETE FROM gauges;
 -- => the declared delete un-seeds without dropping the tested table
 ```
@@ -3101,11 +3103,13 @@ CREATE TABLE mu (
 
 -- rollback DROP TABLE mu;
 -- => this reverse never runs here; forensics read, they do not roll back
-
 -- changeset course:002-bad-insert
 -- => the failing changeset inserts into a table that does not exist
 -- => its absence from the history is the boundary the program reports
-INSERT INTO missing_table (name) VALUES ('ghost');
+INSERT INTO
+  missing_table (name)
+VALUES
+  ('ghost');
 
 -- rollback DELETE FROM missing_table WHERE name = 'ghost';
 -- => this reverse never runs: the failed changeset recorded nothing
@@ -3304,7 +3308,6 @@ CREATE TABLE nu (
 
 -- rollback DROP TABLE nu;
 -- => dropping the table reverses exactly what this changeset built
-
 -- changeset course:002-make-xi
 -- => the middle changeset creates the xi table
 -- => the program tampers this row's checksum to stand in for an edit
@@ -3317,7 +3320,6 @@ CREATE TABLE xi (
 
 -- rollback DROP TABLE xi;
 -- => each changeset carries its own reverse, independent of its neighbours
-
 -- changeset course:003-make-omicron
 -- => the last honest changeset creates the omicron table
 -- => its checksum stays honest, framing the edited middle above
@@ -3526,7 +3528,6 @@ CREATE TABLE pi (
 
 -- rollback DROP TABLE pi;
 -- => dropping the table reverses exactly what this changeset built
-
 -- changeset course:002-make-rho
 -- => the second rewritten changeset creates the rho table
 CREATE TABLE rho (
@@ -3875,6 +3876,7 @@ CREATE TABLE sigma (
   name VARCHAR(60) NOT NULL
   -- => sigma names are required from the first migration
 );
+
 CREATE TABLE IF NOT EXISTS rb_proof (
   id SERIAL PRIMARY KEY,
   -- => the proof table outlives reversals: traces persist after re-apply
@@ -3887,7 +3889,6 @@ CREATE TABLE IF NOT EXISTS rb_proof (
 -- => the test cycle runs this reverse, then rebuilds sigma after
 -- => rb_proof has no reverse: the proof table is test scaffolding that
 -- => outlives every reversal so traces persist after the re-apply
-
 -- changeset course:002-make-tau
 -- => the second tested changeset creates the tau table
 -- => its reverse writes the trace row that proves reverses really ran
@@ -4261,7 +4262,6 @@ CREATE TABLE psi (
 
 -- rollback DROP TABLE psi;
 -- => resets ignore rollback blocks: removal needs no declared reverse
-
 -- changeset course:002-make-omega
 -- => the second experiment changeset creates the omega table
 -- => tracked or not, every object goes when the reset runs
@@ -4420,7 +4420,6 @@ CREATE TABLE alpha (
 
 -- rollback DROP TABLE alpha;
 -- => this reverse never runs here; cleared releases ship, they do not roll back
-
 -- changeset course:002-make-beta
 -- => the second release changeset creates the beta table
 -- => the checklist verifies this table alongside the first one

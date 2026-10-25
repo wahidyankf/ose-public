@@ -13,7 +13,6 @@ CREATE TABLE nu (
 
 -- rollback DROP TABLE nu;
 -- => dropping the table reverses exactly what this changeset built
-
 -- changeset course:002-make-xi
 -- => the middle changeset creates the xi table
 -- => the program tampers this row's checksum to stand in for an edit
@@ -26,7 +25,6 @@ CREATE TABLE xi (
 
 -- rollback DROP TABLE xi;
 -- => each changeset carries its own reverse, independent of its neighbours
-
 -- changeset course:003-make-omicron
 -- => the last honest changeset creates the omicron table
 -- => its checksum stays honest, framing the edited middle above

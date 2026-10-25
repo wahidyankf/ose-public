@@ -13,7 +13,6 @@ CREATE TABLE depots (
 
 -- rollback DROP TABLE depots;
 -- => this reverse never runs here; the count stops at the newer changeset
-
 -- changeset course:002-make-routes
 -- => the newer changeset creates the routes table
 -- => rolling back one reverses exactly this changeset and deletes its row

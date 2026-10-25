@@ -13,7 +13,6 @@ CREATE TABLE lanes (
 
 -- rollback DROP TABLE lanes;
 -- => dropping the table reverses exactly what this changeset built
-
 -- changeset course:002-make-shipments
 -- => the second changeset creates the shipments table
 -- => it is skipped on every later update for the same reason

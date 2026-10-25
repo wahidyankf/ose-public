@@ -11,12 +11,12 @@ CREATE TABLE players (
 
 -- rollback DROP TABLE players;
 -- => dropping the table reverses exactly what this changeset built
-
 -- changeset course:002-add-level
 -- => a second changeset alters the live table instead of recreating it
 -- => existing rows keep their data; the new column starts NULL everywhere
-ALTER TABLE players ADD COLUMN level INTEGER;
--- => plain SQL inside a tracked changeset: the best of both formats
+ALTER TABLE players
+ADD COLUMN level INTEGER;
 
+-- => plain SQL inside a tracked changeset: the best of both formats
 -- rollback ALTER TABLE players DROP COLUMN level;
 -- => additive changes reverse by dropping what was added

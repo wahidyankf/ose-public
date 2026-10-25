@@ -12,16 +12,20 @@ CREATE TABLE bulletins (
   body TEXT NOT NULL
   -- => the new column, fully bridged before the contract below runs
 );
-INSERT INTO bulletins (title, body) VALUES ('Jadwal', 'Jadwal');
--- => one bridged row where old and new already agree
 
+INSERT INTO
+  bulletins (title, body)
+VALUES
+  ('Jadwal', 'Jadwal');
+
+-- => one bridged row where old and new already agree
 -- rollback DROP TABLE bulletins;
 -- => dropping the table reverses the bridge and the contract together
-
 -- changeset course:002-drop-title
 -- => the contract changeset drops the old column last of all
 -- => safe exactly now: no reader needs the old name anymore
-ALTER TABLE bulletins DROP COLUMN title;
+ALTER TABLE bulletins
+DROP COLUMN title;
 
 -- rollback ALTER TABLE bulletins ADD COLUMN title VARCHAR(120);
 -- => re-adding restores the structure but not the retired values

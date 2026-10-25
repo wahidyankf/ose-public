@@ -13,11 +13,14 @@ CREATE TABLE shelves (
 
 -- rollback DROP TABLE shelves;
 -- => dropping the table reverses the schema and orphans the backfill
-
 -- changeset course:002-stock-shelves
 -- => the data changeset stocks exactly two rows into the prepared table
 -- => running second is load-bearing: the table must exist by now
-INSERT INTO shelves (code) VALUES ('S-1'), ('S-2');
+INSERT INTO
+  shelves (code)
+VALUES
+  ('S-1'),
+  ('S-2');
 
 -- rollback DELETE FROM shelves;
 -- => the declared delete un-stocks without dropping the prepared schema

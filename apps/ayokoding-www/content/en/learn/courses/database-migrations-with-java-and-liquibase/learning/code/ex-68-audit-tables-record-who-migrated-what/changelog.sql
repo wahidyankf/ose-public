@@ -12,7 +12,6 @@ CREATE TABLE atolls (
 
 -- rollback DROP TABLE atolls;
 -- => dropping the table reverses the audited change with its audit intact
-
 -- changeset course:002-make-audit
 -- => the audit changeset creates the audit table beside the audited one
 CREATE TABLE migration_audit (

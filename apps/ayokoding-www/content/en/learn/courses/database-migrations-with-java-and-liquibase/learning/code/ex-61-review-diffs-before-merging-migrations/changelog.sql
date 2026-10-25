@@ -13,7 +13,6 @@ CREATE TABLE deltas (
 
 -- rollback DROP TABLE deltas;
 -- => this reverse never runs here; previews execute nothing at all
-
 -- changeset course:002-make-epsilons
 -- => the second reviewed changeset creates the epsilons table
 -- => the preview counts this CREATE alongside the first one

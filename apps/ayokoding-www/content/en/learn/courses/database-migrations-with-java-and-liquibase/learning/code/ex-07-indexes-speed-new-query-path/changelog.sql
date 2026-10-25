@@ -11,11 +11,10 @@ CREATE TABLE members (
 
 -- rollback DROP TABLE members;
 -- => dropping the table reverses exactly what this changeset built
-
 -- changeset course:002-index-handle
 -- => a B-tree over handle turns full scans into index lookups
 CREATE INDEX ix_members_handle ON members (handle);
--- => a named index shows up in pg_indexes under a name reviewers chose
 
+-- => a named index shows up in pg_indexes under a name reviewers chose
 -- rollback DROP INDEX ix_members_handle;
 -- => indexes drop by name, so naming them is load-bearing

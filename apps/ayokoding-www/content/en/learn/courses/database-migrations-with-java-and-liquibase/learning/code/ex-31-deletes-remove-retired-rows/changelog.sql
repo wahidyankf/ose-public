@@ -11,16 +11,24 @@ CREATE TABLE scopes (
   kind VARCHAR(20) NOT NULL
   -- => the kind column is what the retirement changeset filters on
 );
-INSERT INTO scopes (model, kind) VALUES ('OA-101', 'analog'), ('OA-102', 'analog'), ('OD-201', 'digital'), ('OD-202', 'digital');
--- => four seeded rows: the analog pair is already scheduled for retirement
 
+INSERT INTO
+  scopes (model, kind)
+VALUES
+  ('OA-101', 'analog'),
+  ('OA-102', 'analog'),
+  ('OD-201', 'digital'),
+  ('OD-202', 'digital');
+
+-- => four seeded rows: the analog pair is already scheduled for retirement
 -- rollback DROP TABLE scopes;
 -- => dropping the table reverses the seed and the retirement together
-
 -- changeset course:002-retire-analog
 -- => the retirement changeset deletes exactly the analog rows
 -- => a narrow WHERE keeps the digital rows untouched and reviewable
-DELETE FROM scopes WHERE kind = 'analog';
+DELETE FROM scopes
+WHERE
+  kind = 'analog';
 
 -- rollback INSERT INTO scopes (model, kind) VALUES ('OA-101', 'analog'), ('OA-102', 'analog');
 -- => the reverse re-inserts the retired rows by their known values

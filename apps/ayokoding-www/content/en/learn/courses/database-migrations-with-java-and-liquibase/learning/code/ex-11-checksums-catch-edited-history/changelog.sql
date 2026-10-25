@@ -13,7 +13,6 @@ CREATE TABLE widgets (
 
 -- rollback DROP TABLE widgets;
 -- => dropping the table reverses exactly what this changeset built
-
 -- changeset course:002-make-gadgets
 -- => the second changeset creates the gadgets table
 -- => its checksum stays honest, proving validation names the edited one

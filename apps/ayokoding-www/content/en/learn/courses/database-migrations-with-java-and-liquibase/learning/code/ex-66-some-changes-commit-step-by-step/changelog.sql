@@ -12,11 +12,13 @@ CREATE TABLE eta (
 
 -- rollback DROP TABLE eta;
 -- => this reverse never runs here; the failure below stops first
-
 -- changeset course:002-impossible-insert
 -- => the failing changeset inserts into a table that does not exist
 -- => its failure commits nothing, and uncommits nothing before it either
-INSERT INTO missing_table (name) VALUES ('ghost');
+INSERT INTO
+  missing_table (name)
+VALUES
+  ('ghost');
 
 -- rollback DELETE FROM missing_table WHERE name = 'ghost';
 -- => this reverse never runs: the failed changeset recorded nothing

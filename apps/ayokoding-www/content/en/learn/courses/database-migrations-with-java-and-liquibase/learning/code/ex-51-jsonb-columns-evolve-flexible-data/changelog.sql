@@ -15,13 +15,14 @@ CREATE TABLE produce (
 
 -- rollback DROP TABLE produce;
 -- => dropping the table reverses the documents and their queries together
-
 -- changeset course:002-seed-produce
 -- => the seed changeset stores two documents with nested origins
-INSERT INTO produce (name, attrs) VALUES
+INSERT INTO
+  produce (name, attrs)
+VALUES
   ('cengkeh', '{"origin": "Maluku", "grade": "AB"}'),
   ('lada', '{"origin": "Lampung", "grade": "FAQ"}');
--- => single-quoted JSON inside SQL strings: the path query below reads it
 
+-- => single-quoted JSON inside SQL strings: the path query below reads it
 -- rollback DELETE FROM produce;
 -- => the declared delete un-stores both documents without dropping the table

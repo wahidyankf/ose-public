@@ -5,7 +5,7 @@
 -- changeset course:001-lock-rescue-marker
 -- => a marker changeset keeps the handle valid without building anything
 CREATE TABLE IF NOT EXISTS lock_rescue_log (id SERIAL PRIMARY KEY);
--- => the marker table records that a rescue happened on this database
 
+-- => the marker table records that a rescue happened on this database
 -- rollback DROP TABLE lock_rescue_log;
 -- => this reverse never runs here; rescues release locks, not tables

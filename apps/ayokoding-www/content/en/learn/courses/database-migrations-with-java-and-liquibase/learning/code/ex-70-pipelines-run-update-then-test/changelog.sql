@@ -12,11 +12,14 @@ CREATE TABLE gauges (
 
 -- rollback DROP TABLE gauges;
 -- => dropping the table reverses the seed the pipeline tests below
-
 -- changeset course:002-seed-gauges
 -- => the seed changeset inserts exactly the two rows the test demands
-INSERT INTO gauges (code) VALUES ('G-1'), ('G-2');
--- => two seeded rows: the pipeline test fails the build on any other count
+INSERT INTO
+  gauges (code)
+VALUES
+  ('G-1'),
+  ('G-2');
 
+-- => two seeded rows: the pipeline test fails the build on any other count
 -- rollback DELETE FROM gauges;
 -- => the declared delete un-seeds without dropping the tested table

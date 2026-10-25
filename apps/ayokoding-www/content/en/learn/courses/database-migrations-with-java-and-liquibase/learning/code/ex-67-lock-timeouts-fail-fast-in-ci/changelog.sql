@@ -12,7 +12,6 @@ CREATE TABLE theta (
 
 -- rollback DROP TABLE theta;
 -- => this reverse never runs: the contender never reaches past the lock
-
 -- changeset course:002-make-iota
 -- => the pending changeset creates the iota table the contender wants
 -- => pending work forces lock acquisition; nothing pending would skip it

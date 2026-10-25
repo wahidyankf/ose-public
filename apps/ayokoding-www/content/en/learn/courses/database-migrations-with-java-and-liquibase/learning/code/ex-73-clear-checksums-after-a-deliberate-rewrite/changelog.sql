@@ -12,7 +12,6 @@ CREATE TABLE pi (
 
 -- rollback DROP TABLE pi;
 -- => dropping the table reverses exactly what this changeset built
-
 -- changeset course:002-make-rho
 -- => the second rewritten changeset creates the rho table
 CREATE TABLE rho (

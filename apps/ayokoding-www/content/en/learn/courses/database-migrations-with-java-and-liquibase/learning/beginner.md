@@ -153,8 +153,8 @@ CREATE TABLE users (
   username VARCHAR(50) NOT NULL
   -- => NOT NULL at creation time keeps the first migration honest
 );
--- => Liquibase runs this DDL inside one transaction on PostgreSQL
 
+-- => Liquibase runs this DDL inside one transaction on PostgreSQL
 -- rollback DROP TABLE users;
 -- => every changeset that can be undone declares its reverse here
 -- => Example 18 runs this line; until then it is a promise, not an action
@@ -480,7 +480,6 @@ CREATE TABLE customers (
 
 -- rollback DROP TABLE customers;
 -- => dropping the table reverses exactly what this changeset built
-
 -- changeset billing:002-create-invoices
 -- => a second author in the same file: no coordination needed to share it
 -- => the id sequence continues because order still comes from file position
@@ -775,13 +774,13 @@ CREATE TABLE players (
 
 -- rollback DROP TABLE players;
 -- => dropping the table reverses exactly what this changeset built
-
 -- changeset course:002-add-level
 -- => a second changeset alters the live table instead of recreating it
 -- => existing rows keep their data; the new column starts NULL everywhere
-ALTER TABLE players ADD COLUMN level INTEGER;
--- => plain SQL inside a tracked changeset: the best of both formats
+ALTER TABLE players
+ADD COLUMN level INTEGER;
 
+-- => plain SQL inside a tracked changeset: the best of both formats
 -- rollback ALTER TABLE players DROP COLUMN level;
 -- => additive changes reverse by dropping what was added
 ```
@@ -954,20 +953,21 @@ CREATE TABLE accounts (
 
 -- rollback DROP TABLE accounts;
 -- => dropping the table reverses exactly what this changeset built
-
 -- changeset course:002-require-handle
 -- => NULL handles are a data bug: the schema should refuse them outright
-ALTER TABLE accounts ALTER COLUMN handle SET NOT NULL;
--- => SET NOT NULL fails on a table that already holds NULLs, by design
+ALTER TABLE accounts
+ALTER COLUMN handle
+SET
+  NOT NULL;
 
+-- => SET NOT NULL fails on a table that already holds NULLs, by design
 -- rollback ALTER TABLE accounts ALTER COLUMN handle DROP NOT NULL;
 -- => nullability reverses symmetrically when the rule is rolled back
-
 -- changeset course:003-unique-handle
 -- => duplicate handles would merge two users: uniqueness is identity here
 ALTER TABLE accounts ADD CONSTRAINT uq_accounts_handle UNIQUE (handle);
--- => a named constraint produces error messages a human can act on
 
+-- => a named constraint produces error messages a human can act on
 -- rollback ALTER TABLE accounts DROP CONSTRAINT uq_accounts_handle;
 -- => named constraints drop by name, so naming them is load-bearing
 ```
@@ -1096,12 +1096,11 @@ CREATE TABLE members (
 
 -- rollback DROP TABLE members;
 -- => dropping the table reverses exactly what this changeset built
-
 -- changeset course:002-index-handle
 -- => a B-tree over handle turns full scans into index lookups
 CREATE INDEX ix_members_handle ON members (handle);
--- => a named index shows up in pg_indexes under a name reviewers chose
 
+-- => a named index shows up in pg_indexes under a name reviewers chose
 -- rollback DROP INDEX ix_members_handle;
 -- => indexes drop by name, so naming them is load-bearing
 ```
@@ -1268,7 +1267,6 @@ CREATE TABLE authors (
 
 -- rollback DROP TABLE authors;
 -- => dropping the table reverses exactly what this changeset built
-
 -- changeset course:002-create-books
 -- => books carry the key; authors stay independent of their books
 CREATE TABLE books (
@@ -1282,13 +1280,11 @@ CREATE TABLE books (
 
 -- rollback DROP TABLE books;
 -- => books drop before authors on rollback, reversing creation order
-
 -- changeset course:003-link-books-to-authors
 -- => the foreign key turns a bare integer into a guaranteed relationship
-ALTER TABLE books
-  ADD CONSTRAINT fk_books_author FOREIGN KEY (author_id) REFERENCES authors (id);
--- => a named constraint produces error messages a human can act on
+ALTER TABLE books ADD CONSTRAINT fk_books_author FOREIGN KEY (author_id) REFERENCES authors (id);
 
+-- => a named constraint produces error messages a human can act on
 -- rollback ALTER TABLE books DROP CONSTRAINT fk_books_author;
 -- => named constraints drop by name, so naming them is load-bearing
 ```
@@ -1455,7 +1451,6 @@ CREATE TABLE teams (
 
 -- rollback DROP TABLE teams;
 -- => dropping the table reverses exactly what this changeset built
-
 -- changeset course:002-make-projects
 -- => the second changeset creates the projects table
 -- => its history row carries orderexecuted 2, proving file order ran
@@ -1601,7 +1596,6 @@ CREATE TABLE lanes (
 
 -- rollback DROP TABLE lanes;
 -- => dropping the table reverses exactly what this changeset built
-
 -- changeset course:002-make-shipments
 -- => the second changeset creates the shipments table
 -- => it is skipped on every later update for the same reason
@@ -1822,7 +1816,6 @@ CREATE TABLE widgets (
 
 -- rollback DROP TABLE widgets;
 -- => dropping the table reverses exactly what this changeset built
-
 -- changeset course:002-make-gadgets
 -- => the second changeset creates the gadgets table
 -- => its checksum stays honest, proving validation names the edited one
@@ -2920,7 +2913,6 @@ CREATE TABLE plans (
 
 -- rollback DROP TABLE plans;
 -- => dropping the table reverses exactly what this changeset built
-
 -- changeset course:002-make-plan-items
 -- => the second changeset creates the plan_items table
 -- => the preview counts this id alongside the first one
@@ -3103,7 +3095,6 @@ CREATE TABLE depots (
 
 -- rollback DROP TABLE depots;
 -- => this reverse never runs here; the count stops at the newer changeset
-
 -- changeset course:002-make-routes
 -- => the newer changeset creates the routes table
 -- => rolling back one reverses exactly this changeset and deletes its row
@@ -3292,7 +3283,6 @@ CREATE TABLE harbours (
 
 -- rollback DROP TABLE harbours;
 -- => this reverse never runs here; the tag rollback stops above it
-
 -- changeset course:002-make-piers
 -- => the first post-release changeset creates the piers table
 -- => rolling back to v1 reverses this changeset and deletes its row
@@ -3305,7 +3295,6 @@ CREATE TABLE piers (
 
 -- rollback DROP TABLE piers;
 -- => the tag rollback runs this line on its way back to v1
-
 -- changeset course:003-make-ferries
 -- => the second post-release changeset creates the ferries table
 -- => it is the first reverse the tag rollback runs
@@ -3501,7 +3490,6 @@ CREATE TABLE canals (
 
 -- rollback DROP TABLE canals;
 -- => this reverse never runs here; no rollback happens in this example
-
 -- changeset course:002-make-locks
 -- => the second release changeset creates the locks table
 -- => the v1 tag lands on this history row as the release point
@@ -3514,7 +3502,6 @@ CREATE TABLE locks (
 
 -- rollback DROP TABLE locks;
 -- => this reverse never runs here; the example only tags, never rolls back
-
 -- changeset course:003-make-tolls
 -- => the post-release changeset creates the tolls table after the tag
 -- => its row stays untagged, proving tags mark points, not ranges
@@ -3827,11 +3814,14 @@ CREATE TABLE bins (
 
 -- rollback DROP TABLE bins;
 -- => this reverse never runs here; only the seed is rolled back
-
 -- changeset course:002-seed-bins
 -- => the seed changeset inserts exactly two rows into the bins table
 -- => data changes deserve reverses as much as schema changes do
-INSERT INTO bins (code) VALUES ('A-1'), ('A-2');
+INSERT INTO
+  bins (code)
+VALUES
+  ('A-1'),
+  ('A-2');
 
 -- rollback DELETE FROM bins;
 -- => the declared delete removes exactly the rows this changeset added
@@ -4000,11 +3990,12 @@ CREATE TABLE crates (
 
 -- rollback DROP TABLE crates;
 -- => this reverse exists but never runs: the failure below fires first
-
 -- changeset course:002-seal-crates
 -- => raw SQL with deliberately no rollback block and no inferable reverse
 -- => ADD COLUMN on raw SQL cannot be reversed automatically, by design
-ALTER TABLE crates ADD COLUMN seal VARCHAR(20);
+ALTER TABLE crates
+ADD COLUMN seal VARCHAR(20);
+
 -- => the missing reverse is the whole lesson: rolling this back must fail
 -- => a data-preserving reverse would need a compensating changeset instead
 ```
@@ -4349,7 +4340,6 @@ CREATE TABLE beacons (
 
 -- rollback DROP TABLE beacons;
 -- => this reverse never runs: validation refuses before any update
-
 -- changeset course:001-make-beacons
 -- => DELIBERATE BREAK: the same author and id as the changeset above
 -- => two identities collide, so validation must refuse the whole changelog

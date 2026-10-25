@@ -11,8 +11,8 @@ CREATE TABLE users (
   username VARCHAR(50) NOT NULL
   -- => NOT NULL at creation time keeps the first migration honest
 );
--- => Liquibase runs this DDL inside one transaction on PostgreSQL
 
+-- => Liquibase runs this DDL inside one transaction on PostgreSQL
 -- rollback DROP TABLE users;
 -- => every changeset that can be undone declares its reverse here
 -- => Example 18 runs this line; until then it is a promise, not an action

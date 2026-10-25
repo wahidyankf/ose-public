@@ -13,7 +13,6 @@ CREATE TABLE teams (
 
 -- rollback DROP TABLE teams;
 -- => dropping the table reverses exactly what this changeset built
-
 -- changeset course:002-make-projects
 -- => the second changeset creates the projects table
 -- => its history row carries orderexecuted 2, proving file order ran

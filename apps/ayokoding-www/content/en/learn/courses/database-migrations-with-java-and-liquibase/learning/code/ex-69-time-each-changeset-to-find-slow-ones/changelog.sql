@@ -12,7 +12,6 @@ CREATE TABLE iota (
 
 -- rollback DROP TABLE iota;
 -- => dropping the table reverses exactly what this changeset built
-
 -- changeset course:002-make-kappa
 -- => the second timed changeset creates the kappa table
 CREATE TABLE kappa (
@@ -24,7 +23,6 @@ CREATE TABLE kappa (
 
 -- rollback DROP TABLE kappa;
 -- => each changeset carries its own reverse, independent of its neighbours
-
 -- changeset course:003-make-lambda
 -- => the third timed changeset creates the lambda table
 CREATE TABLE lambda (

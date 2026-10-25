@@ -13,7 +13,6 @@ CREATE TABLE customers (
 
 -- rollback DROP TABLE customers;
 -- => dropping the table reverses exactly what this changeset built
-
 -- changeset billing:002-create-invoices
 -- => a second author in the same file: no coordination needed to share it
 -- => the id sequence continues because order still comes from file position

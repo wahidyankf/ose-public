@@ -13,7 +13,6 @@ CREATE TABLE plans (
 
 -- rollback DROP TABLE plans;
 -- => dropping the table reverses exactly what this changeset built
-
 -- changeset course:002-make-plan-items
 -- => the second changeset creates the plan_items table
 -- => the preview counts this id alongside the first one

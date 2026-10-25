@@ -13,7 +13,6 @@ CREATE TABLE canals (
 
 -- rollback DROP TABLE canals;
 -- => this reverse never runs here; no rollback happens in this example
-
 -- changeset course:002-make-locks
 -- => the second release changeset creates the locks table
 -- => the v1 tag lands on this history row as the release point
@@ -26,7 +25,6 @@ CREATE TABLE locks (
 
 -- rollback DROP TABLE locks;
 -- => this reverse never runs here; the example only tags, never rolls back
-
 -- changeset course:003-make-tolls
 -- => the post-release changeset creates the tolls table after the tag
 -- => its row stays untagged, proving tags mark points, not ranges

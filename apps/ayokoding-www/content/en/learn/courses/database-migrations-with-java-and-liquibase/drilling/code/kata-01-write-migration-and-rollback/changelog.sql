@@ -12,10 +12,10 @@ CREATE TABLE shelves (
 
 -- rollback DROP TABLE shelves;
 -- => this reverse never runs here; only the column addition rolls back
-
 -- changeset kata:002-add-stock
 -- => the stock changeset adds the column the kata rolls back
-ALTER TABLE shelves ADD COLUMN stock INTEGER;
+ALTER TABLE shelves
+ADD COLUMN stock INTEGER;
 
 -- rollback ALTER TABLE shelves DROP COLUMN stock;
 -- => dropping the column reverses exactly what this changeset added

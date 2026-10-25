@@ -10,9 +10,13 @@ CREATE TABLE zeta (
   name VARCHAR(60) NOT NULL
   -- => the create succeeds, then the insert below fails beside it
 );
-INSERT INTO missing_table (name) VALUES ('ghost');
+
+INSERT INTO
+  missing_table (name)
+VALUES
+  ('ghost');
+
 -- => the insert cannot succeed: no such table exists anywhere here
 -- => the transaction undoes the create above together with this failure
-
 -- rollback DROP TABLE zeta;
 -- => this reverse never runs: the failed changeset recorded nothing

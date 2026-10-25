@@ -13,11 +13,14 @@ CREATE TABLE bins (
 
 -- rollback DROP TABLE bins;
 -- => this reverse never runs here; only the seed is rolled back
-
 -- changeset course:002-seed-bins
 -- => the seed changeset inserts exactly two rows into the bins table
 -- => data changes deserve reverses as much as schema changes do
-INSERT INTO bins (code) VALUES ('A-1'), ('A-2');
+INSERT INTO
+  bins (code)
+VALUES
+  ('A-1'),
+  ('A-2');
 
 -- rollback DELETE FROM bins;
 -- => the declared delete removes exactly the rows this changeset added

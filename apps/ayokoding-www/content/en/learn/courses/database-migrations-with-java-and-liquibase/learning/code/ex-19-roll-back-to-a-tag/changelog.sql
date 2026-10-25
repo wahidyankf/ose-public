@@ -13,7 +13,6 @@ CREATE TABLE harbours (
 
 -- rollback DROP TABLE harbours;
 -- => this reverse never runs here; the tag rollback stops above it
-
 -- changeset course:002-make-piers
 -- => the first post-release changeset creates the piers table
 -- => rolling back to v1 reverses this changeset and deletes its row
@@ -26,7 +25,6 @@ CREATE TABLE piers (
 
 -- rollback DROP TABLE piers;
 -- => the tag rollback runs this line on its way back to v1
-
 -- changeset course:003-make-ferries
 -- => the second post-release changeset creates the ferries table
 -- => it is the first reverse the tag rollback runs

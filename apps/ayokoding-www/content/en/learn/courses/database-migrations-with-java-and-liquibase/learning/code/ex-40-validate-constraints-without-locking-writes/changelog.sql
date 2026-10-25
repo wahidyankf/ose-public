@@ -9,12 +9,15 @@ CREATE TABLE orders (
   total_cents INTEGER NOT NULL
   -- => the seeded total already satisfies the rule below
 );
-INSERT INTO orders (total_cents) VALUES (5000);
--- => one seeded row the validation step must accept, never reject
 
+INSERT INTO
+  orders (total_cents)
+VALUES
+  (5000);
+
+-- => one seeded row the validation step must accept, never reject
 -- rollback DROP TABLE orders;
 -- => dropping the table reverses the seed and the rule together
-
 -- changeset course:002-add-rule-not-valid
 -- => the rule changeset guards new writes without scanning old rows
 -- => NOT VALID skips the table scan, so writers never block on this deploy
@@ -22,7 +25,6 @@ ALTER TABLE orders ADD CONSTRAINT ck_orders_total_positive CHECK (total_cents > 
 
 -- rollback ALTER TABLE orders DROP CONSTRAINT ck_orders_total_positive;
 -- => dropping the rule reverses exactly what this changeset added
-
 -- changeset course:003-validate-rule
 -- => the validation changeset checks old rows under a weaker lock
 -- => writes continue during validation; only the rule's promise waits

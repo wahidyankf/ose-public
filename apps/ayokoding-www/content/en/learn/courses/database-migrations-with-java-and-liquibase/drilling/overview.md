@@ -406,10 +406,10 @@ CREATE TABLE shelves (
 
 -- rollback DROP TABLE shelves;
 -- => this reverse never runs here; only the column addition rolls back
-
 -- changeset kata:002-add-stock
 -- => the stock changeset adds the column the kata rolls back
-ALTER TABLE shelves ADD COLUMN stock INTEGER;
+ALTER TABLE shelves
+ADD COLUMN stock INTEGER;
 
 -- rollback ALTER TABLE shelves DROP COLUMN stock;
 -- => dropping the column reverses exactly what this changeset added
@@ -551,9 +551,16 @@ CREATE TABLE ingots (
   grade VARCHAR(10)
   -- => grades start NULL; the backfill step derives all four
 );
-INSERT INTO ingots (weight_kg) VALUES (10), (20), (30), (40);
--- => four ungraded rows awaiting the wired backfill step
 
+INSERT INTO
+  ingots (weight_kg)
+VALUES
+  (10),
+  (20),
+  (30),
+  (40);
+
+-- => four ungraded rows awaiting the wired backfill step
 -- rollback DROP TABLE ingots;
 -- => this reverse never runs here; the kata wires forward only
 ```
@@ -566,9 +573,14 @@ INSERT INTO ingots (weight_kg) VALUES (10), (20), (30), (40);
 -- => The wired backfill step: heavy rows become A, light rows become B.
 -- changeset kata:002-grade-ingots
 -- => the added step derives every row's grade from its weight
-UPDATE ingots SET grade = CASE WHEN weight_kg >= 25 THEN 'A' ELSE 'B' END;
--- => two and two: the verification below recounts both bands
+UPDATE ingots
+SET
+  grade = CASE
+    WHEN weight_kg >= 25 THEN 'A'
+    ELSE 'B'
+  END;
 
+-- => two and two: the verification below recounts both bands
 -- rollback UPDATE ingots SET grade = NULL;
 -- => nulling the grades un-derives every row without dropping the column
 ```
@@ -941,8 +953,8 @@ CREATE TABLE waypoints (
 -- changeset kata:002-b-index-waypoints
 -- => the replacement ships the loser's value without the loser's table
 CREATE INDEX ix_waypoints_code ON waypoints (code);
--- => the index the duplicate skipped, applied onto the winner's table
 
+-- => the index the duplicate skipped, applied onto the winner's table
 -- rollback DROP INDEX ix_waypoints_code;
 -- => dropping the index un-resolves back to the winner alone
 ```
@@ -1126,11 +1138,13 @@ CREATE TABLE barometers (
 
 -- rollback DROP TABLE barometers;
 -- => this reverse never runs here; forensics read, they do not roll back
-
 -- changeset kata:002-bad-insert
 -- => the failing changeset inserts into a table that does not exist
 -- => its absence from the history is the boundary the kata reports
-INSERT INTO missing_table (name) VALUES ('ghost');
+INSERT INTO
+  missing_table (name)
+VALUES
+  ('ghost');
 
 -- rollback DELETE FROM missing_table WHERE name = 'ghost';
 -- => this reverse never runs: the failed changeset recorded nothing
@@ -1423,7 +1437,6 @@ CREATE TABLE signals (
 
 -- rollback DROP TABLE signals;
 -- => this reverse never runs: the gate refuses before any update
-
 -- changeset kata:001-make-signals
 -- => DELIBERATE BREAK: the same author and id as the changeset above
 -- => two identities collide, so validation must refuse the whole file
@@ -1643,7 +1656,6 @@ CREATE TABLE meters (
 
 -- rollback DROP TABLE meters;
 -- => dropping the table reverses exactly what this changeset built
-
 -- changeset kata:002-make-dials
 -- => the second rewritten changeset creates the dials table
 CREATE TABLE dials (

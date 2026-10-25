@@ -9,16 +9,20 @@ CREATE TABLE goods (
   name VARCHAR(60) NOT NULL
   -- => the old shape every blue-deploy query still names
 );
-INSERT INTO goods (name) VALUES ('kopi');
--- => one seeded row both deploys must keep reading through the switch
 
+INSERT INTO
+  goods (name)
+VALUES
+  ('kopi');
+
+-- => one seeded row both deploys must keep reading through the switch
 -- rollback DROP TABLE goods;
 -- => dropping the table reverses the seed and the addition together
-
 -- changeset course:002-add-tag
 -- => the compatible change adds a nullable column and nothing else
 -- => nullable means old inserts without the column keep working untouched
-ALTER TABLE goods ADD COLUMN tag VARCHAR(30);
+ALTER TABLE goods
+ADD COLUMN tag VARCHAR(30);
 
 -- rollback ALTER TABLE goods DROP COLUMN tag;
 -- => dropping the column un-adds without touching the old shape

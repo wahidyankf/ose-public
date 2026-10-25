@@ -12,7 +12,6 @@ CREATE TABLE meters (
 
 -- rollback DROP TABLE meters;
 -- => dropping the table reverses exactly what this changeset built
-
 -- changeset kata:002-make-dials
 -- => the second rewritten changeset creates the dials table
 CREATE TABLE dials (

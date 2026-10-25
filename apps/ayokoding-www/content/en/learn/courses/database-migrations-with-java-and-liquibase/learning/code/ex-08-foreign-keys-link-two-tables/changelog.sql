@@ -11,7 +11,6 @@ CREATE TABLE authors (
 
 -- rollback DROP TABLE authors;
 -- => dropping the table reverses exactly what this changeset built
-
 -- changeset course:002-create-books
 -- => books carry the key; authors stay independent of their books
 CREATE TABLE books (
@@ -25,12 +24,10 @@ CREATE TABLE books (
 
 -- rollback DROP TABLE books;
 -- => books drop before authors on rollback, reversing creation order
-
 -- changeset course:003-link-books-to-authors
 -- => the foreign key turns a bare integer into a guaranteed relationship
-ALTER TABLE books
-  ADD CONSTRAINT fk_books_author FOREIGN KEY (author_id) REFERENCES authors (id);
--- => a named constraint produces error messages a human can act on
+ALTER TABLE books ADD CONSTRAINT fk_books_author FOREIGN KEY (author_id) REFERENCES authors (id);
 
+-- => a named constraint produces error messages a human can act on
 -- rollback ALTER TABLE books DROP CONSTRAINT fk_books_author;
 -- => named constraints drop by name, so naming them is load-bearing

@@ -13,7 +13,6 @@ CREATE TABLE alpha (
 
 -- rollback DROP TABLE alpha;
 -- => this reverse never runs here; cleared releases ship, they do not roll back
-
 -- changeset course:002-make-beta
 -- => the second release changeset creates the beta table
 -- => the checklist verifies this table alongside the first one

@@ -13,7 +13,6 @@ CREATE TABLE psi (
 
 -- rollback DROP TABLE psi;
 -- => resets ignore rollback blocks: removal needs no declared reverse
-
 -- changeset course:002-make-omega
 -- => the second experiment changeset creates the omega table
 -- => tracked or not, every object goes when the reset runs

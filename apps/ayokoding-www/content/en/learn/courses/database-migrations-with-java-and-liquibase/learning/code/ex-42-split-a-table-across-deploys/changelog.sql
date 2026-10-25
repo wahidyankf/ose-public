@@ -11,12 +11,16 @@ CREATE TABLE purchase_orders (
   item VARCHAR(60) NOT NULL
   -- => the line half below moves out into its own table
 );
-INSERT INTO purchase_orders (customer, item) VALUES ('budi', 'kopi'), ('sari', 'teh');
--- => two wide rows the split below copies line by line
 
+INSERT INTO
+  purchase_orders (customer, item)
+VALUES
+  ('budi', 'kopi'),
+  ('sari', 'teh');
+
+-- => two wide rows the split below copies line by line
 -- rollback DROP TABLE purchase_orders;
 -- => dropping the table reverses the seed and the split together
-
 -- changeset course:002-split-lines-out
 -- => the split creates the lines table and copies every line across
 CREATE TABLE order_lines (
@@ -27,8 +31,15 @@ CREATE TABLE order_lines (
   item VARCHAR(60) NOT NULL
   -- => the copied item text the verification below recounts
 );
-INSERT INTO order_lines (order_id, item) SELECT id, item FROM purchase_orders;
--- => INSERT SELECT copies all rows in one statement, nothing hand-moved
 
+INSERT INTO
+  order_lines (order_id, item)
+SELECT
+  id,
+  item
+FROM
+  purchase_orders;
+
+-- => INSERT SELECT copies all rows in one statement, nothing hand-moved
 -- rollback DROP TABLE order_lines;
 -- => dropping the new table un-splits back to the wide shape alone

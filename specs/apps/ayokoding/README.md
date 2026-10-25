@@ -1,12 +1,15 @@
 # AyoKoding
 
 Specifications for the AyoKoding product family. AyoKoding ships two logical owners:
-`www` (site behaviour) and `cli` (code-example harness contract).
+`www` (site behaviour) and `cli` (code-example harness contract). The planned `web` owner
+describes the parallel Phoenix LiveView rewrite; it is not implemented yet.
 
 ## Contents
 
 - [AyoKoding Web](./www/) — the specification corpus for `ayokoding-www`, the multilingual
   educational site: its architecture and its recursive Gherkin behaviours.
+- [AyoKoding Phoenix Web](./web/) — the planned rewrite's populated behavior corpus,
+  current architecture status, local coexistence contract, and test-layer ownership.
 - [AyoKoding CLI](./cli/) — the contract for `ayokoding-cli`, the harness that checks course
   code examples: run specs, catalog references, layout, sync, execution, and coverage.
 

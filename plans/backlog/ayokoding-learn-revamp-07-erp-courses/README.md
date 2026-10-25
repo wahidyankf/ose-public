@@ -119,6 +119,15 @@ the two ERP paths are restructured and the pending mechanism is deleted, test fi
 AAOIFI link in a browser before the PR is marked ready. See
 [tech-docs/007](./tech-docs/007-execution-batching-and-ledger.md).
 
+## Parallel Phoenix Rewrite
+
+The [AyoKoding Phoenix LiveView rewrite](../ayokoding-app-web/README.md) runs independently of
+this plan. Keep this plan's existing execution order and ownership of ERP content, manifests,
+and removal of the transitional restructure mechanism. The rewrite reads these sources in place
+and owns adapting Phoenix to the already-merged phased schema, retired marker fields, path copy,
+and fixtures. This plan does not wait for Phoenix or preserve obsolete fields for it. The apps
+use separate local ports (3101 and 3102), tests, and owner specification corpora.
+
 ## Navigation
 
 - [Business requirements](./brd.md)

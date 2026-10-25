@@ -108,6 +108,15 @@ restored to its baseline, reported, and the wave moves on; the user decides whet
 Each finished course is one commit, and the branch is pushed four times, with a draft PR from the first push,
 so CI problems surface early. See [tech-docs/006](./tech-docs/006-execution-model.md).
 
+## Parallel Phoenix Rewrite
+
+The [AyoKoding Phoenix LiveView rewrite](../ayokoding-app-web/README.md) runs independently of
+this plan. Keep this plan's existing execution order and ownership of language/tooling content,
+prerequisites, metadata, the audited-course registry, filler baseline, and example harness.
+Phoenix reads these sources in place and owns reconciling already-merged changes and relevant
+completion scenarios. This plan does not wait for the rewrite or duplicate its application work.
+The apps use separate local ports (3101 and 3102), tests, and owner specification corpora.
+
 ## Navigation
 
 - [Business requirements](./brd.md)

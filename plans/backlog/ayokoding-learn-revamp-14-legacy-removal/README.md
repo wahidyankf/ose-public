@@ -184,6 +184,21 @@ every decision this plan relies on is copied into
 | 13  | `audit-product-security-ai`   | Audit and fix web, backend, mobile, security, AI, testing, architecture, product courses                                     | 05         |
 | 14  | `legacy-removal` (this plan)  | Delete `learn/legacy`, add 308 redirects, repoint `docs/` links, update specs and tests, carry the series-completion gate    | 10 to 13   |
 
+## Parallel Phoenix Rewrite
+
+The [AyoKoding Phoenix LiveView rewrite](../ayokoding-app-web/README.md) runs independently of
+this plan. Keep this plan's existing execution order and ownership of legacy deletion, the
+redirect mapping, navigation/search/sitemap changes, surviving rendering fixtures, and series
+closure. Do not retain legacy content or wait for Phoenix on its behalf. The rewrite owns
+reconciling these changes after they merge, using the surviving corpus and ordered 308 redirects.
+
+When preparing a merge, inspect only the current merged `main`: if Phoenix has already landed,
+identify affected Phoenix specs and tests in the shared-source impact review and hand any
+rewrite-owned adaptation to its executor. Do not read another worktree's uncommitted files or
+make an unfinished rewrite a new gate for this plan. The rewrite's executor must reconcile this
+plan's merged deletions and replacements before its own next delivery gate. The apps use separate
+local ports (3101 and 3102), tests, and owner specification corpora.
+
 ## Navigation
 
 - [Business requirements](./brd.md)

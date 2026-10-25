@@ -112,6 +112,15 @@ every loop stops after 2 cycles (the user's cap, 2026-10-09: "semua jadi 2 aja")
 fails is marked BLOCKED, reported, and the batch moves on; the plan then stops for the user before the
 paths are restructured. See [tech-docs/006](./tech-docs/006-execution-model.md).
 
+## Parallel Phoenix Rewrite
+
+The [AyoKoding Phoenix LiveView rewrite](../ayokoding-app-web/README.md) runs independently of
+this plan and reads the same content and path manifests. This plan keeps its existing execution
+order and does not wait for the rewrite. Continue authoring accounting courses and restructuring
+their paths in `apps/ayokoding-www`; the rewrite owns adapting Phoenix to already-merged metadata,
+prerequisite, phased-manifest, copy, and milestone changes. The two apps use separate local ports
+(3101 and 3102), tests, and owner specification corpora.
+
 ## Navigation
 
 - [Business requirements](./brd.md)

@@ -22,15 +22,18 @@ Schema 3 chooses capacity through a separate tier. One FIFO waiter persists unti
 tier deadline; the payload launches at most once and receives the largest safe vector within the tier.
 
 A resource tier is a reservation, not a limit: HIPPO does not cap the process, so classify by what
-the work really needs.
+the work needs.
 
 - `light` is one narrow static check: a linter, a formatter, or one validator.
 - `standard` is an ordinary check, one project's tests, or a writer.
 - `heavy` is a full build, a whole suite, or a quality gate.
+- `very-heavy` is an optional last resort. Declare it only in a machine file that can hold it; naming
+  an undeclared tier exits `2` with `hippo.args.invalid`.
 
-A tier that is too low lets real use exceed the reservation: the host reaches pressure and HIPPO
-sheds ephemeral work. A tier that is too high, or `heavy` by habit, holds capacity other runs need
-and starves the queue. Never choose a tier to be admitted faster.
+Pick the smallest tier that fits, and move up only on measured need. A tier that is too low lets real
+use exceed the reservation: the host reaches pressure and HIPPO sheds ephemeral work. A tier that is
+too high, or `heavy` by habit, holds capacity other runs need and starves the queue. Never choose a
+tier to be admitted faster.
 
 OSE maps fixed CPU allocation only to `NX_PARALLEL` and `DOTNET_PROCESSOR_COUNT`: missing values
 receive it, lower positive values survive, and higher values are clamped. Inner commands inherit

@@ -82,7 +82,7 @@ toolchains:
     # image whose install argv fetches jars.lock into /deps/clojure (JARS);
     # the wrapper puts the core jars first, then the locked jars in sorted
     # file-name order as explicit entries.
-    image: ayokoding-toolchain/clojure:7c9b9f0df0192c6010d9225ee3db9b1b27b1713e5c02894f748b81824cba9b6c@sha256:7c9b9f0df0192c6010d9225ee3db9b1b27b1713e5c02894f748b81824cba9b6c
+    image: ayokoding-toolchain/clojure:7b44f261ee2c774ee64dc5bede53fecae4177962b965a0b31c0941efe6f6cc24@sha256:7b44f261ee2c774ee64dc5bede53fecae4177962b965a0b31c0941efe6f6cc24
     build: clojure/Dockerfile
     install:
       lockfiles: [jars.lock]
@@ -112,7 +112,7 @@ toolchains:
     version: "2.4.21"
     # Locked units build an environment image whose install argv fetches
     # jars.lock into /deps/kotlin (JARS), the same recipe as java and clojure.
-    image: ayokoding-toolchain/kotlin:97e1de2aa6633e62efd282adc388f4cffc58b1f104c1bf5bc047a9673e47b1d3@sha256:97e1de2aa6633e62efd282adc388f4cffc58b1f104c1bf5bc047a9673e47b1d3
+    image: ayokoding-toolchain/kotlin:55ce84858815194bf0b33a6402cd0e242219c6bc465ad47f5886074bda8ec409@sha256:55ce84858815194bf0b33a6402cd0e242219c6bc465ad47f5886074bda8ec409
     build: kotlin/Dockerfile
     install:
       lockfiles: [jars.lock]
@@ -190,17 +190,17 @@ toolchains:
   - id: lua
     kind: language
     version: "5.5.1"
-    image: ayokoding-toolchain/lua:3b2f3dc54d52710af0d9961a36317b2cfa88c1738bc7869ae1dad19e6283e7b0@sha256:3b2f3dc54d52710af0d9961a36317b2cfa88c1738bc7869ae1dad19e6283e7b0
+    image: ayokoding-toolchain/lua:773df08098e411c67a500985053aab49b9688e40e677c8fb31e1c6df878a3d11@sha256:773df08098e411c67a500985053aab49b9688e40e677c8fb31e1c6df878a3d11
     build: lua/Dockerfile
   - id: luajit
     kind: language
     version: "v2.1 at commit 2a8e017"
-    image: ayokoding-toolchain/luajit:071b09ec4233e8724109a95572118460ee156fd33fcbe0e10b6185328bef10d4@sha256:071b09ec4233e8724109a95572118460ee156fd33fcbe0e10b6185328bef10d4
+    image: ayokoding-toolchain/luajit:7a2c48b4a6ca0ee1467875b52aafe3a4f1a876a6e2e0746938a3ec0da7d19d0d@sha256:7a2c48b4a6ca0ee1467875b52aafe3a4f1a876a6e2e0746938a3ec0da7d19d0d
     build: luajit/Dockerfile
   - id: neovim
     kind: language
     version: "0.12.6"
-    image: ayokoding-toolchain/neovim:0ebf17227a338bf2246967ffa9fd43153979bd29e967f7fda6c3fc0cc04c812a@sha256:0ebf17227a338bf2246967ffa9fd43153979bd29e967f7fda6c3fc0cc04c812a
+    image: ayokoding-toolchain/neovim:50b5dbe6f41632f1f9c9d2368016c47e54fc5c813d0f141b77d1f70bfeea5bad@sha256:50b5dbe6f41632f1f9c9d2368016c47e54fc5c813d0f141b77d1f70bfeea5bad
     build: neovim/Dockerfile
   - id: gcc
     kind: language
@@ -226,7 +226,7 @@ toolchains:
   - id: flutter
     kind: language
     version: "3.41.5"
-    image: ayokoding-toolchain/flutter:b531897761b022b21e7515a0428427fd42d52c646c7bcab88a5ebc4c1598add4@sha256:b531897761b022b21e7515a0428427fd42d52c646c7bcab88a5ebc4c1598add4
+    image: ayokoding-toolchain/flutter:8748c31666893d19224d93a3839d28e4f635e35fdb07793c85ed384d39f81b92@sha256:8748c31666893d19224d93a3839d28e4f635e35fdb07793c85ed384d39f81b92
     build: flutter/Dockerfile
     # The SDK publishes a linux x64 archive only, so the harness builds
     # and runs this image for linux/amd64 on every host.
@@ -241,7 +241,7 @@ toolchains:
   - id: shell
     kind: language
     version: "Debian trixie snapshot"
-    image: ayokoding-toolchain/shell:a9e969bb659a65d9a2a74d75d42a324c58f62bbac87927a43981426bbf52b57a@sha256:a9e969bb659a65d9a2a74d75d42a324c58f62bbac87927a43981426bbf52b57a
+    image: ayokoding-toolchain/shell:c51f81ac5d9f8ebf0b2a609428de30c59a2e1290b266417172f2ef4d192b3639@sha256:c51f81ac5d9f8ebf0b2a609428de30c59a2e1290b266417172f2ef4d192b3639
     build: shell/Dockerfile
   - id: powershell
     kind: language
@@ -276,7 +276,7 @@ toolchains:
   - id: ktlint
     kind: validator
     version: "1.8.0"
-    image: ayokoding-toolchain/ktlint:8b7611ee4960c516abda5bd72290caff76ec9bd256f9fb8429909f4c533d0dee@sha256:8b7611ee4960c516abda5bd72290caff76ec9bd256f9fb8429909f4c533d0dee
+    image: ayokoding-toolchain/ktlint:d0f82140a1db230da78e5f57b7aa435b013a8bc441d7c8194b23132d6361b458@sha256:d0f82140a1db230da78e5f57b7aa435b013a8bc441d7c8194b23132d6361b458
     build: ktlint/Dockerfile
   - id: opentofu
     kind: validator
@@ -285,7 +285,7 @@ toolchains:
   - id: kubeconform
     kind: validator
     version: "v0.8.0"
-    image: ayokoding-toolchain/kubeconform:945b3d03cd56e93e524515b058b189f231adbf62ded8de4dd94f12d483201416@sha256:945b3d03cd56e93e524515b058b189f231adbf62ded8de4dd94f12d483201416
+    image: ayokoding-toolchain/kubeconform:080da868e86dc2c680faba76f2f777030dee56b4ece316097f6e30f067017cc4@sha256:080da868e86dc2c680faba76f2f777030dee56b4ece316097f6e30f067017cc4
     build: kubeconform/Dockerfile
   - id: windows-static
     kind: validator
@@ -297,5 +297,5 @@ toolchains:
     version: "1.12.0"
     # WebAssembly via the wazero CLI on slim Debian. No install recipe: no
     # third-party Wasm library is used (AC-4 scope is the runtime alone).
-    image: ayokoding-toolchain/webassembly:0db6bd900c10447dcc73879a33585df4ec10a0bb836f3ad887ea2307cc0fc8c1@sha256:0db6bd900c10447dcc73879a33585df4ec10a0bb836f3ad887ea2307cc0fc8c1
+    image: ayokoding-toolchain/webassembly:269d0234d39ece219cb6585d64d72f2238b6c672207422125c645749aa3a6374@sha256:269d0234d39ece219cb6585d64d72f2238b6c672207422125c645749aa3a6374
     build: webassembly/Dockerfile

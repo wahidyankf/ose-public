@@ -29,8 +29,8 @@ dependency order.
 **How to call HIPPO (worktree root, that worktree's `./hippo`)**: one outer boundary per
 compute-bearing node — `rtk ./hippo run --class <transactional|ephemeral> --resource-tier
 <light|standard|heavy> --disk-path . -- <command>`. `transactional` for writers (`npm install`,
-provision), `ephemeral` for checks, tests, builds; `light` narrow, `standard` ordinary, `heavy`
-full. `npm run <script>` is already guarded — never re-wrap it; `npm install`/`npm exec` do take the
+provision), `ephemeral` for checks, tests, builds; choose the tier per the link below.
+`npm run <script>` is already guarded — never re-wrap it; `npm install`/`npm exec` do take the
 boundary; `rtk npm run doctor` guards itself.
 
 **Read pressure from HIPPO; never guess.** Before heavy work, read `./hippo status`

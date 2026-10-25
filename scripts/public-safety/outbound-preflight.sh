@@ -94,8 +94,25 @@ scan_error() {
 # ------------------------------------------------------------------------------
 
 WORK=$(mktemp -d "${TMPDIR:-/tmp}/public-safety.XXXXXX") || scan_error "cannot create a working directory"
-cleanup() { rm -rf "$WORK"; }
-trap cleanup EXIT INT TERM
+# A scanner being extracted lives in a staging directory inside the scanner cache,
+# not under WORK, so its path is recorded here for the cleanup below.
+STAGE_DIR=""
+# Invoked by the trap below, which ShellCheck does not read as a call.
+# shellcheck disable=SC2329
+cleanup() {
+	rm -rf "$WORK"
+	if [[ -n "$STAGE_DIR" ]]; then
+		rm -rf "$STAGE_DIR"
+	fi
+}
+# Bash runs a trap for a signal only after the foreground command it interrupted
+# returns, and then resumes the script unless the trap exits. An interrupted scan
+# must end here, stated as a scan error, rather than resume on whatever the
+# cleanup left behind.
+# shellcheck disable=SC2329
+interrupted() { scan_error "interrupted before the scan completed"; }
+trap cleanup EXIT
+trap interrupted INT TERM
 
 FINDINGS_FILE="$WORK/findings.txt"
 : >"$FINDINGS_FILE"
@@ -303,7 +320,8 @@ screen_all_terms() {
 
 # ------------------------------------------------------------------------------
 # TruffleHog. Bootstrapped once into a cache outside the repository, verified
-# by digest before extraction, and run offline afterwards.
+# by digest before extraction, stamped with what was extracted, and verified
+# against that stamp on every later run. It is run offline afterwards.
 # ------------------------------------------------------------------------------
 
 platform() {
@@ -321,20 +339,55 @@ platform() {
 	printf '%s_%s' "$os" "$arch"
 }
 
+digest_of() {
+	if command -v shasum >/dev/null 2>&1; then
+		shasum -a 256 "$1" | cut -d' ' -f1
+	elif command -v sha256sum >/dev/null 2>&1; then
+		sha256sum "$1" | cut -d' ' -f1
+	else
+		return 1
+	fi
+}
+
+verify_cached_scanner() {
+	# verify_cached_scanner <binary> <stamp>
+	#
+	# A cache entry is verified rather than trusted. The tarball digest is checked
+	# once, at download; the stamp carries that verification forward, so a binary
+	# that drifted from it drifted after it was approved.
+	local bin=$1 stamp=$2 actual
+	[[ -x "$bin" ]] ||
+		scan_error "the scanner cache entry holds no executable scanner: remove the scanner cache directory and run again"
+	# Fail closed rather than re-download. A hook may run with no network, and a
+	# wrapper that reached for one when its cache looked wrong would be least
+	# available exactly when it is most needed. The path is not printed: a cache
+	# under a home directory is itself a maintainer path.
+	[[ -r "$stamp" ]] ||
+		scan_error "the cached scanner carries no record of what was extracted: remove the scanner cache directory and run again"
+	actual=$(digest_of "$bin") || scan_error "cannot digest the cached scanner"
+	[[ "$actual" == "$(cat "$stamp")" ]] ||
+		scan_error "the cached scanner does not match what was extracted: refusing to run it"
+}
+
 bootstrap_trufflehog() {
-	local plat want cache dir tarball actual
+	local plat want cache parent dir tarball actual stamp stage stagebase
 	plat=$(platform) || scan_error "unsupported platform: refusing to scan"
 	want=$(trufflehog_digest "$plat") || scan_error "no approved digest for this platform"
 
 	cache="${PUBLIC_SAFETY_CACHE:-${XDG_CACHE_HOME:-$HOME/.cache}/ose-public-safety}"
-	dir="$cache/trufflehog/$TRUFFLEHOG_VERSION/$plat"
+	parent="$cache/trufflehog/$TRUFFLEHOG_VERSION"
+	dir="$parent/$plat"
 	TRUFFLEHOG_BIN="$dir/trufflehog"
+	stamp="$dir/trufflehog.sha256"
 
 	if [[ -x "$TRUFFLEHOG_BIN" ]]; then
+		verify_cached_scanner "$TRUFFLEHOG_BIN" "$stamp"
 		return 0
 	fi
 
-	mkdir -p "$dir" || scan_error "cannot create the scanner cache"
+	# Only the version directory is created here. The platform directory appears
+	# when a complete entry is published, never before.
+	mkdir -p "$parent" || scan_error "cannot create the scanner cache"
 	tarball="$WORK/trufflehog.tar.gz"
 
 	# The only network access in this script, and only when the exact pinned
@@ -343,12 +396,46 @@ bootstrap_trufflehog() {
 		"https://github.com/trufflesecurity/trufflehog/releases/download/v${TRUFFLEHOG_VERSION}/trufflehog_${TRUFFLEHOG_VERSION}_${plat}.tar.gz" ||
 		scan_error "cannot download the pinned scanner"
 
-	actual=$(shasum -a 256 "$tarball" | cut -d' ' -f1)
+	actual=$(digest_of "$tarball") || scan_error "cannot digest the downloaded scanner"
 	[[ "$actual" == "$want" ]] || scan_error "scanner digest mismatch: refusing to extract"
 
-	tar -xzf "$tarball" -C "$dir" trufflehog || scan_error "cannot extract the pinned scanner"
-	chmod +x "$TRUFFLEHOG_BIN" || scan_error "cannot make the scanner executable"
-	[[ -x "$TRUFFLEHOG_BIN" ]] || scan_error "the scanner is not executable after extraction"
+	# Extract and stamp inside a fresh staging directory beside the final one, then
+	# publish the whole directory at once. Nothing is visible at $dir until it is
+	# complete, so no run can see a scanner without its stamp, and a run that dies
+	# part-way leaves only a staging directory, which no run reads as a cache entry.
+	stage=$(mktemp -d "$parent/.stage.XXXXXX") || scan_error "cannot create a staging directory for the scanner"
+	STAGE_DIR="$stage"
+	stagebase=${stage##*/}
+	tar -xzf "$tarball" -C "$stage" trufflehog || scan_error "cannot extract the pinned scanner"
+	chmod +x "$stage/trufflehog" || scan_error "cannot make the scanner executable"
+	[[ -x "$stage/trufflehog" ]] || scan_error "the scanner is not executable after extraction"
+	digest_of "$stage/trufflehog" >"$stage/trufflehog.sha256" || scan_error "cannot record what was extracted"
+	verify_cached_scanner "$stage/trufflehog" "$stage/trufflehog.sha256"
+
+	# Publish. rename(2) of a directory onto a name that does not exist is atomic on
+	# Linux and macOS: the name appears with the whole staged entry already inside
+	# it, or not at all. A reader therefore never sees the scanner without its stamp.
+	# A loser of the race finds $dir already present. `rmdir` first clears an empty
+	# $dir left by an earlier run; a published entry always holds two files, so
+	# this cannot remove a winner's entry.
+	rmdir "$dir" 2>/dev/null
+	if [[ ! -e "$dir" ]]; then
+		# `mv` renames when its target is absent. If another run published $dir after
+		# the test above, `mv` moves the staging directory inside that entry instead.
+		# That is detected below and discarded, so the winner's entry is left intact.
+		mv -- "$stage" "$dir" 2>/dev/null || scan_error "cannot publish the scanner cache entry"
+		STAGE_DIR=""
+		if [[ ! -e "$dir/$stagebase" ]]; then
+			return 0
+		fi
+		rm -rf -- "${dir:?}/${stagebase:?}"
+	else
+		# The winner's entry is complete when it appears, so this run discards its own
+		# staging directory and uses the entry as it stands.
+		rm -rf -- "$stage"
+		STAGE_DIR=""
+	fi
+	verify_cached_scanner "$TRUFFLEHOG_BIN" "$stamp"
 }
 
 input_label() {

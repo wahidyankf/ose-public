@@ -7,7 +7,7 @@ when_to_use: Use when asking how a resource-aware obligation is enforced, or why
 
 Bootstrap, config, entrypoint, mapping, smoke, and upstream scheduler tests gate the executable
 contract. Plan validation checks guards, classes, edges, and justified serialization. Novel class
-choice and safe human retry remain **unenforced by decision** because they require intent, and
+choice, resource tier choice, and safe human retry remain **unenforced by decision** because they require intent, and
 container init because no OSE container runs HIPPO yet.
 
 ## Boundary presence is enforced; boundary class is not
@@ -33,7 +33,7 @@ Existing compute-admission exemptions remain governed by each checkout's owning 
 An unadmitted node is invisible to the ledger, so the host can reach critical pressure while
 `hippo status` still reports `normal`: nothing on the HIPPO side can defer or shed work it was never
 told about. That failure is unrecoverable after the fact, which is why presence is refused rather
-than reported. A wrong _class_, by contrast, still admits the work and still accounts for it, and so
+than reported. A wrong _class_ or tier, by contrast, still admits the work and still accounts for what was asked, and so
 stays unenforced by decision alongside the judgments named above.
 
 A reservation is also not a hard RSS limit — the ledger knows what an owner _asked for_, not what it
@@ -44,7 +44,16 @@ exports and nothing else does — so bypassing the boundary discards the clamp a
 accounting.
 
 `npm run <script>` is outside the guard by design: those scripts carry their own boundary, and an
-outer one makes the inner call wait on its own ancestor's lease.
+outer one makes the inner call wait on its own ancestor's lease. The four Markdown scripts carry
+none, because runs of `prettier` and `markdownlint-cli2` need no admission.
+
+`.github/scripts/test-hippo-consumer.sh` covers that exemption: it fails if one of those scripts gains
+a boundary or any other direct leaf loses its single one. Whether an ad hoc run is such a run is
+**unenforced by decision**. The guard and the hook allow exactly two spellings: `npx --no-install <tool>`
+and `npm exec --no -- <tool>` (the `--` optional). `npx --no` is denied because it exits 0 without
+running a missing tool, so a `--check` gate would pass falsely; `npm exec --no-install` is denied
+because npm only warns and installs. Versions, paths, other tools, and lines with another guarded
+segment stay denied.
 
 Two residual gaps, recorded rather than hidden. A command reached through an intermediary — a shell
 script, a Makefile target, an alias, an interpreter — still passes; text matching cannot close that

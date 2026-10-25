@@ -18,21 +18,36 @@ All `service`, `ephemeral`, and `transactional` owners reserve capacity. Automat
 may be smaller but not below one CPU or 256 MiB. Admission reserves both dimensions under strict
 FIFO; pressure may defer a request even when its vector fits.
 
-Schema 3 chooses capacity through a separate tier: `light` for narrow static checks, `standard` for
-ordinary checks and writers, and `heavy` for full builds, full suites, browser suites, and complete
-gates. One FIFO waiter persists until admission or its tier deadline; the payload launches at most
-once and receives the largest safe vector within the tier.
+Schema 3 chooses capacity through a separate tier. One FIFO waiter persists until admission or its
+tier deadline; the payload launches at most once and receives the largest safe vector within the tier.
+
+A resource tier is a reservation, not a limit: HIPPO does not cap the process, so classify by what
+the work really needs.
+
+- `light` is one narrow static check: a linter, a formatter, or one validator.
+- `standard` is an ordinary check, one project's tests, or a writer.
+- `heavy` is a full build, a whole suite, or a quality gate.
+
+A tier that is too low lets real use exceed the reservation: the host reaches pressure and HIPPO
+sheds ephemeral work. A tier that is too high, or `heavy` by habit, holds capacity other runs need
+and starves the queue. Never choose a tier to be admitted faster.
 
 OSE maps fixed CPU allocation only to `NX_PARALLEL` and `DOTNET_PROCESSOR_COUNT`: missing values
 receive it, lower positive values survive, and higher values are clamped. Inner commands inherit
 the session; never add another outer guard or an unowned ecosystem mapping.
 
-Every compute-bearing `package.json` script here already carries its own guard, either invoking
+Runs of `prettier` and `markdownlint-cli2`, in any mode over any files, need no HIPPO admission. Such
+passes are bounded and restartable, so queueing them behind heavy runs costs time and saves no
+capacity. All other compute stays guarded.
+
+Every compute-bearing `package.json` script here, except the four Markdown scripts (`lint:md`,
+`lint:md:fix`, `format:md`, `format:md:check`), already carries its own guard, either invoking
 `./hippo run` directly or delegating to one that does. `npm run <script>` is therefore already
 admitted, and wrapping one in an outer `./hippo run` makes each inner call wait on a lease its own
 ancestor holds. The run then stalls near zero CPU while `./hippo status` still reports `normal`, so
 it reads as a slow build rather than as self-contention. `npm install` and `npm exec` are not
-scripts and do take the outer boundary — that is what the `AGENTS.md` and `README.md` examples show.
+scripts and do take the outer boundary, except for runs of the two tools above — that is what the
+`AGENTS.md` and `README.md` examples show.
 
 ## The boundary is not paperwork on a command that would have been fine
 

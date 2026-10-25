@@ -105,6 +105,47 @@ cmd_denies "the exact fan-out that exhausted the host" "rtk npm exec nx -- run-m
 cmd_denies "unguarded npx" "rtk npx nx run ose-app-web:build"
 cmd_denies "unguarded npx playwright" "npx playwright test"
 
+# --- prettier and markdownlint-cli2 without HIPPO admission ------------------------------------------
+# Only these two tools, and only through a spelling that refuses to install a missing tool. Verified
+# with npm 11: `npx --no-install` and `npm exec --no` cancel the fetch, but `npm exec --no-install` only
+# warns and still installs, so it does not qualify. File arguments are never inspected.
+cmd_allows "npx no-install prettier check" "npx --no-install prettier --check x.md"
+cmd_allows "rtk npx no-install markdownlint-cli2" "rtk npx --no-install markdownlint-cli2 '**/*.md'"
+cmd_allows "npm exec no separator markdownlint-cli2" 'npm exec --no -- markdownlint-cli2 "**/*.md"'
+cmd_allows "npm exec no-flag prettier without separator" "npm exec --no prettier -- --help"
+cmd_allows "rtk npm exec no-flag prettier with separator" "rtk npm exec --no -- prettier --check ."
+cmd_allows "env assignment before an admitted tool" "CI=1 npx --no-install prettier --check ."
+cmd_allows "path-qualified npx before an admitted tool" "/usr/bin/npx --no-install prettier --check ."
+cmd_allows "admitted prettier with an output redirect" "npx --no-install prettier --check . >/tmp/prettier.log"
+# `npx --no` exits 0 without running the tool when the tool is missing, so it is not an accepted spelling.
+cmd_denies "npx --no prettier write" "npx --no prettier --write ."
+cmd_denies "rtk npx --no markdownlint-cli2" "rtk npx --no markdownlint-cli2 '**/*.md'"
+cmd_denies "npx prettier without a no-install flag" "npx prettier --check x.md"
+cmd_denies "npm exec prettier without a no-install flag" "npm exec -- prettier --check ."
+cmd_denies "npm exec no-install spelling still installs" "npm exec --no-install -- prettier --check ."
+cmd_denies "npx no-install other tool" "npx --no-install eslint ."
+cmd_denies "npx no-install markdownlint without cli2" "npx --no-install markdownlint --check ."
+cmd_denies "npx no-install versioned prettier" "npx --no-install prettier@3 --check ."
+cmd_denies "npx no-install tool by path" "npx --no-install ./node_modules/.bin/prettier --check ."
+cmd_denies "npx no-install separator is not accepted" "npx --no-install -- prettier --check ."
+cmd_denies "npx no-install with no tool" "npx --no-install"
+cmd_denies "bare npx" "npx"
+cmd_denies "npm exec no-flag other tool" "npm exec --no -- some-other-tool"
+cmd_denies "npx no-install extra flag before the tool" "npx --no-install --package=evil prettier --check ."
+cmd_denies "npm exec no-flag extra flag before the tool" 'npm exec --no --call="npm ci" -- prettier'
+cmd_denies "allowed prettier chained with unguarded npx" "npx --no-install prettier --check . && npx eslint ."
+cmd_denies "allowed prettier chained with unguarded npm exec" "npm exec --no -- prettier --check . ; npm exec nx -- run app:build"
+cmd_denies "allowed prettier then unguarded npm ci by or" "npx --no-install prettier --check . || npm ci"
+cmd_denies "allowed prettier piped to unguarded exec" "npx --no-install prettier --check . | npm exec nx -- run app:build"
+cmd_denies "allowed prettier with an unguarded substitution" "npx --no-install prettier --check . \$(npm ci)"
+cmd_denies "allowed prettier with an unguarded backtick" "npx --no-install prettier --check . \`npm ci\`"
+cmd_denies "allowed prettier then unguarded command on a new line" "npx --no-install prettier --check .
+npm ci"
+# Direct calls were never guarded, and stay unaffected by the no-install exemption.
+cmd_allows "direct prettier is not guarded" "prettier --check ."
+cmd_allows "direct markdownlint-cli2 is not guarded" 'markdownlint-cli2 "**/*.md"'
+cmd_allows "node_modules prettier is not guarded" "./node_modules/.bin/prettier --check ."
+
 # --- bare nx through a PATH shim -------------------------------------------------------------------
 cmd_denies "bare nx run" "rtk nx run ose-app-web:build"
 cmd_denies "bare nx affected" "nx affected -t test:quick"
@@ -221,6 +262,103 @@ fi
 # Positive control: the same command inside a repository that DOES ship ./hippo must still be
 # denied. Without this, the consumer cases above would pass against a guard that never fires at all.
 cmd_denies "consuming repository still denies" "rtk npm install"
+
+# --- Launchers judged by the program they run: xargs and find -exec ----------------------------------
+# REGRESSION (known gap A): an exempt tool piped into xargs made the guarded program invisible to the
+# first-word check. A launcher is now judged by the program it runs, and any other program is refused.
+cmd_denies "xargs npm ci after a no-install prettier pipe (gap A)" "npx --no-install prettier --check . | xargs npm ci"
+cmd_denies "xargs npm ci" "xargs npm ci"
+cmd_denies "xargs npm exec nx" "git ls-files | xargs npm exec nx -- run app:build"
+cmd_denies "xargs npm with the verb supplied by stdin" "echo ci | xargs npm"
+cmd_denies "xargs replace-string program" "echo ci | xargs -I{} npm {} ci"
+cmd_denies "xargs -i replace option" "echo ci | xargs -i npm ci"
+cmd_denies "xargs long replace option" "echo ci | xargs --replace=X npm ci"
+cmd_denies "xargs unknown option may hide the program" "xargs --bogus npm ci"
+cmd_denies "xargs with a numeric value before the program" "xargs -n 1 npm ci"
+cmd_denies "xargs runs sh" "xargs sh -c 'npm ci'"
+cmd_denies "xargs runs a non-exempt tool by decision" "git status | xargs rm"
+cmd_denies "xargs runs grep, refused by decision" "git ls-files | xargs grep -l foo"
+cmd_denies "xargs quoted program name" 'xargs "npm" ci'
+cmd_denies "xargs exempt tool by path" "xargs /usr/bin/prettier --check"
+cmd_denies "xargs npx without a no-install flag" "xargs npx prettier --check"
+cmd_denies "xargs npx with the no-install flag refused" "xargs npx --no prettier --check"
+cmd_denies "xargs npx tool supplied only by stdin" "echo prettier | xargs npx --no-install"
+cmd_denies "xargs npm exec tool supplied only by stdin" "echo prettier | xargs npm exec --no --"
+cmd_denies "xargs npm exec with a non-exempt tool" "git ls-files | xargs npm exec --no -- eslint"
+cmd_denies "xargs running find with an exec" "xargs find . -exec npm ci {} ;"
+cmd_denies "xargs behind rtk" "rtk xargs npm ci"
+cmd_denies "xargs by path" "/usr/bin/xargs npm ci"
+cmd_denies "xargs after a conjunction" "true && xargs npm ci"
+cmd_denies "xargs inside a command substitution" "echo \$(xargs npm ci)"
+cmd_denies "xargs running env" "git ls-files -z | xargs -0 -n1 env npm ci"
+cmd_denies "find -exec a guarded tool" "find . -name x -exec npm ci \\;"
+cmd_denies "find -exec with a plus terminator" "find . -name '*.md' -exec npm ci {} +"
+cmd_denies "find -execdir a guarded tool" "find . -execdir npm ci {} \\;"
+cmd_denies "find -ok a guarded tool" "find . -ok npm ci \\;"
+cmd_denies "find -okdir a guarded tool" "find . -okdir npm ci {} \\;"
+cmd_denies "find -exec a shell" "find . -exec sh -c 'npm ci' \\;"
+cmd_denies "find -exec with a placeholder program" "find . -exec {} \\;"
+cmd_denies "find -exec with no command" "find . -exec \\;"
+cmd_denies "find -exec inside an escaped group" "find . \\( -name x -exec npm ci \\; \\)"
+cmd_denies "find -exec with a quoted keyword" 'find . "-exec" npm ci \;'
+cmd_denies "find -exec npx without a no-install flag" "find . -exec npx prettier {} +"
+cmd_denies "find -exec npx whose tool is a placeholder" "find . -exec npx --no-install {} \\;"
+cmd_denies "find -exec npm exec with a non-exempt tool" "find . -exec npm exec --no -- eslint {} +"
+cmd_denies "find -exec after an exempt one" "find . -exec prettier --check {} \\; -exec npm ci \\;"
+cmd_denies "find running find with an exec" "xargs find . -exec npm ci \\;"
+cmd_allows "xargs with no program runs echo" "git ls-files | xargs"
+cmd_allows "xargs echo" "echo npm ci | xargs echo"
+cmd_allows "xargs echo with harmless options" "git ls-files | xargs -r -0 echo"
+cmd_allows "xargs --version" "xargs --version"
+cmd_allows "xargs exempt prettier" "git ls-files '*.md' | xargs prettier --check"
+cmd_allows "xargs exempt prettier with separate and attached values" "git ls-files -z | xargs -0 -n 1 -P 4 prettier --check"
+cmd_allows "xargs exempt prettier with a separate delimiter value" "git ls-files | xargs -d , prettier --check"
+cmd_allows "xargs no-install prettier" "xargs npx --no-install prettier --check"
+cmd_allows "xargs npm exec no-install markdownlint-cli2" "git ls-files '*.md' | xargs npm exec --no -- markdownlint-cli2"
+cmd_allows "find -exec exempt prettier" "find . -name '*.md' -exec prettier --check {} +"
+cmd_allows "find -exec no-install markdownlint-cli2" "find . -name '*.md' -exec npx --no-install markdownlint-cli2 {} +"
+cmd_allows "find -exec echo" "find . -exec echo {} \\;"
+cmd_allows "find without an exec action is not a launcher" "find . -name '*.md' -print"
+cmd_allows "grep text naming a launcher is prose" "grep -rn 'xargs npm ci' docs/"
+
+# --- Shell keywords and PATH-qualified prefixes do not hide a command --------------------------------
+cmd_denies "guarded command in a then branch" "if true; then npm ci; fi"
+cmd_denies "guarded command in a while body" "while false; do npm ci; done"
+cmd_denies "guarded command after a negation" "! npm ci"
+cmd_denies "guarded command in a brace group" "{ npm ci; }"
+cmd_denies "path-qualified env hides nothing" "/usr/bin/env npm ci"
+cmd_denies "path-qualified nice hides nothing" "/usr/bin/nice npm ci"
+cmd_allows "exempt tool in a then branch" "if true; then prettier --check .; fi"
+cmd_allows "harmless command in a then branch" "if true; then echo ok; fi"
+
+# --- A launcher with an option hides its program; the guard refuses rather than guesses ------------
+cmd_denies "nice with an option" "nice -n 5 npm ci"
+cmd_denies "env with an option" "env -i npm ci"
+cmd_denies "sudo with an option" "sudo -u root npm ci"
+cmd_denies "time with an option" "time -p npm ci"
+
+# --- Quoting and escaping do not change the program the shell runs -------------------------------------
+cmd_denies "quoted guarded program" '"npm" ci'
+cmd_denies "quoted guarded verb" 'npm "ci"'
+cmd_denies "quoted program behind rtk" 'rtk "npm" ci'
+cmd_denies "backslash-escaped program" '\npm ci'
+cmd_denies "quoted cargo program" '"cargo" test'
+
+# --- The deny text tells the agent what to do, and no longer repeats the retired claim -----------------
+stale_out="$(printf '%s' "$(bash_payload "npm ci")" | "$HOOK" 2>/dev/null)"
+if printf '%s' "$stale_out" | jq -e '.hookSpecificOutput.permissionDecisionReason | (contains("already carry their own guard") | not) and contains("in a second boundary")' >/dev/null 2>&1; then
+	pass=$((pass + 1))
+else
+	echo "FAIL: deny text still carries the retired claim or lacks the second-boundary correction: ${stale_out:-<empty>}"
+	fail=$((fail + 1))
+fi
+launcher_out="$(printf '%s' "$(bash_payload "git ls-files | xargs npm ci")" | "$HOOK" 2>/dev/null)"
+if printf '%s' "$launcher_out" | jq -e '.hookSpecificOutput.permissionDecisionReason | contains("xargs") and contains("Run the program itself inside the boundary")' >/dev/null 2>&1; then
+	pass=$((pass + 1))
+else
+	echo "FAIL: launcher deny text does not tell the agent to run the program itself: ${launcher_out:-<empty>}"
+	fail=$((fail + 1))
+fi
 
 echo "passed=$pass failed=$fail"
 [ "$fail" -eq 0 ]

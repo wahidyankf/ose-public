@@ -1,0 +1,3 @@
+extended: email,password,createdAt (base=2)
+merged: displayName,theme
+base intact: email,password

@@ -1,0 +1,2 @@
+merged: users+posts getUser=user:Ada listPosts=posts:2
+clash: getUser

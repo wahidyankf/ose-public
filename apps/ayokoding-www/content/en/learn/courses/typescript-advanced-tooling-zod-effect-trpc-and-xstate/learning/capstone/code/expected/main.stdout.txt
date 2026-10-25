@@ -1,0 +1,3 @@
+happy: editing>submitting>confirmed | order for ada@example.com: 2 seats, paid 50
+broke: editing>submitting>failed | top up: have 60, need 100
+bad: editing>submitting>failed | fix: email: expected email string

@@ -1,0 +1,2 @@
+deleted: state=empty
+refused: DELETE ignored in empty: nothing selected

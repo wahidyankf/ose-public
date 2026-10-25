@@ -1,0 +1,2 @@
+playing: state=playing volume=80
+stopped: state=stopped log=enter playing: unmute | exit playing: fade out

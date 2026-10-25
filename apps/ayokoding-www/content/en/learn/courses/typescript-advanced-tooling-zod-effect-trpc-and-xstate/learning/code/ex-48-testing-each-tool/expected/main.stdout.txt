@@ -1,0 +1,3 @@
+schema: 3/3 rejected
+machine: idle>working>done
+machine: illegal FINISH in idle

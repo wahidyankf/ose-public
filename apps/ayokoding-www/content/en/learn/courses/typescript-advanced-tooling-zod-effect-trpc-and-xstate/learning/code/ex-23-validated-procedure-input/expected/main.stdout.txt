@@ -1,0 +1,2 @@
+created: created Ada (36)
+rejected: name: expected non-empty string

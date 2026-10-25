@@ -1,0 +1,3 @@
+hello user:ada
+missing ghost: create it?
+denied root: ask an admin

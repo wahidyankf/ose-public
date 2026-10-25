@@ -1,0 +1,2 @@
+funded: paid, balance 70
+broke: insufficient credits: have 10, need 30

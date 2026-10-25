@@ -1,0 +1,2 @@
+resolved: state=ready data=feed
+rejected: state=failed error=offline

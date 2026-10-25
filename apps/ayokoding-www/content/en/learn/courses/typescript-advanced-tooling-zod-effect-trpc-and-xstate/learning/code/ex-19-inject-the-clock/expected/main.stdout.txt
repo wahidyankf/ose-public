@@ -1,0 +1,2 @@
+fixed: good morning, Ada
+afternoon: good day, Ada

@@ -1,0 +1,3 @@
+shipped: shipped
+double pay: PAY refused in payment.card: use SHIP
+early ship: SHIP refused in cart.browsing: pay first

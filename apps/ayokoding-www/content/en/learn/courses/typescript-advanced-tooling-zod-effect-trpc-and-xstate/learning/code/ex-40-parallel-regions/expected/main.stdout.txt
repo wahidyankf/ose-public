@@ -1,0 +1,2 @@
+playing: playing,off
+paused: paused,on

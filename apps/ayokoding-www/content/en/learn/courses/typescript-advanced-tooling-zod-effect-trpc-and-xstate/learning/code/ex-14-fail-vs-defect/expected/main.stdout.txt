@@ -1,0 +1,3 @@
+value: 3.5
+handled: division by zero
+defect: null dereference in divide

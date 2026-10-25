@@ -1,0 +1,3 @@
+guess: id=temp_8 title=Buy milk
+confirmed: id=todo_42
+swap temp_8 -> todo_42

@@ -1,0 +1,2 @@
+admin: stats for Ada
+guest: forbidden: admin only

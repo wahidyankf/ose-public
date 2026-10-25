@@ -1,0 +1,3 @@
+client: sending seats=2
+server: accepted ada@example.com
+forged: email: expected email string

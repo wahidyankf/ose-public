@@ -1,0 +1,2 @@
+overdraft: InsufficientFunds shortBy=20
+funded: balance=70

@@ -1,0 +1,2 @@
+circle: area=circle:12.57
+bad tag: unknown kind: triangle

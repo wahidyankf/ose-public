@@ -1,0 +1,3 @@
+locked: 2
+first: org.jetbrains.kotlin:kotlin-stdlib:2.4.21
+hashed: true

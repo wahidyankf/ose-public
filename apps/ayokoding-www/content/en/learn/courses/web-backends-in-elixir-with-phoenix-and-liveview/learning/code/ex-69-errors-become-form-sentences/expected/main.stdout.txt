@@ -1,0 +1,2 @@
+fields: email handle
+email says: can't be blank

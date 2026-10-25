@@ -1,0 +1,2 @@
+rice: 12000
+sambal: not on the menu

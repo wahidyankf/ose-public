@@ -1,0 +1,7 @@
+criteria: 4
+correctness: 0.50
+tokens: 0.20
+turns: 0.15
+review burden: 0.15
+weights sum: 1.0
+scorecard fair: True

@@ -1,0 +1,14 @@
+# => Serialized deploys: queue on main, never cancel a live deploy.
+# => cancel-in-progress false means wait in line, not die on arrival.
+# => Half-applied deploys corrupt targets; serialization prevents overlap.
+name: ship # => workflow name shown in the Actions tab
+on: push # => pushes to main line up behind the running deploy
+concurrency: # => overlap policy for production safety
+  group: ship-main # => one lane for the whole main line
+  cancel-in-progress: false # => queue, never cancel a deploy
+jobs: # => jobs governed by the serial lane
+  deploy: # => single job proving the queue policy
+    runs-on: ubuntu-latest # => hosted runner image
+    environment: production # => guarded target for the deploy
+    steps: # => steps running strictly one run at a time
+      - run: echo deploy-ok # => placeholder deploy proof

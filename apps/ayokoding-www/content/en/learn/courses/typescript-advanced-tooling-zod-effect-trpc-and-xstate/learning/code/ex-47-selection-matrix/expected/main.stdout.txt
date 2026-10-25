@@ -1,0 +1,5 @@
+untrusted input -> Zod [runtime] cost: schemas per boundary
+typed errors -> Effect [compile-time + runtime] cost: rewrite throws as values
+API typing -> tRPC [compile-time] cost: router plus shared types
+UI flow -> XState [runtime] cost: model every state
+no gap -> none [compile-time] cost: nothing

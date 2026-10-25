@@ -1,0 +1,3 @@
+locked: state=locked count=3
+ignored: state=locked count=3
+reset: state=counting count=0

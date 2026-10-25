@@ -1,0 +1,3 @@
+False allow exec: npm test
+True allow edit: /repo/**
+True allow exec: rm *

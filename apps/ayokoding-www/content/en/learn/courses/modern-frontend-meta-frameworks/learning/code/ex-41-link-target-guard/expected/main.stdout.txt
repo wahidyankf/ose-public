@@ -1,0 +1,5 @@
+pass: /products/kopi-001
+pass: /products
+reject unknown: /admin
+reject traversal: /products/../../etc
+legal shapes: /,/products,/products/:id

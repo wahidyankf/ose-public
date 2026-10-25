@@ -1,0 +1,2 @@
+order: ['./AGENTS.md', '~/.claude/MEMORY.md']
+answers: ./AGENTS.md

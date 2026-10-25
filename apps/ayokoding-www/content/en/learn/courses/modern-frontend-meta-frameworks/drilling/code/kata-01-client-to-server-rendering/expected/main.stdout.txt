@@ -1,0 +1,2 @@
+first paint: <ul><li>Kopi Toraja 250g 68000</li><li>Teh Melati 100g 32000</li></ul>
+paints-kopi=true

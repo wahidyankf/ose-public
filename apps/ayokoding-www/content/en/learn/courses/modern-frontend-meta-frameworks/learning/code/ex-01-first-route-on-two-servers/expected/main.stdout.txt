@@ -1,0 +1,8 @@
+GET /next/ -> 200 next home: NusaMart
+GET /next/products -> 200 next list: kopi-001,teh-002,gula-003
+GET /next/products/teh-002 -> 200 next detail: Teh Melati 100g 32000
+GET /next/products/unknown -> 404 next detail: product not found
+GET /start/ -> 200 start home: NusaMart
+GET /start/products -> 200 start list: kopi-001,teh-002,gula-003
+GET /start/products/teh-002 -> 200 start detail: Teh Melati 100g 32000
+GET /start/products/unknown -> 404 start detail: product not found

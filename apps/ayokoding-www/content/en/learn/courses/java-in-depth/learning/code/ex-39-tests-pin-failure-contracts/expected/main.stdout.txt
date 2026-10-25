@@ -1,0 +1,4 @@
+PASS valid tag builds
+PASS blank refused
+PASS negative refused
+failures pinned: 2

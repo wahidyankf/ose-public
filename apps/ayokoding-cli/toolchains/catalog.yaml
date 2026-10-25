@@ -18,10 +18,31 @@ toolchains:
     kind: language
     version: "1.27.2"
     image: docker.io/library/golang:1.27@sha256:820153096fda4de6ac1b7194d12e416b7dd8f4e9a33d17e0345b111b945162d8
+    # Locked units build an environment image whose install argv downloads
+    # the course go.mod requirements into /deps/gomod (GOMODCACHE); the unit
+    # builds offline from that cache with GOPROXY=off.
+    install:
+      lockfiles: [go.mod]
+      command:
+        [
+          sh,
+          -c,
+          "mkdir -p /deps/gomod/cache && cp /deps/lock/go.mod /deps/gomod/go.mod && cd /deps/gomod && GOMODCACHE=/deps/gomod/cache go mod download",
+        ]
+      env:
+        GOMODCACHE: /deps/gomod/cache
+        GOPROXY: "off"
   - id: rust
     kind: language
     version: "1.99.1"
-    image: docker.io/library/rust:1.99@sha256:e259494b14672950a909b4c54527e19d29cae6ebf980672114c8bb85e5594e4a
+    # Locked units build an environment image whose install argv fetches
+    # Cargo.lock into /deps/rust; the unit builds offline from that vendor
+    # dir through --config source replacement twice alike.
+    image: ayokoding-toolchain/rust:b88b87d6f58a6abaae6460d74f2d54dee7ada9807ca170ae36637668b8791d0b@sha256:b88b87d6f58a6abaae6460d74f2d54dee7ada9807ca170ae36637668b8791d0b
+    build: rust/Dockerfile
+    install:
+      lockfiles: [Cargo.lock]
+      command: [python3, /opt/tools/fetch.py, /deps/lock/Cargo.lock, /deps/rust]
   - id: node
     kind: language
     version: "24.22.0"
@@ -29,17 +50,75 @@ toolchains:
   - id: typescript
     kind: language
     version: "7.0.2"
-    image: ayokoding-toolchain/typescript:b7c9c03f556ecef1da8571cb3ddceb9697254b8d4b0a473b73672eb4821bdd14@sha256:b7c9c03f556ecef1da8571cb3ddceb9697254b8d4b0a473b73672eb4821bdd14
+    image: ayokoding-toolchain/typescript:a38a2617a7a24c957aaaac635fb3fd727f7e89b549789ab91eb0028feb20ee1b@sha256:a38a2617a7a24c957aaaac635fb3fd727f7e89b549789ab91eb0028feb20ee1b
     build: typescript/Dockerfile
+    # Locked units build an environment image whose install argv derives a
+    # package.json from the course package-lock.json and runs npm ci into
+    # /srv/node-deps (pre-created node-owned; the recipe runs as USER node,
+    # so root-owned paths are unusable);
+    # the .bin suffix on PATH exposes the vitest binary, and the link puts
+    # node_modules beside each unit for ESM resolution.
+    install:
+      lockfiles: [package-lock.json]
+      command:
+        [
+          sh,
+          -c,
+          'mkdir -p /srv/node-deps/node && cp /deps/lock/package-lock.json /srv/node-deps/node/package-lock.json && node -e "const fs=require(''fs'');const l=JSON.parse(fs.readFileSync(''/srv/node-deps/node/package-lock.json'',''utf8''));const r=(l.packages&&l.packages[''''])||{};fs.writeFileSync(''/srv/node-deps/node/package.json'',JSON.stringify({name:l.name||''course-deps'',version:l.version||''0.0.0'',dependencies:r.dependencies||{},devDependencies:r.devDependencies||{}}))" && npm ci --prefix /srv/node-deps/node --no-audit --no-fund --no-update-notifier && ln -sfn /srv/node-deps/node/node_modules /srv/node-deps/node_modules',
+        ]
+      env:
+        PATH: $PATH:/srv/node-deps/node_modules/.bin
+        # Vitest 5 writes an API token under XDG_DATA_HOME; runs are
+        # --read-only with only /tmp writable, so point it at the tmpfs.
+        XDG_DATA_HOME: /tmp/ayokoding-data
+      links:
+        - name: node_modules
+          target: /srv/node-deps/node_modules
+  - id: clojure
+    kind: language
+    version: "1.12.6"
+    # Clojure 1.12.6 on Temurin JDK 25 with the three core jars named by its
+    # POM (hashes recorded 2026-10-20). Locked units build an environment
+    # image whose install argv fetches jars.lock into /deps/clojure (JARS);
+    # the wrapper puts the core jars first, then the locked jars in sorted
+    # file-name order as explicit entries.
+    image: ayokoding-toolchain/clojure:7b44f261ee2c774ee64dc5bede53fecae4177962b965a0b31c0941efe6f6cc24@sha256:7b44f261ee2c774ee64dc5bede53fecae4177962b965a0b31c0941efe6f6cc24
+    build: clojure/Dockerfile
+    install:
+      lockfiles: [jars.lock]
+      command: [java, /opt/tools/JarFetch.java, /deps/lock/jars.lock, /deps/clojure]
+      env:
+        JARS: /deps/clojure
   - id: java
     kind: language
     version: "25.0.4.1+1"
-    image: docker.io/library/eclipse-temurin:25-jdk@sha256:2d5d5e9b533342a565907c84f47a2ec298c40cde7b13a3ca85d4950fa456a641
+    # Derived from the same Temurin base plus JarFetch, the hash-locked jar
+    # installer. Units without a lockfile run on this image as before (the
+    # default user is unchanged); locked units build an environment image
+    # whose install argv fetches jars.lock into /deps/java (JARS).
+    image: ayokoding-toolchain/java:d391a9a933425fb316e6e9583922deb8c137e8dfa8ce8b880a188447ab5138ab@sha256:d391a9a933425fb316e6e9583922deb8c137e8dfa8ce8b880a188447ab5138ab
+    build: java/Dockerfile
+    # Hash-locked jar install: JarFetch fetches each jars.lock line into
+    # /deps/java (JARS). A line carries an optional third field naming the
+    # repository (`central`, the default, or `clojars`); anything else fails
+    # the build naming the line.
+    install:
+      lockfiles: [jars.lock]
+      command: [java, /opt/tools/JarFetch.java, /deps/lock/jars.lock, /deps/java]
+      env:
+        JARS: /deps/java
   - id: kotlin
     kind: language
     version: "2.4.21"
-    image: ayokoding-toolchain/kotlin:812eaeff10297e717fd044f54eac1525dbe72932f95b9816274ab343969b0b1e@sha256:812eaeff10297e717fd044f54eac1525dbe72932f95b9816274ab343969b0b1e
+    # Locked units build an environment image whose install argv fetches
+    # jars.lock into /deps/kotlin (JARS), the same recipe as java and clojure.
+    image: ayokoding-toolchain/kotlin:55ce84858815194bf0b33a6402cd0e242219c6bc465ad47f5886074bda8ec409@sha256:55ce84858815194bf0b33a6402cd0e242219c6bc465ad47f5886074bda8ec409
     build: kotlin/Dockerfile
+    install:
+      lockfiles: [jars.lock]
+      command: [java, /opt/tools/JarFetch.java, /deps/lock/jars.lock, /deps/kotlin]
+      env:
+        JARS: /deps/kotlin
   - id: dotnet
     kind: language
     version: "10.0.402"
@@ -49,24 +128,79 @@ toolchains:
       # and the harness HOME (/tmp/home) is never created. Point HOME at
       # the container /tmp, which always exists and is private per run.
       HOME: /tmp
+    # Locked units build an environment image whose install argv restores
+    # packages.lock.json into /deps/dotnet. NuGet's content hashes are not
+    # nupkg checksums, so nothing but NuGet itself can check them: the
+    # recipe pins every lock entry (direct and transitive) as an exact
+    # PackageReference in /tmp and restores it — NuGet's lowest-match
+    # resolution reproduces the locked graph version for version — then
+    # stages the downloaded nupkgs. The restore here must NOT use
+    # --locked-mode: the rebuilt project lists transitive packages as
+    # direct references, so locked mode always fails with NU1004 on any
+    # lock that has transitive dependencies. The tamper gate stays where
+    # it belongs: units restore --locked-mode from /deps/dotnet (NU1403
+    # on any tampered entry).
+    install:
+      lockfiles: [packages.lock.json]
+      command:
+        - sh
+        - -c
+        - |
+          set -eu
+          lock=/deps/lock/packages.lock.json
+          dest=/deps/dotnet
+          work=/tmp/dotnet-fetch
+          mkdir -p "$dest" "$work"
+          cp "$lock" "$work/packages.lock.json"
+          tfm=$(grep -o '"net[0-9][0-9.]*"' "$lock" | head -n 1 | tr -d '"')
+          awk '/": \{$/ { key=$0 } /"resolved": "/ { line=key; sub(/^[^"]*"/, "", line); sub(/".*$/, "", line); name=line; ver=$0; sub(/^[^"]*"[^"]*"[^"]*"/, "", ver); sub(/".*$/, "", ver); print name" "ver }' "$lock" > "$work/refs.txt"
+          {
+            printf '%s\n' '<Project Sdk="Microsoft.NET.Sdk">' '  <PropertyGroup>' "    <TargetFramework>$tfm</TargetFramework>" '    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>' '  </PropertyGroup>' '  <ItemGroup>'
+            while read -r name ver; do
+              printf '    <PackageReference Include="%s" Version="%s" />\n' "$name" "$ver"
+            done < "$work/refs.txt"
+            printf '%s\n' '  </ItemGroup>' '</Project>'
+          } > "$work/fetch.csproj"
+          dotnet restore "$work/fetch.csproj"
+          cp "$HOME/.nuget/packages/"*/*/*.nupkg "$dest"/
   - id: elixir
     kind: language
     version: "1.20.4 (OTP 29.1.2)"
-    image: docker.io/library/elixir:1.20-otp-29@sha256:8241e27b8915d197eb8df4783f14490de9c9c335d03bd8a5d5613005cb2d7fc2
+    # Locked units build an environment image whose install argv seeds the
+    # Hex cache from mix.lock: hex and rebar3 install first (hex pinned;
+    # rebar3 follows upstream stable), then fetch.py resolves the locked
+    # versions into HEX_HOME and verifies every tarball against the lock's
+    # own checksum. Units resolve offline from that cache twice alike.
+    image: ayokoding-toolchain/elixir:ad9cbcca22f1fdb9e79029f23ff1b4bf36b18d78131c7ac7127caddd24e2982a@sha256:ad9cbcca22f1fdb9e79029f23ff1b4bf36b18d78131c7ac7127caddd24e2982a
+    build: elixir/Dockerfile
+    install:
+      lockfiles: [mix.lock]
+      command:
+        - sh
+        - -c
+        - |
+          set -eu
+          export HEX_HOME=/deps/hex-seed MIX_HOME=/deps/mix-seed
+          mkdir -p "$HEX_HOME" "$MIX_HOME"
+          mix local.hex --force 2.5.3
+          mix local.rebar --force
+          python3 /opt/tools/fetch.py /deps/lock/mix.lock
+      env:
+        HEX_OFFLINE: "1"
   - id: lua
     kind: language
     version: "5.5.1"
-    image: ayokoding-toolchain/lua:3b2f3dc54d52710af0d9961a36317b2cfa88c1738bc7869ae1dad19e6283e7b0@sha256:3b2f3dc54d52710af0d9961a36317b2cfa88c1738bc7869ae1dad19e6283e7b0
+    image: ayokoding-toolchain/lua:773df08098e411c67a500985053aab49b9688e40e677c8fb31e1c6df878a3d11@sha256:773df08098e411c67a500985053aab49b9688e40e677c8fb31e1c6df878a3d11
     build: lua/Dockerfile
   - id: luajit
     kind: language
     version: "v2.1 at commit 2a8e017"
-    image: ayokoding-toolchain/luajit:071b09ec4233e8724109a95572118460ee156fd33fcbe0e10b6185328bef10d4@sha256:071b09ec4233e8724109a95572118460ee156fd33fcbe0e10b6185328bef10d4
+    image: ayokoding-toolchain/luajit:7a2c48b4a6ca0ee1467875b52aafe3a4f1a876a6e2e0746938a3ec0da7d19d0d@sha256:7a2c48b4a6ca0ee1467875b52aafe3a4f1a876a6e2e0746938a3ec0da7d19d0d
     build: luajit/Dockerfile
   - id: neovim
     kind: language
     version: "0.12.6"
-    image: ayokoding-toolchain/neovim:0ebf17227a338bf2246967ffa9fd43153979bd29e967f7fda6c3fc0cc04c812a@sha256:0ebf17227a338bf2246967ffa9fd43153979bd29e967f7fda6c3fc0cc04c812a
+    image: ayokoding-toolchain/neovim:50b5dbe6f41632f1f9c9d2368016c47e54fc5c813d0f141b77d1f70bfeea5bad@sha256:50b5dbe6f41632f1f9c9d2368016c47e54fc5c813d0f141b77d1f70bfeea5bad
     build: neovim/Dockerfile
   - id: gcc
     kind: language
@@ -92,7 +226,7 @@ toolchains:
   - id: flutter
     kind: language
     version: "3.41.5"
-    image: ayokoding-toolchain/flutter:cc4fd8e235a66b354d33632de23d2146af1722a40df631fcc55fa44189b3a4c8@sha256:cc4fd8e235a66b354d33632de23d2146af1722a40df631fcc55fa44189b3a4c8
+    image: ayokoding-toolchain/flutter:8748c31666893d19224d93a3839d28e4f635e35fdb07793c85ed384d39f81b92@sha256:8748c31666893d19224d93a3839d28e4f635e35fdb07793c85ed384d39f81b92
     build: flutter/Dockerfile
     # The SDK publishes a linux x64 archive only, so the harness builds
     # and runs this image for linux/amd64 on every host.
@@ -107,7 +241,7 @@ toolchains:
   - id: shell
     kind: language
     version: "Debian trixie snapshot"
-    image: ayokoding-toolchain/shell:a9e969bb659a65d9a2a74d75d42a324c58f62bbac87927a43981426bbf52b57a@sha256:a9e969bb659a65d9a2a74d75d42a324c58f62bbac87927a43981426bbf52b57a
+    image: ayokoding-toolchain/shell:c51f81ac5d9f8ebf0b2a609428de30c59a2e1290b266417172f2ef4d192b3639@sha256:c51f81ac5d9f8ebf0b2a609428de30c59a2e1290b266417172f2ef4d192b3639
     build: shell/Dockerfile
   - id: powershell
     kind: language
@@ -142,7 +276,7 @@ toolchains:
   - id: ktlint
     kind: validator
     version: "1.8.0"
-    image: ayokoding-toolchain/ktlint:8b7611ee4960c516abda5bd72290caff76ec9bd256f9fb8429909f4c533d0dee@sha256:8b7611ee4960c516abda5bd72290caff76ec9bd256f9fb8429909f4c533d0dee
+    image: ayokoding-toolchain/ktlint:d0f82140a1db230da78e5f57b7aa435b013a8bc441d7c8194b23132d6361b458@sha256:d0f82140a1db230da78e5f57b7aa435b013a8bc441d7c8194b23132d6361b458
     build: ktlint/Dockerfile
   - id: opentofu
     kind: validator
@@ -151,10 +285,17 @@ toolchains:
   - id: kubeconform
     kind: validator
     version: "v0.8.0"
-    image: ayokoding-toolchain/kubeconform:945b3d03cd56e93e524515b058b189f231adbf62ded8de4dd94f12d483201416@sha256:945b3d03cd56e93e524515b058b189f231adbf62ded8de4dd94f12d483201416
+    image: ayokoding-toolchain/kubeconform:080da868e86dc2c680faba76f2f777030dee56b4ece316097f6e30f067017cc4@sha256:080da868e86dc2c680faba76f2f777030dee56b4ece316097f6e30f067017cc4
     build: kubeconform/Dockerfile
   - id: windows-static
     kind: validator
     version: "Debian trixie snapshot"
     image: ayokoding-toolchain/windows-static:f92e8b786d3f1edb47402da464b9a52f76c461ab26d3619b85fa265c5b707fa5@sha256:f92e8b786d3f1edb47402da464b9a52f76c461ab26d3619b85fa265c5b707fa5
     build: windows-static/Dockerfile
+  - id: webassembly
+    kind: language
+    version: "1.12.0"
+    # WebAssembly via the wazero CLI on slim Debian. No install recipe: no
+    # third-party Wasm library is used (AC-4 scope is the runtime alone).
+    image: ayokoding-toolchain/webassembly:269d0234d39ece219cb6585d64d72f2238b6c672207422125c645749aa3a6374@sha256:269d0234d39ece219cb6585d64d72f2238b6c672207422125c645749aa3a6374
+    build: webassembly/Dockerfile

@@ -1,0 +1,4 @@
+symptom: claim with no runnable proof
+recovery: refuse, demand a test gate
+kept: ['rejected claim quoted', 'gate requirement filed']
+recovered: True

@@ -1,0 +1,4 @@
+upgrade=true
+upgrade=true
+schema-same=3
+vals=retries=5,timeout=60

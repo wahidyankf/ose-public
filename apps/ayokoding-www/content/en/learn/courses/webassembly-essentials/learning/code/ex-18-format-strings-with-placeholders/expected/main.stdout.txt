@@ -1,0 +1,8 @@
+sari scored 91
+  sari |     91
+sari ratio: 0.91
+record: ("sari", 91)
+pretty: [
+    "sari",
+    "budi",
+]

@@ -1,0 +1,1 @@
+PASS: ex-34-clear-reset-restore-matrix (1 tests)

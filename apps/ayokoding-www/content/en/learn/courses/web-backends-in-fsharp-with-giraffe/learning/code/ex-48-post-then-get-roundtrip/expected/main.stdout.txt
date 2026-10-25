@@ -1,0 +1,2 @@
+POST /notes -> 201 {"id":1}
+GET /notes -> 200 [{"id":1,"text":"hi"}]

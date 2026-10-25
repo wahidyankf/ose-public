@@ -1,0 +1,3 @@
+first: admin
+second: admin
+no passwords typed: true

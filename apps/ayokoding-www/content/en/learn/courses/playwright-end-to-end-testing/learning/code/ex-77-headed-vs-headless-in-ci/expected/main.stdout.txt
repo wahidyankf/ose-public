@@ -1,0 +1,4 @@
+ci mode: headless
+local debug mode: headed
+local default mode: headless
+baselines match ci: true

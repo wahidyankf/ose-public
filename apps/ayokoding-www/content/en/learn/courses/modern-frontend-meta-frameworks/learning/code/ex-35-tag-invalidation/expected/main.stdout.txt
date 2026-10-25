@@ -1,0 +1,3 @@
+before: /products,/products/teh-002,/about
+invalidate prices drops: /products,/products/teh-002
+after: /about

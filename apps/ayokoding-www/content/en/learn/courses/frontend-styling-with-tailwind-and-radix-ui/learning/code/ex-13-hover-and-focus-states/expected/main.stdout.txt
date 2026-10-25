@@ -1,0 +1,3 @@
+rest: bg-blue-600
+hover: bg-blue-600 hover:bg-blue-700
+focus: bg-blue-600 focus:ring-2

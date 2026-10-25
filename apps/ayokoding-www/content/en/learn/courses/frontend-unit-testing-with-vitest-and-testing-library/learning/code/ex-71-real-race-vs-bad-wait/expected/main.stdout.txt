@@ -1,0 +1,1 @@
+PASS: ex-71-real-race-vs-bad-wait (1 tests)

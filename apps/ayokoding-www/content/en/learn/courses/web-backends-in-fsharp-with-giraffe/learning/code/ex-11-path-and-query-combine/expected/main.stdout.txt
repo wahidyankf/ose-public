@@ -1,0 +1,2 @@
+GET /users/ada/orders?status=open -> 200 {"status":"open","user":"ada"}
+GET /users/ada/orders -> 200 {"status":"all","user":"ada"}

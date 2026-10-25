@@ -1,0 +1,9 @@
+# Fixture: the version table one project pins.
+# Every version decision lives here; modules reference names only.
+[versions]
+kotlin = "2.4.21"
+junit = "5.11.0"
+
+[libraries]
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }

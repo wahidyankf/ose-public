@@ -1,0 +1,3 @@
+light: bg-white + text-slate-900
+dark: bg-slate-900 + text-slate-100
+unpaired surfaces shipped: 0

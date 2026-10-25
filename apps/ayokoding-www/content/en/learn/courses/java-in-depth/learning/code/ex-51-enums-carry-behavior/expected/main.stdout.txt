@@ -1,0 +1,6 @@
+pending: SETTLED
+settled stays: SETTLED
+void closed: true
+pending open: false
+short reads: partial
+states: 4

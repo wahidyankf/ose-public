@@ -1,0 +1,1 @@
+same=true chars=899

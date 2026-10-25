@@ -1,0 +1,4 @@
+GET / -> 200 typed hit: /
+GET /products -> 200 typed hit: /products
+GET /products/kopi-001 -> 200 typed hit: /products/kopi-001
+GET /products/teh-002 -> 200 typed hit: /products/teh-002

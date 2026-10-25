@@ -1,0 +1,2 @@
+GET /next/layout -> 200 <html><body><header>NusaMart</header><div class='shop'><nav>shelf</nav><h1>Teh Melati 100g</h1><p>32000</p></div></body></html>
+GET /start/layout -> 200 <html><body><header>NusaMart</header><div class='shop'><nav>shelf</nav><h1>Teh Melati 100g</h1><p>32000</p></div></body></html>

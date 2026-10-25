@@ -1,0 +1,3 @@
+sari: 50
+dewi: 0
+present: true

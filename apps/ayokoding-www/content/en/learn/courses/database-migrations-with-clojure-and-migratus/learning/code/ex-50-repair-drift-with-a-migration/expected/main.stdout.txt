@@ -1,0 +1,4 @@
+migrate: nil
+repair: nil
+completed: ["make-crate" "restore-crate"]
+catalog: ["m50_crate"]

@@ -1,0 +1,2 @@
+oat holds 12 sacks
+missing: Exception: salt is unstocked

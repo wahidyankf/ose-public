@@ -1,0 +1,2 @@
+GET /hello x-user=ada -> 200 OK {"hello":"ada"}
+GET /hello x-user=(none) -> 200 OK {"hello":"guest"}

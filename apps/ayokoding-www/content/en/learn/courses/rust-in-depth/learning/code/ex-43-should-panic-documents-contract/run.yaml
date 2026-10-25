@@ -1,0 +1,13 @@
+schema: ayokoding.run/v1
+toolchain: rust
+runs:
+  - name: main
+    command:
+      [
+        sh,
+        -c,
+        'rustc --test suite.rs -o unittest && ./unittest --test-threads=1 > gotest.out 2>&1; status=$?; sed -e "s/finished in [0-9][0-9.]*s/finished in 0.00s/" gotest.out; exit $status',
+      ]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

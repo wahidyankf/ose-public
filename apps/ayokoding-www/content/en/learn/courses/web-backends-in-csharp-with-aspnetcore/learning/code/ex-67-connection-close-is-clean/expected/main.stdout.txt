@@ -1,0 +1,2 @@
+GET /bye/ada -> 200 close=yes {"goodbye":"ada"}
+GET /bye/grace -> 200 close=yes {"goodbye":"grace"}

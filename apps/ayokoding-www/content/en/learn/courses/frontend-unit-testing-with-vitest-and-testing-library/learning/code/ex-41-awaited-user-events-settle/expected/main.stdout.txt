@@ -1,0 +1,1 @@
+PASS: ex-41-awaited-user-events-settle (1 tests)

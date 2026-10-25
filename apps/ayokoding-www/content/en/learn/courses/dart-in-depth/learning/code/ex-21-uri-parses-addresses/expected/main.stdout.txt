@@ -1,0 +1,5 @@
+host: https://pantry.example.com
+path: /catalog
+crop: oat
+note: grade A
+built: https://pantry.example.com/order?crop=tea&sacks=4

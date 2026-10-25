@@ -1,0 +1,3 @@
+backfilled rows: 2
+sample: ada lovelace
+migrations applied: 2

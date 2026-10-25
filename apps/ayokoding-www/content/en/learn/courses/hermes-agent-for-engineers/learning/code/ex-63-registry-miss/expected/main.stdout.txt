@@ -1,0 +1,2 @@
+provider: none
+setting: {'deploy.dry-run': 'true'}

@@ -1,0 +1,13 @@
+schema: ayokoding.run/v1
+toolchain: clojure
+dependencies:
+  lockfile: learning/code/jars.lock
+services: [postgres]
+runs:
+  - name: main
+    command: [clojure, main.clj]
+    timeout: 600s
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+      stderr: ignore

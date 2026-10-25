@@ -1,0 +1,2 @@
+sheds table present: 0
+history rows after rollback: 0

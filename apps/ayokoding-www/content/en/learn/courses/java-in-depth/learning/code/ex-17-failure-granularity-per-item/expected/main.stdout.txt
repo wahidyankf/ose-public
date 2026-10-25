@@ -1,0 +1,2 @@
+banked: [50, 25, 75]
+skipped: [xx (For input string: "xx"), -5 (negative: -5)]

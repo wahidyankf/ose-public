@@ -1,0 +1,2 @@
+GET /fact [(none)] -> 200 cache=public, max-age=60 etag="v3" {"fact":"honey never spoils"}
+GET /fact ["v3"] -> 304 cache=(none) etag=(none)

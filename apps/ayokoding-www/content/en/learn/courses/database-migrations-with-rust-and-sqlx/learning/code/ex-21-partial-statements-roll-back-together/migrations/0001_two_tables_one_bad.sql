@@ -1,0 +1,13 @@
+-- 0001: two good creates plus one broken tail. -- => the whole file shares one transaction
+CREATE TABLE halves ( -- => rolls back when the file fails
+    id SERIAL PRIMARY KEY, -- => surrogate key: the row identity never changes
+    code TEXT NOT NULL -- => every half row carries a code
+); -- => the definition closes here
+CREATE TABLE wholes ( -- => rolls back when the file fails
+    id SERIAL PRIMARY KEY, -- => surrogate key: the row identity never changes
+    code TEXT NOT NULL -- => every whole row carries a code
+); -- => the definition closes here
+CREATE TABLE broken_tail ( -- => this statement never commits
+    id SERIAL PRIMARY KEY, -- => surrogate key: the row identity never changes
+    amount NOT_A_TYPE -- => unknown types fail at parse time
+); -- => the definition closes here

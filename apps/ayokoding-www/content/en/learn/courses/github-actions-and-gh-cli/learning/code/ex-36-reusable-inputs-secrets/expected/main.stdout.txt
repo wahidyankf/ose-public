@@ -1,0 +1,6 @@
+PASS: with block present
+PASS: input passed
+PASS: secrets block present
+PASS: secret context used
+PASS: pinned callee
+checks: 5/5

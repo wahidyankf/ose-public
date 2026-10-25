@@ -24,6 +24,7 @@ type preparedUnit struct {
 	image  string
 	files  fs.FS
 	work   string
+	links  []containerplan.Link
 }
 
 // runUnit parses one unit spec, prepares its image and working copy, and
@@ -60,7 +61,35 @@ func (flow *runner) prepareUnit(ctx context.Context, course string, sub fs.FS, u
 	if err != nil || len(findings) != 0 {
 		return preparedUnit{}, findings, err
 	}
-	return preparedUnit{course: course, unit: unit, spec: spec, image: image, files: sub}, nil, nil
+	return preparedUnit{course: course, unit: unit, spec: spec, image: image, files: sub, links: flow.unitLinks(spec)}, nil, nil
+}
+
+// unitLinks carries the caller links plus the toolchain install links for
+// a locked unit: the install target only exists in the environment image,
+// so unlocked units never see it. A caller link wins a name clash, since
+// the explicit request scopes one execution while the catalog scopes the
+// toolchain.
+func (flow *runner) unitLinks(spec runspec.Spec) []containerplan.Link {
+	links := append([]containerplan.Link(nil), flow.req.Links...)
+	if spec.Lockfile == "" {
+		return links
+	}
+	toolchain, found := flow.req.Catalog.Lookup(spec.Toolchain)
+	if !found {
+		return links
+	}
+	seen := map[string]bool{}
+	for _, link := range links {
+		seen[link.Name] = true
+	}
+	for _, link := range toolchain.Install.Links {
+		if seen[link.Name] {
+			continue
+		}
+		links = append(links, containerplan.Link{Name: link.Name, Target: link.Target})
+		seen[link.Name] = true
+	}
+	return links
 }
 
 // runImage returns the image one unit runs in: the environment image for a
@@ -106,7 +135,7 @@ func (flow *runner) runImage(ctx context.Context, course string, sub fs.FS, unit
 
 // workingCopy copies one unit into a fresh temporary directory and places
 // the caller links, so runs never write the repository.
-func (flow *runner) workingCopy(sub fs.FS, unit layout.Unit) (string, error) {
+func (flow *runner) workingCopy(sub fs.FS, unit layout.Unit, links []containerplan.Link) (string, error) {
 	work, err := os.MkdirTemp("", "ayokoding-run-")
 	if err != nil {
 		return "", fmt.Errorf("application: create working copy: %w", err)
@@ -115,7 +144,7 @@ func (flow *runner) workingCopy(sub fs.FS, unit layout.Unit) (string, error) {
 		_ = os.RemoveAll(work)
 		return "", err
 	}
-	for _, link := range flow.req.Links {
+	for _, link := range links {
 		if err := placeLink(work, unit.Path, link); err != nil {
 			_ = os.RemoveAll(work)
 			return "", err

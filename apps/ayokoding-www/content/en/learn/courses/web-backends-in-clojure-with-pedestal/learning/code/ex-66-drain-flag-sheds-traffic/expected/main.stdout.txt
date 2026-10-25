@@ -1,0 +1,3 @@
+live: hi
+shed: draining
+stopped: true

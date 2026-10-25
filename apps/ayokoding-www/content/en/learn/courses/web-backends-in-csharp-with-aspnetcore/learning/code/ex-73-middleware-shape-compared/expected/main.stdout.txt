@@ -1,0 +1,2 @@
+GET /ping -> 200 legs=in-out {"pong":true}
+fastapi: class StampMiddleware(BaseHTTPMiddleware)

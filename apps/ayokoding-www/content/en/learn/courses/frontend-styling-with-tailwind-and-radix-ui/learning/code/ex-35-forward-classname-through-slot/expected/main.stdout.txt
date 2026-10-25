@@ -1,0 +1,3 @@
+element: <button class='px-4 py-2'>Open</button>
+behaviour: dialog-trigger
+wrapper divs added: 0

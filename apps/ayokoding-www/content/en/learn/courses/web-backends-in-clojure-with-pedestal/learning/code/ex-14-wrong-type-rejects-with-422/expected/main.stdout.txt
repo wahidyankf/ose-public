@@ -1,0 +1,4 @@
+ok: qty 3
+word: qty must be a positive number: "many"
+word-status: 422
+negative: qty must be a positive number: -1

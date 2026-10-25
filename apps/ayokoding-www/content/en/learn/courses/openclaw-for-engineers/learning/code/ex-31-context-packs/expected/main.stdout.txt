@@ -1,0 +1,4 @@
+packed items: 3
+question: may I delete old drafts?
+answer from pack: archive, never delete
+re-asked human: False

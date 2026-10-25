@@ -1,0 +1,2 @@
+tables described by both: 3
+history rows old plus squash: 4

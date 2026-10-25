@@ -1,0 +1,3 @@
+Clojure code reads data
+data shapes code
+Clojure data stays simple

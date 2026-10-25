@@ -1,0 +1,1 @@
+PASS: ex-32-stubbing-fetch-itself (1 tests)

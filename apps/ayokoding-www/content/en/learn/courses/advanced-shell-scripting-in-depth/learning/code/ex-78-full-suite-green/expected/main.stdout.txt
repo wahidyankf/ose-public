@@ -1,0 +1,6 @@
+ok: flags on
+ok: pipe counts
+ok: colons kept
+ok: counts agree
+ok: suite ends
+suite: 5/5

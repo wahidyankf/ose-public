@@ -1,0 +1,51 @@
+databaseChangeLog: # => Root key required for every YAML changelog
+  - changeSet: # => The shared changeset carries no context, so it always runs
+      id: 001-make-tenants
+      # => every environment needs the tenants table underneath its seeds
+      author: course
+      # => one author keeps the identity triples in this file uniform
+      changes:
+        - createTable: # => Declarative table creation, the YAML counterpart of DDL
+            tableName: tenants
+            # => the shared table both environment seeds build on
+            columns:
+              - column: # => One entry per column, name and type together
+                  name: id
+                  type: SERIAL
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: VARCHAR(80)
+  - changeSet: # => The dev-only changeset runs solely under the dev context
+      id: 002-seed-dev
+      # => demo seeds must never leak into a production database
+      author: course
+      context: dev
+      # => context dev selects this changeset only when dev is active
+      changes:
+        - createTable:
+            tableName: dev_seeds
+            # => the dev seed table exists only where dev context ran
+            columns:
+              - column:
+                  name: id
+                  type: SERIAL
+                  constraints:
+                    primaryKey: true
+  - changeSet: # => The prod-only changeset runs solely under prod context
+      id: 003-seed-prod
+      # => placeholders stay pending until a prod-context update selects them
+      author: course
+      context: prod
+      # => context prod leaves this changeset pending under the dev run
+      changes:
+        - createTable:
+            tableName: prod_seeds
+            # => absence of this table below proves the gate held
+            columns:
+              - column:
+                  name: id
+                  type: SERIAL
+                  constraints:
+                    primaryKey: true

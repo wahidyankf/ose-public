@@ -1,0 +1,5 @@
+PASS empty is None
+PASS singleton self
+PASS pair exact
+PASS range formula
+suite: 4 tests, 0 failures

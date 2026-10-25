@@ -1,0 +1,4 @@
+posted 100: total 100
+refused: postings need a positive amount, got -5: total 100
+posted 50: total 150
+digits in 10050: 5

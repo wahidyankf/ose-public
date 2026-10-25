@@ -1,0 +1,2 @@
+datoms: 4
+attributes: ['part/in-stock', 'part/name', 'part/price', 'part/sku']

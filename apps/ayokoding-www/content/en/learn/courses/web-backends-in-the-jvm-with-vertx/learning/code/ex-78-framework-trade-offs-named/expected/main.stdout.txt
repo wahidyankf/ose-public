@@ -1,0 +1,4 @@
+explicit wiring -> 201 {"name":"drill"}
+guards you own -> 422 {"error":{"code":422,"message":"name is required"}}
+probes stay separate -> 200 {"status":"ok"}
+tested in-process -> 78 examples green

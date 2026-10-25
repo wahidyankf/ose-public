@@ -1,0 +1,2 @@
+text=:stdlib
+json={:hex, "1.4.10"}

@@ -1,0 +1,5 @@
+tool: pi 1.3.0
+task: add coupon total with test
+turns: 6
+tokens: 9400
+passed: True

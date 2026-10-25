@@ -1,0 +1,13 @@
+schema: ayokoding.run/v1
+toolchain: java
+runs:
+  - name: test
+    command: [sh, -c, "javac Report.java ReportTest.java && java -ea ReportTest"]
+    expect:
+      exit: 0
+      stdout: expected/test/test.stdout.txt
+  - name: main
+    command: [sh, -c, "javac Report.java Main.java && java Main"]
+    expect:
+      exit: 0
+      stdout: expected/main/main.stdout.txt

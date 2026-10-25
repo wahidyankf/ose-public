@@ -1,0 +1,8 @@
+calls: 5 total: 46s
+browser: 38s
+exec: 4s
+exec: 2s
+read: 1s
+message: 1s
+bottleneck: browser
+share: 82%

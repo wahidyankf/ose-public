@@ -1,0 +1,6 @@
+src/my_app/
+src/my_app/web.clj
+test/my_app/web_test.clj
+resources/config.edn
+deps.edn
+README.md

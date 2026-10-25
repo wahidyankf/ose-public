@@ -1,0 +1,11 @@
+GET /health -> 200 {"status":"ok"}
+GET /v1/orders -> 200 []
+POST /v1/orders -> 201 {"id":1,"title":"dune","qty":2}
+POST /v1/orders -> 201 {"id":2,"title":"hyperion","qty":1}
+POST /v1/orders -> 400 {"code":400,"error":"title-is-required","hint":"send a JSON body with a title"}
+POST /v1/orders -> 400 {"code":400,"error":"qty-must-be-positive","hint":"send a quantity of at least one"}
+GET /v1/orders/1 -> 200 {"id":1,"title":"dune","qty":2}
+GET /v1/orders/9 -> 404 {"code":404,"error":"order-not-found","hint":"no order has id 9"}
+DELETE /v1/orders/1 -> 204
+DELETE /v1/orders/1 -> 404 {"code":404,"error":"order-not-found","hint":"no order has id 1"}
+GET /v1/orders -> 200 [{"id":2,"title":"hyperion","qty":1}]

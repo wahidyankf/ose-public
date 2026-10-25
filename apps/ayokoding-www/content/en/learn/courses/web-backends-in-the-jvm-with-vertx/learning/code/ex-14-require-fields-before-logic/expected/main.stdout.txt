@@ -1,0 +1,2 @@
+POST /gadgets {"name":"drill"} -> 200 {"name":"drill"}
+POST /gadgets {"watts":40} -> 422 {"error":{"code":422,"message":"name is required"}}

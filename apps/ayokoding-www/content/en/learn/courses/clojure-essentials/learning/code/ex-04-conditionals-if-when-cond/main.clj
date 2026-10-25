@@ -1,0 +1,11 @@
+;; => if is an expression: both branches return values, no statements.
+(defn label [n] ;; => classify a number by sign
+  (if (pos? n) ;; => test first, then the two value branches
+    "positive" ;; => returned when n is above zero
+    "non-positive")) ;; => returned for zero and negatives alike
+(println (label 5)) ;; => prints positive
+(println (label -2)) ;; => prints non-positive
+;; => when wraps a one-sided test with an implicit do for side effects.
+(println (when (odd? 7) "odd!")) ;; => prints odd!
+;; => cond reads as a table of test and value pairs, plus :else.
+(println (cond (neg? -1) "neg" (zero? -1) "zero" :else "pos")) ;; => prints neg

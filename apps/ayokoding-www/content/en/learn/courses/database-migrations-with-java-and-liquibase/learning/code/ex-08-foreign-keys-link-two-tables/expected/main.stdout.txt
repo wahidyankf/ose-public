@@ -1,0 +1,2 @@
+orphan book rejected: true
+foreign keys recorded: 1

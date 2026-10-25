@@ -1,0 +1,3 @@
+success exits: 0
+failure exits: 1
+misuse exits: 2

@@ -1,0 +1,1 @@
+PASS: ex-01-first-passing-test (1 tests)

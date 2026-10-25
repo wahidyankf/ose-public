@@ -1,0 +1,2 @@
+version 2 pending review: true
+candidate knows version 2: true

@@ -1,0 +1,2 @@
+GET /whoami x-caller=atlas -> 200 {"caller":"atlas"}
+GET /whoami x-caller=null -> 200 {"caller":"anonymous"}

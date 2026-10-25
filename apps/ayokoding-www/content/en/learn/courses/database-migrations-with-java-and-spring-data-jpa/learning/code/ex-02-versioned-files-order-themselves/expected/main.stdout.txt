@@ -1,0 +1,3 @@
+customers table present: 1
+orders table present: 1
+ledger order: 001 002 003

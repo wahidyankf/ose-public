@@ -1,0 +1,2 @@
+GET /slow -> 200 slow-done
+landed-before-stop

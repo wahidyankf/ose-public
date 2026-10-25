@@ -1,0 +1,13 @@
+# => Finish, do not cancel: deploys queue behind the running one.
+# => Test files cancel freely; deploy files wait their turn, always.
+# => The absence of true anywhere in the file is the policy proof.
+name: patient-deploy # => workflow name shown in the Actions tab
+on: push # => pushes to main line up behind the running deploy
+concurrency: # => overlap policy for deploy safety
+  group: deploy-main # => one lane for all deploys
+  cancel-in-progress: false # => wait in line, never kill a deploy
+jobs: # => jobs governed by the patient lane
+  deploy: # => single job proving the queue policy
+    runs-on: ubuntu-latest # => hosted runner image
+    steps: # => steps running strictly one run at a time
+      - run: echo deploy-ok # => placeholder deploy proof

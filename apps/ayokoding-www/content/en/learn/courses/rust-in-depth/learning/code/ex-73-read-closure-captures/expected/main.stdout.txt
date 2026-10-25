@@ -1,0 +1,4 @@
+sari: true
+oops: false
+budi: true
+tally: 125

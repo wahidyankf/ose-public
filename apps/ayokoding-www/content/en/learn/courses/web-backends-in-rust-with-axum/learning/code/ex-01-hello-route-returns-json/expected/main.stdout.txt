@@ -1,0 +1,2 @@
+GET /hello -> 200 OK {"message":"hello, axum"}
+GET /goodbye -> 404 Not Found (empty body)

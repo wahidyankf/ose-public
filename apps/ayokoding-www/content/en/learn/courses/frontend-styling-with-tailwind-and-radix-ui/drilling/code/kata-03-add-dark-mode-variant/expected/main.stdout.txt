@@ -1,0 +1,3 @@
+light: rounded-lg bg-white p-6 dark:bg-slate-900 dark:text-slate-100
+dark: rounded-lg bg-white p-6 dark:bg-slate-900 dark:text-slate-100 (rendered under .dark)
+stylesheets added: 0

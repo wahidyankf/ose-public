@@ -1,0 +1,3 @@
+null -> anonymous
+"   " -> anonymous
+"  Ada  " -> ada

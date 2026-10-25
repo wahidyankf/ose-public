@@ -1,0 +1,4 @@
+value: 0123456789
+type: text
+columns: id, code
+cleaned: yes

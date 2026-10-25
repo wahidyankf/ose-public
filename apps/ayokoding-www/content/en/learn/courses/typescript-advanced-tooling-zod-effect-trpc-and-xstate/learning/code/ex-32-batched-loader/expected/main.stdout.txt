@@ -1,0 +1,2 @@
+batch: u1=Ada u2=Grace u9=null
+coverage: keys=3 hits=2

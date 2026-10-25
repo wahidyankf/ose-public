@@ -1,0 +1,2 @@
+POST /gadgets -> 201 {"id":1}
+GET /gadgets/1 -> 200 {"id":1,"name":"drill"}

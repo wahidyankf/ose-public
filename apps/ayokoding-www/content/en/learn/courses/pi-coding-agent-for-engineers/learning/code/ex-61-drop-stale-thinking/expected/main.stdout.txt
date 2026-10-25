@@ -1,0 +1,3 @@
+level: medium
+budget: 4000
+fits: True

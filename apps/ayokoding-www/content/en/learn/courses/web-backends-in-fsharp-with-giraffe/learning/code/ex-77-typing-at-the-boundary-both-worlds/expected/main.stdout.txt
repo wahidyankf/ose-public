@@ -1,0 +1,4 @@
+POST /signup -> 400 {"error":"email-invalid"}
+POST /signup -> 400 {"error":"name-required"}
+POST /signup -> 400 {"error":"year-invalid"}
+POST /signup -> 201 {"email":"a@x.io","name":"ada","year":2001}

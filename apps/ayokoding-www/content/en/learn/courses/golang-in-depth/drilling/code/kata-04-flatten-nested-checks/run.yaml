@@ -1,0 +1,8 @@
+schema: ayokoding.run/v1
+toolchain: go
+runs:
+  - name: main
+    command: [sh, -c, "go build -o kata after/solution.go && ./kata"]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

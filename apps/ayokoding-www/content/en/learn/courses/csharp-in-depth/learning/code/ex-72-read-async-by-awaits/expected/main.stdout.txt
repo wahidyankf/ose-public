@@ -1,0 +1,3 @@
+open
+first: rice ready
+second: rendang ready

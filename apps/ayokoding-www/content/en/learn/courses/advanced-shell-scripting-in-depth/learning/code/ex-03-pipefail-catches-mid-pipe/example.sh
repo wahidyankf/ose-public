@@ -1,0 +1,14 @@
+# => Example 3: pipefail reports a failure in any pipe stage.
+set -euo pipefail # => strict header first, as in every example
+# => WHY a fixture: the script reads its own input, never live logs.
+# => WHY set +e: every probe below fails on purpose and must not abort.
+set +e                                # => failing probes are observable, not fatal, below
+grep -c ERROR app.log >/dev/null 2>&1 # => finds no ERROR, exits 1
+echo "grep alone exits: $?"           # => shows the true stage status first
+set +o pipefail                       # => turn pipefail off to show the masking problem
+grep ERROR app.log | wc -l >/dev/null # => middle fails, last succeeds
+echo "masked pipeline exits: $?"      # => prints 0 although grep failed
+set -o pipefail                       # => turn pipefail back on for the honest version
+grep ERROR app.log | wc -l >/dev/null # => same pipe, honest status now
+echo "honest pipeline exits: $?"      # => prints 1: the grep failure shows
+set -e                                # => strict again: the demonstration section is over

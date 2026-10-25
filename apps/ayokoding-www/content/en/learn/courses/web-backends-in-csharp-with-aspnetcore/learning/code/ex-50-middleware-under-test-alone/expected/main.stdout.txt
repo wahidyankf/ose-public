@@ -1,0 +1,2 @@
+GET /bare -> 200 stamp=middleware-was-here {"bare":true}
+GET /missing -> 404 stamp=middleware-was-here

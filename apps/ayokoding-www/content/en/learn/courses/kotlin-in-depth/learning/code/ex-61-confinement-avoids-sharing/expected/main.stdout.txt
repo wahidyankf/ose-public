@@ -1,0 +1,2 @@
+merged: {budi=75, citra=25, dewi=100, sari=50}
+total: 250

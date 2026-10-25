@@ -1,0 +1,3 @@
+before: <header>shop</header><p>count: 0</p>
+after: <header>shop</header><p>count: 1</p>
+static kept: true

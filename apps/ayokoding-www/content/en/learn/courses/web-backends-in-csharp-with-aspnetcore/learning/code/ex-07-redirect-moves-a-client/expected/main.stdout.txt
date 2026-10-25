@@ -1,0 +1,2 @@
+GET /old -> 302 location=/new
+GET /new -> 200 {"message":"new home"}

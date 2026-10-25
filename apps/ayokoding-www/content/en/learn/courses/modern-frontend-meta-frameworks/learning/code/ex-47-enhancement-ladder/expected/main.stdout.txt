@@ -1,0 +1,5 @@
+rung 1: html: shelf list readable with no JavaScript [works without JS]
+rung 2: links: detail pages reachable with no JavaScript [works without JS]
+rung 3: forms: add-to-cart posts with no JavaScript [works without JS]
+rung 4: islands: cart count updates without reloads, needs JavaScript [needs JS, falls back to forms]
+rungs without JS: 3 of 4

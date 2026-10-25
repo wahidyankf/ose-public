@@ -1,0 +1,7 @@
+applied: 1_create_ex07_customers
+applied: 2_add_email_to_customers
+applied: 3_create_ex07_orders
+history: 1_create_ex07_customers
+history: 2_add_email_to_customers
+history: 3_create_ex07_orders
+cleaned: yes

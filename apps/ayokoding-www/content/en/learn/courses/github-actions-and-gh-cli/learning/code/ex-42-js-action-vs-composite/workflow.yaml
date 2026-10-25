@@ -1,0 +1,14 @@
+# => Decision: composite wins for shell-only bundles; JS wins for Node libs.
+# => Composites need no build step and run anywhere bash exists.
+# => JavaScript actions bundle Node: faster starts, real dependencies.
+# => Choose composite when steps are shell; choose JS when logic needs libs.
+name: choose-kind # => workflow name shown in the Actions tab
+on: workflow_dispatch # => manual trigger for a deterministic demo
+jobs: # => jobs block proving the composite choice
+  greet: # => single job using the local composite action
+    runs-on: ubuntu-latest # => hosted runner image
+    steps: # => use the composite: zero build, shell steps only
+      - uses: ./greet-action # => local composite action by path
+        with: # => inputs to the composite action
+          who: team # => greet the team with shell steps
+      - run: echo composite-ok # => no node setup needed here

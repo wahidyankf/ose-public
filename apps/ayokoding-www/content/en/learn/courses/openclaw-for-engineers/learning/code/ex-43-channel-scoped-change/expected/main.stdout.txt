@@ -1,0 +1,4 @@
+announce: refused
+ops: accepted
+ask: restart gateway
+public refused: True

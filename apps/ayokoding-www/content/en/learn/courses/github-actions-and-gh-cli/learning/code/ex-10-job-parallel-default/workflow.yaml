@@ -1,0 +1,14 @@
+# => Parallel gates: lint and typecheck start together, no edges.
+# => Absence of needs is meaningful: it declares independence.
+# => Split only checks that truly share no state or ordering.
+name: parallel-gates # => workflow name shown in the Actions tab
+on: pull_request # => check every pull request twice as fast
+jobs: # => two jobs with no edge between them
+  lint: # => first gate: style, runs immediately
+    runs-on: ubuntu-latest # => its own runner, no sharing
+    steps: # => steps of the lint job
+      - run: echo lint-ok # => placeholder lint proof
+  typecheck: # => second gate: types, runs immediately too
+    runs-on: ubuntu-latest # => a second runner in parallel
+    steps: # => steps of the typecheck job
+      - run: echo types-ok # => placeholder type proof

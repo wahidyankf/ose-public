@@ -1,0 +1,4 @@
+PASS: totals sum
+PASS: empty is zero
+PASS: sorted output
+checks: 3 failed: 0

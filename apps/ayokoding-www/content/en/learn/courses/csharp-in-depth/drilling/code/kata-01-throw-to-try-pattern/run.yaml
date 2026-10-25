@@ -1,0 +1,10 @@
+schema: ayokoding.run/v1
+toolchain: dotnet
+runs:
+  - name: main
+    command:
+      [sh, -c, "dotnet build --nologo -v q after/app.csproj > /dev/null && dotnet after/bin/Debug/net10.0/app.dll"]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+      stderr: ignore

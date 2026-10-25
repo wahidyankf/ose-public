@@ -1,0 +1,1 @@
+GET /stream -> 200 "chunk 1\nchunk 2\nchunk 3\n"

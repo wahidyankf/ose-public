@@ -47,7 +47,7 @@ var builtTag = regexp.MustCompile(`^typescript ayokoding-toolchain/typescript:[0
 
 // catalogTypescriptTag is the embedded catalog tag for typescript: the build
 // must reproduce it byte for byte, proving the tag hashes the recipe.
-const catalogTypescriptTag = "ayokoding-toolchain/typescript:b7c9c03f556ecef1da8571cb3ddceb9697254b8d4b0a473b73672eb4821bdd14"
+const catalogTypescriptTag = "ayokoding-toolchain/typescript:a38a2617a7a24c957aaaac635fb3fd727f7e89b549789ab91eb0028feb20ee1b"
 
 // TestBuildPrintsIDAndTag requires a derived toolchain to build and print
 // its id and tag.

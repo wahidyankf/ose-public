@@ -1,0 +1,1 @@
+mix=true lib=true test=true app=true

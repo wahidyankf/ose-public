@@ -1,0 +1,1 @@
+GET /price -> 200 OK {"currency":"IDR","max_qty":100,"total":3000}

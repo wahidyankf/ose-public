@@ -1,0 +1,3 @@
+head_base=1 head_ext=0 len=101
+pool=10 web_same=true
+orig_pool=5

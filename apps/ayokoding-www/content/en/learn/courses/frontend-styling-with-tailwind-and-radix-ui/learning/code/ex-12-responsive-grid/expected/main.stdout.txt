@@ -1,0 +1,3 @@
+375px columns: 1
+1024px columns: 3
+markup changes between layouts: 0

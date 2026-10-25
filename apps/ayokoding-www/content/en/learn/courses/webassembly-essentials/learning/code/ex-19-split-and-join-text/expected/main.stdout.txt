@@ -1,0 +1,5 @@
+fields: ["sari", "91", "pass"]
+fields: ["budi", "77", "pass"]
+words: ["wasm", "runs", "anywhere", "fast"]
+joined: wasm runs anywhere fast
+renamed: Wasm  runs	anywhere fast

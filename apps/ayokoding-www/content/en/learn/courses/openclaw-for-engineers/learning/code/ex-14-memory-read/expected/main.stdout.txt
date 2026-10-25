@@ -1,0 +1,5 @@
+stored: 2
+editor: nvim
+shell: bash
+timezone: None
+miss is explicit: True

@@ -1,0 +1,2 @@
+GET /a -> 200 a
+GET /missing -> 404 {"error":"nope"}

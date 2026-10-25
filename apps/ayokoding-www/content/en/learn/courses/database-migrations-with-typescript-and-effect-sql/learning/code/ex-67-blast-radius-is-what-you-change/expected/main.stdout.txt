@@ -1,0 +1,3 @@
+applied: 1
+table lock: AccessExclusiveLock
+cleaned: yes

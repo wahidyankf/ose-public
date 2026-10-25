@@ -1,0 +1,2 @@
+GET /pay -> 502 {"error":{"code":502,"message":"retry later"}}
+GET /missing -> 404 {"error":{"code":404,"message":"failed"}}

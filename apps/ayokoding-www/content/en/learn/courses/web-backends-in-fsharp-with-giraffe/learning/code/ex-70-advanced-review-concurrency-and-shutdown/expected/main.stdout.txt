@@ -1,0 +1,5 @@
+GET /hit -> 200 hits=1
+GET /hit -> 200 hits=2
+GET /healthz -> 200 {"status":"ok"}
+GET /nope -> 404 Not Found
+log=GET /hit;GET /hit;GET /healthz;GET /nope

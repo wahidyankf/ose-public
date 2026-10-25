@@ -1,0 +1,5 @@
+upgrade=true
+upgrade=true
+upgrade=true
+cols=id,v,fixed
+history-len=3

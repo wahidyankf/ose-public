@@ -1,0 +1,3 @@
+greeter
+./dist/main.js
+shut

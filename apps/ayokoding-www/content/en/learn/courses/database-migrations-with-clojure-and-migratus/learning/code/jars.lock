@@ -1,0 +1,19 @@
+# database-migrations-with-clojure-and-migratus direct libraries (recorded 2026-10-23):
+# migratus:migratus 1.6.8, com.github.seancorfield:next.jdbc 1.3.1118,
+# org.postgresql:postgresql 42.7.14, org.slf4j:slf4j-simple 2.0.20, all resolved
+# 2026-10-23 via Maven against Clojars and Maven Central. The three core jars
+# (org.clojure:clojure, spec.alpha, core.specs.alpha) ship in /opt/clojure and
+# are excluded. Transitive closure: Ring/Jetty-free; next.jdbc brings
+# org.clojure:java.data; migratus brings tools.logging, tools.cli, data.json,
+# camel-snake-kebab; postgresql brings checker-qual; slf4j-simple brings slf4j-api.
+camel-snake-kebab:camel-snake-kebab:0.4.3 8191f335776310d7857a40ad33254be66adb363806b18136d8843196923ac2c8 clojars
+org.checkerframework:checker-qual:3.55.1 857658c8bdcbff794949a8d9922f88d63ee3751c203c7cd7d21ea97f9e745288
+org.clojure:data.json:2.5.0 6779c36ee1f90d70f35feb872fb31756aa0e1b8bd6c65e105e780babb4b25704
+org.clojure:java.data:1.4.120 8d16f2e0b5420d77e4b3445ad8a4f88205958f6d353ce769c5d0e485994e9317
+migratus:migratus:1.6.8 2bb23f04e4d0f03418ca5408782bcfc57004b5051a131e4f272627df43a7b34f clojars
+com.github.seancorfield:next.jdbc:1.3.1118 387562bfa86dc1a5a402a06a04e8e3b353f82550d296d755e5e7ce4c124275c4 clojars
+org.postgresql:postgresql:42.7.14 73914527305a40cce504b0d3d90b23caf565136912d607ae8ae7c5895512332c
+org.slf4j:slf4j-api:2.0.20 7e1446499b359675d8aabe6af2de86b85e72ae8a2a932c0b40d0e5ba57097439
+org.slf4j:slf4j-simple:2.0.20 8e701404786a4f87219d39d4853c86dfe4e86ae99376a39749df6c08e75022e0
+org.clojure:tools.cli:1.0.219 946003ac2f2288e0c0c58861624df3ef98111c9e8877eb401ca528cc377f97a9
+org.clojure:tools.logging:1.1.0 65310dfbe2e737388ff0a9656a0c719ae364535c3cf1d9693ae1a36177fc5f74

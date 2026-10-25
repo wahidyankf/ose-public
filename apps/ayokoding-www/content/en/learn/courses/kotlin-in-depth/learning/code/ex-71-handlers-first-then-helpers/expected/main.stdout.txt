@@ -1,0 +1,4 @@
+post sari=50
+skip: blank
+skip: shapeless
+post budi=0

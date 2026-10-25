@@ -1,0 +1,3 @@
+sequential ticks: 100 order product,stock,reviews
+parallel ticks: 50 order product+stock+reviews
+saved ticks: 50

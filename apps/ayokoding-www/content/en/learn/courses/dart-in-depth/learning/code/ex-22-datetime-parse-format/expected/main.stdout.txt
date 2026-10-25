@@ -1,0 +1,4 @@
+utc: true
+stamp: 2026-03-14
+gap hours: 8
+harvest first: true

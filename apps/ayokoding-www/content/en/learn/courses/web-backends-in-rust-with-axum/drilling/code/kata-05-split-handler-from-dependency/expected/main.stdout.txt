@@ -1,0 +1,2 @@
+seeded GET /orders -> 200 OK {"orders":["o-1"]}
+empty GET /orders -> 200 OK {"orders":[]}

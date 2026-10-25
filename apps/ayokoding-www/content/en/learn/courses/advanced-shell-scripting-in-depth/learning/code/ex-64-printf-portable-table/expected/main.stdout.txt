@@ -1,0 +1,3 @@
+NAME     STATE
+web-1    ready
+db-1     ready

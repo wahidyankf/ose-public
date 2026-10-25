@@ -1,0 +1,1 @@
+kinds=["absence", "known failure", "other failure", "success", "unclassified"]

@@ -1,0 +1,3 @@
+budi, citra, sari
+legacy: true
+count: 3

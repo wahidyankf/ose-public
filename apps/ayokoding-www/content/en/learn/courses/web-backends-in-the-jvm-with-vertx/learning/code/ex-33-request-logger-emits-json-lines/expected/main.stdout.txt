@@ -1,0 +1,2 @@
+log {"method":"GET","path":"/hello","status":200}
+log {"method":"GET","path":"/goodbye","status":404}

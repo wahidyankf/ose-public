@@ -1,0 +1,5 @@
+budi: 2
+citra: 1
+sari: 3
+sari wins: 3
+has dewi: false

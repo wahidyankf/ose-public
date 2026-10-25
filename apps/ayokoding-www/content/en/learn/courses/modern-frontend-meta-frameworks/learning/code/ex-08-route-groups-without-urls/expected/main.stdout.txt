@@ -1,0 +1,4 @@
+next app/(shop)/products/page.tsx => /products
+next app/(shop)/page.tsx => /
+start _shop/products => /products
+start _shop => /

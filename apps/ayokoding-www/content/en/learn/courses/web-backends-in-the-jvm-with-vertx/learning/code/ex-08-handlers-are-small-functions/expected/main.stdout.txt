@@ -1,0 +1,2 @@
+GET /hello -> 200 {"message":"hello, vertx"}
+GET /hello -> 200 {"message":"hello, vertx"}

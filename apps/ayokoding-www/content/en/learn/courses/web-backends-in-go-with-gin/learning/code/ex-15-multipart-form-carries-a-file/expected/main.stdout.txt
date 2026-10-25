@@ -1,0 +1,2 @@
+POST /upload full= true -> 200 {"head":"PNG CONTENTS","name":"me.png","size":12,"title":"portrait"}
+POST /upload full= false -> 400 {"error":"bad upload"}

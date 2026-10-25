@@ -1,0 +1,3 @@
+damaged: BROKEN
+restored: alpha
+rollback verified: True

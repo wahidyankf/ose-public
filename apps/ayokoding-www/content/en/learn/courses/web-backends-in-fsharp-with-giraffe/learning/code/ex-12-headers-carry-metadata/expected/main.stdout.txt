@@ -1,0 +1,2 @@
+GET /trace -> 200 {"trace":"none"}
+GET /trace + X-Trace -> 200 {"trace":"abc"}

@@ -1,0 +1,6 @@
+upgrade=true
+order=d08_001_create_ledger.sql,d08_002_add_posted.sql,d08_003_add_amount.sql
+columns=4
+history=d08_001_create_ledger.sql
+history=d08_002_add_posted.sql
+history=d08_003_add_amount.sql

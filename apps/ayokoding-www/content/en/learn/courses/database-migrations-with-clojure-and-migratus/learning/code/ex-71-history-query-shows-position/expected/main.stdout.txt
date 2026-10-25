@@ -1,0 +1,4 @@
+bring-up: nil
+completed: ("make-a" "make-b")
+pending: ("make-c")
+position: [2 1]

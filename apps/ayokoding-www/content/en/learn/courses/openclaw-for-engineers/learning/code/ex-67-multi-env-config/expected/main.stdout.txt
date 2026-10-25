@@ -1,0 +1,5 @@
+base sandbox: False
+prod sandbox: True
+prod log: warn
+shared budget: 50000
+base untouched: True

@@ -1,0 +1,3 @@
+[BUDI, CITRA, GRACE, SARI]
+a-names: 1
+letters: 21

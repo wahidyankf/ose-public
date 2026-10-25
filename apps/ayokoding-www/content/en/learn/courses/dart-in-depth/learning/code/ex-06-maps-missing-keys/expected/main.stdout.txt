@@ -1,0 +1,4 @@
+has oat: true
+has salt: false
+stock: {oat: 12, tea: 10, salt: 2}
+names: oat,tea,salt

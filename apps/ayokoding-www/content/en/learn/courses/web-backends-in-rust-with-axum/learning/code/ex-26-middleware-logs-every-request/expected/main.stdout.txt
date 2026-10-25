@@ -1,0 +1,3 @@
+-> GET /hello
+<- 200 OK
+body {"message":"hello, axum"}

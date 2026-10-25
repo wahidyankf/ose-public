@@ -1,0 +1,1 @@
+GET / -> 200 OK text/html; charset=utf-8 <h1>Hello from axum</h1>

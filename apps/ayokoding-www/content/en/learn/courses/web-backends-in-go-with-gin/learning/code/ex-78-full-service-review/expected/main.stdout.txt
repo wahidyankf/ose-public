@@ -1,0 +1,5 @@
+POST /api/v1/items id=req-1 -> 201 {"name":"bolt","price":4}
+POST /api/v1/items id=req-2 -> 400 {"error":{"code":"bad_item","message":"send name and positive price"}}
+GET /api/v1/items/bolt id=req-3 -> 200 {"name":"bolt","price":4}
+GET /api/v1/items/nut id=req-4 -> 404 {"error":{"code":"no_item","message":"no item nut"}}
+GET /healthz id=req-5 -> 200 {"ok":true}

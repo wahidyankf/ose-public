@@ -1,0 +1,1 @@
+parallel=10 lost=0

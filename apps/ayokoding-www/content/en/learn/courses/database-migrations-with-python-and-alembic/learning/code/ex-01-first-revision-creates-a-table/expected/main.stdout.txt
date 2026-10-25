@@ -1,0 +1,2 @@
+columns: id, name
+cleaned: yes

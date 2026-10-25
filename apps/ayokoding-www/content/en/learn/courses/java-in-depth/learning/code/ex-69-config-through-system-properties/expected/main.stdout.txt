@@ -1,0 +1,4 @@
+region: surabaya
+batch: july
+java version family: modern
+injected, not hardcoded: true

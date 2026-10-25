@@ -1,0 +1,2 @@
+migration 2 failed as recorded
+healthy versions standing: 1

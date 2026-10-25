@@ -1,0 +1,2 @@
+GET /read -> 404 Not Found {"code":"no_order","message":"request failed: no_order"}
+GET /report -> 503 Service Unavailable {"code":"store_down","message":"request failed: store_down"}

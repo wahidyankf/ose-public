@@ -1,0 +1,4 @@
+utility classes: px-4 py-2 bg-blue-600 text-white font-semibold rounded
+custom css lines: 8
+utility lines added to stylesheet: 0
+second button costs: 0 new rules

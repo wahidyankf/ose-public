@@ -1,0 +1,4 @@
+asked: GET /api/total
+answered: 200 $42.00
+rendered: $42.00
+round trip complete: true

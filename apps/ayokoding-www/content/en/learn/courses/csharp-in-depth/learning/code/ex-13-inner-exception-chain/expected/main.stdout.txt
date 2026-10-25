@@ -1,0 +1,2 @@
+outer: cannot start rendang
+inner: burner 2 is cold

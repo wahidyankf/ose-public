@@ -1,0 +1,2 @@
+[{sari 41} {budi 30} {citra 30}]
+sorted: true

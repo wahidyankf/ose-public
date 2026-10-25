@@ -1,0 +1,5 @@
+applied: 1
+tables: 0
+recorded: 1
+drift: ex75_t recorded but missing
+cleaned: yes

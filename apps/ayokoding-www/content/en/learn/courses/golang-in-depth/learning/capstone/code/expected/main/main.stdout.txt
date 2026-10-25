@@ -1,0 +1,5 @@
+budi: 100
+citra: 25
+sari: 60
+grand total: 185
+skipped lines: 3

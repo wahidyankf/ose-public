@@ -1,0 +1,6 @@
+ls drafts => True
+cat inbox.md => True
+rm notes.md => False
+wc -w inbox.md => True
+cat a.md && cat b.md => False
+permitted: 3 of 5

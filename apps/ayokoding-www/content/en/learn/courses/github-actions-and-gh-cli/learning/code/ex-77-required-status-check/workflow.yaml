@@ -1,0 +1,12 @@
+# => Required check: branch protection names test, merge waits for it.
+# => The check name and the job name must match exactly, or else.
+# => required-check comment records the protection context for reviewers.
+name: gated # => workflow name shown in the Actions tab
+on: pull_request # => protection evaluates checks on pull requests
+# => required-check: branch protection requires the test context.
+jobs: # => jobs block with the required check job
+  test: # => this job name is the required status check
+    runs-on: ubuntu-latest # => hosted runner image
+    steps: # => steps proving the required signal
+      - run: echo tests-ok # => green here unblocks the merge
+# => checks: [test] is configured on the branch protection rule.

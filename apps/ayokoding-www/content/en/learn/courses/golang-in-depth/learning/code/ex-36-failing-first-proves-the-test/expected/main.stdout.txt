@@ -1,0 +1,7 @@
+=== RUN   TestSlug
+=== RUN   TestSlug/lowercases
+=== RUN   TestSlug/no_spaces_remain
+--- PASS: TestSlug
+    --- PASS: TestSlug/lowercases
+    --- PASS: TestSlug/no_spaces_remain
+PASS

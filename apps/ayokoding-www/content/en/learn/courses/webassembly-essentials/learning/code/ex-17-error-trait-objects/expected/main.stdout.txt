@@ -1,0 +1,3 @@
+19xx/91: refused: invalid digit found in string
+1999/91: refused: year 1999 predates the records
+2024/104: refused: score 104 is outside 0..=100

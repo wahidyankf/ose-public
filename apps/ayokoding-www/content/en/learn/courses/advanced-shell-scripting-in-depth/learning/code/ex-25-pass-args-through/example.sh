@@ -1,0 +1,15 @@
+# => Example 25: wrappers forward "$@" quoted so arguments survive intact.
+set -euo pipefail # => strict header first, as in every example
+# => WHY a wrapper fn: log/time/retry wrappers all forward this same way.
+inner() {                 # => stands in for the real tool being wrapped
+	echo "inner got $# args" # => the count proves nothing split or merged
+	for arg in "$@"; do      # => quoted iteration: one turn per argument
+		echo "arg: [${arg}]"    # => brackets make each argument boundary visible
+	done                     # => every forwarded argument printed exactly once
+}                         # => closes the stand-in for the wrapped tool
+wrapper() {               # => the wrapper under test: forwards everything it gets
+	inner "$@"               # => THE line: quoted forwarding preserves every argument
+}                         # => closes the wrapper
+# => WHY fixed demo argv: forwarding must show a constant spaced value.
+set -- "first arg" second # => demo: one spaced argument plus one plain
+wrapper "$@"              # => forward the demo argv through the wrapper, quoted

@@ -1,0 +1,1 @@
+PASS: ex-39-wait-for-assertions (1 tests)

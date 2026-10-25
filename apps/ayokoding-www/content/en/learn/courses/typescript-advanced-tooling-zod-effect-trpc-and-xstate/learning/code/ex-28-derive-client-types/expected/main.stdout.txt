@@ -1,0 +1,2 @@
+client: id=usr_ada@example.com
+shared: email=ada@example.com

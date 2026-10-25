@@ -1,0 +1,5 @@
+cogs 60.00
+opex 25.00
+interest 2.00
+tax 3.25
+net 9.75

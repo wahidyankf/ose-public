@@ -1,0 +1,3 @@
+PASS: settlement totals 125
+PASS: empty ledger settles zero
+PASS: three members total 6

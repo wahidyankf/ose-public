@@ -1,0 +1,5 @@
+job: fast-3.13
+job: fast-3.14
+job: full-3.13
+job: full-3.14
+jobs: 4

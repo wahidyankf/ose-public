@@ -1,0 +1,2 @@
+golangindepth/ex26module
+version: (devel)

@@ -1,0 +1,7 @@
+migrate: nil
+completed: ["make-contact" "expand-contact-email" "copy-emails" "contract-email"]
+emails: ["a@x.io" "b@x.io"]
+rollback: nil
+rollback: nil
+completed: ["make-contact" "expand-contact-email"]
+columns: ["id" "contact_email" "email"]

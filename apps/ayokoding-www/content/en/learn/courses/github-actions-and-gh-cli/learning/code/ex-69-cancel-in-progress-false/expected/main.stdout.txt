@@ -1,0 +1,6 @@
+PASS: queue mode
+PASS: deploy job present
+PASS: group keyed
+PASS: runner pinned
+PASS: no cancel-true
+checks: 5/5

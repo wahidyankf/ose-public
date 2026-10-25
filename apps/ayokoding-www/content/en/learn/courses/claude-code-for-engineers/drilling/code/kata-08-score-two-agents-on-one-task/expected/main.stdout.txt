@@ -1,0 +1,2 @@
+scores: 92 40
+A wins 92 to 40 (2 runs each, one task)

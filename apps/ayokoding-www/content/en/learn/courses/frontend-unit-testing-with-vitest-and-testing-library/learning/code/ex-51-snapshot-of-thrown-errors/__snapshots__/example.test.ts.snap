@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`empty checkout throws the frozen error 1`] = `[CheckoutError: Cannot check out an empty cart (total: 0)]`;

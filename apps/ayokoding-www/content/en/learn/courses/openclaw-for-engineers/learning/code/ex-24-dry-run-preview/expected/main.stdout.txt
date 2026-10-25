@@ -1,0 +1,5 @@
+would: move drafts/*.md to archive/
+would: delete drafts/*.md
+would: write archive/index.md
+previewed: 3
+files changed: 0

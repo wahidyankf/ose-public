@@ -1,0 +1,2 @@
+gadgets after migrate: true
+gadgets after undo: false

@@ -1,0 +1,4 @@
+users: buyer-0,buyer-1,buyer-2
+unique: true
+no shared names: true
+scales with workers: true

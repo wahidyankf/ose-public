@@ -1,0 +1,3 @@
+indexes: ex06_widgets_name_idx, ex06_widgets_pkey
+names: ada, grace
+cleaned: yes

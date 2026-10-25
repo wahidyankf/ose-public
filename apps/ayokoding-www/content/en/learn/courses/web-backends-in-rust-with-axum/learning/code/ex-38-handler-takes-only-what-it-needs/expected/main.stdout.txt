@@ -1,0 +1,2 @@
+GET /items -> 200 OK {"items":["pen"]}
+GET /checkout -> 200 OK {"currency":"IDR","max_qty":100}

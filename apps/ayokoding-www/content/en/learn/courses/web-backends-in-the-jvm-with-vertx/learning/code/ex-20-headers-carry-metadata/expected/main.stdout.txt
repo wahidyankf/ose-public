@@ -1,0 +1,1 @@
+GET /gadgets -> 200 x-total-count=2 x-request-id=trace-1 {"gadgets":[{"id":1},{"id":2}]}

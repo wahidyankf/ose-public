@@ -1,0 +1,2 @@
+GET /items -> 200 OK {"category":null,"items":["pen","pencil","paper"]}
+GET /items?category=books&limit=1 -> 200 OK {"category":"books","items":["pen"]}

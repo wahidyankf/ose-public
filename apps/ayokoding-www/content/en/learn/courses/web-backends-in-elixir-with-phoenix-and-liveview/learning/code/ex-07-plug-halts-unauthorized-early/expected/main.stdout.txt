@@ -1,0 +1,2 @@
+denied: 401 halted=true denied
+allowed: halted=false user=ada

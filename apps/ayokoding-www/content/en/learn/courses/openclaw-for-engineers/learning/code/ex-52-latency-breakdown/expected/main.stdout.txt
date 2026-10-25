@@ -1,0 +1,5 @@
+total: 46s
+model wait: 30s (65%)
+tool time: 12s (26%)
+overhead: 4s (8%)
+optimise first: model wait

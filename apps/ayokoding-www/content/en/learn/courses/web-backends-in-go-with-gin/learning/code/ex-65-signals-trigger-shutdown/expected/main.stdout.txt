@@ -1,0 +1,3 @@
+started
+signal terminated
+shutdown clean

@@ -1,0 +1,6 @@
+PASS: runs block present
+PASS: composite runner
+PASS: two run steps
+PASS: shell set
+PASS: no jobs block
+checks: 5/5

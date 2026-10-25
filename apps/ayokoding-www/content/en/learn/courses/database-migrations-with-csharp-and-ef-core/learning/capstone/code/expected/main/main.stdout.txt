@@ -1,0 +1,4 @@
+capstone=ali|2|310
+capstone=budi|1|50
+capstone=cici|0|0
+history=8

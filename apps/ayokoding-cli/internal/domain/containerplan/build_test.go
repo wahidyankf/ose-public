@@ -296,6 +296,25 @@ func TestEnvironmentDockerfile_withoutRecipe(t *testing.T) {
 	}
 }
 
+// TestEnvironmentDockerfile_stripsLocalDigest renders a harness-local base by
+// bare tag: the local daemon holds no RepoDigest for derived tags, so the
+// digest suffix would force a registry pull that cannot succeed. Official
+// pinned refs keep their digest.
+func TestEnvironmentDockerfile_stripsLocalDigest(t *testing.T) {
+	local := string(containerplan.EnvironmentDockerfile(
+		"ayokoding-toolchain/java:fd03cb55d49e52c422f27cd91d1c4e0730f0a6a969d5e089f714b2ea60e063b6@sha256:fd03cb55d49e52c422f27cd91d1c4e0730f0a6a969d5e089f714b2ea60e063b6",
+		"jars.lock", catalog.Install{}))
+	if local != "FROM ayokoding-toolchain/java:fd03cb55d49e52c422f27cd91d1c4e0730f0a6a969d5e089f714b2ea60e063b6\nCOPY jars.lock /deps/lock/jars.lock\n" {
+		t.Fatalf("local Dockerfile=%q", local)
+	}
+	official := string(containerplan.EnvironmentDockerfile(
+		"docker.io/library/python:3.15@sha256:e748956ccf3f50c9555f236753bbcd5f430d3937e665d3bd6922dd0e6e591a24",
+		"requirements.lock", catalog.Install{}))
+	if !strings.HasPrefix(official, "FROM docker.io/library/python:3.15@sha256:") {
+		t.Fatalf("official Dockerfile lost its pin: %q", official)
+	}
+}
+
 // TestInspect_argv pins the presence probe.
 func TestInspect_argv(t *testing.T) {
 	got := containerplan.Inspect("docker", "img:tag@sha256:abc")

@@ -1,0 +1,3 @@
+wasm: 3
+fast: 2
+runs: 2

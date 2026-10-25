@@ -1,0 +1,5 @@
+PASS valid lines settle
+PASS shapeless lines skip
+PASS negatives refuse
+PASS zero settles
+spec rows: 4

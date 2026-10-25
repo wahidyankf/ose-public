@@ -1,0 +1,3 @@
+correlation: 0.9992
+caveat: payday weeks lift spend and revenue together;
+cause not shown by correlation alone.

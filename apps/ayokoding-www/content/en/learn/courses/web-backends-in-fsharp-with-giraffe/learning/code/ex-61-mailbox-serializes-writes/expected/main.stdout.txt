@@ -1,0 +1,2 @@
+POST /log -> 200 logged=1
+POST /log -> 200 logged=2

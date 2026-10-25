@@ -1,0 +1,10 @@
+[
+  {
+    "first": "adi",
+    "last": "pratama"
+  },
+  {
+    "first": "bima",
+    "last": "sakti"
+  }
+]

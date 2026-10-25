@@ -1,0 +1,5 @@
+first square above 50: 64
+fuel: 3
+fuel: 2
+fuel: 1
+total 1..=5: 15

@@ -1,0 +1,4 @@
+second sees session: false
+shared sees session: abc
+isolation is default: true
+sharing is opt-in: true

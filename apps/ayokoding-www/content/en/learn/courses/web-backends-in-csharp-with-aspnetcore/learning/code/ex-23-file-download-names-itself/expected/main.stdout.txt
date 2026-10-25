@@ -1,0 +1,2 @@
+GET /report -> 200 application/json file=(inline) {"title":"weekly","rows":42}
+GET /report.csv -> 200 text/csv file=weekly.csv title,rows\nweekly,42\n

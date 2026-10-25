@@ -1,0 +1,6 @@
+PASS: inputs block present
+PASS: who input named
+PASS: default set
+PASS: inputs context read
+PASS: shell set
+checks: 5/5

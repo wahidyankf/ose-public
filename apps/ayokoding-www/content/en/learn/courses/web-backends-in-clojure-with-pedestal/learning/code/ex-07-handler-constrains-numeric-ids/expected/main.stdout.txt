@@ -1,0 +1,3 @@
+numeric: user 42
+word-status: 400
+word-body: id must be numeric: abc

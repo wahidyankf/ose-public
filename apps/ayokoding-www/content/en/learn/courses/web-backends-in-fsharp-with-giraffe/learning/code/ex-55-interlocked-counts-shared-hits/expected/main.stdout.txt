@@ -1,0 +1,3 @@
+GET /hit -> 200 hit=1
+GET /hit -> 200 hit=2
+GET /hit -> 200 hit=3

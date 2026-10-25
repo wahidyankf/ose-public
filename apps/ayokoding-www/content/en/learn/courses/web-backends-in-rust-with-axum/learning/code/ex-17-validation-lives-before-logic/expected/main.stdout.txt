@@ -1,0 +1,4 @@
+POST /orders {"id":"o-1","item":"pen","qty":2} -> 201 Created {"id":"o-1"}
+POST /orders {"id":"","item":"pen","qty":2} -> 422 Unprocessable Entity {"error":"id_required"}
+POST /orders {"id":"o-3","item":"","qty":2} -> 422 Unprocessable Entity {"error":"item_required"}
+POST /orders {"id":"o-4","item":"pen","qty":0} -> 422 Unprocessable Entity {"error":"qty_out_of_range"}

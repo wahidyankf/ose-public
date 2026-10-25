@@ -1,0 +1,3 @@
+read: False
+grep: False
+edit: True

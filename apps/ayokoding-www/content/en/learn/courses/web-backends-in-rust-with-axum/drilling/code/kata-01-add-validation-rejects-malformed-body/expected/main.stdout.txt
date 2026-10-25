@@ -1,0 +1,3 @@
+POST /orders {"id":"o-1","qty":2} -> 201 Created {"id":"o-1","qty":2}
+POST /orders {"id":"o-2","qty":0} -> 422 Unprocessable Entity {"error":"qty_must_be_positive"}
+POST /orders {"id":"o-3","qty":500} -> 422 Unprocessable Entity {"error":"qty_exceeds_stock"}

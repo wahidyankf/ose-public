@@ -1,0 +1,1 @@
+PASS: ex-16-testing-library-dom-without-react (1 tests)

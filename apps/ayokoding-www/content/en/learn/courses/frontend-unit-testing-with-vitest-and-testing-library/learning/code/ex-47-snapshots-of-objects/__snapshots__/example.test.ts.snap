@@ -1,0 +1,10 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`a sequence of actions reaches the expected state 1`] = `
+{
+  "coupon": "SAVE10",
+  "items": [
+    "Rice",
+  ],
+}
+`;

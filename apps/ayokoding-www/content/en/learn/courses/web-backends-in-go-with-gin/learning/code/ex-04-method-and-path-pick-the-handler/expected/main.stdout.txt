@@ -1,0 +1,5 @@
+GET /notes -> 200 list notes
+POST /notes -> 201 note created
+PUT /notes -> 200 note replaced
+DELETE /notes -> 204
+PATCH /notes -> 405 405 method not allowed

@@ -1,0 +1,1 @@
+PASS: ex-45-first-snapshot (1 tests)

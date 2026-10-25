@@ -1,0 +1,4 @@
+single head: True
+at tip: True
+tables match: True
+kata ok

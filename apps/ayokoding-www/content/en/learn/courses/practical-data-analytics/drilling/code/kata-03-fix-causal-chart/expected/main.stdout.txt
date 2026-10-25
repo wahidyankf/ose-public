@@ -1,0 +1,2 @@
+correlation: 0.9897
+caveat: payday calendar confounds both; no causal claim.

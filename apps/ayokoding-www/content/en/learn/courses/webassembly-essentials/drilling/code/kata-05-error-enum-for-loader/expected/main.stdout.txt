@@ -1,0 +1,3 @@
+"sari=91" -> ("sari", 91)
+"budi=many" -> error: "many" is not a score
+"citra=104" -> error: 104 is outside 0..=100

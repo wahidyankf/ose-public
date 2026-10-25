@@ -1,0 +1,3 @@
+enterprise: 1050000
+ebitda: 240000
+ev-ebitda: 4.38

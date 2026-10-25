@@ -1,0 +1,2 @@
+GET /locked -> 403 {"error":"locked"}
+GET /open -> 200 {"secret":false}

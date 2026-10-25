@@ -1,0 +1,16 @@
+# => Scoped env: workflow says warning, job says info, step says debug.
+# => Narrower scope wins: the step sees debug, nothing else.
+# => Never place secret values in env: previews print them in logs.
+name: env-demo # => workflow name shown in the Actions tab
+on: workflow_dispatch # => manual trigger for a deterministic demo
+env: # => workflow-wide defaults for every job
+  LOG_LEVEL: warning # => quietest default for the whole file
+jobs: # => jobs block with the scoped-env job
+  show: # => single job proving the override order
+    runs-on: ubuntu-latest # => hosted runner image
+    env: # => job-wide override for all its steps
+      LOG_LEVEL: info # => louder than workflow, quieter than step
+    steps: # => steps reading the effective value
+      - run: echo "level $LOG_LEVEL" # => prints info without override
+        env: # => step-only override wins over job and workflow
+          LOG_LEVEL: debug # => loudest: this step sees debug

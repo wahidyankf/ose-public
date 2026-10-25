@@ -1,0 +1,3 @@
+level: low
+budget: 1500
+fits: True

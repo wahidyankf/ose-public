@@ -1,0 +1,5 @@
+## Example code for database-migrations-with-rust-and-sqlx
+
+One folder per worked example: `ex-NN-<slug>/` holds `Cargo.toml` (the shared `sqlx-migration-example` package depending on sqlx 0.8 with the `migrate` and `macros` features plus tokio), `src/main.rs`, a `migrations/` directory with the versioned SQL files (plus extra directories where an example compares two file sets), its `run.yaml` (`toolchain: rust`, the `rust` install recipe with the course-relative `dependencies.lockfile`, a real pinned PostgreSQL 18 service container, no network), and the recorded output under `expected/`. Multi-file units anchor every file in the lesson; every unit is deterministic: fixed inputs, trust-auth connections to the per-run service alias, no clocks, no timings, no paths or addresses in output. Compiler output stays silent under `--quiet`, so goldens hold only program lines.
+
+Kata starters are intentionally imperfect -- they exist to be fixed -- and only the `after/` solutions run green in the harness. The capstone evolves an order-management schema through eight migrations and asserts the final schema and data with a golden join output.

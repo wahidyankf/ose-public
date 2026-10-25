@@ -1,0 +1,3 @@
+teams rows: 1
+slug value: team
+migrations applied: 2

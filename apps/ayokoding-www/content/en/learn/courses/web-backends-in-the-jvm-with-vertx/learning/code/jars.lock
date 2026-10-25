@@ -1,0 +1,34 @@
+# web-backends-in-the-jvm-with-vertx direct libraries (recorded 2026-10-24):
+# io.vertx:vertx-core, io.vertx:vertx-web, io.vertx:vertx-web-client 5.2.1, all from
+# Maven Central. Transitive closure resolved from Maven Central POMs on 2026-10-24
+# in a throwaway Maven container (pom.xml not committed).
+com.fasterxml.jackson.core:jackson-annotations:2.21 53ca085f4a150f703f49e1aabd935bd03b43e1ea3d55d135438292af22cef56b
+com.fasterxml.jackson.core:jackson-core:2.21.7 8c5623b98f32d5f7e1287ff61ed50e08ab7b11381e991fff89327faabba42261
+io.netty:netty-buffer:4.2.19.Final 863f09b46cfe7d83872c9499086b9681cd9878c30a319d9f1f3a681bbfb0b12f
+io.netty:netty-codec-base:4.2.19.Final 5702c8097cc81e939dd12e5b39ac2e81f83737c320f6f4d88553577842f9ceb6
+io.netty:netty-codec-classes-quic:4.2.19.Final c6f5765ac2cb37ce23156fce40629ff0221b80e53cfa68af21bad08def370098
+io.netty:netty-codec-compression:4.2.19.Final 8935c51c7217780ae56d178c938b50ea5729b1e088cf3c2568674e331665554c
+io.netty:netty-codec-dns:4.2.19.Final d8177c55f0864807f6ab02d0af7c72a6b88dd6bfd1a39f3a17e5954e0942fcad
+io.netty:netty-codec-http:4.2.19.Final 7c28809a4f527746fbce2369f5ac5d5fcef45cfe9da21aa3dd9d3f6bdf00cbe0
+io.netty:netty-codec-http2:4.2.19.Final f45756b12a75b907e98cd0158dc947308ca463cd3d27b9035d11a025a4fdbc4d
+io.netty:netty-codec-http3:4.2.19.Final a13018427735554428a409c27ae679c44614b31fd402837caa7530a9fd688a26
+io.netty:netty-codec-socks:4.2.19.Final b837044e8edbd977bafe4e643c13958a45cf0caefd1338b7e6660e716a769624
+io.netty:netty-common:4.2.19.Final 22fa74761f6e35c8c88972f35cf65664566b922dd73d3424528e97c34278fa79
+io.netty:netty-handler:4.2.19.Final 8b469cf23ddf21ba84291f4dff470d2277a28deac95e7084b0ff2ce853e58276
+io.netty:netty-handler-proxy:4.2.19.Final 6a46fb5716c8b2a227e3d5e4533ab67abaccc6cb3a4f431ff0ed0859ae8a6993
+io.netty:netty-resolver:4.2.19.Final 3ded47536faeb3c4c544a84871d82f461511589afb2a892a180ca425f281363e
+io.netty:netty-resolver-dns:4.2.19.Final 417aaf5cf25cd07865ea91d2e08916b6974995c54aa83730264fc0e06dd4ea90
+io.netty:netty-tcnative-classes:2.0.84.Final 7a4437abf98b0cec053af4443fe321177d2cfccfec7bcad4e7d8b75571bbec4d
+io.netty:netty-transport:4.2.19.Final d82d4e200456b8c5d8a1647a3724603f80616e5b35b9ada6e7a20d048f175075
+io.netty:netty-transport-native-unix-common:4.2.19.Final 341e91b8e69e6b7d92c353c845ffd91f34e921b7186254c176a64c7089b3e721
+io.vertx:vertx-auth-common:5.2.1 783773c5af7d6f2af1888ac3ba02a6e70521e8c5701f8177a2194c58801cc436
+io.vertx:vertx-bridge-common:5.2.1 f8c7d6d37e25cf91417b0773cadac0f324ddc5661f9a233a470d7e0d374d6b88
+io.vertx:vertx-core:5.2.1 408b01d12a8f888d2afb163bb2139a23b7d134c89f85d5186be745988cc162ad
+io.vertx:vertx-core-logging:5.2.1 639971da24450026a127ebde37b671030a30387dd759745ed26fa395ed3db72f
+io.vertx:vertx-eventbus-bridge-common:5.2.1 fbd543fcf36dffa77d4ae42996dfd4d52bcb010645c6d99f8aa9a05b01a09abf
+io.vertx:vertx-uri-template:5.2.1 2d01e68ca3fafdd407462f8d684c447705771578112670f3fffdc3bcdbc14052
+io.vertx:vertx-web:5.2.1 6bca4017404755b65f3e563e25136e8df275b7ed05b72b36f6463db78ea5a282
+io.vertx:vertx-web-client:5.2.1 a5de9d9533549ce79a6879c3dcf1fa2467a6f7e7a8a35a31a71ef1170a62e141
+io.vertx:vertx-web-common:5.2.1 93fa646b5379ec3c29f4b3c170a425ec7d18619332e5db60ac812a5f4d090019
+tools.jackson.core:jackson-core:3.1.7 7608c367fd8a92666d28711519599543c180298259963184ce04d2947a8f71e7
+tools.jackson.core:jackson-databind:3.1.7 48c781de87e2016e1f0d973748a27130f11643e7ac080173f40e2d9669d84be3

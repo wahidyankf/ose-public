@@ -2,7 +2,8 @@
   "project": "ayokoding-www-be-e2e",
   "corpus": [
     "../../specs/apps/ayokoding/www/behaviours/backend",
-    "../../specs/apps/ayokoding/www/behaviours/frontend/navigation/learn-three-bucket.feature"
+    "../../specs/apps/ayokoding/www/behaviours/frontend/navigation/learn-three-bucket.feature",
+    "../../specs/apps/ayokoding/www/behaviours/frontend/course-paths/catalog-count-after-migration.feature"
   ],
   "adapters": {
     "unit": {

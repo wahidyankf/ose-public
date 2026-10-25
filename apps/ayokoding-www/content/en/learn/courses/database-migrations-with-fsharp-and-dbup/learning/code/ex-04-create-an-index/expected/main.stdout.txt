@@ -1,0 +1,5 @@
+upgrade=true
+upgrade=true
+indexes=1
+history=d04_001_create_events.sql
+history=d04_002_add_index.sql

@@ -1,0 +1,4 @@
+blue-600 allowed: true
+emerald-500 allowed: true
+#2563eb allowed: false
+rebeccapurple allowed: false

@@ -1,0 +1,3 @@
+preflight: 200
+allow: https://app.example
+stranger: 403

@@ -1,0 +1,5 @@
+skip: [oops]
+skip: []
+skip: [citra:xx]
+totals: {budi=75, dewi=25, sari=50}
+skipped: 3

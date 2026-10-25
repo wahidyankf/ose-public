@@ -1,0 +1,6 @@
+PASS: strict-mode-header
+PASS: uses-gh-binary
+PASS: json-output-flag
+PASS: no-bare-token-echo
+PASS: quotes-variables
+gh-calls: 2

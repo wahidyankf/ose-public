@@ -1,0 +1,11 @@
+# => Frozen action: the SHA runs; the comment tells humans which release.
+# => Tags are mutable pointers; SHAs are immutable content addresses.
+# => Update with a deliberate PR that bumps SHA and comment together.
+name: pinned # => workflow name shown in the Actions tab
+on: push # => run on every push while learning
+jobs: # => jobs block with the pinned-checkout job
+  fetch: # => single job proving the SHA pin
+    runs-on: ubuntu-latest # => hosted runner image
+    steps: # => checkout pinned by SHA, not by moving tag
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - run: echo fetched-ok # => proof the files are present

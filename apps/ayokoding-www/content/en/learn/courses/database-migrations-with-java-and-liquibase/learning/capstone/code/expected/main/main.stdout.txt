@@ -1,0 +1,5 @@
+capstone changesets applied: 8
+release tag on latest: v1
+high priority orders: 1
+customers under new name: 2
+concurrent indexes: 1

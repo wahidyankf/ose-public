@@ -1,0 +1,1 @@
+log: [{:method :get, :path "/hi", :status 200} {:method :get, :path "/missing", :status nil}]

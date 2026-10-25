@@ -1,0 +1,2 @@
+GET /square/6 -> 200 {"square":36}
+GET /square/7 -> 200 {"square":49}

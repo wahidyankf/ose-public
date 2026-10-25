@@ -1,0 +1,4 @@
+GET /api/v1/status -> 200 v1 ok
+GET /api/v2/status -> 200 {"ok":true}
+GET /api/v1/admin/users -> 200 admin users
+GET /status -> 404 404 page not found

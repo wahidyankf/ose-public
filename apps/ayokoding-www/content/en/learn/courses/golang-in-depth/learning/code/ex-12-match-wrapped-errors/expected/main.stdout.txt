@@ -1,0 +1,3 @@
+equal: false
+matches: true
+other: false

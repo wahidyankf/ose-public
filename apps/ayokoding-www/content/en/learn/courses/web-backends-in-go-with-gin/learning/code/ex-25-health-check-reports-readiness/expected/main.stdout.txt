@@ -1,0 +1,3 @@
+GET /healthz -> 200 {"ok":true,"version":"1.4.2"}
+GET /healthz -> 503 {"ok":false,"version":"1.4.2"}
+GET /ping -> 200 pong

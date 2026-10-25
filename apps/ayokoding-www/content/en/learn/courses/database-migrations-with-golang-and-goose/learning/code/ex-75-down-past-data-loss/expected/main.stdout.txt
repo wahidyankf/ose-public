@@ -1,0 +1,3 @@
+columns: 0
+loss: permanent
+cleaned: yes

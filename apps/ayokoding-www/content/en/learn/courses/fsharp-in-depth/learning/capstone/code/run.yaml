@@ -1,0 +1,11 @@
+schema: ayokoding.run/v1
+toolchain: dotnet
+runs:
+  - name: main
+    command: [dotnet, fsi, main.fsx]
+    expect:
+      exit: 0
+      stdout: expected/main/main.stdout.txt
+      # Offline workload verification notes to stderr on every invocation;
+      # the exit status and the golden transcript are the check signals.
+      stderr: ignore

@@ -1,0 +1,25 @@
+schema: ayokoding.run/v1
+toolchain: dotnet
+dependencies:
+  lockfile: drilling/code/kata-04-forward-fix-for-a-bad-deploy/after/packages.lock.json
+services: [postgres]
+resources:
+  memory: 2g
+runs:
+  - name: main
+    env:
+      NUGET_CERT_REVOCATION_MODE: offline
+      DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: "1"
+      DOTNET_NOLOGO: "1"
+    command:
+      [
+        sh,
+        -c,
+        "dotnet restore --locked-mode after/app.fsproj > /dev/null && dotnet build after/app.fsproj --nologo -v q --no-restore > /dev/null && dotnet after/bin/Debug/net10.0/app.dll",
+      ]
+    timeout: 600s
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+      stderr: ignore

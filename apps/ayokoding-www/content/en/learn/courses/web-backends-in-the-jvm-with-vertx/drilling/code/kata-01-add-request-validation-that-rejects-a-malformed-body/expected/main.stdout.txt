@@ -1,0 +1,4 @@
+PASS valid -> 201
+PASS missing-name -> 422
+PASS watts-high -> 422
+kata ok=3 failed=0

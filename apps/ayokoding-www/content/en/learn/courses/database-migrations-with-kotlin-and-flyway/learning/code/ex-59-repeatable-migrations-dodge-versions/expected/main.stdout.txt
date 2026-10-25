@@ -1,0 +1,2 @@
+total=300
+history=2

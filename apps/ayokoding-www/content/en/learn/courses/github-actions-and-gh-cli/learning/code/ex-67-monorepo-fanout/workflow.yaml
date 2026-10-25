@@ -1,0 +1,21 @@
+# => Change-driven grid: detect packages, fan out tests per package.
+# => fromJSON turns the detector output into a live matrix axis.
+# => Detection runs first; the grid exists only after it reports.
+name: changed-packages # => workflow name shown in the Actions tab
+on: push # => run on every push while learning
+jobs: # => detector job plus the change-driven grid
+  detect: # => first: compute the changed package list
+    runs-on: ubuntu-latest # => hosted runner image
+    outputs: # => values published for the follower grid
+      packages: ${{ steps.list.outputs.packages }} # => JSON array string
+    steps: # => steps computing the package list
+      - id: list # => addressable id for the detector step
+        run: echo 'packages=["billing", "search"]' >> "$GITHUB_OUTPUT" # => demo
+  test: # => second: one cell per changed package
+    needs: [detect] # => wait for the detector output
+    runs-on: ubuntu-latest # => hosted runner image
+    strategy: # => fan-out from the detected list
+      matrix: # => axis built at runtime from detector output
+        package: ${{ fromJSON(needs.detect.outputs.packages) }} # => live axis
+    steps: # => steps run once per changed package
+      - run: echo "testing ${{ matrix.package }}" # => scoped suite proof

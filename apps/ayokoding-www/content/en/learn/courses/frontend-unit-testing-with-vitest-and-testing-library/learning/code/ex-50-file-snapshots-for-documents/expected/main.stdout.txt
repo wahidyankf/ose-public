@@ -1,0 +1,1 @@
+PASS: ex-50-file-snapshots-for-documents (1 tests)

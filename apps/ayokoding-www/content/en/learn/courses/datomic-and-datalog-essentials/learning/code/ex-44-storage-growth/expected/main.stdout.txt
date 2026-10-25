@@ -1,0 +1,2 @@
+datoms: 10
+mutable-cells: 1

@@ -1,0 +1,4 @@
+current: ex15a2
+columns: id, name, price_cents
+status pending: True
+cleaned: yes

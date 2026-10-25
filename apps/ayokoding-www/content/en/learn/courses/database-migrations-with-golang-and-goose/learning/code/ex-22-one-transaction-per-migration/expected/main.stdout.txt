@@ -1,0 +1,3 @@
+columns: id name email
+applied: 1
+cleaned: yes

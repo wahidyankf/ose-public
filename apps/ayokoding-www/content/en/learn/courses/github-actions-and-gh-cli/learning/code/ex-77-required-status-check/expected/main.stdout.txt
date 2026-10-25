@@ -1,0 +1,6 @@
+PASS: test job exists
+PASS: context named
+PASS: protection noted
+PASS: status registered
+PASS: runner pinned
+checks: 5/5

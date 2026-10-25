@@ -1,0 +1,2 @@
+vec GET /orders -> 200 OK {"orders":["o-1","o-2"]}
+map GET /orders -> 200 OK {"orders":["o-1","o-2"]}

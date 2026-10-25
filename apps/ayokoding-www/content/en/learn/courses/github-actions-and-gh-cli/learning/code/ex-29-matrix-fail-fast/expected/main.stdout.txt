@@ -1,0 +1,7 @@
+PASS: strategy block set
+PASS: fail-fast key set
+PASS: full report chosen
+PASS: matrix present
+PASS: runner pinned
+PASS: policy stated once
+checks: 6/6

@@ -1,0 +1,3 @@
+drafted: ex50a1
+ops: op.create_table, op.drop_table
+cleaned: yes

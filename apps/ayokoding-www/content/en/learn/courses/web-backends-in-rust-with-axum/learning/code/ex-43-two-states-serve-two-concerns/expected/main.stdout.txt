@@ -1,0 +1,2 @@
+GET /api/orders -> 200 OK {"orders":["o-1"]}
+GET /ops/healthz -> 200 OK {"ok":true,"probe_calls":0}

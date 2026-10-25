@@ -1,0 +1,1 @@
+PASS: ex-17-reading-debug-output (1 tests)

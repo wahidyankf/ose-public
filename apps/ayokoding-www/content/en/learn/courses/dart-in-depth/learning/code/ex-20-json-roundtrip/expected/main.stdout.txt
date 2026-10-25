@@ -1,0 +1,2 @@
+json: {"name":"oat","sacks":12,"tags":["dry","graded"]}
+back: oat (12 sacks) [dry, graded]

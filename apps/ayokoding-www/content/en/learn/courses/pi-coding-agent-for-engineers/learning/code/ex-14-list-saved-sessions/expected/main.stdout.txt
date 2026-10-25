@@ -1,0 +1,4 @@
+op: /session list
+row: shop-cart * active
+row: shop-auth idle
+row: docs-rewrite idle

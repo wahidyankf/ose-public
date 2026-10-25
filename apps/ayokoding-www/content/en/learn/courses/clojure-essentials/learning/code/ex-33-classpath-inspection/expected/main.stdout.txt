@@ -1,0 +1,3 @@
+core: true
+locked: true
+async: true

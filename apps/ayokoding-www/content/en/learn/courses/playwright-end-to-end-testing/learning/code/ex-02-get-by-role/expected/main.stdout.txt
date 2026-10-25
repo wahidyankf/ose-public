@@ -1,0 +1,5 @@
+found: true
+role: button
+name: Buy now
+missing is null: true
+strict ok: true

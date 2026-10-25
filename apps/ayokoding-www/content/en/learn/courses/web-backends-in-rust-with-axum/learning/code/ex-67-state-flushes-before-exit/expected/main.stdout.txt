@@ -1,0 +1,2 @@
+signal received: SIGTERM; flushing 3 buffered rows
+flushed 3 rows: o-1,o-2,o-3

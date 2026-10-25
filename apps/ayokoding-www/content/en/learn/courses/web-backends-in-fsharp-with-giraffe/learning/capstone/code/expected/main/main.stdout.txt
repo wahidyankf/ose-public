@@ -1,0 +1,7 @@
+GET /orders -> 200 [{"id":1,"item":"book","qty":2},{"id":2,"item":"pen","qty":5}]
+POST /orders -> 201 loc=/orders/3 {"id":3,"item":"ruler","qty":1}
+GET /orders/3 -> 200 {"id":3,"item":"ruler","qty":1}
+GET /orders/9 -> 404 {"error":"order-not-found"}
+POST /orders -> 400 {"error":"item-required"}
+GET /healthz -> 200 {"status":"ok"}
+GET /nope -> 404 {"error":"not-found"}

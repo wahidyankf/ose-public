@@ -1,0 +1,4 @@
+after click: shown 2 confirmed 0
+server ok: confirmed 2 shown 2
+second click: shown 7 confirmed 2
+server rejects: rolled back to shown 2

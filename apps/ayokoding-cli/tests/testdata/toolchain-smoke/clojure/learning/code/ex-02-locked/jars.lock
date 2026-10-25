@@ -1,0 +1,2 @@
+# Smoke lock: one Maven Central jar for the clojure recipe (recorded 2026-10-20).
+org.clojure:test.check:1.1.3 8b0637b13982734742fb3f4d129f0a9d9e3d752b1aec0c6f65ced4555f72b649

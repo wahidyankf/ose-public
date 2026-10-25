@@ -1,0 +1,58 @@
+databaseChangeLog: # => Root key required for every YAML changelog
+  - changeSet: # => The base changeset builds the table later guards need
+      id: 001-make-ledger
+      # => every later assumption in this file starts from this table
+      author: course
+      # => one author keeps the identity triples in this file uniform
+      changes:
+        - createTable: # => Declarative table creation, the YAML counterpart of DDL
+            tableName: ledger
+            # => the ledger the passing guard below checks for
+            columns:
+              - column: # => One entry per column, name and type together
+                  name: id
+                  type: SERIAL
+                  constraints:
+                    primaryKey: true
+  - changeSet: # => The guarded changeset runs only where the ledger exists
+      id: 002-add-memo
+      # => the passing guard proves assumptions can succeed, not just fail
+      author: course
+      preConditions: # => Preconditions state the starting state up front
+        - onFail: HALT
+          # => HALT refuses the whole update when the assumption is wrong
+          onError: HALT
+          # => errors in the check itself refuse just as loudly
+          tableExists:
+            # => the assumption: the ledger table must already exist
+            tableName: ledger
+            # => it does, because the first changeset built it just above
+      changes:
+        - addColumn: # => A guarded column addition on the proven table
+            tableName: ledger
+            columns:
+              - column:
+                  name: memo
+                  type: VARCHAR(200)
+  - changeSet: # => The impossible guard demands a table nobody built
+      id: 003-needs-archive
+      # => this changeset never runs: its assumption is wrong by design
+      author: course
+      preConditions:
+        - onFail: HALT
+          # => HALT turns the wrong assumption into a loud refusal
+          onError: HALT
+          tableExists:
+            # => the assumption: an archive table must already exist
+            tableName: archive
+            # => it does not, so the update stops here instead of guessing
+      changes:
+        - createTable:
+            tableName: archive_index
+            # => this table is never created; the guard fires first
+            columns:
+              - column:
+                  name: id
+                  type: SERIAL
+                  constraints:
+                    primaryKey: true

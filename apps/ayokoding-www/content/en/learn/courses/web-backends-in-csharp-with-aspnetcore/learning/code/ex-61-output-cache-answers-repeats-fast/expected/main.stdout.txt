@@ -1,0 +1,3 @@
+GET /hot -> 200 {"fact":"honey never spoils"}
+GET /hot -> 200 {"fact":"honey never spoils"}
+GET /executions -> 200 {"executions":1}

@@ -1,0 +1,4 @@
+docs=3
+@moduledoc "A sample module with documented public entries."
+@doc "Doubles the input; raises nothing."
+@doc "Halves the input; integer division truncates."

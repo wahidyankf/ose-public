@@ -1,0 +1,4 @@
+GET /fail/missing -> 404 Not Found {"code":"no_order","message":"request failed: no_order"}
+GET /fail/qty -> 422 Unprocessable Entity {"code":"bad_qty","message":"request failed: bad_qty"}
+GET /fail/anon -> 401 Unauthorized {"code":"unauthorized","message":"request failed: unauthorized"}
+GET /fail/boom -> 503 Service Unavailable {"code":"store_down","message":"request failed: store_down"}

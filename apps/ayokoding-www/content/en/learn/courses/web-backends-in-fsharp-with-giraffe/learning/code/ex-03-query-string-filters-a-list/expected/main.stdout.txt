@@ -1,0 +1,2 @@
+GET /search?q=ap -> 200 ["apple","apricot"]
+GET /search -> 200 ["apple","apricot","banana"]

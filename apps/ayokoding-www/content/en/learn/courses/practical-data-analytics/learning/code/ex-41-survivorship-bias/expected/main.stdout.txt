@@ -1,0 +1,3 @@
+kept_only: 4.57
+all_sold: 3.8
+returned: 3 of 10

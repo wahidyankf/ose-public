@@ -1,0 +1,6 @@
+PASS: sha pinned
+PASS: comment present
+PASS: uses key used
+PASS: runner pinned
+PASS: no bare tag
+checks: 5/5

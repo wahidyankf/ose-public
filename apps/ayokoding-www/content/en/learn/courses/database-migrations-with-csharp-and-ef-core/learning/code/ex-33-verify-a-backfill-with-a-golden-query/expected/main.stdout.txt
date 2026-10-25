@@ -1,0 +1,1 @@
+golden=dana:40,kas:30,modal:50

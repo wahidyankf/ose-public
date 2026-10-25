@@ -1,0 +1,3 @@
+login ok: true
+wrong pass rejected: true
+intent not selectors: true

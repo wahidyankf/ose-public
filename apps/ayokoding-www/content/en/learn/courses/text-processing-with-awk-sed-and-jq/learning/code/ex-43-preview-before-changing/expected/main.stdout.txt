@@ -1,0 +1,8 @@
+original:
+TODO: write intro
+TODO: add diagram
+done: write outro
+proposed:
+DONE: write intro
+DONE: add diagram
+done: write outro

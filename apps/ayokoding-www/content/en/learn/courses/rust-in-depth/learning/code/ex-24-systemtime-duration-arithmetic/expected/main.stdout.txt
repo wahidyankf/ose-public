@@ -1,0 +1,3 @@
+days: 30
+secs: 2592000
+deadline after epoch: 2678400

@@ -1,0 +1,3 @@
+routes=4
+GET /hello -> 200 {"message":"hello, vertx"}
+GET /version -> 200 {"version":"1.0.0"}

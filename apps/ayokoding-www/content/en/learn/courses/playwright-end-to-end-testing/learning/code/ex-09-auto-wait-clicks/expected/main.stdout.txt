@@ -1,0 +1,4 @@
+clicked at tick: 2
+waited, never slept: true
+timeout tick: -1
+timeout is -1: true

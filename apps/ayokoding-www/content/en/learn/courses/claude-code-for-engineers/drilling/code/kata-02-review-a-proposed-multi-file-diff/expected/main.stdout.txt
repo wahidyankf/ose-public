@@ -1,0 +1,3 @@
+True login.py: add check
+True auth.py: import check
+False schema.sql: alter

@@ -1,0 +1,2 @@
+Ok(("sari", 50))
+Err("line \"sari:xyz\" has a bad amount")

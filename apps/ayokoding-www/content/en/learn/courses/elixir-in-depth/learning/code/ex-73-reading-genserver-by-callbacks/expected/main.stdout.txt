@@ -1,0 +1,1 @@
+first={:ok, 0} second={:ok, 1}

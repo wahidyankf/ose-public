@@ -1,0 +1,2 @@
+current rows: 2
+retired rows remaining: 0

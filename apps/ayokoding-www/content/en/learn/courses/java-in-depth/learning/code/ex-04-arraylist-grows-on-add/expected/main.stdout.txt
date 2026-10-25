@@ -1,0 +1,6 @@
+size: 3
+first: citra
+served: citra
+now first: budi
+waiting: budi
+waiting: ada

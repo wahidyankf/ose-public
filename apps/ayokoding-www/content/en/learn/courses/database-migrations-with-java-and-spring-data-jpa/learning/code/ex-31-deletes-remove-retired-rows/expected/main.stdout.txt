@@ -1,0 +1,2 @@
+surviving sessions: 1
+migrations applied: 2

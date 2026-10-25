@@ -1,0 +1,2 @@
+parallel=5 builds=1 same=yes
+sample={"key":"honey","fact":"fact-for-honey"}

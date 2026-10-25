@@ -1,0 +1,2 @@
+by_name=[{"ada", 36}, {"alan", 40}, {"grace", 85}] by_age=[{"ada", 36}, {"alan", 40}, {"grace", 85}]
+tree=[{"a", 1}, {"b", 2}]

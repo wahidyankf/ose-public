@@ -1,0 +1,2 @@
+total = one + two + three
+count = 42

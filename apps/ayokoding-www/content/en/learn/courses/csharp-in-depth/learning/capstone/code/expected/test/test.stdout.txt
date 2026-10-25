@@ -1,0 +1,5 @@
+PASS: parses rice x2
+PASS: rejects missing quantity
+PASS: unknown dish throws
+PASS: golden total is 64000
+passed: 4

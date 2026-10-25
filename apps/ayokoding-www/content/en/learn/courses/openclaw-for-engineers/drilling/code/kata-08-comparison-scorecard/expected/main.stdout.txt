@@ -1,0 +1,3 @@
+openclaw: 0.800
+sibling: 0.198
+winner: openclaw

@@ -1,0 +1,4 @@
+sound: 3 suspect: 0
+read | config to find the timeout key
+edit | raise timeout 5s to 30s
+test | replay the slow webhook

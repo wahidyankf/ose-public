@@ -1,0 +1,4 @@
+audited: 7
+drift: bg-[#123456],text-[13px]
+drift count: 2
+verdict: add tokens or remove classes

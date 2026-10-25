@@ -1,0 +1,13 @@
+# => Nightly audit: run the dependency check on a clock, not a commit.
+# => Cron runs in UTC against the default branch, never a PR branch.
+# => Keep scheduled files in their own workflow so failures page the owner.
+name: nightly-audit # => workflow name shown in the Actions tab
+on: # => trigger block for time-based runs
+  schedule: # => one or more cron entries
+    - cron: "30 2 * * *" # => 02:30 UTC every day, quoted
+jobs: # => jobs for the scheduled run
+  audit: # => single audit job
+    runs-on: ubuntu-latest # => hosted runner image
+    steps: # => steps of the audit job
+      - uses: actions/checkout@v4 # => fetch the default branch
+      - run: echo audit-ok # => placeholder audit proof

@@ -1,0 +1,24 @@
+databaseChangeLog: # => Root key required for every YAML changelog
+  - changeSet: # => The duplicate sorts first and guards on the missing table
+      id: 001-b-index
+      # => its guard fails by design: the builder table sorts second
+      author: course
+      # => one author keeps the identity triples in this merge uniform
+      preConditions: # => Preconditions state the starting state up front
+        - onFail: MARK_RAN
+          # => MARK_RAN records the skip instead of failing the release
+          onError: HALT
+          # => errors in the check itself still refuse loudly
+          tableExists:
+            # => the assumption: the builder table must already exist
+            tableName: cargo
+            # => it does not yet, so this changeset stands down gracefully
+      changes:
+        - createIndex: # => The duplicate work that must not build twice
+            tableName: cargo
+            # => the builder's table, absent while this changeset runs
+            indexName: ix_cargo_code
+            # => absence of this index below proves the guard held
+            columns:
+              - column: # => One entry per indexed column
+                  name: code

@@ -1,0 +1,4 @@
+admin can delete: true
+member can delete: false
+member can read: true
+matrix complete: true

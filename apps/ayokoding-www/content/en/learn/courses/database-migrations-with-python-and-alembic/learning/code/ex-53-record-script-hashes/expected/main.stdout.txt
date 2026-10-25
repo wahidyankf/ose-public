@@ -1,0 +1,4 @@
+manifest: 2 files
+verify clean: True
+verify after edit: False
+cleaned: yes

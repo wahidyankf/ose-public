@@ -1,0 +1,3 @@
+ada, grace, margaret, alan
+true
+26

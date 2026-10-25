@@ -1,0 +1,1 @@
+PASS: ex-35-fake-timers-control-timeout (1 tests)

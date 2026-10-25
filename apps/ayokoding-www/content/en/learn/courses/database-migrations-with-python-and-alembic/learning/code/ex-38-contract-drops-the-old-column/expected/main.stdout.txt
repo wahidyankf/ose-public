@@ -1,0 +1,3 @@
+columns: id, nickname
+kept: sprocket
+cleaned: yes

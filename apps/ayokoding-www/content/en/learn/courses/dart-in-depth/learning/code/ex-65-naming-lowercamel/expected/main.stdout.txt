@@ -1,0 +1,5 @@
+class -> UpperCamel
+member -> lowerCamel
+variable -> lowerCamel
+file -> snake_case
+constant -> lowerCamel

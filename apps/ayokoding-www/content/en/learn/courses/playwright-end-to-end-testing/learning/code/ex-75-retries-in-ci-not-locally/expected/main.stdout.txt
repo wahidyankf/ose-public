@@ -1,0 +1,4 @@
+ci retries: 2
+local retries: 0
+ci patient, local strict: true
+env decides: true

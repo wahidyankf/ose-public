@@ -1,0 +1,7 @@
+PASS: id-token requested
+PASS: permissions set
+PASS: role assumed
+PASS: arn shape
+PASS: configure action used
+PASS: no stored key
+checks: 6/6

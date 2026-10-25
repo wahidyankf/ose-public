@@ -1,0 +1,3 @@
+GET /open -> 200 everyone
+GET /admin -> 403 forbidden
+GET /admin?key=s3cr3t -> 200 holders

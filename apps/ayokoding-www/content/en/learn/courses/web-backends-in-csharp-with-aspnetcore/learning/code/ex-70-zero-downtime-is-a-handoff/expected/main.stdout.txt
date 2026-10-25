@@ -1,0 +1,2 @@
+GET /ping -> 200 {"pong":true,"generation":"gen-1"}
+GET /ping -> 200 {"pong":true,"generation":"gen-2"}

@@ -1,0 +1,2 @@
+GET /status -> 200 {"serve":"memory"}
+GET /elsewhere -> 404

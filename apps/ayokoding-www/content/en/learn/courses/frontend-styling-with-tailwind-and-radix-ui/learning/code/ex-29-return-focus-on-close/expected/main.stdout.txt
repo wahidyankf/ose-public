@@ -1,0 +1,3 @@
+closed via escape | focus now: settings-button
+closed via overlay-click | focus now: settings-button
+closed via close-button | focus now: settings-button

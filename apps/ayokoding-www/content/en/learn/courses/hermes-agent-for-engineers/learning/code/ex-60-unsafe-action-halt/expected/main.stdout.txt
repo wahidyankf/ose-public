@@ -1,0 +1,3 @@
+repeats: 1
+stuck: True
+recover: interrupt, snapshot, re-brief

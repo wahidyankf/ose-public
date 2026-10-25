@@ -1,0 +1,4 @@
+macos -> brew install --cask claude-code
+linux -> curl -fsSL https://claude.ai/install.sh | bash
+windows -> winget install Anthropic.ClaudeCode
+verified: ['binary on PATH', 'claude --version prints a number']

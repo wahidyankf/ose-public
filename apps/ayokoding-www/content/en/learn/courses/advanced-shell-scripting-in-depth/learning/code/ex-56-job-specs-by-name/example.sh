@@ -1,0 +1,10 @@
+# => Example 56: %1 addresses the first job without printing any PID.
+set -euo pipefail # => strict header first, as in every example
+# => WHY specs: numeric PIDs vary every run and would break goldens.
+set -m                 # => monitor mode on: job control works in this script
+true &                 # => instant job: finished or finishing when addressed below
+wait %1                # => reap job one through its spec; status 0 either way
+echo "spec resolved"   # => %1 addressed the right job, exit 0 reaped
+echo "remaining jobs:" # => fixed label before the provably empty table
+jobs                   # => prints nothing: every job was reaped above
+echo "table empty"     # => fixed marker: the table held no rows

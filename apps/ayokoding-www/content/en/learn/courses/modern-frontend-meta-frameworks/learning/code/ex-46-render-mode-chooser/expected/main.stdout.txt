@@ -1,0 +1,4 @@
+story: static (fixed content, no JS needed)
+shelf: server (fresh HTML without JS)
+cart: server (personal data cannot be shared)
+tracker: server (personal data cannot be shared)

@@ -1,0 +1,2 @@
+GET /hello -> 200 {"message":"hello, vertx"}
+GET /goodbye -> 404 {"error":{"code":404,"message":"not found"}}

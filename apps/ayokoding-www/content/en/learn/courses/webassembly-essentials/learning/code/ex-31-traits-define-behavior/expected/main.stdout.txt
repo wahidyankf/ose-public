@@ -1,0 +1,4 @@
+sari: 91 (A)
+budi: 77 (C)
+order 7 ships via tiki
+order 8 ships via jne

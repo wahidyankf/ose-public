@@ -1,0 +1,4 @@
+wire: {"row":{"id":"kopi-001","name":"Kopi Toraja 250g","price":68000},"formatter":"(price) => price + ' IDR'"}
+row survives: true
+price is number: true
+formatter is text: true

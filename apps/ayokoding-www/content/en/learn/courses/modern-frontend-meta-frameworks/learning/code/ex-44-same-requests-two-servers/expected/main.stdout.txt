@@ -1,0 +1,4 @@
+/ => next 200 home with 2 goods | start 200 home with 2 goods
+/products => next 200 list: kopi-001,teh-002 | start 200 list: kopi-001,teh-002
+/products/teh-002 => next 200 detail: Teh Melati 100g 32000 | start 200 detail: Teh Melati 100g 32000
+/products/susu-009 => next 404 next: not found | start 404 start: not found

@@ -1,0 +1,2 @@
+rows carrying the default: 2
+rows missing a status: 0

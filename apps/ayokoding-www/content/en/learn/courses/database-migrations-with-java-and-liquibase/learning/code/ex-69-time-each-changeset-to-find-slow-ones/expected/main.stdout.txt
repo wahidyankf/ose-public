@@ -1,0 +1,3 @@
+001-make-iota | order 1 | EXECUTED | timed true
+002-make-kappa | order 2 | EXECUTED | timed true
+003-make-lambda | order 3 | EXECUTED | timed true

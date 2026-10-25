@@ -1,0 +1,3 @@
+applied: 1
+columns: id, title, slug
+cleaned: yes

@@ -1,0 +1,3 @@
+asset: shop-1.4.0.tar.gz
+attached: True
+size: 48210

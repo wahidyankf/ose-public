@@ -1,0 +1,2 @@
+nullable: EmptyName
+throwing: JsonError

@@ -1,0 +1,15 @@
+schema: ayokoding.run/v1
+toolchain: clojure
+dependencies:
+  lockfile: learning/code/jars.lock
+resources:
+  memory: 2g
+runs:
+  - name: main
+    command: [clojure, main.clj]
+    timeout: 600s
+    env:
+      PEDESTAL_SUPPRESS_DEPRECATION_WARNINGS: "true"
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

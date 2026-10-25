@@ -1,0 +1,3 @@
+tiers: gold, silver
+nullable: NO
+cleaned: yes

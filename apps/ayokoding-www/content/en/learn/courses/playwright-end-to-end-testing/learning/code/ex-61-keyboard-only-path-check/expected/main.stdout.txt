@@ -1,0 +1,4 @@
+entered: dialog-input
+trapped: dialog-input
+cycles inside: true
+returned: trigger

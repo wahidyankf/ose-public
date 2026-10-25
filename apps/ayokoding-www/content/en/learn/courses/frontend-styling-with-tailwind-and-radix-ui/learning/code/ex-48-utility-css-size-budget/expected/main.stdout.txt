@@ -1,0 +1,3 @@
+utility css bytes: 4180
+hand css bytes, 100 pages: 90000
+new page adds rules: 0

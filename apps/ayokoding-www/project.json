@@ -102,7 +102,7 @@
         "{projectRoot}/tests/**/*"
       ],
       "options": {
-        "command": "if grep -rn -E --include='*.ts' --include='*.tsx' --exclude-dir=node_modules --exclude-dir=.next --exclude-dir=dist --exclude-dir=coverage --exclude-dir=storybook-static '\\b(it|test|describe)\\.(skip|only|todo)\\(' .; then echo 'ERROR: .skip()/.only()/.todo() found in test files above - remove before merging'; exit 1; fi && npx vitest run --project unit --project unit-fe --coverage --coverage.thresholds.lines=99 --testTimeout=60000",
+        "command": "if grep -rn -E --include='*.ts' --include='*.tsx' --exclude-dir=node_modules --exclude-dir=.next --exclude-dir=dist --exclude-dir=coverage --exclude-dir=storybook-static --exclude-dir=content '\\b(it|test|describe)\\.(skip|only|todo)\\(' .; then echo 'ERROR: .skip()/.only()/.todo() found in test files above - remove before merging'; exit 1; fi && npx vitest run --project unit --project unit-fe --coverage --coverage.thresholds.lines=99 --testTimeout=60000",
         "cwd": "apps/ayokoding-www"
       },
       "outputs": ["{projectRoot}/coverage"]

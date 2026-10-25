@@ -1,0 +1,24 @@
+=== RUN   TestOrderService
+=== RUN   TestOrderService/create_places_the_order
+    orders_test.go:52: holds: 201 {"id":"o1","item":"book","qty":2,"status":"placed"}
+=== RUN   TestOrderService/zero_qty_is_rejected
+    orders_test.go:55: holds: 400 {"error":{"code":"bad_order","message":"send id, item, and positive qty"}}
+=== RUN   TestOrderService/missing_order_is_404
+    orders_test.go:59: holds: 404 {"error":{"code":"no_order","message":"no order o9"}}
+=== RUN   TestOrderService/paid_is_a_legal_move
+    orders_test.go:62: holds: 200 {"id":"o1","item":"book","qty":2,"status":"paid"}
+=== RUN   TestOrderService/unknown_state_is_422
+    orders_test.go:66: holds: 422 {"error":{"code":"bad_status","message":"status must be placed, paid, shipped, or cancelled"}}
+=== RUN   TestOrderService/delete_cancels_the_order
+    orders_test.go:70: holds: 204 (no body)
+=== RUN   TestOrderService/health_answers_beside_orders
+    orders_test.go:75: holds: 200 {"ok":true}
+--- PASS: TestOrderService
+    --- PASS: TestOrderService/create_places_the_order
+    --- PASS: TestOrderService/zero_qty_is_rejected
+    --- PASS: TestOrderService/missing_order_is_404
+    --- PASS: TestOrderService/paid_is_a_legal_move
+    --- PASS: TestOrderService/unknown_state_is_422
+    --- PASS: TestOrderService/delete_cancels_the_order
+    --- PASS: TestOrderService/health_answers_beside_orders
+PASS

@@ -1,0 +1,2 @@
+plenty={:ok, "connected", 3}
+single={:error, :gave_up}

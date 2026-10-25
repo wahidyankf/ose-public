@@ -1,0 +1,2 @@
+add-note: "threw: ERROR: canceling statement due to lock timeout"
+cols: ["id" "v"]

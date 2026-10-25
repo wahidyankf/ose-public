@@ -1,0 +1,5 @@
+GET /api -> 200 ok
+GET /api -> 200 ok
+GET /api -> 200 ok
+GET /api -> 429 shed
+GET /api -> 429 shed

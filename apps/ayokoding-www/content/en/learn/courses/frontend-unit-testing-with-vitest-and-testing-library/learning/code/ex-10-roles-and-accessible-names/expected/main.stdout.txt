@@ -1,0 +1,1 @@
+PASS: ex-10-roles-and-accessible-names (1 tests)

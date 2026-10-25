@@ -1,0 +1,2 @@
+scores: 92 90
+winner: A

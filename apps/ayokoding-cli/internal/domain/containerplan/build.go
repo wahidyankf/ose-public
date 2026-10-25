@@ -105,10 +105,13 @@ func Environment(settings Settings, contextDir, toolchain, imageRef, lockfileNam
 
 // EnvironmentDockerfile renders the environment Dockerfile: the toolchain
 // image, the lockfile copy, the install argv as a JSON-form RUN, and the
-// install variables as sorted ENV lines.
+// install variables as sorted ENV lines. Harness-local refs (derived and
+// environment tags) resolve by bare tag: the local daemon holds no RepoDigest
+// for them, so a digest suffix would force a registry pull that cannot
+// succeed. The tag stays content-hashed, so determinism is unchanged.
 func EnvironmentDockerfile(imageRef, lockfileName string, install catalog.Install) []byte {
 	var rendered strings.Builder
-	_, _ = rendered.WriteString("FROM " + imageRef + "\n")
+	_, _ = rendered.WriteString("FROM " + RunRef(imageRef) + "\n")
 	_, _ = rendered.WriteString("COPY " + lockfileName + " /deps/lock/" + lockfileName + "\n")
 	if len(install.Command) != 0 {
 		encoded, err := json.Marshal(install.Command)

@@ -1,0 +1,1 @@
+holds GET /orders/o-1 -> 200 {"id":"o-1","status":"placed"}

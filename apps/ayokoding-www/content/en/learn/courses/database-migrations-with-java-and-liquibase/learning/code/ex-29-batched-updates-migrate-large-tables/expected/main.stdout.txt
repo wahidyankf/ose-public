@@ -1,0 +1,2 @@
+unscored rows: 0
+distinct score bands: 3

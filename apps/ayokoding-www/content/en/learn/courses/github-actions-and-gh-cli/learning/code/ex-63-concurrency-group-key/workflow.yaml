@@ -1,0 +1,13 @@
+# => Named lanes: workflow plus ref keeps files from sharing lanes.
+# => Two files pushing to main would otherwise cancel each other.
+# => Compose the key from every dimension that must stay independent.
+name: deploy # => workflow name shown in the Actions tab
+on: push # => every push regroups within its lane
+concurrency: # => overlap policy for this workflow
+  group: ${{ github.workflow }}-${{ github.ref }} # => file plus branch
+  cancel-in-progress: true # => newest push wins within the lane
+jobs: # => jobs governed by the composed lane
+  ship: # => single job proving the composed key
+    runs-on: ubuntu-latest # => hosted runner image
+    steps: # => steps of the ship job
+      - run: echo ship-ok # => placeholder ship proof

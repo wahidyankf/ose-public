@@ -1,0 +1,2 @@
+emails: ada@example.com,grace@example.com
+migrations applied: 2

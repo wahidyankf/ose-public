@@ -1,0 +1,6 @@
+suite: 3 tests, 0 failures
+lines=8 levels=3
+pins=2 stdlib-only
+info: 4
+error: 2
+warn: 2

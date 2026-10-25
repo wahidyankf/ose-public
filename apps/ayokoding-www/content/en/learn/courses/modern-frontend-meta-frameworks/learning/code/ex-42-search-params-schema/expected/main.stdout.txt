@@ -1,0 +1,3 @@
+{"page":1,"limit":10,"sort":"price","errors":[]}
+{"page":2,"limit":10,"sort":"name","errors":[]}
+{"page":null,"limit":99,"sort":"price","errors":["page must be a positive integer","limit must be 1 to 50","sort must be price or name"]}

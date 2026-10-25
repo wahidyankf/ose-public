@@ -1,0 +1,5 @@
+title: Login page crashes on empty password
+state: open
+author: octocat
+labels: bug
+comments: 3

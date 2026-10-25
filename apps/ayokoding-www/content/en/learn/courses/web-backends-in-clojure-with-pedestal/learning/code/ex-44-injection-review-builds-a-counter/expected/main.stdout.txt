@@ -1,0 +1,4 @@
+bump: count 1
+bump-again: count 2
+read: count 2
+reset: count 0

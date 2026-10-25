@@ -1,0 +1,2 @@
+001-make-teams | course | changelog.sql | order 1 | EXECUTED | checksum true
+002-make-projects | course | changelog.sql | order 2 | EXECUTED | checksum true

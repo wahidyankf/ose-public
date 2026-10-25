@@ -1,0 +1,3 @@
+fast: 2
+sandboxed: 1
+wasm: 3

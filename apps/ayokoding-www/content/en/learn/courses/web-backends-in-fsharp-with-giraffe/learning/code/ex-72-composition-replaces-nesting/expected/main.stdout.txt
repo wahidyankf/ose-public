@@ -1,0 +1,3 @@
+GET /v2/items -> 403 forbidden
+GET /v2/items?key=s3cr3t -> 200 {"items":["a","b"]}
+GET /v2/price?key=s3cr3t -> 200 {"price":9}

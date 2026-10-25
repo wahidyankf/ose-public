@@ -1,0 +1,3 @@
+bought 1 x kopi-001
+error [unknown]: susu-009
+error [out-of-stock]: kopi-001 has 1

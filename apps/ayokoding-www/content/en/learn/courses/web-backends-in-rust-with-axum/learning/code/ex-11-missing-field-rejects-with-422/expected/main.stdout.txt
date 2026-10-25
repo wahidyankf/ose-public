@@ -1,0 +1,2 @@
+POST /orders {"id":"o-1","item":"pen","qty":2} -> 201 Created {"id":"o-1"}
+POST /orders {"id":"o-2","item":"pen"} -> 422 Unprocessable Entity Failed to deserialize the JSON body into the target type: missing field `qty` at line 1 column 25

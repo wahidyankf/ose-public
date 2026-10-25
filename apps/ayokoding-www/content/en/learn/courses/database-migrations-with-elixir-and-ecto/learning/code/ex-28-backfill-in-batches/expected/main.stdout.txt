@@ -1,0 +1,2 @@
+batches: 3, filled: 5
+cleaned: yes

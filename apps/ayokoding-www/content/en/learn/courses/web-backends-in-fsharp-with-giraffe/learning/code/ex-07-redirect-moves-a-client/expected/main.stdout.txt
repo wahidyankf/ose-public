@@ -1,0 +1,2 @@
+GET /old -> 302
+GET /new -> 200 new-home

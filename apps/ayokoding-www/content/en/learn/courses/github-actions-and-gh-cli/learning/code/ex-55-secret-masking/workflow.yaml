@@ -1,0 +1,10 @@
+# => Masking contract: every credential arrives masked, nothing raw.
+# => The runner stars known values; indirect leaks need reviewer eyes.
+# => Grep the file for ghp_, passwords, and keys before every merge.
+name: masked # => workflow name shown in the Actions tab
+on: push # => run on every push while learning
+jobs: # => jobs block with the masked-credential job
+  deploy: # => single job proving the masking contract
+    runs-on: ubuntu-latest # => hosted runner image
+    steps: # => steps using only masked references
+      - run: echo "token length hidden ${{ secrets.DEPLOY_TOKEN }}" # => masked

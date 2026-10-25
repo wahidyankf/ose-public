@@ -1,0 +1,3 @@
+Ada is 36
+Grace is 85
+shouted=hello ADA

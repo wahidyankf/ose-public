@@ -1,0 +1,5 @@
+op: pi
+row: cwd: /srv/notes/shop
+row: provider: anthropic
+row: model: default
+row: status: ready

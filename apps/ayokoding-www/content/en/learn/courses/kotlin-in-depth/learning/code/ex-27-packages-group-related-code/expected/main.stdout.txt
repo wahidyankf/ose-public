@@ -1,0 +1,2 @@
+pairs: [(sari, 50), (budi, 75)]
+total: 125

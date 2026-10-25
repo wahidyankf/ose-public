@@ -1,0 +1,3 @@
+tallies: {budi=2, citra=1, sari=3}
+winner votes: 3
+absent votes: 0

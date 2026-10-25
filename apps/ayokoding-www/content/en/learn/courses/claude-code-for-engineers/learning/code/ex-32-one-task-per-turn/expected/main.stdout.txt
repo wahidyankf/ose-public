@@ -1,0 +1,4 @@
+tasks: 3
+1. fix login
+2. refactor auth
+3. update docs

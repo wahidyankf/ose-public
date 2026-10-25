@@ -1,0 +1,9 @@
+
+Testing user
+
+Ran 2 tests containing 3 assertions.
+0 failures, 0 errors.
+words: 11 unique: 7
+data: 3
+clojure: 2
+code: 2

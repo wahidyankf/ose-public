@@ -1,0 +1,5 @@
+OK copy to archive
+VETO delete originals
+OK verify copies
+surviving: 2 of 3
+rule held: never delete originals

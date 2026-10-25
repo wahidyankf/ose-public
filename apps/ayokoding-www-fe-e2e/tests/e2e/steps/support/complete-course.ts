@@ -71,11 +71,18 @@ async function markCompleteAndContinue(page: Page, courseRoot: string): Promise<
   const { page: position, total } = readPagePosition(await bar.innerText());
   const from = currentLocation(page);
 
-  await page
-    .getByRole("navigation", { name: "Page navigation" })
-    .getByRole("link", { name: MARK_COMPLETE_CONTINUE })
-    .click();
-  await page.waitForURL((url) => `${url.pathname}${url.search}` !== from);
+  // Under full-suite load a starved browser can swallow the click: it resolves yet no
+  // navigation commits, and one 150 s wait then burns the whole step on that stall. The
+  // click-and-verify pair re-attempts with a short per-attempt budget instead — the same
+  // pattern the course-landing-progress steps use for the completion toggle. The bar
+  // position check below still pins the exact page, so a double advance fails loudly.
+  await expect(async () => {
+    await page
+      .getByRole("navigation", { name: "Page navigation" })
+      .getByRole("link", { name: MARK_COMPLETE_CONTINUE })
+      .click();
+    await page.waitForURL((url) => `${url.pathname}${url.search}` !== from, { timeout: 15000 });
+  }).toPass({ timeout: 150000 });
 
   // Still inside the course: the next page must be rendered before the next click, or the previous
   // page's still-mounted link would be clicked again (a navigation the test would wait out). The

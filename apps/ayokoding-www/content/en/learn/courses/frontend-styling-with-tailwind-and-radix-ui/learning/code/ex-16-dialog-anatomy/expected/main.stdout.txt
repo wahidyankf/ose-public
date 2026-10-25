@@ -1,0 +1,4 @@
+parts: Root,Trigger,Portal,Overlay,Content,Title,Close
+part count: 7
+pixel styles shipped: 0
+escape closes, overlay blocks: true

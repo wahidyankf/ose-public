@@ -1,0 +1,2 @@
+eaten: [sari:50, budi:75, citra:25]
+pipe drained: true

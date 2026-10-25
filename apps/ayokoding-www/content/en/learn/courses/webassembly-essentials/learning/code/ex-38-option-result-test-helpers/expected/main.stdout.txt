@@ -1,0 +1,10 @@
+
+running 5 tests
+test tests::invalid_score_is_err ... ok
+test tests::known_name_expects_with_message ... ok
+test tests::known_name_unwraps ... ok
+test tests::unknown_name_is_none ... ok
+test tests::valid_score_unwraps ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

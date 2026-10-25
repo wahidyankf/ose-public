@@ -1,0 +1,2 @@
+GET /ping -> 200
+events=started,stopping,stopped

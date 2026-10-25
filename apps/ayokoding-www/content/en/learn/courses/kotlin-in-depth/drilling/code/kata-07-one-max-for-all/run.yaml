@@ -1,0 +1,8 @@
+schema: ayokoding.run/v1
+toolchain: kotlin
+runs:
+  - name: main
+    command: [sh, -c, "kotlinc after/Solution.kt -include-runtime -d main.jar 2>/dev/null && java -jar main.jar"]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

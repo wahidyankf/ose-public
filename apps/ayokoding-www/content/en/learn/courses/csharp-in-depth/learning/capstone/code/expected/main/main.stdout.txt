@@ -1,0 +1,4 @@
+rice x2 = 24000
+rendang x1 = 25000
+sambal x3 = 15000
+total: 64000

@@ -1,0 +1,5 @@
+rank 1 rice-5kg 9
+rank 2 sugar-1kg 8
+rank 3 oil-2l 3
+rank 4 tea-100g 2
+units: 22

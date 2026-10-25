@@ -1,0 +1,3 @@
+=== RUN   ExampleJoinPath
+--- PASS: ExampleJoinPath
+PASS

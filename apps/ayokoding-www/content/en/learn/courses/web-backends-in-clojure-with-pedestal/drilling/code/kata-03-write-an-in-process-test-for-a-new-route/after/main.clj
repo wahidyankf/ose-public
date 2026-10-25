@@ -1,0 +1,26 @@
+;; => Kata: Write an In-Process Test for a New Route.
+;; => Cover the greet route with status, body, and miss checks through response-for.
+(System/setProperty "org.slf4j.simpleLogger.defaultLogLevel" "error") ;; => only errors reach the log
+(System/setProperty "org.slf4j.simpleLogger.showDateTime" "false") ;; => no timestamps leak into output
+(System/setProperty "org.slf4j.simpleLogger.showThreadName" "false") ;; => no thread names leak into output
+(System/setProperty "org.slf4j.simpleLogger.showLogName" "false") ;; => no logger names leak into output
+(System/setProperty "org.slf4j.simpleLogger.showShortLogName" "false") ;; => short names stay off too
+(require '[io.pedestal.connector :as conn]) ;; => connector maps are the 0.8 service description
+(require '[io.pedestal.connector.test :as t]) ;; => response-for tests with no socket
+(require '[io.pedestal.http.jetty :as jetty]) ;; => create-connector builds the testable connector
+(require '[io.pedestal.service.interceptors :as interceptors]) ;; => not-found turns misses into 404
+;; => The greeter answers every name the new test requests.
+(def greet (fn [request] {:status 200 :body (str "hello " (get-in request [:path-params :name]))})) ;; => the param names the guest
+(def routes #{["/hello/:name" :get greet :route-name :hello]}) ;; => the new route under test
+(def service (-> (conn/default-connector-map 8080) ;; => the port stays unbound; tests use no socket
+                 (conn/with-interceptors [interceptors/not-found]) ;; => unknown paths answer 404 instead of nil
+                 (conn/with-routes routes))) ;; => router plus path-params decoder join the chain
+(def connector (jetty/create-connector service {})) ;; => the unstarted connector answers test requests
+;; => The check helper compares expected and actual, and prints PASS or the mismatch.
+(def check (fn [label expected actual] ;; => one helper checks every assertion
+             (if (= expected actual) ;; => equality decides the verdict
+               (println label "PASS") ;; => matches print PASS
+               (println label "FAIL expected" (pr-str expected) "got" (pr-str actual))))) ;; => mismatches print both sides
+(check "status-200" 200 (:status (t/response-for connector :get "/hello/ada"))) ;; => Output: status-200 PASS
+(check "greets-ada" "hello ada" (:body (t/response-for connector :get "/hello/ada"))) ;; => Output: greets-ada PASS
+(check "miss-404" 404 (:status (t/response-for connector :get "/bye/ada"))) ;; => Output: miss-404 PASS

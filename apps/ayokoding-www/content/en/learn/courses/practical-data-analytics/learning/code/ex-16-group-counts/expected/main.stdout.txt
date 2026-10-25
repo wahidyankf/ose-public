@@ -1,0 +1,5 @@
+oil-2l 2
+rice-5kg 4
+sugar-1kg 2
+tea-100g 2
+total: 10 of 10

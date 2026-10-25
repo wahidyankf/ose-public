@@ -1,0 +1,3 @@
+stops: -1,0,-1,-1
+zero count: 1
+after arrow: -1,-1,0,-1

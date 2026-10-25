@@ -1,0 +1,2 @@
+GET /api/users -> 200 {"users":[]}
+GET /api/health -> 200 {"ok":true}

@@ -1,0 +1,2 @@
+{:role :admin}
+{:id :bob, :known (:ada)}

@@ -1,0 +1,2 @@
+greeting: hello shopper
+env-seen: false

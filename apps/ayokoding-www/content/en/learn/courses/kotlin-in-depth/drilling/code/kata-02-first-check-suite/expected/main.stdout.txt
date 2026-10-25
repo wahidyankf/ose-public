@@ -1,0 +1,3 @@
+PASS: two members total 125
+PASS: empty ledger settles zero
+PASS: small ledger totals 3

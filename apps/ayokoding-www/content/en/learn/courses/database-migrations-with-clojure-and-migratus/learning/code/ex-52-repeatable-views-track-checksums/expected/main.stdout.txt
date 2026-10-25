@@ -1,0 +1,5 @@
+migrate: nil
+pending: ()
+edited-pending: ("stock-view")
+remigrate: nil
+total: [20]

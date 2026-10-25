@@ -1,0 +1,4 @@
+fixed sleep cost ticks: 10
+condition met at tick: 3
+saved waiting: 7
+faster and safer: true

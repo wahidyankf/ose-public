@@ -1,0 +1,2 @@
+note: Exception: config missing.cfg not found
+startup failed: Exception: config missing.cfg not found

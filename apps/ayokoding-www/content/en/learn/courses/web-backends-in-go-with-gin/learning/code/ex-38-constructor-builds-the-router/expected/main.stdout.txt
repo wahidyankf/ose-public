@@ -1,0 +1,4 @@
+GET /stock/bolt -> 200 {"qty":4,"sku":"bolt"}
+GET /stock/nut -> 200 {"qty":0,"sku":"nut"}
+GET /stock/nut -> 200 {"qty":9,"sku":"nut"}
+GET /stock/bolt -> 200 {"qty":0,"sku":"bolt"}

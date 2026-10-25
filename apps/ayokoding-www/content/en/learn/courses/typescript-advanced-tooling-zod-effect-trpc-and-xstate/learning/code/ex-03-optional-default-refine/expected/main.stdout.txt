@@ -1,0 +1,2 @@
+sparse: role=member nickname=undefined
+young: rejected=age: must be a number aged 13 or older

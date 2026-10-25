@@ -1,0 +1,6 @@
+
+Testing user
+
+Ran 2 tests containing 3 assertions.
+0 failures, 0 errors.
+tests: 2 pass: 3 fail: 0 error: 0

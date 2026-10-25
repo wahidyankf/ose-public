@@ -1,0 +1,2 @@
+settled: 150
+lines: 3

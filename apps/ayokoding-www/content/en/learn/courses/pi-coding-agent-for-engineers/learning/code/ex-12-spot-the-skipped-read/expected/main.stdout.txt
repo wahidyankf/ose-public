@@ -1,0 +1,4 @@
+sound: 1 suspect: 2
+edit | rewrite pricing without reading it
+test | pytest collects 0 items
+read | src/pricing.py after the fact

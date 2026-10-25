@@ -1,0 +1,4 @@
+sari: 50
+budi: 50
+total: 100
+settled:50

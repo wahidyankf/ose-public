@@ -1,0 +1,3 @@
+0 -> empty
+50 -> settle
+-5 -> refund

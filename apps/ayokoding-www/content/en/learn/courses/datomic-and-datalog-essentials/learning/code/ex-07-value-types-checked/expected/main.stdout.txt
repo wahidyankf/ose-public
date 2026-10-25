@@ -1,0 +1,4 @@
+part/name='Road wheel 700c' admitted=True
+part/price=180 admitted=True
+part/price=18.5 admitted=False
+part/name=700 admitted=False

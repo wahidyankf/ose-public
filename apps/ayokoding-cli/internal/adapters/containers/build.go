@@ -115,10 +115,14 @@ func materializeParent(parent string) (string, error) {
 	return dir, nil
 }
 
-// writeFiles places the planned context files beside the Dockerfile.
+// writeFiles places the planned context files beside the Dockerfile. The
+// mode is world-readable on purpose: COPY preserves it into the image, and a
+// toolchain that runs as a non-root user (kotlin runs as ubuntu) must still
+// read the lockfile. Context files hold recipes and lock coordinates, never
+// secrets, so nothing confidential leaks through the wider mode.
 func writeFiles(dir string, files map[string][]byte) error {
 	for name, content := range files {
-		if err := os.WriteFile(filepath.Join(dir, name), content, 0o600); err != nil {
+		if err := os.WriteFile(filepath.Join(dir, name), content, 0o644); err != nil {
 			return fmt.Errorf("containers: write build context: %w", err)
 		}
 	}

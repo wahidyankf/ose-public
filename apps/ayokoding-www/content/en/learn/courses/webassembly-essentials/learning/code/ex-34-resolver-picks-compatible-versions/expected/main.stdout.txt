@@ -1,0 +1,3 @@
+^1.2.3 resolves to 1.10.0
+^1.9.0 resolves to 1.10.0
+^3.0.0: refused: no registry version satisfies ^3.0.0

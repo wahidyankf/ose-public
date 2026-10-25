@@ -1,0 +1,4 @@
+first present: 1
+second present: 0
+third present: 0
+ledger rows: 1

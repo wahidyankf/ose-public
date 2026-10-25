@@ -1,0 +1,3 @@
+defaults: ['read', 'bash', 'edit', 'write']
+overrides: ['-bash', '-edit', '-write']
+active: ['bash', 'edit', 'read', 'write']

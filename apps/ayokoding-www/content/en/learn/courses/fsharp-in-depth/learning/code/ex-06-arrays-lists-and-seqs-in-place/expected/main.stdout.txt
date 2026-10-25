@@ -1,0 +1,1 @@
+head=10 third=30 lazy=30 lens=4,4,4

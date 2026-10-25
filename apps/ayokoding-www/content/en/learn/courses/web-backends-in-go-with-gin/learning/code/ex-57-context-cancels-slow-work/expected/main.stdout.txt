@@ -1,0 +1,2 @@
+GET /work?fast=yes expired= false -> 200 finished
+GET /work expired= true -> 499 {"error":"client went away"}

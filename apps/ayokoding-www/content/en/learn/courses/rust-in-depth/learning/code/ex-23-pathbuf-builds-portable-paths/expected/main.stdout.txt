@@ -1,0 +1,4 @@
+path: laporan/2026/settle.txt
+file: Some("settle.txt")
+ext: Some("txt")
+dir: Some("laporan/2026")

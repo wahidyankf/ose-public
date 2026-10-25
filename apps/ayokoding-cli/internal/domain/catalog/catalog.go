@@ -47,11 +47,21 @@ const (
 	KindService   Kind = "service"
 )
 
+// Link is one working-copy symlink the harness places beside a locked
+// unit before the bind mount, for runtimes that only resolve dependencies
+// next to the code. The target is container-absolute: it only exists in
+// the environment image the install recipe builds.
+type Link struct {
+	Name   string
+	Target string
+}
+
 // Install is one dependency-install recipe.
 type Install struct {
 	Lockfiles []string
 	Command   []string
 	Env       map[string]string
+	Links     []Link
 }
 
 // Toolchain is one checked catalog entry.
@@ -100,6 +110,13 @@ type installYAML struct {
 	Lockfiles []string          `yaml:"lockfiles"`
 	Command   []string          `yaml:"command"`
 	Env       map[string]string `yaml:"env"`
+	Links     []linkYAML        `yaml:"links"`
+}
+
+// linkYAML is one raw working-copy symlink.
+type linkYAML struct {
+	Name   string `yaml:"name"`
+	Target string `yaml:"target"`
 }
 
 // allowedKeys names the known keys of every fixed catalog mapping.
@@ -111,7 +128,8 @@ var allowedKeys = map[string]map[string]bool{
 		"id": true, "kind": true, "version": true, "image": true, "env": true,
 		"install": true, "build": true, "platform": true, "ready": true, "readyTimeout": true, "connect": true,
 	},
-	"install": {"lockfiles": true, "command": true, "env": true},
+	"install": {"lockfiles": true, "command": true, "env": true, "links": true},
+	"link":    {"name": true, "target": true},
 }
 
 // checker carries one Decode call.
@@ -258,19 +276,41 @@ func walkMapping(check *checker, node *yaml.Node, scope, path string, positions 
 		positions[dotted] = key.Line
 		switch scope + "/" + name {
 		case "/toolchains":
-			if value.Kind == yaml.SequenceNode {
-				for i, item := range value.Content {
-					if item.Kind == yaml.MappingNode {
-						positions["toolchains."+strconv.Itoa(i)] = item.Line
-						walkMapping(check, item, "entry", "toolchains."+strconv.Itoa(i), positions)
-					}
-				}
-			}
+			walkToolchainEntries(check, value, positions)
 		case "entry/install":
 			if value.Kind == yaml.MappingNode {
 				walkMapping(check, value, "install", dotted, positions)
 			}
+		case "install/links":
+			walkInstallLinks(check, value, dotted, positions)
 		}
+	}
+}
+
+// walkToolchainEntries records each toolchain entry of a toolchains sequence.
+func walkToolchainEntries(check *checker, value *yaml.Node, positions map[string]int) {
+	if value.Kind != yaml.SequenceNode {
+		return
+	}
+	for i, item := range value.Content {
+		if item.Kind != yaml.MappingNode {
+			continue
+		}
+		positions["toolchains."+strconv.Itoa(i)] = item.Line
+		walkMapping(check, item, "entry", "toolchains."+strconv.Itoa(i), positions)
+	}
+}
+
+// walkInstallLinks records each install working-copy symlink of a links sequence.
+func walkInstallLinks(check *checker, value *yaml.Node, dotted string, positions map[string]int) {
+	if value.Kind != yaml.SequenceNode {
+		return
+	}
+	for _, item := range value.Content {
+		if item.Kind != yaml.MappingNode {
+			continue
+		}
+		walkMapping(check, item, "link", dotted, positions)
 	}
 }
 
@@ -323,6 +363,32 @@ func (check *checker) check(raw *catalogYAML, positions map[string]int) (Catalog
 	return Catalog{Toolchains: toolchains}, true
 }
 
+// checkLinks checks the install working-copy symlinks: the name stays a
+// repository-relative link path and the target stays container-absolute,
+// since it only exists in the environment image the recipe builds.
+func (check *checker) checkLinks(raw *toolchainYAML, positions map[string]int, prefix string) []Link {
+	links := make([]Link, 0, len(raw.Install.Links))
+	for _, rawLink := range raw.Install.Links {
+		line := lineAt(positions, prefix+".install.links", prefix+".install", prefix)
+		switch {
+		case rawLink.Name == "":
+			check.failf(finding.CatalogInvalidType, line, "install link name is required")
+			continue
+		case strings.HasPrefix(rawLink.Name, "/") || rawLink.Name == ".." ||
+			strings.Contains(rawLink.Name, "../") || strings.HasSuffix(rawLink.Name, "/.."):
+			check.failf(finding.CatalogInvalidType, line,
+				"install link name %q must stay inside the unit", rawLink.Name)
+			continue
+		case !strings.HasPrefix(rawLink.Target, "/"):
+			check.failf(finding.CatalogInvalidType, line,
+				"install link target %q must be container-absolute", rawLink.Target)
+			continue
+		}
+		links = append(links, Link(rawLink))
+	}
+	return links
+}
+
 // checkEntry checks one catalog entry.
 func (check *checker) checkEntry(raw *toolchainYAML, positions map[string]int, index int, seen map[string]bool) Toolchain {
 	prefix := "toolchains." + strconv.Itoa(index)
@@ -357,6 +423,7 @@ func (check *checker) checkEntry(raw *toolchainYAML, positions map[string]int, i
 		Lockfiles: append([]string(nil), raw.Install.Lockfiles...),
 		Command:   append([]string(nil), raw.Install.Command...),
 		Env:       raw.Install.Env,
+		Links:     check.checkLinks(raw, positions, prefix),
 	}
 	entry.Build = raw.Build
 	if !platformPattern.MatchString(raw.Platform) && raw.Platform != "" {

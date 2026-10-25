@@ -1,0 +1,3 @@
+aliases=2 sorted=true
+alias Enum, as: E # => the Enum shorthand this script uses.
+alias String, as: S # => the String shorthand this script uses.

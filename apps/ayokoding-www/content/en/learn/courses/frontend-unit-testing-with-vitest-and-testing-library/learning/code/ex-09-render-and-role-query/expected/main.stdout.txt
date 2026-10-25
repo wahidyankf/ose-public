@@ -1,0 +1,1 @@
+PASS: ex-09-render-and-role-query (1 tests)

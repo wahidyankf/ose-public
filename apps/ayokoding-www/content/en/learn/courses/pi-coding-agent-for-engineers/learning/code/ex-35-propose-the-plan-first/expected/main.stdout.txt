@@ -1,0 +1,3 @@
+goal: add coupon total
+files: 2
+verdict: approved

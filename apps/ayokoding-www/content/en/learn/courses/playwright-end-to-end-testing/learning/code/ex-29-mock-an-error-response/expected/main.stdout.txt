@@ -1,0 +1,4 @@
+banner: Cart unavailable, try again
+total hidden: true
+recovered total: $42.00
+error path covered: true

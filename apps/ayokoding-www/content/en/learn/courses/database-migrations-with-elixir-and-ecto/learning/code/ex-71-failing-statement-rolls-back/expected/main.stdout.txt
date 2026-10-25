@@ -1,0 +1,3 @@
+raised: Postgrex.Error
+rolled back: true
+cleaned: yes

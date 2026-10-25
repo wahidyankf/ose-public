@@ -1,0 +1,8 @@
+schema: ayokoding.run/v1
+toolchain: java
+runs:
+  - name: main
+    command: [sh, -c, "javac -d out $(find . -name '*.java') && java -p out -m dues/dues.Main"]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

@@ -1,0 +1,4 @@
+sari:50
+budi:75
+exit: 0
+lines: 2

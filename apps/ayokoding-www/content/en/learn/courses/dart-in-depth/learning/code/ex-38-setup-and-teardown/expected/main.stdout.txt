@@ -1,0 +1,3 @@
+  ok: fixture holds three
+  ok: take leaves two
+passed: 2

@@ -1,0 +1,3 @@
+honest_ratio: 1.1
+truncated_ratio: 3.5
+exaggeration: 3.2

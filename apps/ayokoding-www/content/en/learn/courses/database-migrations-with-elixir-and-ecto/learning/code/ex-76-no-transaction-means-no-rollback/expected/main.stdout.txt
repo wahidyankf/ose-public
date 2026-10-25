@@ -1,0 +1,4 @@
+raised: Postgrex.Error
+table left behind: true
+receipts: 0
+cleaned: yes

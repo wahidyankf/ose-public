@@ -1,0 +1,2 @@
+currencies: USD
+migrations applied: 2

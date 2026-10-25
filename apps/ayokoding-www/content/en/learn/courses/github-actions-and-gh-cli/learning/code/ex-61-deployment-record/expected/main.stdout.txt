@@ -1,0 +1,6 @@
+PASS: environment named
+PASS: deploy step present
+PASS: status recorded
+PASS: needs edge set
+PASS: runner pinned
+checks: 5/5

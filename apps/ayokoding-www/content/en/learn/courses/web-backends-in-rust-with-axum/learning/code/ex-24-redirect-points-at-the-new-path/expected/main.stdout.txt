@@ -1,0 +1,1 @@
+GET /v1/orders -> 308 Permanent Redirect location=/v2/orders

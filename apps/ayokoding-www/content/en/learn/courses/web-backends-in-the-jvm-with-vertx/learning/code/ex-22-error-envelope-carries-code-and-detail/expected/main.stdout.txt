@@ -1,0 +1,2 @@
+GET /gadgets/9 -> 404 {"error":{"code":404,"message":"gadget 9 not found"}}
+GET /gadgets -> 400 {"error":{"code":400,"message":"limit must be a number"}}

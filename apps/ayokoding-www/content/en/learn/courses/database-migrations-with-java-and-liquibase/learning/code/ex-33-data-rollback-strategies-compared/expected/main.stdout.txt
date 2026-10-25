@@ -1,0 +1,2 @@
+coupon rows after rollback: 0
+prices at original value: 1

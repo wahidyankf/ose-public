@@ -1,0 +1,3 @@
+ex49_clean: clean
+ex49_drifted: drift: extra=status missing=none
+cleaned: yes

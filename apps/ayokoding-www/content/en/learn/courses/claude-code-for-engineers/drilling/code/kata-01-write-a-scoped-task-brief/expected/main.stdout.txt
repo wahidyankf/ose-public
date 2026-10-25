@@ -1,0 +1,3 @@
+brief: login.py | pytest -q exits 0
+guard: no schema change
+complete: True

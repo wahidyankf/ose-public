@@ -1,0 +1,2 @@
+GET /greet -> 200 {"hello":"hello"}
+GET /greet?lang=id -> 200 {"hello":"halo"}

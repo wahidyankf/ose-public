@@ -1,0 +1,2 @@
+  ok: mill-minimum edges
+passed: 1

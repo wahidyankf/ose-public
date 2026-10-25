@@ -1,0 +1,3 @@
+classes: px-4 py-2 bg-blue-600 text-white rounded
+declarations: 5
+custom css lines: 0

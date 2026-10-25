@@ -1,0 +1,2 @@
+legacy rows after two runs: 2
+history rows after two runs: 1

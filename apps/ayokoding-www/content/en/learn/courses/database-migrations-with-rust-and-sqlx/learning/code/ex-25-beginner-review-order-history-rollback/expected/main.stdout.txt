@@ -1,0 +1,3 @@
+versions on record: 1
+stalls present: true
+booths present: false

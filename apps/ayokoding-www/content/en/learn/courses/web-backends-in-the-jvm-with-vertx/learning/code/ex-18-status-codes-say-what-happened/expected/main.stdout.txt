@@ -1,0 +1,2 @@
+POST /gadgets -> 201 {"id":1}
+DELETE /gadgets/1 -> 204 (empty body)

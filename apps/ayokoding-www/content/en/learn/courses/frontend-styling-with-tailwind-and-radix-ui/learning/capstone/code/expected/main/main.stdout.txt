@@ -1,0 +1,7 @@
+PASS: dialog has role
+PASS: dropdown answers arrows
+PASS: tabs wrap on ArrowRight
+PASS: escape restores trigger focus
+PASS: dark pair passes contrast
+passed: 5/5
+theme: light + dark

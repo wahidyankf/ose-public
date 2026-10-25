@@ -1,0 +1,2 @@
+{"sku":"oat-1","price_cents":1500}
+oat-1 1500 0

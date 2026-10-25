@@ -1,0 +1,4 @@
+q1 -> bar
+q2 -> line
+q3 -> histogram
+category_routes: {'bar'}

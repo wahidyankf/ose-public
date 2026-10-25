@@ -1,0 +1,3 @@
+PASS create bolt
+PASS bolt twice conflicts
+PASS blank name is 400

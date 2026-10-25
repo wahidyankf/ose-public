@@ -1,0 +1,3 @@
+GET /tenants/acme/reports/7 -> 200 {"Tenant":"acme","Number":7}
+GET /tenants/acme/reports/abc -> 400 {"error":"bad report id"}
+GET /tenants/acme/reports/0 -> 400 {"error":"bad report id"}

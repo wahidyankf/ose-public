@@ -1,0 +1,4 @@
+table: True
+columns: id, name, price_cents
+index: True
+cleaned: yes

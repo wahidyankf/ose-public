@@ -1,0 +1,3 @@
+discount: 0
+fee: 25
+has discount: false

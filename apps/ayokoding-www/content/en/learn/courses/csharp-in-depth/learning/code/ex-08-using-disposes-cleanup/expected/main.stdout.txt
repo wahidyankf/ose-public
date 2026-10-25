@@ -1,0 +1,5 @@
+acquired outer
+acquired inner
+serving
+released inner
+released outer

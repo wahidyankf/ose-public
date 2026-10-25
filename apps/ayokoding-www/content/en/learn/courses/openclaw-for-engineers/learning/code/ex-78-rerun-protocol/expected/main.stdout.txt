@@ -1,0 +1,5 @@
+seal: compare-001
+version drift: True
+last: v2026.10.4 @ 2026-09-20
+now: v2026.10.5 @ 2026-10-20
+re-run stamped: 2026-10-20

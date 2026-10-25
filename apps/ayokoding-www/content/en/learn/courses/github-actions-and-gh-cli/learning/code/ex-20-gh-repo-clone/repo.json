@@ -1,0 +1,10 @@
+{
+  "name": "shop",
+  "owner": "octocat",
+  "forkOwner": "learner",
+  "visibility": "public",
+  "defaultBranch": "main",
+  "openIssues": 2,
+  "stars": 128,
+  "cloneUrl": "https://example.com/octocat/shop.git"
+}

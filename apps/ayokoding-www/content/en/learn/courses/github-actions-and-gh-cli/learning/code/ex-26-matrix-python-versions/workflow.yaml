@@ -1,0 +1,16 @@
+# => Version axis: one definition, three interpreters, three jobs.
+# => matrix values are the product; each cell is one runner.
+# => Quote versions: matrix values pass through YAML parsing too.
+name: version-grid # => workflow name shown in the Actions tab
+on: push # => run on every push while learning
+jobs: # => jobs block with the matrix job
+  test: # => single definition fanning out to three runners
+    runs-on: ubuntu-latest # => same image for every cell
+    strategy: # => fan-out configuration for this job
+      matrix: # => axes whose product becomes jobs
+        python-version: ["3.12", "3.13", "3.14"] # => quoted versions
+    steps: # => steps run once per cell with the cell value
+      - uses: actions/setup-python@v5 # => install the cell interpreter
+        with: # => action inputs reading the matrix value
+          python-version: ${{ matrix.python-version }} # => cell value
+      - run: echo tests-ok # => placeholder suite proof

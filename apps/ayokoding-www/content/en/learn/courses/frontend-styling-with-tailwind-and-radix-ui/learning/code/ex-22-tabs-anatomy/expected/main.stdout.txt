@@ -1,0 +1,3 @@
+parts: Root,List,Trigger,Content
+visible: account
+visible count: 1

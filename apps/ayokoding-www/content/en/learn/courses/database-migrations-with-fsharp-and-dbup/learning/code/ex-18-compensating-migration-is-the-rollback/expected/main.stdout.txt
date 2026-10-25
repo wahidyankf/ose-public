@@ -1,0 +1,7 @@
+upgrade=true
+upgrade=true
+upgrade=true
+cols=id,title
+history=d18_001_create_posts.sql
+history=d18_002_add_subtitle.sql
+history=d18_003_drop_subtitle.sql

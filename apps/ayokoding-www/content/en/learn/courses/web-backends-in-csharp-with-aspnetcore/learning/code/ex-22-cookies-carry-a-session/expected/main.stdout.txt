@@ -1,0 +1,4 @@
+POST /login -> 200 {"logged":"ada"}
+cookie session=ada-42
+GET /profile -> 200 {"session":"ada-42"}
+GET /profile -> 200 {"session":"(none)"}

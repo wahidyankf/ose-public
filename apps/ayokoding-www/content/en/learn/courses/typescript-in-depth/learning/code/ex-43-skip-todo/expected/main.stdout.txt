@@ -1,0 +1,1 @@
+PASS: ex-43-skip-todo (1 check)

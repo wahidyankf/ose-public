@@ -1,0 +1,2 @@
+POST /greet json -> 200 {"hello":"gopher"}
+POST /greet form -> 200 {"hello":"gopher"}

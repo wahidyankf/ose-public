@@ -1,0 +1,6 @@
+PASS: checkout step present
+PASS: three steps present
+PASS: setup step named
+PASS: test step named
+PASS: single job only
+checks: 5/5

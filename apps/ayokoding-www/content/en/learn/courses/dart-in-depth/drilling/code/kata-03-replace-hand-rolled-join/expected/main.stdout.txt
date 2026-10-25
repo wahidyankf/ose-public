@@ -1,0 +1,3 @@
+oat,tea,rice
+empty:[]
+oat | tea

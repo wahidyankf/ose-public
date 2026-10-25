@@ -1,0 +1,17 @@
+# => Recorded deploy: target production, stamp success when steps pass.
+# => The status step closes the record dashboards and rollbacks read.
+# => Statuses are success, failure, or inactive; never leave one pending.
+name: recorded-deploy # => workflow name shown in the Actions tab
+on: push # => run on every push while learning
+jobs: # => test job plus the recorded deploy job
+  test: # => first: prove the change before recording anything
+    runs-on: ubuntu-latest # => hosted runner image
+    steps: # => steps of the test job
+      - run: echo tests-ok # => placeholder suite proof
+  deploy: # => second: deploy, then record the outcome
+    needs: [test] # => green tests precede the deployment
+    runs-on: ubuntu-latest # => hosted runner image
+    environment: production # => target recorded on the timeline
+    steps: # => deploy step plus the status stamp
+      - run: echo deploy-ok # => placeholder deploy proof
+      - run: echo deployment-status=success # => close the record

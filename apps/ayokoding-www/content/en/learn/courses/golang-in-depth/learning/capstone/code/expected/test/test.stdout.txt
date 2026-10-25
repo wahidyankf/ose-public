@@ -1,0 +1,15 @@
+=== RUN   TestParseLine
+=== RUN   TestParseLine/valid_padded
+=== RUN   TestParseLine/missing_colon
+=== RUN   TestParseLine/empty_member
+=== RUN   TestParseLine/garbage_amount
+=== RUN   TestParseLine/negative_amount
+--- PASS: TestParseLine
+    --- PASS: TestParseLine/valid_padded
+    --- PASS: TestParseLine/missing_colon
+    --- PASS: TestParseLine/empty_member
+    --- PASS: TestParseLine/garbage_amount
+    --- PASS: TestParseLine/negative_amount
+=== RUN   TestSummarizeFoldsTotals
+--- PASS: TestSummarizeFoldsTotals
+PASS

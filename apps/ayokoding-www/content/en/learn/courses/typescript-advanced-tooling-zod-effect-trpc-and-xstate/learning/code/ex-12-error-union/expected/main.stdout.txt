@@ -1,0 +1,3 @@
+read: doc:memo
+denied: Forbidden id=secret
+missing: NotFound id=lost

@@ -1,0 +1,7 @@
+PASS: secret via context
+PASS: masked step present
+PASS: no raw value
+PASS: runner pinned
+FAIL: no literal token
+PASS: no literal password
+checks: 5/6

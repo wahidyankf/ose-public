@@ -1,0 +1,19 @@
+schema: ayokoding.run/v1
+toolchain: rust
+dependencies:
+  lockfile: learning/code/ex-01-hellors/Cargo.lock
+resources:
+  memory: 2g
+runs:
+  - name: main
+    # Without the install recipe the vendored itoa sources are missing, so
+    # cargo must resolve itoa from the network, which the run blocks. With
+    # the recipe the unit builds offline from /deps/rust twice alike. The
+    # --config flags keep the replacement inside the unit (no image config
+    # file). The build target stays in the unit dir: each execution gets a
+    # fresh working copy, so it never dirties the repo (/tmp is noexec in
+    # run containers, so a temp target dir cannot execute).
+    command: [sh, -c, "cargo run --offline --quiet --config 'source.crates-io.replace-with=\"vendored\"' --config 'source.vendored.directory=\"/deps/rust\"'"]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

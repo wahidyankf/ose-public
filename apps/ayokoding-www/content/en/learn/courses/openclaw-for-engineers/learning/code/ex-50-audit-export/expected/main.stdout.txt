@@ -1,0 +1,6 @@
+entries: 4
+ses-001 | read inbox
+ses-001 | exec ls
+ses-001 | write digest
+ses-001 | message send
+export complete: True

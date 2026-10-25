@@ -1,0 +1,3 @@
+GET /doc tag= -> 200 etag="9ecb3656... the quick brown fox
+GET /doc tag="9ecb3656... -> 304 etag=
+GET /doc tag="stale" -> 200 etag="9ecb3656... the quick brown fox

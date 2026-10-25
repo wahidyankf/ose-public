@@ -1,0 +1,3 @@
+shell: <h1>Kopi Toraja 250g 68000</h1>
+reviews: <p>4.8 from 212 tasters</p>
+shell alone readable: true

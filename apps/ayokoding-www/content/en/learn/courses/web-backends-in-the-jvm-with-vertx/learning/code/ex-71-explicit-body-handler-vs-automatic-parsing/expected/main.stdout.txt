@@ -1,0 +1,2 @@
+POST /explicit -> 200 {"name":"gopher","via":"explicit"}
+POST /global -> 200 {"name":"gopher","via":"global"}

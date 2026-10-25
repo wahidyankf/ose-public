@@ -1,0 +1,6 @@
+PASS: trigger names pull_request
+PASS: opened activity listed
+PASS: synchronize activity listed
+PASS: lint job exists
+PASS: test job exists
+checks: 5/5

@@ -1,0 +1,3 @@
+upgrade=true
+catalog=id,a,sneak_a
+journal-knows=d51_001_create_rpt.sql

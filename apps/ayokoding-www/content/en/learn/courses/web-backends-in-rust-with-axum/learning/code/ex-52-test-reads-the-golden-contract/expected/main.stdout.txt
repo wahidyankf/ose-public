@@ -1,0 +1,1 @@
+holds GET /contract -> 200 {"healthy":true,"service":"orders","version":2}

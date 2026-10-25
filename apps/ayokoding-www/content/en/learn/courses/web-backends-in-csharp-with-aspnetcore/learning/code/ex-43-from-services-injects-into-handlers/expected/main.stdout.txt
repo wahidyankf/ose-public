@@ -1,0 +1,2 @@
+GET /members/1 -> 200 {"id":1,"name":"ada"}
+GET /members/9 -> 404 {"error":"member-not-found"}

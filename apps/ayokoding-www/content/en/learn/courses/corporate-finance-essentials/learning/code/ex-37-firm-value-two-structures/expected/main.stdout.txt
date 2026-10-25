@@ -1,0 +1,3 @@
+value-now: 1530612.24
+value-proposed: 1577102.80
+gain: 46490.56

@@ -1,0 +1,3 @@
+roster: [sari, budi, citra, dewi, eka]
+budi at: 1
+sized upfront: true

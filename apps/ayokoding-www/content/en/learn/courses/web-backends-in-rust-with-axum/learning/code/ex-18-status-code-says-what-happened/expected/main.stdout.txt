@@ -1,0 +1,2 @@
+GET /found -> 200 OK {"id":"o-1"}
+GET /missing -> 404 Not Found {"error":"no_order"}

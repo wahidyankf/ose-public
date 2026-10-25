@@ -1,0 +1,2 @@
+POST /loose -> 200 {"name":"drill","watts":40}
+POST /strict -> 200 {"name":"drill","watts":40}

@@ -1,0 +1,3 @@
+pending-all=d59_001_l.sql,d59_002_l.sql,d59_003_l.sql
+base=true
+pending-rest=d59_002_l.sql,d59_003_l.sql

@@ -1,0 +1,5 @@
+sari:50
+budi:75
+dewi:Séka
+roundtrip: true
+lines: 3

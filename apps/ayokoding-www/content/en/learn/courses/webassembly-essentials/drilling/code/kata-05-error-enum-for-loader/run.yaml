@@ -1,0 +1,8 @@
+schema: ayokoding.run/v1
+toolchain: webassembly
+runs:
+  - name: main
+    command: [wazero, run, after/solution.wasm]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

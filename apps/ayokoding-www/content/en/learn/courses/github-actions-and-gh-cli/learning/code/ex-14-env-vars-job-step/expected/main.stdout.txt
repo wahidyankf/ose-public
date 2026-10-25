@@ -1,0 +1,6 @@
+PASS: workflow env set
+PASS: job level value
+PASS: step level value
+PASS: variable read
+PASS: runner pinned
+checks: 5/5

@@ -1,0 +1,1 @@
+{ "host": "db-01", "port": 5432, "tls": true }

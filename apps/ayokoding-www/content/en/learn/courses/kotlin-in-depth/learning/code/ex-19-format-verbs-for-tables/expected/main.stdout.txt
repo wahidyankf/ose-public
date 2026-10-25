@@ -1,0 +1,4 @@
+member.........0
+sari          50
+budi         125
+citra-wulandari    75

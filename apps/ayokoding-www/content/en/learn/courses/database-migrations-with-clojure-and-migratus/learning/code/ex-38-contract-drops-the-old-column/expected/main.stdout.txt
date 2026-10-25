@@ -1,0 +1,4 @@
+migrate: nil
+completed: ["make-user" "expand-and-copy" "contract-name"]
+columns: ["id" "display_name"]
+nullable: ["NO"]

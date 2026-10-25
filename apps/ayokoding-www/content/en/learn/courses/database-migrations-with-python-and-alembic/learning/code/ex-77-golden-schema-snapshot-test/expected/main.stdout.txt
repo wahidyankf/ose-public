@@ -1,0 +1,3 @@
+snapshot: ex77_orders.id, ex77_orders.item, ex77_orders.price_cents
+match: True
+cleaned: yes

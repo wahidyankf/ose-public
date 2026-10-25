@@ -1,0 +1,2 @@
+GET /fail -> 500 {"error":"internal","detail":"disk full"}
+GET /fine -> 200 {"fine":true}

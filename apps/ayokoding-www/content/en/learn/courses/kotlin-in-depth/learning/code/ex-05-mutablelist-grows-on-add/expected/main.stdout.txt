@@ -1,0 +1,4 @@
+start: [ada]
+grown: [ada, grace, sari] size=3
+seated: [ada, budi, grace, sari]
+frozen: [ada, budi, grace, sari]

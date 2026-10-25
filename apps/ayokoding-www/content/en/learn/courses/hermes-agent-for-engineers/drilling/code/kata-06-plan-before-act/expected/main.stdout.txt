@@ -1,0 +1,3 @@
+goal: add email receipts
+steps: 3
+files: 2

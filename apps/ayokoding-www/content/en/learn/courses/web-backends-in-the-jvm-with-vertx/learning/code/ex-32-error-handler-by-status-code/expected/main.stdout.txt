@@ -1,0 +1,2 @@
+GET /boom -> 500 {"error":{"code":500,"message":"we are on it"}}
+GET /nowhere -> 404 {"error":{"code":404,"message":"check the path"}}

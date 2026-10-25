@@ -1,0 +1,4 @@
+ints: 150.0
+mixed: 52.5
+vault: [50, 75] sum=125.0
+attic size: 2

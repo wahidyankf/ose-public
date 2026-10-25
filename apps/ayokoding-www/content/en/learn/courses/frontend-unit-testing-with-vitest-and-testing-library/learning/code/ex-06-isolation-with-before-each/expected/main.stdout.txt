@@ -1,0 +1,1 @@
+PASS: ex-06-isolation-with-before-each (2 tests)

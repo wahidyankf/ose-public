@@ -1,0 +1,11 @@
+{
+  "tag": "v1.4.0",
+  "name": "Commit-to-release pipeline",
+  "draft": false,
+  "prerelease": false,
+  "notes": "Test matrix green, dist packaged, OIDC publish approved.\n\nShipped by the capstone pipeline.",
+  "assets": [
+    { "name": "shop-1.4.0.tar.gz", "size": 48210, "downloads": 0 },
+    { "name": "checksums.txt", "size": 128, "downloads": 0 }
+  ]
+}

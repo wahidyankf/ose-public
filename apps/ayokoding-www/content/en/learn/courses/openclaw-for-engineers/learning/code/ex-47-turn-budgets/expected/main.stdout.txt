@@ -1,0 +1,8 @@
+turn 1: plan
+turn 2: read
+turn 3: edit
+turn 4: test
+turn 5: fix
+HALT at budget: retest skipped
+used 5 of 5
+overrun blocked: True

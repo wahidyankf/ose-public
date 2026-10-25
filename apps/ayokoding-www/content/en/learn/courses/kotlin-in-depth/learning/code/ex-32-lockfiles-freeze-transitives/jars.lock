@@ -1,0 +1,4 @@
+# Fixture: the frozen transitive closure, two jars.
+# Each line: group:artifact:version SHA-256.
+org.jetbrains.kotlin:kotlin-stdlib:2.4.21 8f8f7d9b8f8f7d9b8f8f7d9b8f8f7d9b8f8f7d9b8f8f7d9b8f8f7d9b8f8f7d9b
+org.jetbrains:annotations:26.0.2 3c8fd8b83c8fd8b83c8fd8b83c8fd8b83c8fd8b83c8fd8b83c8fd8b83c8fd8b8

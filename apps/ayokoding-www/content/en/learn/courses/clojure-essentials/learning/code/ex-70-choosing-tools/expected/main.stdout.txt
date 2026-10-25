@@ -1,0 +1,5 @@
+job => tool
+format data => clojure.pprint
+lint config => clj-kondo
+run tests => clojure.test
+pin jars => jars.lock

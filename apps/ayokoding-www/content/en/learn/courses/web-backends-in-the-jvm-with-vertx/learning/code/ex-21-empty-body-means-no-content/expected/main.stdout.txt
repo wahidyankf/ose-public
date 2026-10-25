@@ -1,0 +1,2 @@
+DELETE /gadgets/1 -> 204 (empty body)
+GET /ping -> 204 (empty body)

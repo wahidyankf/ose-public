@@ -1,0 +1,9 @@
+seen :a
+seen :b
+[10 20 30]
+tick 0
+tick 1
+tick 2
+left 3
+left 2
+left 1

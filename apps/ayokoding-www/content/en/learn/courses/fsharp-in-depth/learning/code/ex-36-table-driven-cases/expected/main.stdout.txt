@@ -1,0 +1,6 @@
+PASS grade 100
+PASS grade 90
+PASS grade 85
+PASS grade 60
+PASS grade 59
+suite: 5 tests, 0 failures

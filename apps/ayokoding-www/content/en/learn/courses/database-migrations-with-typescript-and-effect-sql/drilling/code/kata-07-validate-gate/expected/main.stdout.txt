@@ -1,0 +1,3 @@
+applied: 2, recorded: 2, present: 2
+gate: pass
+cleaned: yes

@@ -1,0 +1,4 @@
+GET /a -> 200 a
+GET /b -> 200 b
+GET /nope -> 404 Not Found
+log=GET /a;GET /b;GET /nope

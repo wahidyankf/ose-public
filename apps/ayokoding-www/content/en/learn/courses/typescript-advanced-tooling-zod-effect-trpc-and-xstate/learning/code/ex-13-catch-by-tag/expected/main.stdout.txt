@@ -1,0 +1,2 @@
+caught: guest-doc (default for memo)
+kept: Forbidden id=secret

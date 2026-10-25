@@ -1,0 +1,11 @@
+{
+  "tag": "v1.4.0",
+  "name": "Cache and concurrency release",
+  "draft": false,
+  "prerelease": false,
+  "notes": "Faster CI via pip caching and safer deploys via concurrency groups.\n\nFull changelog on the compare view.",
+  "assets": [
+    { "name": "shop-1.4.0.tar.gz", "size": 48210, "downloads": 7 },
+    { "name": "checksums.txt", "size": 128, "downloads": 7 }
+  ]
+}

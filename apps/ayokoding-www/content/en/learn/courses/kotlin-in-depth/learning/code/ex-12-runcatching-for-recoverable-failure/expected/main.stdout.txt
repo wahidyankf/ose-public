@@ -1,0 +1,4 @@
+good: 50
+word: 0
+blank: 0
+kept: 75

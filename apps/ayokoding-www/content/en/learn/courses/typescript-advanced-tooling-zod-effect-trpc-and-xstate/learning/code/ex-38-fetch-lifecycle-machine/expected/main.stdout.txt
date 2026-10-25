@@ -1,0 +1,2 @@
+good: state=success data=profile trace=idle>loading>success
+bad: state=failure error=timeout trace=idle>loading>failure

@@ -1,0 +1,5 @@
+upgrade=true
+upgrade=true
+seed=keep
+drift-found=true
+history=2

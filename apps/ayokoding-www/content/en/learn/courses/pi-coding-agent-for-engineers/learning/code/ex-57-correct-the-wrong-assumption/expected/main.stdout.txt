@@ -1,0 +1,4 @@
+symptom: assumed sqlite, repo uses postgres
+recovery: state the correction, rerun plan
+kept: ['corrected brief', 'passing plan v2']
+recovered: True

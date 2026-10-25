@@ -1,0 +1,2 @@
+sku=book qty=10 line=95.0
+plain_sku=book plain_qty=10 plain_price=9.5

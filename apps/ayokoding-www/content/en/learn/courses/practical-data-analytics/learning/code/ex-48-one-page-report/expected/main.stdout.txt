@@ -1,0 +1,5 @@
+Q: restock staples for October if mean September basket exceeds 3?
+M: sales-sep.csv, strip+lower, median-fill, product x month.
+F: rice averages 3.0 units (stdev 0.82, n=4); sugar 4.0 (n=3).
+C: n=4, Saturday-only, payday confound, no causal claim.
+verdict: restock rice; hold sugar pending weekday data.

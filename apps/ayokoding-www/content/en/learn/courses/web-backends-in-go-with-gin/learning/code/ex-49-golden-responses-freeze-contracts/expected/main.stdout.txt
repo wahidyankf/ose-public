@@ -1,0 +1,3 @@
+PASS status frozen
+PASS sari frozen
+FAIL budi vs sari golden got 200 {"message":"hello, Budi"}

@@ -1,0 +1,4 @@
+mode: json
+prompt: list changed files
+reply: {"files": ["a.py"]}
+envelope: result, trace, usage

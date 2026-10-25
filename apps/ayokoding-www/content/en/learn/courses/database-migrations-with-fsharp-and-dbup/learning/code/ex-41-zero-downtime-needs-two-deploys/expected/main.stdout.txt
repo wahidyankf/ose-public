@@ -1,0 +1,6 @@
+upgrade=true
+upgrade=true
+upgrade=true
+upgrade=true
+deploys=4
+serving=id,label

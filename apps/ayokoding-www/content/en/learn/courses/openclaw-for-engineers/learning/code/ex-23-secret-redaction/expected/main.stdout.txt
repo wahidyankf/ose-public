@@ -1,0 +1,5 @@
+log: model: anthropic/claude
+log: api_key: [REDACTED]
+log: workspace: notes
+log: token: [REDACTED]
+secrets leaked: False

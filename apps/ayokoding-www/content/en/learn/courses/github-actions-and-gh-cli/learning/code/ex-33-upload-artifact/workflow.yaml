@@ -1,0 +1,15 @@
+# => Handoff upload: store dist under a name the next job knows.
+# => Runners are throwaway; unuploaded files vanish with the job.
+# => Retention bounds storage cost; seven days suits review windows.
+name: package # => workflow name shown in the Actions tab
+on: push # => run on every push while learning
+jobs: # => jobs block with the packaging job
+  build: # => single job proving the upload step
+    runs-on: ubuntu-latest # => hosted runner image
+    steps: # => build then upload the result
+      - run: echo built-ok # => placeholder build proof
+      - uses: actions/upload-artifact@v4 # => store files for later jobs
+        with: # => action inputs for the upload
+          name: dist # => artifact name the consumer requests
+          path: dist/ # => directory packaged into the artifact
+          retention-days: 7 # => storage bound in days

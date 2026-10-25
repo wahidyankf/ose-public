@@ -1,0 +1,10 @@
+next app/page.tsx => /
+next app/products/page.tsx => /products
+next app/products/[id]/page.tsx => /products/:id
+next /products/teh-002 matches detail: true
+next /products matches detail: false
+start src/routes/index.tsx => /
+start src/routes/products/index.tsx => /products
+start src/routes/products/$productId.tsx => /products/:productId
+start /products/teh-002 matches detail: true
+start /products matches detail: false

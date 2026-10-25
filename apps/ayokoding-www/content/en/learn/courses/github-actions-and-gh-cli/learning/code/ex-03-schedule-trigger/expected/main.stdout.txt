@@ -1,0 +1,6 @@
+PASS: schedule key present
+PASS: cron expression set
+PASS: audit job exists
+PASS: runner pinned
+PASS: uses checkout
+checks: 5/5

@@ -1,0 +1,3 @@
+served: rice
+served: rendang
+served: sambal

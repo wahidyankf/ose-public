@@ -1,0 +1,2 @@
+silent: ['ls']
+gated: ['pytest', 'rm -rf /tmp/x']

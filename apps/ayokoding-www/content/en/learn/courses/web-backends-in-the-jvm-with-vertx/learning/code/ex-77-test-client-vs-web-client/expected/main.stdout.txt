@@ -1,0 +1,4 @@
+PASS GET /hello -> 200 contains hello
+PASS GET /healthz -> 200 contains ok
+PASS GET /version -> 200 contains 1.0.0
+PASS GET /nowhere -> 404 contains not found

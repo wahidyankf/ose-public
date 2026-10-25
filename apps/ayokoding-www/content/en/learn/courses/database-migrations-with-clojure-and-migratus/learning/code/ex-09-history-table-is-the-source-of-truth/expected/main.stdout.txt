@@ -1,0 +1,4 @@
+migrate: nil
+completed: ["create-ledger"]
+journal-cols: ["id" "applied" "description" "checksum"]
+journal-row: [[20260101000901 "create-ledger"]]

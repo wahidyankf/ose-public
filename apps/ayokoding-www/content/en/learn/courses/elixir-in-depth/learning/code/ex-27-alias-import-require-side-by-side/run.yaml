@@ -1,0 +1,8 @@
+schema: ayokoding.run/v1
+toolchain: elixir
+runs:
+  - name: main
+    command: [elixir, main.exs]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

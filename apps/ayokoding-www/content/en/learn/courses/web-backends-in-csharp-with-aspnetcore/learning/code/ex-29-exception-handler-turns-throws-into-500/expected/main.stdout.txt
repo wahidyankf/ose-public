@@ -1,0 +1,2 @@
+GET /fail -> 500 {"error":"boom","path":"/fail"}
+GET /fine -> 200 {"fine":true}

@@ -1,0 +1,16 @@
+schema: ayokoding.run/v1
+toolchain: dotnet
+runs:
+  - name: warnaserror
+    kind: check
+    command: [sh, -c, "dotnet build --nologo -v q -p:TreatWarningsAsErrors=true"]
+    expect:
+      exit: 0
+      stdout: ignore
+      stderr: ignore
+  - name: main
+    command: [sh, -c, "dotnet build --nologo -v q > /dev/null && dotnet bin/Debug/net10.0/app.dll"]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+      stderr: ignore

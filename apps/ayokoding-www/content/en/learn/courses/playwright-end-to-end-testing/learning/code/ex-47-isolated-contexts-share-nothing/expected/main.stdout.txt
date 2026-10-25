@@ -1,0 +1,4 @@
+admin sees delete: true
+member sees delete: false
+no cross-talk: true
+roles differ: true

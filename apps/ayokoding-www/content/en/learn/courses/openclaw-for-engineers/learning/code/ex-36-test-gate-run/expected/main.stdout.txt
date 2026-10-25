@@ -1,0 +1,5 @@
+PASS links resolve
+PASS no stray files
+FAIL index builds
+passed: 2 of 3
+merge allowed: False

@@ -1,0 +1,3 @@
+user: null
+greeting: Welcome, guest
+fixture built the page: true

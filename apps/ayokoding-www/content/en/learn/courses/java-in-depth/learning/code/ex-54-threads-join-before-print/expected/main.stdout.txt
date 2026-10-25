@@ -1,0 +1,2 @@
+partials: 100,150,50
+total: 300

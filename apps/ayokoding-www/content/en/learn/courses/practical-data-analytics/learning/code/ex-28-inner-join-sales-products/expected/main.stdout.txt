@@ -1,0 +1,5 @@
+('2801', 'rice-5kg', 'staples', 2)
+('2802', 'sugar-1kg', 'staples', 5)
+('2803', 'oil-2l', 'cooking', 1)
+('2804', 'rice-5kg', 'staples', 3)
+matched: 4 of 5

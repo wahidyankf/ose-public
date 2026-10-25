@@ -1,0 +1,3 @@
+valid: classified
+stranger: 401
+missing: unauthorized

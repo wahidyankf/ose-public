@@ -1,0 +1,2 @@
+{"login":"ada","age":36}
+rejected: login must be a non-empty string

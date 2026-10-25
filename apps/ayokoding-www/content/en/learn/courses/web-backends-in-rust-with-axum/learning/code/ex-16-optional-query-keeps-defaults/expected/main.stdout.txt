@@ -1,0 +1,3 @@
+GET /orders -> 200 OK {"page":1,"per":20}
+GET /orders?per=5 -> 200 OK {"page":1,"per":5}
+GET /orders?page=3&per=5 -> 200 OK {"page":3,"per":5}

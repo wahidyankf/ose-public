@@ -1,0 +1,2 @@
+GET /users -> 200 {"users":["ada"]}
+GET /orders -> 200 {"orders":[1]}

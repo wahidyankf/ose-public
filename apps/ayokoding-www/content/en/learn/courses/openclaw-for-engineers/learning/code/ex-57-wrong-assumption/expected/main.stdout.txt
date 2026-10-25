@@ -1,0 +1,5 @@
+assumed: archive/ is empty
+fact: archive holds 12
+assumption wrong: True
+corrected plan: merge, never overwrite archive/
+resumed on facts: True

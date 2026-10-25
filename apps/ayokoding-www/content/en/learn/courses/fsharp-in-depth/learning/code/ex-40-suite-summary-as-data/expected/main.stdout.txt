@@ -1,0 +1,5 @@
+PASS upper ada
+PASS lower GRACE
+PASS trim pads
+suite: 3 tests, 0 failures
+report: casing rules verified

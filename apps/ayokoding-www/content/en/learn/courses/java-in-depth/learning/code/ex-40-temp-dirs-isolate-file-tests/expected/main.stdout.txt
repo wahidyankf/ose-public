@@ -1,0 +1,4 @@
+PASS roundtrip inside sandbox
+PASS two lines stored
+PASS sandbox is a directory
+PASS sandbox removed

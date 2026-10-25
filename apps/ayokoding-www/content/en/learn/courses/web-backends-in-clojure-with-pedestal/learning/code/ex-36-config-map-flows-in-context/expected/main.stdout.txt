@@ -1,0 +1,1 @@
+config: shop max=2 reviews=false

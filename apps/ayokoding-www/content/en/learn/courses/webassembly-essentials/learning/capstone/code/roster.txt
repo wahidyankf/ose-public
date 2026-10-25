@@ -1,0 +1,10 @@
+sari=91
+budi=77
+citra=88
+deka
+eka=many
+farah=95
+gita=104
+hadi=62
+
+irfan=73

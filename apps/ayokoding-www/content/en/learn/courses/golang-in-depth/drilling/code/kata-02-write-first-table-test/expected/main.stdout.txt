@@ -1,0 +1,9 @@
+=== RUN   TestDouble
+=== RUN   TestDouble/zero_stays_zero
+=== RUN   TestDouble/positive_doubles
+=== RUN   TestDouble/negative_doubles
+--- PASS: TestDouble
+    --- PASS: TestDouble/zero_stays_zero
+    --- PASS: TestDouble/positive_doubles
+    --- PASS: TestDouble/negative_doubles
+PASS

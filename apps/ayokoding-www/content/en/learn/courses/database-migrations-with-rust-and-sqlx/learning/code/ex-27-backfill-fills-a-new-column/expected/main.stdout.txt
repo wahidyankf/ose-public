@@ -1,0 +1,3 @@
+invoice 1 total 1000
+invoice 2 total 1999
+invoice 3 total 1000

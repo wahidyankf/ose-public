@@ -1,0 +1,2 @@
+checksum failure: CommandExecutionException
+history rows intact: 2

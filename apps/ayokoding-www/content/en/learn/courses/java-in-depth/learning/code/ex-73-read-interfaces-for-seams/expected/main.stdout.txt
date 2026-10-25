@@ -1,0 +1,2 @@
+total: 125
+receipts: [sari:50, budi:75]

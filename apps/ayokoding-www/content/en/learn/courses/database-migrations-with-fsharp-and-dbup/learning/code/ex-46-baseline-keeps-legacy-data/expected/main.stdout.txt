@@ -1,0 +1,4 @@
+upgrade=true
+upgrade=true
+items=book,pen
+steps=2

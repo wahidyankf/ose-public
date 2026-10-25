@@ -1,0 +1,4 @@
+artifacts: trace.zip,video.webm,screenshot.png
+evidence kept: true
+green keeps nothing: true
+debug from evidence: true

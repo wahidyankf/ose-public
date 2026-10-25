@@ -1,0 +1,3 @@
+ran=true
+links=5
+cols=6

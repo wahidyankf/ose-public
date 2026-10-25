@@ -1,0 +1,4 @@
+GET /hello -> 200 {"message":"hello, vertx"}
+closed client
+closed server
+closed vertx

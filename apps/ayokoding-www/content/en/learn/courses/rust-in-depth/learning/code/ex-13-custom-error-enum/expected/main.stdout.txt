@@ -1,0 +1,4 @@
+("sari", 50)
+bad line: oops
+bad amount: sari:xyz
+negative refused: sari:-5

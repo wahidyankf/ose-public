@@ -1,0 +1,6 @@
+PASS: cache action used
+PASS: cache step id
+PASS: path set
+PASS: key set
+PASS: hashFiles used
+checks: 5/5

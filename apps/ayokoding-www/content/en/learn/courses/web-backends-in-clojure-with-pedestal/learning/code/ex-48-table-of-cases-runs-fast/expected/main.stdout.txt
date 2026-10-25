@@ -1,0 +1,6 @@
+get /ok PASS
+post /made PASS
+delete /gone PASS
+get /made PASS
+post /ok PASS
+get /gone PASS

@@ -1,0 +1,9 @@
+schema: ayokoding.run/v1
+toolchain: rust
+runs:
+  - name: main
+    command: [sh, -c, "rustc main.rs -o main && ./main"]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt
+      stderr: ignore

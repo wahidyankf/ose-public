@@ -1,0 +1,5 @@
+server first paint: <ul><li>Kopi Toraja 250g</li><li>Teh Melati 100g</li></ul>
+client first paint: <ul><li>loading...</li></ul>
+client after fetch: <ul><li>Kopi Toraja 250g</li><li>Teh Melati 100g</li></ul>
+server had rows first: true
+client had rows first: false

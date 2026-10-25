@@ -1,0 +1,5 @@
+schedule: daily 08:00
+scope: inbox.md
+report: team-chat: digest
+runs unwatched: True
+reports somewhere: True

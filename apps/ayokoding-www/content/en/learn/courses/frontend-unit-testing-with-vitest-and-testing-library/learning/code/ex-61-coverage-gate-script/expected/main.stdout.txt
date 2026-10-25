@@ -1,0 +1,1 @@
+PASS: ex-61-coverage-gate-script (2 tests)

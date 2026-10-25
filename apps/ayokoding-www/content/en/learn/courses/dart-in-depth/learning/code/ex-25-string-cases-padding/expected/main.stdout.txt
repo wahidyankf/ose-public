@@ -1,0 +1,3 @@
+stored: oat,tea,rice
+sign: Oat | Tea | Rice
+cols: [oat..., tea..., rice..]

@@ -1,0 +1,3 @@
+PASS: empty -> []
+PASS: single -> [sari]
+PASS: many -> [sari, budi, citra]

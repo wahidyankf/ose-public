@@ -1,0 +1,2 @@
+after copy-spend: 100
+after pointer-spend: 60

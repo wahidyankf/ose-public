@@ -1,0 +1,2 @@
+doors: 2 walls: 1
+total: 125

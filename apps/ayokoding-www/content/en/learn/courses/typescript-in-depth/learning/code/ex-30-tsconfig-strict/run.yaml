@@ -1,0 +1,14 @@
+schema: ayokoding.run/v1
+toolchain: typescript
+runs:
+  - name: build
+    kind: check
+    command: [sh, -c, "tsc -p ."]
+    expect:
+      exit: 0
+      stdout: ignore
+  - name: main
+    command: [sh, -c, "tsc -p . && node out/main.js"]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

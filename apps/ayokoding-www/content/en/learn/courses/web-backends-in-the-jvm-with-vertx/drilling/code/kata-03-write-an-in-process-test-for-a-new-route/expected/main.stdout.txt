@@ -1,0 +1,2 @@
+PASS GET /hello -> 200
+PASS GET /version -> 200

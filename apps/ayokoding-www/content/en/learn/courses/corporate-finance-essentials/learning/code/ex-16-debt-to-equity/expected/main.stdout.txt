@@ -1,0 +1,3 @@
+debt: 380000
+equity: 500000
+debt-to-equity: 0.76

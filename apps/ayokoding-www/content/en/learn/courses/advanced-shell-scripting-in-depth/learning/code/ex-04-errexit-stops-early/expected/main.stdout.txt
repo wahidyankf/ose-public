@@ -1,0 +1,3 @@
+strict probe exits: 1
+continued
+lax probe exits: 1

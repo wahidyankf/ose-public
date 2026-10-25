@@ -1,0 +1,5 @@
+list: next=next: list kopi-001,teh-002,gula-003 | start=start: list kopi-001,teh-002,gula-003 agree=true
+detail teh-002: next=next: detail Teh Melati 100g 32000 | start=start: detail Teh Melati 100g 32000 agree=true
+add 2 kopi: next=next: added 2 x kopi-001 | start=start: added 2 x kopi-001 agree=true
+add ghost: next=next: error unknown susu-009 | start=start: error unknown susu-009 agree=true
+cart: next=next: cart [kopi-001 x2] total 136000 | start=start: cart [kopi-001 x2] total 136000 agree=true

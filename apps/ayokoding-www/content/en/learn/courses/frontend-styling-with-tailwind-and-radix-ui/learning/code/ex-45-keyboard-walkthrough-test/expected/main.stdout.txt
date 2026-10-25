@@ -1,0 +1,3 @@
+Enter -> dialog
+Tab -> save-button
+Escape -> trigger

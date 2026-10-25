@@ -1,0 +1,3 @@
+GET /items -> 200 {"mode":"list"}
+POST /items -> 201 {"id":1}
+fastapi: @app.get("/items") and @app.post("/items")

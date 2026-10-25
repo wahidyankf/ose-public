@@ -1,0 +1,4 @@
+order A green: true
+order B green: false
+coupled, not flaky: true
+fix: isolate the coupon: true

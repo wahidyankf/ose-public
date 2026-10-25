@@ -1,0 +1,2 @@
+names: Ada Lovelace, Grace Hopper
+cleaned: yes

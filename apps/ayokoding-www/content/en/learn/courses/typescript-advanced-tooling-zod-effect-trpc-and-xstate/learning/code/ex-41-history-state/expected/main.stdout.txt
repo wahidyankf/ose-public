@@ -1,0 +1,2 @@
+dialog over: history=settings state=dialog
+returned: settings

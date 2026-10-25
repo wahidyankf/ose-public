@@ -1,0 +1,2 @@
+GET /gadgets -> 200 {"limit":5}
+GET /gadgets?limit=1000000 -> 200 {"limit":10}

@@ -1,0 +1,3 @@
+tables: ['kata01_widgets']
+version: k01a1
+kata ok

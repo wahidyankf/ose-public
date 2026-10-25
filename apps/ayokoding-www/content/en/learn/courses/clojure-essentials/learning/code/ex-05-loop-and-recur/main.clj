@@ -1,0 +1,10 @@
+;; => loop opens explicit recursion targets; recur jumps without growing the stack.
+(defn countdown [n] ;; => collect n down to 1 into a vector
+  (loop [i n acc []] ;; => i counts down, acc gathers
+    (if (zero? i) ;; => done when i reaches zero
+      acc ;; => return the gathered vector
+      (recur (dec i) (conj acc i))))) ;; => tail jump, stack stays flat
+(println (countdown 4)) ;; => prints [4 3 2 1]
+;; => doseq repeats side effects over a collection with no value built.
+(doseq [x [1 2 3]] ;; => x takes each element in turn
+  (println "got" x)) ;; => prints one line per element

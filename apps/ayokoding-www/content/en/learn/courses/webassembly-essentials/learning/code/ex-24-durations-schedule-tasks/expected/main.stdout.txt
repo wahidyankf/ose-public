@@ -1,0 +1,3 @@
+4 slots of 225s in a 900s window
+refused: cannot split into 0 slots
+three legs total 900s

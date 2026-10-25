@@ -1,0 +1,6 @@
+budi: 75
+citra: 25
+eko: 100
+sari: 75
+grand: 275
+skipped: 3

@@ -1,0 +1,1 @@
+oat:4 tea:2 rice:1

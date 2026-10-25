@@ -1,0 +1,2 @@
+PASS GET /book/1 -> 200 {"id":1,"title":"dune"}
+PASS GET /book/9 -> 404 {"error":"book-not-found"}

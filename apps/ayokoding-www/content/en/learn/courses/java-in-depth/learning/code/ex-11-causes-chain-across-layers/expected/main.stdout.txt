@@ -1,0 +1,2 @@
+amount: 50
+ledger: bad dues amount: 'xx' caused by NumberFormatException

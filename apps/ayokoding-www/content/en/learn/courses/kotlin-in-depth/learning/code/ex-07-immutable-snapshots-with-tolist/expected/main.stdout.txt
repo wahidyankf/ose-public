@@ -1,0 +1,3 @@
+live: [ada, grace, sari]
+alias: [ada, grace, sari]
+snapshot: [ada, grace]

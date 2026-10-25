@@ -1,0 +1,3 @@
+short: false
+long: false
+just: true

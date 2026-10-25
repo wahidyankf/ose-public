@@ -1,0 +1,2 @@
+PASS: rice costs 12000
+SKIP: slow suite (SLOW_TESTS=0)

@@ -1,0 +1,4 @@
+GET /users/new -> 200 new user form
+GET /users/user-42 -> 200 user user-42
+GET /users/a/b -> 404 404 page not found
+GET /users/ -> 404 404 page not found

@@ -1,0 +1,5 @@
+upgrade=true
+upgrade=true
+upgrade=true
+legacy-reads=ada
+new-reads=ada

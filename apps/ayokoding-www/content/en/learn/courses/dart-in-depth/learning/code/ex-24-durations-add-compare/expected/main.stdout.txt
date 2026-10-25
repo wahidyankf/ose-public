@@ -1,0 +1,4 @@
+day minutes: 630
+morning shorter: true
+twice equals 8h: true
+rest halves: 13

@@ -1,0 +1,6 @@
+PASS: defaults block set
+PASS: run subsection
+PASS: shell chosen
+PASS: strict flags
+PASS: directory set
+checks: 5/5

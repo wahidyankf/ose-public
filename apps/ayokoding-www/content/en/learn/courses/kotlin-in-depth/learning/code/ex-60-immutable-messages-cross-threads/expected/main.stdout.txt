@@ -1,0 +1,2 @@
+totals: {budi=75, sari=75}
+messages: 3

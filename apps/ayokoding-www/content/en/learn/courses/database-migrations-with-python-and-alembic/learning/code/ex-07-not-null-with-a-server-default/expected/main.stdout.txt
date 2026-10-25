@@ -1,0 +1,3 @@
+status: new
+nullable: NO
+cleaned: yes

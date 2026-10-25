@@ -1,0 +1,4 @@
+migrate: nil
+completed: ["create-members" "expand-add-username" "contract-drop-handle"]
+columns: ["id" "username"]
+usernames: [["agus"] ["rina"]]

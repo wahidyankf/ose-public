@@ -1,0 +1,5 @@
+applied: 1_create_ex18_temp
+applied: 2_drop_ex18_temp
+tables: 0
+recorded: 1, 2
+cleaned: yes

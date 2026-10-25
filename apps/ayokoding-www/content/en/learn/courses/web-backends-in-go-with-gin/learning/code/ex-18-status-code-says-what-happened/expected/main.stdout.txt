@@ -1,0 +1,5 @@
+GET /widgets/w1 -> 200 {"id":"w1","value":"gear"}
+GET /widgets/w9 -> 404 {"error":"no widget"}
+POST /widgets -> 201 {"id":"w2","value":"spring"}
+POST /widgets -> 400 {"error":"bad widget"}
+DELETE /widgets/w1 -> 204

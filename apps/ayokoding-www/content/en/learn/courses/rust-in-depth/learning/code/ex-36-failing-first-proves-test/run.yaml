@@ -1,0 +1,13 @@
+schema: ayokoding.run/v1
+toolchain: rust
+runs:
+  - name: main
+    command:
+      [
+        sh,
+        -c,
+        'set -e; rustc --test buggy.rs -o buggy_t; if ./buggy_t --test-threads=1 > gobug.out 2>&1; then echo "before: GREEN (unexpected)"; else echo "before: RED as expected (1 failing test)"; fi; rustc --test fixed.rs -o fixed_t; ./fixed_t --test-threads=1 > gofix.out 2>&1; status=$?; sed -e "s/finished in [0-9][0-9.]*s/finished in 0.00s/" gofix.out; exit $status',
+      ]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

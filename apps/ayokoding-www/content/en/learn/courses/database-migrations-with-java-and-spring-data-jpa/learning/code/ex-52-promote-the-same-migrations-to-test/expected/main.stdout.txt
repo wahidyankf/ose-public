@@ -1,0 +1,2 @@
+stage ledgers:dev: 001 002 | test: 001 002
+promotion stages: 2

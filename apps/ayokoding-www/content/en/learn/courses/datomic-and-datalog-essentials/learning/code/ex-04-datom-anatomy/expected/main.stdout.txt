@@ -1,0 +1,3 @@
+e=1 a=part/name v=Road wheel 700c tx=1001
+e=1 a=part/price v=180 tx=1002
+e=2 a=part/in-stock v=12 tx=1001

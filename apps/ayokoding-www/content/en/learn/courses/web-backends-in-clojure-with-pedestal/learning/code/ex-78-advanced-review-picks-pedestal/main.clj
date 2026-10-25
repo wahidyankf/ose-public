@@ -1,0 +1,45 @@
+;; => Ex-78: Advanced Review Picks Pedestal.
+;; => The review service combines guard, validation, counter, and health in one table.
+;; => Silence framework logging so the transcript holds only our lines.
+(System/setProperty "org.slf4j.simpleLogger.defaultLogLevel" "error") ;; => only errors reach the log
+(System/setProperty "org.slf4j.simpleLogger.showDateTime" "false") ;; => no timestamps leak into output
+(System/setProperty "org.slf4j.simpleLogger.showThreadName" "false") ;; => no thread names leak into output
+(System/setProperty "org.slf4j.simpleLogger.showLogName" "false") ;; => no logger names leak into output
+(System/setProperty "org.slf4j.simpleLogger.showShortLogName" "false") ;; => short names stay off too
+;; => Load the connector stack plus the interceptor record factory.
+(require '[io.pedestal.connector :as conn]) ;; => connector maps are the 0.8 service description
+(require '[io.pedestal.connector.test :as t]) ;; => response-for tests with no socket
+(require '[io.pedestal.http.jetty :as jetty]) ;; => create-connector builds the testable connector
+(require '[io.pedestal.interceptor :as interceptor]) ;; => interceptor builds records from maps
+(require '[io.pedestal.service.interceptors :as interceptors]) ;; => not-found turns misses into 404
+;; => The shared counter and the guard protect the review table together.
+(def counter (atom 0)) ;; => visits accumulate across the review
+(def guard (interceptor/interceptor ;; => maps become interceptor records
+             {:name ::guard ;; => names show in traces and errors
+              :enter (fn [ctx] ;; => the guard runs before routing reaches the handler
+                       (let [request (:request ctx)] ;; => the incoming request decides the gate
+                         (if (or (= "/health" (:uri request)) ;; => health stays open for load balancers
+                                 (= "Bearer secret" (get-in request [:headers "authorization"]))) ;; => the one valid token
+                           (update ctx :request assoc ::counter counter) ;; => valid callers receive the counter
+                           (assoc ctx :response {:status 401 :body "unauthorized"}))))})) ;; => strangers stop here
+;; => Handlers serve only valid callers: visit counts, health reports.
+(def visit (fn [request] {:status 200 :body (str "visit " (swap! (::counter request) inc))})) ;; => visits count up
+(def health (fn [_] {:status 200 :body "ok"})) ;; => readiness answers one word
+;; => The review table wires guard, counter, and health together.
+(def routes #{["/visit" :get visit :route-name :visit] ;; => guarded visits count up
+              ["/health" :get health :route-name :health]}) ;; => health stays open
+;; => The connector map guards everything outside the router.
+(def service (-> (conn/default-connector-map 8080) ;; => the port stays unbound; tests use no socket
+                 (conn/with-interceptors [interceptors/not-found ;; => unknown paths answer 404 instead of nil
+                                           guard]) ;; => the guard wraps every request
+                 (conn/with-routes routes))) ;; => router plus path-params decoder join the chain
+(def connector (jetty/create-connector service {})) ;; => the unstarted connector answers test requests
+;; => The check helper compares expected and actual, and prints PASS or the mismatch.
+(def check (fn [label expected actual] ;; => one helper checks every assertion
+             (if (= expected actual) ;; => equality decides the verdict
+               (println label "PASS") ;; => matches print PASS
+               (println label "FAIL expected" (pr-str expected) "got" (pr-str actual))))) ;; => mismatches print both sides
+(check "open-health" "ok" (:body (t/response-for connector :get "/health"))) ;; => Output: open-health PASS
+(check "guarded-first" "visit 1" (:body (t/response-for connector :get "/visit" :headers {"authorization" "Bearer secret"}))) ;; => Output: guarded-first PASS
+(check "guarded-second" "visit 2" (:body (t/response-for connector :get "/visit" :headers {"authorization" "Bearer secret"}))) ;; => Output: guarded-second PASS
+(check "stranger-blocked" 401 (:status (t/response-for connector :get "/visit"))) ;; => Output: stranger-blocked PASS

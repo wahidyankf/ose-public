@@ -1,0 +1,2 @@
+gated: pct: expected number 0-100
+valid: rate=0.6

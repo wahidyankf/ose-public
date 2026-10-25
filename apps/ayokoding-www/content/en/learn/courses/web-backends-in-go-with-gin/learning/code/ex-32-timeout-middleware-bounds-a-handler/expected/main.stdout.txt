@@ -1,0 +1,2 @@
+GET /patient?fast=yes -> 200 done
+GET /patient -> 504 {"error":"handler timed out"}

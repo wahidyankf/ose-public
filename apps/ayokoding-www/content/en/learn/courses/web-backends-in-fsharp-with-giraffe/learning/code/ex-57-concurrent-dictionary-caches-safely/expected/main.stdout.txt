@@ -1,0 +1,2 @@
+GET /square/4 -> 200 {"computed":1,"n":4,"square":16}
+GET /square/4 -> 200 {"computed":1,"n":4,"square":16}

@@ -1,0 +1,6 @@
+PASS sums three dues
+PASS empty totals zero
+PASS single passes through
+PASS rejects negatives in messages
+failures: 0
+suite green: true

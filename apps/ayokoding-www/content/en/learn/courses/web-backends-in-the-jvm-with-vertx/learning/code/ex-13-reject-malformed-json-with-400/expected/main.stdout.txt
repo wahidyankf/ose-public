@@ -1,0 +1,2 @@
+POST /gadgets broken -> 400 {"error":{"code":400,"message":"malformed json"}}
+POST /gadgets valid -> 200 {"name":"drill"}

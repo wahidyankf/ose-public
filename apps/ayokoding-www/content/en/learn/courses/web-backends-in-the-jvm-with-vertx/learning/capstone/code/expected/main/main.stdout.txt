@@ -1,0 +1,12 @@
+PASS create -> 201
+PASS missing customer -> 422
+PASS quantity 101 -> 422
+PASS lookup -> pending
+PASS missing -> 404
+PASS list total=1
+PASS pending->paid -> 200
+PASS paid->pending -> 422
+PASS paid->shipped -> 200
+PASS shipped->paid -> 422
+PASS healthz -> 200
+capstone ok=11 failed=0

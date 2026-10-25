@@ -1,0 +1,2 @@
+BUDI=75, CITRA=25, DEWI=100, SARI=50
+mapped: 4

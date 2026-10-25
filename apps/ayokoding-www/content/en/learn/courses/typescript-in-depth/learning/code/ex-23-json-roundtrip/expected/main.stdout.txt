@@ -1,0 +1,3 @@
+{"id":7,"item":"lamp","qty":2,"tags":["home","sale"]}
+qty: 2
+3

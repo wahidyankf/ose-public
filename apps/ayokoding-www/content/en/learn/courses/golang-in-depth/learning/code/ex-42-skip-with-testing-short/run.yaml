@@ -1,0 +1,13 @@
+schema: ayokoding.run/v1
+toolchain: go
+runs:
+  - name: main
+    command:
+      [
+        sh,
+        -c,
+        'go test -c -o ./unittest . && ./unittest -test.v -test.count=1 -test.short > gotest.out 2>&1; status=$?; sed -E -e "s/ \([0-9.]+s\)//g" -e "/^ok /d" gotest.out; exit $status',
+      ]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

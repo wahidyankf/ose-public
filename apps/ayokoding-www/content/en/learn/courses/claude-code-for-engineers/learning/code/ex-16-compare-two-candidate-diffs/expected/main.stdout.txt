@@ -1,0 +1,2 @@
+scores: 84 30
+pick: A

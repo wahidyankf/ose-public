@@ -1,0 +1,1 @@
+PASS: kata-07-findby-not-sleep (1 tests)

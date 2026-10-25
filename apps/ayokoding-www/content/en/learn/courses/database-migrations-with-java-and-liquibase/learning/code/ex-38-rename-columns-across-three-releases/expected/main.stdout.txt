@@ -1,0 +1,2 @@
+rows under the new name: 1
+old name column present: 0

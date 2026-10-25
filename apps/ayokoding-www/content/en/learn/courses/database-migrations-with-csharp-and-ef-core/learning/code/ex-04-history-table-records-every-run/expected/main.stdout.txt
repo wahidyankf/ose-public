@@ -1,0 +1,2 @@
+history=20260101000001_CreateGadgets
+history=20260101000002_AddStock

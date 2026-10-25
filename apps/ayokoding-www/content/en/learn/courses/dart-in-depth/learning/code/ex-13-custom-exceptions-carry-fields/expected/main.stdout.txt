@@ -1,0 +1,2 @@
+delivered 10 sacks of oat
+quota exceeded: rice allows 50, asked 99

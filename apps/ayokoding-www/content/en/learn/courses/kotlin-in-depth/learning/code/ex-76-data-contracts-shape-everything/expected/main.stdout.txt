@@ -1,0 +1,3 @@
+settled sari=50
+contract: Due(member=sari, amount=50)
+refused: true

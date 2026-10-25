@@ -1,0 +1,3 @@
+int: 75
+float: 33.5
+name: sari

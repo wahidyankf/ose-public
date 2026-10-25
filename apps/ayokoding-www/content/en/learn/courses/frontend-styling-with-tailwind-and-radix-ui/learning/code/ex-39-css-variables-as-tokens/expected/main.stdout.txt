@@ -1,0 +1,3 @@
+light surface: #ffffff
+dark surface: #0f172a
+stylesheets per theme: 1

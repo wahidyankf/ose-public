@@ -1,0 +1,2 @@
+match body == {"message":"hello, vertx"}
+DIFF body: expected [{"message":"goodbye"}] actual [{"message":"hello, vertx"}]

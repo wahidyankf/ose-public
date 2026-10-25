@@ -1,0 +1,5 @@
+[
+  { "name": "web", "up": true },
+  { "name": "db", "up": false },
+  { "name": "cache", "up": true }
+]

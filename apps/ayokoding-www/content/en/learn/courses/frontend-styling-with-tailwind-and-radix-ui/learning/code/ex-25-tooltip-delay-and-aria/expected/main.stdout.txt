@@ -1,0 +1,3 @@
+delay ms: 700
+named: described by tooltip-save
+unlinked: (unnamed)

@@ -1,0 +1,4 @@
+skill: triage-inbox
+inputs: 2 of 2
+invoke: triage-inbox inbox.md
+brief complete: True

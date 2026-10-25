@@ -1,0 +1,2 @@
+distinct: ['rice-5kg', 'sugar-1kg']
+n_products: 2

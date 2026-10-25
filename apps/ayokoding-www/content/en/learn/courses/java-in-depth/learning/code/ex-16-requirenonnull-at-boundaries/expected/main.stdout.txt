@@ -1,0 +1,3 @@
+total: 150
+null list -> amounts must not be null
+null item -> amount must not be null

@@ -1,0 +1,3 @@
+GET /hello -> 200 {"message":"hello, vertx"} (expected 200)
+GET /healthz -> 200 {"ready":true} (expected 200)
+GET /nowhere -> 404 <html><body><h1>Resource not found</h1></body></html> (expected 404)

@@ -1,0 +1,6 @@
+guided steps: 6
+baseline steps: 2
+shared: workspace
+guided-only: verify inference, gateway, channels, skills, health
+rebuild with: openclaw setup --baseline
+same config file: True

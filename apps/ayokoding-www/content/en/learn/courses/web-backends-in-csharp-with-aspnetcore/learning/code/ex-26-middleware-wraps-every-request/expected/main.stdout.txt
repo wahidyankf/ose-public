@@ -1,0 +1,2 @@
+GET /ping -> 200 trace=before-after {"pong":true}
+GET /pong -> 200 trace=before-after {"ping":true}

@@ -1,0 +1,15 @@
+schema: ayokoding.run/v1
+toolchain: typescript
+dependencies:
+  lockfile: package-lock.json
+runs:
+  - name: main
+    command:
+      [
+        sh,
+        -c,
+        "if vitest run --fsModuleCachePath=/tmp/.vitest-cache --no-color >unit.log 2>&1; then echo 'PASS: ex-26-recording-calls-with-vi-fn (1 tests)'; else cat unit.log; exit 1; fi",
+      ]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

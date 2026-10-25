@@ -1,0 +1,3 @@
+columns: ['email', 'id']
+heads: 1
+kata ok

@@ -1,0 +1,4 @@
+pending=2
+ran=true
+clean=true
+cols=3

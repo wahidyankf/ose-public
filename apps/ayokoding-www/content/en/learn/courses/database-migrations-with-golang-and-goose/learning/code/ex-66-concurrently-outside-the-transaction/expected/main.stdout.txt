@@ -1,0 +1,3 @@
+notx: true
+indexes: ex66_hot_email_cidx
+cleaned: yes

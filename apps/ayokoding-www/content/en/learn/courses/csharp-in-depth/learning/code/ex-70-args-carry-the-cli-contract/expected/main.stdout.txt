@@ -1,0 +1,5 @@
+args: 3
+[0]=--format
+[1]=json
+[2]=sari
+json: True

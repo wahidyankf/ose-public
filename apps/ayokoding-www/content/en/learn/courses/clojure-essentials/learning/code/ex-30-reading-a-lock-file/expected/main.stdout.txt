@@ -1,0 +1,2 @@
+entries: 2
+org.clojure:test.check:1.1.3

@@ -1,0 +1,6 @@
+runtime: python 3.14 stdlib (csv, statistics, sqlite3)
+input: sales-sep.csv, 12 rows
+cleaning: strip+lowercase, ISO dates
+tools: python stdlib csv/statistics
+grouping: product x month
+missing: median-fill, 1 cell

@@ -1,0 +1,13 @@
+schema: ayokoding.run/v1
+toolchain: go
+runs:
+  - name: main
+    command:
+      [
+        sh,
+        -c,
+        'go test -c -o ./unittest . && ./unittest -test.run=NONE -test.bench=. -test.benchtime=1x > gobench.out 2>&1; status=$?; grep -c "^Benchmark" gobench.out; exit $status',
+      ]
+    expect:
+      exit: 0
+      stdout: expected/main.stdout.txt

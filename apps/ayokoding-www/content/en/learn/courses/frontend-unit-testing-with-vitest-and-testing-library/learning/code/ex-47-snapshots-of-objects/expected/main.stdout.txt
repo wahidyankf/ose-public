@@ -1,0 +1,1 @@
+PASS: ex-47-snapshots-of-objects (1 tests)

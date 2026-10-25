@@ -1,0 +1,2 @@
+pending before apply: 001 002
+migrations applied: 2

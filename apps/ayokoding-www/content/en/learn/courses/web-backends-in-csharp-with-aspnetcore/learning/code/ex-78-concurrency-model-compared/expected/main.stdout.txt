@@ -1,0 +1,2 @@
+parallel=10 lost=0
+fastapi: async def visit() awaits the same way

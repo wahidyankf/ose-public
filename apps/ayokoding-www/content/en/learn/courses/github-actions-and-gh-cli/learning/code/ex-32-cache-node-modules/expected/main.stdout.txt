@@ -1,0 +1,6 @@
+PASS: setup-node used
+PASS: node version set
+PASS: cache input set
+PASS: npm cache chosen
+PASS: runner pinned
+checks: 5/5

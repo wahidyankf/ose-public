@@ -1,0 +1,2 @@
+GET /ok -> 200 OK {"ok":true}
+GET /missing -> 404 Not Found {"error":"no_route","path":"/missing"}

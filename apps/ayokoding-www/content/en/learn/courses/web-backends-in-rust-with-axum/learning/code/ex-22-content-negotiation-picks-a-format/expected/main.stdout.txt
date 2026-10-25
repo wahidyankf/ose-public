@@ -1,0 +1,5 @@
+GET /orders accept=text/csv -> 200 OK text/csv id,item
+o-1,pen
+
+GET /orders accept=application/json -> 200 OK application/json {"orders":[{"id":"o-1","item":"pen"}]}
+GET /orders accept=(none) -> 200 OK application/json {"orders":[{"id":"o-1","item":"pen"}]}

@@ -1,0 +1,3 @@
+tests: 3
+logins: 1
+one login serves all: true

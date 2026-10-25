@@ -1,0 +1,3 @@
+PASS: first edits its own copy
+PASS: second sees a fresh 50
+PASS: builder starts with two

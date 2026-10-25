@@ -1,0 +1,2 @@
+stage ledgers:dev: 001 002 003 | test: 001 002 003 | prod: 001 002 003
+promotion stages: 3

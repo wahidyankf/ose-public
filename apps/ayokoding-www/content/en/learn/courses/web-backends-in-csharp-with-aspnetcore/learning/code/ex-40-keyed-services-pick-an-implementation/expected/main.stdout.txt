@@ -1,0 +1,2 @@
+GET /pay/cash -> 200 {"method":"cash","receipt":"CASH-5000"}
+GET /pay/card -> 200 {"method":"card","receipt":"CARD-5000"}

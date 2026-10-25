@@ -1,0 +1,2 @@
+('approve', 'in scope, tests green')
+('reject', 'out of scope')

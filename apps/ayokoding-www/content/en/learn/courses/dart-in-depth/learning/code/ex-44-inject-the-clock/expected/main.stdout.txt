@@ -1,0 +1,4 @@
+  ok: march is dry
+  ok: august is dry
+  ok: september is wet
+passed: 3

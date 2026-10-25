@@ -1,0 +1,2 @@
+roles: admin,editor,viewer
+migrations applied: 1

@@ -1,0 +1,3 @@
+GET /orders/1 -> 200 {"id":1,"title":"dune"}
+POST /refund/1 -> 200 {"refunded":1}
+POST /refund/9 -> 404 {"error":"order-not-found"}

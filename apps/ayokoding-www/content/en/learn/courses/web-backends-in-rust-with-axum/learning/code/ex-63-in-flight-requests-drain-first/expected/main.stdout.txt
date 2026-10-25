@@ -1,0 +1,5 @@
+signal received: SIGTERM; draining 3 in-flight, accepting stopped
+in-flight-1 finished -> 200 OK {"message":"hello, axum"}
+in-flight-2 finished -> 200 OK {"message":"hello, axum"}
+in-flight-3 finished -> 200 OK {"message":"hello, axum"}
+drained 3 in-flight; exiting clean

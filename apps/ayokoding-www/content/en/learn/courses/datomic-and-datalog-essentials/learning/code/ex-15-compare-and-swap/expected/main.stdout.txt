@@ -1,0 +1,3 @@
+first: accepted
+second: accepted
+price: 175

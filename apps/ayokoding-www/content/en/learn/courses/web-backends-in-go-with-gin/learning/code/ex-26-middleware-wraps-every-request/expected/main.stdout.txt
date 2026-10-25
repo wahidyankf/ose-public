@@ -1,0 +1,2 @@
+GET /hello -> 200 req-1 {"message":"hello","requestID":"req-1"}
+GET /goodbye -> 200 req-2 {"message":"hello","requestID":"req-2"}

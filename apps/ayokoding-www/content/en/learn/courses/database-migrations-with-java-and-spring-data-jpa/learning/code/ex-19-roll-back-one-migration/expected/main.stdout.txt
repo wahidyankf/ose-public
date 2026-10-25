@@ -1,0 +1,4 @@
+alpha present: 1
+beta present: 1
+gamma present: 0
+ledger rows: 2

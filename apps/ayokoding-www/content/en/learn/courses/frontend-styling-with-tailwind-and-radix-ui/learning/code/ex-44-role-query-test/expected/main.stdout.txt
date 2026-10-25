@@ -1,0 +1,3 @@
+found: dialog 'Settings'
+found: button 'Save'
+menu missing: throws

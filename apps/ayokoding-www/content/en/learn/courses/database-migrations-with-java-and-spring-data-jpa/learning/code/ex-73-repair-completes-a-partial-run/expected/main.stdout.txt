@@ -1,0 +1,2 @@
+repaired rows: 2
+migrations applied: 2

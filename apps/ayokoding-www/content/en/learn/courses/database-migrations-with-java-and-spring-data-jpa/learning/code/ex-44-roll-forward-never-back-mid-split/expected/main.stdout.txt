@@ -1,0 +1,3 @@
+unmigrated rows: 0
+migrated rows: 3
+migrations applied: 3

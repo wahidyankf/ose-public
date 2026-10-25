@@ -1,0 +1,13 @@
+=== RUN   TestGrade
+=== RUN   TestGrade/top_band
+=== RUN   TestGrade/upper_middle
+=== RUN   TestGrade/lower_middle
+=== RUN   TestGrade/failing
+=== RUN   TestGrade/zero
+--- PASS: TestGrade
+    --- PASS: TestGrade/top_band
+    --- PASS: TestGrade/upper_middle
+    --- PASS: TestGrade/lower_middle
+    --- PASS: TestGrade/failing
+    --- PASS: TestGrade/zero
+PASS

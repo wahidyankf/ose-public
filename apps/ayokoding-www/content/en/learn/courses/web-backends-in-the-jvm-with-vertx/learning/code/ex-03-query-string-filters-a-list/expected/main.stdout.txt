@@ -1,0 +1,2 @@
+GET /items -> 200 {"type":"all"}
+GET /items?type=book -> 200 {"type":"book"}

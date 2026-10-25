@@ -1,0 +1,3 @@
+line 4: doc line without /// marker
+line 5: summary does not start with a verb
+2 doc findings

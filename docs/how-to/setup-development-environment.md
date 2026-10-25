@@ -207,14 +207,15 @@ does three things:
 
 ### HIPPO local policy and shared coordination
 
-The committed `hippo.local.json.example` is a safe schema-2 reservation example. **Copy it to the
+The committed `hippo.local.json.example` is a safe schema-3 reservation example. **Copy it to the
 ignored `hippo.local.json` as part of setup**; never commit the copy. Without that file HIPPO falls
-back to schema-1 `exclusive`, which counts leases but has no memory dimension at all — a build can
-then be admitted on a host that has no memory left to give it.
+back to schema-1 `exclusive`, which admits one heavy task at a time host-wide and reserves no
+CPU-and-memory vector — a build can then be admitted on a host that has no memory left to give it.
 
-Then add explicit host-wide caps to **your copy only**. They stay out of the committed example on
-purpose: an absolute cap is a statement about one machine, and CI executes the example on runners far
-smaller than a workstation, where a workstation-sized cap defers admission with exit `124`.
+Then set the host-wide caps in **your copy only**. The committed example carries the recommended
+8-CPU, 16-GiB caps, which suit a larger workstation, so size `maxCpu` and `maxMemoryMiB` to your own
+machine. An absolute cap is a statement about one machine. Since v0.10.0, HIPPO offers every CPU the
+host reports unless `maxCpu` lowers it.
 
 ```json
 "coordination": {
@@ -239,6 +240,10 @@ Set them explicitly rather than relying on a profile. A profile's `maxConcurrenc
 survive into reservation mode — the allocated CPU replaces it — so `extends` alone caps nothing.
 These fields may only tighten safety; a value that would weaken a compiled floor is rejected at load
 time with exit `125`.
+
+On Linux, `coordination.countSwap` (schema 3 only, off by default) counts unused swap as memory. Never
+enable it on zram-backed swap, because zram is carved from RAM and would be counted twice. Repin every
+consumer to v0.11.0 before adding it, since an older binary refuses the file.
 
 A reservation is an admission promise, not a hard RSS limit: the ledger knows what owners _asked
 for_, not what they go on to allocate. That is why host pressure thresholds stay authoritative after

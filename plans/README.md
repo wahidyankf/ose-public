@@ -32,7 +32,7 @@ is updated in the same change that moves, adds, or removes a plan, per
 ```mermaid
 flowchart LR
   accTitle: Plan order
-  accDescr: Ten live plans ordered by their Depends-on declarations.
+  accDescr: Eleven live plans; the Phoenix rewrite runs independently of the AyoKoding content series.
   P06["🔜 06-accounting"]:::backlog
   P07["🔜 07-erp"]:::backlog
   P08["🔜 08-capstone"]:::backlog
@@ -43,6 +43,7 @@ flowchart LR
   P13["🔜 13-audit-prodsec"]:::backlog
   P14["🔜 14-removal"]:::backlog
   FER["🔜 ferret-02-backend"]:::backlog
+  PHX["🔜 ayokoding-app-web"]:::backlog
   P06 --> P07
   P10 --> P14
   P11 --> P14
@@ -55,3 +56,8 @@ flowchart LR
 
 Legend: 🔜 blue = backlog; 🏗️ teal = in progress. Hexagon credentialed-machine steps do not apply here.
 `ferret-02` has no live dependencies and runs in parallel with everything.
+
+The [AyoKoding Phoenix LiveView rewrite](./backlog/ayokoding-app-web/README.md) also has no live
+dependencies (`Depends-on: []`). It can start and finish alongside the existing AyoKoding plans;
+its executor reconciles shared content changes already merged into `main` without waiting for
+the content series. Awareness links between plans do not add dependency edges.

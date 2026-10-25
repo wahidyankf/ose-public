@@ -146,6 +146,15 @@ These are choices the plan made and documented; none needs an answer before exec
   that runs it on every pull request is a product decision you can take after plan 14 (decision D18).
 - **No plan quality gate verdict exists.** The gate runs first in Phase 0 at execution time.
 
+## Parallel Phoenix Rewrite
+
+The [AyoKoding Phoenix LiveView rewrite](../ayokoding-app-web/README.md) runs independently of
+this plan. Keep this plan's existing execution order and ownership of product/security/AI
+content, prerequisites, metadata, safety fixtures, the audited-course registry, filler baseline,
+and example harness. Phoenix consumes this corpus read-only and owns reconciling already-merged
+changes and completion scenarios. This plan does not wait for the rewrite. The apps use separate
+local ports (3101 and 3102), tests, and owner specification corpora.
+
 ## Navigation
 
 - [Business requirements](./brd.md)

@@ -138,6 +138,15 @@ Quality Gate → harness green → filler guard, and every loop stops after 2 cy
 for the user before the end-state steps. The guard and its baseline are built first, test-first, so every
 course is measured against it as it lands. See [tech-docs/006](./tech-docs/006-execution-model.md).
 
+## Parallel Phoenix Rewrite
+
+The [AyoKoding Phoenix LiveView rewrite](../ayokoding-app-web/README.md) runs independently of
+this plan. This plan retains its execution order and ownership of course rewrites, Git vectors,
+the filler baseline, content safety, and the code-example harness. Phoenix consumes the existing
+corpus read-only and owns adapting to merged content, metadata, and scenario changes; it does not
+duplicate course-example execution. This plan does not wait for the rewrite. The apps use
+separate local ports (3101 and 3102), tests, and owner specification corpora.
+
 ## Navigation
 
 - [Business requirements](./brd.md)

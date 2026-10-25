@@ -10,4 +10,4 @@ weight: 104
 - [Intermediate Examples](/en/learn/courses/web-backends-in-clojure-with-pedestal/learning/intermediate)
 - [Advanced Examples](/en/learn/courses/web-backends-in-clojure-with-pedestal/learning/advanced)
 - [Capstone](/en/learn/courses/web-backends-in-clojure-with-pedestal/learning/capstone)
-  - [Overview](/en/learn/courses/web-backends-in-clojure-with-pedestal/learning/capstone/overview)
+  - [Capstone Overview](/en/learn/courses/web-backends-in-clojure-with-pedestal/learning/capstone/overview)

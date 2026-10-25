@@ -10,7 +10,7 @@ format: by-example
 estimatedHours: 9
 ---
 
-- [Overview](/en/learn/courses/web-backends-in-clojure-with-pedestal/overview)
+- [Web Backends in Clojure with Pedestal](/en/learn/courses/web-backends-in-clojure-with-pedestal/overview)
 - [Learning](/en/learn/courses/web-backends-in-clojure-with-pedestal/learning)
   - [Overview](/en/learn/courses/web-backends-in-clojure-with-pedestal/learning/overview)
   - [Beginner Examples](/en/learn/courses/web-backends-in-clojure-with-pedestal/learning/beginner)
@@ -18,4 +18,4 @@ estimatedHours: 9
   - [Advanced Examples](/en/learn/courses/web-backends-in-clojure-with-pedestal/learning/advanced)
   - [Capstone](/en/learn/courses/web-backends-in-clojure-with-pedestal/learning/capstone)
 - [Drilling](/en/learn/courses/web-backends-in-clojure-with-pedestal/drilling)
-  - [Overview](/en/learn/courses/web-backends-in-clojure-with-pedestal/drilling/overview)
+  - [Drilling Overview](/en/learn/courses/web-backends-in-clojure-with-pedestal/drilling/overview)

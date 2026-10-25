@@ -5,4 +5,4 @@ draft: false
 weight: 204
 ---
 
-- [Overview](/en/learn/courses/web-backends-in-clojure-with-pedestal/drilling/overview)
+- [Drilling Overview](/en/learn/courses/web-backends-in-clojure-with-pedestal/drilling/overview)

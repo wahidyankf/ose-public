@@ -5,4 +5,4 @@ draft: false
 weight: 900
 ---
 
-- [Overview](/en/learn/courses/web-backends-in-clojure-with-pedestal/learning/capstone/overview)
+- [Capstone Overview](/en/learn/courses/web-backends-in-clojure-with-pedestal/learning/capstone/overview)

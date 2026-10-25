@@ -40,6 +40,13 @@ jobs:
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-go
       - uses: ./.github/actions/setup-docker-cache
+      # The container builder that setup brings cannot resolve local-store
+      # base images (it goes to the registry and fails): environment image
+      # builds must see the toolchain images the previous step loaded, so
+      # switch back to the local docker driver, which resolves the store.
+      # The local-dir layer cache flags work under both drivers.
+      - name: Use the local docker driver for builds
+        run: docker buildx use default
       - name: Build the CLI
         run: >-
           ./hippo run --class ephemeral --resource-tier heavy --disk-path . --

@@ -46,17 +46,41 @@ jobs:
           npx nx run ayokoding-cli:build
       # The ayokoding-toolchain/* images live in no registry: each shard job
       # builds them into the local store from the repo Dockerfiles, so the
-      # check never pulls them. Only entries still naming the local namespace
-      # are built; pinned public images keep flowing through `docker pull`.
+      # check never pulls them. Building all sixteen images per shard exhausts
+      # the runner disk, so each shard builds only the toolchains its own
+      # course selection declares in run specs. Only entries still naming the
+      # local namespace are built; pinned public images keep flowing through
+      # `docker pull`.
       - name: Build the toolchain images locally
         env:
           AYOKODING_BUILDX_CACHE: /tmp/.buildx-cache
         run: |
           set -euo pipefail
+          if [ "${{ inputs.selection }}" = "all" ]; then
+            sel=(--all)
+          else
+            sel=(--since "${{ inputs.base }}")
+          fi
+          affected_json=$(mktemp)
+          apps/ayokoding-cli/dist/ayokoding-cli examples affected "${sel[@]}" \
+            --shard "${{ matrix.shard }}/${{ inputs.shard-total }}" --output json >"$affected_json" \
+            || { echo "course selection failed" >&2; exit 1; }
+          mapfile -t courses < <(jq -r '.courses[]' "$affected_json")
+          rm -f "$affected_json"
+          wanted=$(for c in "${courses[@]}"; do
+            dir="apps/ayokoding-www/content/en/learn/courses/$c"
+            [ -d "$dir" ] || { echo "unknown course dir for slug: $c" >&2; exit 1; }
+            grep -rhoE "^toolchain: [A-Za-z0-9_.+-]+" "$dir" --include=run.yaml
+          done | awk '{print $2}' | sort -u)
           mapfile -t ids < <(apps/ayokoding-cli/dist/ayokoding-cli toolchains list --output json \
-            | jq -r '.toolchains[] | select(.image | startswith("ayokoding-toolchain/")) | .id')
-          ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- \
-            apps/ayokoding-cli/dist/ayokoding-cli toolchains build "${ids[@]}"
+            | jq -r --argjson wanted "$(printf '%s\n' "$wanted" | jq -R . | jq -cs .)" \
+              '.toolchains[] | select(.image | startswith("ayokoding-toolchain/")) | select(.id as $id | $wanted | index($id)) | .id')
+          if [ "${#ids[@]}" -eq 0 ]; then
+            echo "no local toolchain images needed for this shard"
+          else
+            ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- \
+              apps/ayokoding-cli/dist/ayokoding-cli toolchains build "${ids[@]}"
+          fi
       - name: Run the examples check
         env:
           AYOKODING_SHARD: ${{ matrix.shard }}/${{ inputs.shard-total }}

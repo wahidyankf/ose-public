@@ -23,6 +23,17 @@ For every invocation outside the bounded contract and the separate incident proc
 
 **A per-instance grant does not carry forward.** If the user approved a `git push --force` five minutes ago, that approval covers only that one execution. The next invocation starts from zero and requires a fresh confirmation.
 
+## Standing HIPPO-congestion pre-authorization
+
+The maintainer pre-authorizes `--no-verify` on `git commit` and `git push` for a task-owned branch that lands through a pull request, with no per-instance prompt, when every condition below holds. This is the only standing exception to the per-instance rule above.
+
+- The hook cannot run because HIPPO admission deferred or failed it (exit `124` never-started, exit `125`, abnormal latency), not because a gate found a violation.
+- The manual screens pass: the tracked-tree screen and the per-commit range screen both exit `0`, with no leak-review finding. The `commit-msg` hook stays enabled.
+- Formatting is done by hand or editor; the pull-request gate verifies it.
+- The bypass cites the HIPPO receipt and screen evidence in the push and PR notes, and never carries into a later operation.
+
+Direct pushes to `main` stay outside this exception: explicit per-instance authorization still applies, strongly discouraged except for manual override.
+
 ## Secret-exposure history-remediation exception
 
 When a secret is suspected or confirmed in committed history, do not use the normal approval flow to

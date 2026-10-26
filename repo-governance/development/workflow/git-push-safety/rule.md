@@ -1,5 +1,5 @@
 ---
-description: The core approval rule for force-push and hook-bypass operations, and the sole standing exception for confirmed secret-exposure history remediation.
+description: The core approval rule for force-push and hook-bypass operations, the standing worktree-to-PR pre-authorization for --no-verify, and the sole standing exception for confirmed secret-exposure history remediation.
 when_to_use: Use when about to run a covered git push operation, or when handling a confirmed secret exposed in committed history.
 ---
 
@@ -7,12 +7,14 @@ when_to_use: Use when about to run a covered git push operation, or when handlin
 
 The approval procedure and examples on this page apply outside the
 [authorized task-owned sync contract](../no-destructive-git-operations/001-authorized-task-branch-sync.md).
-Its bounded ongoing authority needs no repeated prompt; hook bypass is outside it. The separate secret-incident
+Its bounded ongoing authority needs no repeated prompt; hook bypass is outside it except the
+[worktree-to-PR pre-authorization](#worktree-to-pr-pre-authorization). The separate secret-incident
 procedure remains unchanged.
 
 **AI agents and automation MUST NOT execute any of the covered operations autonomously**, except the
-lease-protected remote rewrites required by a confirmed secret-exposure incident. `--no-verify` is
-never part of that exception.
+lease-protected remote rewrites required by a confirmed secret-exposure incident, and except `--no-verify` on a
+task-owned branch under the worktree-to-PR pre-authorization below. `--no-verify` is
+never part of the secret-incident exception.
 
 For every invocation outside the bounded contract and the separate incident procedure, the agent must:
 
@@ -23,16 +25,17 @@ For every invocation outside the bounded contract and the separate incident proc
 
 **A per-instance grant does not carry forward.** If the user approved a `git push --force` five minutes ago, that approval covers only that one execution. The next invocation starts from zero and requires a fresh confirmation.
 
-## Standing HIPPO-congestion pre-authorization
+## Worktree-to-PR pre-authorization
 
-The maintainer pre-authorizes `--no-verify` on `git commit` and `git push` for a task-owned branch that lands through a pull request, with no per-instance prompt, when every condition below holds. This is the only standing exception to the per-instance rule above.
+The maintainer pre-authorizes `--no-verify` on `git commit` and `git push` for a task-owned branch that lands through a pull request under the `worktree-to-pr` delivery mode, with no per-instance prompt, when every condition below holds. This is the only standing exception to the per-instance rule above. It supersedes the earlier HIPPO-congestion-only pre-authorization: a hook whose contract the pull-request gate mirrors does not need to run locally first, because the gate refuses the head when the hook would have.
 
-- The hook cannot run because HIPPO admission deferred or failed it (exit `124` never-started, exit `125`, abnormal latency), not because a gate found a violation.
-- The manual screens pass: the tracked-tree screen and the per-commit range screen both exit `0`, with no leak-review finding. The `commit-msg` hook stays enabled.
+- The branch is a task-owned `worktree-to-pr` branch whose only route to `main` is its pull request. Direct pushes to `main` stay outside this exception: explicit per-instance authorization still applies, strongly discouraged except for manual override.
+- No reported finding is skipped: a hook that ran and reported a violation is fixed at its cause. The manual screens pass: the tracked-tree screen and the per-commit range screen both exit `0`, with no leak-review finding. The `commit-msg` hook stays enabled.
 - Formatting is done by hand or editor; the pull-request gate verifies it.
-- The bypass cites the HIPPO receipt and screen evidence in the push and PR notes, and never carries into a later operation.
+- The bypass cites the screen evidence in the push and PR notes, and never carries into a later operation.
+- The branch does not merge until the pull-request gate passes on the exact pushed head. A later push replaces that head and owes a fresh pass; nothing about this exception waives it.
 
-Direct pushes to `main` stay outside this exception: explicit per-instance authorization still applies, strongly discouraged except for manual override.
+Enforcement: gated — `pr-quality-gate.yml` mirrors the hook contracts as merge-blocking checks, so a bypassed hook moves its failure into the gate, where it blocks the merge; review verifies the cited screen evidence against the gate result.
 
 ## Secret-exposure history-remediation exception
 

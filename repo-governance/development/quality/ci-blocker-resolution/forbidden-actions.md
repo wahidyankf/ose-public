@@ -5,7 +5,7 @@ when_to_use: "Use before skipping, disabling, or bypassing a CI check."
 
 # Forbidden Actions
 
-The following actions are **explicitly forbidden** as responses to preexisting CI blockers:
+The following actions are **explicitly forbidden** as responses to preexisting CI blockers. The [worktree-to-PR pre-authorization](../../workflow/git-push-safety/rule.md#worktree-to-pr-pre-authorization) moves hook execution into the pull-request gate; it never waives a failing gate, so none of these become permitted:
 
 | Forbidden Action                                              | Why It Is Wrong                                                |
 | ------------------------------------------------------------- | -------------------------------------------------------------- |

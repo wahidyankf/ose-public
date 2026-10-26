@@ -31,5 +31,6 @@ Force-push and hook-bypass operations are not always wrong. Common legitimate si
 - Cleaning up a local branch before merging (amending commits, squashing, rebasing) when the branch has no other contributors — including a `worktree-to-pr` plan branch mid-review, where a `--force-with-lease` push after a rebase is common once review feedback lands.
 - Emergency hotfix where the pre-push hook is malfunctioning and the hook problem is being tracked separately.
 - CI automation that explicitly documents the force-push in workflow files and is reviewed as part of code review (for example, the `prod-ayokoding-www` deployment workflow — see [Trunk Based Development Convention](../trunk-based-development.md)).
+- A task-owned `worktree-to-pr` branch skipping hooks under the [worktree-to-PR pre-authorization](./rule.md#worktree-to-pr-pre-authorization), where the pull-request gate still runs every skipped check and must pass on the pushed head.
 
-In every case, the decision requires human judgment about the specific context. An agent cannot reliably determine whether a force-push is safe without that context.
+In every other case, the decision requires human judgment about the specific context. An agent cannot reliably determine whether a force-push is safe without that context.

@@ -48,5 +48,7 @@ Agent: [30 minutes later, different situation] Reusing your earlier approval
 ```
 Agent: The pre-push hook is taking too long. Running with --no-verify
        to skip it and save time.
-[runs git push --no-verify without asking]
+[runs git push --no-verify origin main without asking]
 ```
+
+Direct pushes to `main` stay outside the [worktree-to-PR pre-authorization](./rule.md#worktree-to-pr-pre-authorization): explicit per-instance authorization still applies there.

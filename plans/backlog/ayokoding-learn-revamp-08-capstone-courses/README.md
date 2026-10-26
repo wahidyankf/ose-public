@@ -146,7 +146,7 @@ stops for the user before the metadata and path phases. See
 
 ## Parallel Phoenix Rewrite
 
-The [AyoKoding Phoenix LiveView rewrite](../ayokoding-app-web/README.md) runs independently of
+The [AyoKoding Phoenix LiveView rewrite](../../in-progress/ayokoding-app-web/README.md) runs independently of
 this plan. Keep this plan's existing execution order and ownership of capstone content, AI
 Engineer goal/core membership, prerequisites, copy, and outline-dependent fixtures. The rewrite
 reads the shared corpus in place and owns reconciling these changes after they merge; neither

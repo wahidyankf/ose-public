@@ -121,7 +121,7 @@ AAOIFI link in a browser before the PR is marked ready. See
 
 ## Parallel Phoenix Rewrite
 
-The [AyoKoding Phoenix LiveView rewrite](../ayokoding-app-web/README.md) runs independently of
+The [AyoKoding Phoenix LiveView rewrite](../../in-progress/ayokoding-app-web/README.md) runs independently of
 this plan. Keep this plan's existing execution order and ownership of ERP content, manifests,
 and removal of the transitional restructure mechanism. The rewrite reads these sources in place
 and owns adapting Phoenix to the already-merged phased schema, retired marker fields, path copy,

@@ -19,7 +19,7 @@ does not claim ownership of those source files or stop existing content work.
 
 ## Proposed design location
 
-The [backlog plan](../../../../plans/backlog/ayokoding-app-web/README.md) carries proposed
+The [rewrite plan](../../../../plans/in-progress/ayokoding-app-web/README.md) carries proposed
 Phoenix components, interfaces, dependency choices, diagrams, local commands, and recovery steps.
 They are proposed design, not current architecture. The [behaviors](./behaviours/README.md) in
 this corpus are the accepted outcomes that implementation must prove.

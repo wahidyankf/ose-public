@@ -148,7 +148,7 @@ These are choices the plan made and documented; none needs an answer before exec
 
 ## Parallel Phoenix Rewrite
 
-The [AyoKoding Phoenix LiveView rewrite](../ayokoding-app-web/README.md) runs independently of
+The [AyoKoding Phoenix LiveView rewrite](../../in-progress/ayokoding-app-web/README.md) runs independently of
 this plan. Keep this plan's existing execution order and ownership of product/security/AI
 content, prerequisites, metadata, safety fixtures, the audited-course registry, filler baseline,
 and example harness. Phoenix consumes this corpus read-only and owns reconciling already-merged

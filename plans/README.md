@@ -43,7 +43,7 @@ flowchart LR
   P13["🔜 13-audit-prodsec"]:::backlog
   P14["🔜 14-removal"]:::backlog
   FER["🔜 ferret-02-backend"]:::backlog
-  PHX["🔜 ayokoding-app-web"]:::backlog
+  PHX["🏗️ ayokoding-app-web"]:::inprogress
   P06 --> P07
   P10 --> P14
   P11 --> P14
@@ -57,7 +57,7 @@ flowchart LR
 Legend: 🔜 blue = backlog; 🏗️ teal = in progress. Hexagon credentialed-machine steps do not apply here.
 `ferret-02` has no live dependencies and runs in parallel with everything.
 
-The [AyoKoding Phoenix LiveView rewrite](./backlog/ayokoding-app-web/README.md) also has no live
+The [AyoKoding Phoenix LiveView rewrite](./in-progress/ayokoding-app-web/README.md) also has no live
 dependencies (`Depends-on: []`). It can start and finish alongside the existing AyoKoding plans;
 its executor reconciles shared content changes already merged into `main` without waiting for
 the content series. Awareness links between plans do not add dependency edges.

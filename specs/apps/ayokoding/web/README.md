@@ -13,7 +13,7 @@
 them through a persistent browser connection. The existing Next.js implementation remains in
 [`apps/ayokoding-www`](../../../../apps/ayokoding-www/README.md).
 
-The [rewrite plan](../../../../plans/backlog/ayokoding-app-web/README.md) owns the proposed
+The [rewrite plan](../../../../plans/in-progress/ayokoding-app-web/README.md) owns the proposed
 architecture, implementation checklist, complete source-scenario inventory, and parity evidence.
 These features state durable acceptance contracts; they do not claim that the future application,
 its test bindings, or a successful runtime check already exists.

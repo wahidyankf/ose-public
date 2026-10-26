@@ -114,7 +114,7 @@ paths are restructured. See [tech-docs/006](./tech-docs/006-execution-model.md).
 
 ## Parallel Phoenix Rewrite
 
-The [AyoKoding Phoenix LiveView rewrite](../ayokoding-app-web/README.md) runs independently of
+The [AyoKoding Phoenix LiveView rewrite](../../in-progress/ayokoding-app-web/README.md) runs independently of
 this plan and reads the same content and path manifests. This plan keeps its existing execution
 order and does not wait for the rewrite. Continue authoring accounting courses and restructuring
 their paths in `apps/ayokoding-www`; the rewrite owns adapting Phoenix to already-merged metadata,

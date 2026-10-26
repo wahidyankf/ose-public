@@ -110,7 +110,7 @@ so CI problems surface early. See [tech-docs/006](./tech-docs/006-execution-mode
 
 ## Parallel Phoenix Rewrite
 
-The [AyoKoding Phoenix LiveView rewrite](../ayokoding-app-web/README.md) runs independently of
+The [AyoKoding Phoenix LiveView rewrite](../../in-progress/ayokoding-app-web/README.md) runs independently of
 this plan. Keep this plan's existing execution order and ownership of language/tooling content,
 prerequisites, metadata, the audited-course registry, filler baseline, and example harness.
 Phoenix reads these sources in place and owns reconciling already-merged changes and relevant

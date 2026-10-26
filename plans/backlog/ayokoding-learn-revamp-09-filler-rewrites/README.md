@@ -140,7 +140,7 @@ course is measured against it as it lands. See [tech-docs/006](./tech-docs/006-e
 
 ## Parallel Phoenix Rewrite
 
-The [AyoKoding Phoenix LiveView rewrite](../ayokoding-app-web/README.md) runs independently of
+The [AyoKoding Phoenix LiveView rewrite](../../in-progress/ayokoding-app-web/README.md) runs independently of
 this plan. This plan retains its execution order and ownership of course rewrites, Git vectors,
 the filler baseline, content safety, and the code-example harness. Phoenix consumes the existing
 corpus read-only and owns adapting to merged content, metadata, and scenario changes; it does not

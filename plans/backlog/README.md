@@ -16,14 +16,6 @@ step-by-step execution record.
 
 ## Planned Projects
 
-### AyoKoding Phoenix LiveView rewrite
-
-- [AyoKoding Web](./ayokoding-app-web/README.md) — full local feature and UI parity in
-  `apps/ayokoding-web`, using Phoenix LiveView, imported BeaverNest ExBdd, Unit/Integration tests,
-  and Playwright E2E with Gherkin BDD. The existing Next.js app remains on port 3101; Phoenix
-  uses 3102, with a separate E2E server on 3191. This user-requested plan runs independently of
-  the Learn Revamp series, consumes its content read-only, and excludes deployment and cutover.
-
 ### FERRET initialization series
 
 FERRET (Framework for Evaluation, Regression, Reliability & Experiment Tracking) begins as a local-only,

@@ -186,7 +186,7 @@ every decision this plan relies on is copied into
 
 ## Parallel Phoenix Rewrite
 
-The [AyoKoding Phoenix LiveView rewrite](../ayokoding-app-web/README.md) runs independently of
+The [AyoKoding Phoenix LiveView rewrite](../../in-progress/ayokoding-app-web/README.md) runs independently of
 this plan. Keep this plan's existing execution order and ownership of legacy deletion, the
 redirect mapping, navigation/search/sitemap changes, surviving rendering fixtures, and series
 closure. Do not retain legacy content or wait for Phoenix on its behalf. The rewrite owns

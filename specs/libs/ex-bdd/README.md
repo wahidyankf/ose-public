@@ -7,7 +7,7 @@ describes the engine's required behavior and provenance without claiming the imp
 ## Status
 
 **Planned; library source and bindings are not imported in this authoring change.** The intended
-destination is `libs/ex-bdd`. The [rewrite plan](../../../plans/backlog/ayokoding-app-web/README.md)
+destination is `libs/ex-bdd`. The [rewrite plan](../../../plans/in-progress/ayokoding-app-web/README.md)
 owns the import and its repository integration. The planned first consumer is
 [AyoKoding Phoenix Web](../../apps/ayokoding/web/README.md).
 

@@ -7,8 +7,9 @@ when_to_use: Use before git push --force, --force-with-lease, or --no-verify, or
 
 AI agents and automation must never execute `git push --force`, `git push --force-with-lease`, or
 `git push --no-verify` without explicit, fresh per-instance approval outside
-[authorized task-owned sync](no-destructive-git-operations/001-authorized-task-branch-sync.md). A single-action grant
-never carries forward; the same ongoing task retains its bounded delivery authority. Hook bypass remains separate.
+[authorized task-owned sync](no-destructive-git-operations/001-authorized-task-branch-sync.md), except `--no-verify`
+on a task-owned branch under the [worktree-to-PR pre-authorization](./git-push-safety/rule.md#worktree-to-pr-pre-authorization).
+A single-action grant never carries forward; the same ongoing task retains its bounded delivery authority. Hook bypass remains separate.
 The independent standing
 exception is a confirmed secret-exposure incident handled end-to-end under
 [the secret history-remediation procedure](../../conventions/security/secrets-and-env-standards/secret-exposure-history-remediation.md#secret-exposure-history-remediation): there, a lease-protected force-push is required to remove
@@ -17,7 +18,7 @@ contaminated reachable history rather than a convenience rewrite.
 These rules apply identically regardless of the active delivery mode (see the
 [Plans Organization Convention — Delivery Mode](../../conventions/structure/plans/delivery-mode-the-four-modes.md#delivery-mode)):
 a delivery mode chooses the route and grants no authority. Routine owned task-branch sync follows its bounded
-contract; direct-main and environment targets do not gain that exception. Hook bypass always remains outside it.
+contract; direct-main and environment targets do not gain that exception. Hook bypass always remains outside it except the [worktree-to-PR pre-authorization](./git-push-safety/rule.md#worktree-to-pr-pre-authorization).
 The independent secret-incident procedure grants only its existing remediation operations.
 
 ## Contents

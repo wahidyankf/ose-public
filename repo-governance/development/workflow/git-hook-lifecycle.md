@@ -86,7 +86,9 @@ full-quality workflows own complete Integration and E2E execution.
 ## Bypass policy
 
 Skipping hooks with `--no-verify` needs explicit authorization that names the bypass for that one
-operation, as [Git Push Safety](git-push-safety.md) requires. A request to commit or push never
+operation, as [Git Push Safety](git-push-safety.md) requires, except the
+[worktree-to-PR pre-authorization](git-push-safety/rule.md#worktree-to-pr-pre-authorization) on a task-owned
+`worktree-to-pr` branch. A request to commit or push never
 implies it, and there is no emergency or CI-blocker-investigation exception. A bypass does not remove
 the CI gate, and it must never be used to avoid fixing a registry, generated-artifact, or hook
 conformance failure.

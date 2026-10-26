@@ -7,7 +7,7 @@ when_to_use: Use when determining whether a specific push mechanism or actor fal
 
 The approval procedure and examples on this page apply outside the
 [authorized task-owned sync contract](../no-destructive-git-operations/001-authorized-task-branch-sync.md).
-Its bounded ongoing authority needs no repeated prompt; hook bypass is outside it. The separate secret-incident
+Its bounded ongoing authority needs no repeated prompt; hook bypass is outside it except the [worktree-to-PR pre-authorization](./rule.md#worktree-to-pr-pre-authorization). The separate secret-incident
 procedure remains unchanged.
 
 This rule applies to:

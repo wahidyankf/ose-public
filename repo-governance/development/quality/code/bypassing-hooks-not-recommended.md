@@ -17,6 +17,8 @@ git commit --no-verify -m "message"
 - When hooks are malfunctioning (report the issue)
 - A guard stop before any check started, on a human-authorized push of a task-owned branch whose hosted gate mirrors
   the hook — see [Capacity-Held Hook](./capacity-held-hook.md)
+- A task-owned `worktree-to-pr` branch whose pull-request gate still runs every skipped check and must pass on the
+  pushed head — see the [worktree-to-PR pre-authorization](../../workflow/git-push-safety/rule.md#worktree-to-pr-pre-authorization)
 - **NEVER** use this to avoid fixing code quality issues
 
 Bypassing hooks regularly defeats the purpose of automated quality checks.

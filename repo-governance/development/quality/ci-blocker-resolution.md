@@ -23,7 +23,7 @@ This convention mandates that a preexisting CI blocker is investigated to its ro
 
 - [CI Monitoring Convention](../workflow/ci-monitoring.md) -- Safe CI / GitHub Actions monitoring cadence: never poll faster than once every two minutes (2-minute operational default)
 - [Code Quality Convention](./code.md) -- Quality gates that this convention protects
-- [Git Push Safety Convention](../workflow/git-push-safety.md) -- Per-instance approval for `--no-verify`
+- [Git Push Safety Convention](../workflow/git-push-safety.md) -- Per-instance approval for `--no-verify`, with the worktree-to-PR pre-authorization
 - [Trunk Based Development Convention](../workflow/trunk-based-development.md) -- Main must always be releasable
 - [Root Cause Orientation Principle](../../principles/general/root-cause-orientation.md) -- The foundational principle this convention implements
 - [Commit Message Convention](../workflow/commit-messages.md) -- Conventional commit format for preexisting fixes

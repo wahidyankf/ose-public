@@ -57,5 +57,7 @@ Push fewer commits at once if the range screen is the slow gate.
    - Skill not found: Ensure skill exists in the platform binding skill directory (`.agents/skills/`)
 
 4. Do not skip the hook to get past a failure. `--no-verify` needs explicit authorization naming
-   that one bypass, with no emergency exception; see the
+   that one bypass, with no emergency exception — or the
+   [worktree-to-PR pre-authorization](../../workflow/git-push-safety/rule.md#worktree-to-pr-pre-authorization) on a
+   task-owned `worktree-to-pr` branch; see the
    [Bypass policy](../../workflow/git-hook-lifecycle.md#bypass-policy).

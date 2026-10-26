@@ -8,8 +8,8 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "4.10.1",
-    "@playwright/test": "1.60.0",
-    "playwright-bdd": "8.5.1"
+    "@playwright/test": "1.62.1",
+    "playwright-bdd": "9.2.0"
   },
   "volta": {
     "extends": "../../package.json"

@@ -1,5 +1,10 @@
 import { createBdd } from "playwright-bdd";
 import { expect, type Locator, type Page } from "@playwright/test";
+import {
+  independentCandidates,
+  rawCalculatorDataset,
+  rawSeniorSweNonSalaryAnnualUsd,
+} from "../helpers/calculator-oracle";
 
 const { Given, When, Then } = createBdd();
 
@@ -7,14 +12,23 @@ const freshTabs = new WeakMap<Page, Page>();
 const activePage = (page: Page): Page => freshTabs.get(page) ?? page;
 
 type CalculatorEvidence = {
+  countryCityTabs?: Array<{
+    tab: string;
+    headers: string[];
+    cellTexts: string[];
+    countryIndex: number;
+    cityIndex: number;
+  }>;
+  thresholdNets?: { atThreshold: number; belowThreshold: number };
   clickedCity?: { id: string; name: string };
   clickedCountry?: { id: string; name: string };
+  healthcareSchemes?: Array<{ cityId: string; label: string }>;
   householdBefore?: ExpenseSnapshot;
   householdAfter?: ExpenseSnapshot;
   schoolBefore?: Record<string, number>;
   schoolAfter?: Record<string, number>;
-  areaBefore?: { housing: number; total: number };
-  areaAfter?: { housing: number; total: number };
+  areaBefore?: { cityId: string; housing: number; total: number };
+  areaAfter?: { cityId: string; housing: number; total: number };
   candidateBefore?: { firstSavings: string; minimumRole: string };
   candidateAfter?: { firstSavings: string; minimumRole: string };
   fx?: { currencies: string[]; invalidConversions: string[]; displayCurrencies: string[] };
@@ -23,8 +37,14 @@ type CalculatorEvidence = {
   qualifyingOracle?: {
     expectedKeys: string[];
     cityCount: number;
-    roleCount: number;
     targetUsd: number;
+  };
+  target8000Oracle?: {
+    qualifyingKeys: string[];
+    nonQualifyingPreviewKeys: string[];
+    expectedSavings: Record<string, number>;
+    minimumKeys: string[];
+    minimumRank: number | null;
   };
   lifestyleRanking?: {
     essentialOrder: string[];
@@ -43,6 +63,16 @@ type CalculatorEvidence = {
   nonSalaryRanking?: Array<{ savings: number; nonSalary: number }>;
   scrollPosition?: { before: number; after: number };
   navigationTimeOrigin?: { before: number; after: number };
+  grossSalaryUrlBefore?: string | null;
+  costBasisPreview?: {
+    cityId: string;
+    beforeHousing: number;
+    afterHousing: number;
+    beforeEssentials: number;
+    afterEssentials: number;
+    timeOriginBefore: number;
+    timeOriginAfter: number;
+  };
 };
 
 const EXPECTED_FX_RATES: Readonly<Record<string, number>> = {
@@ -78,7 +108,7 @@ type ExpenseSnapshot = {
   food: number;
   transport: number;
   healthcare: number;
-  school: number;
+  school: Record<string, number>;
   childcare?: number;
   totalText?: string;
 };
@@ -113,6 +143,15 @@ async function rawAmounts(page: Page, category: string): Promise<Record<string, 
   return result;
 }
 
+async function visibleCostCityIds(page: Page): Promise<string[]> {
+  return page.locator("[data-testid^='col-housing-']").evaluateAll((cells) =>
+    cells
+      .map((cell) => (cell.getAttribute("data-testid") ?? "").replace("col-housing-", ""))
+      .filter(Boolean)
+      .sort(),
+  );
+}
+
 async function expenseSnapshot(page: Page): Promise<ExpenseSnapshot> {
   return {
     housing: await rawAmount(page, "housing"),
@@ -120,10 +159,20 @@ async function expenseSnapshot(page: Page): Promise<ExpenseSnapshot> {
     food: await rawAmount(page, "food"),
     transport: await rawAmount(page, "transport"),
     healthcare: await rawAmount(page, "healthcare"),
-    school: await rawAmount(page, "school"),
+    school: await rawAmounts(page, "school"),
     childcare: await rawAmount(page, "childcare"),
     totalText: (await page.locator("table tbody tr").first().locator("td").nth(2).innerText()).trim(),
   };
+}
+
+function rawSchoolCost(cityId: string, selectedType: "public" | "private"): number {
+  const city = rawCalculatorDataset.cities.find(({ id }) => id === cityId);
+  if (!city) throw new Error(`Missing pinned raw city fixture for ${cityId}`);
+  const country = rawCalculatorDataset.countries.find(({ id }) => id === city.countryId);
+  if (!country) throw new Error(`Missing pinned raw country fixture for ${city.countryId}`);
+  const effectiveType =
+    selectedType === "public" && country.foreignerPublicSchool.access !== "open" ? "private" : selectedType;
+  return city.schoolMedianLocal[effectiveType].amount;
 }
 
 async function selectedLabel(locator: Locator): Promise<string> {
@@ -160,6 +209,31 @@ function candidateRows(page: Page): Locator {
 
 async function candidateKey(row: Locator): Promise<string> {
   return `${await row.getAttribute("data-city-id")}:${await row.getAttribute("data-role")}`;
+}
+
+async function detailOutcome(page: Page): Promise<Record<string, string>> {
+  const detail = page.getByTestId("city-detail");
+  const ids = [
+    "expense-housing",
+    "expense-food",
+    "expense-transport",
+    "expense-utilities",
+    "expense-healthcare",
+    "expense-childcare",
+    "expense-school",
+    "expense-lifestyle",
+    "essentials-subtotal",
+    "monthly-total",
+    "healthcare-badge",
+    "relocation-sunk",
+    "liquidity-reserve",
+  ];
+  const result: Record<string, string> = {};
+  for (const id of ids) {
+    const element = detail.getByTestId(id);
+    result[id] = `${(await element.getAttribute("data-raw")) ?? ""}|${(await element.textContent())?.trim() ?? ""}`;
+  }
+  return result;
 }
 
 async function minimumMarkerKeys(page: Page): Promise<string[]> {
@@ -246,15 +320,25 @@ Given(
 );
 
 Given(
-  "I am on the {string} tab and the {string} role qualifies for the {string} household basis",
-  async ({ page }, tabName: string, _role: string, _household: string) => {
+  'I am on the "Minimum role" tab with Austin selected and the "SWE I" role qualifies for the "single" household basis at a 2000 USD target',
+  async ({ page }) => {
     await page.goto("/en/tools/cost-of-living-calculator");
-    await page.getByRole("tab", { name: tabName }).click();
+    await page.getByRole("tab", { name: "Minimum role" }).click();
     await page.waitForURL(/tab=min-role/);
-    await page.locator("#target-amount-input").fill("1000");
+    await page.locator("#target-amount-input").fill("2000");
     await page.keyboard.press("Tab");
-    await page.waitForURL(/target=1000/);
+    await page.waitForURL(/target=2000/);
+    await page.getByLabel("Country").selectOption("us");
+    await page.getByLabel("City").selectOption("austin");
     await expect(page.getByTestId("qualifying-divider")).toBeVisible();
+    expect(independentCandidates(2000, { cityIds: ["austin"] }).qualifying.some(({ role }) => role === "swe_1")).toBe(
+      true,
+    );
+    const singleOracle = independentCandidates(2000, { cityIds: ["austin"] });
+    const singleSavings = singleOracle.candidates.find(({ role }) => role === "swe_1")?.essentialSavingsUsd;
+    const singleRow = page.locator("tr[data-candidate-row='true'][data-city-id='austin'][data-role='swe_1']");
+    expect(singleSavings).toBe(3026);
+    expect(await numericAttribute(singleRow, "data-essential-savings-usd")).toBe(singleSavings);
   },
 );
 
@@ -287,15 +371,6 @@ Then("I see a table of tech-hub cities", async ({ page }) => {
 });
 
 Then("each row shows a Country column immediately to the left of the City column", async ({ page }) => {
-  const headers = page.locator("table thead th");
-  const texts = await headers.allTextContents();
-  const countryIdx = texts.findIndex((h) => h.trim() === "Country");
-  const cityIdx = texts.findIndex((h) => h.trim() === "City");
-  expect(countryIdx).toBeGreaterThanOrEqual(0);
-  expect(cityIdx).toBe(countryIdx + 1);
-});
-
-Then("every row shows a Country column immediately to the left of the City column", async ({ page }) => {
   const headers = page.locator("table thead th");
   const texts = await headers.allTextContents();
   const countryIdx = texts.findIndex((h) => h.trim() === "Country");
@@ -407,8 +482,65 @@ When("I select the country {string} in the cascading filters", async ({ page }, 
 // ── Country+city on every tab ─────────────────────────────────────────────────
 
 When("I view any tab's results table", async ({ page }) => {
-  await page.locator("table tbody tr").first().waitFor({ state: "visible" });
+  const observations: Array<{
+    tab: string;
+    headers: string[];
+    cellTexts: string[];
+    countryIndex: number;
+    cityIndex: number;
+  }> = [];
+  const capture = async (tab: string): Promise<void> => {
+    const table = page.getByRole("table");
+    await expect(table).toBeVisible();
+    const headers = (await table.getByRole("columnheader").allInnerTexts()).map((value) => value.trim());
+    const row = table.getByRole("row").filter({ hasText: "San Francisco" }).first();
+    const cells = (await row.getByRole("cell").allInnerTexts()).map((value) => value.trim());
+    observations.push({
+      tab,
+      headers,
+      cellTexts: cells,
+      countryIndex: headers.findIndex((header) => header.toLowerCase().includes("country")),
+      cityIndex: headers.findIndex((header) => header.toLowerCase().includes("city")),
+    });
+  };
+
+  await capture("Cost of living");
+  await page.getByRole("tab", { name: "Savings" }).click();
+  await page.getByLabel("Gross monthly salary (before tax)").fill("8000");
+  await expect.poll(() => new URL(page.url()).searchParams.get("gross")).toBe("8000");
+  await capture("Savings");
+  await page.getByRole("tab", { name: "Minimum role" }).click();
+  await page.getByRole("spinbutton", { name: "Monthly savings target" }).fill("1000");
+  await expect.poll(() => new URL(page.url()).searchParams.get("target")).toBe("1000");
+  await capture("Minimum role");
+  evidenceFor(page).countryCityTabs = observations;
 });
+
+Then(
+  "each tab's rows show the country alongside the city, using separate adjacent columns where that table has them",
+  async ({ page }) => {
+    const observations = evidenceFor(page).countryCityTabs ?? [];
+    expect(observations).toHaveLength(3);
+    for (const observation of observations) {
+      const headers = observation.headers.map((header) => header.toLowerCase());
+      const countryIndex = headers.findIndex((header) => header.includes("country"));
+      const cityIndex = headers.findIndex((header) => header.includes("city"));
+      expect(observation.countryIndex).toBe(countryIndex);
+      expect(observation.cityIndex).toBe(cityIndex);
+      if (observation.tab === "Minimum role") {
+        expect(countryIndex).toBe(-1);
+        expect(cityIndex).toBeGreaterThanOrEqual(0);
+        expect(observation.cellTexts[cityIndex]).toContain("United States");
+        expect(observation.cellTexts[cityIndex]).toContain("San Francisco");
+      } else {
+        expect(countryIndex, `${observation.tab}: a distinct Country header exists`).toBeGreaterThanOrEqual(0);
+        expect(cityIndex, `${observation.tab}: city follows country`).toBe(countryIndex + 1);
+        expect(observation.cellTexts[countryIndex]).toBe("United States");
+        expect(observation.cellTexts[cityIndex]).toContain("San Francisco");
+      }
+    }
+  },
+);
 
 // ── City name click → deep link ───────────────────────────────────────────────
 
@@ -442,7 +574,28 @@ Then("the City filter is pre-selected to that city", async ({ page }) => {
 Then(
   "the detail shows the full per-category breakdown, essentials subtotal, total, healthcare scheme badge, and split relocation in both local currency and USD",
   async ({ page }) => {
+    const clicked = evidenceFor(page).clickedCity;
+    expect(clicked).toBeDefined();
+    const city = rawCalculatorDataset.cities.find(({ id }) => id === clicked!.id)!;
+    const country = rawCalculatorDataset.countries.find(({ id }) => id === city.countryId)!;
     const detail = page.locator("[data-testid='city-detail']");
+    const expectedEssentials =
+      city.expenses.housing.amount +
+      city.expenses.food.amount +
+      city.expenses.transport.amount +
+      city.expenses.utilities.amount +
+      city.expenses.healthcare.amount;
+    const expectedRows: Array<[string, number]> = [
+      ["expense-housing", city.expenses.housing.amount],
+      ["expense-food", city.expenses.food.amount],
+      ["expense-transport", city.expenses.transport.amount],
+      ["expense-utilities", city.expenses.utilities.amount],
+      ["expense-healthcare", city.expenses.healthcare.amount],
+      ["expense-childcare", 0],
+      ["expense-school", 0],
+      ["expense-lifestyle", city.expenses.lifestyle.amount],
+      ["essentials-subtotal", expectedEssentials],
+    ];
     for (const testId of [
       "expense-housing",
       "expense-food",
@@ -451,6 +604,7 @@ Then(
       "expense-healthcare",
       "expense-childcare",
       "expense-school",
+      "expense-lifestyle",
       "essentials-subtotal",
       "monthly-total",
       "healthcare-badge",
@@ -459,6 +613,20 @@ Then(
     ]) {
       await expect(detail.getByTestId(testId), testId).toBeVisible();
     }
+    for (const [testId, expectedAmount] of expectedRows) {
+      const row = detail.getByTestId(testId);
+      expect(await numericAttribute(row, "data-raw")).toBe(expectedAmount);
+      await expect(row).toContainText(city.currency);
+    }
+    const monthlyTotal = expectedEssentials + city.expenses.lifestyle.amount;
+    expect(displayedNumber(await detail.getByTestId("monthly-total").innerText())).toBe(monthlyTotal);
+    await expect(detail.getByTestId("healthcare-badge")).toHaveText(
+      country.healthcareModelType === "oop"
+        ? "out-of-pocket"
+        : country.healthcareModelType === "mixed"
+          ? "mandatory payroll insurance"
+          : "tax-funded",
+    );
     await expect(detail.getByTestId("relocation-sunk")).toContainText(/[A-Z]{3} [\d,.-]+ \/ \$[\d,.-]+/);
     await expect(detail.getByTestId("liquidity-reserve")).toContainText(/[A-Z]{3} [\d,.-]+ \/ \$[\d,.-]+/);
   },
@@ -524,33 +692,36 @@ Then(
 // ── Healthcare scheme badge ───────────────────────────────────────────────────
 
 When("I select any city on any tab", async ({ page }) => {
-  // Wait for the results table to be populated before clicking, so the city link
-  // is attached and stable (firefox occasionally clicked before hydration finished).
-  const cityLink = page.locator("table tbody tr td:nth-child(2) a").first();
-  await cityLink.waitFor({ state: "visible", timeout: 10000 });
-  await cityLink.click();
-  // The click drives a router.push(?city=…) then a re-render into the single-city
-  // detail. Wait for the URL to commit the city param first (the deterministic
-  // navigation signal), then for the detail view — networkidle alone raced the
-  // client-side navigation on firefox.
-  await page.waitForURL(/city=/, { timeout: 10000 });
-  await page.locator("[data-testid='city-detail']").waitFor({ state: "visible", timeout: 10000 });
+  const observations: Array<{ cityId: string; label: string }> = [];
+  for (const cityId of ["san-francisco", "berlin", "singapore", "london"]) {
+    await page.goto("/en/tools/cost-of-living-calculator");
+    const citySelect = page.getByLabel("City").first();
+    await citySelect.selectOption(cityId);
+    await page.waitForURL(new RegExp(`city=${cityId}`));
+    const badge = page.locator("[data-testid='city-detail'] [data-testid='healthcare-badge']");
+    await expect(badge).toBeVisible();
+    observations.push({ cityId, label: (await badge.textContent())?.trim() ?? "" });
+  }
+  evidenceFor(page).healthcareSchemes = observations;
 });
 
 Then("a healthcare funding-scheme badge is shown for that city's country", async ({ page }) => {
-  // After clicking a city link, CityDetail is rendered with data-testid="healthcare-badge".
-  // Scope to the detail view so we don't collide with the per-row badges in the table.
-  const badge = page.locator("[data-testid='city-detail'] [data-testid='healthcare-badge']");
-  await expect(badge).toBeVisible();
+  expect(evidenceFor(page).healthcareSchemes?.map(({ cityId, label }) => [cityId, label])).toEqual([
+    ["san-francisco", "mandatory payroll insurance"],
+    ["berlin", "mandatory payroll insurance"],
+    ["singapore", "mandatory payroll insurance"],
+    ["london", "tax-funded"],
+  ]);
 });
 
 Then("the badge reads {string}, {string}, or {string}", async ({ page }, _v1: string, _v2: string, _v3: string) => {
-  const badge = page.locator("[data-testid='city-detail'] [data-testid='healthcare-badge']");
-  await expect(badge).toBeVisible();
-  const text = (await badge.textContent())?.toLowerCase() ?? "";
-  expect(text.includes("tax-funded") || text.includes("mandatory payroll") || text.includes("out-of-pocket")).toBe(
-    true,
-  );
+  const labels = evidenceFor(page).healthcareSchemes?.map(({ label }) => label);
+  expect(labels).toEqual([
+    "mandatory payroll insurance",
+    "mandatory payroll insurance",
+    "mandatory payroll insurance",
+    "tax-funded",
+  ]);
 });
 
 // ── OOP legend ────────────────────────────────────────────────────────────────
@@ -561,17 +732,16 @@ When("I read the legend near the table", async ({ page }) => {
 
 Then("an on-screen explanation states that {string}", async ({ page }, _explanation: string) => {
   const legend = page.locator("[data-testid='oop-legend']");
-  await expect(legend).toBeVisible();
-  const text = await legend.textContent();
-  expect(text?.includes("OOP")).toBe(true);
+  await expect(legend).toHaveText(
+    "OOP = out-of-pocket — healthcare you pay yourself, on top of any tax-funded or insurance coverage.",
+  );
 });
 
 Then(
   "the explanation says it is the healthcare you pay yourself on top of any tax-funded or insurance coverage",
   async ({ page }) => {
     const legend = page.locator("[data-testid='oop-legend']");
-    const text = await legend.textContent();
-    expect(text?.toLowerCase().includes("out-of-pocket")).toBe(true);
+    await expect(legend).toContainText("healthcare you pay yourself, on top of any tax-funded or insurance coverage");
   },
 );
 
@@ -681,6 +851,13 @@ Then(
       expect(Number(essentialText.match(/\((-?\d+)%\)/)?.[1])).toBe(Math.round((essentialSavings / net) * 100));
       expect(Number(lifestyleText.match(/\((-?\d+)%\)/)?.[1])).toBe(Math.round((afterLifestyle / net) * 100));
     }
+    const sanFrancisco = page.locator("tr[data-testid='savings-row'][data-city-id='san-francisco']");
+    expect(await numericAttribute(sanFrancisco.getByTestId("net-value"), "data-usd")).toBe(5600);
+    expect(await numericAttribute(sanFrancisco.getByTestId("essentials-value"), "data-usd")).toBe(5335);
+    expect(await numericAttribute(sanFrancisco.getByTestId("savings-essential"), "data-usd")).toBe(265);
+    expect(await numericAttribute(sanFrancisco.getByTestId("savings-lifestyle"), "data-usd")).toBe(-245);
+    await expect(sanFrancisco.getByTestId("savings-essential")).toContainText("(5%)");
+    await expect(sanFrancisco.getByTestId("savings-lifestyle")).toContainText("(-4%)");
   },
 );
 
@@ -716,9 +893,10 @@ Then("the annual gross is shown as {string} USD", async ({ page }, expectedAnnua
 Then("the annual figure equals twelve times the monthly figure", async ({ page }) => {
   const annualEl = page.locator("[data-testid='annual-gross']");
   await expect(annualEl).toBeAttached({ timeout: 5000 });
-  const text = await annualEl.textContent();
-  // Just verify a number is shown — exact value checked by the "annual gross is shown as" step
-  expect(text).toMatch(/\d/);
+  const monthly = Number(await page.locator("#gross-salary-input").inputValue());
+  const annual = displayedNumber((await annualEl.textContent()) ?? "");
+  expect(Number.isFinite(monthly)).toBe(true);
+  expect(annual).toBe(monthly * 12);
 });
 
 // ── Non-salary comp informational ─────────────────────────────────────────────
@@ -748,6 +926,10 @@ Then("it is not added into the net, the essential savings, or the after-lifestyl
     expect(savings).not.toBeCloseTo(net + nonSalary - essentials, 3);
     expect(afterLifestyle).toBeLessThan(savings);
   }
+  const sanFrancisco = page.locator("tr[data-testid='savings-row'][data-city-id='san-francisco']");
+  expect(await numericAttribute(sanFrancisco.getByTestId("net-value"), "data-usd")).toBe(5600);
+  expect(await numericAttribute(sanFrancisco.getByTestId("savings-essential"), "data-usd")).toBe(265);
+  expect(await numericAttribute(sanFrancisco.getByTestId("savings-lifestyle"), "data-usd")).toBe(-245);
 });
 
 // ── Total comp informational ──────────────────────────────────────────────────
@@ -757,6 +939,12 @@ Then(
   async ({ page }) => {
     const annualGross = displayedNumber((await page.getByTestId("annual-gross").textContent()) ?? "");
     expect(annualGross).toBe(96000);
+    const sanFrancisco = page.locator("tr[data-testid='savings-row'][data-city-id='san-francisco']");
+    const expectedNonSalary = rawSeniorSweNonSalaryAnnualUsd("san-francisco");
+    expect(await numericAttribute(sanFrancisco.getByTestId("non-salary-value"), "data-usd")).toBe(expectedNonSalary);
+    expect(await numericAttribute(sanFrancisco.getByTestId("total-comp-value"), "data-usd")).toBe(
+      annualGross + expectedNonSalary,
+    );
     for (const row of await page.getByTestId("savings-row").all()) {
       const nonSalary = await numericAttribute(row.getByTestId("non-salary-value"), "data-usd");
       const totalComp = await numericAttribute(row.getByTestId("total-comp-value"), "data-usd");
@@ -779,6 +967,11 @@ Then(
       expect(savings).not.toBeCloseTo(totalComp / 12 - essentials, 3);
       expect(afterLifestyle).toBeLessThan(savings);
     }
+    const sanFrancisco = page.locator("tr[data-testid='savings-row'][data-city-id='san-francisco']");
+    expect(await numericAttribute(sanFrancisco.getByTestId("net-value"), "data-usd")).toBe(5600);
+    expect(await numericAttribute(sanFrancisco.getByTestId("essentials-value"), "data-usd")).toBe(5335);
+    expect(await numericAttribute(sanFrancisco.getByTestId("savings-essential"), "data-usd")).toBe(265);
+    expect(await numericAttribute(sanFrancisco.getByTestId("savings-lifestyle"), "data-usd")).toBe(-245);
   },
 );
 
@@ -794,14 +987,14 @@ Then("the federal-country city applies its city sub-national rate on top of the 
   await expect(row.getByTestId("sub-national-indicator")).toBeVisible();
   await expect(row.getByTestId("sub-national-indicator")).toHaveText("(fed+state)");
   // At USD 10,000/month, the authored high-band oracle is 36% federal + 8% California.
-  expect(Number(await row.getByTestId("net-value").getAttribute("data-usd"))).toBeCloseTo(5600);
+  expect(Number(await row.getByTestId("net-value").getAttribute("data-usd"))).toBe(10_000 * (1 - (0.36 + 0.08)));
 });
 
 Then("the unitary-country city applies the federal rate alone", async ({ page }) => {
   const row = page.locator("table tbody tr", { has: page.getByRole("link", { name: "London", exact: true }) });
   await expect(row.getByTestId("sub-national-indicator")).toHaveCount(0);
   // The United Kingdom's authored high-band federal rate is 42%, with no city layer.
-  expect(Number(await row.getByTestId("net-value").getAttribute("data-usd"))).toBeCloseTo(5800);
+  expect(Number(await row.getByTestId("net-value").getAttribute("data-usd"))).toBe(10_000 * (1 - 0.42));
 });
 
 // ── Net lower than gross ──────────────────────────────────────────────────────
@@ -839,17 +1032,11 @@ When("I enter a gross salary whose net is lower than that city's modeled essenti
 });
 
 Then("the savings-after-essentials amount and percentage are shown as negative", async ({ page }) => {
-  const savingsCells = page.locator("[data-testid='savings-essential']");
-  const count = await savingsCells.count();
-  let foundNegative = false;
-  for (let i = 0; i < count; i++) {
-    const usdAttr = await savingsCells.nth(i).getAttribute("data-usd");
-    if (parseFloat(usdAttr ?? "0") < 0) {
-      foundNegative = true;
-      break;
-    }
-  }
-  expect(foundNegative).toBe(true);
+  const row = page.locator("tr[data-testid='savings-row'][data-city-id='san-francisco']");
+  expect(await numericAttribute(row.getByTestId("net-value"), "data-usd")).toBe(420);
+  expect(await numericAttribute(row.getByTestId("essentials-value"), "data-usd")).toBe(5335);
+  expect(await numericAttribute(row.getByTestId("savings-essential"), "data-usd")).toBe(-4915);
+  await expect(row.getByTestId("savings-essential")).toContainText("(-1170%)");
 });
 
 // ── Indonesian locale ─────────────────────────────────────────────────────────
@@ -912,7 +1099,7 @@ Then("I see an {string} disclaimer", async ({ page }, text: string) => {
 // ── FX conversion ─────────────────────────────────────────────────────────────
 
 When("I read any USD figure derived from a local-currency value", async ({ page }) => {
-  const cells = page.locator("[data-testid^='col-housing-']");
+  const cells = page.locator("td[data-raw]");
   await cells.first().waitFor({ state: "visible" });
   const currencies = new Set<string>();
   const invalidConversions: string[] = [];
@@ -971,7 +1158,7 @@ When("I change the household from {string} to married with 2 school-age children
     food: await rawAmount(page, "food"),
     transport: await rawAmount(page, "transport"),
     healthcare: await rawAmount(page, "healthcare"),
-    school: await rawAmount(page, "school"),
+    school: await rawAmounts(page, "school"),
   };
   await page.getByLabel("Adults").selectOption("2");
   await page.waitForURL(/adults=2/);
@@ -983,7 +1170,7 @@ When("I change the household from {string} to married with 2 school-age children
     food: await rawAmount(page, "food"),
     transport: await rawAmount(page, "transport"),
     healthcare: await rawAmount(page, "healthcare"),
-    school: await rawAmount(page, "school"),
+    school: await rawAmounts(page, "school"),
   };
 });
 
@@ -1003,8 +1190,16 @@ Then("the modeled food and healthcare increase near per-capita", async ({ page }
 
 Then("schooling is added for the two school-age children", async ({ page }) => {
   const { householdBefore: before, householdAfter: after } = evidenceFor(page);
-  expect(before!.school).toBe(0);
-  expect(after!.school).toBeGreaterThan(0);
+  const visibleCityIds = await visibleCostCityIds(page);
+  const expectedSchoolKeys = visibleCityIds.map((cityId) => `col-school-${cityId}`).sort();
+  expect(expectedSchoolKeys.length).toBeGreaterThan(0);
+  expect(Object.keys(before!.school).sort()).toEqual(expectedSchoolKeys);
+  expect(Object.keys(after!.school).sort()).toEqual(expectedSchoolKeys);
+  expect(Object.values(before!.school).every((amount) => amount === 0)).toBe(true);
+  for (const [testId, amount] of Object.entries(after!.school)) {
+    const cityId = testId.replace("col-school-", "");
+    expect(amount).toBe(rawSchoolCost(cityId, "public") * 2);
+  }
 });
 
 // ── Pre-school children ───────────────────────────────────────────────────────
@@ -1069,6 +1264,11 @@ Then("the schooling portion of the modeled expenses increases", async ({ page })
   const { schoolBefore, schoolAfter } = evidenceFor(page);
   expect(schoolBefore).toBeDefined();
   expect(schoolAfter).toBeDefined();
+  for (const [testId, amount] of Object.entries(schoolAfter!)) {
+    const cityId = testId.replace("col-school-", "");
+    expect(schoolBefore![testId]).toBe(rawSchoolCost(cityId, "public") * 2);
+    expect(amount).toBe(rawSchoolCost(cityId, "private") * 2);
+  }
   const increasedCities = Object.entries(schoolAfter!).filter(
     ([testId, amount]) => amount > (schoolBefore![testId] ?? Number.POSITIVE_INFINITY),
   );
@@ -1079,43 +1279,45 @@ Then("the schooling portion of the modeled expenses increases", async ({ page })
 
 When("I switch the area from {string} to {string}", async ({ page }, _from: string, to: string) => {
   const evidence = evidenceFor(page);
+  const city = rawCalculatorDataset.cities[0]!;
   evidence.areaBefore = {
-    housing: await rawAmount(page, "housing"),
-    total: Number(
-      await page
-        .locator("table tbody tr")
-        .first()
-        .locator("td")
-        .nth(2)
-        .textContent()
-        .then((text) => text?.match(/\/ \$([\d,.-]+)/)?.[1]?.replaceAll(",", "") ?? "NaN"),
-    ),
+    cityId: city.id,
+    housing: await numericAttribute(page.getByTestId(`col-housing-${city.id}`), "data-raw"),
+    total: await numericAttribute(page.getByTestId(`col-essentials-${city.id}`), "data-raw"),
   };
   // Area is a SegmentedControl (radiogroup), not a <select>
   const label = to === "rural" ? "Rural" : "City center";
   await page.getByRole("radio", { name: label }).click();
   if (to === "rural") await page.waitForURL(/area=rural/);
   evidence.areaAfter = {
-    housing: await rawAmount(page, "housing"),
-    total: Number(
-      await page
-        .locator("table tbody tr")
-        .first()
-        .locator("td")
-        .nth(2)
-        .textContent()
-        .then((text) => text?.match(/\/ \$([\d,.-]+)/)?.[1]?.replaceAll(",", "") ?? "NaN"),
-    ),
+    cityId: city.id,
+    housing: await numericAttribute(page.getByTestId(`col-housing-${city.id}`), "data-raw"),
+    total: await numericAttribute(page.getByTestId(`col-essentials-${city.id}`), "data-raw"),
   };
 });
 
 Then("the modeled housing expense decreases", async ({ page }) => {
   const { areaBefore: before, areaAfter: after } = evidenceFor(page);
-  expect(after!.housing).toBeCloseTo(before!.housing * 0.75);
+  const city = rawCalculatorDataset.cities.find(({ id }) => id === after!.cityId)!;
+  const adults = new URL(page.url()).searchParams.get("adults") === "2" ? 2 : 1;
+  const housingScale = 1 + 0.5 * (1 + 0.5 * (adults - 1) - 1);
+  expect(before!.housing).toBeCloseTo(city.expenses.housing.amount * housingScale, 8);
+  expect(after!.housing).toBeCloseTo(city.expenses.housing.amount * housingScale * 0.75, 8);
 });
 
 Then("the city total decreases accordingly", async ({ page }) => {
   const { areaBefore: before, areaAfter: after } = evidenceFor(page);
+  const city = rawCalculatorDataset.cities.find(({ id }) => id === after!.cityId)!;
+  const adults = new URL(page.url()).searchParams.get("adults") === "2" ? 2 : 1;
+  const people = 1 + 0.5 * (adults - 1);
+  const sublinear = 1 + 0.5 * (people - 1);
+  const expectedRuralEssentials =
+    city.expenses.housing.amount * sublinear * 0.75 +
+    city.expenses.food.amount * people +
+    city.expenses.transport.amount +
+    city.expenses.utilities.amount * sublinear * 0.75 +
+    city.expenses.healthcare.amount * people;
+  expect(after!.total).toBeCloseTo(expectedRuralEssentials, 8);
   expect(after!.total).toBeLessThan(before!.total);
 });
 
@@ -1155,8 +1357,7 @@ Then(
   async ({ page }) => {
     const caption = page.locator("[data-testid='se-roles-caption']");
     await expect(caption).toBeVisible();
-    const text = await caption.textContent();
-    expect(text?.toLowerCase().includes("software")).toBe(true);
+    await expect(caption).toHaveText("Roles: software-engineering (IC + management)");
   },
 );
 
@@ -1180,14 +1381,21 @@ Then("the role shows its country's p25, median, and p75 salary distribution", as
       await expect(row.locator(`[data-money-column='${column}'] [data-line='display']`)).toContainText(/USD$/);
     }
   }
+  const sanFranciscoSenior = page.locator(
+    "tr[data-candidate-row='true'][data-city-id='san-francisco'][data-role='senior_swe']",
+  );
+  expect(await numericAttribute(sanFranciscoSenior.locator("[data-money-column='p25']"), "data-usd")).toBe(15000);
+  expect(await numericAttribute(sanFranciscoSenior.locator("[data-money-column='median']"), "data-usd")).toBe(18500);
+  expect(await numericAttribute(sanFranciscoSenior.locator("[data-money-column='p75']"), "data-usd")).toBe(23000);
 });
 
 Then("the row's essential savings is computed from the median salary", async ({ page }) => {
-  const row = candidateRows(page).first();
-  const cityId = await row.getAttribute("data-city-id");
+  const row = page.locator("tr[data-candidate-row='true'][data-city-id='san-francisco'][data-role='senior_swe']");
+  const cityId = "san-francisco";
   const medianGrossUsd = await numericAttribute(row.locator("[data-money-column='median']"), "data-usd");
   const candidateSavings = await numericAttribute(row, "data-essential-savings-usd");
-  expect(cityId).toBeTruthy();
+  expect(medianGrossUsd).toBe(18500);
+  expect(candidateSavings).toBe(18_500 * (1 - (0.36 + 0.08)) - 5_335);
 
   const calculator = await page.context().newPage();
   await calculator.goto(`/en/tools/cost-of-living-calculator?tab=savings&gross=${medianGrossUsd}&city=${cityId}`);
@@ -1502,24 +1710,37 @@ When(
 Then(
   "{string} is re-evaluated after childcare, schooling, and central housing raise modeled essentials",
   async ({ page }, _role: string) => {
-    const { candidateBefore: before, candidateAfter: after } = evidenceFor(page);
-    expect(before).toBeDefined();
-    expect(after).toBeDefined();
-    expect(after!.firstSavings).not.toBe(before!.firstSavings);
+    const oracle = independentCandidates(2000, {
+      cityIds: ["austin"],
+      household: { adults: 2, preschoolKids: 0, schoolKids: 2 },
+    });
+    const expected = oracle.candidates.find(({ cityId, role }) => cityId === "austin" && role === "swe_1");
+    expect(expected).toBeDefined();
+    // Preserve the independent decimal outcome while ignoring only its IEEE representation tail.
+    expect(expected!.essentialSavingsUsd).toBeCloseTo(879.35, 10);
+    const row = page.locator("tr[data-candidate-row='true'][data-city-id='austin'][data-role='swe_1']");
+    expect(await numericAttribute(row, "data-essential-savings-usd")).toBeCloseTo(expected!.essentialSavingsUsd, 10);
+    expect(oracle.qualifying.some(({ cityId, role }) => cityId === "austin" && role === "swe_1")).toBe(false);
     expect(new URL(page.url()).searchParams.get("adults")).toBe("2");
     expect(new URL(page.url()).searchParams.get("schoolkids")).toBe("2");
   },
 );
 
 Then("the marked minimum reflects the recalculated household", async ({ page }) => {
-  const after = evidenceFor(page).candidateAfter;
-  expect(after).toBeDefined();
-  expect(after!.minimumRole).not.toBe("");
-  if (after!.minimumRole !== "no qualifying role") {
-    await expect(page.locator("[data-testid='minimum-marker']").first()).toBeVisible();
-  } else {
-    await expect(page.locator("[data-testid='no-qualifier-message']")).toBeVisible();
-  }
+  const oracle = independentCandidates(2000, {
+    cityIds: ["austin"],
+    household: { adults: 2, preschoolKids: 0, schoolKids: 2 },
+  });
+  const markerRows = candidateRows(page).filter({ has: page.getByTestId("minimum-marker") });
+  const actualKeys: string[] = [];
+  for (const row of await markerRows.all()) actualKeys.push(await candidateKey(row));
+  const expectedKeys = oracle.qualifying
+    .filter(({ rank }) => rank === oracle.minimumRank)
+    .map(({ cityId, role }) => `${cityId}:${role}`)
+    .sort();
+  expect(actualKeys.sort()).toEqual(expectedKeys);
+  if (oracle.minimumRank === null) await expect(page.locator("[data-testid='no-qualifier-message']")).toBeVisible();
+  else await expect(markerRows.first()).toBeVisible();
 });
 
 // ── No role can reach the bar ─────────────────────────────────────────────────
@@ -1562,12 +1783,34 @@ When("I change the household type or area", async ({ page }) => {
 });
 
 Then("the role candidates' savings and the marked minimum role update accordingly", async ({ page }) => {
-  const { candidateBefore: before, candidateAfter: after } = evidenceFor(page);
-  expect(before).toBeDefined();
-  expect(after).toBeDefined();
-  expect(after!.firstSavings).not.toBe(before!.firstSavings);
-  expect(after!.minimumRole).not.toBe("");
   expect(new URL(page.url()).searchParams.get("area")).toBe("rural");
+  const targetUsd = Number(new URL(page.url()).searchParams.get("target"));
+  expect(targetUsd).toBe(2000);
+  const center = independentCandidates(targetUsd, { area: "center" });
+  const rural = independentCandidates(targetUsd, { area: "rural" });
+  const visibleKeys = (oracle: ReturnType<typeof independentCandidates>): string[] => [
+    ...oracle.qualifying.map(({ cityId, role }) => `${cityId}:${role}`),
+    ...oracle.nonQualifying.slice(0, 12).map(({ cityId, role }) => `${cityId}:${role}`),
+  ];
+  const actualRows = await candidateRows(page).all();
+  const actualKeys: string[] = [];
+  for (const row of actualRows) actualKeys.push(await candidateKey(row));
+  expect(actualKeys).toEqual(visibleKeys(rural));
+  for (const row of actualRows) {
+    const key = await candidateKey(row);
+    const expected = rural.candidates.find(({ cityId, role }) => `${cityId}:${role}` === key);
+    expect(await numericAttribute(row, "data-essential-savings-usd")).toBeCloseTo(expected!.essentialSavingsUsd, 8);
+  }
+  const expectedMarkerKeys = rural.qualifying
+    .filter(({ rank }) => rank === rural.minimumRank)
+    .map(({ cityId, role }) => `${cityId}:${role}`)
+    .sort();
+  const markers = page.getByTestId("minimum-marker").locator("xpath=ancestor::tr");
+  const actualMarkerKeys = await markers.evaluateAll((rows) =>
+    rows.map((row) => `${row.getAttribute("data-city-id")}:${row.getAttribute("data-role")}`).sort(),
+  );
+  expect(actualMarkerKeys).toEqual(expectedMarkerKeys);
+  expect(rural.candidates[0]?.essentialSavingsUsd).not.toBe(center.candidates[0]?.essentialSavingsUsd);
 });
 
 // ── Low-confidence cells (narrowed to minimum-role tab) ──────────────────────
@@ -1577,12 +1820,26 @@ When("the table renders", async ({ page }) => {
 });
 
 Then("cells with lower data confidence display a visual flag indicator", async ({ page }) => {
+  await page.goto("/en/tools/cost-of-living-calculator?tab=min-role&baseline=savings_target&target=0&country=id");
+  await expect(page.getByRole("table")).toBeVisible();
   const flags = page.locator("[data-testid='confidence-flag']");
   expect(await flags.count()).toBeGreaterThan(0);
   for (const flag of await flags.all()) {
     await expect(flag).toHaveText(/^\[(moderate|proxy)\]$/);
     await expect(flag.locator("xpath=ancestor::*[@data-testid='city-cell'][1]")).toBeVisible();
   }
+  const jakartaSenior = page.locator("tr[data-candidate-row='true'][data-city-id='jakarta'][data-role='senior_swe']");
+  await expect(jakartaSenior.getByTestId("confidence-flag")).toHaveText("[moderate]");
+  await expect(jakartaSenior.getByTestId("city-cell")).toContainText("[moderate]");
+  const jakartaStaff = page.locator("tr[data-candidate-row='true'][data-city-id='jakarta'][data-role='staff_swe']");
+  await expect(jakartaStaff.getByTestId("confidence-flag")).toHaveText("[proxy]");
+  await page.goto("/en/tools/cost-of-living-calculator?tab=min-role&baseline=savings_target&target=0&country=us");
+  await expect(page.getByRole("table")).toBeVisible();
+  const sanFranciscoSenior = page.locator(
+    "tr[data-candidate-row='true'][data-city-id='san-francisco'][data-role='senior_swe']",
+  );
+  await expect(sanFranciscoSenior.getByTestId("city-cell")).not.toContainText("[moderate]");
+  await expect(sanFranciscoSenior.getByTestId("city-cell")).not.toContainText("[proxy]");
 });
 
 // ── No Israeli city in role candidates ───────────────────────────────────────
@@ -1627,7 +1884,10 @@ Then(
     const { areaBefore: center, areaAfter: rural } = evidenceFor(page);
     expect(center).toBeDefined();
     expect(rural).toBeDefined();
-    expect(rural!.housing).toBeCloseTo(center!.housing * 0.75);
+    const city = rawCalculatorDataset.cities.find(({ id }) => id === center!.cityId);
+    if (!city) throw new Error(`Missing pinned raw city fixture for ${center!.cityId}`);
+    expect(center!.housing).toBeCloseTo(city.expenses.housing.amount * 1.25, 8);
+    expect(rural!.housing).toBeCloseTo(city.expenses.housing.amount * 1.25 * 0.75, 8);
   },
 );
 
@@ -1642,6 +1902,8 @@ When("I select a city from the City dropdown filter", async ({ page }) => {
   // getByLabel("City") resolves to 2 elements; .first() gets the actual select
   const citySelect = page.getByLabel("City").first();
   await citySelect.selectOption({ index: 1 });
+  const id = await citySelect.inputValue();
+  evidenceFor(page).clickedCity = { id, name: await selectedLabel(citySelect) };
   await page.waitForLoadState("networkidle");
 });
 
@@ -1651,22 +1913,37 @@ Then("the single-city cost-of-living detail for that city is shown", async ({ pa
 });
 
 Then("the detail is identical to the one shown when clicking the city name in the table", async ({ page }) => {
-  const cityId = new URL(page.url()).searchParams.get("city");
-  await expect(page.getByTestId("city-detail").locator("[data-testid='expense-housing']")).toBeVisible();
-  expect(cityId).toBeTruthy();
+  const selected = evidenceFor(page).clickedCity;
+  expect(selected).toBeDefined();
+  const dropdownOutcome = await detailOutcome(page);
+  await page.goto("/en/tools/cost-of-living-calculator");
+  const cityLink = page.locator(`table tbody tr td:nth-child(2) a[href='?tab=cost&city=${selected!.id}']`);
+  await expect(cityLink).toBeVisible();
+  await cityLink.click();
+  await page.waitForURL(new RegExp(`city=${selected!.id}`));
+  expect(await detailOutcome(page)).toEqual(dropdownOutcome);
 });
 
 // ── SG-004: Income-band boundary handling ─────────────────────────────────────
 
 When("I enter a gross monthly salary at exactly the low-to-mid band threshold for a city", async ({ page }) => {
-  await page.locator("#gross-salary-input").fill("4167");
-  await page.locator("#gross-salary-input").blur();
+  const input = page.locator("#gross-salary-input");
+  const sanFranciscoRow = page.getByTestId("savings-row").filter({
+    has: page.getByRole("link", { name: "San Francisco", exact: true }),
+  });
+  await input.fill("3500");
+  await input.blur();
+  await expect.poll(() => new URL(page.url()).searchParams.get("gross")).toBe("3500");
+  const atThreshold = await numericAttribute(sanFranciscoRow.getByTestId("net-value"), "data-usd");
+  await input.fill("3499");
+  await input.blur();
+  await expect.poll(() => new URL(page.url()).searchParams.get("gross")).toBe("3499");
+  const belowThreshold = await numericAttribute(sanFranciscoRow.getByTestId("net-value"), "data-usd");
+  evidenceFor(page).thresholdNets = { atThreshold, belowThreshold };
 });
 
 Then("that city's net take-home uses the mid band effective tax rate", async ({ page }) => {
-  const net = Number(await page.getByTestId("net-value").first().getAttribute("data-usd"));
-  expect(net).toBeGreaterThan(0);
-  expect(net).toBeLessThan(4167);
+  expect(evidenceFor(page).thresholdNets).toEqual({ atThreshold: 2450, belowThreshold: 2939.16 });
 });
 
 // ── SG-005: Mobile city cards show country name ───────────────────────────────
@@ -1733,7 +2010,18 @@ Then("the qualifying divider element is rendered in the role ladder", async ({ p
 });
 
 Then("the minimum marker appears on the lowest-ranked role in the ladder", async ({ page }) => {
-  await expect(page.getByTestId("minimum-marker").first()).toBeVisible();
+  const oracle = independentCandidates(0);
+  const expectedKeys = oracle.qualifying
+    .filter(({ rank }) => rank === oracle.minimumRank)
+    .map(({ cityId, role }) => `${cityId}:${role}`)
+    .sort();
+  const markerRows = page.getByTestId("minimum-marker").locator("xpath=ancestor::tr");
+  const actualKeys = await markerRows.evaluateAll((rows) =>
+    rows.map((row) => `${row.getAttribute("data-city-id")}:${row.getAttribute("data-role")}`).sort(),
+  );
+  const actualRanks = await markerRows.evaluateAll((rows) => rows.map((row) => Number(row.getAttribute("data-rank"))));
+  expect(actualKeys).toEqual(expectedKeys);
+  expect(new Set(actualRanks)).toEqual(new Set([oracle.minimumRank]));
 });
 
 // ── SG-007: Expense preview updates in real time ──────────────────────────────
@@ -1746,6 +2034,16 @@ Given("the default household is 1 adult with no children in city center", async 
   const evidence = evidenceFor(page);
   evidence.householdBefore = await expenseSnapshot(page);
   evidence.navigationTimeOrigin = { before: await page.evaluate(() => performance.timeOrigin), after: 0 };
+  const city = rawCalculatorDataset.cities[0]!;
+  evidence.costBasisPreview = {
+    cityId: city.id,
+    beforeHousing: await numericAttribute(page.getByTestId(`col-housing-${city.id}`), "data-raw"),
+    beforeEssentials: await numericAttribute(page.getByTestId(`col-essentials-${city.id}`), "data-raw"),
+    afterHousing: Number.NaN,
+    afterEssentials: Number.NaN,
+    timeOriginBefore: evidence.navigationTimeOrigin.before,
+    timeOriginAfter: Number.NaN,
+  };
 });
 
 When("I change the Adults control to 2", async ({ page }) => {
@@ -1754,7 +2052,14 @@ When("I change the Adults control to 2", async ({ page }) => {
   await adults.selectOption("2");
   await expect.poll(() => new URL(page.url()).searchParams.get("adults")).toBe("2");
   await expect(adults).toHaveValue("2");
-  await expect.poll(() => rawAmount(page, "housing")).toBeCloseTo(evidence.householdBefore!.housing * 1.25);
+  const preview = evidence.costBasisPreview!;
+  const city = rawCalculatorDataset.cities.find(({ id }) => id === preview.cityId)!;
+  await expect
+    .poll(() => numericAttribute(page.getByTestId(`col-housing-${city.id}`), "data-raw"))
+    .toBeCloseTo(city.expenses.housing.amount * 1.25, 8);
+  preview.afterHousing = await numericAttribute(page.getByTestId(`col-housing-${city.id}`), "data-raw");
+  preview.afterEssentials = await numericAttribute(page.getByTestId(`col-essentials-${city.id}`), "data-raw");
+  preview.timeOriginAfter = await page.evaluate(() => performance.timeOrigin);
   evidence.householdAfter = await expenseSnapshot(page);
   evidence.navigationTimeOrigin = {
     before: evidence.navigationTimeOrigin!.before,
@@ -1773,13 +2078,30 @@ Then("the Childcare and School preview amounts remain zero", async ({ page }) =>
   const { householdAfter: two } = evidenceFor(page);
   expect(two).toBeDefined();
   expect(two!.childcare).toBe(0);
-  expect(two!.school).toBe(0);
+  const visibleCityIds = await visibleCostCityIds(page);
+  const expectedSchoolKeys = visibleCityIds.map((cityId) => `col-school-${cityId}`).sort();
+  expect(expectedSchoolKeys.length).toBeGreaterThan(0);
+  expect(Object.keys(two!.school).sort()).toEqual(expectedSchoolKeys);
+  for (const amount of Object.values(two!.school)) expect(amount).toBe(0);
 });
 
 Then("the Total preview updates immediately without a page reload", async ({ page }) => {
   const { householdBefore: one, householdAfter: two, navigationTimeOrigin } = evidenceFor(page);
   expect(two!.totalText).not.toBe(one!.totalText);
   expect(navigationTimeOrigin!.after).toBe(navigationTimeOrigin!.before);
+  const preview = evidenceFor(page).costBasisPreview!;
+  const city = rawCalculatorDataset.cities.find(({ id }) => id === preview.cityId)!;
+  const expected =
+    city.expenses.housing.amount * 1.25 +
+    city.expenses.food.amount * 1.5 +
+    city.expenses.transport.amount +
+    city.expenses.utilities.amount * 1.25 +
+    city.expenses.healthcare.amount * 1.5;
+  expect(preview.beforeHousing).toBe(city.expenses.housing.amount);
+  expect(preview.afterHousing).toBe(city.expenses.housing.amount * 1.25);
+  expect(preview.afterEssentials).toBeCloseTo(expected, 8);
+  expect(preview.afterEssentials).not.toBe(preview.beforeEssentials);
+  expect(preview.timeOriginAfter).toBe(preview.timeOriginBefore);
 });
 
 // ── SG-007: Expense preview updates in real time ─────────────────────────────
@@ -2001,6 +2323,10 @@ Then("the instructional message disappears", async ({ page }) => {
 Then("the savings comparison table is shown with computed savings figures", async ({ page }) => {
   await page.waitForSelector("[data-testid='savings-table'][data-hydrated='true']", { timeout: 12000 });
   await expect(page.locator("[data-testid='savings-table']")).toBeVisible();
+  const row = page.locator("tr[data-testid='savings-row'][data-city-id='san-francisco']");
+  expect(await numericAttribute(row.getByTestId("net-value"), "data-usd")).toBe(3500);
+  expect(await numericAttribute(row.getByTestId("essentials-value"), "data-usd")).toBe(5335);
+  expect(await numericAttribute(row.getByTestId("savings-essential"), "data-usd")).toBe(-1835);
 });
 
 // ── USS-002: Minimum Role empty state ────────────────────────────────────────
@@ -2137,7 +2463,12 @@ When("the table renders with at least one city row", async ({ page }) => {
 Then("every monetary cell shows the local currency amount and the USD equivalent", async ({ page }) => {
   const cells = page.locator("td[data-raw]");
   expect(await cells.count()).toBeGreaterThan(0);
-  for (const cell of await cells.all()) await expect(cell).toContainText(/\/ \$[\d-]/);
+  for (const cell of await cells.all()) {
+    const currency = await cell.getAttribute("data-currency");
+    expect(currency).toBeTruthy();
+    await expect(cell).toContainText(new RegExp(`${currency}\\s*[\\d,.-]+`));
+    await expect(cell).toContainText(/\/ \$[\d,.-]+/);
+  }
 });
 
 Then("no money cell shows a bare integer without a currency label", async ({ page }) => {
@@ -2155,7 +2486,16 @@ Then(
   async ({ page }) => {
     const rows = page.locator("table tbody tr");
     expect(await rows.count()).toBeGreaterThan(0);
-    for (const row of (await rows.all()).slice(0, 3)) await expect(row).toContainText(/\/ \$[\d-]/);
+    for (const row of await rows.all()) {
+      const currency = await row.getAttribute("data-currency");
+      expect(currency).toBeTruthy();
+      for (const testId of ["net-value", "essentials-value", "savings-essential", "savings-lifestyle"]) {
+        const cell = row.getByTestId(testId);
+        await expect(cell).toContainText(/\/ \$[\d,.-]+/);
+        await expect(cell).toContainText(currency!);
+        expect(Number.isFinite(await numericAttribute(cell, "data-usd"))).toBe(true);
+      }
+    }
   },
 );
 
@@ -2408,6 +2748,12 @@ When("I select the region {string}", async ({ page }, region: string) => {
 
 When("I change the Adults control to {string}", async ({ page }, adults: string) => {
   const evidence = evidenceFor(page);
+  const city = rawCalculatorDataset.cities[0]!;
+  const housingCell = page.getByTestId(`col-housing-${city.id}`);
+  const essentialsCell = page.getByTestId(`col-essentials-${city.id}`);
+  const timeOriginBefore = await page.evaluate(() => performance.timeOrigin);
+  const beforeHousing = await numericAttribute(housingCell, "data-raw");
+  const beforeEssentials = await numericAttribute(essentialsCell, "data-raw");
   const hasCostRows = (await page.locator("[data-testid^='col-housing-']").count()) > 0;
   if (hasCostRows) {
     evidence.householdBefore = {
@@ -2416,11 +2762,21 @@ When("I change the Adults control to {string}", async ({ page }, adults: string)
       food: await rawAmount(page, "food"),
       transport: await rawAmount(page, "transport"),
       healthcare: await rawAmount(page, "healthcare"),
-      school: await rawAmount(page, "school"),
+      school: await rawAmounts(page, "school"),
     };
   }
   await page.getByLabel("Adults").first().selectOption(adults);
   await page.waitForURL(new RegExp("adults=" + adults));
+  await expect(housingCell).not.toHaveAttribute("data-raw", String(beforeHousing));
+  evidence.costBasisPreview = {
+    cityId: city.id,
+    beforeHousing,
+    afterHousing: await numericAttribute(housingCell, "data-raw"),
+    beforeEssentials,
+    afterEssentials: await numericAttribute(essentialsCell, "data-raw"),
+    timeOriginBefore,
+    timeOriginAfter: await page.evaluate(() => performance.timeOrigin),
+  };
   if (hasCostRows) {
     evidence.householdAfter = {
       housing: await rawAmount(page, "housing"),
@@ -2428,7 +2784,7 @@ When("I change the Adults control to {string}", async ({ page }, adults: string)
       food: await rawAmount(page, "food"),
       transport: await rawAmount(page, "transport"),
       healthcare: await rawAmount(page, "healthcare"),
-      school: await rawAmount(page, "school"),
+      school: await rawAmounts(page, "school"),
     };
   }
 });
@@ -2558,7 +2914,10 @@ Then("the single-city detail for Singapore is shown", async ({ page }) => {
 });
 
 Then("the single-city Cost-of-living detail for Singapore is shown", async ({ page }) => {
-  await expect(activePage(page).locator("[data-testid='city-detail']")).toBeVisible({ timeout: 8000 });
+  const currentPage = activePage(page);
+  await expect(currentPage.locator("[data-testid='city-detail']")).toBeVisible({ timeout: 8000 });
+  await expect(currentPage.locator("[data-testid='city-detail'] h2").first()).toContainText("Singapore");
+  await expect(currentPage.getByLabel("City").first()).toHaveValue("singapore");
 });
 
 Then(
@@ -2592,6 +2951,20 @@ Then("reloading the page keeps the {string} tab active", async ({ page }, tabNam
 });
 
 Then("the household preview updates without a page reload", async ({ page }) => {
+  const preview = evidenceFor(page).costBasisPreview;
+  expect(preview).toBeDefined();
+  const city = rawCalculatorDataset.cities.find(({ id }) => id === preview!.cityId)!;
+  const expectedEssentials =
+    city.expenses.housing.amount * 1.25 +
+    city.expenses.food.amount * 1.5 +
+    city.expenses.transport.amount +
+    city.expenses.utilities.amount * 1.25 +
+    city.expenses.healthcare.amount * 1.5;
+  expect(preview!.beforeHousing).toBe(city.expenses.housing.amount);
+  expect(preview!.afterHousing).toBe(city.expenses.housing.amount * 1.25);
+  expect(preview!.afterEssentials).toBeCloseTo(expectedEssentials, 8);
+  expect(preview!.afterEssentials).not.toBe(preview!.beforeEssentials);
+  expect(preview!.timeOriginAfter).toBe(preview!.timeOriginBefore);
   await expect(page.getByLabel("Adults")).toHaveValue("2");
   expect(new URL(page.url()).searchParams.get("adults")).toBe("2");
   expect(
@@ -2711,21 +3084,28 @@ Given("the user views the calculator tab bar", async ({ page }) => {
 });
 
 Then(
-  "each of the three tabs has a visibly rendered description element associated with its trigger via aria-describedby",
+  "each of the three tabs has a description element associated with its trigger via aria-describedby",
   async ({ page }) => {
-    // The three tab triggers each have aria-describedby pointing to a rendered <p>
-    const tabTriggers = page.locator('[role="tab"]');
-    const count = await tabTriggers.count();
-    expect(count).toBeGreaterThanOrEqual(3);
-    for (let i = 0; i < Math.min(count, 3); i++) {
-      const describedById = await tabTriggers.nth(i).getAttribute("aria-describedby");
-      expect(describedById).toBeTruthy();
-      // The element with that id must exist in the DOM (not necessarily visible — hidden class used)
-      const descEl = page.locator(`#${describedById}`);
+    const descriptions = [
+      { name: "Cost of living", id: "tab-desc-cost" },
+      { name: "Savings", id: "tab-desc-savings" },
+      { name: "Minimum role", id: "tab-desc-min-role" },
+    ];
+    for (const { name, id } of descriptions) {
+      const trigger = page.getByRole("tab", { name });
+      await expect(trigger).toHaveAttribute("aria-describedby", id);
+      const descEl = page.locator(`#${id}`);
       await expect(descEl).toBeAttached();
+      await expect(descEl).not.toHaveText("");
     }
   },
 );
+
+Then("only the active tab's description is visible", async ({ page }) => {
+  await expect(page.locator("#tab-desc-cost")).toBeVisible();
+  await expect(page.locator("#tab-desc-savings")).not.toBeVisible();
+  await expect(page.locator("#tab-desc-min-role")).not.toBeVisible();
+});
 
 Then("no tab description text is duplicated elsewhere on screen", async ({ page }) => {
   // Each tab description should appear only once in the DOM (one <p> per tab, not repeated)
@@ -2762,9 +3142,7 @@ Then("an active-currency indicator next to the field shows {string}", async ({ p
 
 Then("an explanation states salaries are compared in USD across all cities", async ({ page }) => {
   const explanation = page.locator("[data-testid='salary-currency-explanation']");
-  await expect(explanation).toBeVisible();
-  const text = (await explanation.textContent())?.toUpperCase() ?? "";
-  expect(text).toContain("USD");
+  await expect(explanation).toHaveText("Salaries are compared in USD across all cities.");
 });
 
 // ── AC-9: Minimum-role blank savings target → empty-state guidance ────────────
@@ -2981,11 +3359,11 @@ Given('"City center" is the active area', async ({ page }) => {
   await page.goto("/en/tools/cost-of-living-calculator?area=center");
 });
 
-Then('the "City center" button has aria-pressed "true"', async ({ page }) => {
+Then('the "City center" radio has aria-checked "true"', async ({ page }) => {
   await expect(page.getByRole("radio", { name: "City center" })).toHaveAttribute("aria-checked", "true");
 });
 
-Then('the "Rural" button has aria-pressed "false"', async ({ page }) => {
+Then('the "Rural" radio has aria-checked "false"', async ({ page }) => {
   await expect(page.getByRole("radio", { name: "Rural" })).toHaveAttribute("aria-checked", "false");
 });
 
@@ -3131,12 +3509,17 @@ Given("the Minimum-role tab at 320px and 375px", async ({ page }) => {
 });
 
 Then('each "Baseline source" option remains at least 44px tall when the control wraps', async ({ page }) => {
-  const group = page.getByRole("radiogroup", { name: /how to set your target|baseline source/i });
-  await expect(group).toBeVisible();
-  const options = group.getByRole("radio");
-  await expect(options).toHaveCount(3);
-  for (const option of await options.all()) {
-    expect((await option.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(44);
+  for (const width of [320, 375]) {
+    await page.setViewportSize({ width, height: 812 });
+    const group = page.getByRole("radiogroup", { name: /how to set your target|baseline source/i });
+    await expect(group).toBeVisible();
+    const options = group.getByRole("radio");
+    await expect(options).toHaveCount(3);
+    for (const option of await options.all()) {
+      expect((await option.boundingBox())?.height ?? 0, `baseline option height at ${width}px`).toBeGreaterThanOrEqual(
+        44,
+      );
+    }
   }
 });
 
@@ -3172,16 +3555,31 @@ Then("the URL update requests no scroll so the page does not jump to the top", a
   expect(scroll!.after).toBeCloseTo(scroll!.before, 0);
 });
 
+Given('I am on the "Savings" tab with the browser clock paused', async ({ page }) => {
+  await page.clock.install({ time: new Date("2026-10-25T23:00:00Z") });
+  await page.goto("/en/tools/cost-of-living-calculator?tab=savings");
+  await page.waitForLoadState("networkidle");
+  await expect(page.getByRole("tab", { name: "Savings" })).toHaveAttribute("data-state", "active");
+  await expect(page.locator("#gross-salary-input")).toBeVisible();
+  await page.clock.pauseAt(new Date("2026-10-26T00:00:00Z"));
+});
+
 When('I type a gross monthly salary of "7000" without pausing', async ({ page }) => {
+  evidenceFor(page).grossSalaryUrlBefore = new URL(page.url()).searchParams.get("gross");
   await page.locator("#gross-salary-input").pressSequentially("7000", { delay: 0 });
 });
 
 Then('the salary field immediately shows "7000"', async ({ page }) => {
   await expect(page.locator("#gross-salary-input")).toHaveValue("7000");
+  expect(new URL(page.url()).searchParams.get("gross")).toBe(evidenceFor(page).grossSalaryUrlBefore);
 });
 
 Then("the gross salary is written to the URL once typing settles", async ({ page }) => {
-  await page.waitForURL(/gross=7000/);
+  const previousGross = evidenceFor(page).grossSalaryUrlBefore;
+  await page.clock.fastForward(299);
+  expect(new URL(page.url()).searchParams.get("gross")).toBe(previousGross);
+  await page.clock.fastForward(1);
+  await expect.poll(() => new URL(page.url()).searchParams.get("gross")).toBe("7000");
 });
 
 When("I add one school-age child with public school selected", async ({ page }) => {
@@ -3193,14 +3591,18 @@ Then("the Singapore school cost equals its private-school figure and the cell is
   const schoolCell = page.getByTestId("col-school-singapore");
   await expect(schoolCell).toBeVisible();
   await expect(schoolCell.getByTestId(/school-foreigner-flag-singapore/)).toBeVisible();
-  expect(Number(await schoolCell.getAttribute("data-raw"))).toBeGreaterThan(0);
+  const singapore = rawCalculatorDataset.cities.find(({ id }) => id === "singapore");
+  if (!singapore) throw new Error("Missing pinned Singapore raw school-cost fixture");
+  expect(Number(await schoolCell.getAttribute("data-raw"))).toBe(singapore.schoolMedianLocal.private.amount);
 });
 
 Then("the Berlin school cost equals its public-school figure with no foreigner flag", async ({ page }) => {
   const schoolCell = page.getByTestId("col-school-berlin");
   await expect(schoolCell).toBeVisible();
   await expect(schoolCell.getByTestId(/school-foreigner-flag-berlin/)).toHaveCount(0);
-  expect(Number(await schoolCell.getAttribute("data-raw"))).toBeGreaterThanOrEqual(0);
+  const berlin = rawCalculatorDataset.cities.find(({ id }) => id === "berlin");
+  if (!berlin) throw new Error("Missing pinned Berlin raw school-cost fixture");
+  expect(Number(await schoolCell.getAttribute("data-raw"))).toBe(berlin.schoolMedianLocal.public.amount);
 });
 
 Given("a city whose country does not open public school to foreigners", async ({ page }) => {
@@ -3219,7 +3621,7 @@ Given('school-age children >= 1 and school type "public"', async ({ page }) => {
 Then("the cost-of-living table school cell shows a clearly-worded private-fallback flag", async ({ page }) => {
   const flag = page.getByTestId(/school-foreigner-flag-singapore/).first();
   await expect(flag).toBeVisible();
-  await expect(flag).not.toHaveText("");
+  await expect(flag).toHaveText("Private — public not open to foreigners");
 });
 
 Then("the flag is visually distinct from ordinary caption text", async ({ page }) => {
@@ -3266,6 +3668,12 @@ Then('the "Track" column abbreviations ic\\/mgmt are expanded or carry abbr titl
     .locator("tbody tr[data-candidate-row='true'] td:nth-child(2)")
     .allTextContents();
   expect(new Set(trackValues.map((value) => value.trim()))).toEqual(new Set(["Individual contributor", "Management"]));
+  await expect(
+    page.locator("tr[data-candidate-row='true'][data-city-id='singapore'][data-role='senior_swe'] td:nth-child(2)"),
+  ).toHaveText("Individual contributor");
+  await expect(
+    page.locator("tr[data-candidate-row='true'][data-city-id='singapore'][data-role='eng_manager'] td:nth-child(2)"),
+  ).toHaveText("Management");
 });
 
 Then("the localized out-of-pocket title differs between the en and id locales", async ({ page }) => {
@@ -3304,7 +3712,9 @@ Then("the region display label differs between the en and id locales", async ({ 
   const enLabel = await page.locator("#geo-region-select option[value='americas']").textContent();
   await page.goto("/id/tools/cost-of-living-calculator");
   const idLabel = await page.locator("#geo-region-select option[value='americas']").textContent();
-  expect(enLabel).not.toBe(idLabel);
+  expect(enLabel?.trim()).toBe("Americas");
+  expect(idLabel?.trim()).toBe("Amerika");
+  expect(idLabel).not.toBe(enLabel);
 });
 
 Then("no healthcare-scheme badge is rendered in ALL CAPS while another is lower-case", async ({ page }) => {
@@ -3382,16 +3792,61 @@ Then(
     expect(dividerIndex).toBeGreaterThan(0);
     expect(dimmedIndexes.length).toBeGreaterThan(0);
     expect(Math.min(...dimmedIndexes)).toBeGreaterThan(dividerIndex);
+
+    const oracle = independentCandidates(8000);
+    const qualifyingKeys = oracle.qualifying.map(({ cityId, role }) => `${cityId}:${role}`);
+    const nonQualifyingPreviewKeys = oracle.nonQualifying.slice(0, 12).map(({ cityId, role }) => `${cityId}:${role}`);
+    const expectedSavings = Object.fromEntries(
+      oracle.candidates.map(({ cityId, role, essentialSavingsUsd }) => [`${cityId}:${role}`, essentialSavingsUsd]),
+    );
+    const actualQualifyingKeys = await page
+      .locator("table tbody tr[data-candidate-row='true']:not([data-testid='non-qualifying-row'])")
+      .evaluateAll((items) =>
+        items.map((row) => `${row.getAttribute("data-city-id")}:${row.getAttribute("data-role")}`),
+      );
+    const actualNonQualifyingKeys = await page
+      .getByTestId("non-qualifying-row")
+      .evaluateAll((items) =>
+        items.map((row) => `${row.getAttribute("data-city-id")}:${row.getAttribute("data-role")}`),
+      );
+    expect(actualQualifyingKeys).toEqual(qualifyingKeys);
+    expect(actualNonQualifyingKeys).toEqual(nonQualifyingPreviewKeys);
+    const minimumKeys = oracle.qualifying
+      .filter(({ rank }) => rank === oracle.minimumRank)
+      .map(({ cityId, role }) => `${cityId}:${role}`)
+      .sort();
+    evidenceFor(page).target8000Oracle = {
+      qualifyingKeys,
+      nonQualifyingPreviewKeys,
+      expectedSavings,
+      minimumKeys,
+      minimumRank: oracle.minimumRank,
+    };
+
+    for (const row of await candidateRows(page).all()) {
+      const key = await candidateKey(row);
+      expect(await numericAttribute(row, "data-essential-savings-usd")).toBeCloseTo(expectedSavings[key]!, 8);
+    }
   },
 );
 
 Then(
   "the lowest role rank that reaches at least 8000 USD essential savings anywhere in the filter is marked as the minimum",
   async ({ page }) => {
-    const marker = page.getByTestId("minimum-marker");
-    expect(await marker.count()).toBeGreaterThan(0);
-    const markedRow = marker.first().locator("xpath=ancestor::tr");
-    expect(await markedRow.getByTestId("savings-triple").locator("[data-line='usd']").textContent()).toMatch(/USD/);
+    const oracle = evidenceFor(page).target8000Oracle;
+    expect(oracle).toBeDefined();
+    expect(oracle!.minimumRank).not.toBeNull();
+    const markers = page.getByTestId("minimum-marker");
+    expect(await markers.count()).toBeGreaterThan(0);
+    const markerRows = markers.locator("xpath=ancestor::tr");
+    const markerRanks = await markerRows.evaluateAll((rows) =>
+      rows.map((row) => Number(row.getAttribute("data-rank"))),
+    );
+    expect(new Set(markerRanks)).toEqual(new Set([oracle!.minimumRank]));
+    const markerKeys = await markerRows.evaluateAll((rows) =>
+      rows.map((row) => `${row.getAttribute("data-city-id")}:${row.getAttribute("data-role")}`).sort(),
+    );
+    expect(markerKeys).toEqual(oracle!.minimumKeys);
   },
 );
 
@@ -3401,6 +3856,43 @@ Then(
     const rows = page.getByTestId("non-qualifying-row");
     expect(await rows.count()).toBeGreaterThan(0);
     for (const row of await rows.all()) await expect(row).toHaveCSS("opacity", "0.5");
+
+    // The global contract above remains all qualifiers plus a bounded nonqualifier preview.
+    // Calibrate all 15 Austin candidates in a separate city-scoped public mount.
+    const austinLiteral = [
+      ["fellow", 54674],
+      ["cto", 53330],
+      ["svp_eng", 49682],
+      ["distinguished_swe", 36946],
+      ["vp_eng", 34322],
+      ["senior_director", 24978],
+      ["principal_swe", 21266],
+      ["director", 19986],
+      ["senior_staff_swe", 18066],
+      ["senior_eng_manager", 14610],
+      ["staff_swe", 12946],
+      ["eng_manager", 10386],
+      ["senior_swe", 8786],
+      ["swe_2", 6226],
+      ["swe_1", 3026],
+    ] as const;
+    await page.goto(
+      "/en/tools/cost-of-living-calculator?tab=min-role&baseline=savings_target&target=8000&country=us&city=austin",
+    );
+    const austinRows = page.locator("table tbody tr[data-candidate-row='true'][data-city-id='austin']");
+    await expect(austinRows).toHaveCount(austinLiteral.length);
+    const observedAustin = await austinRows.evaluateAll((candidateRows) =>
+      candidateRows.map((row) => [
+        row.getAttribute("data-role"),
+        Number(row.getAttribute("data-essential-savings-usd")),
+      ]),
+    );
+    expect(observedAustin).toEqual(austinLiteral);
+    expect(
+      await austinRows.evaluateAll((candidateRows) =>
+        candidateRows.every((row) => row.getAttribute("data-country-id") === "us"),
+      ),
+    ).toBe(true);
   },
 );
 
@@ -3415,34 +3907,18 @@ When("the savings bar is cleared by several countries at several seniority level
     .evaluateAll((options) => options.map((option) => (option as HTMLOptionElement).value));
   expect(cityIds.length).toBeGreaterThan(3);
 
-  await page.getByRole("radio", { name: "Match a role" }).click();
-  await expect(page.locator("#ref-role-select")).toBeVisible();
-  const roleCount = await page.locator("#ref-role-select option").count();
-  expect(roleCount).toBeGreaterThan(5);
-
-  const publishedCandidates: Array<{ key: string; savings: number }> = [];
-  for (const cityId of cityIds) {
-    await page.goto(
-      `/en/tools/cost-of-living-calculator?tab=min-role&baseline=savings_target&target=0&region=asean&city=${cityId}`,
-    );
-    await expect(candidateRows(page)).toHaveCount(roleCount);
-    for (const row of await candidateRows(page).all()) {
-      expect(await row.getAttribute("data-city-id")).toBe(cityId);
-      publishedCandidates.push({
-        key: await candidateKey(row),
-        savings: await numericAttribute(row, "data-essential-savings-usd"),
-      });
-    }
-  }
-  expect(new Set(publishedCandidates.map(({ key }) => key)).size).toBe(cityIds.length * roleCount);
-
   const targetUsd = 400;
-  const expectedKeys = publishedCandidates
-    .filter(({ savings }) => savings >= targetUsd)
-    .map(({ key }) => key)
-    .sort();
-  expect(expectedKeys.length).toBeGreaterThan(cityIds.length);
-  evidenceFor(page).qualifyingOracle = { expectedKeys, cityCount: cityIds.length, roleCount, targetUsd };
+  const oracle = independentCandidates(targetUsd, { region: "asean" });
+  const expectedKeys = oracle.qualifying.map(({ cityId, role }) => `${cityId}:${role}`);
+  expect(new Set(oracle.candidates.map(({ cityId }) => cityId)).size).toBe(cityIds.length);
+  expect(new Set(oracle.qualifying.map(({ cityId }) => cityId)).size).toBeGreaterThan(1);
+  expect(oracle.qualifying.length).toBeGreaterThan(cityIds.length);
+  expect(oracle.qualifying.filter(({ cityId }) => cityId === "kuala-lumpur").length).toBeGreaterThan(1);
+  evidenceFor(page).qualifyingOracle = {
+    expectedKeys,
+    cityCount: cityIds.length,
+    targetUsd,
+  };
 
   await page.goto(
     `/en/tools/cost-of-living-calculator?tab=min-role&baseline=savings_target&target=${targetUsd}&region=asean`,
@@ -3457,11 +3933,15 @@ Then(
     expect(oracle).toBeDefined();
     const qualifyingRows = page.getByTestId("qualifying-divider").locator("xpath=preceding-sibling::tr");
     const actualKeys: string[] = [];
+    const actualOrderedKeys: string[] = [];
     for (const row of await qualifyingRows.all()) {
       expect(await numericAttribute(row, "data-essential-savings-usd")).toBeGreaterThanOrEqual(oracle!.targetUsd);
-      actualKeys.push(await candidateKey(row));
+      const key = await candidateKey(row);
+      actualKeys.push(key);
+      actualOrderedKeys.push(key);
     }
-    expect(actualKeys.sort()).toEqual(oracle!.expectedKeys);
+    expect(actualKeys.slice().sort()).toEqual(oracle!.expectedKeys.slice().sort());
+    expect(actualOrderedKeys).toEqual(oracle!.expectedKeys);
   },
 );
 
@@ -3494,7 +3974,8 @@ When("I read a qualifying \\(city, role\\) row", async ({ page }) => {
 });
 
 Then("the row shows the city and its country", async ({ page }) => {
-  await expect(page.getByTestId("city-cell").first()).toContainText(/.+, .+/);
+  const row = page.locator("tr[data-candidate-row='true'][data-city-id='singapore'][data-role='senior_swe']");
+  await expect(row.getByTestId("city-cell")).toContainText("Singapore, Singapore");
 });
 
 Then("every \\(city, role\\) row is drawn only from Indonesian cities", async ({ page }) => {
@@ -3569,19 +4050,26 @@ Then("both inputs produce the same baseline and ranking", async ({ page }) => {
 Then(
   "the qualifying \\(city, role\\) rows whose savings are at or above zero appear above the divider",
   async ({ page }) => {
+    const oracle = independentCandidates(0);
     const rows = page.getByTestId("qualifying-divider").locator("xpath=preceding-sibling::tr");
     expect(await rows.count()).toBeGreaterThan(0);
-    for (const text of await rows.getByTestId("savings-triple").locator("[data-line='usd']").allTextContents()) {
-      expect(Number(text.replace(/[^0-9.-]/g, ""))).toBeGreaterThanOrEqual(0);
+    const actual = await rows.evaluateAll((items) =>
+      items.map((row) => ({
+        key: `${row.getAttribute("data-city-id")}:${row.getAttribute("data-role")}`,
+        rank: Number(row.getAttribute("data-rank")),
+        savings: Number(row.getAttribute("data-essential-savings-usd")),
+      })),
+    );
+    expect(actual.map(({ key }) => key)).toEqual(oracle.qualifying.map(({ cityId, role }) => `${cityId}:${role}`));
+    for (let index = 0; index < actual.length; index += 1) {
+      expect(actual[index]!.savings).toBeCloseTo(oracle.qualifying[index]!.essentialSavingsUsd, 8);
+      expect(actual[index]!.rank).toBe(oracle.qualifying[index]!.rank);
     }
   },
 );
 
 Then("the City column shows Indonesian city and country names where translations exist", async ({ page }) => {
-  await expect(
-    page
-      .getByTestId("city-cell")
-      .filter({ hasText: /Singapura/ })
-      .first(),
-  ).toBeVisible();
+  const row = page.locator("tr[data-candidate-row='true'][data-city-id='singapore'][data-role='senior_swe']");
+  await expect(row).toHaveAttribute("data-country-id", "sg");
+  await expect(row.getByTestId("city-cell")).toHaveText("Singapura, Singapura");
 });

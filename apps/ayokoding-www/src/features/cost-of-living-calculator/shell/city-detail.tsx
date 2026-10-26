@@ -179,6 +179,12 @@ export function CityDetail({ dataset, cityId, household, schoolType, area, local
             rawValue={essentials}
           />
           <Row
+            label={t(locale, "colLifestyle")}
+            value={fmtCurrency(e.lifestyle.amount, cur)}
+            testId="expense-lifestyle"
+            rawValue={e.lifestyle.amount}
+          />
+          <Row
             label={t(locale, "labelMonthlyTotal")}
             value={fmtCurrency(monthlyTotal, cur)}
             testId="monthly-total"

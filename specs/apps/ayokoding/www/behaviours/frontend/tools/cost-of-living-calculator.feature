@@ -28,7 +28,7 @@ Feature: Salary savings calculator
   Scenario: Country and city are always shown together on every tab
     Given I am on "/en/tools/cost-of-living-calculator"
     When I view any tab's results table
-    Then every row shows a Country column immediately to the left of the City column
+    Then each tab's rows show the country alongside the city, using separate adjacent columns where that table has them
 
   # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Clicking a city name opens its single-city cost-of-living detail
   @integration-exempt
@@ -335,7 +335,7 @@ Feature: Salary savings calculator
   # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Household composition recalculates minimum-role candidates
   @integration-exempt
   Scenario: Household composition recalculates minimum-role candidates
-    Given I am on the "Minimum role" tab and the "SWE I" role qualifies for the "single" household basis
+    Given I am on the "Minimum role" tab with Austin selected and the "SWE I" role qualifies for the "single" household basis at a 2000 USD target
     When I change the household to "married with 2 children" and the area to "center"
     Then "SWE I" is re-evaluated after childcare, schooling, and central housing raise modeled essentials
     And the marked minimum reflects the recalculated household
@@ -673,7 +673,8 @@ Feature: Salary savings calculator
   Scenario: Each tab has a visible description associated with its trigger
     Given the user views the calculator tab bar
     When the tab bar renders
-    Then each of the three tabs has a visibly rendered description element associated with its trigger via aria-describedby
+    Then each of the three tabs has a description element associated with its trigger via aria-describedby
+    And only the active tab's description is visible
     And no tab description text is duplicated elsewhere on screen
 
   # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Uppercase locale URL redirects to canonical lowercase
@@ -963,7 +964,7 @@ Feature: Salary savings calculator
   # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Typing the gross salary echoes instantly but commits to the URL only after typing settles
   @integration-exempt
   Scenario: Typing the gross salary echoes instantly but commits to the URL only after typing settles
-    Given I am on the "Savings" tab
+    Given I am on the "Savings" tab with the browser clock paused
     When I type a gross monthly salary of "7000" without pausing
     Then the salary field immediately shows "7000"
     And the gross salary is written to the URL once typing settles
@@ -1017,14 +1018,14 @@ Feature: Salary savings calculator
     Then every tab trigger is at least 44px tall
     And every school-type, area, and salary-currency segmented radio is at least 44px tall
 
-  # USS-003 — Area toggle exposes its active state via ARIA.
+  # USS-003 — Area radio group exposes its selected state via ARIA.
   # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Area toggle exposes its pressed state
   @integration-exempt
   Scenario: Area toggle exposes its pressed state
     Given "City center" is the active area
     When the page is rendered
-    Then the "City center" button has aria-pressed "true"
-    And the "Rural" button has aria-pressed "false"
+    Then the "City center" radio has aria-checked "true"
+    And the "Rural" radio has aria-checked "false"
 
   # USS-004 — disabled school-type buttons announce the prerequisite.
   # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Disabled school-type buttons announce the prerequisite

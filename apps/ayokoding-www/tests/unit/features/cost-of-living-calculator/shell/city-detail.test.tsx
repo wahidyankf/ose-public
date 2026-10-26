@@ -56,6 +56,29 @@ describe("CityDetail", () => {
     expect(screen.getByTestId("expense-healthcare")).toBeTruthy();
   });
 
+  // Gherkin: clicking a city shows the full per-category breakdown and monthly total.
+  it.each([
+    { locale: "en", label: "Lifestyle" },
+    { locale: "id", label: "Gaya hidup" },
+  ] as const)("shows the flat lifestyle amount outside essentials in $locale", ({ locale, label }) => {
+    render(
+      <CityDetail
+        {...defaultProps}
+        cityId="singapore"
+        household={{ adults: 2, preschoolKids: 0, schoolKids: 0 }}
+        locale={locale}
+      />,
+    );
+
+    // Raw Singapore fixture: lifestyle 260; two-adult essentials are
+    // 3830 × 1.25 + 420 × 1.5 + 128 + 210 × 1.25 + 130 × 1.5 = 6003 SGD.
+    expect(screen.getByText(label)).toBeVisible();
+    expect(screen.getByTestId("expense-lifestyle")).toHaveAttribute("data-raw", "260");
+    expect(screen.getByTestId("expense-lifestyle")).toHaveTextContent("SGD 260");
+    expect(screen.getByTestId("essentials-subtotal")).toHaveAttribute("data-raw", "6003");
+    expect(screen.getByTestId("monthly-total")).toHaveTextContent("SGD 6,263");
+  });
+
   it("shows healthcare funding-scheme badge", () => {
     render(<CityDetail {...defaultProps} />);
 

@@ -1,6 +1,6 @@
 # AyoKoding Web — Phoenix LiveView Rewrite
 
-> **Status:** In Progress. Execution is starting; implementation has not begun.
+> **Status:** In Progress. Phase 0 baseline repairs and prerequisite checks are underway.
 
 Depends-on: []
 
@@ -35,6 +35,11 @@ database adoption, and removal of the Next.js app are outside scope.
 - [Delivery checklist](./delivery.md) — dependency graph, ordered TDD actions, local commands,
   evidence, and completion gates.
 - [Learnings](./learnings.md) — transient execution observations and their eventual disposition.
+- [Execution evidence](./evidence/P0/readiness.md) — verified setup, ownership and admission results.
+- [Dependency prerequisites](./evidence/P0/native-prerequisites.md) — exact import notices,
+  compatible requirements, installed native build prerequisites and pending browser setup.
+- [Calculator source review](./evidence/P0/calculator-source-review.md) — independent source
+  acceptance, exact file pins and the remaining runtime/product proof.
 
 ## Specifications
 

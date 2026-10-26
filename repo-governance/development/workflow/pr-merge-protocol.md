@@ -22,7 +22,7 @@ Merging a pull request requires a set of hardened preconditions to hold — not 
 
 ## Related Documentation
 
-- [Git Push Safety Convention](../workflow/git-push-safety.md) -- Per-instance approval for destructive git operations; gated by a prompt because their safety is not mechanically checkable, unlike a PR merge's
+- [Git Push Safety Convention](../workflow/git-push-safety.md) -- Per-instance approval for destructive git operations (with the worktree-to-PR pre-authorization for `--no-verify`); gated by a prompt because their safety is not mechanically checkable, unlike a PR merge's
 - [Plans Organization Convention §Delivery Mode](../../conventions/structure/plans/delivery-mode-the-four-modes.md#delivery-mode) -- Establishes `[AI]` merge as the default and `[HUMAN]` as the explicit per-plan opt-in this protocol implements
 - [Code Quality Convention](../quality/code.md) -- Quality gates enforced by git hooks
 - [Trunk Based Development Convention](../workflow/trunk-based-development.md) -- The `worktree-to-pr` default delivery mode and how it relates to TBD

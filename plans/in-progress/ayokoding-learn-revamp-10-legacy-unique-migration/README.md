@@ -1,9 +1,8 @@
 # AyoKoding Learn Revamp 10 — Legacy Unique Migration
 
-Depends-on: [ayokoding-learn-revamp-05-code-harness]
+Depends-on: [ayokoding-app-web]
 
-> **Status:** In Progress. Execution ordered by the user ahead of plans 06 to 09 (DAG
-> `P05 --> P10` allows it; plans 11 to 14 still start only after this plan has merged).
+> **Status:** In Progress. Remaining work is blocked until the user authorizes resumption after the Podman migration and Phoenix rewrite complete. Preserve the existing worktree checkpoint and progress.
 >
 > **Plan quality gate:** PASS. Three checker cycles cleared all findings (19 + 2 residues +
 > 2 LOW links fixed verbatim); the remaining order deviation (62 outline skeletons belong to
@@ -110,41 +109,17 @@ to change before execution.
 
 ## Dependency and Result
 
-The series runs strictly in order, one plan, one worktree, and one PR at a time (series decision 42), so
-plans 01 to 09 are all merged when this plan starts. This plan builds directly on plan 02 (path model,
-for the closure rule that lets a course join no path), plan 03 (course metadata and catalog counts), and
-plan 05 (the code harness and the toolchain-addition procedure), and on plan 09's merged `clojure` entry
-and `java` install recipe, which Phase 0 re-reads before any toolchain work starts. Plans 11 to 13 run after it and may treat
-this plan's new courses and its `covered` dispositions as audit input; plan 14 runs last and consumes this
-plan's mapping file as its only input for the series-ending deletion and redirect step.
-
-```mermaid
-%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Gray #808080
-flowchart TD
-  accTitle: Plan 10 position in the series
-  accDescr: Plans 01 to 09 run one after another and are merged before plan 10 starts. Plan 10 inventories learn/legacy against the course library and writes 48 new courses for the topics with no equivalent, recording the legacy-to-course mapping. Plans 11 to 13 audit the rest of the catalog next; plan 14 runs last, deletes learn/legacy, adds the redirects, and repoints the docs files using plan 10's mapping, and carries the series-completion gate.
-  P01["01 to 09<br/>merged in order"] --> P10["10 legacy unique<br/>migration<br/>(48 courses<br/>+ mapping file)"]
-  P10 --> P11["11 to 13<br/>audits"]
-  P11 --> P14["14 legacy removal<br/>+ end-state gate"]
-
-  classDef prior fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
-  classDef current fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef later fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
-  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
-  class P01 prior
-  class P10 current
-  class P11,P14 later
-```
+The live execution blockers are the Depends-on entries at the top of this README and the [plan-order graph](../../README.md#plan-order). Earlier series plans may provide useful merged inputs, but they do not add unlisted start conditions. Each plan retains its stated content ownership and delivery evidence.
 
 ## Series Context
 
-This plan is row 10 of the 14-plan **AyoKoding Learn Revamp** series. Each plan is one PR delivered from
-its own worktree, and the plans run strictly in numeric order; the "Depends on" column shows which
-earlier plans each one builds on directly. The user resolved the series decisions on 2026-10-09; every
+This plan is row 10 of the 14-plan **AyoKoding Learn Revamp** series. Each plan is delivered from its own
+worktree. Live execution follows the plan-order DAG; the "Depends on" column and graph show which live
+predecessors must complete, while plans without an edge may run in parallel after Phoenix. The user resolved the series decisions on 2026-10-09; every
 decision this plan relies on is copied into
 [brd.md](./brd.md#resolved-series-decisions-this-plan-relies-on).
 
-| NN  | Plan suffix                           | Scope                                                                                                                        | Depends on       |
+| NN  | Plan suffix                           | Scope                                                                                                                        | Series inputs    |
 | --- | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ---------------- |
 | 01  | `navigation-and-display`              | Strip `NN ·` title prefixes; path position numbers; sidebar auto-scroll; render fixes                                        | —                |
 | 02  | `path-model`                          | Phases, goals, `assumes`, outline marker, prerequisite revision, closure checks, career copy                                 | 01               |
@@ -169,15 +144,9 @@ cycles (the user's cap, 2026-10-09: "semua jadi 2 aja"). A course that still fai
 `local-tmp/ayokoding-learn/execution-ledger.md`, reported, and the batch moves on; the wave gate stays
 open until the user decides. See [tech-docs/006](./tech-docs/006-execution-model-waves-and-ledger.md).
 
-## Parallel Phoenix Rewrite
+## Phoenix Prerequisite
 
-The [AyoKoding Phoenix LiveView rewrite](../ayokoding-app-web/README.md) runs
-independently while this migration continues. This plan retains ownership of course authoring,
-catalog metadata, the legacy mapping, and code-example toolchains; its existing dependencies and
-authorized execution order stay in force. Phoenix reads the current corpus in place and owns
-reconciling this plan's already-merged content, prerequisites, and scenarios. Neither plan waits
-for the other, and the rewrite must not freeze current catalog counts. The apps use separate
-local ports (3101 and 3102), tests, and owner specification corpora.
+The [AyoKoding Phoenix LiveView rewrite](../ayokoding-app-web/README.md) must complete before the remaining work in this plan resumes. Keep its current worktree checkpoint and completed evidence intact. This plan retains ownership of course authoring and its mapping; do not inspect or consume unmerged work from the Phoenix worktree. After Phoenix, follow the live DAG: this plan may run alongside other AyoKoding plans that are not its declared predecessors, and it reconciles all shared content against merged `main` at each delivery boundary.
 
 ## Navigation
 

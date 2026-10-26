@@ -652,7 +652,6 @@ policies:
         - glob: "LICENSING-NOTICE.md"
         - glob: "README.md"
         - glob: "SECURITY.md"
-        - glob: "roadmap.md"
         - glob: "apps/ayokoding-cli/README.md"
         - glob: "apps/ayokoding-www/README.md"
         - glob: "apps/ayokoding-www-be-e2e/README.md"

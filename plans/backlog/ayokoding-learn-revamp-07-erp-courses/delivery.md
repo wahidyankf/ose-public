@@ -4,11 +4,7 @@
 > `[HUMAN]`: only a human can do it (physical action, out-of-band approval, real-secret or
 > privileged-credential handling). `[AI+HUMAN]`: agent prepares, human approves or finishes.
 
-**Do not start** until the user gives an explicit execution command for this plan. That command is
-the authorization for this plan's change set (commits, pushes, PR, merge, and deploy described
-below). The user said: "jangan kerjain/implement plan ini sebelum gw kasih perintah buat eksekusi
-ya". The 14 plans of the series run strictly one after another (series decision 42), so plans 01 to
-06 must be merged, deployed, verified, and cleaned up first (see Phase 0).
+**Do not start** until the user gives an explicit execution command for this plan and every live dependency declared in its README has completed. The authorization covers the change set and delivery actions described below.
 
 **Plan quality gate:** not run yet, so no verdict exists. By the user's decision of 2026-10-09 it was
 not run while this plan was written; it runs at the start of execution, as the first checkbox of
@@ -290,7 +286,7 @@ Rules that keep it bounded:
 
 Phase 0 opens no PR. Its evidence rides the DU-07 PR.
 
-- **Input:** this plan at `<plan>/`; `origin/main` with plans 01 to 06 merged.
+- **Input:** this plan at `<plan>/`; `origin/main` at the recorded current revision.
 - **Outcome:** a verdict from the plan quality gate; a provisioned, initialized worktree; confirmed
   preconditions; the as-merged names of every consumed contract; the landing-split and removal
   baselines; a lockfile source; nine probe results; a recorded green baseline; the empty ledger.
@@ -326,9 +322,8 @@ Phase 0 opens no PR. Its evidence rides the DU-07 PR.
       lists a folder ending in each of `__ayokoding-learn-revamp-01-navigation-and-display`,
       `__ayokoding-learn-revamp-02-path-model`, `__ayokoding-learn-revamp-03-catalog-and-metadata`,
       `__ayokoding-learn-revamp-04-learning-experience`, `__ayokoding-learn-revamp-05-code-harness`, and
-      `__ayokoding-learn-revamp-06-accounting-courses`. Record the six folder names. Also record whether
-      `plans/done/` or `plans/in-progress/` holds a folder for plan 08 (expected: none; plan 08 follows
-      this plan).
+      `__ayokoding-learn-revamp-06-accounting-courses`. Record the six folder names. Other live plans
+      may run in parallel after Phoenix when the DAG permits; do not gate this plan on their status.
 - [ ] [AI] Each earlier plan's product is on `origin/main`. Run each command and record its result in
       `<plan>/evidence/phase-0-contracts.md`:
   - plan 02: `rtk git cat-file -e origin/main:apps/ayokoding-www/src/features/course-paths/core/skills-restructure-allowlist.ts`
@@ -527,9 +522,10 @@ Phase 0 opens no PR. Its evidence rides the DU-07 PR.
       for `erp-foundations-and-history` and for each other ERP slug, over `apps/ayokoding-www/tests`,
       `apps/ayokoding-www-fe-e2e`, `apps/ayokoding-www-be-e2e`, and `specs`. Record every hit in
       `<plan>/evidence/phase-1-outline-tests.md`.
-- [ ] [AI] Choose the replacement: the first capstone course listed by
-      `grep -l "^status: outline" apps/ayokoding-www/content/en/learn/courses/capstone-*/_index.md`. It
-      stays an outline after this PR, because plan 08 follows this plan. Record its slug.
+- [ ] [AI] Choose the replacement: the first currently outlined course listed by
+      `grep -l "^status: outline" apps/ayokoding-www/content/en/learn/courses/*/_index.md`, preferring a
+      capstone if one remains. Record its slug and merged source revision. If no outline remains,
+      follow the existing human decision checkpoint below; do not gate on plan 08's status.
 - [ ] [HUMAN] **Only if no outline course would remain after this PR** (unexpected): stop and report. The
       Outline badge would then need a synthetic fixture, which is a user decision.
 - [ ] [AI] **Before:** run every re-pointed test unchanged and confirm it passes (the ERP course is

@@ -4,9 +4,9 @@ Writing eight long courses with working code is most of this plan's work. This p
 order the courses are written, who writes and checks each one, how every loop is bounded, what happens
 when a course cannot pass, and where the record of it all lives.
 
-The previous plans (01–07) are already merged when this plan starts, because the series executes
-strictly in order (decision 42). Nothing in this plan waits for another plan, rebases onto one, or runs
-beside one.
+Execution follows the live Depends-on declarations. Record the current merged sources before
+starting and reconcile changes at each delivery boundary. An undeclared plan is not a start gate;
+independent plans may run alongside this one without sharing uncommitted work.
 
 ## Batches
 
@@ -120,7 +120,7 @@ budget rung 4 applies. Then:
    course, for example to authorise more cycles for that one or to change the plan's scope. The plan does
    not continue until every BLOCKED course is resolved.
 
-There is no WAITING state. Plan 09 and the audit plans run after this plan, so nothing here waits for them
+There is no WAITING state. Plan 09 and the audit plans may run before, during, or after this plan, so no batch waits for their completion; re-read merged changes at each delivery boundary
 ([003](./003-prerequisites-readiness-and-ordering.md#gate-r-prerequisite-readiness)).
 
 ## The Execution Ledger

@@ -231,7 +231,7 @@ While we're not yet accepting public contributions, you can stay connected and s
 - **GitHub Repository**: [open-sharia-enterprise](https://github.com/wahidyankf/ose-public)
   - ⭐ Star the repository to show your support
   - 👀 Watch for updates and release announcements
-  - 📋 Read the [detailed roadmap](https://github.com/wahidyankf/ose-public/blob/main/roadmap.md) and planning documents
+  - 📋 Read the [product overview](https://github.com/wahidyankf/ose-public/blob/main/README.md#-understand-the-product) and [plans index](https://github.com/wahidyankf/ose-public/blob/main/plans/README.md)
 
 ### Learn and Explore
 

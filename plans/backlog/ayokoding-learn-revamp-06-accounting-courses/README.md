@@ -1,11 +1,8 @@
 # AyoKoding Learn Revamp 06 — Accounting Courses
 
-Depends-on: [ayokoding-learn-revamp-05-code-harness]
+Depends-on: [ayokoding-app-web]
 
-> **Status:** Backlog. Do not execute until both are true: the user gives an explicit execution
-> command, and plans 01 to 05 of this series have merged to `origin/main`. The 14 plans run strictly
-> one after another (series decision 42), so plan 05 is merged, deployed, verified, and cleaned up
-> before this plan starts.
+> **Status:** Backlog. Do not execute until the user gives an explicit execution command and every predecessor declared in this README has completed, including the Podman migration and Phoenix rewrite.
 >
 > **Plan quality gate:** not run yet, so no verdict exists. By the user's decision of 2026-10-09 it
 > was not run while the plan was written; it runs at the start of execution, as the first item of
@@ -57,37 +54,15 @@ accounting paths into titled phases with plain outcomes, in the same PR.
 
 ## Dependency and Result
 
-The series runs strictly in order, one plan, one worktree, and one PR at a time (series decision
-42), so plans 01 to 05 are all merged when this plan starts. Of those, this plan builds directly on
-plan 02 (path model), plan 03 (course metadata), and plan 05 (code harness), and it edits the skills
-landing as plan 04 left it.
-
-```mermaid
-%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Gray #808080
-flowchart TD
-  accTitle: Plan 06 position in the series
-  accDescr: Plans 01 to 05 run one after another and are merged before plan 06 starts. Plan 06 writes the 24 accounting courses, restructures both accounting paths, and adds the psql toolchain. Plan 07 starts only after plan 06 has merged and does the same for ERP.
-  P01["01 to 05<br/>merged in order"] --> P06["06 accounting<br/>courses + paths"]
-  P06 --> P07["07 ERP<br/>courses + paths"]
-
-  classDef prior fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
-  classDef current fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef later fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
-  class P01 prior
-  class P06 current
-  class P07 later
-  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
-```
+The live execution blockers are the Depends-on entries at the top of this README and the [plan-order graph](../../README.md#plan-order). Earlier series plans may provide useful merged inputs, but they do not add unlisted start conditions. Each plan retains its stated content ownership and delivery evidence.
 
 ## Series Context
 
-This plan is row 06 of the 14-plan **AyoKoding Learn Revamp** series. Each plan is one PR delivered
-from its own worktree, and the plans run strictly in numeric order; the "Depends on" column shows
-which earlier plans each one builds on. The user resolved the series decisions on 2026-10-09; every
+This plan is row 06 of the 14-plan **AyoKoding Learn Revamp** series. Each plan is one PR delivered from its own worktree. Its live execution blockers are declared in Depends-on and the [plan-order graph](../../README.md#plan-order); the series table below records the historical content relationships. The user resolved the series decisions on 2026-10-09; every
 decision this plan relies on is copied into
 [brd.md](./brd.md#resolved-series-decisions-this-plan-relies-on).
 
-| NN  | Plan suffix                      | Scope                                                                                        | Depends on       |
+| NN  | Plan suffix                      | Scope                                                                                        | Series inputs    |
 | --- | -------------------------------- | -------------------------------------------------------------------------------------------- | ---------------- |
 | 01  | `navigation-and-display`         | Strip `NN ·` title prefixes; path position numbers; sidebar auto-scroll; render fixes        | —                |
 | 02  | `path-model`                     | Phases, goals, `assumes`, outline marker, prerequisite revision, closure checks, career copy | 01               |
@@ -112,14 +87,9 @@ every loop stops after 2 cycles (the user's cap, 2026-10-09: "semua jadi 2 aja")
 fails is marked BLOCKED, reported, and the batch moves on; the plan then stops for the user before the
 paths are restructured. See [tech-docs/006](./tech-docs/006-execution-model.md).
 
-## Parallel Phoenix Rewrite
+## Phoenix Prerequisite
 
-The [AyoKoding Phoenix LiveView rewrite](../../in-progress/ayokoding-app-web/README.md) runs independently of
-this plan and reads the same content and path manifests. This plan keeps its existing execution
-order and does not wait for the rewrite. Continue authoring accounting courses and restructuring
-their paths in `apps/ayokoding-www`; the rewrite owns adapting Phoenix to already-merged metadata,
-prerequisite, phased-manifest, copy, and milestone changes. The two apps use separate local ports
-(3101 and 3102), tests, and owner specification corpora.
+The [AyoKoding Phoenix LiveView rewrite](../../in-progress/ayokoding-app-web/README.md) must complete before this plan starts. This plan retains ownership of its AyoKoding content and source files. Phoenix may reconcile the merged results at its own delivery boundaries after this plan completes.
 
 ## Navigation
 

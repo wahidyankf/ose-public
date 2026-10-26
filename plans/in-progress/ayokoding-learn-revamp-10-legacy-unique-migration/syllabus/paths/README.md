@@ -37,7 +37,9 @@ plan.
 | `clojure-essentials` + `database-migrations-with-clojure-and-migratus` | The same                                                                                                                                                                          | `clojure-essentials` is Wave 5, the dependent Wave 11 |
 
 No other cross-course dependency exists inside this plan's 48 courses; every other course's prerequisites are
-plans 01 to 09 courses, already filled before this plan starts (series decision 42). In particular
+plans 01 to 09 courses, which were the baseline when this mapping was authored. Revalidate course
+prerequisites against merged `main` during execution; this historical assumption does not add a live
+start gate. In particular
 `golang-in-depth` and `elixir-in-depth` carry no path-level prerequisite chain to the migration or backend
 courses that use those languages.
 

@@ -32,19 +32,34 @@ is updated in the same change that moves, adds, or removes a plan, per
 ```mermaid
 flowchart LR
   accTitle: Plan order
-  accDescr: Eleven live plans; the Phoenix rewrite runs independently of the AyoKoding content series.
+  accDescr: Twelve live plans; the Podman migration precedes Phoenix, Phoenix precedes every live AyoKoding plan, and plans 06 through 13 also precede the plan 14 terminal gate.
+  POD["🔜 docker-to-podman"]:::backlog
+  PHX["🏗️ ayokoding-app-web"]:::inprogress
+  P10["🏗️ 10-migration"]:::inprogress
   P06["🔜 06-accounting"]:::backlog
   P07["🔜 07-erp"]:::backlog
   P08["🔜 08-capstone"]:::backlog
   P09["🔜 09-filler"]:::backlog
-  P10["🏗️ 10-migration"]:::inprogress
   P11["🔜 11-audit-lang"]:::backlog
   P12["🔜 12-audit-cs"]:::backlog
   P13["🔜 13-audit-prodsec"]:::backlog
   P14["🔜 14-removal"]:::backlog
   FER["🔜 ferret-02-backend"]:::backlog
-  PHX["🏗️ ayokoding-app-web"]:::inprogress
+  POD --> PHX
+  PHX --> P06
+  PHX --> P07
+  PHX --> P08
+  PHX --> P09
+  PHX --> P10
+  PHX --> P11
+  PHX --> P12
+  PHX --> P13
+  PHX --> P14
   P06 --> P07
+  P06 --> P14
+  P07 --> P14
+  P08 --> P14
+  P09 --> P14
   P10 --> P14
   P11 --> P14
   P12 --> P14
@@ -57,7 +72,8 @@ flowchart LR
 Legend: 🔜 blue = backlog; 🏗️ teal = in progress. Hexagon credentialed-machine steps do not apply here.
 `ferret-02` has no live dependencies and runs in parallel with everything.
 
-The [AyoKoding Phoenix LiveView rewrite](./in-progress/ayokoding-app-web/README.md) also has no live
-dependencies (`Depends-on: []`). It can start and finish alongside the existing AyoKoding plans;
-its executor reconciles shared content changes already merged into `main` without waiting for
-the content series. Awareness links between plans do not add dependency edges.
+The Podman migration must complete before the [AyoKoding Phoenix LiveView rewrite](./in-progress/ayokoding-app-web/README.md),
+which must complete before each live AyoKoding Learn Revamp plan. Plans 06 through 13 may proceed in
+parallel after Phoenix except for the existing plan 06 → 07 dependency. Plan 14 also waits for plans
+06 through 13 because its terminal gate verifies the complete 14-plan corpus; its other declared
+dependencies are explicit direct predecessors for that gate.

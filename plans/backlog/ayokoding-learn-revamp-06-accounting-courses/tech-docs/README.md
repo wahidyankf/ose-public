@@ -39,10 +39,11 @@ self-contained enough for a junior engineer to carry out its part.
 
 ## Cross-Plan Assumptions
 
-The series runs strictly in order (series decision 42), so plans 01 to 05 are merged when this plan
-starts and plan 07 has not started. This plan builds directly on plans 02, 03, and 05 and edits the
-skills landing as plan 04 left it. Each assumption below is checked in Phase 0; a failed check stops
-the plan with a report to the user.
+Plans 01 to 05 provide source context for this plan; plan 06 does not wait for other live AyoKoding
+plans beyond its declared Phoenix prerequisite. Plan 07 remains blocked on plan 06 by the declared
+06 → 07 edge. This plan builds on the merged outputs of plans 02, 03, and 05 and edits the skills
+landing as plan 04 left it. Phase 0 re-measures each assumption against `origin/main` and records
+differences for reconciliation.
 
 | From    | What this plan assumes                                                                                                                                                                                                                                                                                                                                    | Phase 0 check                                                                                   |
 | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |

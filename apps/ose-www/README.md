@@ -8,7 +8,8 @@ developing.
 
 OSE is pre-alpha. The product direction, technical architecture, and public APIs can change as the
 team learns. For the wider product context, see the repository
-[roadmap](../../roadmap.md) and [application map](../../docs/reference/system-architecture/applications.md).
+[product overview](../../README.md#-understand-the-product), [plans index](../../plans/README.md),
+and [application map](../../docs/reference/system-architecture/applications.md).
 
 ## What the site provides
 

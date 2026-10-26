@@ -16,6 +16,13 @@ step-by-step execution record.
 
 ## Planned Projects
 
+### Rootless container runtime
+
+- [Docker to Podman](./docker-to-podman/README.md) — migrate operational container use across the
+  repository, including development, CI, image publishing, and the example runner, to rootless
+  Podman with an explicit podman-compose provider. AyoKoding lesson content and hosting migration
+  are excluded. This plan has no predecessors and must finish before the Phoenix rewrite resumes.
+
 ### FERRET initialization series
 
 FERRET (Framework for Evaluation, Regression, Reliability & Experiment Tracking) begins as a local-only,
@@ -33,25 +40,26 @@ authorization.
 
 The `learn` section of `apps/ayokoding-www` is reworked from a pile of documents into learning paths
 with complete, runnable courses, and `learn/legacy` is removed. The work is split into 14 plans. Each
-plan is one worktree and one PR, and the plans run **strictly in numeric order**: the next plan starts
-only after the previous one is merged, deployed, verified, and cleaned up. The "Depends on" column
-names the earlier plans each one builds on directly. Every plan's Phase 0 first runs the deferred
+plan is one worktree and one PR. Live execution follows the [plan-order DAG](../README.md#plan-order):
+the Podman migration precedes Phoenix, Phoenix precedes each live AyoKoding plan, and plan 14 waits
+for plans 06 through 13 for its terminal gate. Plans without a dependency edge may run in parallel.
+The "Depends on" column names each live plan's declared predecessors. Every plan's Phase 0 first runs the deferred
 `plan-quality-gate` (at most 2 cycles); plan 01's verdict is recorded in its `delivery.md`.
 
-| Order | Plan                                                                                                                   | Locally verifiable outcome                                                                          | Depends on  |
-| ----: | ---------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | ----------- |
-|     3 | [Catalog and metadata](../done/2026-10-13__ayokoding-learn-revamp-03-catalog-and-metadata/README.md) (done 2026-10-13) | Course metadata schema and backfill, categories, catalog page, course landing header                | 01          |
-|     4 | [Learning experience](../done/2026-10-18__ayokoding-learn-revamp-04-learning-experience/README.md) (done 2026-10-18)   | Browser progress, phase roadmap page, context bar, mark complete (and undo), Learn home             | 02, 03      |
-|     5 | [Code harness](../done/2026-10-19__ayokoding-learn-revamp-05-code-harness/README.md) (done 2026-10-19)                 | Go + Cobra `ayokoding-cli`, `run.yaml` contract, runners, Nx target, CI, quality-gate propagation   | —           |
-|     6 | [Accounting courses](./ayokoding-learn-revamp-06-accounting-courses/README.md)                                         | 24 accounting courses written; both accounting paths restructured in the same PR                    | 02, 03, 05  |
-|     7 | [ERP courses](./ayokoding-learn-revamp-07-erp-courses/README.md)                                                       | 30 ERP courses written; both ERP paths restructured in the same PR                                  | 06          |
-|     8 | [Capstone courses](./ayokoding-learn-revamp-08-capstone-courses/README.md)                                             | 8 skeleton capstones rewritten; the AI Engineer path gets its goal                                  | 02, 03, 05  |
-|     9 | [Filler rewrites](./ayokoding-learn-revamp-09-filler-rewrites/README.md)                                               | 8 templated filler courses rewritten                                                                | 03, 05      |
-|    10 | [Legacy unique migration](../in-progress/ayokoding-learn-revamp-10-legacy-unique-migration/README.md) (in progress)    | 48 new courses for legacy topics with no equivalent; the legacy-to-course map recorded              | 03, 05      |
-|    11 | [Audit: languages and tooling](./ayokoding-learn-revamp-11-audit-languages-and-tooling/README.md)                      | 32 language, tooling, and infrastructure courses audited and fixed, every example in the harness    | 03, 05      |
-|    12 | [Audit: CS, systems, and data](./ayokoding-learn-revamp-12-audit-cs-systems-and-data/README.md)                        | 34 CS, systems, concurrency, distributed, database, and architecture courses audited and fixed      | 05          |
-|    13 | [Audit: product, security, and AI](./ayokoding-learn-revamp-13-audit-product-security-ai/README.md)                    | 45 application, AI, product, interview, and security courses audited and fixed                      | 03, 05      |
-|    14 | [Legacy removal](./ayokoding-learn-revamp-14-legacy-removal/README.md)                                                 | `learn/legacy` deleted, 308 redirects added, `docs/` links repointed, series-completion gate passed | 10 (+11–13) |
+| Order | Plan                                                                                                                   | Locally verifiable outcome                                                                          | Depends on     |
+| ----: | ---------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | -------------- |
+|     3 | [Catalog and metadata](../done/2026-10-13__ayokoding-learn-revamp-03-catalog-and-metadata/README.md) (done 2026-10-13) | Course metadata schema and backfill, categories, catalog page, course landing header                | 01             |
+|     4 | [Learning experience](../done/2026-10-18__ayokoding-learn-revamp-04-learning-experience/README.md) (done 2026-10-18)   | Browser progress, phase roadmap page, context bar, mark complete (and undo), Learn home             | 02, 03         |
+|     5 | [Code harness](../done/2026-10-19__ayokoding-learn-revamp-05-code-harness/README.md) (done 2026-10-19)                 | Go + Cobra `ayokoding-cli`, `run.yaml` contract, runners, Nx target, CI, quality-gate propagation   | —              |
+|     6 | [Accounting courses](./ayokoding-learn-revamp-06-accounting-courses/README.md)                                         | 24 accounting courses written; both accounting paths restructured in the same PR                    | Phoenix        |
+|     7 | [ERP courses](./ayokoding-learn-revamp-07-erp-courses/README.md)                                                       | 30 ERP courses written; both ERP paths restructured in the same PR                                  | Phoenix, 06    |
+|     8 | [Capstone courses](./ayokoding-learn-revamp-08-capstone-courses/README.md)                                             | 8 skeleton capstones rewritten; the AI Engineer path gets its goal                                  | Phoenix        |
+|     9 | [Filler rewrites](./ayokoding-learn-revamp-09-filler-rewrites/README.md)                                               | 8 templated filler courses rewritten                                                                | Phoenix        |
+|    10 | [Legacy unique migration](../in-progress/ayokoding-learn-revamp-10-legacy-unique-migration/README.md) (in progress)    | 48 new courses for legacy topics with no equivalent; the legacy-to-course map recorded              | Phoenix        |
+|    11 | [Audit: languages and tooling](./ayokoding-learn-revamp-11-audit-languages-and-tooling/README.md)                      | 32 language, tooling, and infrastructure courses audited and fixed, every example in the harness    | Phoenix        |
+|    12 | [Audit: CS, systems, and data](./ayokoding-learn-revamp-12-audit-cs-systems-and-data/README.md)                        | 34 CS, systems, concurrency, distributed, database, and architecture courses audited and fixed      | Phoenix        |
+|    13 | [Audit: product, security, and AI](./ayokoding-learn-revamp-13-audit-product-security-ai/README.md)                    | 45 application, AI, product, interview, and security courses audited and fixed                      | Phoenix        |
+|    14 | [Legacy removal](./ayokoding-learn-revamp-14-legacy-removal/README.md)                                                 | `learn/legacy` deleted, 308 redirects added, `docs/` links repointed, series-completion gate passed | Phoenix, 06–13 |
 
 The end state is a catalog of 229 courses, none in `status: outline`, each with runnable examples.
 Plan 01 is done ([`../done/2026-10-12__ayokoding-learn-revamp-01-navigation-and-display/README.md`](../done/2026-10-12__ayokoding-learn-revamp-01-navigation-and-display/README.md));

@@ -68,8 +68,8 @@ How many of the 32 courses use each id:
 
 ## Entries Other Plans Add, and This Plan's Own Additions
 
-Plan 09 changes the catalog in two ways, and its draft PR is merged before this plan starts (series decision
-42), so its full-run effect on CI is over:
+Plan 09 may change the catalog while this plan is underway. Phase 0 and each delivery boundary re-read
+the merged catalog and account for its current CI effect:
 
 | Change by plan 09                               | What it is                                                                                                                                                                                                     | What it means here                                                                                                                                                                                                                                  |
 | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

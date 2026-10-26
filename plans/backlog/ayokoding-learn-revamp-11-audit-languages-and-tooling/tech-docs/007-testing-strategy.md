@@ -77,7 +77,8 @@ no push has a failing test, and the red probe run per course is the evidence tha
 Plan 09 added a deterministic filler guard (`core/course-filler.ts`, rules FG1 to FG6) with a closed baseline
 in `core/course-filler-baseline.ts`: `FILLER_BASELINE`, `FILLER_BASELINE_CAP`, and
 `REWRITTEN_FILLER_COURSES`. The baseline held 25 non-outline courses that fire a rule on 2026-10-09; plan 09
-rewrites 8 of them, so the baseline and its cap read 17 when this plan starts. Each entry carries an owner tag.
+rewrites 8 of them, so 17 is the projected baseline and cap when this plan starts. Phase 0 records the
+actual merged baseline because other live plans may have already removed their entries. Each entry carries an owner tag.
 Five of the 17 are tagged `plan-11`. The guard's three rules, which live in the skill module
 `reference/course-quality-guards.md`, bind this plan:
 

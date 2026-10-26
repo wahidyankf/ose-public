@@ -4,13 +4,7 @@
 > `[HUMAN]`: only a human can do it (physical action, out-of-band approval, real-secret or
 > privileged-credential handling). `[AI+HUMAN]`: agent prepares, human approves or finishes.
 
-**Do not start** until both are true: (1) the user gives an explicit execution command for this
-plan — that command authorizes this plan's change set (commits, pushes, PR, merge, and the deploy
-described below); (2) plans 01 to 05 of this series have merged to `origin/main`, deployed, been
-verified, and had their worktrees cleaned up. The series runs strictly one plan at a time (series
-decision 42), so no other series plan runs while this one does, and no rebase between plans is
-needed. The user's words (2026-10-09): "jangan kerjain/implement plan ini sebelum gw
-kasih perintah buat eksekusi ya" (do not implement this plan until I give the command to execute it).
+**Do not start** until the user gives an explicit execution command for this plan and every live dependency declared in its README has completed. The authorization covers the change set and delivery actions described below.
 
 **Plan quality gate:** not run yet, so no verdict exists. By the user's decision of 2026-10-09 it was
 not run while the plan was written. It runs at the start of execution, as the first item of
@@ -277,12 +271,8 @@ Phase 0 opens no PR. Its evidence rides the delivery PR.
 - [ ] [AI] Sync and branch: `rtk git fetch origin`, `rtk git merge --ff-only origin/main`, then
       `rtk git switch -c ayokoding-learn-revamp-06-accounting-courses`. Append the branch to the
       inventory (`worktree-to-pr`, `active`). Acceptance: `rtk git status` shows the new branch, clean.
-- [ ] [AI] **Preconditions — plans 01 to 05 merged:** run
-      `rtk git ls-tree -d --name-only origin/main plans/done/`. Acceptance: the output contains folders
-      ending in `__ayokoding-learn-revamp-01-navigation-and-display`,
-      `__ayokoding-learn-revamp-02-path-model`, `__ayokoding-learn-revamp-03-catalog-and-metadata`,
-      `__ayokoding-learn-revamp-04-learning-experience`, and `__ayokoding-learn-revamp-05-code-harness`.
-      If any is missing, stop: report to the user.
+- [ ] [AI] **Declared prerequisites:** confirm each plan listed in this plan's Depends-on declaration has merged to origin/main. Other live plans that are not declared predecessors do not block this plan.
+
 - [ ] [AI] **Plan 07 not started:** run
       `rtk git grep -n "plan-07" origin/main -- apps/ayokoding-www/src/features/course-paths/manifests/skills`.
       Acceptance: matches in `conventional-erp.json` and `sharia-erp.json` only.
@@ -354,7 +344,7 @@ Phase 0 opens no PR. Its evidence rides the delivery PR.
 - [ ] [AI] The plan quality gate verdict line is recorded in this file's header, with verdict `PASS`
       or `PASS_WITH_FINDINGS` after at most 2 cycles.
 - [ ] [AI] `Provisioning status: provisioned` with identity and inventory recorded.
-- [ ] [AI] `<plan>/evidence/phase-0-baseline.md` records: the five merged plans, plan 07 not started, the name map, the
+- [ ] [AI] `<plan>/evidence/phase-0-baseline.md` records: the five merged plans, the name map, the
       `psql` result, the drift check, the tree-shape result, the rule-module result, the outline-example
       list, the Vercel probe, the M1 counts, every baseline exit code, and B.
 - [ ] [AI] `rtk git status --short` shows only `<plan>/` changes.

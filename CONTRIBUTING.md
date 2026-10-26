@@ -451,4 +451,5 @@ Thank you for respecting Open Sharia Enterprise's current intake boundary.
 
 **Where to go next.** If you are here to run the project, start with
 [Getting started with OSE Public](./docs/tutorials/getting-started-with-ose-public.md). If you are
-here to understand it, start with the [development roadmap](./roadmap.md).
+here to understand it, start with the [product overview](./README.md#-understand-the-product) and
+[plans index](./plans/README.md).

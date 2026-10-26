@@ -50,7 +50,8 @@ FastAPI-based courses can share one lock content (spike SP4), so one image serve
 
 ## Entries Other Plans Add
 
-Plans 09 to 12 are merged before this plan starts (series decision 42), so their full-run effect on CI is over. None of
+Plans 09 to 12 provide source context and may be active in parallel with this plan. Phase 1 measures
+the current CI effect of this plan and reconciles it with changes already merged to `origin/main`. None of
 their additions is used by these 45 courses. The facts are read from the plans' own documents on 2026-10-10; Phase 0
 reads the merged entries.
 

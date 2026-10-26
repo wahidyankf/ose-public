@@ -1,11 +1,8 @@
 # AyoKoding Learn Revamp 09 — Filler Course Rewrites
 
-Depends-on: [ayokoding-learn-revamp-05-code-harness]
+Depends-on: [ayokoding-app-web]
 
-> **Status:** Backlog. Do not execute until both are true: the user gives an explicit execution
-> command, and plans 01 to 08 of this series have merged to `origin/main`. The 14 plans run strictly
-> one after another (series decision 42), so plan 08 is merged, deployed, verified, and cleaned up
-> before this plan starts.
+> **Status:** Backlog. Do not execute until the user gives an explicit execution command and every predecessor declared in this README has completed, including the Podman migration and Phoenix rewrite.
 >
 > **Plan quality gate:** not run yet, so no verdict exists. By the user's decision of 2026-10-09 it
 > was not run while the plan was written; it runs at the start of execution, as the first item of
@@ -67,44 +64,15 @@ templated course from a written one, so no course in the library can slip back i
 
 ## Dependency and Result
 
-The series runs strictly in order, one plan, one worktree, and one PR at a time (series decision 42),
-so plans 01 to 08 are all merged when this plan starts. This plan builds directly on plan 03 (course
-metadata) and plan 05 (code harness). It also relies on plan 02 (the path integrity rules that guard the
-prerequisite changes), plan 08 (the `relies-on` handoff for the security courses), and plan 04 (any
-course page convention it added, read in Phase 0).
-
-```mermaid
-%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Gray #808080
-flowchart TD
-  accTitle: Plan 09 position in the series
-  accDescr: Plans 01 to 08 run one after another and are merged before plan 09 starts. Plan 09 rewrites eight filler courses and adds the filler guard with a baseline of 25 courses that shrinks to 17. Plans 11 to 13 fix the other 17 and plan 14 requires an empty baseline.
-  P01["01 to 08<br/>merged in order"] --> P09["09 filler rewrites<br/>8 courses + guard<br/>baseline 25 to 17"]
-  P09 --> P10["10 legacy<br/>unique migration"]
-  P10 --> P11["11 to 13<br/>audits<br/>baseline 17 to 0"]
-  P11 --> P14["14 legacy removal<br/>needs empty baseline"]
-
-  classDef prior fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
-  classDef current fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef later fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
-  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
-  class P01 prior
-  class P09 current
-  class P10,P11,P14 later
-```
-
-When this plan ends, the eight courses pass the filler guard, have no `status: outline`, reach the
-28,000-word floor, and are green in the harness. The filler baseline holds 17 courses, each with an
-owner, and shrinks only.
+The live execution blockers are the Depends-on entries at the top of this README and the [plan-order graph](../../README.md#plan-order). Earlier series plans may provide useful merged inputs, but they do not add unlisted start conditions. Each plan retains its stated content ownership and delivery evidence.
 
 ## Series Context
 
-This plan is row 09 of the 14-plan **AyoKoding Learn Revamp** series. Each plan is one PR delivered
-from its own worktree, and the plans run strictly in numeric order; the "Depends on" column shows
-which earlier plans each one builds on. The user resolved the series decisions on 2026-10-09; every
+This plan is row 09 of the 14-plan **AyoKoding Learn Revamp** series. Each plan is one PR delivered from its own worktree. Its live execution blockers are declared in Depends-on and the [plan-order graph](../../README.md#plan-order); the series table below records the historical content relationships. The user resolved the series decisions on 2026-10-09; every
 decision this plan relies on is copied into
 [brd.md](./brd.md#resolved-series-decisions-this-plan-relies-on).
 
-| NN  | Plan suffix                   | Scope                                                                                        | Depends on       |
+| NN  | Plan suffix                   | Scope                                                                                        | Series inputs    |
 | --- | ----------------------------- | -------------------------------------------------------------------------------------------- | ---------------- |
 | 01  | `navigation-and-display`      | Strip `NN ·` title prefixes; path position numbers; sidebar auto-scroll; render fixes        | —                |
 | 02  | `path-model`                  | Phases, goals, `assumes`, outline marker, prerequisite revision, closure checks, career copy | 01               |
@@ -138,14 +106,9 @@ Quality Gate → harness green → filler guard, and every loop stops after 2 cy
 for the user before the end-state steps. The guard and its baseline are built first, test-first, so every
 course is measured against it as it lands. See [tech-docs/006](./tech-docs/006-execution-model.md).
 
-## Parallel Phoenix Rewrite
+## Phoenix Prerequisite
 
-The [AyoKoding Phoenix LiveView rewrite](../../in-progress/ayokoding-app-web/README.md) runs independently of
-this plan. This plan retains its execution order and ownership of course rewrites, Git vectors,
-the filler baseline, content safety, and the code-example harness. Phoenix consumes the existing
-corpus read-only and owns adapting to merged content, metadata, and scenario changes; it does not
-duplicate course-example execution. This plan does not wait for the rewrite. The apps use
-separate local ports (3101 and 3102), tests, and owner specification corpora.
+The [AyoKoding Phoenix LiveView rewrite](../../in-progress/ayokoding-app-web/README.md) must complete before this plan starts. This plan retains ownership of its AyoKoding content and source files. Phoenix may reconcile the merged results at its own delivery boundaries after this plan completes.
 
 ## Navigation
 

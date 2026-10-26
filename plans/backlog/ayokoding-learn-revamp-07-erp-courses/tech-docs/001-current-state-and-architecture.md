@@ -28,7 +28,7 @@ under `plans/done/2026-08-16__ayokoding-learning-path-17-skills-erp-foundations/
 
 ## Contracts This Plan Consumes
 
-The 14 plans run strictly in sequence (series decision 42), so plans 01 to 06 are merged when this plan
+Earlier plans 01 to 06 provide source context; live dependencies govern when this plan
 starts. The names below come from their plan documents of 2026-10-09 (plan 06's design files 001 to 010 were
 read in full); the plans may have been adjusted while they were executed. Phase 0 checks each name against
 `origin/main` with `rtk git grep` and records the as-merged name in `<plan>/evidence/phase-0-contracts.md`. A

@@ -6,7 +6,8 @@ where they bind. The user made no choice about the items below, so each is a def
 recorded so it can be reversed; none is an open question for the user. The user's choices that bind this plan are
 decisions 26 to 29 (definition of done, 70/111 split, per-course execution, the cap of 2 cycles), 30 to 33 (the harness
 contract, determinism, container runtime and static mode, CI), 35 (English only), 37 (checks in tested code), and 40 to
-42 (the end state, the deferred plan gate, strict sequential execution).
+41 (the end state and deferred plan gate). The 2026-10-26 plan-order DAG supersedes the original strict sequencing
+in decision 42 for live execution.
 
 ## D1 — Audit in Place; Do Not Rewrite
 

@@ -4,11 +4,7 @@
 > `[HUMAN]`: only a human can do it (physical action, out-of-band approval, real-secret or
 > privileged-credential handling). `[AI+HUMAN]`: agent prepares, human approves or finishes.
 
-**Do not start** until the user gives an explicit execution command for this plan. That command is
-the authorization for this plan's change set (commits, pushes, PR, merge, and deploy described
-below). The user said: "jangan kerjain/implement plan ini sebelum gw kasih perintah buat eksekusi
-ya". The 14 plans of the series run strictly one after another (series decision 42), so plans 01 to
-09 must be merged, deployed, verified, and cleaned up first (see Phase 0).
+**Remaining work is blocked** until the Podman migration and Phoenix rewrite have completed, and the user explicitly resumes this plan. Preserve its existing worktree checkpoint and progress.
 
 **Plan quality gate:** not run yet, so no verdict exists. By the user's decision of 2026-10-09 it was
 not run while this plan was written; it runs at the start of execution, as the first checkbox of
@@ -342,7 +338,7 @@ Rules that keep it bounded:
 
 Phase 0 opens no PR. Its evidence rides the DU-10 PR.
 
-- **Input:** this plan at `<plan>/`; `origin/main` with plans 01 to 09 merged.
+- **Input:** this plan at `<plan>/`; `origin/main` at the recorded current revision.
 - **Outcome:** a verdict from the plan quality gate; a provisioned, initialized worktree; confirmed
   preconditions; the as-merged names of every consumed contract; a reused PostgreSQL lock source; the
   re-validated 1,150-file legacy baseline and 182-course catalog baseline; a recorded green baseline;
@@ -375,16 +371,15 @@ Phase 0 opens no PR. Its evidence rides the DU-10 PR.
 
 ### Preconditions
 
-- [ ] [AI] Plans 01 to 09 merged and archived: `rtk git ls-tree -d --name-only origin/main plans/done/`
-      lists a folder ending in each of `__ayokoding-learn-revamp-01-navigation-and-display`,
-      `__ayokoding-learn-revamp-02-path-model`, `__ayokoding-learn-revamp-03-catalog-and-metadata`,
-      `__ayokoding-learn-revamp-04-learning-experience`, `__ayokoding-learn-revamp-05-code-harness`,
-      `__ayokoding-learn-revamp-06-accounting-courses`, `__ayokoding-learn-revamp-07-erp-courses`,
-      `__ayokoding-learn-revamp-08-capstone-courses`, and `__ayokoding-learn-revamp-09-filler-rewrites`.
-      Record the nine folder names. Also record whether `plans/done/` or `plans/in-progress/` holds a
-      folder for plan 11 (expected: none; plan 11 follows this plan).
-- [ ] [AI] Each earlier plan's product is on `origin/main`. Run each command and record its result in
-      `<plan>/evidence/phase-0-contracts.md`:
+- [ ] [AI] **Declared prerequisites:** confirm the plans listed in this plan's Depends-on declaration
+      have completed. Other live AyoKoding plans may proceed in parallel after Phoenix when the DAG
+      permits; do not gate on their status.
+- [ ] [AI] **Shared-source reconciliation:** inspect the current merged course corpus and toolchain
+      catalog on `origin/main`, record which earlier-plan outputs are present, and reconcile this plan's
+      mapping, course prerequisites, and toolchain use against that revision. This is a source baseline,
+      not a requirement that plans 01 to 09 be archived before this plan starts.
+- [ ] [AI] Confirm the shared source names and contracts against `origin/main`; record the merged
+      results in `<plan>/evidence/phase-0-contracts.md`:
   - plan 02: `rtk git grep -n "R4" origin/main -- apps/ayokoding-www/src/features/course-paths/core`
     shows the closure rule this plan relies on (no path assignment needs R4's stronger rules);
   - plan 03: `rtk git cat-file -e origin/main:apps/ayokoding-www/src/features/content/core/course-metadata.ts`
@@ -417,11 +412,11 @@ Phase 0 opens no PR. Its evidence rides the DU-10 PR.
     entry has an `install` block
     (`rtk git grep -n "install:" origin/main -- apps/ayokoding-cli/toolchains/catalog.yaml`); Phase 1's
     AC-5 uses that record.
-  - plans 06 to 08: no shared code dependency; their course additions already count toward the
-    182-course baseline checked below.
-- [ ] [HUMAN] **Only if any check above fails:** stop and report which plan or product is missing. The
-      user decides; the series order (decision 42) makes a missing earlier plan an unexpected state.
-      Do not continue on an assumption.
+  - plans 06 to 08: record their current course additions and any changed shared contracts as part of
+    the corpus reconciliation; use only merged content, never another worktree's uncommitted files.
+- [ ] [HUMAN] If a merged-source difference leaves a course mapping or prerequisite unresolved, report
+      the specific row and continue only the independent work. Do not treat another live plan's status
+      as a blocker unless it is listed in this plan's Depends-on declaration.
 - [ ] [AI] Re-probe Vercel MCP: record in `<plan>/evidence/phase-0-baseline.md` whether any Vercel MCP
       tool is listed in this session (`present` or `absent`). Either way this plan uses no Vercel tool
       (it adds no `app` deploy surface); record no Vercel identifiers.

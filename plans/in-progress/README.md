@@ -16,8 +16,9 @@ execution checklist.
 - [AyoKoding Web](./ayokoding-app-web/README.md) — full local feature and UI parity in
   `apps/ayokoding-web`, using Phoenix LiveView, imported BeaverNest ExBdd, Unit/Integration tests,
   and Playwright E2E with Gherkin BDD. The existing Next.js app remains on port 3101; Phoenix
-  uses 3102, with a separate E2E server on 3191. This user-requested plan runs independently of
-  the Learn Revamp series, consumes its content read-only, and excludes deployment and cutover.
+  uses 3102, with a separate E2E server on 3191. The plan follows Podman in the live DAG and must
+  finish before the live Learn Revamp plans; it consumes their content read-only and excludes
+  deployment and cutover.
 
 ### AyoKoding Learn Revamp series
 
@@ -38,8 +39,8 @@ execution checklist.
 - Plan 05 (code harness) moved to
   [plans/done/2026-10-19\_\_ayokoding-learn-revamp-05-code-harness](../done/2026-10-19__ayokoding-learn-revamp-05-code-harness/README.md)
   on 2026-10-19.
-  The series continues with plans 10–13 (`legacy-unique-migration`, `audit-languages-and-tooling`,
-  `audit-cs-systems-and-data`, `audit-product-security-ai`), which feed plan 14 (`legacy-removal`).
+  Live plans 06–13 proceed after Phoenix, retaining the 06 → 07 edge. Plans 06–13 all precede plan
+  14's terminal gate; the other AyoKoding plans may proceed in parallel when the DAG permits.
 - Plan 10 (legacy unique migration) is in progress at
   [plans/in-progress/ayokoding-learn-revamp-10-legacy-unique-migration](./ayokoding-learn-revamp-10-legacy-unique-migration/README.md).
 

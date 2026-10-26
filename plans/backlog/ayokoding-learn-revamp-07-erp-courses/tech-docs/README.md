@@ -58,8 +58,9 @@ The annotated, root-relative file tree is owned by [010-file-impact.md](./010-fi
   Gherkin. The only third-party package in the courses is the `pg8000` database driver, locked with hashes
   inside the PostgreSQL courses that use it from Python, never installed in the repository
   ([004](./004-code-runtime-and-run-yaml.md#postgresql-example-shape)).
-  Plans 01 to 06 are merged when this plan starts: the series runs strictly in sequence, one plan, one worktree,
-  and one PR at a time (series decision 42). Plan 08 follows this plan.
+  Plans 01 to 06 provide source context when this plan starts. Plan 07 waits for its declared
+  predecessors, including plan 06; other live AyoKoding plans may proceed in parallel after Phoenix
+  when their declared dependencies are complete.
 
 - **Plan 02** (merged first): the `phases`/`assumes` manifest model, `status: outline`, the integrity rules
   R1 to R10, the path-copy test, and the pending-restructure mechanism this plan deletes

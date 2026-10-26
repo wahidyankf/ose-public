@@ -7,16 +7,16 @@ decisions 39 and 42 and the one-plan-one-PR rule); the others are this plan's de
 
 ## D1 — Order against the other plans
 
-- **Selected:** the 14 plans of the series run strictly in sequence, one plan, one worktree, and one PR at a time
-  (series decision 42, 2026-10-09). This plan starts after plans 01 to 06 have merged, so plan 04 (the phase
-  roadmap with its flat mode) is on `origin/main` and this plan removes that flat mode. Plan 08 follows this plan,
-  so the eight capstone courses are still outlines while this plan runs. Phase 0 checks every consumed name
-  against `origin/main`.
+- **Selected:** the 2026-10-26 plan-order DAG supersedes the original strict sequencing in series decision 42.
+  Podman precedes Phoenix, Phoenix precedes this plan, and plan 06 precedes this plan. Plan 08 may run in
+  parallel after Phoenix, so Phase 0 checks current merged outlines and this plan's tests use a currently
+  outlined course, retaining the existing explicit decision checkpoint if none remains. Phase 0 checks
+  every consumed name against `origin/main`.
 - **Alternative 1 — run before plan 06.** Rejected: the ERP paths assume accounting courses that plan 06 fills,
   and the skills category landing is shared with plan 06.
-- **Alternative 2 — run beside plans 04 or 08 and reconcile at merge.** Rejected by decision 42: two plans in
-  flight need rebases, "whichever lands second" rules, and fallback branches. A strict sequence removes all
-  three.
+- **Alternative 2 — run beside plans 04 or 08 and reconcile at merge.** Rejected under the original 2026-10-09
+  sequencing decision; the later DAG decision permits parallel plans after Phoenix when no declared edge connects
+  them, with merged-main reconciliation for shared content.
 - **Prior art:** the repository's DAG-first rule orders dependent work by explicit edges, not by hope
   ([operating budgets](../../../../repo-governance/development/agents/agent-workflow-orchestration/operating-budgets-dag-first-and-background-slot.md));
   the series README orders the 14 plans the same way.

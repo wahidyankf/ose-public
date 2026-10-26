@@ -1,12 +1,8 @@
 # AyoKoding Learn Revamp 07 — ERP Courses
 
-Depends-on: [ayokoding-learn-revamp-06-accounting-courses]
+Depends-on: [ayokoding-app-web, ayokoding-learn-revamp-06-accounting-courses]
 
-> **Status:** Backlog. Do not execute until both are true: the user gives an explicit execution
-> command, and plans 01 to 06 of this series have merged to `origin/main`. The 14 plans run strictly
-> one after another (series decision 42), so plan 06 is merged, deployed, verified, and cleaned up
-> before this plan starts. The user said: "jangan kerjain/implement plan ini sebelum gw kasih perintah
-> buat eksekusi ya".
+> **Status:** Backlog. Do not execute until the user gives an explicit execution command and every predecessor declared in this README has completed, including the Podman migration and Phoenix rewrite.
 >
 > **Plan quality gate:** not run yet, so no verdict exists. By the user's decision of 2026-10-09 it
 > was not run while the plan was written; it runs at the start of execution, as the first item of
@@ -51,8 +47,8 @@ It also deletes the temporary "pending restructure" mechanism that plan 02 added
 
 ## Non-Goals
 
-- The 24 accounting courses and their two paths (plan 06), and the 8 capstone courses (plan 08). The capstones
-  stay outlines until plan 08.
+- The 24 accounting courses and their two paths (plan 06), and the 8 capstone courses (plan 08). Their
+  current outline state is measured when this plan selects an outline-dependent test fixture.
 - Any new durable rule. The plan applies rules from plans 02, 03, 05, and 06 and retires one closed exception
   ([tech-docs/011](./tech-docs/011-rule-and-docs-impact.md)).
 - Any change to plan 05's harness or to plan 04's roadmap code, except deleting plan 04's flat mode.
@@ -61,37 +57,16 @@ It also deletes the temporary "pending restructure" mechanism that plan 02 added
 
 ## Dependency and Result
 
-The series runs strictly in order, one plan, one worktree, and one PR at a time (series decision 42), so plans
-01 to 06 are all merged when this plan starts. This plan builds directly on plan 02 (path model and the
-mechanism it deletes), plan 03 (course metadata), plan 04 (the roadmap with the flat mode it removes), plan 05
-(code harness), and plan 06 (accounting courses, the Sharia rules, the `psql` toolchain, and the shared
-content-shape helpers).
-
-```mermaid
-%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Gray #808080
-flowchart TD
-  accTitle: Plan 07 position in the series
-  accDescr: Plans 01 to 06 run one after another and are merged before plan 07 starts. Plan 07 writes the 30 ERP courses, restructures both ERP paths, and deletes the pending-restructure mechanism. Plan 08 starts only after plan 07 has merged and rewrites the capstone courses.
-  P01["01 to 06<br/>merged in order"] --> P07["07 ERP<br/>courses + paths"]
-  P07 --> P08["08 capstone<br/>courses"]
-
-  classDef prior fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
-  classDef current fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef later fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
-  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
-  class P01 prior
-  class P07 current
-  class P08 later
-```
+The live execution blockers are the Depends-on entries at the top of this README and the [plan-order graph](../../README.md#plan-order). Earlier series plans may provide useful merged inputs, but they do not add unlisted start conditions. Each plan retains its stated content ownership and delivery evidence.
 
 ## Series Context
 
-This plan is row 07 of the 14-plan **AyoKoding Learn Revamp** series. Each plan is one PR delivered from its
-own worktree, and the plans run strictly in numeric order; the "Depends on" column shows which earlier plans
-each one builds on. The user resolved the series decisions on 2026-10-09; every decision this plan relies on is
+This plan is row 07 of the 14-plan **AyoKoding Learn Revamp** series. Each plan is delivered from its own
+worktree. Live execution follows the plan-order DAG; the "Depends on" column and graph show which live
+predecessors must complete, while plans without an edge may run in parallel after Phoenix. The user resolved the series decisions on 2026-10-09; every decision this plan relies on is
 copied into [brd.md](./brd.md#resolved-series-decisions-this-plan-relies-on).
 
-| NN  | Plan suffix                   | Scope                                                                                         | Depends on       |
+| NN  | Plan suffix                   | Scope                                                                                         | Series inputs    |
 | --- | ----------------------------- | --------------------------------------------------------------------------------------------- | ---------------- |
 | 01  | `navigation-and-display`      | Strip `NN ·` title prefixes; path position numbers; sidebar auto-scroll; render fixes         | —                |
 | 02  | `path-model`                  | Phases, goals, `assumes`, outline marker, prerequisite revision, closure checks, career copy  | 01               |
@@ -119,14 +94,9 @@ the two ERP paths are restructured and the pending mechanism is deleted, test fi
 AAOIFI link in a browser before the PR is marked ready. See
 [tech-docs/007](./tech-docs/007-execution-batching-and-ledger.md).
 
-## Parallel Phoenix Rewrite
+## Phoenix Prerequisite
 
-The [AyoKoding Phoenix LiveView rewrite](../../in-progress/ayokoding-app-web/README.md) runs independently of
-this plan. Keep this plan's existing execution order and ownership of ERP content, manifests,
-and removal of the transitional restructure mechanism. The rewrite reads these sources in place
-and owns adapting Phoenix to the already-merged phased schema, retired marker fields, path copy,
-and fixtures. This plan does not wait for Phoenix or preserve obsolete fields for it. The apps
-use separate local ports (3101 and 3102), tests, and owner specification corpora.
+The [AyoKoding Phoenix LiveView rewrite](../../in-progress/ayokoding-app-web/README.md) must complete before this plan starts. This plan retains ownership of its AyoKoding content and source files. Phoenix may reconcile the merged results at its own delivery boundaries after this plan completes.
 
 ## Navigation
 

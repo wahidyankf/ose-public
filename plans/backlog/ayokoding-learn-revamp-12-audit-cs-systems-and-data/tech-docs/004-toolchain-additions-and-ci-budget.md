@@ -49,8 +49,8 @@ How many of the 34 courses use each id, and which, including the ids this plan a
 
 ## What Plan 09 Changes and Probe P9
 
-Plan 09 changes the catalog in two ways, and its pull request is merged before this plan starts (series decision
-42), so its full-run effect on CI is over:
+Plan 09 may change the catalog while this plan is underway. Phase 0 and each delivery boundary re-read
+the merged catalog and account for its current CI effect:
 
 | Change by plan 09                               | What it is                                                                                             | What it means here                                                                                            |
 | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |

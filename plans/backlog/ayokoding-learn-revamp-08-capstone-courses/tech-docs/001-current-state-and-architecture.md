@@ -1,8 +1,8 @@
 # 001 — Current State and Architecture
 
 All measurements on this page were taken on 2026-10-09 in the authoring worktree, based on
-`origin/main` at `bb7f90137`. Plans 01 to 07 change some of these files before this plan runs (the series
-executes strictly in order, one plan at a time); Phase 0 re-measures and records the differences.
+`origin/main` at `bb7f90137`. Earlier plans and concurrently completed live plans may change some of
+these files before this plan runs; Phase 0 re-measures `origin/main` and records the differences.
 
 ## The 8 Skeleton Capstones Today
 

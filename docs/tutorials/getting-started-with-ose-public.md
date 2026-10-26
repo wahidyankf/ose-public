@@ -184,5 +184,6 @@ The build target regenerates its search data before creating the local Next.js o
 ## Choose your next step
 
 You now have a working public-site development loop. To understand the product direction, read the
-[roadmap](../../roadmap.md). To explore this website's architecture and available development
+[product overview](../../README.md#-understand-the-product) and [plans index](../../plans/README.md).
+To explore this website's architecture and available development
 targets, continue with the [ose-www README](../../apps/ose-www/README.md).

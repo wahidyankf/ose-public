@@ -4,11 +4,7 @@
 > `[HUMAN]`: only a human can do it (physical action, out-of-band approval, real-secret or
 > privileged-credential handling). `[AI+HUMAN]`: agent prepares, human approves or finishes.
 
-**Do not start** until the user gives an explicit execution command for this plan. That command is the
-authorization for this plan's change set (commits, pushes, PR, merge, deploy, and series closure described
-below). The user said: "jangan kerjain/implement plan ini sebelum gw kasih perintah buat eksekusi ya". The 14
-plans of the series run strictly one after another (series decision 42), so plans 01 to 13 must be merged,
-deployed, verified, and cleaned up first (see Phase 0). This is the last plan of the series.
+**Do not start** until the user gives an explicit execution command for this plan and every live dependency declared in its README has completed. The authorization covers the change set and delivery actions described below.
 
 **Plan quality gate:** not run yet, so no verdict exists. By the user's decision of 2026-10-09 it was not run
 while this plan was written; it runs at the start of execution, as the first checkbox of Phase 0, with
@@ -285,7 +281,7 @@ executor follows:
 
 Phase 0 opens no PR. Its evidence rides the DU-14 PR.
 
-- **Input:** this plan at `<plan>/`; `origin/main` with plans 01 to 13 merged and archived.
+- **Input:** this plan at `<plan>/`; `origin/main` at the recorded current revision.
 - **Outcome:** a verdict from the plan quality gate; a provisioned, initialized worktree; confirmed
   preconditions; the as-merged names of every contract this plan consumes; a passing readiness probe of the
   fast gate checks (so a failure that belongs to an earlier plan is found now, not at Phase 10); the

@@ -67,8 +67,9 @@ pass with fixtures, and do not make every local test rescan the entire lesson li
 
 ## Parallel execution contract
 
-`Depends-on: []` is intentional. Existing plans 06 through 14 continue changing the current
-`ayokoding-www` source. The rewrite owns its new app, E2E project, new specs, and imported library;
+The declared Podman migration is this plan's execution prerequisite. Existing plans 06 through 14
+may proceed after this rewrite and continue changing the current `ayokoding-www` source. The rewrite
+owns its new app, E2E project, new specs, and imported library;
 the only planned old-app code edits are bounded tool data adapters. It never changes course
 bodies, phase manifests, content-example tooling, or source indexes to simplify its implementation.
 
@@ -76,7 +77,7 @@ At every delivery boundary, record the latest merged `origin/main` revision, dif
 families and old specs against the prior recorded revision, and rebase/reconcile the rewrite's
 affected contracts and tests. The source revision is a moving integration input, not a lock that
 requires course authors to preserve old content. Do not inspect or consume their uncommitted
-worktrees, wait for a plan to archive, or add a coordinated-merge prerequisite.
+worktrees. Respect the declared execution order without adding coordinated-merge prerequisites.
 
 When plan 07 has already removed transitional manifest fields, remove the corresponding Phoenix
 acceptance branches and fixtures. When plan 14 has already removed legacy content, use its surviving
@@ -85,8 +86,8 @@ If those changes have not merged, implement the current source faithfully withou
 
 ```mermaid
 flowchart LR
-  accTitle: Independent plans
-  accDescr: Content work and the Phoenix rewrite independently integrate through main; the rewrite consumes only already-merged sources.
+  accTitle: Ordered content work
+  accDescr: The Podman migration precedes Phoenix, which precedes each AyoKoding plan; the rewrite consumes current merged sources.
   C["Course plans"] --> M["Merged main"]
   R["Phoenix rewrite"] --> M
   M --> S["Shared corpus"]
@@ -96,5 +97,4 @@ flowchart LR
 ```
 
 Final acceptance compares the new app against the latest recorded merged corpus and corresponding
-old-app behavior, even if every other live plan is still unfinished. Newly merged differences
-reopen only the affected parity packet. They never convert awareness links into hard dependencies.
+old-app behavior. Newly merged differences reopen only the affected parity packet.

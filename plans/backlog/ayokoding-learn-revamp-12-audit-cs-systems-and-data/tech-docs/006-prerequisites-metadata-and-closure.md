@@ -50,10 +50,11 @@ first course starts.
 | `system-design`                             | `backend-at-scale`, `advanced-networking`, `advanced-sql-and-query-performance` | none                                                                                                                                                                                                                                                                                                                      | none                                        |
 
 Twelve prerequisites point outside the 34 courses. Six are language primers or tooling courses that plan 11 audits
-before this plan starts (`just-enough-python`, `just-enough-go`, `just-enough-c`, `just-enough-bash`,
-`just-enough-elixir`, `just-enough-rust`) and one is `software-engineering-practices` (also plan 11). The other five
+(`just-enough-python`, `just-enough-go`, `just-enough-c`, `just-enough-bash`, `just-enough-elixir`,
+`just-enough-rust`) and one is `software-engineering-practices` (also plan 11). The other five
 (`backend-essentials`, `backend-at-scale`, `capstone-first-working-software`, `engineering-management`,
-`software-product-engineering`) belong to plan 13, which runs after this plan.
+`software-product-engineering`) belong to plan 13. These plans may execute in parallel after Phoenix; revalidate
+the merged course state and prerequisite graph at each delivery boundary rather than treating their status as a gate.
 
 ## Order Inside the Plan
 

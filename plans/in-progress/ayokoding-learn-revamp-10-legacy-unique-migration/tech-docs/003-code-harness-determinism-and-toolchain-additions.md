@@ -38,8 +38,8 @@ therefore cannot host a unit that has a lockfile.
 
 Plan 05's toolchain catalog (python, go, rust, node, typescript, java, kotlin, dotnet, elixir, lua,
 luajit, neovim, gcc, racket, ocaml, swift, dart, flutter, shell, powershell, postgres, neo4j, plus
-validators) is extended by plan 09, which merges before this plan starts (series decision 42). The
-baseline this plan builds on is therefore fixed, not conditional:
+validators) may be extended by plan 09 while this plan is underway. The Phase 0 source reconciliation
+records the merged catalog and adjusts toolchain use to that state; these entries are not a start gate:
 
 | Plan 09 baseline                                                                                                                                                                                                                                                                                                                                                             | Source                                                                                                    |
 | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |

@@ -98,7 +98,7 @@ a competing full scenario copy in this checklist.
 
 ## Phase 0: Environment, Shared-Source Baseline, and Ownership
 
-**Input:** approved PRD, matching worktree, no inter-plan predecessors. **Outcome:** reproducible
+**Input:** approved PRD, matching worktree, and completed Podman predecessor. **Outcome:** reproducible
 baseline and exact source/scenario ownership. **Proof:** baseline logs and a complete scenario
 disposition ledger before production code changes.
 

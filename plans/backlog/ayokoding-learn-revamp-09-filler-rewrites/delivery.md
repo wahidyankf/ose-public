@@ -4,13 +4,7 @@
 > `[HUMAN]`: only a human can do it (physical action, out-of-band approval, real-secret or
 > privileged-credential handling). `[AI+HUMAN]`: agent prepares, human approves or finishes.
 
-**Do not start** until both are true: (1) the user gives an explicit execution command for this
-plan — that command authorizes this plan's change set (commits, pushes, PR, merge, and the deploy
-described below); (2) plans 01 to 08 of this series have merged to `origin/main`, deployed, been
-verified, and had their worktrees cleaned up. The series runs strictly one plan at a time (series
-decision 42), so no other series plan runs while this one does, and no rebase between plans is
-needed. The user's words (2026-10-09): "jangan kerjain/implement plan ini sebelum gw
-kasih perintah buat eksekusi ya" (do not implement this plan until I give the command to execute it).
+**Do not start** until the user gives an explicit execution command for this plan and every live dependency declared in its README has completed. The authorization covers the change set and delivery actions described below.
 
 **Plan quality gate:** not run yet, so no verdict exists. By the user's decision of 2026-10-09 it was
 not run while the plan was written. It runs at the start of execution, as the first item of
@@ -304,18 +298,8 @@ Phase 0 opens no PR. Its evidence rides the delivery PR.
 - [ ] [AI] Sync and branch: `rtk git fetch origin`, `rtk git merge --ff-only origin/main`, then
       `rtk git switch -c ayokoding-learn-revamp-09-filler-rewrites`. Append the branch to the
       inventory (`worktree-to-pr`, `active`). Acceptance: `rtk git status` shows the new branch, clean.
-- [ ] [AI] **Preconditions — plans 01 to 08 merged:** run
-      `rtk git ls-tree -d --name-only origin/main plans/done/`. Acceptance: the output contains folders
-      ending in `__ayokoding-learn-revamp-01-navigation-and-display`,
-      `__ayokoding-learn-revamp-02-path-model`, `__ayokoding-learn-revamp-03-catalog-and-metadata`,
-      `__ayokoding-learn-revamp-04-learning-experience`, `__ayokoding-learn-revamp-05-code-harness`,
-      `__ayokoding-learn-revamp-06-accounting-courses`, `__ayokoding-learn-revamp-07-erp-courses`, and
-      `__ayokoding-learn-revamp-08-capstone-courses`. If any is missing, stop: report to the user.
-- [ ] [AI] **Plans 10 to 14 not started:** run
-      `rtk git ls-tree -d --name-only origin/main plans/in-progress/ plans/done/`. Acceptance: no folder
-      name ends in `ayokoding-learn-revamp-10-legacy-unique-migration`, `-11-audit-languages-and-tooling`,
-      `-12-audit-cs-systems-and-data`, `-13-audit-product-security-ai`, or `-14-legacy-removal`, and
-      `plans/in-progress/` holds no other series plan. If one is there, stop and report.
+- [ ] [AI] **Declared prerequisites:** confirm each plan listed in this plan's Depends-on declaration has merged to origin/main. Other live plans that are not declared predecessors do not block this plan.
+
 - [ ] [AI] **Name reconciliation:** for each name below, run
       `rtk git grep -n "<name>" origin/main -- apps specs repo-governance .agents` and record the merged file and
       spelling in a name map in the baseline evidence: `estimatedHours`,
@@ -426,8 +410,7 @@ Phase 0 opens no PR. Its evidence rides the delivery PR.
 - [ ] [AI] The plan quality gate verdict line is recorded in this file's header, with verdict `PASS`
       or `PASS_WITH_FINDINGS` after at most 2 cycles.
 - [ ] [AI] `Provisioning status: provisioned` with identity and inventory recorded.
-- [ ] [AI] `<plan>/evidence/phase-0-baseline.md` records: the eight merged plans, plans 10 to 14 not started,
-      the name map and vitest globs, the catalog result, the plan 01 and 04 conventions, the manifest
+- [ ] [AI] `<plan>/evidence/phase-0-baseline.md` records: the completed declared predecessors and current merged-source revision, the name map and vitest globs, the catalog result, the plan 01 and 04 conventions, the manifest
       placement, the dependency search with its classification, the prerequisite-edge result, the plan 08
       dependents, the drift check, the owner tags, the skill-module result, the Vercel probe, the M1 counts,
       every baseline exit code, and B.
@@ -514,17 +497,18 @@ write the least code that passes (GREEN), then clean (REFACTOR).
       unique, closed owner set, non-empty reason, length at most the cap). Run `GUARD`. Acceptance: the
       scenario "Every non-outline course that fires a rule is in the baseline" fails and lists the firing
       courses; save the metrics table.
-- [ ] [AI] **Compare with the expected 25.** Compare the firing courses with the table in
+- [ ] [AI] **Compare with the planning projection of 25.** Re-read the current merged baseline and course changes before comparing firing courses with the table in
       [tech-docs/003](./tech-docs/003-filler-guard.md#the-25-non-outline-courses-that-fire) and handle each
       difference with the table in
       [tech-docs/006](./tech-docs/006-execution-model.md#unexpected-guard-findings): a course rewritten by
-      plans 06 to 08 that fires is a regression, so stop and report it to the user before baselining; any
+      plans 06 to 08 that fires is a regression only if the merged source shows it was already fixed; if
+      those plans have not merged, retain the existing owner and reconcile after their change lands. Any
       other unexplained course is reported before it is baselined. Acceptance: every difference is
       explained in the evidence file, or Phase 1 stops.
 - [ ] [AI] **GREEN:** fill `FILLER_BASELINE` with the firing courses, sorted by slug, each with its owner
       (`plan-09` for the eight; the others as recorded in Phase 0) and a reason of the form
-      `"FG1, FG2, FG3, FG6 (<run date>)"`; set `FILLER_BASELINE_CAP` to the number of entries (25 when there
-      is no difference). Run `GUARD`. Acceptance: all ratchet scenarios pass.
+      `"FG1, FG2, FG3, FG6 (<run date>)"`; set `FILLER_BASELINE_CAP` to the current number of entries.
+      Run `GUARD`. Acceptance: all ratchet scenarios pass.
 - [ ] [AI] **Calibration.** Compare, rule by rule, the flagged extreme and the healthy extreme of the
       run with the table in [tech-docs/003](./tech-docs/003-filler-guard.md#calibration), within 0.01
       (words within 1). Record the elapsed time of the scan (budget 30 seconds under HIPPO's `standard`
@@ -1194,9 +1178,9 @@ merge with a BLOCKED course unless the user says so in words.
 
 - [ ] [AI] Run `COMPLETION`. Acceptance: nine scenarios pass.
 - [ ] [AI] Run `GUARD` and save the metrics table. Acceptance: the eight courses fire no rule;
-      `REWRITTEN_FILLER_COURSES` equals the eight slugs; `FILLER_BASELINE` has 17 entries (owners
-      `plan-11`, `plan-12`, and `plan-13`; plus any `plan-09` entry that Phase 6 decision (c) kept) and
-      `FILLER_BASELINE_CAP` equals its length.
+      `REWRITTEN_FILLER_COURSES` equals the eight slugs; the baseline has no entries for these eight,
+      retains only unresolved courses assigned to their owning plans, and its cap equals its length.
+      The projected 17 remaining entries apply only if plans 11–13 have not already removed their share.
 - [ ] [AI] Run `rtk git grep -l "status: outline" -- <the eight course folders>`. Acceptance: no file.
 - [ ] [AI] Run `rtk wc -w` over the Markdown pages of each course (outside `code/`). Acceptance: each is at
       least 28,000 words (the completion test is the authority; record the numbers).

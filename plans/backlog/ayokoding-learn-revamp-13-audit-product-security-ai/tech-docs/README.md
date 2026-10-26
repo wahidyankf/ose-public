@@ -55,9 +55,10 @@ a junior engineer to carry out its part.
 
 ## Cross-Plan Assumptions
 
-The series runs strictly in order (series decision 42), so plans 01 to 12 are merged when this plan starts and plan 14
-has not started. Each assumption below is checked in Phase 0; a failed check stops the plan with a report to the user.
-Names may differ slightly as merged: Phase 0 records the merged names and the rest of the plan uses them.
+Plans 01 to 12 provide source context for this plan; other live AyoKoding plans do not block its start
+beyond the dependencies declared in this plan's README. Each assumption below is checked against
+`origin/main` in Phase 0; differences are recorded and reconciled. Names may differ slightly as merged:
+Phase 0 records the merged names and the rest of the plan uses them.
 
 | From    | What this plan assumes                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Phase 0 check                                                                                                                                       |
 | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |

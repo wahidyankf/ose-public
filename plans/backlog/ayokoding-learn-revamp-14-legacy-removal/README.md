@@ -1,11 +1,8 @@
 # AyoKoding Learn Revamp 14 — Legacy Removal
 
-Depends-on: [ayokoding-learn-revamp-10-legacy-unique-migration, ayokoding-learn-revamp-11-audit-languages-and-tooling, ayokoding-learn-revamp-12-audit-cs-systems-and-data, ayokoding-learn-revamp-13-audit-product-security-ai]
+Depends-on: [ayokoding-app-web, ayokoding-learn-revamp-06-accounting-courses, ayokoding-learn-revamp-07-erp-courses, ayokoding-learn-revamp-08-capstone-courses, ayokoding-learn-revamp-09-filler-rewrites, ayokoding-learn-revamp-10-legacy-unique-migration, ayokoding-learn-revamp-11-audit-languages-and-tooling, ayokoding-learn-revamp-12-audit-cs-systems-and-data, ayokoding-learn-revamp-13-audit-product-security-ai]
 
-> **Status:** Backlog. Do not execute until both are true: the user gives an explicit execution command, and
-> plans 01 to 13 of this series have merged to `origin/main` and are archived. The 14 plans run strictly one
-> after another (series decision 42), so plan 13 is merged, deployed, verified, and cleaned up before this
-> plan starts. This is the last plan of the series; nothing follows it except its own closure.
+> **Status:** Backlog. Do not execute until the user gives an explicit execution command and every predecessor declared in this README has completed, including the Podman migration and Phoenix rewrite.
 >
 > **Plan quality gate:** not run yet, so no verdict exists. By the user's decision of 2026-10-09 it was not run
 > while the plan was written; it runs at the start of execution, as the first item of Phase 0 in
@@ -116,29 +113,7 @@ start, and each is easy to change before execution.
 
 ## Dependency and Result
 
-The series runs strictly in order, one plan, one worktree, and one PR at a time (series decision 42), so plans 01
-to 13 are all merged when this plan starts. This plan consumes plan 10's mapping as its only redirect input and
-reads the products of plans 02 to 13 (path-model integrity, catalog counts, harness commands, the filler guard,
-the audited-course registry, and the completion suites) in its terminal gate.
-
-```mermaid
-%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Gray #808080
-flowchart TD
-  accTitle: Plan 14 position in the series
-  accDescr: Plans 01 to 13 run one after another and are merged before plan 14 starts. Plan 10 records the legacy-to-course mapping that plan 14 consumes. Plan 14 adds the redirects, repoints the docs, removes the legacy tree, runs the terminal series-completion gate, and then closes the series by archiving itself and cleaning temporary artifacts.
-  P01["01 to 09<br/>navigation, paths,<br/>catalog, harness,<br/>content"] --> P10["10 legacy unique<br/>migration<br/>(the mapping)"]
-  P10 --> P11["11 to 13<br/>audits"]
-  P11 --> P14["14 legacy removal<br/>redirects, docs,<br/>deletion,<br/>terminal gate"]
-  P14 --> CL["Series closure<br/>archive 14, clean up"]
-
-  classDef prior fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
-  classDef current fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef later fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
-  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
-  class P01,P10,P11 prior
-  class P14 current
-  class CL later
-```
+The live execution blockers are the Depends-on entries at the top of this README and the [plan-order graph](../../README.md#plan-order). Earlier series plans may provide useful merged inputs, but they do not add unlisted start conditions. Each plan retains its stated content ownership and delivery evidence.
 
 ## How the Work Runs
 
@@ -163,41 +138,30 @@ pause-safety note. Phase 0 opens no PR; the draft PR opens at the checkpoint pus
 ## Series Context
 
 This plan is row 14 of the 14-plan **AyoKoding Learn Revamp** series. Each plan is one PR delivered from its own
-worktree, and the plans run strictly in numeric order. The user resolved the series decisions on 2026-10-09;
+worktree. Its live execution blockers are declared in Depends-on and the plan-order graph. The user resolved the series decisions on 2026-10-09;
 every decision this plan relies on is copied into
 [brd.md](./brd.md#resolved-series-decisions-this-plan-relies-on).
 
-| NN  | Plan suffix                   | Scope                                                                                                                        | Depends on |
-| --- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| 01  | `navigation-and-display`      | Strip `NN ·` title prefixes; path position numbers; sidebar auto-scroll; render fixes                                        | —          |
-| 02  | `path-model`                  | Phases, goals, `assumes`, outline marker, prerequisite revision, closure checks, career copy                                 | 01         |
-| 03  | `catalog-and-metadata`        | Course metadata schema and backfill, categories, catalog page, course landing header                                         | 01         |
-| 04  | `learning-experience`         | Browser progress, phase roadmap page, context bar, mark complete, Learn home                                                 | 02, 03     |
-| 05  | `code-harness`                | `ayokoding-cli`, `run.yaml` contract, runners, Nx target, CI, quality-gate propagation                                       | —          |
-| 06  | `accounting-courses`          | Write 24 accounting courses; restructure both accounting paths in the same PR                                                | 02, 03, 05 |
-| 07  | `erp-courses`                 | Write 30 ERP courses; restructure both ERP paths in the same PR                                                              | 06         |
-| 08  | `capstone-courses`            | Rewrite 8 skeleton capstones; give the AI Engineer path its goal                                                             | 02, 03, 05 |
-| 09  | `filler-rewrites`             | Rewrite 8 templated filler courses                                                                                           | 03, 05     |
-| 10  | `legacy-unique-migration`     | Inventory legacy topics vs courses; build 48 new courses for topics without equivalents; record the legacy-to-course mapping | 03, 05     |
-| 11  | `audit-languages-and-tooling` | Audit and fix language and tooling courses                                                                                   | 05         |
-| 12  | `audit-cs-systems-and-data`   | Audit and fix CS, systems, concurrency, distributed, database, and data courses                                              | 05         |
-| 13  | `audit-product-security-ai`   | Audit and fix web, backend, mobile, security, AI, testing, architecture, product courses                                     | 05         |
-| 14  | `legacy-removal` (this plan)  | Delete `learn/legacy`, add 308 redirects, repoint `docs/` links, update specs and tests, carry the series-completion gate    | 10 to 13   |
+| NN  | Plan suffix                   | Scope                                                                                                                        | Series inputs |
+| --- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| 01  | `navigation-and-display`      | Strip `NN ·` title prefixes; path position numbers; sidebar auto-scroll; render fixes                                        | —             |
+| 02  | `path-model`                  | Phases, goals, `assumes`, outline marker, prerequisite revision, closure checks, career copy                                 | 01            |
+| 03  | `catalog-and-metadata`        | Course metadata schema and backfill, categories, catalog page, course landing header                                         | 01            |
+| 04  | `learning-experience`         | Browser progress, phase roadmap page, context bar, mark complete, Learn home                                                 | 02, 03        |
+| 05  | `code-harness`                | `ayokoding-cli`, `run.yaml` contract, runners, Nx target, CI, quality-gate propagation                                       | —             |
+| 06  | `accounting-courses`          | Write 24 accounting courses; restructure both accounting paths in the same PR                                                | 02, 03, 05    |
+| 07  | `erp-courses`                 | Write 30 ERP courses; restructure both ERP paths in the same PR                                                              | 06            |
+| 08  | `capstone-courses`            | Rewrite 8 skeleton capstones; give the AI Engineer path its goal                                                             | 02, 03, 05    |
+| 09  | `filler-rewrites`             | Rewrite 8 templated filler courses                                                                                           | 03, 05        |
+| 10  | `legacy-unique-migration`     | Inventory legacy topics vs courses; build 48 new courses for topics without equivalents; record the legacy-to-course mapping | 03, 05        |
+| 11  | `audit-languages-and-tooling` | Audit and fix language and tooling courses                                                                                   | 05            |
+| 12  | `audit-cs-systems-and-data`   | Audit and fix CS, systems, concurrency, distributed, database, and data courses                                              | 05            |
+| 13  | `audit-product-security-ai`   | Audit and fix web, backend, mobile, security, AI, testing, architecture, product courses                                     | 05            |
+| 14  | `legacy-removal` (this plan)  | Delete `learn/legacy`, add 308 redirects, repoint `docs/` links, update specs and tests, carry the series-completion gate    | 10 to 13      |
 
-## Parallel Phoenix Rewrite
+## Phoenix Prerequisite
 
-The [AyoKoding Phoenix LiveView rewrite](../../in-progress/ayokoding-app-web/README.md) runs independently of
-this plan. Keep this plan's existing execution order and ownership of legacy deletion, the
-redirect mapping, navigation/search/sitemap changes, surviving rendering fixtures, and series
-closure. Do not retain legacy content or wait for Phoenix on its behalf. The rewrite owns
-reconciling these changes after they merge, using the surviving corpus and ordered 308 redirects.
-
-When preparing a merge, inspect only the current merged `main`: if Phoenix has already landed,
-identify affected Phoenix specs and tests in the shared-source impact review and hand any
-rewrite-owned adaptation to its executor. Do not read another worktree's uncommitted files or
-make an unfinished rewrite a new gate for this plan. The rewrite's executor must reconcile this
-plan's merged deletions and replacements before its own next delivery gate. The apps use separate
-local ports (3101 and 3102), tests, and owner specification corpora.
+The [AyoKoding Phoenix LiveView rewrite](../../in-progress/ayokoding-app-web/README.md) must complete before this plan starts. This plan retains ownership of its AyoKoding content and source files. Phoenix may reconcile the merged results at its own delivery boundaries after this plan completes.
 
 ## Navigation
 

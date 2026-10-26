@@ -105,7 +105,7 @@ Feature: The legacy-to-course mapping is complete and mechanically checkable
   # Exemption(e2e): a file-tree diff is not observable at a browser or HTTP boundary; alternative-proof: ayokoding-www:test:unit / learn/legacy is untouched by this plan
   @e2e-exempt
   Scenario: learn/legacy is untouched by this plan
-    Given this plan's branch diffed against the commit where plans 01 to 09 merged
+    Given this plan's branch diffed against the recorded current origin/main commit
     When the diff is filtered to apps/ayokoding-www/content/en/learn/legacy
     Then the filtered diff is empty
 ```

@@ -1,10 +1,8 @@
 # AyoKoding Learn Revamp 13 — Audit of Product, Security, and AI Courses
 
-Depends-on: [ayokoding-learn-revamp-05-code-harness]
+Depends-on: [ayokoding-app-web]
 
-> **Status:** Backlog. Do not execute until both are true: the user gives an explicit execution command, and plans 01
-> to 12 of this series have merged to `origin/main`. The 14 plans run strictly one after another (series decision 42),
-> so plan 12 is merged, deployed, verified, and cleaned up before this plan starts.
+> **Status:** Backlog. Do not execute until the user gives an explicit execution command and every predecessor declared in this README has completed, including the Podman migration and Phoenix rewrite.
 >
 > **Plan quality gate:** not run yet, so no verdict exists. By the user's decision of 2026-10-09 it was not run while
 > the plan was written; it runs at the start of execution, as the first item of Phase 0 in
@@ -63,36 +61,15 @@ proves the series end state for them: harness coverage complete and the filler b
 
 ## Dependency and Result
 
-The series runs strictly in order, one plan, one worktree, and one PR at a time (series decision 42), so plans 01 to 12
-are all merged when this plan starts. It builds directly on plan 03 (course metadata) and plan 05 (the code harness),
-and it respects plan 02's prerequisites and path integrity, plan 08's AI path and capstone contract, plan 09's filler
-guard and safe-lab rules, and the registry, completion test, and CI decisions of plans 11 and 12.
-
-```mermaid
-%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Gray #808080
-flowchart TD
-  accTitle: Plan 13 position in the series
-  accDescr: Plans 01 to 12 run one after another and are merged before plan 13 starts. Plan 13 audits 45 application development, AI, product, interview, and security courses, completes the harness coverage and filler baseline for them, and proves the series coverage gate. Plan 14 starts only after plan 13 has merged and re-measures the whole series before it deletes the legacy tree.
-  P01["01 to 12<br/>merged in order"] --> P13["13 audit product,<br/>security, AI"]
-  P13 --> P14["14 legacy removal<br/>and terminal gate"]
-
-  classDef prior fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
-  classDef current fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef later fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
-  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
-  class P01 prior
-  class P13 current
-  class P14 later
-```
+The live execution blockers are the Depends-on entries at the top of this README and the [plan-order graph](../../README.md#plan-order). Earlier series plans may provide useful merged inputs, but they do not add unlisted start conditions. Each plan retains its stated content ownership and delivery evidence.
 
 ## Series Context
 
 This plan is row 13 of the 14-plan **AyoKoding Learn Revamp** series. Each plan is one PR delivered from its own
-worktree, and the plans run strictly in numeric order; the "Depends on" column shows which earlier plans each one builds
-on. The user resolved the series decisions on 2026-10-09; every decision this plan relies on is copied into
+worktree, and its live execution blockers are declared in Depends-on and the plan-order graph. The series table below records historical content relationships. The user resolved the series decisions on 2026-10-09; every decision this plan relies on is copied into
 [brd.md](./brd.md#resolved-series-decisions-this-plan-relies-on).
 
-| NN  | Plan suffix                             | Scope                                                                                        | Depends on                     |
+| NN  | Plan suffix                             | Scope                                                                                        | Series inputs                  |
 | --- | --------------------------------------- | -------------------------------------------------------------------------------------------- | ------------------------------ |
 | 01  | `navigation-and-display`                | Strip `NN ·` title prefixes; path position numbers; sidebar auto-scroll; render fixes        | —                              |
 | 02  | `path-model`                            | Phases, goals, `assumes`, outline marker, prerequisite revision, closure checks, career copy | 01                             |
@@ -146,14 +123,9 @@ These are choices the plan made and documented; none needs an answer before exec
   that runs it on every pull request is a product decision you can take after plan 14 (decision D18).
 - **No plan quality gate verdict exists.** The gate runs first in Phase 0 at execution time.
 
-## Parallel Phoenix Rewrite
+## Phoenix Prerequisite
 
-The [AyoKoding Phoenix LiveView rewrite](../../in-progress/ayokoding-app-web/README.md) runs independently of
-this plan. Keep this plan's existing execution order and ownership of product/security/AI
-content, prerequisites, metadata, safety fixtures, the audited-course registry, filler baseline,
-and example harness. Phoenix consumes this corpus read-only and owns reconciling already-merged
-changes and completion scenarios. This plan does not wait for the rewrite. The apps use separate
-local ports (3101 and 3102), tests, and owner specification corpora.
+The [AyoKoding Phoenix LiveView rewrite](../../in-progress/ayokoding-app-web/README.md) must complete before this plan starts. This plan retains ownership of its AyoKoding content and source files. Phoenix may reconcile the merged results at its own delivery boundaries after this plan completes.
 
 ## Navigation
 

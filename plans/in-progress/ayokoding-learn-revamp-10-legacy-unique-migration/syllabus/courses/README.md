@@ -68,7 +68,7 @@ done; path membership is not required by decision 27.
 
 ## Dependency note
 
-`clojure-essentials` (wave 5) is a prerequisite of `web-backends-in-clojure-with-pedestal` (wave 14) and `database-migrations-with-clojure-and-migratus` (wave 11), because Clojure has no `just-enough-clojure` primer in the existing catalog (`lisp` covers only Scheme plus a short look at Clojure) and this plan's own `clojure-essentials` course fills that gap. Both dependents are scheduled in a later wave, so the prerequisite is always filled first. No other cross-course dependency exists inside this plan's 48 courses; every other course's prerequisites are plans 01 to 09 courses, already filled before this plan starts (series decision 42).
+`clojure-essentials` (wave 5) is a prerequisite of `web-backends-in-clojure-with-pedestal` (wave 14) and `database-migrations-with-clojure-and-migratus` (wave 11), because Clojure has no `just-enough-clojure` primer in the existing catalog (`lisp` covers only Scheme plus a short look at Clojure) and this plan's own `clojure-essentials` course fills that gap. Both dependents are scheduled in a later wave, so the prerequisite is always filled first. No other cross-course dependency exists inside this plan's 48 courses. Prerequisite course state from plans 01 to 09 is revalidated against merged `main` during execution; the authoring baseline does not add a live start gate.
 
 ## Totals
 

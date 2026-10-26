@@ -8,8 +8,8 @@ OSE is for product people exploring that problem and early-career engineers who 
 product platform is being built. This is a pre-alpha repository: the architecture and APIs will
 change as product, research, assurance, and platform work develops.
 
-This is the active OSE product monorepo, not a generic project starter. It holds OSE product work,
-its supporting research, and the governance and automation that carry them.
+This active OSE product monorepo holds product work, supporting research, and their governance and
+automation.
 
 This repository is one of the **OSE Code Repositories** (`ose-projects`), the seven repositories OSE
 is built and maintained in. The other six have distinct roles: the independent private sibling
@@ -48,9 +48,11 @@ The current product and public surfaces are:
   web client, backend, and end-to-end tests.
 - **AyoKoding** — public engineering research and learning drawn from work around the platform.
 
-Start with the [development roadmap](./roadmap.md) for the workstreams and readiness model. Then
-use the [application map](./docs/reference/system-architecture/applications.md) to see the current
-software surfaces and their responsibilities.
+Priorities reflect user value, evidence, risk, dependencies, and capacity. Initiatives need discovery,
+validation, and appropriate product, Shariah, security, and operational readiness checks.
+
+See the [plans index](./plans/README.md) for planned and active work, and the
+[application map](./docs/reference/system-architecture/applications.md) for current software responsibilities.
 
 ### Where the work lives
 

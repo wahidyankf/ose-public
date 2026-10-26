@@ -3,7 +3,7 @@
 Auditing 32 courses is most of this plan's work. This page says in what order the courses are audited, who
 works on each one, how every loop is bounded, what happens to a course that cannot pass, where the record of
 it all lives, and how the work reaches `origin/main` in commits and pushes. Execution starts only after the
-user's command and after plans 01 to 10 have merged (series decision 42).
+user's command and after the live dependencies declared in this plan have completed.
 
 ## Roles and Slots
 

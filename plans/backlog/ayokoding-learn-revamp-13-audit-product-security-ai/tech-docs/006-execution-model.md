@@ -3,8 +3,9 @@
 Auditing 45 courses is this plan's whole work, and most of it is authoring (about 487,871 words and 1,007
 new unit folders). This page says in what order the courses are done, who works on each one, how every loop is
 bounded, what happens to a course that cannot pass, where the record of it all lives, and how the work reaches
-`origin/main` in commits and pushes. Execution starts only after the user's command and after plans 01 to 12 have
-merged (series decision 42).
+`origin/main` in commits and pushes. Execution starts only after the user's command and after the live
+dependencies declared in this plan's README have completed. Earlier merged plans remain source context;
+their stated outputs are re-measured during Phase 0.
 
 ## Roles and Slots
 
@@ -304,7 +305,7 @@ A new session, or the same session after its context was compacted, resumes like
   [004](./004-toolchain-additions-and-ci-cost.md#the-ci-budget); the coordinator replaces its planning figures with
   the measured `EX-CHECK` minutes before each push.
 - **Merging `origin/main`.** Before each wave, fetch and, if `origin/main` moved, read the full diff of the new commits,
-  reconcile, and merge (not rebase) so pushed history is stable. The series runs plans strictly one after another, so a
+  reconcile, and merge (not rebase) so pushed history is stable. The live DAG allows separate plans to overlap after their declared prerequisites complete, so a
   moved `origin/main` is a hotfix or a bot, not another plan.
 - **PR size.** The PR will change about 9,000 to 11,000 files (a planning estimate: 2,831 units at about 3 files
   each, plus the lesson pages), far above the 3,000 files that GitHub's pull-request files view and files API list. The

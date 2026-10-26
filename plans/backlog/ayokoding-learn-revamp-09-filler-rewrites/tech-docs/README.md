@@ -26,7 +26,7 @@ enough for a junior engineer to carry out its part.
    plan 05's code harness. The syllabus in [../syllabus/](../syllabus/README.md) is each course's brief.
 2. **Guard.** A deterministic TypeScript unit test (six rules, FG1 to FG6) tells a templated course from a
    written one. It runs in `test:quick`, fails on any new filler course, and keeps a closed baseline that can
-   only shrink: 25 courses at the start, 17 after this plan, none at plan 14. Every course, not only these eight,
+   only shrink: 25-to-17 is the planning projection, and plan 14 verifies none remain. Every course, not only these eight,
    must pass it, so plan 14's end-state gate can call it.
 3. **Code.** Every example, kata, and capstone is a harness unit with a `run.yaml`. Languages come from plan 05's
    catalog: Python, F# on .NET, TypeScript, OCaml, Rust, Racket, Java, and the shell. This plan adds one toolchain
@@ -43,8 +43,7 @@ enough for a junior engineer to carry out its part.
 
 ## Cross-Plan Assumptions
 
-The series runs strictly in order (series decision 42), so plans 01 to 08 are merged, deployed, verified, and
-cleaned up when this plan starts, and plans 10 to 14 have not started. Each assumption below is checked in
+Plans 01 to 08 provide historical source context. They do not add live start gates, and plans 10 to 14 may overlap according to the live dependency graph. Each assumption below is checked in
 Phase 0; a failed check stops the plan with a report to the user.
 
 | From                | What this plan assumes                                                                                                                                                                                                                                                                                                                            | Phase 0 check                                                                                                                    |

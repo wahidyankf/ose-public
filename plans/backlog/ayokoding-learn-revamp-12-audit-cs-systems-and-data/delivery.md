@@ -4,13 +4,7 @@
 > `[HUMAN]`: only a human can do it (physical action, out-of-band approval, real-secret or
 > privileged-credential handling). `[AI+HUMAN]`: agent prepares, human approves or finishes.
 
-**Do not start** until both are true: (1) the user gives an explicit execution command for this
-plan — that command authorizes this plan's change set (commits, pushes, PR, merge, and the deploy
-described below); (2) plans 01 to 11 of this series have merged to `origin/main`, deployed, been
-verified, and had their worktrees cleaned up. The series runs strictly one plan at a time (series
-decision 42), so no other series plan runs while this one does, and no rebase between plans is
-needed. The user's words (2026-10-09): "jangan kerjain/implement plan ini sebelum gw
-kasih perintah buat eksekusi ya" (do not implement this plan until I give the command to execute it).
+**Do not start** until the user gives an explicit execution command for this plan and every live dependency declared in its README has completed. The authorization covers the change set and delivery actions described below.
 
 **Plan quality gate:** not run yet, so no verdict exists. By the user's decision of 2026-10-09 it was
 not run while the plan was written ("plans quality gate gak usah kita lakuin sekarang. nanti aja pas
@@ -304,12 +298,8 @@ Phase 0 opens no PR. Its evidence rides the delivery PR.
 - [ ] [AI] Sync and branch: `rtk git fetch origin`, `rtk git merge --ff-only origin/main`, then
       `rtk git switch -c ayokoding-learn-revamp-12-audit-cs-systems-and-data`. Append the branch to the
       inventory (`worktree-to-pr`, `active`). Acceptance: `rtk git status` shows the new branch, clean.
-- [ ] [AI] **Preconditions — plans 01 to 11 merged, plans 13 and 14 not started:** run
-      `rtk git ls-tree -d --name-only origin/main plans/done/`. Acceptance: the output contains folders ending
-      in `__ayokoding-learn-revamp-01-navigation-and-display` through
-      `__ayokoding-learn-revamp-11-audit-languages-and-tooling` (all eleven suffixes in the series list). Then run
-      `rtk git ls-tree -d --name-only origin/main plans/in-progress/`. Acceptance: the only series folder is this
-      plan's, and there is none for plans 13 or 14. If any precondition fails, stop and report to the user.
+- [ ] [AI] **Declared prerequisites:** confirm each plan listed in this plan's Depends-on declaration has merged to origin/main. Other live plans that are not declared predecessors do not block this plan.
+
 - [ ] [AI] **Name reconciliation:** for each name below, run `rtk git grep -n "<name>" origin/main -- apps specs .agents repo-governance .github`
       and record the merged file and spelling in a name map in the baseline evidence. Plan 11's design:
       `audited-course-completion.feature` and its eight scenario titles, `audited-course-completion.steps.ts`,
@@ -332,8 +322,8 @@ Phase 0 opens no PR. Its evidence rides the delivery PR.
       `COMPLETION` exits 0. If plan 11 merged a different design (for example one constant per plan in a separate
       file), record it and follow it ([tech-docs/007](./tech-docs/007-testing-strategy.md#extending-the-audited-course-completion-feature)).
 - [ ] [AI] **Plan 09's filler baseline:** open `apps/ayokoding-www/src/features/content/core/course-filler-baseline.ts`
-      on `origin/main`. Acceptance: record the number of entries and the cap (expected 12 and 12 after plans 09 and
-      11), and that these six slugs are listed with owner `plan-12`: `build-your-own-database`, `build-your-own-raft`, `linux-os`, `system-programming`, `windows-os`, `csp-style-concurrency`, with the rules in
+      on `origin/main`. Acceptance: record the current number of entries and cap (12 is the projection if plans 09 and
+      11's shares are present and no other live plan has changed the baseline), and whether these six slugs are listed with owner `plan-12`: `build-your-own-database`, `build-your-own-raft`, `linux-os`, `system-programming`, `windows-os`, `csp-style-concurrency`, with the rules in
       [tech-docs/007](./tech-docs/007-testing-strategy.md#the-filler-baseline-ratchet) and [tech-docs/001](./tech-docs/001-current-state-and-partition.md#the-six-courses-in-plan-09s-filler-baseline). Record any
       difference (an owner re-tag, a different cap, a course that already left, an extra entry). Run `FILLER`.
       Acceptance: exit 0 on `origin/main`, and the printed metrics table shows no fired rule for the other 28
@@ -419,7 +409,7 @@ Phase 0 opens no PR. Its evidence rides the delivery PR.
 - [ ] [AI] The plan quality gate verdict line is recorded in this file's header, with verdict `PASS`
       or `PASS_WITH_FINDINGS` after at most 2 cycles.
 - [ ] [AI] `Provisioning status: provisioned` with identity and inventory recorded.
-- [ ] [AI] `<plan>/evidence/phase-0-baseline.md` records: the eleven merged plans, plans 13 and 14 not started,
+- [ ] [AI] `<plan>/evidence/phase-0-baseline.md` records: the merged source baseline,
       the name map, plan 11's registry design, the filler baseline result (entries, cap, the six `plan-12`
       entries), the `java`, `clojure`, and `psql` entries with the Temurin digest and plan 09's P9 result, the
       state of each of the seven ids in the catalog, the AI path result and the closure intersection, the

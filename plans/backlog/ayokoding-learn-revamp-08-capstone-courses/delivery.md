@@ -4,13 +4,7 @@
 > `[HUMAN]`: only a human can do it (physical action, out-of-band approval, real-secret or
 > privileged-credential handling). `[AI+HUMAN]`: agent prepares, human approves or finishes.
 
-**Do not start** until both are true: (1) the user gives an explicit execution command for this
-plan — that command authorizes this plan's change set (commits, pushes, PR, merge, and the deploy
-described below); (2) plans 01 to 07 of this series have merged to `origin/main`, deployed, been
-verified, and had their worktrees cleaned up. The series runs strictly one plan at a time (series
-decision 42), so no other series plan runs while this one does, plans 09 to 14 have not started, and no
-rebase between plans is needed. The user's words (2026-10-09): "jangan kerjain/implement plan ini sebelum
-gw kasih perintah buat eksekusi ya" (do not implement this plan until I give the command to execute it).
+**Do not start** until the user gives an explicit execution command for this plan and every live dependency declared in its README has completed. The authorization covers the change set and delivery actions described below.
 
 **Plan quality gate:** not run yet, so no verdict exists. By the user's decision of 2026-10-09 it was
 not run while the plan was written. It runs at the start of execution, as the first item of
@@ -290,19 +284,13 @@ Phase 0 opens no PR. Its evidence rides the delivery PR.
 - [ ] [AI] Sync and branch: `rtk git fetch origin`, `rtk git merge --ff-only origin/main`, then
       `rtk git switch -c ayokoding-learn-revamp-08-capstone-courses`. Append the branch to the
       inventory (`worktree-to-pr`, `active`). Acceptance: `rtk git status` shows the new branch, clean.
-- [ ] [AI] **Preconditions — plans 01 to 07 merged, 09 to 14 not started:** run
-      `rtk git ls-tree -d --name-only origin/main plans/done/`. Acceptance: the output contains folders
-      ending in `__ayokoding-learn-revamp-01-navigation-and-display`,
-      `__ayokoding-learn-revamp-02-path-model`, `__ayokoding-learn-revamp-03-catalog-and-metadata`,
-      `__ayokoding-learn-revamp-04-learning-experience`, `__ayokoding-learn-revamp-05-code-harness`,
-      `__ayokoding-learn-revamp-06-accounting-courses`, and `__ayokoding-learn-revamp-07-erp-courses`,
-      and none of plans 09 to 14. If any of the seven is missing, or any later plan is present, stop and
-      report to the user (the strict order of decision 42 was broken).
-- [ ] [AI] **Outline count is 8:** run
-      `rtk git grep -l "status: outline" origin/main -- apps/ayokoding-www/content/en/learn/courses`.
-      Acceptance: exactly the 8 capstone `_index.md` files (record the list). More means plan 06 or 07
-      left a course as an outline: stop and report. Fewer than 8 means a capstone was already filled:
-      stop and report.
+- [ ] [AI] **Declared prerequisites:** confirm each plan listed in this plan's Depends-on declaration has merged to origin/main. Other live plans that are not declared predecessors do not block this plan.
+
+- [ ] [AI] **Capstone source baseline:** list the eight capstone `_index.md` files named in this
+      plan's syllabus and inspect each current `status`. Record which remain outlines and any that
+      changed on merged `main`; do not use the repository-wide outline count as a gate because other
+      AyoKoding plans may run independently after Phoenix. Preserve the scope and test only the
+      eight capstones this plan owns.
 - [ ] [AI] **Name reconciliation:** for each name below, run `rtk git grep -n "<name>" origin/main -- apps specs`
       and record the merged file and spelling in a name map in the baseline evidence:
       `checkPathModelIntegrity`, `computeCore`, `outlineCourseIds`, `legacy-membership.ts`,
@@ -419,8 +407,7 @@ Phase 0 opens no PR. Its evidence rides the delivery PR.
 - [ ] [AI] The plan quality gate verdict line is recorded in this file's header, with verdict `PASS`
       or `PASS_WITH_FINDINGS` after at most 2 cycles.
 - [ ] [AI] `Provisioning status: provisioned` with identity and inventory recorded.
-- [ ] [AI] `<plan>/evidence/phase-0-baseline.md` records: the seven merged plans, plans 09 to 14 not
-      started, the outline count (8), the name map, the drift check, the Start-fallback binding, the
+- [ ] [AI] `<plan>/evidence/phase-0-baseline.md` records: the eight capstone source states, the name map, the drift check, the Start-fallback binding, the
       outline-anchor list, the harness readiness answers, the rule-home results, the Vercel probe, every
       baseline exit code, and B. `phase-0-facts.md`, `closure-recompute.md`, and `ci-projection.md` exist.
 - [ ] [AI] `rtk git status --short` shows only `<plan>/` changes.

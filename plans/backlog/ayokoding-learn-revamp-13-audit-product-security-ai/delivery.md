@@ -4,13 +4,7 @@
 > `[HUMAN]`: only a human can do it (physical action, out-of-band approval, real-secret or
 > privileged-credential handling). `[AI+HUMAN]`: agent prepares, human approves or finishes.
 
-**Do not start** until both are true: (1) the user gives an explicit execution command for this
-plan — that command authorizes this plan's change set (commits, pushes, PR, merge, and the deploy
-described below); (2) plans 01 to 12 of this series have merged to `origin/main`, deployed, been
-verified, and had their worktrees cleaned up. The series runs strictly one plan at a time (series
-decision 42), so no other series plan runs while this one does, and no rebase between plans is
-needed. The user's words (2026-10-09): "jangan kerjain/implement plan ini sebelum gw
-kasih perintah buat eksekusi ya" (do not implement this plan until I give the command to execute it).
+**Do not start** until the user gives an explicit execution command for this plan and every live dependency declared in its README has completed. The authorization covers the change set and delivery actions described below.
 
 **Plan quality gate:** not run yet, so no verdict exists. By the user's decision of 2026-10-09 it was
 not run while the plan was written. It runs at the start of execution, as the first item of
@@ -309,12 +303,8 @@ Phase 0 opens no PR. Its evidence rides the delivery PR.
 - [ ] [AI] Sync and branch: `rtk git fetch origin`, `rtk git merge --ff-only origin/main`, then
       `rtk git switch -c ayokoding-learn-revamp-13-audit-product-security-ai`. Append the branch to the
       inventory (`worktree-to-pr`, `active`). Acceptance: `rtk git status` shows the new branch, clean.
-- [ ] [AI] **Preconditions — plans 01 to 12 merged, plan 14 not started:** run
-      `rtk git ls-tree -d --name-only origin/main plans/done/`. Acceptance: the output contains folders ending
-      in `__ayokoding-learn-revamp-01-navigation-and-display` through
-      `__ayokoding-learn-revamp-12-audit-cs-systems-and-data` (all twelve suffixes in the series list). Then run
-      `rtk git ls-tree -d --name-only origin/main plans/in-progress/`. Acceptance: no folder for plan 14 and no
-      other series plan except this one. If any precondition fails, stop and report to the user.
+- [ ] [AI] **Declared prerequisites:** confirm each plan listed in this plan's Depends-on declaration has merged to origin/main. Other live plans that are not declared predecessors do not block this plan.
+
 - [ ] [AI] **Name reconciliation:** for each name below, run `rtk git grep -n "<name>" origin/main -- apps specs .agents repo-governance .github`
       and record the merged file and spelling in a name map in the baseline evidence:
       `checkPathModelIntegrity`, `path-model-integrity.unit.test.ts`, `manifest-membership.unit.test.ts`,
@@ -427,7 +417,7 @@ Phase 0 opens no PR. Its evidence rides the delivery PR.
 - [ ] [AI] The plan quality gate verdict line is recorded in this file's header, with verdict `PASS`
       or `PASS_WITH_FINDINGS` after at most 2 cycles.
 - [ ] [AI] `Provisioning status: provisioned` with identity and inventory recorded.
-- [ ] [AI] `<plan>/evidence/phase-0-baseline.md` records: the twelve merged plans, plan 14 not started, the name
+- [ ] [AI] `<plan>/evidence/phase-0-baseline.md` records: the twelve merged plans, the name
       map, the filler baseline result, the registry and ladder result, the AI path and capstone result (including the
       learning-folder set), the prerequisite differences, the `java` and `kotlin` result, the drift check, the safety
       and AI baseline, the catalog pins and formatter invocations, the Vercel probe, the M1 counts, the CI shape and

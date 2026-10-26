@@ -67,8 +67,9 @@ The briefs state this in full; the table is the boundary for review.
 
 ## Capstone Handoff
 
-Plan 08 (capstone courses, merged before this plan) writes three capstones that list the two security courses
-as prerequisites. Plan 08's rules for those capstones (restated here so this plan stands alone):
+Plan 08 writes three capstones that list the two security courses as prerequisites. Its outputs may merge
+before, during, or after this plan, so recheck the merged capstone content at each delivery boundary. Plan
+08's rules for those capstones (restated here so this plan stands alone):
 
 | Rule | Meaning                                                                                                                                                                |
 | ---- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

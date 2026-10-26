@@ -7,12 +7,12 @@ order the courses are written in.
 
 ## Short Answers
 
-| Question                                                                                                          | Answer                                                                                                                                                                                                                                                                                                                      |
-| ----------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Does a capstone need its prerequisites' final content?                                                            | No. It needs each prerequisite to exist, to be filled (not an outline, not a skeleton), and to teach the named concepts at definition level. It does not need any prerequisite's examples, figures, headings, or code.                                                                                                      |
-| Plans execute strictly in order 01 to 14 (decision 42). What if a prerequisite is rewritten later by plans 09–13? | The capstone is written and tested against the prerequisite **as it exists when this plan starts**, and it is built so that a later rewrite cannot make it wrong: the course-level coupling rule below. A rewrite by a later plan re-checks the capstone's `relies-on` table; plan 14's end-state gate re-checks all eight. |
-| What order is safe?                                                                                               | Three waves, with the in-plan dependency first: the concurrency capstone before the lead capstone, and the three security-flavoured courses last. See [Waves](#waves).                                                                                                                                                      |
-| Is there a "capstone depends on filled prerequisites" gate?                                                       | Yes: **Gate R**, run for each course before its maker starts. See [Gate R](#gate-r-prerequisite-readiness).                                                                                                                                                                                                                 |
+| Question                                                                                                           | Answer                                                                                                                                                                                                                                                                                                                      |
+| ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Does a capstone need its prerequisites' final content?                                                             | No. It needs each prerequisite to exist, to be filled (not an outline, not a skeleton), and to teach the named concepts at definition level. It does not need any prerequisite's examples, figures, headings, or code.                                                                                                      |
+| The numeric series order was superseded by the live DAG. What if a prerequisite is rewritten later by plans 09–13? | The capstone is written and tested against the prerequisite **as it exists when this plan starts**, and it is built so that a later rewrite cannot make it wrong: the course-level coupling rule below. A rewrite by a later plan re-checks the capstone's `relies-on` table; plan 14's end-state gate re-checks all eight. |
+| What order is safe?                                                                                                | Three waves, with the in-plan dependency first: the concurrency capstone before the lead capstone, and the three security-flavoured courses last. See [Waves](#waves).                                                                                                                                                      |
+| Is there a "capstone depends on filled prerequisites" gate?                                                        | Yes: **Gate R**, run for each course before its maker starts. See [Gate R](#gate-r-prerequisite-readiness).                                                                                                                                                                                                                 |
 
 ## Starting State of the Prerequisites
 
@@ -25,8 +25,8 @@ Measured on 2026-10-09 at `origin/main` `bb7f90137`; Phase 0 repeats it on the m
   `capstone-lead-at-altitude` requires `capstone-concurrency-and-systems`, which this plan writes.
 - Two prerequisites are **templated filler** courses: `defensive-security` (12 pages, about 11,800
   words) and `vulnerability-management-and-assessment` (12 pages, about 11,300 words). They are not
-  outlines, so they pass the readiness check, but the series lists them for a from-scratch rewrite in
-  plan 09, which runs after this plan.
+  outlines, so they pass the readiness check. Plan 09 may rewrite them before, during, or after this
+  plan; re-read their merged state at each delivery boundary.
 - `capstone-solid-core` is a filled capstone with a different layout (code at the course root) and is
   owned by the audit plans 11–13.
 - Plans 09–13 may also rewrite, audit, or fix any other prerequisite, and may change their
@@ -108,8 +108,8 @@ plan's nine edge changes applied.
 
 ## Course-Level Coupling
 
-Plans 09–13 run after this plan and may rewrite any prerequisite. A capstone must stay correct when that
-happens. Four rules make that true. They are binding on every capstone and checked in the Content Quality
+Plans 09–13 may run before, during, or after this plan and may rewrite any prerequisite. A capstone must
+stay correct as those changes merge. Four rules make that true. They are binding on every capstone and checked in the Content Quality
 Gate (D9 in [002](./002-capstone-course-contract-and-modes.md)).
 
 | Rule | Statement                                                                                                                                                                                                                                                        | Why                                                                                                     |
@@ -158,7 +158,7 @@ the maker is started (checklist step CP-0). All parts must pass:
 | R-3   | Each has more than 1,000 words (not a skeleton) and its `learning/overview.md` or `overview.md` names the concepts in the capstone's `relies-on` table | If a concept is missing from a filler course, the capstone restates it (CL2) and the maker records it in the ledger; it is not a block |
 | R-4   | The `relies-on` table lists only concept names the maker has confirmed in the prerequisite's current text                                              | The maker removes the name or teaches it inside the capstone                                                                           |
 
-Gate R is a **check, not a wait**. Because the series executes strictly in order, no later plan can fill
+Gate R is a **check, not a wait**. Because plans may overlap when the live DAG permits, a later plan can fill
 a prerequisite first, so a failing course is reported rather than paused. Expected result: every check
 passes for every course, because plans 06 and 07 touch no capstone prerequisite and the only in-plan
 prerequisite is handled by [wave order](#waves).

@@ -9,23 +9,36 @@ unchecked during backlog authoring. `plan-quality-gate: PASS (3 cycles, 0 open f
 
 Worktree path: `worktrees/ayokoding-app-web/`.
 
-This is the pre-existing worktree supplied with the user's session, adopted before plan authoring.
+The authoring worktree was supplied with the user's session and adopted before plan authoring.
 Its branch reflog records creation from HEAD at `2026-10-25T19:02:55+08:00`; the authoring baseline is
 `88d4f0b36156b6efb10c03e532a646cea65f81b1`. The agent did not create it and does not invent the
 original actor's identity.
 
-### Provisioned Worktree Identity
+### Historical Authoring Worktree Identity
 
 - Declared repository-relative route: `worktrees/ayokoding-app-web/`.
 - Initial branch: `ayokoding-app-web`.
 - Created by: user-provided pre-existing session worktree; original actor not recorded in Git.
 - Created at: `2026-10-25T19:02:55+08:00`, from the branch-creation reflog.
 
+### Provisioned Worktree Identity
+
+- Declared repository-relative route: `worktrees/ayokoding-app-web/`.
+- Initial execution branch: `ayokoding-app-web-base`.
+- Created by: Codex execution coordinator under the user's plan-execution request.
+- Created at: `2026-10-26T00:12:13Z`, corroborated by the branch-creation reflog.
+- Base: `bafba8b77f634cca89a5967f142767b81d743248`, after promotion PR #739 merged.
+- Provisioning proof: guarded `git worktree add -b ayokoding-app-web-base
+worktrees/ayokoding-app-web origin/main` exited zero. Only the missing historical plan
+  registration was removed non-force before provisioning; unrelated registrations were retained.
+
 ### Delivery Branch Inventory
 
-| Branch              | Mode          | Lifecycle state | Proof                                                                      |
-| ------------------- | ------------- | --------------- | -------------------------------------------------------------------------- |
-| `ayokoding-app-web` | `provisioned` | active          | Branch reflog creation from the authoring baseline at the timestamp above. |
+| Branch                      | Mode           | Lifecycle state                       | Proof                                                                                                                                                                                                         |
+| --------------------------- | -------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ayokoding-app-web`         | worktree-to-pr | delivered; historical branch retained | Authoring PR #738 merged reviewed head `ad2f4d647aa11a2829cab06ad8c10aab44423822`; original actor's branch is preserved.                                                                                      |
+| `promote-ayokoding-app-web` | worktree-to-pr | delivered; cleaned                    | Pure promotion PR #739 merged reviewed head `f2e4acfa572c6dcb1da85935ea06ae691bdcdb6f` as `bafba8b77f634cca89a5967f142767b81d743248`; GitHub auto-deletion event and ordinary local branch deletion verified. |
+| `ayokoding-app-web-base`    | worktree-to-pr | active                                | Execution identity above; provisioned from the promoted trunk.                                                                                                                                                |
 
 Append every delivery branch before use and record the merged PR plus reviewed 40-character head
 SHA. Resolve the worktree route against the selected repository at runtime and reconcile with
@@ -33,6 +46,49 @@ SHA. Resolve the worktree route against the selected repository at runtime and r
 worktree has already been cleaned before execution, the workflow's Step 0 re-provisions the same
 declared route and records the new branch inventory before implementation. Use only one worktree
 for this repository across all units.
+
+## User-requested pause and draft checkpoint (2026-10-26)
+
+The user explicitly stopped execution and requested that all changes and progress be preserved
+in the worktree's `local-tmp/` and this checklist, with a draft PR. This is a WIP checkpoint
+requested by the user while Phase 0 is incomplete, overriding the usual no-Phase-0-PR behavior
+for this checkpoint only. It is not a Phase 0 gate, implementation delivery, or permission to merge.
+
+Verified checklist progress is **7/86 actions (8.14% by item count)**. All 86 actions are `[AI]`;
+there is no planned human gate. Phases 1–4 and the Phoenix implementation have not started.
+
+- Bootstrap and Doctor passed; source inventory and the current 497-identity disposition ledger
+  are recorded under `evidence/P0/`. Native source/license/prerequisite inspection is complete.
+- The calculator lifecycle repair passed the original full quick checkpoint: 248 files,
+  4,180 tests, 99.54% lines against the unchanged 99% floor. This predates later semantic repairs.
+- The local build-worker control has assertion RED and focused GREEN (45/45), accepted source
+  review, and static coverage for all 497 current identities. The original Integration target
+  still needs a complete cache-free one-worker run; prior storage/memory stops ran no Integration tests.
+- Calculator semantic and runtime repairs preserve all 129 identities and 387 layer obligations.
+  Focused calculator proof is 527/527 with zero errors; the localized Lifestyle regression has
+  RED 15/17 then GREEN 17/17. Independent delta review has zero actionable findings. Current
+  full quick, all required browser E2E, Integration and screenshot/reference proof remain pending.
+- Playwright 1.62.1 with playwright-bdd 9.2.0 is the screened candidate for Ubuntu 26.04.
+  Only the two AyoKoding E2E manifests were edited. Installation never started: the corrected
+  request stayed queued and was cancelled on the user's stop, session `62759`, exit `130`.
+  The root lockfile and installed dependencies remain unchanged. These manifest pins are WIP:
+  normal lock generation, physical CLI/test/core/BDD resolution, resolved-tree security audit,
+  generation/compatibility proof, and all three browser installs/launches remain unverified.
+
+There is no owned live install, test, build, or service to resume or restart. Peer work is preserved.
+The plan worktree and branch `ayokoding-app-web-base` remain in place. Complete tracked and
+untracked changes, SHA-256 inventory, execution-state copies, review packets, and resumption
+instructions are preserved locally under
+`local-tmp/plan/ayokoding-app-web/stop-2026-10-26/`. Its `handoff.md` records the draft PR URL
+and exact published head after creation. Local logs and snapshots are ignored and are not PR content.
+
+On an explicit resume, reconcile current `origin/main`, the touch ledger and active user decisions;
+then complete the supported Playwright dependency/lock repair and every remaining P0 gate before
+starting P1. Use the approved per-command HIPPO configuration. The standing congestion exception
+in `origin/main` commit `98ce02f412f9eb8900052905a8bc84773cb7d0ef` applies to eligible Git hooks
+only, with its manual screens, commit-message validation, fresh leak review and operation-specific
+receipts; it does not waive install/build/test admission. No timeout, retry, heap, resource floor,
+scenario, assertion, content or dataset weakening is authorized.
 
 ## Delivery Mode: worktree-to-pr
 
@@ -42,6 +98,10 @@ staging, committing, pushing, or merging. No deployment branch is created or mod
 authorized PR needs exact-current-head/base `pr-quality-gate.yml`, a fresh-context clean
 `leak-reviewer` verdict for its push/merge head, and applicable finite UI/API gates. Broad semantic
 PR review runs only if requested.
+
+The user's execution request explicitly authorizes the necessary staging, commits, pushes and
+merges to deliver all phases to `origin/main`. This execution authority follows the same hardened
+prerequisites; it does not authorize deployment.
 
 ## Parallelization Model
 
@@ -102,10 +162,19 @@ a competing full scenario copy in this checklist.
 baseline and exact source/scenario ownership. **Proof:** baseline logs and a complete scenario
 disposition ledger before production code changes.
 
-- [ ] [AI] Read current `AGENTS.md`, the repository adapter, worktree setup, and this plan. Compare
+- [x] [AI] Read current `AGENTS.md`, the repository adapter, worktree setup, and this plan. Compare
       `rtk git status --short`, branch/worktree list, and the touch ledger; retain foreign work.
       Reconcile active user decisions before resuming and fail the affected packet on conflict.
-- [ ] [AI] Before any guarded command, locate and use the documented operator-approved host policy
+
+  **Implementation notes (2026-10-26):** Completed. Read current instructions, adapter,
+  worktree setup and full approved plan; reconciled a clean new worktree at
+  `bafba8b77f634cca89a5967f142767b81d743248` and the action/touch ledger. Preserved foreign
+  worktrees and the historical authoring branch. Active user decisions remain full execution,
+  one plan worktree, delivery to `origin/main`, and progress updates. No conflict remains.
+  Files changed: this checklist and baseline evidence; ignored coordination state is under
+  `local-tmp/plan/ayokoding-app-web/`.
+
+- [x] [AI] Before any guarded command, locate and use the documented operator-approved host policy
       through `HIPPO_CONFIG` or the correct `--config <approved-policy>` option. If HIPPO rejects
       admission because its default exclusive mode conflicts with an existing reservation-mode
       marker, inspect the effective configuration and the documented host policy before continuing.
@@ -117,33 +186,184 @@ disposition ledger before production code changes.
       Follow
       [consumer configuration and evidence](../../../repo-governance/development/practice/resource-aware-development/consumer-integrity-state-and-evidence.md)
       and the [development setup guidance](../../../docs/how-to/setup-development-environment.md).
-- [ ] [AI] Run the mandatory worktree bootstrap from the root:
+
+  **Implementation notes (2026-10-26):** Completed. Selected the documented operator-approved
+  machine policy through `HIPPO_CONFIG` before guarded work; the transactional install was
+  admitted and exited zero. No example-policy override, resource-floor change, shared-state
+  deletion or peer termination occurred. The scanner's temporary-filesystem quota was diagnosed
+  and corrected with task-owned temporary staging on the repository filesystem; checks remain
+  unchanged. Host-specific configuration and errno diagnostics remain in ignored handoff notes.
+  Files changed: this checklist and baseline evidence under the plan; ignored diagnostics are
+  under `local-tmp/plan/ayokoding-app-web/`.
+
+- [x] [AI] Run the mandatory worktree bootstrap from the root:
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install`,
       then `rtk npm run doctor`. Only on reported toolchain drift run the documented transactional
       `./rhino toolchain provision --apply`, then doctor again. Save baseline exit codes; do not
       change Git identity or production/staging environment files.
-- [ ] [AI] Record the latest merged `origin/main` SHA, current nine-plan statuses, shared content,
+
+  **Implementation notes (2026-10-26):** Completed at the new worktree root. Guarded
+  `npm install` exited zero with 1,539 packages and Husky `prepare`. Doctor initially reported
+  three unavailable tools; the documented drift-only provisioner exited zero with no provision
+  vectors. Diagnosis proved all three pinned tools were installed but absent from Bash's PATH.
+  Correcting only the command environment produced Doctor exit zero: 24 declared toolchains,
+  no findings. No tool installation, repository configuration, Git identity or protected
+  environment-file change was needed. Files changed: this checklist and
+  `evidence/P0/readiness.md`; exact commands and session results remain in ignored runtime notes.
+
+- [x] [AI] Record the latest merged `origin/main` SHA, current nine-plan statuses, shared content,
       manifest schemas, redirect module order, tool codecs, public assets, and existing config.
       Use the bounded inventory in [001](./tech-docs/001-baseline-and-parity.md); consume no unmerged
       sibling-worktree output. Move the plan to `plans/in-progress/ayokoding-app-web/` only when
       execution actually begins; update both stage indexes and the plan-order DAG in that unit.
-- [ ] [AI] Enumerate and expand the current old-app Gherkin corpus using the existing Cucumber
+
+  **Implementation notes (2026-10-26):** Completed. Recorded the remote-confirmed merged
+  revision `bafba8b77f634cca89a5967f142767b81d743248`, all nine related plan states,
+  3,275 English and 125 Indonesian Markdown sources, eight path manifests and their current
+  schemas, exact redirect order, tool-codec locations, public assets and existing app/test
+  configuration. Consumed no unmerged sibling output. The pure lifecycle move, indexes and DAG
+  had already landed independently in promotion PR #739 before setup. Files changed:
+  `evidence/P0/current-source-inventory.md` and this checklist.
+
+- [x] [AI] Enumerate and expand the current old-app Gherkin corpus using the existing Cucumber
       parser; record every source scenario/example and its new destination/layer disposition as
       required by 001. Include all current course-path and tool cases. Unmapped user behavior
       blocks its packet; framework-only exclusions need their concrete replacement proof.
+
+  **Implementation notes (2026-10-26):** Completed the baseline mapping, with future runtime
+  proof explicitly pending. The existing Cucumber parser expanded all 63 feature files into
+  487 identities, including 68 Examples rows, with zero parse/shape errors. The 487-row ledger
+  records source lines, examples, revision, exact destination title/feature and layer owners:
+  464 adapted, 21 retained at existing owners, two implementation-only dispositions with
+  explicit replacement/retained proof. Missing exact destinations are marked `ADD-REQUIRED P2`.
+  Root review corrected inherited exemptions and browser/native ownership; all rows have
+  destinations and the table validates as eight columns and identities 1–487. Files changed:
+  `evidence/P0/scenario-dispositions.md` and this checklist. Raw parser metadata remains in
+  ignored runtime evidence. These mappings do not claim implemented or passing behavior.
+
+  **Overlay reconciliation (2026-10-26):** The reviewed build-worker repair adds ten retained
+  Next.js-only identities. The evidence ledger preserves all original 487 rows and appends
+  stable IDs `BW-SUP-01` through `BW-SUP-10`, pinned to the accepted feature hash. The current
+  corpus is 497 identities: 464 adapted, 31 retained, two implementation-only. Each added row
+  names its exact Unit alternative for the independently justified Integration/E2E exemptions;
+  focused Unit proof is 45/45 and all four static adapters pass. Phoenix proof remains pending.
+
 - [ ] [AI] Read both existing app E2E project configurations. Run the old owner's baseline with
       `rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npm exec nx -- run ayokoding-www:test:quick`
       and its `test:integration` target with the same guard. Record failures and root causes;
       resolve any baseline that would invalidate subsequent parity evidence before proceeding.
+
+- [ ] [AI] Resolve plan-local Integration build storage and memory pressure without changing resource
+      floors or omitting dependencies/tests. Attribute owned output/cache bytes, remove only
+      verified unpublished partial artifacts, and prove the original full target can run with
+      documented cache controls. Retain diagnostic logs and all source/shared caches.
+
+  **Discovery (2026-10-26):** Integration run 85728 generated all 3,278 pages, then HIPPO
+  stopped it with exit 124 before test results while Nx copied the completed build into cache.
+  The worktree build used about 17.28 GiB; a verified unpublished partial cache duplicated
+  about 11.77 GiB. Source bytes and all resource floors remain unchanged. The documented
+  `--skip-nx-cache` flag preserves the full four-node dependency graph and disables cache
+  reads/writes. Bounded cleanup recovered 12.64 GB without deleting source or other caches.
+  The subsequent full cache-free run hit memory-PSI shedding at static-worker startup, with no
+  OOM kill. An app-prefixed one-worker override is being added through the existing build-worker
+  contract, with default two and hosted behavior preserved, Gherkin/Unit proof and cache inputs.
+  All pages and dependency tasks remain required; full-target confirmation is pending.
+
+- [ ] [AI] Resolve the frozen calculator scenario-trace findings without reducing scenario,
+      layer or assertion scope. Revalidate all 57 consolidated findings against their exact
+      Unit/E2E contracts, repair each confirmed gap with independent observations, reconcile
+      contradictory canonical descriptions to existing accessible behavior, and rerun
+      required focused/full proof plus independent semantic review. Record every finding's
+      resolution; a runtime green result alone does not close semantic gaps.
+
+  **Discovery (2026-10-26):** The frozen 387-row review retains all 129 calculator identities:
+  52 Unit and 33 E2E rows lack substantive outcome proof, invalidating 33 Integration alternative
+  proofs. There are 57 consolidated pre-existing findings (25 HIGH, 32 MEDIUM). The reviewed
+  sources did not drift. The detailed frozen ledger and refutations remain in ignored
+  `local-tmp/gherkin-implementation-review/`; accepted final evidence must accompany delivery.
+
+  **Execution clarifications (2026-10-26):** Criticality and confidence are separate; all
+  findings have HIGH repair confidence after revalidation. Preserve the later accepted
+  active-tab description visibility and valid radio checked-state semantics. The later
+  minimum-role locale scenario explicitly places city and country together in the City cell;
+  preserve that existing representation while proving both identities on all three tabs and
+  strict adjacent Country/City columns on Cost/Savings. The original cost-breakdown adjacency
+  contract remains unchanged. Early snapshot review found an ambiguous input locator and weak
+  Unit visibility proof; both require repair and final verification. No runtime gate is closed.
+
+- [x] [AI] Resolve the pre-existing calculator Unit-worker heap exhaustion found by the
+      Phase 0 baseline. Diagnose the owning lifecycle or resource boundary, retain regression
+      proof and all existing scenarios/assertions/coverage, and verify focused proof before
+      rerunning the required quick baseline. Do not widen timeouts, retry failing tests,
+      suppress checks, or raise process limits without evidence of the complete resource need.
+
+  **Discovery (2026-10-26):** The old quick baseline exited one after 548.09 seconds:
+  246/247 files and 3,970/4,177 tests passed before the calculator frontend step worker
+  exhausted Node's heap. The run emitted 99.09% overall line coverage but is not accepted
+  because its worker failed. Integration has no completed proof; a prematurely started owned
+  invocation was cancelled before build/tests, with no shared-content diff. This repair is
+  required before the original baseline action can complete.
+
+  **Implementation notes (2026-10-26):** Completed. Replaced collection-retained input drivers
+  with independent lazy sessions released by the existing scenario teardown, and re-queried
+  captured DOM elements at their observation steps. Three lifecycle regressions demonstrated
+  assertion-based RED then GREEN. Typecheck, focused lint and formatting passed. Independent
+  static review read ten files with zero findings and unchanged reviewed hashes. All 526
+  calculator step tests then completed under coverage without worker errors; the focused
+  command's whole-app threshold failure was retained honestly as diagnostic-only evidence.
+  The original unmodified full quick target subsequently exited zero: 248/248 files,
+  4,180/4,180 tests, 99.54% line coverage against the unchanged 99% floor, and all static
+  adapters passed for 63 features and 487 expanded scenarios. No heap, timeout, coverage,
+  scenario, assertion, dataset or content limit was changed. Files changed:
+  `apps/ayokoding-www/tests/unit/fe-steps/cost-of-living-calculator.steps.tsx`, its new
+  `helpers/scenario-user.ts`, `tests/unit/features/scenario-user.test.tsx`, and this checklist.
+  Sanitized baseline evidence is under `evidence/P0/`; detailed logs/review remain in ignored
+  `local-tmp/swe-debugger/` and `local-tmp/swe-reviewer/`.
+
+- [ ] [AI] Resolve the detected Playwright/Ubuntu platform incompatibility through the documented
+      dependency-bump workflow and fitting SWE repin role. Select an eligible supported stable
+      release with published integrity, date, security and functional clearance; verify a coherent
+      CLI/test/BDD runtime. Expand manifest scope only when actual shared resolution requires it.
+      Route necessary compatibility source changes to the developer and retain all scenarios,
+      assertions, browser projects and required affected-owner proof. Do not substitute a host
+      override, suppressed validation, forced peers or hand-edited lock integrity.
+
+  **Discovery (2026-10-26):** The guarded install under the verified existing Playwright 1.60.0
+  exited one because it does not support `ubuntu26.04-x64`. No browser was installed or smoke
+  launched; old cached browsers remain intact. A compatible version is an implementation choice
+  within setup scope, subject to the repository's release-age/security policy and real BDD
+  compatibility. No new dependency pin is selected or applied by this discovery.
+
+- [ ] [AI] Install the browser revisions required by the locked Playwright package through the
+      documented guarded setup path before reference screenshots or E2E proof. Verify Chromium,
+      Firefox and WebKit can launch with their required OS dependencies; retain existing unrelated
+      browser installations and record the exact package/revision and attributable results.
+
+  **Discovery (2026-10-26):** Installed Playwright 1.60.0 requires Chromium revision 1223,
+  Firefox 1522 and WebKit 2287. Read-only cache inspection found only Chromium/headless-shell
+  revision 1248, which cannot substitute for the locked binaries. No browser installation or
+  launch proof has run. The initial attempt changed no package pins or product behavior; the
+  separate supported-tooling repair above now precedes installation and launch proof.
+
 - [ ] [AI] Verify the configured listener inventory in `docs/reference/web-sites.md`. Reserve
       3102/3191 for the new app/test server and retain 3101. A busy listener fails clearly; do not
       kill or reuse another process. Capture existing feature reference screenshots in both
       locales at 375/768/1280 px as described in PRD; own only the server processes started here.
-- [ ] [AI] Inspect the source library at the exact BeaverNest commit, using its Git tracked-file
+- [x] [AI] Inspect the source library at the exact BeaverNest commit, using its Git tracked-file
       list and notices. Verify the subtree/commit before copying. Record compatible Phoenix 1.8,
       LiveView 1.2, Elixir 1.18+, OTP, MDEx/YAML, Node, and browser dependency requirements from actual
       manifests and cited sources; resolve/lock exact patches during P1/P2. Validate MDEx's native
       NIF or documented build prerequisites on the actual host instead of assuming a Rust setup.
+
+  **Implementation notes (2026-10-26):** Completed the independent source/requirements
+  inspection. Verified the pinned BeaverNest subtree's 215 tracked paths and complete MIT/CCK
+  notice chain. Recorded compatible library/runtime requirements from versioned manifests and
+  cited sources, plus exact existing Node and browser-tooling pins. Actual host metadata and
+  successful Doctor 6256 establish the documented native build-prerequisite alternative; no
+  NIF fetch, compile or load is claimed. Exact dependency locking and native smoke proof remain
+  with P1/P2. The incompatible/missing locked browser binaries are recorded as a separate
+  unchecked setup repair before screenshots/E2E. Files changed:
+  `evidence/P0/native-prerequisites.md`, the evidence index in `README.md`, and this checklist.
 
 ### Phase 0 Gate
 
@@ -152,8 +372,10 @@ disposition ledger before production code changes.
 - [ ] [AI] Confirm `rtk git status --short` agrees with the touch ledger and the current baseline
       revision is recorded. No source corpus, secret, or old-app listener was overwritten.
 
-> **Pause Safety:** Only baseline evidence and honest lifecycle metadata have changed. Resume by
-> reading the source revision/disposition ledger and running `rtk npm run doctor`.
+> **Pause Safety:** Existing-app baseline repairs and setup evidence are recorded with their
+> verification state. Resume by reconciling the repair findings, source revision and disposition
+> ledger, then running `rtk npm run doctor` before the next admitted setup/phase gate. Preserve
+> pending proof rather than inferring success from a source edit.
 
 ## Phase 1: Imported BDD Engine and Compatible Shared Data
 

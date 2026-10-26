@@ -26,6 +26,10 @@ you need production-build evidence, or
 `./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run ayokoding-www:start` to serve a
 completed local build.
 
+Local production builds use two workers by default. Set `AYOKODING_WWW_BUILD_WORKERS=1` to reduce local build
+concurrency or `AYOKODING_WWW_BUILD_WORKERS=2` to state the default explicitly. Empty or unset values use the default;
+other values fail with a configuration error. CI and Vercel builds keep Next.js's default worker selection.
+
 ## How the app is shaped
 
 - `content/` holds the lessons and pages readers see.

@@ -68,6 +68,15 @@
         },
         {
           "env": "AYOKODING_WEB_SHOW_DRAFTS"
+        },
+        {
+          "env": "AYOKODING_WWW_BUILD_WORKERS"
+        },
+        {
+          "env": "CI"
+        },
+        {
+          "env": "VERCEL"
         }
       ]
     },

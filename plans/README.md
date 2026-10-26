@@ -33,7 +33,7 @@ is updated in the same change that moves, adds, or removes a plan, per
 flowchart LR
   accTitle: Plan order
   accDescr: Twelve live plans; the Podman migration precedes Phoenix, Phoenix precedes every live AyoKoding plan, and plans 06 through 13 also precede the plan 14 terminal gate.
-  POD["🔜 docker-to-podman"]:::backlog
+  POD["🏗️ docker-to-podman"]:::inprogress
   PHX["🏗️ ayokoding-app-web"]:::inprogress
   P10["🏗️ 10-migration"]:::inprogress
   P06["🔜 06-accounting"]:::backlog

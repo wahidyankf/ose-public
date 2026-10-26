@@ -1,6 +1,6 @@
 # Docker to Podman across ose-public
 
-> **Status:** Backlog. This is an execution plan; the runtime migration has not started.
+> **Status:** In Progress. The runtime migration is being executed under this plan.
 
 Depends-on: []
 

@@ -16,13 +16,6 @@ step-by-step execution record.
 
 ## Planned Projects
 
-### Rootless container runtime
-
-- [Docker to Podman](./docker-to-podman/README.md) — migrate operational container use across the
-  repository, including development, CI, image publishing, and the example runner, to rootless
-  Podman with an explicit podman-compose provider. AyoKoding lesson content and hosting migration
-  are excluded. This plan has no predecessors and must finish before the Phoenix rewrite resumes.
-
 ### FERRET initialization series
 
 FERRET (Framework for Evaluation, Regression, Reliability & Experiment Tracking) begins as a local-only,

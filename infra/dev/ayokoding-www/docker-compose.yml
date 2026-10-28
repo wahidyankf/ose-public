@@ -19,7 +19,7 @@ services:
       # playwright.config.ts's own local webServer.env for the same reason).
       - AYOKODING_WEB_SHOW_DRAFTS=true
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3101/api/trpc/meta.health"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3101/api/trpc/meta.health"]
       interval: 10s
       timeout: 5s
       retries: 5

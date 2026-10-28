@@ -8,6 +8,7 @@ RUN node -e " \
   const pkg = JSON.parse(require('fs').readFileSync('package.json','utf8')); \
   delete pkg.dependencies['@open-sharia-enterprise/web-ui']; \
   delete pkg.dependencies['@open-sharia-enterprise/web-ui-token']; \
+  delete pkg.dependencies['@open-sharia-enterprise/ts-env-loader']; \
   require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2)); \
 " && npm install --ignore-scripts
 
@@ -18,6 +19,7 @@ RUN npm install --save \
   clsx@^2.1.1 \
   lucide-react@0.577.0 \
   tailwind-merge@^2.5.3 \
+  dotenv@16.4.7 \
   --ignore-scripts
 
 # Copy workspace libs as resolvable node_modules packages
@@ -25,6 +27,9 @@ COPY libs/web-ui/src/ ./node_modules/@open-sharia-enterprise/web-ui/src/
 COPY libs/web-ui/package.json ./node_modules/@open-sharia-enterprise/web-ui/
 COPY libs/web-ui-token/src/ ./node_modules/@open-sharia-enterprise/web-ui-token/src/
 COPY libs/web-ui-token/package.json ./node_modules/@open-sharia-enterprise/web-ui-token/
+# ts-env-loader: next.config.ts reaches it through src/env-loader.ts at build time, with dotenv installed above
+COPY libs/ts-env-loader/src/ ./node_modules/@open-sharia-enterprise/ts-env-loader/src/
+COPY libs/ts-env-loader/package.json ./node_modules/@open-sharia-enterprise/ts-env-loader/
 
 COPY apps/organiclever-www/src/ ./src/
 COPY apps/organiclever-www/package.json apps/organiclever-www/tsconfig.json apps/organiclever-www/next.config.ts apps/organiclever-www/postcss.config.mjs ./
@@ -48,6 +53,6 @@ USER app
 EXPOSE 3200
 ENV ORGANICLEVER_WWW_PORT=3200 HOSTNAME="0.0.0.0" NODE_ENV=production NEXT_TELEMETRY_DISABLED=1
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD ["sh", "-c", "wget --no-verbose --tries=1 --spider http://localhost:${ORGANICLEVER_WWW_PORT}/ || exit 1"]
+  CMD ["sh", "-c", "wget --no-verbose --tries=1 --spider http://127.0.0.1:${ORGANICLEVER_WWW_PORT}/ || exit 1"]
 
 CMD ["node", "scripts/next-with-port.mjs", "start", "--env", "ORGANICLEVER_WWW_PORT", "--default", "3200", "-H", "0.0.0.0"]

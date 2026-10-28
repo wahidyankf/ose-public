@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # E2E test runner for organiclever-be.
-# Brings up PostgreSQL + NATS via docker-compose and lets the Playwright harness
+# Brings up PostgreSQL + NATS via rootless Podman Compose and lets the Playwright harness
 # own backend process lifecycle so startup behaviours can observe real transitions.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 
-# Fail fast (before paying for docker-compose/dotnet startup) on any unconditional
+# Fail fast (before paying for podman compose/dotnet startup) on any unconditional
 # test.skip() left in the e2e suite. test.skip(condition, reason) - the documented
 # Playwright environment-guard form - is intentionally allowed through.
 if grep -rn -E --include='*.ts' --exclude-dir=node_modules --exclude-dir=.features-gen --exclude-dir=test-results --exclude-dir=playwright-report '\$?test\.skip\([^,)]*\)' "${ROOT}/apps/organiclever-be-e2e"; then
@@ -18,15 +18,17 @@ COMPOSE_FILE="${ROOT}/apps/organiclever-be/docker-compose.e2e.yml"
 PROJECT_NAME="organiclever-be-e2e"
 PORT=8202
 FSPROJ="${ROOT}/apps/organiclever-be/src/OrganicleverBe/OrganicleverBe.fsproj"
+export PODMAN_COMPOSE_PROVIDER=podman-compose
 
 cleanup() {
-	docker compose -p "${PROJECT_NAME}" -f "${COMPOSE_FILE}" down -v >/dev/null 2>&1 || true
+	podman compose -p "${PROJECT_NAME}" -f "${COMPOSE_FILE}" down >/dev/null 2>&1 || true
 }
 trap cleanup EXIT
 
-# Start infrastructure
-docker compose -p "${PROJECT_NAME}" -f "${COMPOSE_FILE}" down -v >/dev/null 2>&1 || true
-docker compose -p "${PROJECT_NAME}" -f "${COMPOSE_FILE}" up -d --wait
+# Start infrastructure. The preflight checks the rootless engine and provider before any mutation.
+"${ROOT}/scripts/container-runtime-check" --compose
+podman compose -p "${PROJECT_NAME}" -f "${COMPOSE_FILE}" down >/dev/null 2>&1 || true
+podman compose -p "${PROJECT_NAME}" -f "${COMPOSE_FILE}" up --detach --wait --wait-timeout 60
 
 # Build the backend
 dotnet build "${FSPROJ}" --configuration Release --nologo -v quiet

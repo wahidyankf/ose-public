@@ -13,33 +13,33 @@ proves presence only; the pins below are enforced by the named manager or projec
 No entry declares a provision vector either, so `./rhino toolchain provision --apply` installs
 nothing here — install a reported tool through the phase or manager listed, then run doctor again.
 
-| #   | Tool                   | Needed by                                       | Pinned by                             | Install                     |
-| --- | ---------------------- | ----------------------------------------------- | ------------------------------------- | --------------------------- |
-| 1   | git                    | everything                                      | —                                     | Phase 2                     |
-| 2   | volta                  | Node.js pinning                                 | —                                     | Phase 3                     |
-| 3   | node                   | Nx, hooks, TypeScript projects                  | `package.json` → `volta.node`         | Phase 3                     |
-| 4   | npm                    | dependency install, `npx`                       | `package.json` → `volta.npm`          | Phase 3                     |
-| 5   | dotnet                 | .NET projects, `format-staged` (F#)             | each .NET project's `global.json`     | Phase 9                     |
-| 6   | go                     | Go projects, `gofmt` in `format-staged`         | CI `setup-go` input                   | Phase 4                     |
-| 7   | golangci-lint          | Go project lint                                 | CI `setup-go` input                   | Phase 4                     |
-| 8   | java                   | `openapi-generator-cli` (`codegen` targets)     | —                                     | SDKMAN or a JDK package     |
-| 9   | podman                 | dev stacks, E2E, container builds               | —                                     | Phase 2                     |
-| 10  | podman-compose         | dev stacks, E2E, container builds               | `1.6.0` (Phase 2 pipx)                | Phase 2                     |
-| 11  | jq                     | hooks, CI scripts                               | —                                     | Phase 2                     |
-| 12  | bash                   | every gate script                               | —                                     | Phase 2 (ships with the OS) |
-| 13  | curl                   | cold-cache `./rhino`, `./hippo`, safety scanner | —                                     | Phase 2 (ships with the OS) |
-| 14  | rustfmt                | `format-staged` (`*.rs`)                        | —                                     | Phase 7                     |
-| 15  | fantomas               | `format-staged` (`*.fs`)                        | `.config/dotnet-tools.json`           | Phase 9                     |
-| 16  | csharpier              | `format-staged` (`*.cs`)                        | `.config/dotnet-tools.json`           | Phase 9                     |
-| 17  | ruff                   | `format-staged` (`*.py`)                        | FERRET `uv.lock` (CI uses its venv)   | Phase 6                     |
-| 18  | mix                    | `format-staged` (`*.ex`, `*.exs`)               | —                                     | Phase 8                     |
-| 19  | dart                   | `format-staged` (`*.dart`)                      | `.fvmrc`                              | Phase 10                    |
-| 20  | shfmt                  | `format-staged` (`*.sh`)                        | CI `setup-go` input                   | Phase 2                     |
-| 21  | tofu                   | `format-staged` (`*.tf`)                        | —                                     | Phase 2                     |
-| 22  | clang-format           | `format-staged` (`*.c`, `*.h`)                  | —                                     | Phase 2                     |
-| 23  | shellcheck             | `shellcheck` gate; `actionlint` `run:` checks   | CI `setup-lint-tools` input           | Phase 2                     |
-| 24  | hadolint               | `hadolint` gate                                 | CI `setup-lint-tools` input           | Phase 2                     |
-| 25  | actionlint             | `actionlint` gate                               | CI `setup-lint-tools` input           | Phase 2                     |
+| #   | Tool           | Needed by                                       | Pinned by                           | Install                     |
+| --- | -------------- | ----------------------------------------------- | ----------------------------------- | --------------------------- |
+| 1   | git            | everything                                      | —                                   | Phase 2                     |
+| 2   | volta          | Node.js pinning                                 | —                                   | Phase 3                     |
+| 3   | node           | Nx, hooks, TypeScript projects                  | `package.json` → `volta.node`       | Phase 3                     |
+| 4   | npm            | dependency install, `npx`                       | `package.json` → `volta.npm`        | Phase 3                     |
+| 5   | dotnet         | .NET projects, `format-staged` (F#)             | each .NET project's `global.json`   | Phase 9                     |
+| 6   | go             | Go projects, `gofmt` in `format-staged`         | CI `setup-go` input                 | Phase 4                     |
+| 7   | golangci-lint  | Go project lint                                 | CI `setup-go` input                 | Phase 4                     |
+| 8   | java           | `openapi-generator-cli` (`codegen` targets)     | —                                   | SDKMAN or a JDK package     |
+| 9   | podman         | dev stacks, E2E, container builds               | —                                   | Phase 2                     |
+| 10  | podman-compose | dev stacks, E2E, container builds               | `1.6.0` (Phase 2 pipx)              | Phase 2                     |
+| 11  | jq             | hooks, CI scripts                               | —                                   | Phase 2                     |
+| 12  | bash           | every gate script                               | —                                   | Phase 2 (ships with the OS) |
+| 13  | curl           | cold-cache `./rhino`, `./hippo`, safety scanner | —                                   | Phase 2 (ships with the OS) |
+| 14  | rustfmt        | `format-staged` (`*.rs`)                        | —                                   | Phase 7                     |
+| 15  | fantomas       | `format-staged` (`*.fs`)                        | `.config/dotnet-tools.json`         | Phase 9                     |
+| 16  | csharpier      | `format-staged` (`*.cs`)                        | `.config/dotnet-tools.json`         | Phase 9                     |
+| 17  | ruff           | `format-staged` (`*.py`)                        | FERRET `uv.lock` (CI uses its venv) | Phase 6                     |
+| 18  | mix            | `format-staged` (`*.ex`, `*.exs`)               | —                                   | Phase 8                     |
+| 19  | dart           | `format-staged` (`*.dart`)                      | `.fvmrc`                            | Phase 10                    |
+| 20  | shfmt          | `format-staged` (`*.sh`)                        | CI `setup-go` input                 | Phase 2                     |
+| 21  | tofu           | `format-staged` (`*.tf`)                        | —                                   | Phase 2                     |
+| 22  | clang-format   | `format-staged` (`*.c`, `*.h`)                  | —                                   | Phase 2                     |
+| 23  | shellcheck     | `shellcheck` gate; `actionlint` `run:` checks   | CI `setup-lint-tools` input         | Phase 2                     |
+| 24  | hadolint       | `hadolint` gate                                 | CI `setup-lint-tools` input         | Phase 2                     |
+| 25  | actionlint     | `actionlint` gate                               | CI `setup-lint-tools` input         | Phase 2                     |
 
 ## Deliberately not declared
 

@@ -229,3 +229,12 @@ so this run is the runner proof for the new step. The branch was deleted after t
 - The facts printed afterwards: rootless `true`, `cgroupVersion` `v2`, controllers `cpu`, `memory`, `pids`,
   `networkBackend` `netavark`, `dnsPath` the runner's aardvark-dns binary, `graphDriver` `overlay`.
 - The step reached `main` in #755 (`1c07b224f`).
+
+## Cold-runner result for the Postgres service scenario
+
+The scenario "An example with a service reaches it by name" (`specs/apps/ayokoding/cli/behaviours/examples/example-execution.feature`)
+carries no `@e2e-exempt` tag, so the real-engine adapter runs it. Run 40778630932 ran that adapter on a fresh GitHub
+runner with an empty Podman store, so the Postgres image had to be pulled there. The suite finished with `ok ...
+tests/bdd 184.306s` under strict godog, so this scenario passed on a cold runner. An earlier attempt to emulate a cold store on a
+developer host failed in rootless networking before it reached the scenario. That emulation was untrustworthy; the real
+cold runner shows the scenario passes.

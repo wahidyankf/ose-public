@@ -92,9 +92,9 @@ These do not block the runtime switch. They need a person or a later proof.
    pre-existing `ferret-cli` failure (`ferret-cli-e2e`, interpreter-guard scenarios) for the owner.
 4. **`ferret-cli:test:integration` baseline failure** (6 `test_hook_registrations` cases) fails on main's scheduled
    runs too. Recorded as out of scope by the maintainer.
-5. **Postgres service scenario on a cold store.** An emulated cold store failed the "example with a service reaches it
-   by name" scenario twice, but the emulation itself failed in rootless networking, so the cause is unproven. The warm
-   store passes. Only a real cold runner settles it.
+5. **Postgres service scenario on a cold store (closed).** An emulated cold store failed it twice, but the emulation
+   itself failed in rootless networking. On a real cold GitHub runner the scenario passed as part of the full
+   real-engine suite (run 40778630932, `evidence/P2/ci.md`).
 6. **Open UI findings** from the UI gates (for example UWQ-001 dark-mode Mermaid contrast, UWT-014 language-switch 404)
    were all present on `main` before this change and are listed in `evidence/P3/ui-gates/` with their dispositions.
 7. **Intermittent firefox stall** in the lesson course-walk helper: seen once, not reproduced locally in 2,678

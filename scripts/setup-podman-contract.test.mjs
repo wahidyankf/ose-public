@@ -18,6 +18,8 @@ const CALLERS = [
 ];
 const PODMAN_FILES = [ACTION, PUBLISH, REUSABLE];
 const PUBLISH_FILES = [PUBLISH, REUSABLE];
+const NON_PRODUCT = ".github/workflows/non-product-full-quality.yml";
+const PODMAN_STEP = "      - uses: ./.github/actions/setup-podman";
 
 // Pins the pre-migration externally visible contract (names, tags, triggers, permissions), captured once from origin/main.
 const PINNED_ON = {
@@ -93,6 +95,19 @@ function imageTags(text) {
 
 function callerImages(text) {
   return [...text.matchAll(/^[ \t]+image-name:[ \t]+(\S+)[ \t]*$/gm)].map((match) => match[1]);
+}
+
+// The lines of one job under the top-level jobs: map: its header line plus every following line up to the next job.
+function jobLines(text, job) {
+  const lines = text.split("\n");
+  const start = lines.indexOf(`  ${job}:`);
+  assert.notEqual(start, -1, `no job ${job}`);
+  const block = [];
+  for (const line of lines.slice(start + 1)) {
+    if (/^  \S/.test(line) || (line !== "" && !/^\s/.test(line))) break;
+    block.push(line);
+  }
+  return block;
 }
 
 test("setup-podman pins one reviewed Podman row for ubuntu/resolute/amd64 and refuses every other tuple", () => {
@@ -204,4 +219,24 @@ test("the caller workflows keep their pinned image-name inputs", () => {
   for (const path of CALLERS) {
     assert.deepEqual(callerImages(read(path)), PINNED_CALLER_IMAGES[path], path);
   }
+});
+
+test(`${NON_PRODUCT} installs Podman once in the e2e job before the test:e2e run, and not in integration`, () => {
+  const text = read(NON_PRODUCT);
+  const e2e = jobLines(text, "e2e");
+  assert.equal(
+    e2e.filter((line) => line === PODMAN_STEP).length,
+    1,
+    "the e2e job must install Podman through the setup action exactly once, so the ayokoding-cli adapter finds podman-compose",
+  );
+  const run = e2e.findIndex((line) => /nx run-many -t test:e2e\b/.test(line));
+  assert.notEqual(run, -1, "the e2e job must run nx run-many -t test:e2e");
+  assert.ok(
+    e2e.indexOf(PODMAN_STEP) < run,
+    "setup-podman must come before the first step that runs nx run-many -t test:e2e",
+  );
+  assert.ok(
+    !jobLines(text, "integration").includes(PODMAN_STEP),
+    "the integration job must not install Podman: its adapter uses a fake container CLI",
+  );
 });

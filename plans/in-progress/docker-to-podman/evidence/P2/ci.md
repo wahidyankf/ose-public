@@ -151,5 +151,6 @@ Observed facts only:
   `ayokoding-cli` Integration and E2E, whose BDD adapter uses the real container engine, on the runner as it comes.
   `main` has the same workflow and no container-runtime line in it. In run 40693498144 the `e2e` job was skipped
   (an upstream `ferret-cli` failure), so this dependency was not exercised. It is an open question for the maintainer
-  (see `delivery.md`, Phase 2 AC-07 publishing item).
+  (see `delivery.md`, Phase 2 AC-07 publishing item). Rediscovered on 2026-10-29: the `e2e` job needs
+  `podman-compose`, so it now runs the `setup-podman` action; see `cli-ci-rediscovery.md`.
 - No PR quality gate run and no PR CI run is recorded here yet.

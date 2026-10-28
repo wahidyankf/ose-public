@@ -251,3 +251,52 @@
   evidence](./evidence/P0/macos-capabilities.md).
 - **Disposition:** untriaged. Route only an established ownership-check gap during Phase 5;
   this observation does not authorize deleting unknown resources or patching the provider.
+
+## 2026-10-28 — A provider's CLI subset can differ from the engine's Compose
+
+- **Observation:** the migrated reusable www workflow looked up a service container with
+  `podman compose ps -q <service>`. The pinned `podman-compose` 1.6.0 `ps` accepts only `-q` and a
+  format flag, so that form exits 2 and yields an empty id. Docker Compose accepted the service
+  name, and the workflow does not run in the PR gate, so every check stayed green.
+- **Response and proof:** running the real packet exposed it. A throwaway one-service stack
+  confirmed that the Compose labels (`io.podman.compose.project`, `com.docker.compose.service`)
+  find exactly the service container and nothing for a wrong name. The plan's packet text, the
+  workflow, and a regression test were corrected together.
+- **Disposition:** untriaged. Compare existing guidance on provider parity and on workflows outside
+  the PR gate during Phase 5; this entry creates no new rule.
+
+## 2026-10-28 — Verbatim command translation is not proof
+
+- **Observation:** a second class of mistakes came from translating a command shape instead of
+  running it: the `ps -q` form above, and an AC-01 claim that named a doctor run not yet executed.
+- **Response and proof:** every evidence file now states only what was executed, and lists what was
+  not (here, the Compose stack health and the full doctor on macOS).
+- **Disposition:** untriaged. Compare existing evidence-contract guidance during Phase 5.
+
+## 2026-10-28 — Local capacity limits are layered and need a diagnosis each
+
+- **Observation:** the same "disk quota exceeded" text came from three different layers: the host
+  account's quota on the default temp root, a 3.8 GB tmpfs that a layer outgrew, and the HIPPO disk
+  floor, which stopped a full Next.js image build and reported `storage-blocked`. A failed build
+  also left Buildah working containers that blocked removing their images.
+- **Response and proof:** direct Go and Podman temp to tmpfs for small outputs, never repeat a run
+  without changing the cause, and remove only labelled or ID-listed resources. Full monorepo
+  image builds need roughly 18 GB of headroom above the HIPPO floor on this host.
+- **Disposition:** untriaged. Compare existing resource-aware-development and HIPPO guidance during
+  Phase 5; this entry sets no capacity number as policy.
+
+## 2026-10-28 — Debug flags can change the host's user-visible behavior
+
+- **Observation:** `podman machine start --log-level=debug` on macOS launches the VM helper through a
+  generated script in a new terminal window, which popped up on a machine in use by its owner.
+- **Response and proof:** debug mode was not repeated. Its log did show the guest never sent its
+  ready notice. The Machine then started only when the owner ran the start in a local terminal.
+- **Disposition:** untriaged. Compare existing remote-execution guidance during Phase 5.
+
+## 2026-10-28 — Resolver search domains make `nslookup` a poor DNS probe
+
+- **Observation:** `nslookup <name>` inside a container appended the host's search domain and
+  reported NXDOMAIN although the container name resolved.
+- **Response and proof:** `getent hosts <name>` is the resolver-faithful check and passed on both
+  platforms. The search-domain value is private and was left out of the evidence.
+- **Disposition:** untriaged. Likely discard as too local during Phase 5.

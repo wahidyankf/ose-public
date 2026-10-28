@@ -9,6 +9,8 @@ proof-gated removal of this plan's worktree and development/build artifacts on 2
 
 plan-quality-gate: PASS (3 cycles, 0 open findings).
 
+## Authorized Repairs
+
 ### Authorized CI evidence timing
 
 On 2026-10-26 the maintainer explicitly selected: collect CI package/rootless evidence on the

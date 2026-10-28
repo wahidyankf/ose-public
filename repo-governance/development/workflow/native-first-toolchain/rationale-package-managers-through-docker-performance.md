@@ -1,9 +1,9 @@
 ---
-description: Why native package managers are already idempotent, why installed binaries are the source of truth, why this is a single-machine problem, and why Docker Dev Containers cost too much on macOS.
-when_to_use: Use when justifying why native toolchain management beats IaC or containerized dev environments for this monorepo.
+description: Why native package managers are already idempotent, why installed binaries are the source of truth, why this is a single-machine problem, and why container-based Dev Containers cost too much on macOS, with the Docker figures kept as recorded history.
+when_to_use: Use when justifying why native toolchain management beats IaC or containerized dev environments for this monorepo, or when checking which performance figures apply to Podman.
 ---
 
-# Rationale — Package Managers Through Docker Performance
+# Rationale — Package Managers Through Container Performance
 
 ## 1. Package Managers Are Already Idempotent
 
@@ -32,6 +32,16 @@ No external state file or convergence engine is needed when the underlying tools
 
 Terraform and Ansible solve fleet management across hundreds of servers. This repository targets one macOS laptop per developer. The overhead of a DSL, provider plugins, or inventory files provides zero value for a single-machine target.
 
-## 4. Docker Dev Containers Have Unacceptable Performance Cost on macOS
+## 4. Container Dev Environments Have Unacceptable Performance Cost on macOS
 
-Nineteen toolchains produce a 15-30 GB Docker image. macOS Docker bind-mount I/O runs 2-5x slower than native filesystem access. Pre-commit hooks that complete in 5 seconds natively take 30-60 seconds inside a container. Developers disable hooks out of frustration, which degrades code quality -- a worse outcome than not using Docker at all.
+The figures in this section are the values this rationale originally recorded for Docker-based Dev
+Containers. They are historical Docker figures, not Podman measurements. Podman on macOS runs
+containers inside a Podman machine VM, so bind-mount I/O and image size may differ from them.
+
+The recorded figures are: nineteen toolchains produce a 15-30 GB Docker image; macOS Docker bind-mount
+I/O runs 2-5x slower than native filesystem access; and pre-commit hooks that complete in 5 seconds
+natively take 30-60 seconds inside a container. Developers disable hooks out of frustration, which
+degrades code quality -- a worse outcome than not using a container at all.
+
+The performance argument carries over to Podman only where a measurement on Podman supports it. This
+repository records no Podman measurement for these figures yet.

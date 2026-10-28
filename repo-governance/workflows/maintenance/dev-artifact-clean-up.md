@@ -21,7 +21,7 @@ failure to finish.
 ## Scope
 
 The worktree this plan provisioned, the branches it opened, the regenerable build output it
-produced, the Docker artifacts it created, the `local-tmp/` scratch it wrote, and the primary
+produced, the Podman artifacts it created, the `local-tmp/` scratch it wrote, and the primary
 checkout's `main` ref. Nothing else. Scratch means what this work itself wrote — notes, logs,
 one-off scripts, intermediate data — never a plan's declared evidence and never another actor's
 files. An
@@ -39,7 +39,7 @@ the only copies, and nothing there is removable except regenerable build output.
 2. **Run the pre-removal checks** — all six, before any removal:
    [Mandatory Pre-Removal Checks](../../development/workflow/worktree-and-artifact-cleanup/mandatory-pre-removal-checks.md).
 3. **Bring down the dev containers this session started, and remove its leaked test containers**, before touching the worktree:
-   [Docker-Artifact Cleanup](../../development/workflow/worktree-and-artifact-cleanup/docker-artifact-cleanup.md).
+   [Podman-Artifact Cleanup](../../development/workflow/worktree-and-artifact-cleanup/docker-artifact-cleanup.md).
 4. **Remove the worktree**, then `git worktree prune`.
 5. **Delete the branches**, local and remote, under the proof gate:
    [Branch Cleanup](../../development/workflow/worktree-and-artifact-cleanup/branch-cleanup.md), or
@@ -73,8 +73,7 @@ topology reasoning stay canonical there.
 
 ## Verification
 
-`docker compose ls` no longer lists a project this session started, and `docker ps` shows no
-container from it; `git worktree list` no longer names the path; `git branch -a` no longer lists the
+`podman ps -a` shows no container from a project this session started; `git worktree list` no longer names the path; `git branch -a` no longer lists the
 branch either locally or on `origin`; this work's scratch is gone from `local-tmp/`; the divergence
 count reads `0 0`.
 

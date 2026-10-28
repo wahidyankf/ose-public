@@ -31,7 +31,7 @@ open-sharia-enterprise/
 ├── plans/                     # Project planning documents
 ├── .claude/                   # Claude Code configuration
 ├── infra/                     # Infrastructure configurations
-│   ├── dev/                  # Local development Docker Compose files per service
+│   ├── dev/                  # Local development Compose files per service (run with Podman Compose)
 │   │   └── [service]/        # docker-compose.yml for local dev environment
 │   └── k8s/                  # Kubernetes deployments
 ├── specs/                     # Gherkin acceptance specs, C4 diagrams, and OpenAPI contracts
@@ -51,7 +51,7 @@ open-sharia-enterprise/
 ├── tsconfig.base.json         # Base TypeScript configuration
 ├── package.json               # Workspace manifest with npm workspaces
 ├── package-lock.json          # Dependency lock file
-├── .dockerignore              # Docker build context exclusions (web app)
+├── .dockerignore              # Container build context exclusions (web app)
 ├── .nxignore                  # Files to exclude from Nx processing
 ├── .gitignore                 # Git ignore rules
 ├── commitlint.config.js       # Commitlint config (on demand; no hook runs it)
@@ -132,7 +132,7 @@ apps/organiclever-be/
 ├── src/                       # Source code (F# modules)
 ├── tests/                     # Test suites (unit/, integration/)
 ├── Dockerfile                 # Production multi-stage build
-├── .dockerignore              # Docker build context exclusions
+├── .dockerignore              # Container build context exclusions
 ├── *.fsproj                   # F# project file
 ├── project.json               # Nx project configuration
 └── README.md                  # App documentation

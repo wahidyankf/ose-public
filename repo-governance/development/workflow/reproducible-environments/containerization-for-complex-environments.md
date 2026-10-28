@@ -1,11 +1,15 @@
 ---
-description: docker-compose.yml and a development Dockerfile pattern for local services and consistent build environments.
-when_to_use: Use when standing up local Postgres/Redis services via Docker Compose, or writing a development Dockerfile.
+description: docker-compose.yml and a development Dockerfile pattern for local services and consistent build environments, run with rootless Podman Compose.
+when_to_use: Use when standing up local Postgres/Redis services via Podman Compose, or writing a development Dockerfile.
 ---
 
 # Containerization for Complex Environments
 
-## Docker Compose for Local Development
+## Podman Compose for Local Development
+
+The repository runs containers with rootless Podman. Use `podman compose` with the explicit
+`podman-compose` provider. Set `PODMAN_COMPOSE_PROVIDER` to the `podman-compose` executable so that an
+installed Docker Compose cannot take over. The Compose file keeps its standard name and schema.
 
 **docker-compose.yml** (committed to git):
 
@@ -52,7 +56,8 @@ volumes:
 **Starting local environment**:
 
 ```bash
-docker-compose up
+export PODMAN_COMPOSE_PROVIDER="$(command -v podman-compose)"
+podman compose up
 # All services start with exact same configuration
 ```
 

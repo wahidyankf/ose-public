@@ -13,11 +13,11 @@ Practices for creating consistent, reproducible development and build environmen
 - [Runtime Version Management with Volta](./reproducible-environments/runtime-version-management-with-volta.md) — Pinning, installing, updating, and CI integration.
 - [Dependency Locking](./reproducible-environments/dependency-locking.md) — `npm ci`, lockfile freshness, and PR review.
 - [Shared Cargo Target Directories](./reproducible-environments/shared-cargo-target-directories.md) — The retired shared symlink cache and how to reclaim it.
-- [Containerization for Complex Environments](./reproducible-environments/containerization-for-complex-environments.md) — Docker Compose and a development Dockerfile.
+- [Containerization for Complex Environments](./reproducible-environments/containerization-for-complex-environments.md) — Podman Compose and a development Dockerfile.
 - [Documentation](./reproducible-environments/documentation.md) — README setup-instruction and common-tasks templates.
 - [Testing Reproducibility](./reproducible-environments/testing-reproducibility.md) — A CI-runnable environment-verification script.
 - [Troubleshooting](./reproducible-environments/troubleshooting.md) — Common drift symptoms and a workspace-hoisting gotcha.
-- [Migration Guide](./reproducible-environments/migration-guide.md) — Adding Volta or Docker to an existing project.
+- [Migration Guide](./reproducible-environments/migration-guide.md) — Adding Volta or Podman Compose to an existing project.
 - [Git Identity Guardrail](./reproducible-environments/git-identity-guardrail.md) — No AI agent sets git identity; the human `includeIf` pattern and CI exemption.
 
 ## Related Documentation
@@ -33,7 +33,7 @@ Practices for creating consistent, reproducible development and build environmen
 
 - **Version Management**: [Volta](https://volta.sh/), [volta-cli/action](https://github.com/volta-cli/action)
 - **Dependency Management**: [npm ci](https://docs.npmjs.com/cli/v10/commands/npm-ci), [package-lock.json](https://docs.npmjs.com/cli/v10/configuring-npm/package-lock-json)
-- **Containerization**: [Docker](https://www.docker.com/), [Docker Compose](https://docs.docker.com/compose/)
+- **Containerization**: [Podman](https://podman.io/), [Podman Compose](https://docs.podman.io/en/latest/markdown/podman-compose.1.html)
 - **Build Reproducibility**: [Nx Caching](https://nx.dev/concepts/how-caching-works), [Reproducible Builds](https://reproducible-builds.org/)
 
 ## Environment Configuration

@@ -1,5 +1,5 @@
 ---
-description: Shows reproducible patterns for environment variable configuration, Docker Compose service definitions, and documented setup steps.
+description: Shows reproducible patterns for environment variable configuration, Compose service definitions, and documented setup steps.
 when_to_use: Use when configuring environment variables, containerizing a multi-service local setup, or writing onboarding setup instructions.
 ---
 

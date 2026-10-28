@@ -38,7 +38,7 @@ Every app with runtime configuration must satisfy these requirements:
 
 - **`.env.example` in `infra/dev/{app}/`**: Documents all required and optional environment
   variables with placeholder values and inline comments explaining each variable.
-- **`env_file` directive in docker-compose**: Compose services load environment variables via
+- **`env_file` directive in Podman Compose files**: Compose services load environment variables via
   `env_file: .env` rather than hardcoding values in the `environment:` block.
 - **`.env*.local` in `.gitignore`**: Local override files (`.env.local`, `.env.development.local`,
   etc.) must never be committed. The root `.gitignore` must include `**/.env*.local`.

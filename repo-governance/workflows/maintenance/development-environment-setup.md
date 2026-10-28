@@ -25,7 +25,7 @@ toolchain, or verifying an environment after adding a new project language.
 ## Inputs
 
 - **`platform`** (enum: macos, linux, optional, default `macos`) — Target operating system
-- **`scope`** (enum: full, minimal, optional, default `full`) — full: every phase, covering all 21 declared toolchains; minimal: core phases only (Git, Docker, jq, Volta, Node.js, npm). Doctor has no scope: it always probes every declared toolchain
+- **`scope`** (enum: full, minimal, optional, default `full`) — full: every phase, covering all 21 declared toolchains; minimal: core phases only (Git, Podman, jq, Volta, Node.js, npm). Doctor has no scope: it always probes every declared toolchain
 
 ## Outputs
 
@@ -42,7 +42,7 @@ toolchain, or verifying an environment after adding a new project language.
 ### Phases
 
 - [Phase 1: System Package Manager](./development-environment-setup/004-phase-1-system-package-manager.md) — Homebrew/apt.
-- [Phase 2: Core Tools](./development-environment-setup/005-phase-2-core-tools.md) — Git, Docker, jq.
+- [Phase 2: Core Tools](./development-environment-setup/005-phase-2-core-tools.md) — Git, Podman, jq.
 - [Phase 3: Node.js Ecosystem](./development-environment-setup/006-phase-3-nodejs-ecosystem.md) — Volta, Node, npm.
 - [Phase 4: Go Ecosystem](./development-environment-setup/007-phase-4-go-ecosystem.md) — Go toolchain.
 - [Phase 6: Python Ecosystem](./development-environment-setup/008-phase-6-python-ecosystem.md) — full scope only.

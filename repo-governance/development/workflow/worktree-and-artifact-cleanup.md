@@ -1,5 +1,5 @@
 ---
-description: Mandatory post-merge gate requiring safe removal of self-created worktrees, eligible branches, plan-local regenerable build output, and session-started Docker artifacts while preserving diagnostics and shared state.
+description: Mandatory post-merge gate requiring safe removal of self-created worktrees, eligible branches, plan-local regenerable build output, and session-started Podman artifacts while preserving diagnostics and shared state.
 when_to_use: Use when a plan that created worktrees, branches, build output, or dev containers is finishing and needs to tear them down.
 ---
 
@@ -34,13 +34,13 @@ those remain out of scope. The resolved host path is runtime evidence, never com
 
 - [Principles and Conventions Implemented](./worktree-and-artifact-cleanup/principles-and-conventions-implemented.md) — Why this gate exists.
 - [Why This Is a Gate](./worktree-and-artifact-cleanup/why-this-is-a-gate.md) — Disk, ref namespace, and stale-state risk on a shared machine.
-- [The Four Artifact Classes](./worktree-and-artifact-cleanup/the-four-artifact-classes.md) — Worktrees, branches, build output, Docker artifacts.
+- [The Four Artifact Classes](./worktree-and-artifact-cleanup/the-four-artifact-classes.md) — Worktrees, branches, build output, Podman artifacts.
 - [Hard Safety Rules](./worktree-and-artifact-cleanup/hard-safety-rules.md) — Self-created only, verify before deleting, never touch shared caches.
 - [Mandatory Pre-Removal Checks](./worktree-and-artifact-cleanup/mandatory-pre-removal-checks.md) — The six checks before any `git worktree remove`.
 - [Branch Cleanup](./worktree-and-artifact-cleanup/branch-cleanup.md) — Deleting merged local and remote branches safely.
 - [Patch-Equivalent Branch Cleanup](./worktree-and-artifact-cleanup/patch-equivalent-branch-cleanup.md) — Deleting a branch that carries no change `main` lacks, or a stale task branch after preserving its tip.
 - [Build-Artifact Cleanup](./worktree-and-artifact-cleanup/build-artifact-cleanup.md) — Purging plan-local regenerable output while preserving diagnostics and shared caches.
-- [Docker-Artifact Cleanup](./worktree-and-artifact-cleanup/docker-artifact-cleanup.md) — Bringing down session-started dev stacks, locally built images, and leaked test containers, before the worktree goes.
+- [Podman-Artifact Cleanup](./worktree-and-artifact-cleanup/docker-artifact-cleanup.md) — Bringing down session-started dev stacks, locally built images, and leaked test containers, before the worktree goes.
 
 **Enforcement.** `plan-execution-checker` verifies that successful delivery evidence covers all
 four artifact classes and that diagnostic/shared-state protections held. Live worktree identity,

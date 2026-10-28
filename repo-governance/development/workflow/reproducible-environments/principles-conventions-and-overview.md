@@ -15,7 +15,7 @@ This practice respects the following core principles:
 
 - **[Explicit Over Implicit](../../../principles/software-engineering/explicit-over-implicit.md)**: Runtime versions pinned explicitly (package.json volta field). Dependencies locked with exact versions (package-lock.json). No implicit system dependencies.
 
-- **[Simplicity Over Complexity](../../../principles/general/simplicity-over-complexity.md)**: Use simple, proven tools (Volta, npm lockfiles, Docker) instead of complex custom solutions. Minimum configuration for maximum reproducibility.
+- **[Simplicity Over Complexity](../../../principles/general/simplicity-over-complexity.md)**: Use simple, proven tools (Volta, npm lockfiles, Podman) instead of complex custom solutions. Minimum configuration for maximum reproducibility.
 
 ## Conventions Implemented/Respected
 
@@ -34,5 +34,5 @@ Reproducible environments require:
 1. **Runtime version management**: Volta for Node.js/npm pinning
 2. **Dependency locking**: package-lock.json for deterministic installs
 3. **Configuration management**: .env.example for required environment variables
-4. **Container definitions**: Docker/docker-compose for complex setups
+4. **Container definitions**: Podman and `podman compose` (with the `podman-compose` provider) for complex setups
 5. **Documentation**: Clear setup instructions for onboarding

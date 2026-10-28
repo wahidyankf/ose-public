@@ -31,11 +31,11 @@ These bound every action the gate takes.
   disappear; that is the environment, not a rule violation by another actor.
 - **A dev container stack is shared state.** A Compose project name derives from its
   `infra/dev/{app}` directory and every dev stack binds fixed host ports, so one stack is identified
-  machine-wide rather than per worktree — `docker compose down` reaches whatever session actually
+  machine-wide rather than per worktree — `podman compose down` reaches whatever session actually
   started it. Bring down only a stack this session started, on positive evidence, and leave it
-  running when ownership cannot be proven. Machine-wide reclaim — `docker system prune`,
+  running when ownership cannot be proven. Machine-wide reclaim — `podman system prune`,
   `image prune -a`, `volume prune` — stays out of the gate for the same reason `git gc` does. See
-  [Docker-Artifact Cleanup](./docker-artifact-cleanup.md).
+  [Podman-Artifact Cleanup](./docker-artifact-cleanup.md).
 - **Preserve diagnostic evidence.** Logs, traces, crash dumps, coverage output used to explain a
   failure, and any other non-regenerable evidence stay in place or move to an explicitly recorded
   evidence location before cleanup. An active, `partial`, or `fail` run retains its artifacts; a

@@ -10,13 +10,13 @@ This document records the architectural decision to use native toolchain managem
 ## Contents
 
 - [Principles, Conventions, Context, and Decision](./native-first-toolchain/principles-conventions-context-and-decision.md) — Why native management, and the decision itself.
-- [Rationale — Package Managers Through Docker Performance](./native-first-toolchain/rationale-package-managers-through-docker-performance.md) — Idempotency, source of truth, single-machine scope, and Docker's macOS cost.
+- [Rationale — Package Managers Through Container Performance](./native-first-toolchain/rationale-package-managers-through-docker-performance.md) — Idempotency, source of truth, single-machine scope, and Docker's macOS cost.
 - [Rationale — Worktrees and the Doctor Pattern](./native-first-toolchain/rationale-worktrees-and-the-doctor-pattern.md) — Worktree incompatibility with containers, the doctor check-diff-apply mapping, and future-decision guidance.
 - [Platform Support and Git Worktree Compatibility](./native-first-toolchain/platform-support-and-git-worktree-compatibility.md) — macOS/Ubuntu support and worktree-safe path resolution.
 
 ## Related Documentation
 
-- [Reproducible Environments](../workflow/reproducible-environments.md) — broader reproducibility practices (Volta, lockfiles, Docker for services).
+- [Reproducible Environments](../workflow/reproducible-environments.md) — broader reproducibility practices (Volta, lockfiles, Podman for services).
 - [Development Environment Setup](../../workflows/maintenance/development-environment-setup.md) — workflow for setting up a development environment.
 - Native Dev Setup Improvements Plan — completed plan that implemented the retired in-tree Doctor's `--fix` mode; `./rhino toolchain provision --apply` now runs only the provision vectors `repo-config.yml` toolchain entries declare.
 

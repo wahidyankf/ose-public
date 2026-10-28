@@ -15,7 +15,7 @@ when_to_use: Use when writing or reviewing a README's setup/troubleshooting sect
 ### Prerequisites
 
 - [Volta](https://volta.sh/) - JavaScript tool manager (auto-installs Node.js/npm)
-- [Docker](https://www.docker.com/) - For local services (PostgreSQL, Redis)
+- [Podman](https://podman.io/) - Rootless container engine for local services (PostgreSQL, Redis), used with `podman compose`
 - Git - Version control
 
 ### Installation
@@ -52,7 +52,8 @@ when_to_use: Use when writing or reviewing a README's setup/troubleshooting sect
 4. **Start Services**:
 
    ```bash
-   docker-compose up -d
+   export PODMAN_COMPOSE_PROVIDER="$(command -v podman-compose)"
+   podman compose up -d
    ```
 
 5. **Run Development Server**:
@@ -73,7 +74,7 @@ when_to_use: Use when writing or reviewing a README's setup/troubleshooting sect
 
 **Issue**: "Cannot connect to database"
 
-- **Solution**: Ensure Docker is running and services started with `docker-compose up`
+- **Solution**: Ensure the rootless Podman engine is running (on macOS, the Podman machine) and services started with `podman compose up`
 
 **Issue**: "Port 3000 already in use"
 
@@ -151,9 +152,10 @@ else
     echo " .env already exists"
 fi
 
-# Start Docker services
-echo " Starting Docker services..."
-docker-compose up -d
+# Start Podman services
+echo " Starting Podman services..."
+export PODMAN_COMPOSE_PROVIDER="$(command -v podman-compose)"
+podman compose up -d
 
 echo " Services started"
 

@@ -328,7 +328,7 @@ func TestContainers_SweepRemovesLeftoversOlderThan24Hours(t *testing.T) {
 	fresh := time.Now().Add(-time.Hour).UTC().Format(time.RFC3339)
 	runtime, log := fakeRuntime(t, map[string]string{
 		"FAKECONTAINER_PS":       "ayokoding-old-0|2000-01-01T00:00:00Z\nayokoding-fresh-0|" + fresh + "\n",
-		"FAKECONTAINER_NETWORKS": "ayokoding-old-net|2000-01-01T00:00:00Z\nayokoding-fresh-net|" + fresh + "\n",
+		"FAKECONTAINER_NETWORKS": `[{"name":"ayokoding-old-net","created":"2000-01-01T00:00:00Z"},{"name":"ayokoding-fresh-net","created":"` + fresh + `"}]`,
 	})
 	if err := runtime.SweepLeftovers(context.Background(), 24*time.Hour); err != nil {
 		t.Fatalf("sweep leftovers: %v", err)
@@ -337,4 +337,78 @@ func TestContainers_SweepRemovesLeftoversOlderThan24Hours(t *testing.T) {
 	requireFakeLogContains(t, log, "network rm ayokoding-old-net")
 	requireFakeLogExcludes(t, log, "ayokoding-fresh-0")
 	requireFakeLogExcludes(t, log, "ayokoding-fresh-net")
+}
+
+func TestRootfulProbeAndBuildRefuseBeforeMutation(t *testing.T) {
+	runtime, log := fakeRuntime(t, map[string]string{"FAKECONTAINER_ROOTFUL": "1"})
+	requireEnvCode(t, runtime.Probe(context.Background()), finding.EnvRuntimeRefused, 125)
+	parent := t.TempDir()
+	builder := containers.Builder{}
+	base := "docker.io/library/python:tag@sha256:" + strings.Repeat("a", 64)
+	_, err := builder.BuildDerived(context.Background(), containerplan.Settings{}, parent, "python", base, []byte("FROM "+base+"\n"), nil)
+	requireEnvCode(t, err, finding.EnvRuntimeRefused, 125)
+	entries, err := os.ReadDir(parent)
+	if err != nil || len(entries) != 0 {
+		t.Fatalf("build context created: %v %v", entries, err)
+	}
+	content := readFakeLog(t, log)
+	if strings.Count(content, "argv: info --format json") != 2 {
+		t.Fatalf("probe calls=%q", content)
+	}
+	for _, forbidden := range []string{"argv: build", "argv: run", "argv: ps", "argv: network", "argv: pull"} {
+		if strings.Contains(content, forbidden) {
+			t.Fatalf("mutation after refusal: %s", content)
+		}
+	}
+}
+
+func TestBuildPreflightPreservesMissingAndUnusableCommand(t *testing.T) {
+	for _, testCase := range []struct {
+		name       string
+		executable bool
+		code       string
+		status     int
+	}{
+		{"missing", false, finding.EnvNotFound, 127},
+		{"unusable", true, finding.EnvNotExecutable, 126},
+	} {
+		t.Run(testCase.name, func(t *testing.T) {
+			parent := t.TempDir()
+			binary := filepath.Join(parent, "engine")
+			if testCase.executable {
+				if err := os.WriteFile(binary, []byte("#!/bin/sh\nexit 0\n"), 0o600); err != nil {
+					t.Fatal(err)
+				}
+			}
+			t.Setenv("AYOKODING_CONTAINER_CLI", binary)
+			contextParent := t.TempDir()
+			base := "docker.io/library/python:tag@sha256:" + strings.Repeat("a", 64)
+			_, err := (containers.Builder{}).BuildDerived(context.Background(), containerplan.Settings{}, contextParent, "python", base, []byte("FROM "+base+"\n"), nil)
+			requireEnvCode(t, err, testCase.code, testCase.status)
+			entries, err := os.ReadDir(contextParent)
+			if err != nil || len(entries) != 0 {
+				t.Fatalf("context created: %v %v", entries, err)
+			}
+		})
+	}
+}
+
+func TestBuildEnvironmentOverrideWinsOverSettings(t *testing.T) {
+	t.Setenv("AYOKODING_CONTAINER_CLI", "ambient-other")
+	var used []string
+	builder := containers.Builder{Exec: func(_ context.Context, cli string, args []string) (string, error) {
+		used = append(used, cli+":"+args[0])
+		if args[0] == "info" {
+			return `{"host":{"security":{"rootless":true}}}`, nil
+		}
+		return "built", nil
+	}}
+	base := "docker.io/library/python:tag@sha256:" + strings.Repeat("a", 64)
+	_, err := builder.BuildDerived(context.Background(), containerplan.Settings{ContainerCLI: "selected"}, t.TempDir(), "python", base, []byte("FROM "+base+"\n"), nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Join(used, ",") != "ambient-other:info,ambient-other:build" {
+		t.Fatalf("different executables used: %v", used)
+	}
 }

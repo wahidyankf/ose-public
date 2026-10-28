@@ -510,3 +510,16 @@ func TestRunInvalidCopyDir(t *testing.T) {
 		t.Fatalf("calls=%d, want no execution without the copy", len(fake.calls))
 	}
 }
+
+func TestRunEnvPreflightFailurePreservesStatus(t *testing.T) {
+	fake := &scriptedRuntime{run: okExecution("hello\n")}
+	req := baseRunRequest(runContent(lockfileCourse()), fake)
+	req.EnvBuilder = &fakeEnvBuilder{err: &finding.Error{Code: finding.EnvRuntimeRefused, Message: "rootful"}}
+	_, err := application.Run(context.Background(), req)
+	if got := finding.ExitCode(err); got != 125 {
+		t.Fatalf("status=%d err=%v, want 125", got, err)
+	}
+	if len(fake.calls) != 0 {
+		t.Fatalf("calls=%d, want no workload", len(fake.calls))
+	}
+}

@@ -14,7 +14,8 @@ const godogSuccess = 0
 // AYOKODING_BDD_ADAPTER environment names.
 func TestContract(t *testing.T) {
 	var driver Driver
-	switch os.Getenv("AYOKODING_BDD_ADAPTER") {
+	adapter := os.Getenv("AYOKODING_BDD_ADAPTER")
+	switch adapter {
 	case "", "unit":
 		driver = unitDriver{}
 	case "integration":
@@ -35,7 +36,7 @@ func TestContract(t *testing.T) {
 	}
 	suite := godog.TestSuite{
 		Name:                "cli-contract",
-		ScenarioInitializer: func(ctx *godog.ScenarioContext) { registerSteps(ctx, driver) },
+		ScenarioInitializer: func(ctx *godog.ScenarioContext) { registerSteps(ctx, driver, adapter) },
 		Options: &godog.Options{
 			Format: "pretty",
 			Paths:  []string{"../../../../specs/apps/ayokoding/cli/behaviours"},

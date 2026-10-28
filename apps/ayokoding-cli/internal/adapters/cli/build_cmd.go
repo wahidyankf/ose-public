@@ -16,9 +16,7 @@ import (
 )
 
 // runBuild builds the named derived images and prints one id and tag per
-// build. The container CLI defaults to docker; AYOKODING_CONTAINER_CLI
-// overrides it, and AYOKODING_BUILDX_CACHE adds the local buildx cache
-// flags. The context cancels the build, so interrupts stop it.
+// build. AYOKODING_CONTAINER_CLI overrides the default Podman command.
 func runBuild(ctx context.Context, cmd *cobra.Command) error {
 	cat, err := loadCatalog(cmd)
 	if err != nil {
@@ -35,7 +33,6 @@ func runBuild(ctx context.Context, cmd *cobra.Command) error {
 		Builder: containers.Builder{},
 		Settings: containerplan.Settings{
 			ContainerCLI: os.Getenv("AYOKODING_CONTAINER_CLI"),
-			CacheDir:     os.Getenv("AYOKODING_BUILDX_CACHE"),
 		},
 	})
 	if err != nil {

@@ -11,13 +11,13 @@ no server, no database, and no stored state.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Gray #808080
 flowchart TD
   accTitle: Code harness system context
-  accDescr: Content authors and CI call ayokoding-cli. The CLI reads course content in the working tree, reads changed paths from git, and starts containers through the Docker CLI. Container images come from public registries by digest. Plan 14 reads its coverage report.
+  accDescr: Content authors and CI call ayokoding-cli. The CLI reads course content in the working tree, reads changed paths from git, and starts containers through the rootless Podman CLI. Container images come from public registries by digest. Plan 14 reads its coverage report.
   A["Content author<br/>or content plan<br/>agent"] --> C["ayokoding-cli"]
   CI["GitHub Actions<br/>(PR gate,<br/>monthly run)"] --> C
   P14["Plan 14<br/>end-state gate"] --> C
   C --> F["Course content<br/>apps/ayokoding-www/<br/>content/en/learn/<br/>courses"]
   C --> G["git<br/>(changed paths)"]
-  C --> D["Docker CLI<br/>and daemon"]
+  C --> D["Podman CLI<br/>rootless engine"]
   D --> R["Public registries<br/>(images by digest)"]
 
   classDef person fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px

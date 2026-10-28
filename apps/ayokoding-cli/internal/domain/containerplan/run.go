@@ -51,6 +51,10 @@ type RunConfig struct {
 	Network      string
 	Seed         string
 	Links        []Link
+	// KeepID maps the host user onto the same UID inside the namespace
+	// (--userns=keep-id), so /work keeps host ownership. The application
+	// sets it only where the rootless Linux mapping applies.
+	KeepID bool
 }
 
 // RunPlan is one planned execution: the container invocation and the
@@ -96,6 +100,7 @@ var localImageNamespaces = []string{"ayokoding-toolchain/", "ayokoding-env/"}
 // IsLocalImage reports whether the reference names a harness-local image,
 // which always runs from the local store.
 func IsLocalImage(image string) bool {
+	image = strings.TrimPrefix(image, "localhost/")
 	for _, namespace := range localImageNamespaces {
 		if strings.HasPrefix(image, namespace) {
 			return true
@@ -145,8 +150,11 @@ func PlanRun(cfg RunConfig) RunPlan {
 		"--memory", strconv.FormatInt(cfg.MemoryBytes, 10),
 		"--memory-swap", strconv.FormatInt(cfg.MemoryBytes, 10),
 		"--cpus", cpuQuota(cfg.CPUs, cfg.Seq),
-		"--user", strconv.Itoa(cfg.UID)+":"+strconv.Itoa(cfg.GID),
 	)
+	if cfg.KeepID {
+		argv = append(argv, "--userns=keep-id")
+	}
+	argv = append(argv, "--user", strconv.Itoa(cfg.UID)+":"+strconv.Itoa(cfg.GID))
 	for _, variable := range runEnv(cfg) {
 		argv = append(argv, "--env", variable.Key+"="+variable.Value)
 	}
@@ -156,6 +164,9 @@ func PlanRun(cfg RunConfig) RunPlan {
 	)
 	if cfg.Stdin {
 		argv = append(argv, "--interactive")
+	}
+	if IsLocalImage(cfg.Image) {
+		argv = append(argv, "--pull", "never")
 	}
 	argv = append(argv, RunRef(cfg.Image))
 	argv = append(argv, cfg.Command...)

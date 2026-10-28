@@ -61,6 +61,7 @@
         "{projectRoot}/scripts/coverage-gate.sh",
         "{projectRoot}/go.mod",
         "{projectRoot}/go.sum",
+        "{workspaceRoot}/scripts/container-runtime-check",
         "{workspaceRoot}/specs/apps/ayokoding/cli/behaviours/**/*.feature"
       ]
     },
@@ -156,6 +157,7 @@
         "{projectRoot}/scripts/**/*",
         "{projectRoot}/go.mod",
         "{projectRoot}/go.sum",
+        "{workspaceRoot}/scripts/container-runtime-check",
         "{workspaceRoot}/specs/apps/ayokoding/cli/behaviours/**/*.feature"
       ]
     },

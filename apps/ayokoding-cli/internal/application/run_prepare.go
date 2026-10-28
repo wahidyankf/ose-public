@@ -92,7 +92,11 @@ func (flow *runner) runImage(ctx context.Context, course string, sub fs.FS, unit
 	toolchain, _ := flow.req.Catalog.Lookup(spec.Toolchain)
 	tag, err := flow.req.EnvBuilder.BuildEnvironment(ctx, flow.req.Settings, "", spec.Toolchain, toolchain.Image, path.Base(spec.Lockfile), lockfile, toolchain.Install)
 	if err != nil {
-		//nolint:nilerr // the findings slice carries unit-scoped failures so siblings still run; the error return is for command-stopping failures.
+		status := finding.ExitCode(err)
+		if status >= 124 && status <= 130 || ctx.Err() != nil || errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
+			return "", nil, fmt.Errorf("application: preflight environment build: %w", err)
+		}
+		//nolint:nilerr // the findings slice carries unit-scoped failures so siblings still run; command-stopping statuses return above.
 		return "", []finding.Finding{{
 			Code:    CodeEnvBuildFailed,
 			Course:  course,

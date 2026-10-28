@@ -24,3 +24,13 @@ Feature: The toolchain catalog is pinned
     Given a derived toolchain recipe
     When one byte of its Dockerfile changes
     Then its image tag changes
+
+  Scenario: A derived image is built and run from the same Podman store
+    Given a derived toolchain recipe in the selected Podman store
+    When I build and run the derived image
+    Then the image built is the image run without a registry pull or push
+
+  Scenario: An environment image runs from the same Podman store
+    Given an environment image in the selected Podman store
+    When I run the environment image
+    Then the local image is used without a registry pull

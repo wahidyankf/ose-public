@@ -37,10 +37,13 @@ func TestBuildDerived_recordsArgvAndReturnsTag(t *testing.T) {
 	builder := containers.Builder{
 		Exec: func(_ context.Context, cli string, args []string) (string, error) {
 			calls = append(calls, recorded{cli: cli, args: append([]string(nil), args...)})
+			if args[0] == "info" {
+				return `{"host":{"security":{"rootless":true}}}`, nil
+			}
 			return "built", nil
 		},
 	}
-	settings := containerplan.Settings{ContainerCLI: "docker", CacheDir: ""}
+	settings := containerplan.Settings{ContainerCLI: "podman"}
 	tag, err := builder.BuildDerived(context.Background(), settings, t.TempDir(), "typescript", baseRef, []byte(dockerfile), nil)
 	if err != nil {
 		t.Fatalf("build derived image: %v", err)
@@ -48,16 +51,16 @@ func TestBuildDerived_recordsArgvAndReturnsTag(t *testing.T) {
 	if !strings.HasPrefix(tag, "ayokoding-toolchain/typescript:") {
 		t.Fatalf("tag=%q", tag)
 	}
-	if len(calls) != 1 {
-		t.Fatalf("exec calls=%d, want 1", len(calls))
+	if len(calls) != 2 || calls[0].args[0] != "info" {
+		t.Fatalf("exec calls=%v, want info then build", calls)
 	}
-	got := calls[0]
-	if got.cli != "docker" {
-		t.Fatalf("cli=%q, want docker", got.cli)
+	got := calls[1]
+	if got.cli != "podman" {
+		t.Fatalf("cli=%q, want podman", got.cli)
 	}
 	argv := strings.Join(got.args, " ")
 	contextDir := got.args[len(got.args)-1]
-	for _, want := range []string{"buildx build --load", "--tag " + tag, "--file " + filepath.Join(contextDir, "Dockerfile")} {
+	for _, want := range []string{"build --layers --format docker", "--tag " + tag, "--file " + filepath.Join(contextDir, "Dockerfile")} {
 		if !strings.Contains(argv, want) {
 			t.Fatalf("argv=%q, want %q", argv, want)
 		}
@@ -78,11 +81,14 @@ func TestBuildDerived_failureKeepsLast40LogLines(t *testing.T) {
 		lines = append(lines, fmt.Sprintf("log-line-%02d", i))
 	}
 	builder := containers.Builder{
-		Exec: func(_ context.Context, _ string, _ []string) (string, error) {
+		Exec: func(_ context.Context, _ string, args []string) (string, error) {
+			if args[0] == "info" {
+				return `{"host":{"security":{"rootless":true}}}`, nil
+			}
 			return strings.Join(lines, "\n") + "\n", errExecFailed
 		},
 	}
-	settings := containerplan.Settings{ContainerCLI: "docker", CacheDir: ""}
+	settings := containerplan.Settings{ContainerCLI: "podman"}
 	_, err := builder.BuildDerived(context.Background(), settings, t.TempDir(), "typescript", baseRef, []byte(dockerfile), nil)
 	if err == nil {
 		t.Fatalf("failed build returned no error")
@@ -106,10 +112,10 @@ func TestBuildDerived_failureKeepsLast40LogLines(t *testing.T) {
 func TestBuildDerived_rejectsUnpinnedBase(t *testing.T) {
 	builder := containers.Builder{
 		Exec: func(_ context.Context, _ string, _ []string) (string, error) {
-			return "", nil
+			return `{"host":{"security":{"rootless":true}}}`, nil
 		},
 	}
-	settings := containerplan.Settings{ContainerCLI: "docker", CacheDir: ""}
+	settings := containerplan.Settings{ContainerCLI: "podman"}
 	if _, err := builder.BuildDerived(context.Background(), settings, t.TempDir(), "typescript", "docker.io/library/node:24", []byte(dockerfile), nil); err == nil {
 		t.Fatalf("unpinned base built without an error")
 	}
@@ -123,10 +129,10 @@ func TestBuildDerived_contextFailure(t *testing.T) {
 	}
 	builder := containers.Builder{
 		Exec: func(_ context.Context, _ string, _ []string) (string, error) {
-			return "", nil
+			return `{"host":{"security":{"rootless":true}}}`, nil
 		},
 	}
-	settings := containerplan.Settings{ContainerCLI: "docker", CacheDir: ""}
+	settings := containerplan.Settings{ContainerCLI: "podman"}
 	if _, err := builder.BuildDerived(context.Background(), settings, filepath.Join(parent, "child"), "typescript", baseRef, []byte(dockerfile), nil); err == nil {
 		t.Fatalf("unusable context built without an error")
 	}
@@ -138,10 +144,13 @@ func TestBuildEnvironment_writesLockfile(t *testing.T) {
 	builder := containers.Builder{
 		Exec: func(_ context.Context, cli string, args []string) (string, error) {
 			calls = append(calls, recorded{cli: cli, args: append([]string(nil), args...)})
+			if args[0] == "info" {
+				return `{"host":{"security":{"rootless":true}}}`, nil
+			}
 			return "built", nil
 		},
 	}
-	settings := containerplan.Settings{ContainerCLI: "docker", CacheDir: ""}
+	settings := containerplan.Settings{ContainerCLI: "podman"}
 	lockfile := []byte("psycopg==3.2.1\n")
 	image := "docker.io/library/python:3.15@sha256:e748956ccf3f50c9555f236753bbcd5f430d3937e665d3bd6922dd0e6e591a24"
 	install := catalog.Install{
@@ -156,10 +165,10 @@ func TestBuildEnvironment_writesLockfile(t *testing.T) {
 	if !strings.HasPrefix(tag, "ayokoding-env/python:") {
 		t.Fatalf("tag=%q", tag)
 	}
-	if len(calls) != 1 {
-		t.Fatalf("exec calls=%d, want 1", len(calls))
+	if len(calls) != 2 || calls[0].args[0] != "info" {
+		t.Fatalf("exec calls=%v, want info then build", calls)
 	}
-	contextDir := calls[0].args[len(calls[0].args)-1]
+	contextDir := calls[1].args[len(calls[1].args)-1]
 	content, err := os.ReadFile(filepath.Join(contextDir, "requirements.lock"))
 	if err != nil {
 		t.Fatalf("read materialized lockfile: %v", err)
@@ -183,7 +192,7 @@ func TestPresent_reportsInspection(t *testing.T) {
 			return "{}", nil
 		},
 	}
-	if !present.Present(context.Background(), "docker", "img:tag") {
+	if !present.Present(context.Background(), "podman", "img:tag") {
 		t.Fatalf("inspected image reported missing")
 	}
 	missing := containers.Builder{
@@ -191,7 +200,25 @@ func TestPresent_reportsInspection(t *testing.T) {
 			return "", errExecFailed
 		},
 	}
-	if missing.Present(context.Background(), "docker", "img:tag") {
+	if missing.Present(context.Background(), "podman", "img:tag") {
 		t.Fatalf("missing image reported present")
+	}
+}
+
+func TestBuildRejectsRootfulBeforeContextOrWorkload(t *testing.T) {
+	var calls []string
+	builder := containers.Builder{Exec: func(_ context.Context, _ string, args []string) (string, error) {
+		calls = append(calls, args[0])
+		return `{"host":{"security":{"rootless":false}}}`, nil
+	}}
+	parent := t.TempDir()
+	_, err := builder.BuildDerived(context.Background(), containerplan.Settings{}, parent, "typescript", baseRef, []byte(dockerfile), nil)
+	requireEnvCode(t, err, finding.EnvRuntimeRefused, 125)
+	entries, readErr := os.ReadDir(parent)
+	if readErr != nil || len(entries) != 0 {
+		t.Fatalf("context created: %v %v", entries, readErr)
+	}
+	if strings.Join(calls, ",") != "info" {
+		t.Fatalf("calls=%v", calls)
 	}
 }

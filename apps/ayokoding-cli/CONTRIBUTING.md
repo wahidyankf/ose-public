@@ -15,9 +15,9 @@ work inside the delivery worktree):
   unit tests with the 99% coverage gate, and behaviour coverage. Run
   this before every push.
 - `npm exec nx -- run ayokoding-cli:test:integration` — integration
-  tests with the fake container CLI. Needs no Docker daemon.
+  tests with the fake container CLI. Needs no container engine.
 - `npm exec nx -- run ayokoding-cli:test:e2e` — end-to-end tests
-  against real containers. Needs a running Docker daemon.
+  against real containers. Needs a running rootless Podman engine.
 - `npm run lint:md` — Markdown lint over the repository.
 
 Integration and E2E run outside the PR gate, twice daily and on demand.
@@ -68,7 +68,7 @@ Bind a new scenario in `tests/bdd` before implementing it.
 integration tests. It records every argv line, and its behaviour is
 scripted through `FAKECONTAINER_*` environment variables (daemon down,
 pull failure, never ready, run exit code, sleep). Tests select it with
-`AYOKODING_CONTAINER_CLI`, which overrides the default `docker`:
+`AYOKODING_CONTAINER_CLI`, which overrides the default `podman`:
 
 ```sh
 go build -trimpath -o fakecontainer ./tests/support/fakecontainer

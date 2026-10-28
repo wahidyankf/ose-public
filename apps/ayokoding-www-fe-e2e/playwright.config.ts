@@ -41,7 +41,8 @@ export default defineConfig({
   reporter: [["list"], ["html"], ["junit", { outputFile: "test-results/junit.xml" }]],
   use: {
     baseURL: process.env.BASE_URL || "http://localhost:3101",
-    trace: "on-first-retry",
+    // TEMPORARY: the full-matrix proof runs with zero retries, so keep a trace of any failing case for the row 33 flake.
+    trace: process.env.E2E_FULL_MATRIX === "1" ? "retain-on-failure" : "on-first-retry",
     screenshot: "only-on-failure",
   },
   webServer: {

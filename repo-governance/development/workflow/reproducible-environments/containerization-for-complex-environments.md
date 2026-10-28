@@ -92,7 +92,7 @@ CMD ["npm", "run", "dev"]
 - Exact Node.js version (24.13.1)
 - npm ci installs from lockfile (deterministic)
 - Same environment for all developers
-- Intended to run the same on macOS (Podman machine) and Linux; Podman runtime proof pending
+- Intended to run the same on macOS (Podman machine) and Linux; verified on rootless Podman on Linux (Compose stacks and platform checks) and macOS (platform checks)
 
 ## Boundaries and Cleanup
 

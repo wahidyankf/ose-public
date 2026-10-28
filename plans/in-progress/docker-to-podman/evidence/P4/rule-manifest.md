@@ -1,7 +1,7 @@
 # P4 rule manifest: repository-local rules propagation
 
 This record covers the "Repository-local rules propagation" items of Phase 4. The rules-fixer agent wrote
-it under the rules-propagation workflow. The changes are uncommitted; the caller delivers them.
+it under the rules-propagation workflow. The rule changes landed in earlier commits on this branch. The gate logs below are untracked scratch files.
 
 ## Frozen inputs
 
@@ -106,47 +106,69 @@ it under the rules-propagation workflow. The changes are uncommitted; the caller
 
 ## Generated paths
 
-- None recorded. `./rhino harness adapters generate` did not run, because HIPPO stopped it at the disk floor
-  (see the first unresolved item). No generated path differs from its source in this unit. Re-run the generate step
-  after the disk is freed; record every changed generated path and land it with its source.
+`./rhino harness adapters generate` ran. Commit `deb477dac` ("regenerate mirrors for podman canonicals") landed
+the output. It changed 16 files:
 
-## Gate exit codes
+- `catalog.json` and `provenance.json` under each of six harness directories: `.agents/agents`, `.claude/agents`,
+  `.claude/skills`, `.codex/agents`, `.commandcode/agents`, and `.opencode/agents`. That is 12 files.
+- Four files under `.agents/skills/`: `apps-organiclever-www-developing-content/SKILL.md`,
+  `apps-organiclever-www-developing-content/reference/comparison-and-development-commands.md`,
+  `plan-creating-project-plans/reference/operational-readiness.md`, and
+  `plan-verifying-execution/reference/worktree-verification-freshness-cleanup-and-cap.md`.
 
-- No declared gate has an exit code yet. Both HIPPO attempts stopped with `hippo.limit.storage-blocked`
-  (exit 124): the regeneration (transactional, standard) and the `./rhino --version` probe (ephemeral, light).
-  No gate could run, so no exit code is claimed.
-- Prepared runner: `local-tmp/rules-fixer/p4-gates.sh` (scratch, not tracked). It runs each declared Markdown,
-  frontmatter, heading, internal-link, readme-index, naming, Mermaid, word-budget, vendor, quality-gates, emoji,
-  repo-config, env, and harness check, then `npx --no markdownlint-cli2 "**/*.md"`, Prettier on the 62 changed
-  Markdown paths, `git diff --check`, and actionlint, shellcheck, and hadolint on any changed workflow, shell, or
-  Dockerfile path. It prints one `GATE <id> EXIT <code>` line per gate.
+The commit message says skill mirrors are symlinks to the canonical files, so the mirrors change only in digests and
+catalogs, and that `./rhino harness adapters validate` is clean. A later run of that command printed the same result
+(see the gate table).
+
+## Gate results
+
+A scratch runner, `local-tmp/rules-fixer/p4-gates.sh` (not tracked), ran each gate against the frozen change and
+wrote one log per gate. The runner printed a `GATE <id> EXIT <code>` line for each gate, but that stdout was not
+kept. The logs hold no exit code. The table therefore states the outcome text of each log only, and claims no exit
+code.
+
+| Gate                                                           | Outcome in the log                                                                                                                                                                               |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `./rhino harness adapters validate`                            | "canonical adapter validation is clean"                                                                                                                                                          |
+| Declared harness adapters check (validate plus hook tests)     | Validation clean. Native public policy transport 86 passed, 0 failed. All fixture and policy adapter cases pass                                                                                  |
+| `./rhino repo-config validate`                                 | Checked 1 configuration file, no findings                                                                                                                                                        |
+| `./rhino env validate`                                         | Checked 4 declared files, no findings                                                                                                                                                            |
+| `./rhino md frontmatter validate`                              | Checked 3556 files, no findings                                                                                                                                                                  |
+| `./rhino md heading-hierarchy validate`                        | Checked 3157 files, no findings                                                                                                                                                                  |
+| `./rhino md internal-link validate`                            | Checked 17213 links, no findings                                                                                                                                                                 |
+| `./rhino md readme-index validate`                             | Checked 16 directories, no findings                                                                                                                                                              |
+| `./rhino md naming validate`                                   | Checked 5847 files, no findings                                                                                                                                                                  |
+| `./rhino md mermaid validate`                                  | Checked 4339 diagrams, no findings                                                                                                                                                               |
+| `./rhino governance word-budget validate`                      | Checked 3092 files, no findings                                                                                                                                                                  |
+| `./rhino governance vendor validate`                           | Checked 2243 files, no findings                                                                                                                                                                  |
+| `./rhino governance quality-gates validate`                    | Checked 228 files, no findings                                                                                                                                                                   |
+| `./rhino convention emoji validate`                            | Checked 8777 files, 1 finding: an emoji code point (U+1F3AF) in `apps/ayokoding-www/generated/search-data.json`. That file is generated site data outside this unit's changes. Not resolved here |
+| `npx --no markdownlint-cli2 "**/*.md"`                         | Linted 7860 files, 0 errors                                                                                                                                                                      |
+| Prettier check on the changed Markdown paths                   | All matched files use Prettier code style                                                                                                                                                        |
+| `git diff --check` against `origin/main`                       | Empty log                                                                                                                                                                                        |
+| `./scripts/lint-workflows` (actionlint) on changed workflows   | Empty log                                                                                                                                                                                        |
+| `./scripts/lint-dockerfiles` (hadolint) on changed Dockerfiles | Two `DL3059 info` notes (consecutive `RUN` lines) in `apps/ayokoding-www/Dockerfile:40` and `apps/ose-www/Dockerfile:25`. Info level only                                                        |
+| `./scripts/lint-shell` (shellcheck) on changed shell paths     | No log exists. The runner has no recorded outcome for it                                                                                                                                         |
+
+Notes:
+
+- An empty log means the tool printed nothing. It does not record an exit code.
+- The emoji finding names a generated file that this unit did not edit. Whether it predates this change was not
+  checked. The caller or maintainer decides whether to fix it or to exempt generated data.
+- The Dockerfile notes are info level, and this unit does not edit either Dockerfile.
 
 ## Unresolved items
 
-- Compute blocked by HIPPO storage. The root filesystem is at 99% (3.4G free of 177G). HIPPO's disk floor stopped
-  the regeneration and the version probe. The largest consumers, read-only: rootless Podman storage about 25G,
-  `~/.cache` about 7.9G, `~/.npm` about 4.0G, `~/.volta` about 2.8G, `~/.nuget` about 2.3G. This unit did not delete
-  anything, because the storage belongs to the maintainer and to other sessions, and a machine-wide prune is not
-  an agent step. Owner: the maintainer. Then re-run, in order:
-  1. `./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino harness adapters generate`
-  2. `./hippo run --class ephemeral --resource-tier light --disk-path . -- ./rhino harness adapters validate`
-  3. `./hippo run --class ephemeral --resource-tier light --disk-path . -- bash local-tmp/rules-fixer/p4-gates.sh`
-     Record the generated paths, the gate exit codes, and any repair they show in this manifest.
-- `rules-quality-gate` has not run. This agent never starts a gate, so the caller must run it on this frozen change.
-  Owner: the caller. Status: not-resolved until it runs.
-- Operational Docker residue outside the rule surfaces. This unit does not edit it. Owners and required changes:
-  - `apps/ayokoding-www/Dockerfile` line 2: comment "Invoked via: docker compose". Change to `podman compose`
-    with the explicit provider. Owner: `swe-developer`.
-  - `apps/organiclever-be/Dockerfile` and `apps/ose-be/Dockerfile` line 2: comment that shows `docker build`.
-    Change to `podman build --layers --format docker`. Owner: `swe-developer`.
-  - `specs/apps/ose/deployment.md` lines 7, 15, and 22: "Docker Compose" and a `docker compose` command for the
-    unsupported `ose-app` scaffold. Use Podman wording and keep the unsupported status. Owner: docs or specs.
-  - `specs/apps/organiclever/app-web/behaviours/routing/app-routes.feature` line 58 and
-    `disabled-routes.feature` line 21: "real Docker stack" verification comments. Needs a decision, because no
-    replacement claim is proven. Owner: specs.
-  - `scripts/next-with-port.mjs` lines 138 and 147: "docker stop" in code comments. Optional wording change.
-    Owner: `swe-developer`.
-  - `apps/ayokoding-www/Dockerfile` lines 50 and 51: "docker-compose flow" comment. Optional. Owner: `swe-developer`.
+- Earlier compute block, now cleared. An earlier attempt to regenerate and to run the version probe stopped with
+  `hippo.limit.storage-blocked` (exit 124) at HIPPO's disk floor. Generation and the gates later ran, as recorded
+  above. This unit deleted nothing to clear it.
+- `rules-quality-gate` has not run. The gates above are deterministic checks, not that workflow. This agent never
+  starts a gate, so the caller must run it on this frozen change. Owner: the caller. Status: not-resolved until it runs.
+- One emoji finding from the deterministic gate (see the gate table). Owner: the maintainer.
+- Operational Docker residue outside the rule surfaces. The first scan listed six places. A recheck of the listed
+  lines in the current tree shows each now names Podman or neutral container wording: the three Dockerfile comments,
+  the `specs/apps/ose/deployment.md` lines, the two `@local-fullstack` feature comments, and the two comments in
+  `scripts/next-with-port.mjs`. This was a read of those lines only, not a new repository-wide scan.
 - Runtime proof pending: the `com.docker.compose.*` label keys and the "runtime proof pending" notes in the
   containerization convention and the cleanup module. Remove the notes after the P3 proof. Owner: the plan.
 - Statement 3 has no mechanical gate. The judgement disposition is recorded here. Owner: the maintainer, if a

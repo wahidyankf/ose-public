@@ -93,7 +93,7 @@ podman compose up
 
 - Exact versions for all services (postgres:16.1, redis:7.2.4)
 - Same configuration for everyone
-- Intended to run the same on macOS (Podman machine) and Linux; Podman runtime proof pending
+- Intended to run the same on macOS (Podman machine) and Linux; verified on rootless Podman on Linux (Compose stacks and platform checks) and macOS (platform checks)
 - Easy to add new services
 
 ## Documentation of Setup Process

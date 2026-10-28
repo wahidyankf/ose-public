@@ -23,10 +23,11 @@ export PODMAN_COMPOSE_PROVIDER=podman-compose
 cleanup() {
 	podman compose -p "${PROJECT_NAME}" -f "${COMPOSE_FILE}" down >/dev/null 2>&1 || true
 }
-trap cleanup EXIT
 
-# Start infrastructure. The preflight checks the rootless engine and provider before any mutation.
+# Start infrastructure. The preflight checks the rootless engine and provider before any mutation; teardown is armed
+# only after it passes, so a refused engine is never touched.
 "${ROOT}/scripts/container-runtime-check" --compose
+trap cleanup EXIT
 podman compose -p "${PROJECT_NAME}" -f "${COMPOSE_FILE}" down >/dev/null 2>&1 || true
 podman compose -p "${PROJECT_NAME}" -f "${COMPOSE_FILE}" up --detach --wait --wait-timeout 60
 

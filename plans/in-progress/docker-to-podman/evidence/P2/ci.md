@@ -71,3 +71,37 @@ Observed facts only:
 - Temporary job `podman compose ... up --build --detach --wait` failed. The runner ran out of disk: `Free space left: 0 MB`, and `no space left on device` while committing the layer for `COPY apps/ayokoding-www/ ./apps/ayokoding-www/`, writing under `apps/ayokoding-www/.next/`.
 - Web-UI E2E extra passed (148 passed).
 - Integration job `Complete local-resource Integration suites` failed only on `ferret-cli:test:integration` (6 tests in `tests/integration/test_hook_registrations.py`, `KeyError 'SessionStart'` etc.). The same failure appears in main's scheduled runs 40643742153 and 40560502045, so it is a pre-existing baseline failure unrelated to this migration.
+
+## Run 40671958744 (head 916ce0f36, nonce d2p-ayo-1793183106)
+
+Observed facts only:
+
+- Stack-first order: `df -h /` showed 81G available before the stack build and 51G after it. The Ayo stack started, the
+  health wait passed, and `podman cp` copied the prerender manifest.
+- Row 26 (`ayokoding-www-be-e2e:test:e2e`, `E2E_FULL_MATRIX=1`): 37 passed.
+- Row 33 (`ayokoding-www-fe-e2e:test:e2e`, `E2E_FULL_MATRIX=1`): 1,236 tests on 2 workers, 1,231 passed, 4 skipped, 1
+  failed (28.0m).
+- The failed case was `[firefox] Learning progress accessibility > Progress screens pass automated accessibility
+checks`. It hit the 150 s test timeout in `page.waitForURL` at `tests/e2e/steps/support/complete-course.ts:78`,
+  called from `progress-store.steps.ts:535`. The same scenario took 14.6 s on chromium and 23.5 s on webkit in this run.
+- Web-UI E2E extra: 148 passed (2.2m).
+
+### Row 33 failure investigation (run 40671958744)
+
+Observed facts only:
+
+- Row 33 ran after the Ayo containers were stopped, against the Playwright-owned native Node server, so no container or
+  Podman network path was involved in that failure.
+- The log line `waiting for navigation until "load"` shows the URL had not changed when `waitForURL` started and no
+  matching navigation fired in 150 s. Another worker completed other cases normally in the same window.
+- Local reproduction, firefox only, zero retries: 1 of 1 and 16 of 16 passed in isolation; a later three-browser slice
+  run failed once with the same signature (firefox, `waitForURL` timeout from `markCompleteAndContinue`).
+- Local traces of two stalled cases (6 workers, 45 s test timeout) show the click completed, the app's click handler ran
+  (the toggle read "Completed" and the link read "Continue"), the next page's RSC fetches returned 200, and the URL never
+  changed. Other failures in that run were plain overload timeouts and are not counted as this signature.
+- A readiness guard on the completion toggle was tried and reverted: the toggle was already enabled when the click
+  stalled, so the hydration-race hypothesis is refuted.
+- Two direct probes of the same click, 2,678 clicks in total across 8 parallel firefox contexts, produced 0 stalls. The
+  cause is not established.
+- Temporary diagnostics added to the proof job for the next run: `trace: retain-on-failure` when `E2E_FULL_MATRIX=1`, and
+  an `if: failure()` upload of `apps/ayokoding-www-fe-e2e/test-results/`.

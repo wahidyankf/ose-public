@@ -10,7 +10,7 @@
   "scripts": {
     "build": "./hippo run --class ephemeral --resource-tier heavy --disk-path . -- nx run-many -t build",
     "test": "./hippo run --class ephemeral --resource-tier heavy --disk-path . -- nx run-many -t test:quick",
-    "test:validators": "./hippo run --class ephemeral --resource-tier light --disk-path . -- node --test scripts/behaviour-coverage.test.mjs scripts/container-healthcheck-loopback.test.mjs scripts/container-image-qualified.test.mjs scripts/container-runtime-check.test.mjs scripts/dockerfile-workspace-deps.test.mjs scripts/e2e-playwright-config.test.mjs scripts/format-staged.test.mjs scripts/lint-gates.test.mjs scripts/no-docker-binary-calls.test.mjs scripts/workflow-container-lookup.test.mjs scripts/workflow-language-lanes.test.mjs",
+    "test:validators": "./hippo run --class ephemeral --resource-tier light --disk-path . -- node --test scripts/behaviour-coverage.test.mjs scripts/caller-runtime-contract.test.mjs scripts/container-healthcheck-loopback.test.mjs scripts/container-image-qualified.test.mjs scripts/container-runtime-check.test.mjs scripts/dockerfile-workspace-deps.test.mjs scripts/e2e-playwright-config.test.mjs scripts/format-staged.test.mjs scripts/lint-gates.test.mjs scripts/no-docker-binary-calls.test.mjs scripts/setup-podman-contract.test.mjs scripts/workflow-container-lookup.test.mjs scripts/workflow-language-lanes.test.mjs",
     "lint": "./hippo run --class ephemeral --resource-tier standard --disk-path . -- nx run-many -t lint",
     "lint:md": "markdownlint-cli2 \"**/*.md\"",
     "lint:md:fix": "markdownlint-cli2 --fix \"**/*.md\"",

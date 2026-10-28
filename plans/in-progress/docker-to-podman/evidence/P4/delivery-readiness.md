@@ -97,5 +97,5 @@ These do not block the runtime switch. They need a person or a later proof.
 7. **Intermittent firefox stall** in the lesson course-walk helper: seen once, not reproduced locally in 2,678
    direct-probe clicks, not seen in the last two CI runs. Cause unproven.
 8. **Two retained disposable PostgreSQL volumes** from the data rehearsal await a disposal decision.
-9. **Post-merge only:** image publication trigger, tags and digests, `evidence/P4/publishing-terminal.md`, and the
-   terminal audit.
+9. **Post-merge:** merged as `f5f544fe7` and published (run 40773249804); see `evidence/P4/publishing-terminal.md`.
+   The registry digest listing needs a person with `read:packages`. The terminal audit is still to do.

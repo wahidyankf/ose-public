@@ -154,3 +154,34 @@ Observed facts only:
   (see `delivery.md`, Phase 2 AC-07 publishing item). Rediscovered on 2026-10-29: the `e2e` job needs
   `podman-compose`, so it now runs the `setup-podman` action; see `cli-ci-rediscovery.md`.
 - No PR quality gate run and no PR CI run is recorded here yet.
+
+## Run 40758214180 (head 42fad78f0, nonce d2p-final-1793217154)
+
+Dispatched on 2026-10-29 from the throwaway branch `docker-to-podman-proof-final`. That branch is the PR head
+(`b25004578`, which is `e88a30b05` plus the `df84f0efc` workflow and test commit plus a merge of `origin/main`) with the
+temporary proof job and the two Playwright config edits re-applied in one commit (`42fad78f0`). The overlay lives only
+on that branch. It never entered the PR branch, so the PR head carries the restored `main` bytes for those three files.
+The only files the PR head adds after `b25004578` are plan evidence, so the runtime inputs of the proof equal the PR
+head's. The leak review of the overlay range passed with no finding before the push.
+
+Observed facts only:
+
+- Runner tuple line: `ubuntu/resolute/amd64 selects podman=5.7.0+ds2-3build1`. The `setup-podman`, `setup-playwright`
+  and Ayo stack health steps passed (`running healthy`).
+- Production build in the job (`ayokoding-www:build`, a prerequisite of the FE E2E target): `Successfully ran target
+build for project ayokoding-www and 2 tasks it depends on`.
+- Row 26 (`ayokoding-www-be-e2e:test:e2e`): 37 passed (24.2 s of test time, 8m21s step).
+- Row 33 (`ayokoding-www-fe-e2e:test:e2e`, three browser projects, zero retries): 1,235 passed and 4 skipped, 0 failed
+  (37.5 m of test time, 45m17s step). The earlier run had 1,232 passed and 4 skipped; the difference of three is the new
+  Mermaid, canonical-fallback and sidebar scenarios. The `if: failure()` upload step was skipped.
+- Web-UI E2E extra: 148 passed (1.9 m).
+- The proof job concluded `success`. `Unit and static behaviour coverage` passed. `Complete local-resource Integration
+suites` failed only on `ferret-cli:test:integration` (6 failed, 500 passed, the `test_hook_registrations` cases), the
+  baseline failure also seen on main's scheduled runs; the other four integration projects passed.
+  `Complete public-boundary E2E suites` was skipped because of that failure, so the new `setup-podman` line in the `e2e`
+  job did not run in this dispatch (it is covered by the contract test, `scripts/setup-podman-contract.test.mjs`).
+- The firefox stall seen once in run 40671958744 did not recur (the intermittent from the row 33 investigation).
+
+Closing state for the CI-timing rows: rows 26 and 33 and the web-UI extra now have a passing CI receipt on a head whose
+runtime inputs equal the PR head's. Row 14's build also ran in this job; row 20 has the CI receipt from run 40667489060
+and the local final-head rerun in `../P3/target-matrix.md`.

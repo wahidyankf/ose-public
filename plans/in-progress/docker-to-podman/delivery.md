@@ -1247,31 +1247,35 @@ Never run production/shared-system examples or publish an image solely to valida
       explicitly deferred Ayo rows and web-ui E2E extra instead require reconciled CI receipts at
       the pre-merge gate.
 
-  **Remaining:** repeat on the final head. On `60a35faf1`: `test:validators` exited 0 (197 of 197,
-  `evidence/P2/local-gates.md`), and the matrix is complete (102 rows in the first pass, 20 table rows rerun after
-  the Ayo source change, all exit 0; `evidence/P3/target-matrix.md`). `npm run doctor` exited 0 on Ubuntu with 25
-  toolchains at an earlier head and has no record on the final head. The four Ayo CI rows and the web-UI extra
-  close under Post-Push. Re-run only what a later edit invalidates.
+  **Remaining:** on the merged head `b25004578` (2026-10-29), `test:validators` exited 0 (198 of 198) and
+  `npm run doctor` exited 0 (25 toolchains, no findings); see `evidence/P4/delivery-readiness.md`. The matrix is complete
+  (102 rows in the first pass, 20 table rows rerun after the Ayo source change, all exit 0;
+  `evidence/P3/target-matrix.md`). CI receipts on the final runtime inputs: row 26, row 33 and the web-UI extra passed
+  in run 40758214180 (`evidence/P2/ci.md`). Row 14's production build ran in that job. Row 20 has a CI receipt only from
+  run 40667489060 on `88a20850c`, and a local pass on the final inputs. Tick this item once the maintainer accepts that
+  row 20 receipt or a fresh row 20 CI run exists.
 
-- [ ] [AI] Run Markdown lint and Prettier check on the exact changed Markdown/config paths using
+- [x] [AI] Run Markdown lint and Prettier check on the exact changed Markdown/config paths using
       installed local binaries under ephemeral/light admission, plus `rtk git diff --check` and the
       repository's declared cross-language/YAML/workflow gates. Run link and generated-binding gates
       against the final tree. Record positive exit codes and bounded fixes.
 
-  **Remaining:** repeat on the final tree after the last edit. Recorded on `60a35faf1`
-  (`evidence/P2/local-gates.md`): Prettier on 227 changed paths, `git diff --check origin/main...HEAD`, actionlint,
-  shellcheck, YAML parse and hadolint, all exit 0. Recorded in `evidence/P4/rule-manifest.md` (cycles 1 and 2, all
-  exit 0): markdownlint over 7,881 files, frontmatter, heading hierarchy, internal link, README index, word budget
-  and vendor gates. Re-run on 2026-10-29: internal-link and word-budget, exit 0. Missing: the generated-binding
-  gate on the final tree, and the whole set after the last staged and unstaged edits.
+  **Completed:** on the merged tree `b25004578` (2026-10-29) all exited 0: `prettier --check` on every added or modified
+  Markdown, YAML, JSON, `.mjs`, `.ts` and `.tsx` path, `git diff --check origin/main...HEAD`,
+  `./rhino harness adapters validate`, `./rhino md internal-link validate` (17,300 links), the word-budget gate, and the
+  full pre-commit gate set on the merge commit (`evidence/P4/delivery-readiness.md`). The earlier markdownlint,
+  frontmatter, heading, README-index and vendor gates are in `evidence/P4/rule-manifest.md`. Commits after
+  `b25004578` add only plan evidence; the PR gate re-runs the Markdown gates on each push.
 
-- [ ] [AI] Reconcile `git status` with the touch ledger and file-impact inventory. Review the full
+- [x] [AI] Reconcile `git status` with the touch ledger and file-impact inventory. Review the full
       diff, verify learning content/peer work is untouched, and ensure no hosting/secret/shared-state
       change slipped in. Re-run only checks invalidated by a later edit. Freeze the delivery revision
       and the AC-to-proof matrix in `evidence/P4/delivery-readiness.md`.
 
-  **Remaining:** touch-ledger reconciliation and `evidence/P4/delivery-readiness.md`, which does
-  not exist. The Phase 4 gate below names `evidence/P4/delivery.md`; settle one filename.
+  **Completed:** `evidence/P4/delivery-readiness.md` holds the touch-ledger reconciliation (408 files against
+  `origin/main`), the unchanged learning content and peer worktrees, the AC-to-proof matrix, the final-head gates and
+  the open items. The Phase 4 gate's `evidence/P4/delivery.md` is the post-merge record; the readiness file is the
+  pre-merge one.
 
 ### Post-Push Verification
 

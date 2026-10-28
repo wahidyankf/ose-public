@@ -98,4 +98,4 @@ These do not block the runtime switch. They need a person or a later proof.
    direct-probe clicks, not seen in the last two CI runs. Cause unproven.
 8. **Two retained disposable PostgreSQL volumes** from the data rehearsal await a disposal decision.
 9. **Post-merge:** merged as `f5f544fe7` and published (run 40773249804); see `evidence/P4/publishing-terminal.md`.
-   The registry digest listing needs a person with `read:packages`. The terminal audit is still to do.
+   The tag digests were checked through the anonymous registry API. The terminal audit is still to do.

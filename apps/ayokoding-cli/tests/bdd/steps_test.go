@@ -15,7 +15,9 @@ import (
 	"time"
 
 	"github.com/cucumber/godog"
+	"github.com/wahidyankf/ose-public/apps/ayokoding-cli/internal/adapters/containers"
 	"github.com/wahidyankf/ose-public/apps/ayokoding-cli/internal/domain/catalog"
+	"github.com/wahidyankf/ose-public/apps/ayokoding-cli/internal/domain/containerplan"
 	"github.com/wahidyankf/ose-public/apps/ayokoding-cli/toolchains"
 )
 
@@ -38,6 +40,7 @@ type recipeState struct {
 // world carries one scenario from Given through Then.
 type world struct {
 	driver          Driver
+	adapter         string
 	env             map[string]string
 	pending         []string
 	version         string
@@ -54,6 +57,12 @@ type world struct {
 	cliBinary       string
 	baseRev         string
 	coverageCourses []string
+	podmanCalls     []string
+	podmanTag       string
+	podmanStore     map[string]string
+	podmanImage     string
+	nativeTrace     []string
+	nativeImageID   string
 }
 
 // fixturePath resolves a committed fixture file for every driver: the unit
@@ -232,7 +241,7 @@ func (w *world) givenPhase5(text string) error {
 	case `a fixture course whose run is still executing`:
 		return w.useSlowRunCourse()
 	default:
-		return w.givenSync(text)
+		return w.givenPodman(text)
 	}
 }
 
@@ -552,7 +561,7 @@ func (w *world) when(text string) error {
 	case `the harness receives an interrupt`:
 		return w.interruptRun()
 	default:
-		return w.whenSync(text)
+		return w.whenPodman(text)
 	}
 }
 
@@ -712,7 +721,7 @@ func (w *world) then(text string) error {
 		}
 		return nil
 	default:
-		return w.thenContract(text)
+		return w.thenPodman(text)
 	}
 }
 
@@ -806,8 +815,8 @@ func (w *world) requireToolchainLines() error {
 }
 
 // registerSteps binds every corpus step through one dispatcher per keyword.
-func registerSteps(ctx *godog.ScenarioContext, driver Driver) {
-	scenario := &world{driver: driver, env: map[string]string{}}
+func registerSteps(ctx *godog.ScenarioContext, driver Driver, adapter string) {
+	scenario := &world{driver: driver, adapter: adapter, env: map[string]string{}}
 	ctx.Given(`^(.*)$`, scenario.given)
 	ctx.When(`^(.*)$`, scenario.when)
 	ctx.Then(`^(.*)$`, scenario.then)
@@ -1359,27 +1368,25 @@ func (w *world) requireRunCleanup() error {
 			return fmt.Errorf("%w: network %q never removed (log=%q)", errStepFailed, network, logged)
 		}
 	}
-	return dockerEmpty()
+	return runtimeEmpty()
 }
 
-// dockerEmpty asserts no labelled container or harness network remains in
-// the real daemon, whatever driver ran the scenario.
-func dockerEmpty() error {
-	ps := exec.CommandContext(context.Background(), "docker", "ps", "-a", "--filter", "label=ayokoding.run", "--format", "{{.Names}}")
-	psOut, err := ps.Output()
+// runtimeEmpty checks the same selected runtime used by the scenario.
+func runtimeEmpty() error {
+	runtime := &containers.Runtime{}
+	psOut, err := runtime.Run(context.Background(), containerplan.Invocation{Binary: "", Args: []string{"ps", "-a", "--filter", "label=ayokoding.run", "--format", "{{.Names}}"}}, nil)
 	if err != nil {
 		return fmt.Errorf("%w: list labelled containers: %w", errStepFailed, err)
 	}
-	if strings.TrimSpace(string(psOut)) != "" {
-		return fmt.Errorf("%w: labelled containers remain: %q", errStepFailed, psOut)
+	if psOut.ExitCode != 0 || strings.TrimSpace(psOut.Output) != "" {
+		return fmt.Errorf("%w: labelled containers remain or listing failed: %q", errStepFailed, psOut.Output)
 	}
-	ls := exec.CommandContext(context.Background(), "docker", "network", "ls", "--filter", "name=ayokoding-", "--format", "{{.Name}}")
-	lsOut, err := ls.Output()
+	lsOut, err := runtime.Run(context.Background(), containerplan.Invocation{Binary: "", Args: []string{"network", "ls", "--filter", "name=ayokoding-", "--format", "{{.Name}}"}}, nil)
 	if err != nil {
 		return fmt.Errorf("%w: list harness networks: %w", errStepFailed, err)
 	}
-	if strings.TrimSpace(string(lsOut)) != "" {
-		return fmt.Errorf("%w: harness networks remain: %q", errStepFailed, lsOut)
+	if lsOut.ExitCode != 0 || strings.TrimSpace(lsOut.Output) != "" {
+		return fmt.Errorf("%w: harness networks remain or listing failed: %q", errStepFailed, lsOut.Output)
 	}
 	return nil
 }
@@ -1398,7 +1405,7 @@ func (w *world) requireServiceCleanup() error {
 			}
 		}
 	}
-	return dockerEmpty()
+	return runtimeEmpty()
 }
 
 // requireFindingNames asserts one finding line carries the code and every

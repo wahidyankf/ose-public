@@ -43,6 +43,15 @@ Numbers and revisions above are historical observations, not live completion cla
 
 ## Concepts and target architecture
 
+### Execution prerequisite: HIPPO consumer
+
+The maintainer approved the one-file `hippo.lock` update from 0.11.0 to 0.13.0 to accept an
+externally updated host admission profile. The root bootstrap is unchanged. The exact pin,
+release-specific age exception, security-source limits and passing native consumer checks are
+recorded in [P0 HIPPO evidence](./evidence/P0/hippo-prerequisite.md). This prerequisite neither
+changes the container runtime design nor authorizes host-profile changes. Baseline retention
+must account for the actual original and current policy envelopes.
+
 An image is a packaged filesystem plus configuration. A registry such as GHCR or `docker.io`
 stores images. Podman replaces the runtime and builder; it does not require replacing registries
 or the Dockerfile language. Rootless means the engine operates in a user's namespace without a
@@ -66,6 +75,13 @@ flowchart TD
 The engine is native on Linux and runs inside Podman Machine on macOS. Runtime preflight checks
 the connected engine's reported rootless state, not merely the host UID. It must reject a rootful
 remote connection even when the shell itself is non-root.
+
+One supplemental selected-Desktop probe confirmed a rootless bind from Go's observed default
+temporary directory, including exact keep-id ownership, read-only behavior, limits and owned
+cleanup. Its result does not establish the production runner's temporary-directory selection or
+complete runner behavior; the [P0 temporary-directory evidence](./evidence/P0/macos-runner-temp.md)
+records the scope. The separate [Desktop capability evidence](./evidence/P0/macos-capabilities.md)
+retains the full database and DNS proof.
 
 ## Decisions and prior art
 
@@ -112,7 +128,11 @@ Accessed 2026-10-26. These establish documented capabilities, not successful exe
 
 Use native package management. During P0 create one Podman pin row for each distinct Ubuntu tuple:
 CI `runs-on` label plus evaluated runner Ubuntu release and architecture; and local Ubuntu release
-plus architecture. For each tuple, record `lsb_release -ds`, `dpkg --print-architecture`,
+plus architecture. The maintainer authorized collecting CI package/rootless proof on the runtime
+PR's first CI run, before workloads and before merge; P0 records that CI row as provisional while
+fully verifying local rows before implementation. See
+[authorized CI evidence timing](./delivery.md#authorized-ci-evidence-timing).
+For each tuple, at its authorized verification stage record `lsb_release -ds`, `dpkg --print-architecture`,
 `apt-cache policy podman`, and `apt-cache madison podman`. Select that tuple's candidate from its
 signed Ubuntu archive, record its exact version and origin, then confirm it is installable with
 `apt-get --print-uris --yes install "podman=<recorded-version>"`. Pin and install the version
@@ -168,6 +188,30 @@ reports rootless operation; reject a rootful connection even if the host account
 Do not disable host security controls or change global kernel policy as a rootless workaround; an
 unsupported host is a blocker. No Windows support is added.
 
+Native macOS diagnostics may use the inspected Machine's Unix API socket, but Podman 6.1.4's
+Compose wrapper also needs its configured Machine connection. Select the actual named rootless
+connection from metadata and verify that connection's `info` result. For Compose, preserve it in
+invocation-only `CONTAINER_CONNECTION` as well as the parent's explicit `--connection`: the
+podman-compose 1.6.0 provider starts native Podman children without forwarding the parent's
+connection argument. Clear conflicting ambient `DOCKER_HOST`, `CONTAINER_HOST` and
+`CONTAINER_SSHKEY` for that invocation; retain the explicit provider path. Native Podman may
+handle only its generated VM keys under the maintainer's scoped authorization. Do not change the
+global connection default. Client version output alone does not prove the selected runtime store;
+verify actual uniquely owned resources through both the selected engine and provider.
+This behavior is established by the pinned
+[Podman Compose implementation](https://github.com/podman-container-tools/podman/blob/v6.1.4/cmd/podman/compose.go#L892-L1092),
+[connection environment resolution](https://github.com/podman-container-tools/podman/blob/v6.1.4/cmd/podman/root.go#L2074-L2107)
+and [provider subprocess implementation](https://github.com/containers/podman-compose/blob/v1.6.0/podman_compose.py#L1781-L1798).
+Actual Mac capability proof remains separate from this source-based transport finding.
+
+The maintainer subsequently authorized one bounded Ubuntu host-policy exception after the exact
+denial and host-wide scope were explained: add the missing local include to
+`/etc/apparmor.d/usr.bin.pasta` and only `signal (receive) set=(term) peer=podman,` to its existing
+local override. Keep pasta enforced and every other security setting intact. Independently review
+the exact candidate and partial-apply rollback before application, retain verified backups, and
+re-prove native teardown and the unchanged capability checks. This exception does not permit any
+other host/kernel/helper policy change or treat provider status alone as cleanup success.
+
 The new shared setup action replaces the existing Docker-cache action, rather than adding a second
 container setup path. It selects the package pin recorded for that CI runner tuple and fails when
 the current release/architecture/origin does not match its row. Its assertions are
@@ -219,21 +263,32 @@ health result proves that a container started; it does not make every Playwright
 container. Follow the exact ownership/order below and record native fixture BDD results separately
 from container health, browser, and API wire proof. Do not append `-v` to any Compose stop command.
 
-| Caller and Compose file                                                   | Parse and stack health                                                                                                                                                                                                                 | Actual test server owner and command                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | Stop/ordering rule                                                                                                                                                                                                                                                                                                                                                 |
-| ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Ayo public stack `infra/dev/ayokoding-www/docker-compose.yml`             | `podman compose -f infra/dev/ayokoding-www/docker-compose.yml config`; then `podman compose -f infra/dev/ayokoding-www/docker-compose.yml up --build --detach --wait --wait-timeout 150` and record service health on port 3101.       | After health, perform the existing manifest handoff with `container_id="$(podman compose -f infra/dev/ayokoding-www/docker-compose.yml ps -q ayokoding-www)"`, require it nonempty, then `podman cp "$container_id:/app/apps/ayokoding-www/.next/prerender-manifest.json" apps/ayokoding-www-fe-e2e/.e2e-artifacts/prerender-manifest.json`. Next run `npm exec nx -- run ayokoding-www-be-e2e:test:e2e` while Podman serves 3101; its Playwright `webServer.reuseExistingServer` is true and default base URL is 3101. | After the artifact copy and BE E2E, stop the owned stack with `podman compose -f infra/dev/ayokoding-www/docker-compose.yml down` before `npm exec nx -- run ayokoding-www-fe-e2e:test:e2e`. FE has `reuseExistingServer: false` and owns its native built server on 3101. Final cleanup may stop only the same task-owned Compose project; do not remove volumes. |
-| OSE public stack `infra/dev/ose-www/docker-compose.yml`                   | `podman compose -f infra/dev/ose-www/docker-compose.yml config`; then `podman compose -f infra/dev/ose-www/docker-compose.yml up --build --detach --wait --wait-timeout 120` and record service health on port 3100.                   | `npm exec nx -- run ose-www-be-e2e:test:e2e` and `npm exec nx -- run ose-www-fe-e2e:test:e2e` without `WEB_BASE_URL`/`BASE_URL` use the existing native fixture server on port 3190. These commands are native BDD proof only; they do not prove requests reached the Podman service on 3100. The config supports `WEB_BASE_URL`/`BASE_URL` to disable that server, but preserve the current fixture contract and do not silently redirect existing scenarios.                                                          | Keep Podman stack health plus the existing P3 manual-browser and read-only API wire checks as separate required container proof. Stop the task-owned stack with `podman compose -f infra/dev/ose-www/docker-compose.yml down`; never call it native E2E evidence.                                                                                                  |
-| OrganicLever public stack `infra/dev/organiclever-www/docker-compose.yml` | `podman compose -f infra/dev/organiclever-www/docker-compose.yml config`; then `podman compose -f infra/dev/organiclever-www/docker-compose.yml up --build --detach --wait --wait-timeout 120` and record service health on port 3200. | Run `npm exec nx -- run organiclever-www-fe-e2e:test:e2e` while the stack serves 3200. Its Playwright `webServer.reuseExistingServer` is true and its default base URL is 3200, so it reuses the existing Podman service.                                                                                                                                                                                                                                                                                               | After the target, stop the owned stack with `podman compose -f infra/dev/organiclever-www/docker-compose.yml down`; do not remove volumes.                                                                                                                                                                                                                         |
-| OSE backend E2E `apps/ose-be/docker-compose.e2e.yml`                      | `podman compose -p ose-be-e2e -f apps/ose-be/docker-compose.e2e.yml config`                                                                                                                                                            | Run `npm exec nx -- run ose-be-e2e:test:e2e`. That target invokes `apps/ose-be/scripts/run-e2e.sh`, which owns dependency Compose startup, backend lifecycle, and cleanup. Its migrated start command uses `up --detach --wait --wait-timeout 60`, enough for the existing five health retries at 5s intervals and 5s probe timeout. Do not pre-start a competing Compose stack.                                                                                                                                        | The script's migrated ownership cleanup is the only stop. Preserve the source data; do not issue an extra `down -v`.                                                                                                                                                                                                                                               |
-| OrganicLever backend E2E `apps/organiclever-be/docker-compose.e2e.yml`    | `podman compose -p organiclever-be-e2e -f apps/organiclever-be/docker-compose.e2e.yml config`                                                                                                                                          | Run `npm exec nx -- run organiclever-be-e2e:test:e2e`. That target invokes `apps/organiclever-be/scripts/run-e2e.sh`, which owns dependency Compose startup, backend lifecycle, and cleanup. Its migrated start command uses `up --detach --wait --wait-timeout 60`, enough for the existing five health retries at 5s intervals and 5s probe timeout. Do not pre-start a competing Compose stack.                                                                                                                      | The script's migrated ownership cleanup is the only stop. Preserve the source data; do not issue an extra `down -v`.                                                                                                                                                                                                                                               |
+| Caller and Compose file                                                   | Parse and stack health                                                                                                                                                                                                                 | Actual test server owner and command                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | Stop/ordering rule                                                                                                                                                                                                                                                                                                                                                 |
+| ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Ayo public stack `infra/dev/ayokoding-www/docker-compose.yml`             | `podman compose -f infra/dev/ayokoding-www/docker-compose.yml config`; then `podman compose -f infra/dev/ayokoding-www/docker-compose.yml up --build --detach --wait --wait-timeout 150` and record service health on port 3101.       | After health, perform the existing manifest handoff with `container_id="$(podman ps -q --filter label=io.podman.compose.project=ayokoding-www --filter label=com.docker.compose.service=ayokoding-www)"`, require it nonempty, then `podman cp "$container_id:/app/apps/ayokoding-www/.next/prerender-manifest.json" apps/ayokoding-www-fe-e2e/.e2e-artifacts/prerender-manifest.json`. Next run `npm exec nx -- run ayokoding-www-be-e2e:test:e2e` while Podman serves 3101; its Playwright `webServer.reuseExistingServer` is true and default base URL is 3101. | After the artifact copy and BE E2E, stop the owned stack with `podman compose -f infra/dev/ayokoding-www/docker-compose.yml down` before `npm exec nx -- run ayokoding-www-fe-e2e:test:e2e`. FE has `reuseExistingServer: false` and owns its native built server on 3101. Final cleanup may stop only the same task-owned Compose project; do not remove volumes. |
+| OSE public stack `infra/dev/ose-www/docker-compose.yml`                   | `podman compose -f infra/dev/ose-www/docker-compose.yml config`; then `podman compose -f infra/dev/ose-www/docker-compose.yml up --build --detach --wait --wait-timeout 120` and record service health on port 3100.                   | `npm exec nx -- run ose-www-be-e2e:test:e2e` and `npm exec nx -- run ose-www-fe-e2e:test:e2e` without `WEB_BASE_URL`/`BASE_URL` use the existing native fixture server on port 3190. These commands are native BDD proof only; they do not prove requests reached the Podman service on 3100. The config supports `WEB_BASE_URL`/`BASE_URL` to disable that server, but preserve the current fixture contract and do not silently redirect existing scenarios.                                                                                                     | Keep Podman stack health plus the existing P3 manual-browser and read-only API wire checks as separate required container proof. Stop the task-owned stack with `podman compose -f infra/dev/ose-www/docker-compose.yml down`; never call it native E2E evidence.                                                                                                  |
+| OrganicLever public stack `infra/dev/organiclever-www/docker-compose.yml` | `podman compose -f infra/dev/organiclever-www/docker-compose.yml config`; then `podman compose -f infra/dev/organiclever-www/docker-compose.yml up --build --detach --wait --wait-timeout 120` and record service health on port 3200. | Run `npm exec nx -- run organiclever-www-fe-e2e:test:e2e` while the stack serves 3200. Its Playwright `webServer.reuseExistingServer` is true and its default base URL is 3200, so it reuses the existing Podman service.                                                                                                                                                                                                                                                                                                                                          | After the target, stop the owned stack with `podman compose -f infra/dev/organiclever-www/docker-compose.yml down`; do not remove volumes.                                                                                                                                                                                                                         |
+| OSE backend E2E `apps/ose-be/docker-compose.e2e.yml`                      | `podman compose -p ose-be-e2e -f apps/ose-be/docker-compose.e2e.yml config`                                                                                                                                                            | Run `npm exec nx -- run ose-be-e2e:test:e2e`. That target invokes `apps/ose-be/scripts/run-e2e.sh`, which owns dependency Compose startup, backend lifecycle, and cleanup. Its migrated start command uses `up --detach --wait --wait-timeout 60`, enough for the existing five health retries at 5s intervals and 5s probe timeout. Do not pre-start a competing Compose stack.                                                                                                                                                                                   | The script's migrated ownership cleanup is the only stop. Preserve the source data; do not issue an extra `down -v`.                                                                                                                                                                                                                                               |
+| OrganicLever backend E2E `apps/organiclever-be/docker-compose.e2e.yml`    | `podman compose -p organiclever-be-e2e -f apps/organiclever-be/docker-compose.e2e.yml config`                                                                                                                                          | Run `npm exec nx -- run organiclever-be-e2e:test:e2e`. That target invokes `apps/organiclever-be/scripts/run-e2e.sh`, which owns dependency Compose startup, backend lifecycle, and cleanup. Its migrated start command uses `up --detach --wait --wait-timeout 60`, enough for the existing five health retries at 5s intervals and 5s probe timeout. Do not pre-start a competing Compose stack.                                                                                                                                                                 | The script's migrated ownership cleanup is the only stop. Preserve the source data; do not issue an extra `down -v`.                                                                                                                                                                                                                                               |
+
+The installed provider accepts the table's wait flags but does not reliably propagate native
+readiness failures or timeout cancellation; see [the exact provider status findings](./evidence/P0/compose-provider-status.md).
+The table's provider command is not sufficient health proof. Existing stack-owning callers must
+enforce native running/healthy postconditions before copying artifacts or executing E2E, within
+the same total 150/120/60-second budgets. Prefer detached startup followed by that bounded native
+check rather than relying on provider waiting. A false successful provider status must fail
+before consumers run. P2's existing fake-command seams cover unhealthy/elapsed-deadline cases
+and retained owned resources after teardown. Keep the shared P1 preflight narrow and preserve
+the exact provider pin, foreign resources and existing healthchecks; add no lifecycle framework.
 
 For Ayo's artifact handoff, create the destination before `podman cp` and reject an empty service
-lookup:
+lookup. The pinned `podman-compose` 1.6.0 `ps` takes no service argument, so look the container up
+by the Compose labels instead:
 
 ```bash
 artifact_dir=apps/ayokoding-www-fe-e2e/.e2e-artifacts
 mkdir -p "$artifact_dir"
-container_id="$(podman compose -f infra/dev/ayokoding-www/docker-compose.yml ps -q ayokoding-www)"
+container_id="$(podman ps -q --filter label=io.podman.compose.project=ayokoding-www --filter label=com.docker.compose.service=ayokoding-www)"
 test -n "$container_id"
 podman cp "$container_id:/app/apps/ayokoding-www/.next/prerender-manifest.json" \
   "$artifact_dir/prerender-manifest.json"
@@ -329,9 +384,14 @@ CLI runner, and do not weaken existing scenario assertions or coverage threshold
   Docker-specific Go templates/diagnostics without weakening cleanup scope.
 
 Application HTTP, tRPC, GraphQL, database schemas, ports, and localization contracts have **no
-delta**. The evidence is that changes remain in container tooling, test infrastructure, and setup;
-no endpoint, payload, authentication, or persistent application schema is edited. The only intended
-developer-interface delta is the runtime prerequisite/default and removal of Buildx cache config.
+delta** from the runtime migration. Separately authorized P0 work also changes Mermaid fallback
+keyboard access and the Sidebar layout boundary for route-eligible rendering; the applied Sidebar
+change avoids the optional runtime request on non-course `?path` routes. These are bounded UI
+behavior changes, not part of the container-runtime design. The inline-code binding repair keeps
+the original strict style expectations and changes how the current rendered node is observed.
+The Sidebar A′ approach supersedes and withdraws the noncompliant derived-state/effect bridge.
+Document these source footprints without describing all P0 changes as runtime-only. The applicable
+UI specification and sequential EWT/UWT/DWT triad remain required before delivery.
 
 ## CI and publishing
 
@@ -517,6 +577,7 @@ implementation, not changes performed while authoring this plan.
 ├── package.json [E] — Podman Compose entry points and preflight-test registration
 ├── repo-config.yml [E] — Podman/provider toolchain declarations; retain hadolint
 ├── scripts/
+│   ├── README.md [E] — required annotated index for the shared preflight and its tests
 │   ├── container-runtime-check [N] — shared shell/CI rootless preflight
 │   └── container-runtime-check.test.mjs [N] — fake-runtime regression tests
 ├── .github/
@@ -546,6 +607,7 @@ implementation, not changes performed while authoring this plan.
 │   ├── {ayokoding-www,ose-www,organiclever-www,ose-app-web,organiclever-app-web}/
 │   │   ├── Dockerfile [E] — build instructions and proven compatibility fixes
 │   │   └── README.md [E] — operational container instructions only
+│   ├── ayokoding-www/tests/unit/fe-steps/cost-of-living-calculator.steps.tsx [E] — P0 baseline fixture lifecycle repair only; release retained scenario DOM, preserve all assertions and production code
 │   └── *-e2e/{playwright.config.ts,tests/e2e/steps/*.ts,steps/*.ts} [E] — bounded container-path/lifecycle references
 ├── infra/dev/{ayokoding-www,ose-www,organiclever-www,ose-app,organiclever-app}/
 │   ├── docker-compose*.yml [E] — provider compatibility; old scaffolds remain unsupported
@@ -555,6 +617,7 @@ implementation, not changes performed while authoring this plan.
 │   ├── ayokoding/cli/{README.md,architecture.md,behaviours/**/*.feature} [E] — runtime contract and exemptions
 │   ├── ayokoding/cli/behaviours/toolchains/rootless-runtime.feature [N] — shared rootless/provider contract
 │   ├── {ose,organiclever}/**/*.md [E] — bounded container deployment/testing descriptions
+│   ├── organiclever/app-web/behaviours/routing/{app-routes,disabled-routes}.feature [E] — stale verification comments only; preserve scenarios and unsupported-scaffold status
 │   └── ayokoding/www/architecture.md [E] — only if its runtime description becomes stale
 ├── docs/
 │   ├── how-to/{setup-development-environment,add-new-app}.md [E] — supported setup and app workflow
@@ -563,13 +626,21 @@ implementation, not changes performed while authoring this plan.
 │   ├── reference/system-architecture/{ci-cd,technology-stack,applications}.md [E] — as-built runtime
 │   └── explanation/software-engineering/**/*.md [E] — only operational Docker requirements/examples that describe this repo
 ├── repo-governance/development/
+│   ├── infra/README.md [E] — current runtime overview and annotated rule index
+│   ├── workflow/native-first-toolchain.md [E] — current container-service reference only
+│   ├── workflow/native-first-toolchain/rationale-worktrees-and-the-doctor-pattern.md [E] — operational E2E/CI runtime only; preserve native-first decision and historical alternatives
 │   ├── workflow/reproducible-environments*.md [E] — pointers if stale
 │   ├── workflow/reproducible-environments/*.md [E] — canonical runtime requirement and setup
 │   ├── workflow/worktree-and-artifact-cleanup/*.md [E] — owned Podman lifecycle, same safety boundaries
+│   ├── workflow/worktree-and-artifact-cleanup.md [E] — parent lifecycle reference if stale
 │   ├── infra/docker-monorepo-builds*.md [E] — compatible filenames, updated build contract
 │   ├── infra/docker-monorepo-builds/*.md [E] — build-specific rules and examples
 │   ├── infra/ci-conventions/*.md [E] — Podman CI and runtime boundaries
+│   ├── infra/ci-conventions.md [E] — current CI parent reference if stale
 │   └── quality/cross-language-lint-strictness/*.md [E] — only stale tool terminology; preserve hadolint
+├── repo-governance/development/quality/cross-language-lint-strictness.md [E] — parent tool reference if stale
+├── repo-governance/conventions/security/secrets-and-env-standards/injection-matrix.md [E] — current Compose provider labels only; preserve secret boundaries
+├── repo-governance/workflows/maintenance/development-environment-setup.md [E] — parent tool inventory/reference if stale
 ├── repo-governance/workflows/maintenance/development-environment-setup/*.md [E] — tool inventory/provision/verification
 ├── .agents/skills/apps-organiclever-www-developing-content/{SKILL.md,reference/*.md} [E] — canonical operational instructions
 ├── README.md [E] — prerequisite summary only
@@ -586,6 +657,263 @@ Before editing, expand them with `rg --files`, intersect them with the Docker/ru
 and record every exact planned path in the touch ledger. A missing optional leaf is not created
 merely because it appears in a family. Discover workflow callers by the old action/input names.
 Discover generated paths from `harness:` ownership in `repo-config.yml`, never by guessing a vendor.
+
+The P0 scan reconciled additional current operational references with this tree before edits;
+see [the frozen inventory](./evidence/P0/runtime-inventory.md). These are footprint corrections
+within the approved whole-repository runtime switch, not new product scope. Historical native-first
+Dev Container alternatives, compatible `docker-compose.ci.yml` references, and generic signal
+wording remain classified retained mentions. Feature-file changes above are verification comments,
+not altered scenarios or a claim of newly supported legacy stacks.
+
+The mandatory P0 baseline also exposed a memory-retention defect in the named calculator unit
+fixture: scenario declarations retain user-event sessions and detached DOM trees across the file.
+The bounded additional test path above permits lifecycle cleanup only, with the original failing
+suite as RED evidence and focused/full regression proof required. No production calculator code,
+Gherkin scenario, coverage floor, timeout, or application feature is changed by that repair.
+
+The maintainer additionally authorized the baseline prerequisite repin to Playwright 1.61.0.
+Before any pin edit, its exact additional footprint is:
+
+- `apps/ayokoding-www-be-e2e/package.json`
+- `apps/ayokoding-www-fe-e2e/package.json`
+- `apps/ose-www-fe-e2e/package.json`
+- `apps/ose-www-be-e2e/package.json`
+- `apps/ose-app-web-e2e/package.json`
+- `apps/organiclever-be-e2e/package.json`
+- `apps/organiclever-app-web-e2e/package.json`
+- `apps/organiclever-www-fe-e2e/package.json`
+- `apps/ose-be-e2e/package.json`
+- `package-lock.json`
+
+Only the exact Playwright pin and matching generated dependency resolutions change. Existing
+compatible ranges elsewhere remain unchanged. Install the matching native browsers and revalidate
+affected targets without changing their scenarios, assertions, coverage floors, or timeouts.
+The original unsupported-host result remains part of the baseline evidence.
+
+The separately approved Next.js 16.4.3 font-parser repair adds exactly these paths:
+
+- `apps/ayokoding-www/package.json`: `next` and `@next/third-parties`
+- `apps/ose-www/package.json`: `next`
+- `apps/organiclever-www/package.json`: `next`
+- `apps/ose-app-web/package.json`: `next`
+- `apps/organiclever-app-web/package.json`: `next`
+- `package.json`: the two existing optional Linux x64 SWC pins
+- `package-lock.json`: matching generated resolutions, preserving the Playwright repin
+
+Serialize the shared dependency transaction. Verify the original failing OrganicLever build
+and affected gates; preserve font inputs/assets, features, hosting settings, ports, build commands,
+and test requirements. This exact owner-selected release does not authorize other dependency
+upgrades or bypass remaining integrity/security checks.
+
+Native Next.js 16.4.3 builds additionally generate the `root-params.d.ts` import in these existing
+tracked type companions: `apps/ayokoding-www/next-env.d.ts`, `apps/ose-www/next-env.d.ts`, and
+`apps/organiclever-www/next-env.d.ts`. Treat the three paths as generated upgrade output, retain
+the framework's emitted imports, and review their generator provenance. This is separate from
+the seven-file manifest/lock transaction; do not hand-edit the generated files or change features.
+
+The later explicitly approved `playwright-bdd` 9.2.1 compatibility repair changes its existing
+pin in the nine E2E manifests listed above, `libs/web-ui/package.json`, and the generated lock.
+Playwright remains 1.61.0; Next.js and the exact root Gherkin/messages pins remain unchanged.
+The age-policy correction and exact maintainer selection are recorded in
+[the delivery authorization](./delivery.md#authorized-bdd-companion-repair).
+
+Actual v9 generation failures permit only these additional test-binding paths:
+
+- `apps/ayokoding-www-be-e2e/tests/e2e/steps/common.steps.ts`
+- `apps/ayokoding-www-be-e2e/tests/e2e/steps/navigation-api.steps.ts`
+- `apps/ayokoding-www-fe-e2e/tests/e2e/steps/backend-common.steps.ts`
+- `apps/ayokoding-www-fe-e2e/tests/e2e/steps/backend-navigation-api.steps.ts`
+- `apps/ayokoding-www-fe-e2e/tests/e2e/steps/learning-progress-accessibility.steps.ts`
+- `libs/web-ui/tests/e2e/steps/web-ui.steps.ts`
+
+Consumed fixed rest arrays become explicit primitive parameters and identical ordered arrays;
+every existing callback statement and assertion remains. The shared UI bindings additionally
+validate captured strings against their existing fixed Storybook fixtures before the original
+body. Do not parameterize the harness, alter feature text, skip arity validation, update visual
+goldens, or change case selection, coverage, timeouts or reports. Generation and discovery are
+separate from actual runtime proof. The shared Tinyglobby resolution requires fresh proof for
+12 native targets as well as all 30 Playwright identities; independent closure review retains
+the other ten native identities and the separate build. The directly discovered shared UI
+consumer adds its existing quick and full Gherkin/visual E2E targets as separately labeled proof.
+
+The upgraded baseline's actual frontend failures add two bounded test-binding repairs:
+
+- `apps/ayokoding-www-fe-e2e/tests/e2e/steps/learn-reorg-redirects.steps.ts`: assert the same
+  case-sensitive URL substring through the existing web-first URL predicate, replacing the
+  unrelated network-idle barrier. Preserve all redirect examples and HTTP assertions.
+- `apps/ayokoding-www-fe-e2e/tests/e2e/steps/cost-of-living-calculator.steps.ts`: scope the two
+  primary mobile navigation assertions to the single immediate list inside the exact named
+  mobile navigation landmark. Preserve their original label/href assertions, dialog checks and
+  whole-drawer localization assertions. The sidebar's separate learning-root link remains valid.
+
+Independent review accepted both candidates. Actual post-application extraction confirms unchanged
+binding matching semantics after normalizing only diagnostic source-line coordinates. This does
+not make every source byte identical or retain app proofs automatically.
+
+A separately reviewed and now-applied P0 keyboard repair has this exact footprint:
+
+- `apps/ayokoding-www/src/features/content/shell/mermaid.tsx`: the exposed source PRE is
+  keyboard-focusable while rendering is pending or rejected; the hidden reserved PRE is outside
+  sequential keyboard focus after SVG success. Its classes, source, layout box, rendering effect,
+  warning and SVG remain intact. The accepted conditional `tabIndex` line carries a documented
+  one-point `jsx-a11y/no-noninteractive-tabindex` exception under existing policy; no rule or
+  configuration changed.
+- `apps/ayokoding-www/tests/unit/features/content/shell/mermaid.test.tsx`: three real-component
+  Tab-navigation regressions cover controlled pending, rejected and resolved render promises.
+  Native baseline `18737` failed meaningfully in pending/rejected states and passed resolved state;
+  native run `16053` passed all three after the minimal repair. The test file is unchanged by the
+  follow-up comment-only waiver application.
+
+The reviewed waiver candidate
+`95542f36211f4ee8e601b05a05165830a0a284acc76373ef15347241101258e2` was applied exactly. Native
+app lint exited 0 with its longstanding warnings in untouched files; exact-file Oxlint with
+warnings denied emitted no diagnostics, and formatting and diff checks passed. The renderer and
+test identities and exact commands are recorded in the P0 Mermaid evidence and ignored native
+receipt.
+
+The fresh serial browser observations did not reproduce the original five WebKit/Firefox
+failure classes. Native geometry identifies two overflowing Mermaid source PREs, but they were
+hidden after SVG success; original failed-node HTML remains unknown. Do not label the independent
+pending/rejected fallback defect as the proven cause of that old axe failure. Keep the full
+frontend accessibility and progress-layout regressions required, and re-evaluate Ayo native/build
+source closures after production repairs. The pre-repair 44/52 checkpoint, superseded proposed 34/52 and
+84/106 retention set, intermediate 39/52 and 91/106 decision, and 2026-10-27 terminal retention
+of 44/52 pin-affected and 97/106 original identities are historical pre-apply checkpoints, not
+current-source pass counts. The prior full FE E2E result remains a failure: 1,224 passed, eight
+failed, and four original clipboard-permission cases skipped across 1,236 configured cases. Six
+failures were 150-second salary/lifestyle timeouts; the remaining two were WebKit inline-code
+pseudo-content and keyboard-expanded-state assertions. The original failure causes remain
+unproven.
+
+Subsequent native controls support the applied two-callback calculator repair and one-`Then`
+inline-code repair but do not close row 33. Calculator control `52ecd` passed native controls and
+six existing salary/lifestyle cases across all three browsers under original limits; the original
+final lifestyle `Then` remained unchanged and passed. Inline-code control `f6de` passed
+current-document CSS reads and strict before/after/missing-node controls on the real Nvim route; it
+does not explain historical case 868. Sidebar A′ is applied after the original-layout RED. Focused
+validation passed its 19 assertions, but the outer command exited 1 solely on the unchanged
+aggregate coverage floors over the selected files. This is not a full unit GREEN; no production
+native Sidebar pass exists.
+
+The earlier source packet passed independent review `73929`. Its 281 inputs comprised
+275 unchanged prior inputs, two FE binding files, and four application files. The production
+projections preserve all 373 calculator and 49 content binding semantics after line-only
+normalization, with 284 and 12 changed line coordinates; both component tests add zero Gherkin
+bindings. Its 34/52 pin and 84/106 original retention figures are historical, not current-source
+passes. Developer-reported app/FE type and lint exits were 0, but their
+transcripts lack exact environment and raw output, so they are not credited as P0 results. The
+earlier selection included the affected build, lint, typecheck, unit/quick, and coverage rows under
+their original full envelopes.
+
+The later full Ayo frontend run passed the eight earlier failed cases but produced one new WebKit
+unknown-filter error: 1,231 passed, one failed and four original guards. An exact diagnostic did
+not reproduce it; its cause remains unknown. On older source, separate continuation passed rows 49,
+53, 64 and 100, then row 107 passed 60 of 63 Chromium cases and failed two language and one progress
+case. All owned native units retired. The older 101/106, 48/52 and ten generation results do not
+establish current-source retention. The independently reviewed 287-input closure retains 85/106
+original identities, 37/52 pin identities and all ten generation results at the recovery unit's
+start. Current retention is 102/106, 48/52 and ten generation groups; two of three extras have
+passed locally and full web-UI E2E is pending CI. P0 remains blocked at 11/70 and P1 has not begun.
+
+The independently reviewed Ayo correction makes four page-open steps explicit, removes eager
+navigation from browser background setup and moves four unit renders to their scenarios. New unit
+coverage detected extra or duplicate navigation in red and passed the same checks after correction;
+two sentinel controls passed in red. Original reader assertions and the no-error `Then` remain.
+App and FE type and lint checks exited 0 with existing warnings; their evidence is original tool
+transcript excerpts rather than a durable raw baseline.
+
+The independently reviewed Organic correction arms three `DOMContentLoaded` waits before their
+clicks and uses a current timestamp only for workout seeds. A reproduced language diagnostic showed
+the old step ending before reload; the post-failure UI and database did not justify a lost-write,
+UI or store repair. A real production-query regression showed the old workout date outside the
+30-day window, with a 45-day negative control. Fixture tests went from five expected failures and
+three passing controls to eight passes; strict app and E2E type and lint checks exited 0. Original
+assertion and test limits remain unchanged. This does not pass full row 107 or its 99% floor.
+
+The first combined recovery unit was resource-shed during row 14 at 2,784 of 3,278 pages; its
+native and HIPPO plan exits were 124 and its inner exit was absent. Host memory pressure was level 4
+through all 4,465 samples, with one owner and no OOM. The samples cannot assign a process peak.
+Both runs used about 8 GB of physical memory; no resize is established. Later idle checks returned
+normal pressure and zero owners, but do not establish capacity under the build payload.
+
+The reviewed five-file recovery adds optional `AYOKODING_WWW_BUILD_WORKERS` to the Ayo build:
+local 1 or 2 is accepted, unset or blank defaults to 2, and invalid nonempty values fail generically.
+CI and Vercel ignore the override. Conditional environment validation follows the hosted return.
+Only build children for rows 14, 20, 26 and 33 will use 1; original commands, heavy caps, heap,
+pages, assertions, timeouts, retries and test-runner workers remain unchanged. The change adds a
+helper and detector, the exact configuration key and `.env.example` entry, and updates the existing
+build-tools feature and unit. No runtime environment module, dependency, host profile or private
+Next flag changed. Six intended assertion failures and 49 passing steps became 55 passing steps
+across 18 examples; existing default coverage remained. Static checks, scanner controls and
+independent source review passed, and the environment-rule propagation finding was resolved.
+Scanner coverage checks read-contract drift; `.env.example` content was checked manually. These
+development checks do not pass baseline targets.
+
+The maintainer authorized the four memory-blocked original targets—row 14 `ayokoding-www:build`,
+row 20 `ayokoding-www:test:integration`, row 26 `ayokoding-www-be-e2e:test:e2e`, and row 33
+`ayokoding-www-fe-e2e:test:e2e`—to run in test-only CI on the first runtime PR. All remain pending.
+Other required local proofs remain prerequisites for P1. The existing PR quality gate lacks these
+commands. Use a temporary manual-only recipe in the registered `non-product-full-quality.yml`
+workflow on the runtime branch, dispatched with its existing nonce. Snapshot reviewed as-built
+bytes including P2 changes before the overlay; restore them and remove the task-only recipe,
+configuration and harness before merge. Rediscover the normal workflow's CLI E2E Podman dependency
+and retain its verified setup in the restored workflow. Do not establish a permanent full E2E PR
+policy. Record each run's actual SHA and recipe, then compare complete input inventory, dependency
+resolution and scenario scope to final delivery; rerun only invalidated proofs. The separate PR
+Quality gate must pass for literal current head and base after restoration and archival.
+Current FE CI selects only Chromium and two retries, so the temporary job
+must preserve all three browsers, zero retries, 1,236 configured cases including four original
+guards, and original timeouts and assertions without spoofing CI state. The scheduled WWW workflow
+includes a production force-push and must not run for pre-merge proof. Native Ubuntu/Mac capability
+evidence, the existing CI package exception and post-merge publication remain separate. See the
+[delivery timing decision](./delivery.md#authorized-ci-evidence-timing).
+
+The latest local continuation passed original rows 76 and 88 with five of five and 12 of 12 cases,
+respectively, and successful command, inner, HIPPO and cleanup statuses; seven foreign resource
+comparisons remained unchanged. An earlier continuation stopped before row 76 because `sudo` removed
+`TMPDIR`; no row-76 payload ran. A corrected explicit post-`sudo` environment guard passed. Organic
+rows 102 and 103 were refreshed after the warning repair; row 103 passed 53 files and 555 tests at
+99.02% line coverage, including eight regressions. Six thenable warnings were removed by six private
+key changes and two read renames. Web-UI quick passed 63 files and 584 tests at 99.14% line coverage;
+full web-UI E2E was pressure-shed at one worker before any case outcome, with HIPPO and native exits
+124, pressure level 4 and no inner or command marker. The unit retired; its first five items passed,
+but the whole unit did not pass. Under the maintainer's standing memory-capacity decision, the extra
+now joins the four deferred Ayo targets in the temporary manual CI route. Preserve all 148 cases
+(118 BDD and 30 visual), configured projects, zero retries, original timeouts and snapshots. No
+test-only CI execution is claimed. Boundary review passed, but boundary execution remains pending;
+P1 entry requires the 102 local original outcomes, two local extras and boundary to pass.
+
+The one-worker native unit also stopped for pressure during row 14, at the last emitted counter of
+2,969 of 3,278 pages. Outer, plan and native exits were 124; the inner exit, command exit and
+completed build-cap artifact are absent. Output reported one worker, but the build did not pass
+and the completed artifact did not prove the cap. All owned handles and 12 declared ports are clear.
+The 759 host samples reached pressure level 4 with one admitted owner and no OOM; they do not
+identify a process peak or explain the pressure. No later target or extra started.
+
+At that stop all 21 original targets and three extras remained pending. The worklist omits two already proven
+generation groups, retains standalone Ayo row 21, prospective Organic rows 104 and 106, admitted
+row 102 and the original row 107 filter. Unit imports of E2E code affect build/type closures,
+without blanket invalidation of other apps. No new fix has been selected; diagnosis and
+architectural comparison are in progress. The earlier
+full unit run passed 249 files and 4,187 tests at 99.54% line coverage on older source; the focused
+19-assertion result is not the only later unit proof. See the [P0 readiness record](./evidence/P0/readiness.md)
+and [target receipts](./evidence/P0/pin-upgrade-target-results.md). P0 remains blocked at 11 of 70
+actions; P1 has not begun. Mermaid and Sidebar UI gates remain due before delivery. The Organic
+fixture correction makes no production UI change.
+
+The earlier applied candidate `625020a2` changed one `Then` step in
+`apps/ayokoding-www-fe-e2e/tests/e2e/steps/content-rendering.steps.ts`.
+Its `Then` step atomically reads the literal article's `h2 > a` styles from the current
+document. In the separate controlled-remount probe, the old detached handle returned empty styles; the
+new read preserves the visibility guard, no-decoration/equal-color checks, link `href` assertions
+and `networkidle` wait. A strict green and underline control passed, while color-negative controls
+were rejected. The parser found all 49 binding metadata entries identical except that 15 later
+line coordinates shifted by six lines. The other 276 frozen source files remained unchanged, and
+post-application review passed at that checkpoint. Later calculator, inline-code, and Sidebar
+changes were included in the earlier 281-input source packet accepted by review `73929`; do not
+extend the historical 276-file statement across those changes. The binding repair does not
+establish the historical failure's cause or close remaining UI/runtime proof. See
+[current target receipts](./evidence/P0/pin-upgrade-target-results.md).
 
 Exclude `apps/ayokoding-www/content/**` and any new shared learning-content root the Phoenix plan
 has introduced by execution time, including bilingual lessons, manifests, assets, example source,
@@ -608,8 +936,9 @@ Read the relevant tests to select fixture IDs; never invent a lesson name or edi
 Supported web stacks build and start, retain existing health checks and prerender fixtures, and
 pass their declared frontend/backend E2E targets. Both backend suites prove their database/broker
 wire paths through the existing tests. Record manual browser checks for every public site's
-supported locales and manual HTTP readiness plus an existing read-only API request. No application
-feature changes are intended, so rule-15 UI-design/usability triad and rule-16 API-feature retests
+supported locales and manual HTTP readiness plus an existing read-only API request. The Mermaid
+keyboard repair carries the bounded running UI gates recorded above. No API feature changes are
+intended, so rule-16 API-feature retests
 are not applicable unless implementation grows into a genuine feature change; such growth requires
 scope reconciliation before continuing.
 

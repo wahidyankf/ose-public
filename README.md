@@ -88,8 +88,8 @@ Before installing dependencies, have these tools available:
   [`package.json`](./package.json).
 - The .NET SDK used by the repository's F# projects.
 - Rust (`rustfmt`) only when you edit Rust course content; no workspace project is written in Rust.
-- Docker and `jq` only for container-based or broader local-tooling work. Neither is needed for the
-  first `ose-www` website run.
+- Rootless Podman and `jq` only for container-based or broader local-tooling work. Neither is needed for
+  the first `ose-www` website run.
 
 Follow [Set up your development environment](./docs/how-to/setup-development-environment.md) for
 macOS or Ubuntu installation commands and recovery steps for a missing tool.

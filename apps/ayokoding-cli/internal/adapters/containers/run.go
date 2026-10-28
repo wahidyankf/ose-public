@@ -3,6 +3,7 @@ package containers
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -17,10 +18,8 @@ import (
 	"github.com/wahidyankf/ose-public/apps/ayokoding-cli/internal/domain/finding"
 )
 
-// defaultContainerCLI is the Docker command-line interface (decision D4);
-// AYOKODING_CONTAINER_CLI overrides it, for example with podman or the
-// fake used by integration tests.
-const defaultContainerCLI = "docker"
+// defaultContainerCLI is the rootless Podman command by default.
+const defaultContainerCLI = "podman"
 
 // defaultReadyPoll spaces service readiness probes per tech-docs/005.
 const defaultReadyPoll = 500 * time.Millisecond
@@ -31,11 +30,16 @@ const runLabel = "ayokoding.run"
 // networkSubcommand is the container CLI network group.
 const networkSubcommand = "network"
 
-// containerListFormat renders "name|RFC3339" lines for the leftover sweep.
+// formatFlag selects the template or JSON output of a list or info call.
+const formatFlag = "--format"
+
+// containerListFormat renders "name|timestamp" lines for the leftover sweep.
 const containerListFormat = "{{.Names}}|{{.CreatedAt}}"
 
-// networkListFormat renders "name|RFC3339" lines for the leftover sweep.
-const networkListFormat = "{{.Name}}|{{.CreatedAt}}"
+// networkListJSON asks for the labelled networks as JSON: Podman network ls
+// has no CreatedAt template field, only Created, so the sweep reads the
+// documented name and created members instead of a template.
+const networkListJSON = "json"
 
 // Result is the outcome of one container execution: the container exit
 // status with its standard output and error kept apart. Output repeats
@@ -76,7 +80,7 @@ func (e *exitError) Error() string {
 // runs the real CLI with process-group termination.
 type Runtime struct {
 	// CLI is the container binary. Empty resolves through
-	// AYOKODING_CONTAINER_CLI, defaulting to docker.
+	// AYOKODING_CONTAINER_CLI, defaulting to podman.
 	CLI string
 	// Exec runs one container CLI call and returns its combined output.
 	// A nil Exec runs the real CLI through os/exec with process-group
@@ -96,7 +100,7 @@ type Runtime struct {
 }
 
 // ResolveCLI returns the container binary: AYOKODING_CONTAINER_CLI wins,
-// then the configured CLI, then docker.
+// then the configured CLI, then podman.
 func (r *Runtime) ResolveCLI() string {
 	if cli := os.Getenv("AYOKODING_CONTAINER_CLI"); cli != "" {
 		return cli
@@ -192,11 +196,25 @@ func finishRun(invoke containerplan.Invocation, stdout, stderr string, err error
 // Probe checks the container daemon answers. A refusal is the environment
 // error ayokoding.env.container-runtime-unavailable (exit 125).
 func (r *Runtime) Probe(ctx context.Context) error {
-	output, err := r.runner()(ctx, r.ResolveCLI(), []string{"version"}, nil)
-	if err == nil {
-		return nil
+	return r.probeCLI(ctx, r.ResolveCLI())
+}
+
+func (r *Runtime) probeCLI(ctx context.Context, cli string) error {
+	output, err := r.runner()(ctx, cli, []string{"info", formatFlag, "json"}, nil)
+	if err != nil {
+		return r.refused("probe container runtime", "", err)
 	}
-	return r.refused("probe container runtime", output, err)
+	var info struct {
+		Host struct {
+			Security struct {
+				Rootless *bool `json:"rootless"`
+			} `json:"security"`
+		} `json:"host"`
+	}
+	if json.Unmarshal([]byte(output), &info) != nil || info.Host.Security.Rootless == nil || !*info.Host.Security.Rootless {
+		return &finding.Error{Code: finding.EnvRuntimeRefused, Message: "container runtime is not reachable and rootless"}
+	}
+	return nil
 }
 
 // Pull fetches one pinned image. A failure is the environment error
@@ -316,7 +334,7 @@ func (r *Runtime) Cleanup(ctx context.Context) error {
 func (r *Runtime) SweepLeftovers(ctx context.Context, olderThan time.Duration) error {
 	cli := r.ResolveCLI()
 	var errs []error
-	output, err := r.runner()(ctx, cli, []string{"ps", "-a", "--filter", "label=" + runLabel, "--format", containerListFormat}, nil)
+	output, err := r.runner()(ctx, cli, []string{"ps", "-a", "--filter", "label=" + runLabel, formatFlag, containerListFormat}, nil)
 	if err != nil {
 		errs = append(errs, fmt.Errorf("containers: list labelled containers: %w", err))
 	} else {
@@ -326,17 +344,50 @@ func (r *Runtime) SweepLeftovers(ctx context.Context, olderThan time.Duration) e
 			}
 		}
 	}
-	output, err = r.runner()(ctx, cli, []string{networkSubcommand, "ls", "--filter", "label=" + runLabel, "--format", networkListFormat}, nil)
+	output, err = r.runner()(ctx, cli, []string{networkSubcommand, "ls", "--filter", "label=" + runLabel, formatFlag, networkListJSON}, nil)
 	if err != nil {
 		errs = append(errs, fmt.Errorf("containers: list labelled networks: %w", err))
 	} else {
-		for _, name := range stale(output, r.now(), olderThan) {
+		names, parseErr := staleNetworks(output, r.now(), olderThan)
+		if parseErr != nil {
+			errs = append(errs, parseErr)
+		}
+		for _, name := range names {
 			if _, err := r.runner()(ctx, cli, []string{networkSubcommand, "rm", name}, nil); err != nil {
 				errs = append(errs, fmt.Errorf("containers: sweep network %s: %w", name, err))
 			}
 		}
 	}
 	return errors.Join(errs...)
+}
+
+// podmanNetwork is one entry of podman network ls --format json.
+type podmanNetwork struct {
+	Name    string    `json:"name"`
+	Created time.Time `json:"created"`
+}
+
+// staleNetworks returns the names of the listed networks created before the
+// given age. Empty output lists none; an entry without a name or creation
+// time is kept, never swept.
+func staleNetworks(output string, now time.Time, olderThan time.Duration) ([]string, error) {
+	if strings.TrimSpace(output) == "" {
+		return nil, nil
+	}
+	var listed []podmanNetwork
+	if err := json.Unmarshal([]byte(output), &listed); err != nil {
+		return nil, fmt.Errorf("containers: parse labelled networks: %w", err)
+	}
+	var names []string
+	for _, network := range listed {
+		if network.Name == "" || network.Created.IsZero() {
+			continue
+		}
+		if now.Sub(network.Created) > olderThan {
+			names = append(names, network.Name)
+		}
+	}
+	return names, nil
 }
 
 // stale returns the names listed as "name|timestamp" older than the given
@@ -359,8 +410,8 @@ func stale(output string, now time.Time, olderThan time.Duration) []string {
 	return names
 }
 
-// parseCreated reads a container timestamp in RFC 3339 or the Docker
-// CreatedAt layout.
+// parseCreated reads a container timestamp in RFC 3339 or the time.Time
+// String layout the ps CreatedAt template prints.
 func parseCreated(stamp string) (time.Time, error) {
 	if created, err := time.Parse(time.RFC3339, stamp); err == nil {
 		return created, nil

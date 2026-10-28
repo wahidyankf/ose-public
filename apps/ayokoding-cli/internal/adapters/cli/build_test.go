@@ -24,7 +24,7 @@ type buildImagesDocument struct {
 
 // fakeContainerCLI writes a shell script that logs its argv to the log file
 // and exits with the status: it stands in for the container runtime, so no
-// test needs Docker. The embedded catalog carries the recipes, so the tests
+// test needs Podman. The embedded catalog carries the recipes, so the tests
 // need no --catalog flag.
 func fakeContainerCLI(t *testing.T, status int) string {
 	t.Helper()
@@ -32,6 +32,7 @@ func fakeContainerCLI(t *testing.T, status int) string {
 	log := filepath.Join(dir, "argv.log")
 	script := filepath.Join(dir, "container-cli")
 	body := "#!/bin/sh\necho \"$@\" >> '" + log + "'\n"
+	body += "if [ \"$1\" = info ]; then echo '{\"host\":{\"security\":{\"rootless\":true}}}'; exit 0; fi\n"
 	if status != 0 {
 		body += "echo boom\nexit 1\n"
 	}
@@ -69,7 +70,7 @@ func TestBuildPrintsIDAndTag(t *testing.T) {
 	if err != nil {
 		t.Fatalf("read argv log: %v", err)
 	}
-	if !strings.Contains(string(argv), "buildx build --load --tag ayokoding-toolchain/typescript:") {
+	if !strings.Contains(string(argv), "build --layers --format docker --tag ayokoding-toolchain/typescript:") {
 		t.Fatalf("argv=%q, want the derived build shape", argv)
 	}
 }

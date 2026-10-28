@@ -22,4 +22,4 @@ ambient sweeper, not a missed step — record it as swept and move on rather tha
 solely to delete it. History maintenance is a serialization point on a shared machine
 and stays out of the cleanup gate entirely. Container images and volumes are not build output
 and are not purged here — they are their own class, scoped by
-[Docker-Artifact Cleanup](./docker-artifact-cleanup.md).
+[Podman-Artifact Cleanup](./docker-artifact-cleanup.md).

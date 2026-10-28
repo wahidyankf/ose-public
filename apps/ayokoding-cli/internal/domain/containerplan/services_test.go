@@ -18,7 +18,7 @@ var errProbeDown = errors.New("probe: connection refused")
 // reuses.
 func baseServiceConfig() containerplan.ServiceConfig {
 	return containerplan.ServiceConfig{
-		CLI:       "docker",
+		CLI:       "podman",
 		Name:      "ayokoding-r1-postgres",
 		RunID:     "r1",
 		ServiceID: "postgres",
@@ -32,9 +32,9 @@ func baseServiceConfig() containerplan.ServiceConfig {
 // TestNetworkCreateRequiresInternal requires the exact internal network
 // argv carrying the run label, so the leftover sweep finds it.
 func TestNetworkCreateRequiresInternal(t *testing.T) {
-	invoke := containerplan.NetworkCreate("docker", "ayokoding-r1-a1b2c3d4", "r1")
-	if invoke.Binary != "docker" {
-		t.Fatalf("binary=%q, want docker", invoke.Binary)
+	invoke := containerplan.NetworkCreate("podman", "ayokoding-r1-a1b2c3d4", "r1")
+	if invoke.Binary != "podman" {
+		t.Fatalf("binary=%q, want podman", invoke.Binary)
 	}
 	want := []string{"network", "create", "--internal", "--label", "ayokoding.run=r1", "ayokoding-r1-a1b2c3d4"}
 	if !slices.Equal(invoke.Args, want) {
@@ -63,8 +63,8 @@ func TestNetworkNameHashesUnit(t *testing.T) {
 // catalog variables, and the pinned image.
 func TestServiceStartArgv(t *testing.T) {
 	invoke := containerplan.ServiceStart(baseServiceConfig())
-	if invoke.Binary != "docker" {
-		t.Fatalf("binary=%q, want docker", invoke.Binary)
+	if invoke.Binary != "podman" {
+		t.Fatalf("binary=%q, want podman", invoke.Binary)
 	}
 	want := []string{
 		"run", "-d",
@@ -188,13 +188,13 @@ func TestPollReadyHonoursCancel(t *testing.T) {
 // TestCleanupRemovesContainersBeforeNetwork requires the cleanup order:
 // every container with rm -f first, then the network.
 func TestCleanupRemovesContainersBeforeNetwork(t *testing.T) {
-	planned := containerplan.Cleanup("docker", []string{"ayokoding-r1-postgres", "ayokoding-r1-neo4j"}, "ayokoding-r1-a1b2c3d4")
+	planned := containerplan.Cleanup("podman", []string{"ayokoding-r1-postgres", "ayokoding-r1-neo4j"}, "ayokoding-r1-a1b2c3d4")
 	if len(planned) != 2 {
 		t.Fatalf("cleanup holds %d invocations, want 2", len(planned))
 	}
 	first, second := planned[0], planned[1]
-	if first.Binary != "docker" || second.Binary != "docker" {
-		t.Fatalf("binaries=%q,%q, want docker", first.Binary, second.Binary)
+	if first.Binary != "podman" || second.Binary != "podman" {
+		t.Fatalf("binaries=%q,%q, want podman", first.Binary, second.Binary)
 	}
 	wantFirst := []string{"rm", "-f", "ayokoding-r1-postgres", "ayokoding-r1-neo4j"}
 	if !slices.Equal(first.Args, wantFirst) {

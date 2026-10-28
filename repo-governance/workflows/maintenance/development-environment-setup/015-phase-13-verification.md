@@ -46,7 +46,7 @@ resources, process environment, child-process streams, or a review-accepted loop
 owns. They reach no external network and no service the test did not start.
 
 **On failure**: Inspect the target's local fixture lifecycle and confirm every resource is isolated
-and cleaned deterministically. Docker-hosted PostgreSQL and other networked services belong to the
+and cleaned deterministically. Containerized PostgreSQL and other networked services belong to the
 E2E verification in the next section.
 
 ## 13.4 Verify E2E tests (one backend)

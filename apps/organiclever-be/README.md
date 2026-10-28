@@ -10,12 +10,15 @@ server-of-record path is being developed and verified.
 
 ## Start locally
 
-The service requires PostgreSQL. Docker is the quickest way to provide the
-local PostgreSQL and NATS dependencies used by the end-to-end test setup.
+The service requires PostgreSQL. Rootless Podman with `podman-compose` 1.6.0 is the quickest way to
+provide the local PostgreSQL and NATS dependencies used by the end-to-end test setup. Select the
+Compose provider and confirm the rootless engine first:
 
 ```bash
+export PODMAN_COMPOSE_PROVIDER=podman-compose
+scripts/container-runtime-check --compose
 ./hippo run --class service --resource-tier standard --disk-path . -- \
-  docker compose -f apps/organiclever-be/docker-compose.e2e.yml up
+  podman compose -f apps/organiclever-be/docker-compose.e2e.yml up
 ```
 
 Keep that reservation-owning terminal open while the dependencies run. In another terminal, export
@@ -40,11 +43,11 @@ curl http://localhost:8202/api/v1/health
 ```
 
 When finished, stop the backend and dependency terminals with <kbd>Ctrl</kbd>+<kbd>C</kbd>, then
-remove the containers, networks, and volumes transactionally:
+remove the containers and network transactionally. Volumes are kept:
 
 ```bash
 ./hippo run --class transactional --resource-tier standard --disk-path . -- \
-  docker compose -f apps/organiclever-be/docker-compose.e2e.yml down -v
+  podman compose -f apps/organiclever-be/docker-compose.e2e.yml down
 ```
 
 ## Configuration

@@ -249,14 +249,14 @@ The 2026-07 plan listed these items to converge; they are history, not a current
 
 - Workflow **filenames** for the shared gates (PR gate, markdown, env).
 - The **validator set** inside the markdown workflow and the specs-gate.
-- The **invocation mechanism** for shell/docker/actions lint (inline shell vs. lint-staged file-type
+- The **invocation mechanism** for shell/Dockerfile/actions lint (inline shell vs. lint-staged file-type
   entry).
 - The **pre-push scoped validator set** (governance vendor audit presence).
 - The **job skeleton/names** in the PR gate (detect, markdown, naming, env, specs-gate, quality-gate
   sentinel; formatting is lint-staged at commit, not a gate job).
 - The **placement** of env validation (standalone workflow vs. folded into the PR gate).
 - The **Nx target names** invoked by hooks/CI, and the Rhino target set itself: `fmt`/`format:check`
-  targets (removed — formatting via lint-staged), shell/docker/actions tool-lint (folded into
+  targets (removed — formatting via lint-staged), shell/Dockerfile/actions tool-lint (folded into
   lint-staged, not Nx targets), the env/governance/binding validators run as direct `./rhino` calls
   in gates (not `nx run Rhino:` targets).
 

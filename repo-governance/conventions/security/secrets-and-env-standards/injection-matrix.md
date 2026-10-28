@@ -16,11 +16,11 @@ Vercel.
 | App type         | Stage      | Platform / target                               | Injection home                                                         | Values owned by                                |
 | ---------------- | ---------- | ----------------------------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------- |
 | www / app-web    | local      | dev machine                                     | `apps/<app>/.env.local` (gitignored), auto-loaded by Next.js           | developer                                      |
-| www / app-web    | local (CI) | GitHub Actions + docker-compose                 | `infra/dev/<stack>/` compose env, sourced from app `.env.example` keys | this plan (refs only) / committed placeholders |
+| www / app-web    | local (CI) | GitHub Actions + podman compose                 | `infra/dev/<stack>/` compose env, sourced from app `.env.example` keys | this plan (refs only) / committed placeholders |
 | www              | production | Vercel Production target (`prod-*-www` branch)  | Vercel project env, keys from `.env.example`                           | wire-vercel `[HUMAN]`                          |
 | app-web          | staging    | Vercel Preview target (`stag-*-app-web` branch) | Vercel project env (Preview scope)                                     | wire-vercel `[HUMAN]`                          |
 | app-web e2e gate | staging    | GitHub Env `{group}-app-staging`                | `vars.WEB_BASE_URL`, `secrets.VERCEL_AUTOMATION_BYPASS_SECRET`         | wire-vercel `[HUMAN]`                          |
-| be (F#)          | local (CI) | GitHub Actions + docker-compose                 | `infra/dev/<group>/` compose env, sourced from app `.env.example` keys | this plan (refs only) / committed placeholders |
+| be (F#)          | local (CI) | GitHub Actions + podman compose                 | `infra/dev/<group>/` compose env, sourced from app `.env.example` keys | this plan (refs only) / committed placeholders |
 | be (F#)          | staging    | not run from this repository                    | none here; the key set comes from `.env.example`                       | outside this repository's scope                |
 
 Two load-bearing boundaries follow from the matrix:

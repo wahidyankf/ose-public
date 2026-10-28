@@ -35,3 +35,16 @@ Feature: Sidebar course categories
     When the reader opens the navigation drawer on the "SQL Essentials" course landing page
     Then the drawer shows the same category groups
     And the "Data and databases" group is open
+
+  # Exemption(integration): the suspended path context reader is injected in-process, with no local resource boundary to exercise; alternative-proof: ayokoding-www:test:unit / An open group stays open when course path context loads on the courses page
+  @integration-exempt
+  # Exemption(e2e): a browser run cannot hold the path context reader suspended, so the boundary is the unit tier; alternative-proof: ayokoding-www:test:unit / An open group stays open when course path context loads on the courses page
+  @e2e-exempt
+  Scenario: An open group stays open when course path context loads on the courses page
+    Given the reader has opened the "Tools and practices" group on the courses page
+    When the course path context finishes loading
+    Then the "Tools and practices" group is still open with its course listed
+    And the sidebar is still a single navigation region
+    And the path context query is not read
+    When the reader presses Space on the group button
+    Then the "Tools and practices" group closes

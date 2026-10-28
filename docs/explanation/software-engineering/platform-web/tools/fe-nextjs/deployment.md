@@ -290,7 +290,7 @@ server {
 # syntax=docker/dockerfile:1
 
 # Base image
-FROM node:24-alpine AS base
+FROM docker.io/library/node:24-alpine AS base
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
@@ -354,7 +354,7 @@ services:
     restart: unless-stopped
 
   postgres:
-    image: postgres:16-alpine
+    image: docker.io/library/postgres:16-alpine
     environment:
       - POSTGRES_USER=ose_user
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -364,7 +364,7 @@ services:
     restart: unless-stopped
 
   nginx:
-    image: nginx:alpine
+    image: docker.io/library/nginx:alpine
     ports:
       - "80:80"
       - "443:443"
@@ -598,7 +598,7 @@ variables:
 
 test:
   stage: test
-  image: node:${NODE_VERSION}
+  image: docker.io/library/node:${NODE_VERSION}
   cache:
     paths:
       - node_modules/
@@ -609,7 +609,7 @@ test:
 
 build:
   stage: build
-  image: node:${NODE_VERSION}
+  image: docker.io/library/node:${NODE_VERSION}
   cache:
     paths:
       - node_modules/

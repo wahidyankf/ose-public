@@ -28,16 +28,19 @@ From the repository root, install the workspace dependencies and start the web c
 Then open <http://localhost:3300>. The app currently has no application-defined environment
 variables, so no local configuration is required to run this screen.
 
-To run the web client alongside the OSE API and its development database, use the local stack:
+To run the web client alongside the OSE API and its development database, use the local stack.
+Select the rootless Podman Compose provider and confirm the engine first:
 
 ```bash
+export PODMAN_COMPOSE_PROVIDER=podman-compose
+scripts/container-runtime-check --compose
 ./hippo run --class service --resource-tier standard --disk-path . -- \
-  docker compose -f infra/dev/ose-app/docker-compose.yml up --build
+  podman compose -f infra/dev/ose-app/docker-compose.yml up --build
 ```
 
 Keep that terminal open so HIPPO owns the stack for its full lifetime. Stop it with
 <kbd>Ctrl</kbd>+<kbd>C</kbd>, then remove the stopped containers and network with
-`./hippo run --class transactional --resource-tier standard --disk-path . -- docker compose -f infra/dev/ose-app/docker-compose.yml down`.
+`./hippo run --class transactional --resource-tier standard --disk-path . -- podman compose -f infra/dev/ose-app/docker-compose.yml down`.
 
 ## Useful commands
 

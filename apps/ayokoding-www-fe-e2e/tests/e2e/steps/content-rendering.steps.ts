@@ -212,6 +212,18 @@ Then("the raw Mermaid source should not be visible to the visitor", async ({ pag
   await expect(page.locator('pre code[data-language="mermaid"]')).toHaveCount(0);
 });
 
+Then("the Mermaid source should be removed from keyboard focus order", async ({ page }) => {
+  // Once the SVG exists, the reserved source (the only <pre> in the diagram's own container) is
+  // taken out of sequential focus with tabindex -1; the preceding step has already waited for the SVG.
+  const source = page
+    .getByRole("article")
+    .locator("div.relative")
+    .filter({ has: page.locator('svg[id^="mermaid-"]') })
+    .locator("pre")
+    .first();
+  await expect(source).toHaveAttribute("tabindex", "-1");
+});
+
 When("a visitor opens a content page containing a raw HTML details disclosure", async ({ page }) => {
   await page.goto("/en/learn/courses/graph-databases/drilling/overview");
 });
@@ -240,11 +252,17 @@ When("a visitor opens a content page with section headings", async ({ page }) =>
 Then("each section heading is shown in the heading text colour without an underline", async ({ page }) => {
   const headingLink = page.locator("article h2 > a").first();
   await expect(headingLink).toBeVisible();
-  const styles = await headingLink.evaluate((element) => ({
-    textDecorationLine: getComputedStyle(element).textDecorationLine,
-    anchorColor: getComputedStyle(element).color,
-    headingColor: getComputedStyle(element.parentElement as Element).color,
-  }));
+  const styles = await page.evaluate(() => {
+    const element = document.querySelector("article h2 > a");
+    if (element === null) {
+      throw new Error("The first article section-heading link is missing");
+    }
+    return {
+      textDecorationLine: getComputedStyle(element).textDecorationLine,
+      anchorColor: getComputedStyle(element).color,
+      headingColor: getComputedStyle(element.parentElement as Element).color,
+    };
+  });
   expect(styles.textDecorationLine).toBe("none");
   expect(styles.anchorColor).toBe(styles.headingColor);
 });
@@ -269,10 +287,16 @@ Then("the inline code shows no backtick characters before or after it", async ({
   // the fenced-block `pre > code` pairs.
   const inlineCode = page.locator("article p code").first();
   await expect(inlineCode).toBeVisible();
-  const pseudoContent = await inlineCode.evaluate((element) => ({
-    before: getComputedStyle(element, "::before").content,
-    after: getComputedStyle(element, "::after").content,
-  }));
+  const pseudoContent = await page.evaluate(() => {
+    const element = document.querySelector("article p code");
+    if (element === null) {
+      throw new Error("The first article inline code is missing");
+    }
+    return {
+      before: getComputedStyle(element, "::before").content,
+      after: getComputedStyle(element, "::after").content,
+    };
+  });
   // A pseudo-element without generated content reports "none" (Firefox) or "normal"
   // (Chromium/WebKit); either means no literal backticks are generated around the code.
   expect(["none", "normal"]).toContain(pseudoContent.before);

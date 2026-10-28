@@ -40,7 +40,7 @@ than falling back silently.
 ```bash
 ./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- dev ose-www --port=4000       # flag
 OSE_WWW_PORT=4000 ./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- dev ose-www # variable
-./hippo run --class service --resource-tier standard --disk-path . -- docker run -e OSE_WWW_PORT=4000 …            # container
+./hippo run --class service --resource-tier standard --disk-path . -- podman run -e OSE_WWW_PORT=4000 …            # container
 ```
 
 A bare `PORT` is deliberately not honoured — one exported `PORT` would otherwise retarget every app

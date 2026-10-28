@@ -13,8 +13,7 @@ async function ensureLanguage(page: Page, code: "en" | "id") {
   await openSettings(page);
   const button = page.getByTestId(`lang-btn-${code}`);
   if ((await button.getAttribute("data-active")) !== "true") {
-    await button.click();
-    await page.waitForLoadState("domcontentloaded");
+    await Promise.all([page.waitForEvent("domcontentloaded"), button.click()]);
     await expect(page.getByTestId(`lang-btn-${code}`)).toHaveAttribute("data-active", "true");
   }
 }
@@ -82,8 +81,7 @@ Given("the settings screen shows language is English", async ({ page }) => {
 });
 
 When("the user selects Indonesian language", async ({ page }) => {
-  await page.getByTestId("lang-btn-id").click();
-  await page.waitForLoadState("domcontentloaded");
+  await Promise.all([page.waitForEvent("domcontentloaded"), page.getByTestId("lang-btn-id").click()]);
 });
 
 Then("the language is set to Indonesian", async ({ page }) => {
@@ -95,8 +93,7 @@ Given("the settings screen shows language is Indonesian", async ({ page }) => {
 });
 
 When("the user selects English language", async ({ page }) => {
-  await page.getByTestId("lang-btn-en").click();
-  await page.waitForLoadState("domcontentloaded");
+  await Promise.all([page.waitForEvent("domcontentloaded"), page.getByTestId("lang-btn-en").click()]);
 });
 
 Then("the language is set to English", async ({ page }) => {

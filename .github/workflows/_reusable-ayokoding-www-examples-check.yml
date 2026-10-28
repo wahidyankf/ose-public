@@ -39,11 +39,10 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-go
-      - uses: ./.github/actions/setup-docker-cache
+      - uses: ./.github/actions/setup-podman
       - name: Run the examples check
         env:
           AYOKODING_SHARD: ${{ matrix.shard }}/${{ inputs.shard-total }}
-          AYOKODING_BUILDX_CACHE: /tmp/.buildx-cache
           NX_BASE: ${{ inputs.base }}
         run: |
           set -euo pipefail
@@ -52,15 +51,5 @@ jobs:
             args+=(--configuration=full)
           fi
           ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx "${args[@]}"
-      # The CLI writes fresh buildx layers to a -new sibling of the cache folder, because
-      # cache-to cannot write to the folder cache-from reads. Promote it so the cache
-      # action saves the fresh layers; skip when nothing ran and no -new folder exists.
-      - name: Rotate the buildx cache folder
-        run: |
-          set -euo pipefail
-          if [ -d /tmp/.buildx-cache-new ]; then
-            rm -rf /tmp/.buildx-cache
-            mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-          fi
       - name: Append the coverage report to the summary
         run: apps/ayokoding-cli/dist/ayokoding-cli examples coverage >> "$GITHUB_STEP_SUMMARY"

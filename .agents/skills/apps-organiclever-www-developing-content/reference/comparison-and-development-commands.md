@@ -32,23 +32,24 @@ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm 
   --noEmit --project apps/organiclever-www/tsconfig.json
 ```
 
-### Option 2: Docker Compose (containerized, or running alongside the backend)
+### Option 2: Podman Compose (containerized, or running alongside the backend)
 
-Runs the app inside a Node.js 24 Alpine container. Useful when you need the backend alongside the
-frontend, or want an environment closer to CI.
+Runs the app inside a Node.js 24 Alpine container with rootless Podman. Useful when you need the backend
+alongside the frontend, or want an environment closer to CI. Set the explicit Compose provider first:
+`export PODMAN_COMPOSE_PROVIDER="$(command -v podman-compose)"`.
 
 ```bash
-# From repository root — starts organiclever-www in Docker
+# From repository root — starts organiclever-www in a rootless Podman container
 rtk ./hippo run --class service --resource-tier standard --disk-path . -- \
-  docker compose -f infra/dev/organiclever-www/docker-compose.yml up --build
+  podman compose -f infra/dev/organiclever-www/docker-compose.yml up --build
 
 # Or start the frontend container only
 rtk ./hippo run --class service --resource-tier standard --disk-path . -- \
-  docker compose -f infra/dev/organiclever-www/docker-compose.yml up organiclever-www
+  podman compose -f infra/dev/organiclever-www/docker-compose.yml up organiclever-www
 ```
 
 **First startup** (~2-4 min): installs npm dependencies inside the container.
-**Subsequent starts**: fast — `node_modules` is persisted in a named Docker volume.
+**Subsequent starts**: fast — `node_modules` is persisted in a named Compose volume.
 
-> `node_modules` is intentionally isolated from the host via a Docker named volume to prevent
+> `node_modules` is intentionally isolated from the host via a named volume to prevent
 > Alpine Linux binary conflicts with macOS/Windows/Linux host binaries.

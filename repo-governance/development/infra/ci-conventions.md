@@ -5,7 +5,7 @@ when_to_use: Use when writing or reviewing a git hook, CI workflow, Dockerfile, 
 
 # CI/CD Conventions
 
-Central CI/CD reference for the multi-language Nx monorepo: hooks, testing, coverage, Docker,
+Central CI/CD reference for the multi-language Nx monorepo: hooks, testing, coverage, Podman,
 GitHub Actions, and naming.
 
 ## Hooks and Testing
@@ -17,9 +17,9 @@ GitHub Actions, and naming.
 - [Project-Role Testing and Gherkin Matrix](./ci-conventions/test-manifestations-and-gherkin-consumption-matrix.md) — Applicable adapters by role. Use when implementing project tests.
 - [Runtime and Static Coverage Responsibilities](./ci-conventions/coverage-threshold-rationale.md) — Separates runtime measurement from static coverage validation.
 
-## Docker and GitHub Actions
+## Podman and GitHub Actions
 
-- [Docker Conventions](./ci-conventions/docker-conventions.md) — The Dockerfile template, compose file roles, and .dockerignore pattern. Use when writing a Dockerfile, compose file, or .dockerignore.
+- [Podman Conventions](./ci-conventions/docker-conventions.md) — The Dockerfile template, Podman Compose file roles, rootless Podman CI boundaries, and .dockerignore pattern. Use when writing a Dockerfile, compose file, or .dockerignore, or a CI workflow that builds, runs, or publishes a container image with Podman.
 - [GitHub Actions Conventions — File Organisation and Composite Actions](./ci-conventions/github-actions-file-organisation-and-composite-actions.md) — The path pattern for workflow and action files. Use when creating or locating a workflow file or action.
 - [Expression Safety](./ci-conventions/github-actions-expression-safety.md) — Two GitHub Actions expression-injection and falsy-value antipatterns. Use when a run step references a `${{ ... }}` expression.
 - [GitHub Actions Storage](./ci-conventions/github-actions-storage.md) — Storage limits for artifacts, Packages, and caches. Use when a workflow creates or retains GitHub-hosted data.

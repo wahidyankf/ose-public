@@ -1,9 +1,9 @@
 ---
-description: The Dockerfile template, compose file roles, and .dockerignore pattern.
-when_to_use: Use when writing a Dockerfile, compose file, or .dockerignore.
+description: The Dockerfile template, Podman Compose file roles, rootless Podman CI boundaries, and the .dockerignore pattern.
+when_to_use: Use when writing a Dockerfile, compose file, .dockerignore, or a CI workflow that builds, runs, or publishes a container image with Podman.
 ---
 
-# Docker Conventions
+# Podman Conventions
 
 ## Dockerfile Template
 
@@ -12,20 +12,20 @@ All production Dockerfiles follow a multi-stage pattern:
 ```dockerfile
 # syntax=docker/dockerfile:1
 
-# ── Stage 1: dependency manifest layer ──────────────────────────────────────
+# Stage 1: dependency manifest layer
 # Copy only manifest files first so this layer is cached across code changes.
-FROM base-image AS deps
+FROM registry.example.com/base-image AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
 
-# ── Stage 2: build ──────────────────────────────────────────────────────────
+# Stage 2: build
 FROM deps AS builder
 COPY . .
 RUN npm run build
 
-# ── Stage 3: production runtime ─────────────────────────────────────────────
-FROM base-image AS runner
+# Stage 3: production runtime
+FROM registry.example.com/base-image AS runner
 WORKDIR /app
 
 # OCI standard image labels
@@ -49,18 +49,21 @@ CMD ["node", "dist/main.js"]
 
 - **Multi-stage**: Separate dependency installation, build, and runtime stages.
 - **Dependency-manifest-first layer ordering**: Copy `package.json` / lock file before source
-  code so Docker layer cache survives code-only changes.
+  code so the container build layer cache survives code-only changes.
 - **Non-root user**: All containers run as a non-root system user.
-- **HEALTHCHECK with `wget`**: Use `wget` for health checks — never `curl`. Many minimal base
-  images (Alpine, distroless) include `wget` but not `curl`. Write its `CMD` in JSON (exec) form,
+- **HEALTHCHECK with `wget`**: Use `wget` for health checks, never `curl`; minimal images (Alpine,
+  distroless) ship `wget` but not `curl`. Write its `CMD` in JSON (exec) form,
   as the `hadolint` gate requires; wrap it in `sh -c` when the probe needs variable expansion or
   the `|| exit 1` mapping.
+- **Docker image format**: Native builds use `podman build --layers --format docker`, which keeps the
+  `HEALTHCHECK` metadata; never switch to an OCI-only format that drops it. Dev Compose builds set
+  `BUILDAH_FORMAT=docker`; CI Compose builds rely on Compose-level healthchecks.
 - **OCI LABEL**: Every production image must carry `org.opencontainers.image.source` and
   `org.opencontainers.image.description` labels.
 
-## Docker Compose Patterns
+## Podman Compose Patterns
 
-Three docker-compose file roles exist per app:
+Three compose file roles exist per app:
 
 | Role           | Path                                    | Purpose                                                                   |
 | -------------- | --------------------------------------- | ------------------------------------------------------------------------- |
@@ -68,13 +71,38 @@ Three docker-compose file roles exist per app:
 | **E2E**        | `apps/{app}/docker-compose.e2e.yml`     | Networked test stack for public-boundary E2E with isolated synthetic data |
 | **CI overlay** | `infra/dev/{app}/docker-compose.ci.yml` | Overrides for CI E2E environment (no volume mounts, deterministic ports)  |
 
-Docker Compose is never an Integration-test classifier. A container the test did not start is not
-a resource it owns, so any test that reaches one belongs to E2E and must enter through the
-application's public boundary. Integration may use only local resources it owns, including a
-review-accepted loopback socket it starts and stops itself.
+Compose files keep their standard filenames and schema. Run them with `podman compose`, never with
+Docker Compose.
 
-All compose files must pass `docker compose config` without errors before merging. The CI overlay
-is applied with `-f docker-compose.yml -f docker-compose.ci.yml` to keep dev and CI configs DRY.
+A container the test did not start is not a resource it owns, so a test that reaches one is E2E and
+must enter through the application's public boundary. Integration may use only resources it owns,
+including a review-accepted loopback socket it starts and stops itself.
+
+Every compose file must pass `podman compose -f <file> config` before merging. The CI overlay applies as
+`-f docker-compose.yml -f docker-compose.ci.yml`.
+
+## Podman Runtime and CI Boundaries
+
+- **Rootless only**: A local entry point that starts, builds, or publishes a container first
+  runs `scripts/container-runtime-check` (add `--compose` when it calls Compose). CI gets the equivalent
+  assertion from `setup-podman`. Workloads never run with `sudo` or against a rootful engine.
+- **Explicit provider and binary**: Apply the [containerization rules](../../workflow/reproducible-environments/containerization-for-complex-environments.md)
+  for provider and binary. `setup-podman` exports the provider in CI.
+- **Image registry**: Every image reference names its registry, for example `docker.io/library/node:24-alpine`;
+  the `container-image-qualified` validator checks compose files and Dockerfiles in `npm run test:validators`.
+- **Shared setup**: CI installs and checks Podman through the `.github/actions/setup-podman` action,
+  which installs the runner's pinned versions. Do not add a second container
+  setup path.
+- **Native builds with a job-local cache**: Build images with `podman build --layers --format docker`.
+  The cache stays local to the job; derived images run from the same Podman store. Do not add
+  registry-backed cache, BuildKit cache directories, or Buildx cache flags.
+- **Stack teardown**: The reusable web-test workflow's `stop-containers-before-fe-e2e` input controls
+  whether containers stop before FE E2E runs. No CI or E2E Compose stop includes `-v`; no job removes volumes to
+  make a test pass.
+- **Publishing**: Backend image publication logs in with `podman login --password-stdin` using an
+  ephemeral auth file, builds with `podman build --layers --format docker`, and pushes with
+  `podman push`. The job's cleanup removes the auth file. Never print tokens or persist
+  authentication caches.
 
 ## `.dockerignore` Pattern
 
@@ -93,5 +121,4 @@ Use broad exclusions with narrow inclusions rather than enumerating every exclud
 !tsconfig*.json
 ```
 
-Broad exclusion prevents accidentally including large directories (e.g., `node_modules`, `.git`,
-`generated-reports`) that would bloat the build context and slow transfers.
+Broad exclusion keeps `node_modules` and `.git` out of the build context.

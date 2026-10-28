@@ -118,7 +118,7 @@ developer, staging, or production state.
 
 **What they prove**: The system as deployed works correctly for real users.
 
-**Rust tools**: Playwright (TypeScript) + real PostgreSQL via Docker for backend REST API E2E
+**Rust tools**: Playwright (TypeScript) + real PostgreSQL via rootless Podman Compose for backend REST API E2E
 testing
 
 **TypeScript tools**: Playwright + `playwright-bdd` (Gherkin-driven browser automation, no mocking)

@@ -665,8 +665,11 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     Given("the dataset carries a last-updated date", () => {
       expect(full.lastUpdated).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     });
-    When("the page renders", () => {
+    And("the AI benchmark page is open", () => {
       renderPage();
+    });
+    When("the page renders", () => {
+      expect(screen.getByTestId("ai-bench-page")).toBeTruthy();
     });
     Then("the last-updated date is shown in text", () => {
       const time = screen.getByTestId("ai-bench-last-updated").querySelector("time")!;
@@ -825,8 +828,11 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
       insufficient = scored.filter((s) => s.tier === "insufficient").map((s) => s.model);
       expect(insufficient.length).toBeGreaterThan(0);
     });
-    When("the page renders", () => {
+    And("the AI benchmark page is open", () => {
       renderPage();
+    });
+    When("the page renders", () => {
+      expect(screen.getByTestId("ai-bench-page")).toBeTruthy();
     });
     Then("those models are listed inside a closed disclosure", () => {
       const details = screen.getByTestId("ai-bench-insufficient") as HTMLDetailsElement;
@@ -929,13 +935,16 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
-  Scenario("Cost per task is shown where an independent operator publishes it", ({ Given, When, Then }) => {
+  Scenario("Cost per task is shown where an independent operator publishes it", ({ Given, When, Then, And }) => {
     Given("a model whose independent operator publishes a cost per task", () => {
       ctx.model = full.models.find((m) => m.costPerTask !== undefined)!;
       expect(ctx.model).toBeDefined();
     });
-    When("the data table is rendered", () => {
+    And("the AI benchmark page is open", () => {
       renderPage();
+    });
+    When("the data table is rendered", () => {
+      expect(screen.getByTestId("ai-bench-table-section")).toBeTruthy();
     });
     Then("that model's row shows its cost per task in dollars", () => {
       const cell = within(tableRow(ctx.model!.id) as HTMLElement).getByTestId("ai-bench-table-cost");
@@ -1034,8 +1043,11 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
       const used = new Set(full.models.flatMap((m) => m.figures.map((f) => f.operator)));
       for (const id of used) expect(OPERATORS.map((o) => o.id)).toContain(id);
     });
-    When("the page renders", () => {
+    And("the AI benchmark page is open", () => {
       renderPage();
+    });
+    When("the page renders", () => {
+      expect(screen.getByTestId("ai-bench-page")).toBeTruthy();
     });
     Then("a sources section lists every named operator", () => {
       const entries = within(screen.getByTestId("ai-bench-sources")).getAllByTestId("ai-bench-source-operator");

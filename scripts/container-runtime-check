@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+set -euo pipefail
+if (($# > 1)) || { (($# == 1)) && [[ $1 != --compose ]]; }; then
+	printf '%s\n' 'usage: container-runtime-check [--compose]' >&2
+	exit 2
+fi
+
+# Distinguish an absent command from a present but non-executable file.
+find_executable() {
+	local name=$1 directory candidate found_blocked=0
+	if [[ $name == */* ]]; then
+		candidate=$name
+		[[ -e $candidate ]] || return 127
+		[[ -f $candidate && -x $candidate ]] || return 126
+		printf '%s\n' "$candidate"
+		return 0
+	fi
+	local -a directories
+	IFS=: read -r -a directories <<<"$PATH"
+	for directory in "${directories[@]}"; do
+		candidate=${directory:-.}/$name
+		if [[ -e $candidate ]]; then
+			if [[ -f $candidate && -x $candidate ]]; then
+				printf '%s\n' "$candidate"
+				return 0
+			fi
+			found_blocked=1
+		fi
+	done
+	if ((found_blocked)); then return 126; fi
+	return 127
+}
+
+if engine=$(find_executable podman); then :; else
+	status=$?
+	printf '%s\n' 'Podman executable unavailable' >&2
+	exit "$status"
+fi
+if info=$("$engine" info --format json 2>/dev/null); then :; else
+	status=$?
+	printf '%s\n' 'Podman engine is unreachable' >&2
+	if ((status >= 128)); then exit "$status"; fi
+	exit 125
+fi
+if jq_path=$(find_executable jq); then :; else
+	status=$?
+	printf '%s\n' 'jq executable unavailable' >&2
+	exit "$status"
+fi
+if printf '%s\n' "$info" | "$jq_path" -e '.host.security.rootless == true' >/dev/null 2>&1; then :; else
+	status=$?
+	printf '%s\n' 'Podman engine must be reachable and rootless' >&2
+	if ((status >= 128)); then exit "$status"; fi
+	exit 125
+fi
+
+if (($# == 1)); then
+	selected=${PODMAN_COMPOSE_PROVIDER:-}
+	if [[ -z $selected ]]; then
+		printf '%s\n' 'Select podman-compose explicitly' >&2
+		exit 127
+	fi
+	if provider=$(find_executable "$selected"); then :; else
+		status=$?
+		printf '%s\n' 'Selected Compose provider unavailable' >&2
+		exit "$status"
+	fi
+	if [[ ${provider##*/} != podman-compose ]]; then
+		printf '%s\n' 'Selected Compose provider must be podman-compose' >&2
+		exit 2
+	fi
+	if version=$("$provider" --version 2>/dev/null); then :; else
+		status=$?
+		printf '%s\n' 'Compose provider version probe failed' >&2
+		if ((status >= 128)); then exit "$status"; fi
+		exit 2
+	fi
+	if ! [[ $version =~ (^|$'\n')podman-compose[[:space:]]+version[[:space:]]+1\.6\.0($|$'\n') ]]; then
+		printf '%s\n' 'Compose provider must be podman-compose version 1.6.0' >&2
+		exit 2
+	fi
+fi

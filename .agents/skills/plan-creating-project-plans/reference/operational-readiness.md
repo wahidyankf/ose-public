@@ -47,7 +47,7 @@ Every plan must start with environment setup steps:
       `rtk npm run doctor`; only if it reports drift, run
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply`
       and `rtk npm run doctor` again (see [Worktree Toolchain Initialization](../../../../repo-governance/development/workflow/worktree-setup.md))
-- [ ] [Add project-specific setup: env vars, DB, Docker, etc.]
+- [ ] [Add project-specific setup: env vars, DB, Podman, etc.]
 - [ ] Verify dev server starts: `rtk ./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- dev [project-name]`
 - [ ] Verify existing tests pass before making changes
 ```

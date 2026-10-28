@@ -1,6 +1,6 @@
 ---
-description: Step-by-step migration paths for adding Volta pinning or Docker Compose to an existing project.
-when_to_use: Use when retrofitting Volta version pinning or Docker Compose into a project that does not yet have them.
+description: Step-by-step migration paths for adding Volta pinning or Podman Compose to an existing project.
+when_to_use: Use when retrofitting Volta version pinning or Podman Compose into a project that does not yet have them.
 ---
 
 # Migration Guide
@@ -34,34 +34,34 @@ when_to_use: Use when retrofitting Volta version pinning or Docker Compose into 
    - Update setup instructions
    - Document how Volta auto-manages versions
 
-## Adding Docker to Existing Project
+## Adding Podman Compose to Existing Project
 
-1. **Create docker-compose.yml**:
+1. **Create docker-compose.yml** (the standard Compose file name is kept; run it with `podman compose`):
 
    ```yaml
    version: "3.8"
    services:
      postgres:
-       image: postgres:16.1
+       image: docker.io/library/postgres:16.1
        # ... configuration
    ```
 
 2. **Create Dockerfile.be.dev**:
 
    ```dockerfile
-   FROM node:24.13.1-alpine
+   FROM docker.io/library/node:24.13.1-alpine
    # ... configuration
    ```
 
 3. **Update .gitignore**:
 
    ```
-   # Docker volumes
+   # Container volume data
    .docker/
    docker-volumes/
    ```
 
-4. **Document Docker usage**:
-   - Add Docker to prerequisites
-   - Provide docker-compose up instructions
+4. **Document Podman usage**:
+   - Add rootless Podman and the `podman-compose` provider to prerequisites
+   - Provide `podman compose up` instructions, with `PODMAN_COMPOSE_PROVIDER` set
    - Document how to access services

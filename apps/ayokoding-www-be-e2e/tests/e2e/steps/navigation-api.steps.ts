@@ -30,7 +30,17 @@ Given('content exists in locale "en" with sections "about-ayokoding", "learn", a
 
 Given(
   "a section {string} in locale {string} has child nodes with weights {int}, {int}, {int}, {int}, and {int}",
-  async ({ request }, section: string, locale: string, ...declaredWeights: number[]) => {
+  async (
+    { request },
+    section: string,
+    locale: string,
+    firstWeight: number,
+    secondWeight: number,
+    thirdWeight: number,
+    fourthWeight: number,
+    fifthWeight: number,
+  ) => {
+    const declaredWeights = [firstWeight, secondWeight, thirdWeight, fourthWeight, fifthWeight];
     const response = await request.get(
       buildTrpcUrl("content.listChildren", {
         locale,
@@ -66,7 +76,16 @@ Then("each node should reflect its position in the directory hierarchy", async (
 
 Then(
   "the children of {string} should appear in order: weight {int}, weight {int}, weight {int}, weight {int}, weight {int}",
-  async ({}, section: string, ...expectedWeights: number[]) => {
+  async (
+    {},
+    section: string,
+    firstWeight: number,
+    secondWeight: number,
+    thirdWeight: number,
+    fourthWeight: number,
+    fifthWeight: number,
+  ) => {
+    const expectedWeights = [firstWeight, secondWeight, thirdWeight, fourthWeight, fifthWeight];
     const node = findNode(state.treeResult as TreeNode[], section);
     expect(node?.children.map(({ weight }) => weight)).toEqual(expectedWeights);
   },

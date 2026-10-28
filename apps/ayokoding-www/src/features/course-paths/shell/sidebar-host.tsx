@@ -1,13 +1,16 @@
 "use client";
 
+import { Suspense } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import type { ReactNode } from "react";
 import type { PathManifest } from "../core/schemas";
 import {
+  courseIdFromSlug,
   courseTitlesFromClientData,
   EMPTY_COURSE_PATH_CLIENT_DATA,
   type CoursePathClientData,
   resolveActiveCourseFromLocation,
+  slugFromPathname,
 } from "./course-path-nav";
 import { PathRail } from "./path-rail";
 import { useRuntimeCoursePathData } from "./use-runtime-course-path-data";
@@ -38,7 +41,21 @@ export interface SidebarHostProps {
  * Renders the passed-through `children` (today's generic `<Sidebar>`) unchanged when there is no
  * active path context — the Cycle 2.10 invariant this component must never regress.
  */
-export function SidebarHost({
+export function SidebarHost(props: SidebarHostProps) {
+  const pathname = usePathname();
+  const slug = slugFromPathname(pathname, props.locale);
+  if (slug === null || courseIdFromSlug(slug) === null) {
+    return <>{props.children}</>;
+  }
+
+  return (
+    <Suspense fallback={props.children}>
+      <CourseSidebarHost {...props} />
+    </Suspense>
+  );
+}
+
+function CourseSidebarHost({
   locale,
   pathData,
   manifests = [],

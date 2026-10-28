@@ -1,4 +1,4 @@
-FROM node:24-alpine AS deps
+FROM docker.io/library/node:24-alpine AS deps
 WORKDIR /workspace
 COPY ../../package.json ../../package-lock.json ./
 COPY apps/ose-www/package.json apps/ose-www/
@@ -7,7 +7,7 @@ COPY libs/web-ui/package.json libs/web-ui/
 COPY libs/web-ui-token/package.json libs/web-ui-token/
 RUN npm ci --ignore-scripts
 
-FROM node:24-alpine AS builder
+FROM docker.io/library/node:24-alpine AS builder
 WORKDIR /workspace
 COPY --from=deps /workspace/node_modules ./node_modules
 COPY apps/ose-www/ apps/ose-www/
@@ -24,7 +24,7 @@ WORKDIR /workspace/apps/ose-www
 RUN npx tsx src/scripts/generate-search-data.ts
 RUN npm run build
 
-FROM node:24-alpine AS runner
+FROM docker.io/library/node:24-alpine AS runner
 
 LABEL org.opencontainers.image.source="https://github.com/wahidyankf/ose-public"
 LABEL org.opencontainers.image.description="OSE Platform content website built with Next.js"
@@ -46,6 +46,6 @@ COPY --chown=nextjs:nodejs libs/ts-env-loader/src/port-resolver.ts libs/ts-env-l
 USER nextjs
 EXPOSE 3100
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD ["sh", "-c", "wget --no-verbose --tries=1 --spider http://localhost:${OSE_WWW_PORT}/ || exit 1"]
+  CMD ["sh", "-c", "wget --no-verbose --tries=1 --spider http://127.0.0.1:${OSE_WWW_PORT}/ || exit 1"]
 
 CMD ["node", "scripts/next-with-port.mjs", "--env", "OSE_WWW_PORT", "--default", "3100", "--server", "apps/ose-www/server.js"]

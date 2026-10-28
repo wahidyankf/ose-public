@@ -1702,7 +1702,7 @@ npm ci  # Installs from lock file
 **Docker Development Container**:
 
 ```dockerfile
-FROM node:24-alpine
+FROM docker.io/library/node:24-alpine
 
 WORKDIR /app
 

@@ -1,6 +1,6 @@
 # OSE Application local-stack scaffold
 
-This folder contains an early Docker Compose scaffold for a future paired OSE
+This folder contains an early Compose scaffold for a future paired OSE
 Application stack. It is **not** the supported onboarding route today: the
 active API is the F# service in [apps/ose-be/](../../../apps/ose-be/), and the
 active web client is in [apps/ose-app-web/](../../../apps/ose-app-web/). 🧪

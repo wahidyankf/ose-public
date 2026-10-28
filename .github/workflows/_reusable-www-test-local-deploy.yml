@@ -21,7 +21,7 @@ on:
         required: false
         type: boolean
         default: false
-      stop-docker-before-fe-e2e:
+      stop-containers-before-fe-e2e:
         required: false
         type: boolean
         default: false
@@ -77,10 +77,10 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-node
-      - uses: ./.github/actions/setup-docker-cache
+      - uses: ./.github/actions/setup-podman
       - uses: ./.github/actions/setup-playwright
-      # Start via Docker
-      - run: docker compose -f infra/dev/${{ inputs.app-name }}/docker-compose.yml up --build -d
+      # Start the stack with Podman Compose; --wait is bounded by the same budget as the health loop below
+      - run: podman compose -f infra/dev/${{ inputs.app-name }}/docker-compose.yml up --build --detach --wait --wait-timeout ${{ inputs.health-timeout }}
       # Wait for health
       - run: |
           HEALTH_URL="${{ inputs.health-url }}"
@@ -91,26 +91,35 @@ jobs:
             if curl -s "$HEALTH_URL" > /dev/null 2>&1; then break; fi
             sleep 5
           done
+      # Provider exit status is not proof of readiness; the native container must be running and healthy
+      - name: Verify the Podman service is running and healthy
+        run: |
+          set -euo pipefail
+          container_id="$(podman ps -q --filter "label=io.podman.compose.project=${{ inputs.app-name }}" --filter "label=com.docker.compose.service=${{ inputs.app-name }}")"
+          test -n "$container_id"
+          state="$(podman inspect --format '{{.State.Status}} {{if .State.Health}}{{.State.Health.Status}}{{end}}' "$container_id")"
+          test "$state" = "running healthy"
       - name: Copy prerender manifest for E2E
         if: inputs.copy-prerender-manifest-for-e2e
         run: |
+          set -euo pipefail
           artifact_dir="apps/${{ inputs.app-name }}-fe-e2e/.e2e-artifacts"
-          container_id="$(docker compose -f infra/dev/${{ inputs.app-name }}/docker-compose.yml ps -q "${{ inputs.app-name }}")"
+          container_id="$(podman ps -q --filter "label=io.podman.compose.project=${{ inputs.app-name }}" --filter "label=com.docker.compose.service=${{ inputs.app-name }}")"
           test -n "$container_id"
           mkdir -p "$artifact_dir"
-          docker cp "$container_id:/app/apps/${{ inputs.app-name }}/.next/prerender-manifest.json" "$artifact_dir/prerender-manifest.json"
+          podman cp "$container_id:/app/apps/${{ inputs.app-name }}/.next/prerender-manifest.json" "$artifact_dir/prerender-manifest.json"
       # Run E2E
       - run: |
           be_project="${{ inputs.app-name }}-be-e2e"
           if npx nx show project "$be_project" --json > /dev/null 2>&1; then
             npx nx run "${be_project}:test:e2e"
           fi
-          if [ "${{ inputs.stop-docker-before-fe-e2e }}" = "true" ]; then
-            docker compose -f infra/dev/${{ inputs.app-name }}/docker-compose.yml down
+          if [ "${{ inputs.stop-containers-before-fe-e2e }}" = "true" ]; then
+            podman compose -f infra/dev/${{ inputs.app-name }}/docker-compose.yml down
           fi
           npx nx run ${{ inputs.app-name }}-fe-e2e:test:e2e
       - if: always()
-        run: docker compose -f infra/dev/${{ inputs.app-name }}/docker-compose.yml down -v
+        run: podman compose -f infra/dev/${{ inputs.app-name }}/docker-compose.yml down
 
   detect-changes:
     name: Detect changes

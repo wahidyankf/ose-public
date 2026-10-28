@@ -115,9 +115,23 @@ const feature = await loadFeature(
   ),
 );
 
-describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
+// A user-event session retains its last pointer target. Keep only the current scenario's
+// session reachable, so completed scenarios release their detached calculator DOM.
+let activeScenarioUser: ReturnType<typeof userEvent.setup> | undefined;
+
+function getScenarioUser(): ReturnType<typeof userEvent.setup> {
+  activeScenarioUser ??= userEvent.setup();
+  return activeScenarioUser;
+}
+
+describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, AfterEachScenario }) => {
+  BeforeEachScenario(() => {
+    activeScenarioUser = undefined;
+  });
+
   AfterEachScenario(() => {
     cleanup();
+    activeScenarioUser = undefined;
     // Reset URL state between scenarios so each test starts with empty params
     navState.params = new URLSearchParams();
     navState.setParams = () => {};
@@ -191,8 +205,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   Scenario(
     "Region narrows the country filter and country narrows the city filter",
     async ({ Given, When, Then, And }) => {
-      const user = userEvent.setup();
-
       Given('I am on "/en/tools/cost-of-living-calculator"', () => {
         navState.locale = "en";
         expect(navState.params.toString()).toBe("");
@@ -203,8 +215,8 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
 
       When('I select the region "ASEAN" then the country "Indonesia" in the cascading filters', async () => {
         renderPage(<CostOfLivingCalculatorPage />);
-        await user.selectOptions(screen.getByRole("combobox", { name: /region/i }), "asean");
-        await user.selectOptions(screen.getByRole("combobox", { name: /country/i }), "id");
+        await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /region/i }), "asean");
+        await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /country/i }), "id");
       });
 
       Then("the Country filter lists only ASEAN countries", () => {
@@ -259,7 +271,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("Clicking a city name opens its single-city cost-of-living detail", async ({ Given, When, Then, And }) => {
-    const user = userEvent.setup();
     const firstCity = dataset.cities[0]!;
 
     Given('I am on "/en/tools/cost-of-living-calculator"', () => {
@@ -270,7 +281,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
       const links = screen.getAllByRole("link", { name: firstCity.name.en });
       const cityLink = links.find((l) => l.getAttribute("href") === `?tab=cost&city=${firstCity.id}`);
       expect(cityLink).toBeDefined();
-      await user.click(cityLink!);
+      await getScenarioUser().click(cityLink!);
     });
 
     Then('I am taken to that city\'s single-city Cost-of-living detail at "?city=<id>"', () => {
@@ -294,7 +305,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("Clicking a country opens Cost-of-living filtered to that country", async ({ Given, When, Then, And }) => {
-    const user = userEvent.setup();
     const firstCountry = dataset.countries[0]!;
     const firstCountryCities = dataset.cities.filter((c) => c.countryId === firstCountry.id);
 
@@ -306,7 +316,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
       const links = screen.getAllByRole("link", { name: firstCountry.name.en });
       const countryLink = links.find((l) => l.getAttribute("href") === `?tab=cost&country=${firstCountry.id}`);
       expect(countryLink).toBeDefined();
-      await user.click(countryLink!);
+      await getScenarioUser().click(countryLink!);
     });
 
     Then('I am taken to the Cost-of-living tab filtered to that country at "?country=<id>"', () => {
@@ -439,21 +449,19 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   Scenario(
     "Savings tab converts gross salary to net before subtracting expenses",
     async ({ Given, When, Then, And }) => {
-      const user = userEvent.setup();
-
       Given('I am on "/en/tools/cost-of-living-calculator"', () => {
         navState.locale = "en";
         expect(navState.params.toString()).toBe("");
       });
       And('I switch to the "Savings" tab', async () => {
         renderPage(<CostOfLivingCalculatorPage />);
-        await user.click(screen.getByRole("tab", { name: /savings/i }));
+        await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
       });
 
       When('I enter a gross monthly salary of "8000" USD', async () => {
         const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
-        await user.clear(input);
-        await user.type(input, "8000");
+        await getScenarioUser().clear(input);
+        await getScenarioUser().type(input, "8000");
       });
 
       Then("each city row shows a net take-home after the country's federal and sub-national effective tax", () => {
@@ -478,17 +486,15 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   );
 
   Scenario("Gross salary entered monthly shows the derived annual figure", async ({ Given, When, Then, And }) => {
-    const user = userEvent.setup();
-
     Given('I am on the "Savings" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /savings/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
     });
 
     When('I enter a gross monthly salary of "8000" USD', async () => {
       const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
-      await user.clear(input);
-      await user.type(input, "8000");
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "8000");
     });
 
     Then('the annual gross is shown as "96000" USD', () => {
@@ -505,14 +511,12 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("Non-salary comp is shown as informational context only", async ({ Given, When, Then, But }) => {
-    const user = userEvent.setup();
-
     Given('I am on the "Savings" tab with a gross salary entered', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /savings/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
       const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
-      await user.clear(input);
-      await user.type(input, "8000");
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "8000");
     });
 
     When("I read a city row", () => {
@@ -533,14 +537,12 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("Total compensation is shown for negotiation context", async ({ Given, When, Then, And }) => {
-    const user = userEvent.setup();
-
     Given('I am on the "Savings" tab with a gross salary entered', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /savings/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
       const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
-      await user.clear(input);
-      await user.type(input, "8000");
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "8000");
     });
 
     When("I read a city row", () => {
@@ -564,14 +566,12 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("Sub-national tax lowers net only in federal countries", async ({ Given, When, Then, But }) => {
-    const user = userEvent.setup();
-
     Given('I am on the "Savings" tab with a gross salary entered', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /savings/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
       const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
-      await user.clear(input);
-      await user.type(input, "8000");
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "8000");
     });
 
     When("I compare a US, Canadian, or Swiss city against a unitary-country city", () => {
@@ -595,17 +595,15 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("Net take-home is lower than the entered gross", async ({ Given, When, Then }) => {
-    const user = userEvent.setup();
-
     Given('I am on the "Savings" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /savings/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
     });
 
     When("I enter a gross monthly salary above a city's tax band threshold", async () => {
       const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
-      await user.clear(input);
-      await user.type(input, "8000");
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "8000");
     });
 
     Then("the net take-home shown for that city is lower than the entered gross", () => {
@@ -619,17 +617,15 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("Essentials above net show a deficit", async ({ Given, When, Then }) => {
-    const user = userEvent.setup();
-
     Given('I am on the "Savings" tab for a high-cost city', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /savings/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
     });
 
     When("I enter a gross salary whose net is lower than that city's modeled essentials", async () => {
       const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
-      await user.clear(input);
-      await user.type(input, "500");
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "500");
     });
 
     Then("the savings-after-essentials amount and percentage are shown as negative", () => {
@@ -728,15 +724,13 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   // ─── Cost-basis controls scenarios ───────────────────────────────────────────
 
   Scenario("Adding adults and children changes the modeled expenses", async ({ Given, When, Then, And }) => {
-    const user = userEvent.setup();
-
     Given('I am on the "Cost of living" tab', () => {
       renderPage(<CostOfLivingCalculatorPage />);
     });
 
     When('I change the household from "single" to married with 2 school-age children', async () => {
-      await user.selectOptions(screen.getByRole("combobox", { name: /adults/i }), "2");
-      await user.selectOptions(screen.getByRole("combobox", { name: /school-age children/i }), "2");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /adults/i }), "2");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /school-age children/i }), "2");
     });
 
     Then("the modeled housing and utilities increase sub-linearly", () => {
@@ -757,14 +751,12 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("Pre-school children incur childcare, not schooling", async ({ Given, When, Then, But }) => {
-    const user = userEvent.setup();
-
     Given('I am on the "Cost of living" tab', () => {
       renderPage(<CostOfLivingCalculatorPage />);
     });
 
     When("I set the household to 1 pre-school child and 0 school-age children", async () => {
-      await user.selectOptions(screen.getByRole("combobox", { name: /preschool children/i }), "1");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /preschool children/i }), "1");
     });
 
     Then("the childcare expense is added for the one pre-school child", () => {
@@ -804,8 +796,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("Private school raises expenses more than public", async ({ Given, And, When, Then }) => {
-    const user = userEvent.setup();
-
     Given('I am on "/en/tools/cost-of-living-calculator"', () => {
       navState.locale = "en";
       expect(navState.params.toString()).toBe("");
@@ -813,11 +803,11 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
 
     And("the household has 2 school-age children", async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.selectOptions(screen.getByRole("combobox", { name: /school-age children/i }), "2");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /school-age children/i }), "2");
     });
 
     When('I switch the school type from "public" to "private"', async () => {
-      await user.click(screen.getByRole("radio", { name: /private/i }));
+      await getScenarioUser().click(screen.getByRole("radio", { name: /private/i }));
     });
 
     Then("the schooling portion of the modeled expenses increases", () => {
@@ -827,14 +817,12 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("Rural area lowers housing versus city center", async ({ Given, When, Then, And }) => {
-    const user = userEvent.setup();
-
     Given('I am on the "Cost of living" tab', () => {
       renderPage(<CostOfLivingCalculatorPage />);
     });
 
     When('I switch the area from "city center" to "rural"', async () => {
-      await user.click(screen.getByRole("radio", { name: /rural/i }));
+      await getScenarioUser().click(screen.getByRole("radio", { name: /rural/i }));
     });
 
     Then("the modeled housing expense decreases", () => {
@@ -851,24 +839,22 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   Scenario(
     "Minimum role for a savings target ranks on essential savings and is reordered",
     async ({ Given, And, When, Then }) => {
-      const user = userEvent.setup();
-
       Given('I am on "/en/tools/cost-of-living-calculator"', () => {
         navState.locale = "en";
         expect(navState.params.toString()).toBe("");
       });
       And('I switch to the "Minimum role" tab', async () => {
         renderPage(<CostOfLivingCalculatorPage />);
-        await user.click(screen.getByRole("tab", { name: /minimum role/i }));
+        await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
       });
       And('I set the baseline source to "savings target"', async () => {
-        await user.click(screen.getByRole("radio", { name: /monthly savings target/i }));
+        await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
       });
 
       When('I enter a monthly savings target of "8000" USD', async () => {
         const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
-        await user.clear(input);
-        await user.type(input, "8000");
+        await getScenarioUser().clear(input);
+        await getScenarioUser().type(input, "8000");
       });
 
       Then(
@@ -897,19 +883,17 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
 
   // INCLUDE-ALL rule — every qualifying (city, role) within the filter is its own row.
   Scenario("Every qualifying city and role within the filter is included", async ({ Given, And, When, Then }) => {
-    const user = userEvent.setup();
-
     Given('I am on the "Minimum role" tab with a baseline set', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /minimum role/i }));
-      await user.click(screen.getByRole("radio", { name: /monthly savings target/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
+      await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
       const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
-      await user.clear(input);
-      await user.type(input, "400");
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "400");
     });
 
     And("the geographic filter is the ASEAN region", async () => {
-      await user.selectOptions(screen.getByRole("combobox", { name: /region/i }), "asean");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /region/i }), "asean");
     });
 
     When("the savings bar is cleared by several countries at several seniority levels", () => {
@@ -944,15 +928,13 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("Roles are labelled as software-engineering roles", async ({ Given, When, Then }) => {
-    const user = userEvent.setup();
-
     Given('I am on the "Minimum role" tab with a baseline set', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /minimum role/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
       // Enter a target so the ladder renders past the UWT-006 blank empty-state.
       const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
-      await user.clear(input);
-      await user.type(input, "1000");
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "1000");
     });
 
     When("the page finishes loading", () => {
@@ -967,15 +949,13 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("Each role shows its per-country salary distribution", async ({ Given, When, Then, And }) => {
-    const user = userEvent.setup();
-
     Given('I am on the "Minimum role" tab with a baseline set', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /minimum role/i }));
-      await user.click(screen.getByRole("radio", { name: /monthly savings target/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
+      await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
       const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
-      await user.clear(input);
-      await user.type(input, "1000");
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "1000");
     });
 
     When("I read a role row", () => {
@@ -995,15 +975,13 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("A city row shows its country alongside the city name", async ({ Given, When, Then }) => {
-    const user = userEvent.setup();
-
     Given('I am on the "Minimum role" tab with a baseline set', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /minimum role/i }));
-      await user.click(screen.getByRole("radio", { name: /monthly savings target/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
+      await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
       const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
-      await user.clear(input);
-      await user.type(input, "1000");
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "1000");
     });
 
     When("I read a qualifying (city, role) row", () => {
@@ -1017,19 +995,17 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("Geographic filter scopes the candidate cities", async ({ Given, When, Then }) => {
-    const user = userEvent.setup();
-
     Given('I am on the "Minimum role" tab with a baseline set', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /minimum role/i }));
-      await user.click(screen.getByRole("radio", { name: /monthly savings target/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
+      await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
       const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
-      await user.clear(input);
-      await user.type(input, "500");
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "500");
     });
 
     When('I select the country "Indonesia" in the cascading filters', async () => {
-      await user.selectOptions(screen.getByRole("combobox", { name: /country/i }), "id");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /country/i }), "id");
     });
 
     Then("every (city, role) row is drawn only from Indonesian cities", () => {
@@ -1044,16 +1020,15 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("Non-salary comp does not determine the minimum-role ranking", async ({ Given, When, Then, And }) => {
-    const user = userEvent.setup();
     let comparison: Array<{ savings: number; nonSalary: number }> = [];
 
     Given('I am on the "Minimum role" tab with a baseline set', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /minimum role/i }));
-      await user.click(screen.getByRole("radio", { name: /monthly savings target/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
+      await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
       const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
-      await user.clear(input);
-      await user.type(input, "1000");
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "1000");
     });
 
     When("I compare candidate order with their essential savings and non-salary comp", () => {
@@ -1081,7 +1056,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("Lifestyle does not determine the minimum-role ranking", async ({ Given, When, Then }) => {
-    const user = userEvent.setup();
     let essentialOrder: string[] = [];
     let afterLifestyleOrder: string[] = [];
     let markerRanks: number[] = [];
@@ -1089,11 +1063,11 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
 
     Given('I am on the "Minimum role" tab with a baseline set', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /minimum role/i }));
-      await user.click(screen.getByRole("radio", { name: /monthly savings target/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
+      await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
       const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
-      await user.clear(input);
-      await user.type(input, "1000");
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "1000");
     });
 
     When("I compare the ladder with each city's published lifestyle cost", () => {
@@ -1132,18 +1106,16 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("Minimum role from a reference city and role", async ({ Given, And, When, Then }) => {
-    const user = userEvent.setup();
-
     Given('I am on the "Minimum role" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /minimum role/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
     });
     And('I set the baseline source to "Match a role"', async () => {
-      await user.click(screen.getByRole("radio", { name: /match a role/i }));
+      await getScenarioUser().click(screen.getByRole("radio", { name: /match a role/i }));
     });
     And('I pick the city "Jakarta" and the role "Senior SWE"', async () => {
-      await user.selectOptions(screen.getByRole("combobox", { name: /reference city/i }), "jakarta");
-      await user.selectOptions(screen.getByRole("combobox", { name: /reference role/i }), "senior_swe");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /reference city/i }), "jakarta");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /reference role/i }), "senior_swe");
     });
 
     When("I view the minimum role result", () => {
@@ -1161,21 +1133,19 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("Minimum role from my own salary", async ({ Given, And, When, Then }) => {
-    const user = userEvent.setup();
-
     Given('I am on the "Minimum role" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /minimum role/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
     });
     And('I set the baseline source to "my salary"', async () => {
-      await user.click(screen.getByRole("radio", { name: /my salary/i }));
+      await getScenarioUser().click(screen.getByRole("radio", { name: /my salary/i }));
     });
 
     When("I enter my gross salary and its city", async () => {
       const grossInput = screen.getByRole("spinbutton", { name: /my gross monthly/i });
-      await user.clear(grossInput);
-      await user.type(grossInput, "5000");
-      await user.selectOptions(screen.getByRole("combobox", { name: /my salary city/i }), "singapore");
+      await getScenarioUser().clear(grossInput);
+      await getScenarioUser().type(grossInput, "5000");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /my salary city/i }), "singapore");
     });
 
     Then("the baseline savings bar equals my essential savings in my selected salary city", () => {
@@ -1193,7 +1163,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("My-salary baseline accepts the gross in local currency or USD", async ({ Given, And, When, Then }) => {
-    const user = userEvent.setup();
     let localBaseline = Number.NaN;
     let usdBaseline = Number.NaN;
     let localMarkers: string[] = [];
@@ -1201,27 +1170,27 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
 
     Given('I am on the "Minimum role" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /minimum role/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
     });
     And('I set the baseline source to "my salary"', async () => {
-      await user.click(screen.getByRole("radio", { name: /my salary/i }));
+      await getScenarioUser().click(screen.getByRole("radio", { name: /my salary/i }));
     });
     When('I compare "10000" SGD with the FX-equivalent "7744" USD for salary city "Singapore"', async () => {
-      await user.selectOptions(screen.getByRole("combobox", { name: /my salary city/i }), "singapore");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /my salary city/i }), "singapore");
       const group = screen.getByRole("radiogroup", { name: /salary currency/i });
-      await user.click(within(group).getByRole("radio", { name: "SGD" }));
+      await getScenarioUser().click(within(group).getByRole("radio", { name: "SGD" }));
       const grossInput = screen.getByRole("spinbutton", { name: /my gross monthly/i });
-      await user.clear(grossInput);
-      await user.type(grossInput, "10000");
+      await getScenarioUser().clear(grossInput);
+      await getScenarioUser().type(grossInput, "10000");
       localBaseline = Number(screen.getByTestId("min-role-table").getAttribute("data-baseline-usd"));
       localMarkers = Array.from(document.querySelectorAll("tr[data-candidate-row='true']"))
         .filter((row) => row.querySelector("[data-testid='minimum-marker']") !== null)
         .map((row) => `${row.getAttribute("data-city-id")}:${row.getAttribute("data-role")}`)
         .sort();
 
-      await user.click(within(group).getByRole("radio", { name: "USD" }));
-      await user.clear(grossInput);
-      await user.type(grossInput, "7744");
+      await getScenarioUser().click(within(group).getByRole("radio", { name: "USD" }));
+      await getScenarioUser().clear(grossInput);
+      await getScenarioUser().type(grossInput, "7744");
       usdBaseline = Number(screen.getByTestId("min-role-table").getAttribute("data-baseline-usd"));
       usdMarkers = Array.from(document.querySelectorAll("tr[data-candidate-row='true']"))
         .filter((row) => row.querySelector("[data-testid='minimum-marker']") !== null)
@@ -1245,22 +1214,20 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("Savings tab honours the active geographic filter", async ({ Given, And, When, Then }) => {
-    const user = userEvent.setup();
-
     Given('I am on "/en/tools/cost-of-living-calculator"', () => {
       renderPage(<CostOfLivingCalculatorPage />);
     });
     And('I switch to the "Savings" tab', async () => {
-      await user.click(screen.getByRole("tab", { name: /savings/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
     });
     And('I enter a gross monthly salary of "5000" USD', async () => {
       const gross = screen.getByRole("spinbutton");
-      await user.clear(gross);
-      await user.type(gross, "5000");
+      await getScenarioUser().clear(gross);
+      await getScenarioUser().type(gross, "5000");
     });
     When('the Country filter is set to "Indonesia"', async () => {
-      await user.selectOptions(screen.getByRole("combobox", { name: /region/i }), "asean");
-      await user.selectOptions(screen.getByRole("combobox", { name: /country/i }), "id");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /region/i }), "asean");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /country/i }), "id");
     });
     Then("the savings table lists only Indonesian cities", () => {
       // City links in the table point at ?tab=cost&city=<id>; Jakarta is Indonesian.
@@ -1273,20 +1240,18 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("Min-role baseline source and inputs are serialized in the URL", async ({ Given, When, And, Then }) => {
-    const user = userEvent.setup();
-
     Given('I am on the "Minimum role" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /minimum role/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
     });
     When('I set the baseline source to "my salary"', async () => {
-      await user.click(screen.getByRole("radio", { name: /my salary/i }));
+      await getScenarioUser().click(screen.getByRole("radio", { name: /my salary/i }));
     });
     And("I enter my gross salary and its city", async () => {
       const grossInput = screen.getByRole("spinbutton", { name: /my gross monthly/i });
-      await user.clear(grossInput);
-      await user.type(grossInput, "12000");
-      await user.selectOptions(screen.getByRole("combobox", { name: /my salary city/i }), "singapore");
+      await getScenarioUser().clear(grossInput);
+      await getScenarioUser().type(grossInput, "12000");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /my salary city/i }), "singapore");
     });
     Then("the URL query string includes the baseline source and the entered salary inputs", async () => {
       // The gross is a debounced text input — its URL commit lands shortly after typing
@@ -1300,19 +1265,18 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("Savings gross salary is serialized in the URL", async ({ Given, When, Then }) => {
-    const user = userEvent.setup();
     let replaceHistory: ReturnType<typeof vi.spyOn>;
 
     Given('I am on the "Savings" tab', async () => {
       vi.stubEnv("NODE_ENV", "production");
       replaceHistory = vi.spyOn(window.history, "replaceState").mockImplementation(() => {});
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /savings/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
     });
     When('I enter a gross monthly salary of "5000" USD', async () => {
       const gross = screen.getByRole("spinbutton");
-      await user.clear(gross);
-      await user.type(gross, "5000");
+      await getScenarioUser().clear(gross);
+      await getScenarioUser().type(gross, "5000");
     });
     Then("the URL query string includes the entered gross salary", async () => {
       // The statically exported production route must use replacement history rather than a
@@ -1328,19 +1292,17 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("Savings shown in USD, local, and display currency", async ({ Given, When, Then }) => {
-    const user = userEvent.setup();
-
     Given('I am on the "Minimum role" tab with a baseline set', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /minimum role/i }));
-      await user.click(screen.getByRole("radio", { name: /monthly savings target/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
+      await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
       const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
-      await user.clear(input);
-      await user.type(input, "1000");
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "1000");
     });
 
     When("I choose a display currency", async () => {
-      await user.selectOptions(screen.getByRole("combobox", { name: /display currency/i }), "EUR");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /display currency/i }), "EUR");
     });
 
     Then(
@@ -1354,16 +1316,14 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("Every money column on the Minimum-role tab is dual currency", async ({ Given, When, Then, And }) => {
-    const user = userEvent.setup();
-
     Given('I am on the "Minimum role" tab with a baseline set and a display currency chosen', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /minimum role/i }));
-      await user.click(screen.getByRole("radio", { name: /monthly savings target/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
+      await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
       const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
-      await user.clear(input);
-      await user.type(input, "1000");
-      await user.selectOptions(screen.getByRole("combobox", { name: /display currency/i }), "EUR");
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "1000");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /display currency/i }), "EUR");
     });
 
     When("I read a role row", () => {
@@ -1389,23 +1349,21 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("Household composition recalculates minimum-role candidates", async ({ Given, When, Then, And }) => {
-    const user = userEvent.setup();
-
     Given(
       'I am on the "Minimum role" tab and the "SWE I" role qualifies for the "single" household basis',
       async () => {
         renderPage(<CostOfLivingCalculatorPage />);
-        await user.click(screen.getByRole("tab", { name: /minimum role/i }));
-        await user.click(screen.getByRole("radio", { name: /monthly savings target/i }));
+        await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
+        await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
         const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
-        await user.clear(input);
-        await user.type(input, "500");
+        await getScenarioUser().clear(input);
+        await getScenarioUser().type(input, "500");
       },
     );
 
     When('I change the household to "married with 2 children" and the area to "center"', async () => {
-      await user.selectOptions(screen.getByRole("combobox", { name: /adults/i }), "2");
-      await user.selectOptions(screen.getByRole("combobox", { name: /school-age children/i }), "2");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /adults/i }), "2");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /school-age children/i }), "2");
     });
 
     Then('"SWE I" is re-evaluated after childcare, schooling, and central housing raise modeled essentials', () => {
@@ -1421,18 +1379,16 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("No role can reach the bar", async ({ Given, When, Then, And }) => {
-    const user = userEvent.setup();
-
     Given('I am on the "Minimum role" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /minimum role/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
     });
 
     When("I set a savings target higher than any role's essential savings in any city", async () => {
-      await user.click(screen.getByRole("radio", { name: /monthly savings target/i }));
+      await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
       const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
-      await user.clear(input);
-      await user.type(input, "999999999");
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "999999999");
     });
 
     Then("the tool states that no role clears the bar", () => {
@@ -1445,19 +1401,17 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("Cost-basis controls affect role candidates", async ({ Given, When, Then }) => {
-    const user = userEvent.setup();
-
     Given('I am on the "Minimum role" tab with a baseline set', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /minimum role/i }));
-      await user.click(screen.getByRole("radio", { name: /monthly savings target/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
+      await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
       const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
-      await user.clear(input);
-      await user.type(input, "1000");
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "1000");
     });
 
     When("I change the household type or area", async () => {
-      await user.click(screen.getByRole("radio", { name: /rural/i }));
+      await getScenarioUser().click(screen.getByRole("radio", { name: /rural/i }));
     });
 
     Then("the role candidates' savings and the marked minimum role update accordingly", () => {
@@ -1466,15 +1420,13 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("Low-confidence cells are flagged on the minimum-role tab", async ({ Given, When, Then }) => {
-    const user = userEvent.setup();
-
     Given('I am on the "Minimum role" tab with a baseline set', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /minimum role/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
       // Enter a target so the ladder renders past the UWT-006 blank empty-state.
       const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
-      await user.clear(input);
-      await user.type(input, "1000");
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "1000");
     });
 
     When("the table renders", () => {
@@ -1489,15 +1441,13 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("No Israeli city appears among role candidates", async ({ Given, When, Then }) => {
-    const user = userEvent.setup();
-
     Given('I am on the "Minimum role" tab with a baseline set', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /minimum role/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
       // Enter a target so the ladder renders past the UWT-006 blank empty-state.
       const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
-      await user.clear(input);
-      await user.type(input, "1000");
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "1000");
     });
 
     When("the page finishes loading", () => {
@@ -1515,17 +1465,15 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   // ─── SG-001: Zero/empty salary guidance ───────────────────────────────────────
 
   Scenario("Zero or empty salary shows guidance instead of derived savings", async ({ Given, When, Then, And }) => {
-    const user = userEvent.setup();
-
     Given('I am on the "Savings" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /savings/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
     });
 
     When("the gross monthly salary field is empty or zero", async () => {
       const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
-      await user.clear(input);
-      await user.type(input, "0");
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "0");
     });
 
     Then("empty-state guidance replaces the city comparison table", () => {
@@ -1543,18 +1491,16 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   Scenario(
     "Rural area and multi-adult household multiply the housing estimate sub-linearly",
     async ({ Given, And, When, Then }) => {
-      const user = userEvent.setup();
-
       Given('I am on the "Cost of living" tab', () => {
         renderPage(<CostOfLivingCalculatorPage />);
       });
 
       And("I set the household to 2 adults with no children", async () => {
-        await user.selectOptions(screen.getByRole("combobox", { name: /adults/i }), "2");
+        await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /adults/i }), "2");
       });
 
       When('I switch the area from "city center" to "rural"', async () => {
-        await user.click(screen.getByRole("radio", { name: /rural/i }));
+        await getScenarioUser().click(screen.getByRole("radio", { name: /rural/i }));
       });
 
       Then("the housing estimate in the expense preview decreases to base times subLinear 2 adults times 0.75", () => {
@@ -1571,7 +1517,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   // ─── SG-003: City filter dropdown opens detail view ───────────────────────────
 
   Scenario("Selecting a city from the City filter opens its detail view", async ({ Given, When, Then, And }) => {
-    const user = userEvent.setup();
     const firstCity = dataset.cities[0]!;
 
     Given('I am on the "Cost of living" tab', () => {
@@ -1579,7 +1524,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
     });
 
     When("I select a city from the City dropdown filter", async () => {
-      await user.selectOptions(screen.getByRole("combobox", { name: /city/i }), firstCity.id);
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /city/i }), firstCity.id);
     });
 
     Then("the single-city cost-of-living detail for that city is shown", () => {
@@ -1596,18 +1541,16 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   // ─── SG-004: Income-band boundary handling ────────────────────────────────────
 
   Scenario("Income exactly at the low-to-mid threshold uses the mid band", async ({ Given, When, Then }) => {
-    const user = userEvent.setup();
-
     Given('I am on the "Savings" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /savings/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
     });
 
     When("I enter a gross monthly salary at exactly the low-to-mid band threshold for a city", async () => {
       // Stub: exact threshold varies by country; verified at tax-calc unit level
       const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
-      await user.clear(input);
-      await user.type(input, "4167"); // ~$50K/yr, a common band boundary
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "4167"); // ~$50K/yr, a common band boundary
     });
 
     Then("that city's net take-home uses the mid band effective tax rate", () => {
@@ -1640,21 +1583,19 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   // ─── SG-006: Zero savings target marks lowest role as minimum ─────────────────
 
   Scenario("Zero savings target marks the lowest role as the minimum", async ({ Given, And, When, Then }) => {
-    const user = userEvent.setup();
-
     Given('I am on the "Minimum role" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /minimum role/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
     });
 
     And('I set the baseline source to "savings target"', async () => {
-      await user.click(screen.getByRole("radio", { name: /monthly savings target/i }));
+      await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
     });
 
     When("I enter a monthly savings target of zero USD", async () => {
       const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
-      await user.clear(input);
-      await user.type(input, "0");
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "0");
     });
 
     Then("the qualifying divider is shown", () => {
@@ -1692,8 +1633,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   Scenario(
     "Expense preview updates in real time when household controls change",
     async ({ Given, And, When, Then }) => {
-      const user = userEvent.setup();
-
       Given("I am on the cost-of-living calculator", () => {
         renderPage(<CostOfLivingCalculatorPage />);
       });
@@ -1704,7 +1643,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
       });
 
       When("I change the Adults control to 2", async () => {
-        await user.selectOptions(screen.getByRole("combobox", { name: /adults/i }), "2");
+        await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /adults/i }), "2");
       });
 
       Then("the Housing preview amount increases to base times subLinear 2 adults", () => {
@@ -1732,16 +1671,14 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
 
   // Reconciled 2026-06-21: scenario title updated to match the feature file (all 9 controls serialized)
   Scenario("Selecting filters updates the URL with all active query parameters", async ({ Given, When, Then, And }) => {
-    const user = userEvent.setup();
-
     Given("a user is on the cost-of-living calculator page", () => {
       renderPage(<CostOfLivingCalculatorPage />);
     });
 
     When('the user selects Country "Indonesia" and City "Jakarta"', async () => {
-      await user.selectOptions(screen.getByRole("combobox", { name: /country/i }), "id");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /country/i }), "id");
       const jakartaId = dataset.cities.find((c) => c.name.en === "Jakarta")?.id ?? "jakarta";
-      await user.selectOptions(screen.getByRole("combobox", { name: /city/i }), jakartaId);
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /city/i }), jakartaId);
     });
 
     Then("the URL updates to include query parameters reflecting those selections", () => {
@@ -1778,17 +1715,15 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   // ─── SG-001: Negative salary input is clamped to zero ────────────────────────
 
   Scenario("Negative salary input is clamped to zero", async ({ Given, When, Then, And }) => {
-    const user = userEvent.setup();
-
     Given('I am on the "Savings" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /savings/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
     });
 
     When('I enter a gross monthly salary of "-1000"', async () => {
       const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
-      await user.clear(input);
-      await user.type(input, "-1000");
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "-1000");
     });
 
     Then('the annual gross displayed is "0 USD"', () => {
@@ -1804,17 +1739,15 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   // ─── SG-002: Decimal salary computes annual gross correctly ──────────────────
 
   Scenario("Decimal monthly salary produces correct annual gross", async ({ Given, When, Then, And }) => {
-    const user = userEvent.setup();
-
     Given('I am on the "Savings" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /savings/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
     });
 
     When('I enter a gross monthly salary of "8000.5"', async () => {
       const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
-      await user.clear(input);
-      await user.type(input, "8000.5");
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "8000.5");
     });
 
     Then('the annual gross is shown as "96,006 USD"', () => {
@@ -1833,17 +1766,15 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   // ─── SG-003: Very large salary does not produce NaN or Infinity ──────────────
 
   Scenario("Very large salary produces valid savings figures", async ({ Given, When, Then, And }) => {
-    const user = userEvent.setup();
-
     Given('I am on the "Savings" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /savings/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
     });
 
     When('I enter a gross monthly salary of "99999999"', async () => {
       const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
-      await user.clear(input);
-      await user.type(input, "99999999");
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "99999999");
     });
 
     Then('no city row shows "NaN" or "Infinity" in any column', () => {
@@ -1861,7 +1792,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
 
   // Reconciled 2026-06-21: scenario title updated; default tab is omitted from the URL.
   Scenario("Selecting only a country updates the URL country parameter", async ({ Given, When, Then, And }) => {
-    const user = userEvent.setup();
     let pushHistory: ReturnType<typeof vi.spyOn>;
     let replaceHistory: ReturnType<typeof vi.spyOn>;
 
@@ -1873,7 +1803,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
     });
 
     When('the user selects Country "Indonesia" without selecting a city', async () => {
-      await user.selectOptions(screen.getByRole("combobox", { name: /country/i }), "id");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /country/i }), "id");
     });
 
     Then('the URL query string includes "country=id"', () => {
@@ -1902,8 +1832,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   Scenario(
     "School type toggle becomes enabled when school-age children is set to one or more",
     async ({ Given, And, When, Then }) => {
-      const user = userEvent.setup();
-
       Given('I am on "/en/tools/cost-of-living-calculator"', () => {
         renderPage(<CostOfLivingCalculatorPage />);
       });
@@ -1918,7 +1846,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
       });
 
       When("I set the household to 1 school-age child", async () => {
-        await user.selectOptions(screen.getByRole("combobox", { name: /school.age/i }), "1");
+        await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /school.age/i }), "1");
       });
 
       Then('the school type toggle is enabled with "Public" and "Private" options', () => {
@@ -1942,7 +1870,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   // ─── SG-006: Housing scales sub-linearly (1.25x) for 2-adult household ───────
 
   Scenario("Housing preview scales sub-linearly for 2-adult household", async ({ Given, And, When, Then }) => {
-    const user = userEvent.setup();
     const before: Record<string, number> = {};
     const firstCityId = dataset.cities[0]!.id;
 
@@ -1957,7 +1884,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
     });
 
     When("I change the Adults control to 2", async () => {
-      await user.selectOptions(screen.getByRole("combobox", { name: /adults/i }), "2");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /adults/i }), "2");
     });
 
     Then("the Housing preview amount is exactly 1.25 times the 1-adult amount", () => {
@@ -1988,14 +1915,12 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   // ─── USS-001: Savings tab empty-state when no salary entered ─────────────────
 
   Scenario("Savings tab shows empty-state guidance when no salary entered", async ({ Given, When, And, Then }) => {
-    const user = userEvent.setup();
-
     Given("a user has opened the Cost of Living Calculator", () => {
       renderPage(<CostOfLivingCalculatorPage />);
     });
 
     When("they click the Savings tab", async () => {
-      await user.click(screen.getByRole("tab", { name: /savings/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
     });
 
     And("the gross monthly salary field contains no value or zero", () => {
@@ -2016,17 +1941,15 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("Savings tab shows results after salary is entered", async ({ Given, When, Then, And }) => {
-    const user = userEvent.setup();
-
     Given("a user is on the Savings tab with the empty-state message displayed", async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /savings/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
     });
 
     When("they enter a positive gross monthly salary value", async () => {
       const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
-      await user.clear(input);
-      await user.type(input, "5000");
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "5000");
     });
 
     Then("the instructional message disappears", () => {
@@ -2042,14 +1965,12 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   // ─── USS-002: Minimum Role tab empty-state when no target entered ─────────────
 
   Scenario("Minimum Role tab shows empty-state when no target amount entered", async ({ Given, When, And, Then }) => {
-    const user = userEvent.setup();
-
     Given("a user has opened the Cost of Living Calculator", () => {
       renderPage(<CostOfLivingCalculatorPage />);
     });
 
     When("they click the Minimum Role tab", async () => {
-      await user.click(screen.getByRole("tab", { name: /minimum role/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
     });
 
     And("the Monthly savings target field contains no value or zero", () => {
@@ -2074,7 +1995,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   // ─── USS-003: Area toggle confirms data update ────────────────────────────────
 
   Scenario("Area toggle shows selected state and confirms data update", async ({ Given, And, When, Then }) => {
-    const user = userEvent.setup();
     let centerHousing = 0;
 
     Given("a user is on the Cost of Living tab", () => {
@@ -2087,7 +2007,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
     });
 
     When('the user clicks "Rural"', async () => {
-      await user.click(screen.getByRole("radio", { name: /rural/i }));
+      await getScenarioUser().click(screen.getByRole("radio", { name: /rural/i }));
     });
 
     Then('the "Rural" button displays as the active/selected state', () => {
@@ -2202,14 +2122,12 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("Savings table shows local currency and USD for net and savings columns", async ({ Given, When, Then }) => {
-    const user = userEvent.setup();
-
     Given("the user is on the Savings tab with a gross salary entered", async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /savings/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
       const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
-      await user.clear(input);
-      await user.type(input, "5000");
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "5000");
     });
 
     When("the table renders", () => {
@@ -2273,16 +2191,14 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("Id locale minimum-role table uses Indonesian city names", async ({ Given, And, When, Then }) => {
-    const user = userEvent.setup();
-
     Given('the user is on "/id/tools/cost-of-living-calculator" at desktop width', () => {
       navState.locale = "id";
       renderPage(<CostOfLivingCalculatorPage />);
     });
 
     And("the Minimum role tab is active", async () => {
-      await user.click(screen.getByRole("tab", { name: /jabatan minimum/i }));
-      await user.type(screen.getByRole("spinbutton", { name: /target tabungan bulanan/i }), "0");
+      await getScenarioUser().click(screen.getByRole("tab", { name: /jabatan minimum/i }));
+      await getScenarioUser().type(screen.getByRole("spinbutton", { name: /target tabungan bulanan/i }), "0");
     });
 
     When("the ladder table renders", () => {
@@ -2297,11 +2213,9 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   // ─── prd.md: Design-system controls, locale URL redirect, mobile nav ──────────
 
   Scenario("Gross-salary input uses the design-system Input primitive", async ({ Given, When, Then, And }) => {
-    const user = userEvent.setup();
-
     Given('the user is on the "Savings" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /savings/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
     });
 
     When("the tab renders", () => {
@@ -2323,11 +2237,9 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("Baseline selector is a segmented control", async ({ Given, When, Then }) => {
-    const user = userEvent.setup();
-
     Given('the user is on the "Minimum role" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /minimum role/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
     });
 
     When("the tab renders", () => {
@@ -2497,10 +2409,9 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
     });
 
     When('I select the city "Jakarta"', async () => {
-      const user = userEvent.setup();
       const citySelect = screen.queryByRole("combobox", { name: /city/i });
       if (citySelect) {
-        await user.selectOptions(citySelect, "jakarta");
+        await getScenarioUser().selectOptions(citySelect, "jakarta");
       }
     });
 
@@ -2523,10 +2434,9 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
     });
 
     When('I select the region "Europe"', async () => {
-      const user = userEvent.setup();
       const regionSelect = screen.queryByRole("combobox", { name: /region/i });
       if (regionSelect) {
-        await user.selectOptions(regionSelect, "europe");
+        await getScenarioUser().selectOptions(regionSelect, "europe");
       }
     });
 
@@ -2603,10 +2513,9 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
     });
 
     When('I switch to the "Savings" tab', async () => {
-      const user = userEvent.setup();
       const tab = screen.queryByRole("tab", { name: /savings/i });
       if (tab) {
-        await user.click(tab);
+        await getScenarioUser().click(tab);
       }
     });
 
@@ -2629,8 +2538,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
     });
 
     When('I change the Adults control to "2"', async () => {
-      const user = userEvent.setup();
-      await user.selectOptions(screen.getByRole("combobox", { name: /adults/i }), "2");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /adults/i }), "2");
     });
 
     Then('the URL query string includes "adults=2"', () => {
@@ -2738,10 +2646,9 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
     });
 
     When('I select the region "Europe"', async () => {
-      const user = userEvent.setup();
       const regionSelect = screen.queryByRole("combobox", { name: /region/i });
       if (regionSelect) {
-        await user.selectOptions(regionSelect, "europe");
+        await getScenarioUser().selectOptions(regionSelect, "europe");
       }
     });
 
@@ -2897,11 +2804,9 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   Scenario(
     "The Savings gross-salary field shows the active currency as a separate indicator",
     async ({ Given, When, Then, And }) => {
-      const user = userEvent.setup();
-
       Given('I am on the "Savings" tab', async () => {
         renderPage(<CostOfLivingCalculatorPage />);
-        await user.click(screen.getByRole("tab", { name: /savings/i }));
+        await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
       });
 
       When("the gross-salary field renders", () => {
@@ -2921,11 +2826,9 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
 
   // UWT-019 — the fixed USD indicator carries a short explanation of why USD is used
   Scenario("The Savings currency indicator explains why USD is used for every city", async ({ Given, When, Then }) => {
-    const user = userEvent.setup();
-
     Given('I am on the "Savings" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /savings/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
     });
 
     When("the gross-salary field renders", () => {
@@ -2942,12 +2845,10 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   Scenario(
     "A blank savings target shows empty-state guidance instead of the role ladder",
     async ({ Given, When, Then, But }) => {
-      const user = userEvent.setup();
-
       Given('I am on the "Minimum role" tab with the savings-target baseline and a blank target', async () => {
         renderPage(<CostOfLivingCalculatorPage />);
-        await user.click(screen.getByRole("tab", { name: /minimum role/i }));
-        await user.click(screen.getByRole("radio", { name: /monthly savings target/i }));
+        await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
+        await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
         // No target typed → blank.
       });
 
@@ -2964,8 +2865,8 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
 
       But("entering an explicit zero target replaces the guidance with the role ladder and its divider", async () => {
         const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
-        await user.clear(input);
-        await user.type(input, "0");
+        await getScenarioUser().clear(input);
+        await getScenarioUser().type(input, "0");
         expect(screen.queryByTestId("min-role-empty-state")).toBeNull();
         expect(screen.getByRole("table")).toBeTruthy();
         expect(screen.getByTestId("qualifying-divider")).toBeTruthy();
@@ -3003,8 +2904,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
 
   // AC-11 (UWT-014) — A country change that auto-changes the region surfaces an advisory
   Scenario("Selecting a country that changes the region shows a visible advisory", async ({ Given, When, Then }) => {
-    const user = userEvent.setup();
-
     Given("I am on the calculator with no region selected", () => {
       navState.params = new URLSearchParams();
       navState.setParams(navState.params);
@@ -3013,7 +2912,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
 
     When("I select a country whose region differs from the current selection", async () => {
       // No region selected → all countries listed; gb belongs to europe.
-      await user.selectOptions(screen.getByRole("combobox", { name: /country/i }), "gb");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /country/i }), "gb");
     });
 
     Then("a visible region-auto-advisory message is shown", () => {
@@ -3050,8 +2949,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
 
   // SG-U (country-narrows-city) — selecting country alone (no region) narrows city dropdown
   Scenario("Selecting a country without a region still narrows the city dropdown", async ({ Given, When, Then }) => {
-    const user = userEvent.setup();
-
     Given("I am on the calculator with no region or country selected", () => {
       navState.params = new URLSearchParams();
       navState.setParams(navState.params);
@@ -3059,7 +2956,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
     });
 
     When('I select the country "Indonesia" in the country filter without first selecting a region', async () => {
-      await user.selectOptions(screen.getByRole("combobox", { name: /country/i }), "id");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /country/i }), "id");
     });
 
     Then("the city dropdown lists only cities in Indonesia", () => {
@@ -3109,13 +3006,11 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   Scenario(
     "The baseline selector shows the savings-target sub-form when savings target is selected",
     async ({ Given, When, Then, And }) => {
-      const user = userEvent.setup();
-
       Given('the user is on the "Minimum role" tab', async () => {
         navState.params = new URLSearchParams();
         navState.setParams(navState.params);
         renderPage(<CostOfLivingCalculatorPage />);
-        await user.click(screen.getByRole("tab", { name: /minimum role/i }));
+        await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
       });
 
       When("the tab renders", () => {
@@ -3133,7 +3028,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
 
       And("the savings-target input is visible when savings target is the selected baseline", async () => {
         // "savings_target" is the default baseline; the monthly-target input must be present.
-        await user.click(screen.getByRole("radio", { name: /monthly savings target/i }));
+        await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
         expect(screen.getByRole("spinbutton", { name: /monthly savings target/i })).toBeTruthy();
       });
 
@@ -3147,7 +3042,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
 
   // Regression — filter changes must not scroll the page to the top.
   Scenario("Changing a filter preserves the scroll position", async ({ Given, When, Then }) => {
-    const user = userEvent.setup();
     let scrollTo: ReturnType<typeof vi.spyOn>;
 
     Given("I am on the cost-of-living calculator", () => {
@@ -3161,7 +3055,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
       renderPage(<CostOfLivingCalculatorPage />);
     });
     When('I change the region filter to "Europe"', async () => {
-      await user.selectOptions(screen.getByRole("combobox", { name: /region/i }), "europe");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /region/i }), "europe");
     });
     Then("the URL update requests no scroll so the page does not jump to the top", async () => {
       await waitFor(() => expect(navState.params.get("region")).toBe("europe"));
@@ -3175,18 +3069,16 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   Scenario(
     "Typing the gross salary echoes instantly but commits to the URL only after typing settles",
     async ({ Given, When, Then, And }) => {
-      const user = userEvent.setup();
-
       Given('I am on the "Savings" tab', async () => {
         navState.params = new URLSearchParams();
         navState.setParams(navState.params);
         renderPage(<CostOfLivingCalculatorPage />);
-        await user.click(screen.getByRole("tab", { name: /savings/i }));
+        await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
       });
       When('I type a gross monthly salary of "7000" without pausing', async () => {
         const gross = screen.getByRole("spinbutton");
-        await user.clear(gross);
-        await user.type(gross, "7000");
+        await getScenarioUser().clear(gross);
+        await getScenarioUser().type(gross, "7000");
       });
       Then('the salary field immediately shows "7000"', () => {
         // The local echo reflects the typed value synchronously, before any URL commit.
@@ -3201,7 +3093,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   // Foreigner public-school eligibility: where public schooling isn't open to foreign residents,
   // the calculator charges the private figure and flags the cell.
   Scenario("Public schooling not open to foreigners is charged at the private rate", async ({ Given, When, Then }) => {
-    const user = userEvent.setup();
     const sg = dataset.cities.find((c) => c.id === "singapore")!;
 
     Given("I am on the cost-of-living calculator", () => {
@@ -3211,7 +3102,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
     });
     When("I add one school-age child with public school selected", async () => {
       // School type defaults to "public"; adding a school-age child enables the column.
-      await user.selectOptions(screen.getByRole("combobox", { name: /school-age children/i }), "1");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /school-age children/i }), "1");
     });
     Then("the Singapore school cost equals its private-school figure and the cell is flagged", () => {
       // Singapore is "limited" → a foreigner picking public is charged the PRIVATE figure.
@@ -3223,7 +3114,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("Public schooling open to foreigners keeps the public cost", async ({ Given, When, Then }) => {
-    const user = userEvent.setup();
     const berlin = dataset.cities.find((c) => c.id === "berlin")!;
 
     Given("I am on the cost-of-living calculator", () => {
@@ -3232,7 +3122,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
       renderPage(<CostOfLivingCalculatorPage />);
     });
     When("I add one school-age child with public school selected", async () => {
-      await user.selectOptions(screen.getByRole("combobox", { name: /school-age children/i }), "1");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /school-age children/i }), "1");
     });
     Then("the Berlin school cost equals its public-school figure with no foreigner flag", () => {
       // Germany is "open" → public stays public, no fallback, no flag.
@@ -3272,15 +3162,13 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("Active tab description follows the active tab", async ({ Given, When, Then }) => {
-    const user = userEvent.setup();
-
     Given('the cost-of-living calculator is open with the "Cost of living" tab active', () => {
       renderPage(<CostOfLivingCalculatorPage />);
       expect(screen.getByTestId("tab-desc-cost").className).not.toMatch(/\bhidden\b/);
     });
 
     When('the user selects the "Savings" tab', async () => {
-      await user.click(screen.getByRole("tab", { name: /savings/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
     });
 
     Then('only the "Savings" tab description is visible', () => {
@@ -3374,15 +3262,13 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   });
 
   Scenario("Sortable savings column exposes aria-sort", async ({ Given, When, Then }) => {
-    const user = userEvent.setup();
-
     Given("the Savings tab table is shown", async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /savings/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
       // Enter a salary so the savings comparison table renders past the empty-state.
       const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
-      await user.clear(input);
-      await user.type(input, "8000");
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "8000");
     });
 
     When("the page is rendered", () => {
@@ -3401,7 +3287,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
 
   // Cluster 3 — foreigner public-school flag present in BOTH table and city-detail.
   Scenario("Foreigner-school flag is clear, styled, and present in both views", async ({ Given, And, When, Then }) => {
-    const user = userEvent.setup();
     const sg = dataset.cities.find((c) => c.id === "singapore")!;
 
     Given("a city whose country does not open public school to foreigners", () => {
@@ -3410,7 +3295,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
 
     And('school-age children >= 1 and school type "public"', async () => {
       // School type defaults to "public"; adding a school-age child enables the column.
-      await user.selectOptions(screen.getByRole("combobox", { name: /school-age children/i }), "1");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /school-age children/i }), "1");
     });
 
     When("the page is rendered", () => {
@@ -3447,8 +3332,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
 
   // Cluster 4 — jargon glosses across the cost-of-living + min-role headers.
   Scenario("Jargon table headers carry an accessible explanation", async ({ Given, When, Then, And }) => {
-    const user = userEvent.setup();
-
     Given("the calculator is open", () => {
       renderPage(<CostOfLivingCalculatorPage />);
     });
@@ -3472,10 +3355,10 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
 
     And('the "P25"/"Median"/"P75" headers carry percentile explanations', async () => {
       // P25/Median/P75 live on the Minimum-role table; switch tabs and enter a target.
-      await user.click(screen.getByRole("tab", { name: /minimum role/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
       const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
-      await user.clear(input);
-      await user.type(input, "1000");
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "1000");
       const titledHeaders = Array.from(document.querySelectorAll("th[title]")).map(
         (h) => h.getAttribute("title") ?? "",
       );
@@ -3612,11 +3495,9 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   // The single-city essentials preview is removed from the min-role tab (the tab now lists every
   // qualifying city, so a one-city example is redundant there).
   Scenario("Minimum-role tab does not render the single-city essentials preview", async ({ Given, When, Then }) => {
-    const user = userEvent.setup();
-
     Given("the Minimum-role tab is activated", async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /minimum role/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
     });
 
     When("the page is rendered", () => {
@@ -3631,11 +3512,9 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
 
   // UWT-007 — at-field currency indicator on the Savings gross input.
   Scenario("Savings salary input shows its currency at the field", async ({ Given, When, Then }) => {
-    const user = userEvent.setup();
-
     Given("the Savings tab is shown", async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /savings/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
     });
 
     When("the page is rendered", () => {
@@ -3650,12 +3529,10 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
 
   // Cluster 6 / SG-002 — all selects share the design-system chrome (appearance-none + chevron).
   Scenario("All selects share the design-system chrome", async ({ Given, When, Then, And }) => {
-    const user = userEvent.setup();
-
     Given("the calculator at 1280px", async () => {
       renderPage(<CostOfLivingCalculatorPage />);
       // Visit the Minimum-role tab too so the currency/ref selects are also exercised.
-      await user.click(screen.getByRole("tab", { name: /minimum role/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
     });
 
     When("the page is rendered", () => {
@@ -3684,11 +3561,9 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
 
   // SG-003 — Baseline-source segmented control keeps the 44px rhythm via flex-wrap.
   Scenario("Baseline-source control keeps the 44px rhythm at mobile", async ({ Given, When, Then }) => {
-    const user = userEvent.setup();
-
     Given("the Minimum-role tab at 320px and 375px", async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /minimum role/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
     });
 
     When("the page is rendered", () => {
@@ -3709,12 +3584,10 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
 
   // DWT-007 — salary-currency toggle bottom-aligns with the gross input (items-end field row).
   Scenario("Salary-currency toggle bottom-aligns with its sibling input", async ({ Given, When, Then }) => {
-    const user = userEvent.setup();
-
     Given('the Minimum-role "My salary" baseline at 1280px', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
-      await user.click(screen.getByRole("tab", { name: /minimum role/i }));
-      await user.click(screen.getByRole("radio", { name: /my salary/i }));
+      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
+      await getScenarioUser().click(screen.getByRole("radio", { name: /my salary/i }));
     });
 
     When("the page is rendered", () => {

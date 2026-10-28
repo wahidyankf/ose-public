@@ -1,5 +1,5 @@
 ---
-description: "Phase 2: install Git, Docker Desktop, and jq — the foundational tools required before anything else."
+description: "Phase 2: install Git, rootless Podman with its Compose provider, and jq — the foundational tools required before anything else."
 when_to_use: "Use when installing the core tools a fresh environment needs before language ecosystems."
 ---
 
@@ -20,26 +20,41 @@ sudo apt-get install -y git
 
 **Success criteria**: `git --version` returns a version string.
 
-## 2.2 Install Docker Desktop
+## 2.2 Install Podman and the Compose provider
+
+The repository runs containers with rootless Podman and the explicit `podman-compose` provider. Do not
+install Docker Compose for repository use.
 
 ```bash
-# macOS — download and install Docker Desktop
-# https://docs.docker.com/desktop/setup/install/mac-install/
-# After installation, start Docker Desktop from Applications
+# macOS (no pinned Podman version) — install Podman from the official release page, verifying the package digest and signature
+# https://podman.io/docs/installation
+# Create a machine only when none exists, with rootless mode; never replace an existing machine
+podman machine list
+podman machine init --rootful=false   # Only when no machine exists
+podman machine start
 
-# Linux — install Docker Engine + Compose plugin
-# https://docs.docker.com/engine/install/
+# Linux (Ubuntu) — install the Podman version reviewed for the ubuntu/resolute/amd64 runner tuple in
+# .github/actions/setup-podman/action.yml. Other releases and architectures have no reviewed pin yet,
+# so do not install Podman there from this guide.
+sudo apt-get install -y "podman=<podman_pin>"   # podman_pin: see https://github.com/wahidyankf/ose-public/blob/main/.github/actions/setup-podman/action.yml
+
+# Compose provider, in an isolated pipx environment (requires pipx and python3-venv)
+sudo apt-get install -y pipx python3-venv
+pipx install --python "$(command -v python3)" podman-compose==1.6.0
+export PODMAN_COMPOSE_PROVIDER="$(command -v podman-compose)"
 
 # Verify
-docker --version
-docker compose version
+podman --version
+podman-compose --version
+podman info --format json | jq -e '.host.security.rootless == true'
 ```
 
-**Success criteria**: `docker --version` and `docker compose version` both return version strings.
-Docker daemon is running (`docker info` succeeds).
+**Success criteria**: `podman --version` and `podman-compose --version` both return version strings
+(`podman-compose` reports `1.6.0`). The rootless assertion exits 0 for the selected connection.
 
-**On failure**: Ensure Docker Desktop is running. On Linux, add user to docker group:
-`sudo usermod -aG docker $USER` then log out and back in.
+**On failure**: Confirm the selected connection is rootless with `podman system connection list`, and
+start a stopped machine with `podman machine start`. Do not run repository workflows with `sudo` or
+against a rootful engine.
 
 ## 2.3 Install jq
 

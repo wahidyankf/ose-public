@@ -103,7 +103,8 @@ Given("a reader has courses that are done, in progress, and not started", async 
 
 Then(
   "every course status is written as the words {string}, {string}, or {string}",
-  async ({ page }, ...words: string[]) => {
+  async ({ page }, firstWord: string, secondWord: string, thirdWord: string) => {
+    const words = [firstWord, secondWord, thirdWord];
     const statuses = (await page.locator(COURSE_STATUS_SLOT).allTextContents()).map((text) => text.trim());
 
     // One status per course card, each one a word — colour is only ever the second signal.

@@ -1,5 +1,5 @@
 # Production multi-stage Dockerfile for ose-be (F# / Giraffe on .NET 10).
-# Build context: repo root (e.g. `docker build -f apps/ose-be/Dockerfile .`).
+# Build context: repo root (e.g. `podman build --layers --format docker -f apps/ose-be/Dockerfile .`).
 #
 # NOTE: the fsproj references generated OpenAPI contract types under
 # apps/ose-be/generated-contracts/ (gitignored). Run `nx run ose-be:codegen`

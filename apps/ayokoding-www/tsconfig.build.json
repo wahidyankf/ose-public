@@ -1,0 +1,6 @@
+{
+  "extends": "./tsconfig.json",
+  // next build type-checks this config (next.config.ts typescript.tsconfigPath). It leaves out the tests tree,
+  // which the production image does not copy; the typecheck target keeps checking tests via tsconfig.json.
+  "exclude": ["node_modules", "content/**", "tests/**"]
+}

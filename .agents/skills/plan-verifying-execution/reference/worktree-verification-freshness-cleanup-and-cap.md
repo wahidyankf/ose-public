@@ -61,7 +61,7 @@ origin/main)` line, or a recorded `git merge --ff-only origin/main` / `git rebas
 - Eligible plan-local regenerable build output retained without a recorded exception: **HIGH**
 - Diagnostic evidence or a shared cache removed during plan cleanup: **HIGH**
 - Session-started dev container stack left running, another session's stack brought down, or a
-  machine-wide Docker prune issued during plan cleanup: **HIGH**
+  machine-wide Podman prune issued during plan cleanup: **HIGH**
 - Any `.env*` file or other local secret-bearing file removed during plan cleanup: **CRITICAL**
 - Anything other than regenerable build output removed from the primary checkout's working tree, or
   the default branch deleted locally or on `origin`: **HIGH**

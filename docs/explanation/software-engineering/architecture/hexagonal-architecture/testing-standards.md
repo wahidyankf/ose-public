@@ -48,7 +48,7 @@ specific Nx target.
 
 **REQUIRED**: All domain logic (aggregates, value objects, domain services) MUST have unit tests that exercise pure functions with no adapter involvement.
 
-Domain tests prove that business invariants hold regardless of infrastructure. They run without Spring context, without Docker, and without any port implementation.
+Domain tests prove that business invariants hold regardless of infrastructure. They run without Spring context, without containers, and without any port implementation.
 
 ### `Java`
 
@@ -122,7 +122,7 @@ abstract class PurchaseOrderRepositoryPortContract {
   }
 }
 
-// In-memory implementation — runs in test:unit (no Docker)
+// In-memory implementation — runs in test:unit (no containers)
 class InMemoryPurchaseOrderRepositoryAdapterTest
     extends PurchaseOrderRepositoryPortContract {
 

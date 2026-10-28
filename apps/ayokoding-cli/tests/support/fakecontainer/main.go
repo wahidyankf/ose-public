@@ -4,14 +4,16 @@
 //
 // Protocol:
 // Every invocation appends "argv: <args joined by one space>" to
-// FAKECONTAINER_LOG when set. FAKECONTAINER_DAEMON_DOWN=1 makes "version"
-// fail, FAKECONTAINER_PULL_FAIL=1 makes "pull" fail, and
-// FAKECONTAINER_NEVER_READY=1 makes "exec" fail. "run" parses --name,
-// logs "started <name>", sleeps FAKECONTAINER_SLEEP seconds, logs
-// "exited <name> code=<n>", and exits FAKECONTAINER_RUN_EXIT (default 0).
+// FAKECONTAINER_LOG when set. "info" prints rootless engine JSON, or rootful
+// JSON with FAKECONTAINER_ROOTFUL=1; FAKECONTAINER_DAEMON_DOWN=1 makes "info"
+// and "version" fail, FAKECONTAINER_PULL_FAIL=1 makes "pull" fail, and
+// FAKECONTAINER_NEVER_READY=1 makes "exec" fail. "build" succeeds. "run"
+// parses --name, logs "started <name>", sleeps FAKECONTAINER_SLEEP seconds,
+// logs "exited <name> code=<n>", and exits FAKECONTAINER_RUN_EXIT (default 0).
 // "ps" prints FAKECONTAINER_PS verbatim, "network ls" prints
-// FAKECONTAINER_NETWORKS verbatim, FAKECONTAINER_ECHO_STDIN=1 copies
-// standard input to standard output on "run", "rm" logs
+// FAKECONTAINER_NETWORKS verbatim (Podman JSON in the sweep tests),
+// FAKECONTAINER_ECHO_STDIN=1 copies standard input to standard output on
+// "run", "rm" logs
 // "removed container <name>"
 // per name, and "network create" and "network rm" log their network.
 package main
@@ -69,6 +71,9 @@ func runName(args []string) string {
 func runContainer(args []string) int {
 	name := runName(args)
 	record("started " + name)
+	if output := getenv("FAKECONTAINER_STDOUT"); output != "" {
+		_, _ = os.Stdout.WriteString(output)
+	}
 	if seconds, err := strconv.Atoi(getenv("FAKECONTAINER_SLEEP")); err == nil && seconds > 0 {
 		time.Sleep(time.Duration(seconds) * time.Second)
 	}
@@ -120,6 +125,16 @@ func run(args []string) int {
 		return fail("needs a subcommand")
 	}
 	switch args[0] {
+	case "info":
+		if getenv("FAKECONTAINER_DAEMON_DOWN") == "1" {
+			return fail("daemon unreachable")
+		}
+		if getenv("FAKECONTAINER_ROOTFUL") == "1" {
+			_, _ = os.Stdout.WriteString(`{"host":{"security":{"rootless":false}}}` + "\n")
+			return 0
+		}
+		_, _ = os.Stdout.WriteString(`{"host":{"security":{"rootless":true}}}` + "\n")
+		return 0
 	case "version":
 		if getenv("FAKECONTAINER_DAEMON_DOWN") == "1" {
 			return fail("daemon unreachable")
@@ -130,6 +145,8 @@ func run(args []string) int {
 		if getenv("FAKECONTAINER_PULL_FAIL") == "1" {
 			return fail("pull failed")
 		}
+		return 0
+	case "build":
 		return 0
 	case "run":
 		return runContainer(args[1:])

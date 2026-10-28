@@ -79,6 +79,50 @@ Feature: Content Rendering
     Then the diagram should render as an inline SVG element
     And the raw Mermaid source should not be visible to the visitor
 
+  # Exemption(integration): the pending state is produced by an injected in-process renderer, so the boundary has no local resource to exercise; alternative-proof: ayokoding-www:test:unit / Mermaid source stays keyboard reachable while its diagram is pending
+  @integration-exempt
+  # Exemption(e2e): a browser run cannot hold the renderer pending on demand without injected fault control, so the boundary is the unit tier; alternative-proof: ayokoding-www:test:unit / Mermaid source stays keyboard reachable while its diagram is pending
+  @e2e-exempt
+  Scenario: Mermaid source stays keyboard reachable while its diagram is pending
+    Given a visitor opens a content page with a Mermaid code block between two controls
+    And the diagram is still rendering
+    When the visitor presses Tab to reach the control before the code block
+    And the visitor presses Tab again
+    Then the Mermaid source should have keyboard focus
+    When the visitor presses Tab once more
+    Then focus should move to the control after the code block
+
+  # Exemption(integration): the failed state is produced by an injected in-process renderer, so the boundary has no local resource to exercise; alternative-proof: ayokoding-www:test:unit / Mermaid source stays keyboard reachable when its diagram fails to render
+  @integration-exempt
+  # Exemption(e2e): a browser run cannot make the renderer fail on demand without injected fault control, so the boundary is the unit tier; alternative-proof: ayokoding-www:test:unit / Mermaid source stays keyboard reachable when its diagram fails to render
+  @e2e-exempt
+  Scenario: Mermaid source stays keyboard reachable when its diagram fails to render
+    Given a visitor opens a content page with a Mermaid code block between two controls
+    When the diagram rendering fails
+    And the visitor presses Tab to reach the control before the code block
+    And the visitor presses Tab again
+    Then the Mermaid source should have keyboard focus
+    When the visitor presses Tab once more
+    Then focus should move to the control after the code block
+
+  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / The Mermaid source leaves keyboard focus order once the diagram renders
+  @integration-exempt
+  Scenario: The Mermaid source leaves keyboard focus order once the diagram renders
+    When a visitor opens a content page containing a Mermaid code block
+    And the diagram should render as an inline SVG element
+    Then the Mermaid source should be removed from keyboard focus order
+
+  # Exemption(integration): the pending state is produced by an injected in-process renderer, so the boundary has no local resource to exercise; alternative-proof: ayokoding-www:test:unit / The focused Mermaid source has a visible indicator in light and dark themes
+  @integration-exempt
+  # Exemption(e2e): a browser run cannot hold the renderer pending on demand without injected fault control, so the boundary is the unit tier; alternative-proof: ayokoding-www:test:unit / The focused Mermaid source has a visible indicator in light and dark themes
+  @e2e-exempt
+  Scenario: The focused Mermaid source has a visible indicator in light and dark themes
+    Given a visitor opens a content page with a Mermaid code block
+    And the diagram is still rendering
+    When the visitor moves keyboard focus to the Mermaid source
+    Then the Mermaid source should show an outline drawn in the foreground colour
+    And that outline should contrast with the code surface by at least 3 to 1 in both themes
+
   # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Raw HTML details disclosure renders correctly
   @integration-exempt
   Scenario: Raw HTML details disclosure renders correctly

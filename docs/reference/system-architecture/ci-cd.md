@@ -235,7 +235,7 @@ when no product deployment workflow owns them.
 1. Run each project's static `test:coverage:behaviour` validator across the OrganicLever app projects (`organiclever-be`, `organiclever-app-web`, `organiclever-be-e2e`, and the app-web E2E projects)
 2. Run `fe-lint` for `organiclever-app-web`
 3. Run backend and frontend Integration suites only for their isolated non-network local-resource boundaries
-4. Start the full Docker Compose stack, including PostgreSQL, for E2E proof through public boundaries
+4. Start the full Podman Compose stack, including PostgreSQL, for E2E proof through public boundaries
 5. Run the `organiclever-be-e2e` (`BASE_URL: http://localhost:8202`) and `organiclever-app-web` FE E2E (`WEB_BASE_URL: http://localhost:3202`) Playwright tests with isolated synthetic data
 6. `detect-changes`: check the app paths vs previous commit
 7. `deploy` (gated on all test jobs + `detect-changes == true`): "deploy" by force-pushing `HEAD` to BOTH `stag-organiclever-app-web` (Vercel auto-builds the staging app) and `stag-organiclever-be` (the be-build-deploy workflow fires for the backend image)

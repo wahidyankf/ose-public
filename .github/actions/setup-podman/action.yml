@@ -75,3 +75,21 @@ runs:
         version="$(podman-compose --version)"
         grep -Fxq "podman-compose version 1.6.0" <<< "$version"
         test "$PODMAN_COMPOSE_PROVIDER" = "$(command -v podman-compose)"
+
+    - name: Assert cgroup v2, netavark DNS and overlay storage before consumer workloads run
+      shell: bash
+      run: |
+        set -euo pipefail
+        info="$(podman info --format json)"
+        if ! jq -e '.host.cgroupVersion == "v2" and (.host.cgroupControllers | contains(["cpu", "memory", "pids"]))' <<< "$info" > /dev/null; then
+          echo "::error::podman must use cgroup v2 with the cpu, memory and pids controllers; found cgroupVersion=$(jq -r '.host.cgroupVersion' <<< "$info") controllers=$(jq -c '.host.cgroupControllers' <<< "$info")" >&2
+          exit 1
+        fi
+        if ! jq -e '.host.networkBackend == "netavark" and (.host.networkBackendInfo.dns.path | type == "string" and test("(^|/)aardvark-dns$"))' <<< "$info" > /dev/null; then
+          echo "::error::podman must use the netavark network backend with an aardvark-dns path; found networkBackend=$(jq -r '.host.networkBackend' <<< "$info") dns.path=$(jq -r '.host.networkBackendInfo.dns.path' <<< "$info")" >&2
+          exit 1
+        fi
+        if ! jq -e '.store.graphDriverName == "overlay"' <<< "$info" > /dev/null; then
+          echo "::error::podman must use the overlay storage driver; found graphDriverName=$(jq -r '.store.graphDriverName' <<< "$info")" >&2
+          exit 1
+        fi

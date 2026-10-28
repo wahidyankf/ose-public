@@ -31,7 +31,7 @@ Production branch `prod-organiclever-www` deploys to www.organiclever.com via Ve
 
 ## Comparison with Other Apps and Development Commands
 
-Differs from ayokoding-web and ose-web mainly in its feature-context architecture and PGlite storage. See [Comparison with Other Apps and Development Commands](./reference/comparison-and-development-commands.md) for the comparison table and Nx/Docker Compose dev workflows.
+Differs from ayokoding-web and ose-web mainly in its feature-context architecture and PGlite storage. See [Comparison with Other Apps and Development Commands](./reference/comparison-and-development-commands.md) for the comparison table and Nx/Podman Compose dev workflows.
 
 ## Common Patterns
 
@@ -51,7 +51,7 @@ See [Content Validation Checklist and Common Mistakes](./reference/validation-ch
 
 **Infrastructure**:
 
-- [infra/dev/organiclever-www/docker-compose.yml](../../../infra/dev/organiclever-www/docker-compose.yml) - Docker Compose service definition for the frontend
+- [infra/dev/organiclever-www/docker-compose.yml](../../../infra/dev/organiclever-www/docker-compose.yml) - Compose service definition for the frontend, run with Podman Compose
 - [apps/organiclever-www/Dockerfile](../../../apps/organiclever-www/Dockerfile) - Frontend container image
 
 **Related Skills**:

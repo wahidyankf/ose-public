@@ -27,7 +27,7 @@ a shared cache protects a shared stack for the same reason.
 
 ## What Is Retained
 
-Retain pulled base images — `postgres:17-alpine`, language runtimes, anything another worktree or a
+Retain pulled base images — `docker.io/library/postgres:17-alpine`, language runtimes, anything another worktree or a
 local CI run would have to re-pull. Retain named volumes carrying dev data: `podman compose down`
 without `-v` is the default, and `-v` requires that the volume hold disposable data this plan
 created and that no other session shares the stack. Retain every project this session did not start,

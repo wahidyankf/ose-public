@@ -92,7 +92,7 @@ export function resetDatabaseToPending() {
     "DROP SCHEMA public CASCADE; CREATE SCHEMA public; " +
     "SELECT COUNT(*) FROM pg_tables WHERE schemaname = 'public';";
   const result = spawnSync(
-    "docker",
+    "podman",
     [
       "compose",
       "-p",
@@ -112,7 +112,7 @@ export function resetDatabaseToPending() {
       "-tAc",
       sql,
     ],
-    { cwd: process.cwd(), encoding: "utf8" },
+    { cwd: process.cwd(), encoding: "utf8", env: { ...process.env, PODMAN_COMPOSE_PROVIDER: "podman-compose" } },
   );
 
   if (result.status !== 0) {

@@ -290,7 +290,7 @@ server {
 # syntax=docker/dockerfile:1
 
 # Base image
-FROM node:24-alpine AS base
+FROM docker.io/library/node:24-alpine AS base
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 

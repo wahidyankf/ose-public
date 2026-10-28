@@ -1,5 +1,5 @@
 # Build context: workspace root (../../.. from infra/dev/organiclever-www/)
-FROM node:24-alpine AS build
+FROM docker.io/library/node:24-alpine AS build
 WORKDIR /app
 
 # Copy app package.json and strip workspace dependencies before install
@@ -37,7 +37,7 @@ COPY apps/organiclever-www/package.json apps/organiclever-www/tsconfig.json apps
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npx next build
 
-FROM node:24-alpine
+FROM docker.io/library/node:24-alpine
 
 LABEL org.opencontainers.image.source="https://github.com/wahidyankf/ose-public"
 LABEL org.opencontainers.image.description="OrganicLever marketing website built with Next.js"

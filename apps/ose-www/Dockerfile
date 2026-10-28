@@ -1,4 +1,4 @@
-FROM node:24-alpine AS deps
+FROM docker.io/library/node:24-alpine AS deps
 WORKDIR /workspace
 COPY ../../package.json ../../package-lock.json ./
 COPY apps/ose-www/package.json apps/ose-www/
@@ -7,7 +7,7 @@ COPY libs/web-ui/package.json libs/web-ui/
 COPY libs/web-ui-token/package.json libs/web-ui-token/
 RUN npm ci --ignore-scripts
 
-FROM node:24-alpine AS builder
+FROM docker.io/library/node:24-alpine AS builder
 WORKDIR /workspace
 COPY --from=deps /workspace/node_modules ./node_modules
 COPY apps/ose-www/ apps/ose-www/
@@ -24,7 +24,7 @@ WORKDIR /workspace/apps/ose-www
 RUN npx tsx src/scripts/generate-search-data.ts
 RUN npm run build
 
-FROM node:24-alpine AS runner
+FROM docker.io/library/node:24-alpine AS runner
 
 LABEL org.opencontainers.image.source="https://github.com/wahidyankf/ose-public"
 LABEL org.opencontainers.image.description="OSE Platform content website built with Next.js"

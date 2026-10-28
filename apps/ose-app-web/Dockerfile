@@ -1,5 +1,5 @@
 # Build context: workspace root (../../.. from apps/ose-app-web/)
-FROM node:24-alpine AS build
+FROM docker.io/library/node:24-alpine AS build
 WORKDIR /app
 
 # Copy app package.json and strip workspace dependency before install
@@ -33,7 +33,7 @@ ARG OSE_BE_URL=http://ose-be:8302
 ENV OSE_BE_URL=${OSE_BE_URL}
 RUN npx next build
 
-FROM node:24-alpine
+FROM docker.io/library/node:24-alpine
 
 LABEL org.opencontainers.image.source="https://github.com/wahidyankf/ose-public"
 LABEL org.opencontainers.image.description="OSE Application frontend built with Next.js"

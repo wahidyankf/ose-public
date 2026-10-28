@@ -1,7 +1,7 @@
 # Build context: workspace root (../../ from this file)
 # Invoked via: podman compose -f infra/dev/ayokoding-www/docker-compose.yml
 
-FROM node:24-alpine AS deps
+FROM docker.io/library/node:24-alpine AS deps
 WORKDIR /workspace
 COPY package.json package-lock.json ./
 COPY apps/ayokoding-www/package.json ./apps/ayokoding-www/
@@ -10,7 +10,7 @@ COPY libs/web-ui/package.json ./libs/web-ui/
 COPY libs/web-ui-token/package.json ./libs/web-ui-token/
 RUN npm ci --ignore-scripts
 
-FROM node:24-alpine AS builder
+FROM docker.io/library/node:24-alpine AS builder
 WORKDIR /workspace
 COPY --from=deps /workspace/node_modules ./node_modules
 COPY --from=deps /workspace/apps/ayokoding-www/node_modules ./apps/ayokoding-www/node_modules
@@ -25,7 +25,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 WORKDIR /workspace/apps/ayokoding-www
 RUN npm run build
 
-FROM node:24-alpine AS runner
+FROM docker.io/library/node:24-alpine AS runner
 
 LABEL org.opencontainers.image.source="https://github.com/wahidyankf/ose-public"
 LABEL org.opencontainers.image.description="AyoKoding educational content platform built with Next.js"

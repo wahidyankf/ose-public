@@ -25,7 +25,7 @@ nx dev ose-app-web  # http://localhost:3300
 | Image               | Base                                       | Purpose               |
 | ------------------- | ------------------------------------------ | --------------------- |
 | `ose-be` (dev)      | `mcr.microsoft.com/dotnet/sdk:10.0-alpine` | Hot-reload dev server |
-| `ose-app-web` (dev) | `node:24-alpine`                           | Hot-reload dev server |
+| `ose-app-web` (dev) | `docker.io/library/node:24-alpine`         | Hot-reload dev server |
 
 ## Notes
 

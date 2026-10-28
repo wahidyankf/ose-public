@@ -1279,15 +1279,13 @@ Never run production/shared-system examples or publish an image solely to valida
 
 ### Post-Push Verification
 
-- [ ] [AI] Once this implementation change set is authorized for delivery, commit the coherent
+- [x] [AI] Once this implementation change set is authorized for delivery, commit the coherent
       runtime switch, open/update its draft PR to `main`, and obtain fresh-context leak review for
       the exact push head before pushing. Root instructions and hardened push guards remain binding.
 
-  **Remaining:** commits exist on `docker-to-podman-base` and PR #749 is open (coordinator report). Its PR quality
-  gate on `60a35faf1` failed once on a broken relative link in an evidence file, since fixed
-  (`./rhino md internal-link validate` exits 0, 17,286 links, 2026-10-29). The next push needs a fresh push-head
-  leak review and a new current-head and base gate run. Neither the leak review nor the gate result is recorded in
-  the evidence yet.
+  **Completed:** PR #749 carried the runtime switch. Every push head had a fresh-context leak review (all PASS) and the
+  public-safety screen at exit 0. The PR quality gate passed on the exact final head `7660e498f` (every job; Flutter
+  skipped), and the PR merged by squash as `f5f544fe7` (`evidence/P4/publishing-terminal.md`).
 
 - [ ] [AI] Poll CI every two minutes with `gh run list`/`gh run view`; never `gh run watch`. Require
       exact-head/base PR Quality gate and applicable container CI. Investigate failures at root cause,
@@ -1304,13 +1302,12 @@ Never run production/shared-system examples or publish an image solely to valida
       dependencies and scenario identities against the final delivery revision; rerun only proofs
       invalidated by later changes. Any missing, failed or unreconciled row blocks merge.
 
-  **Remaining:** only manual dispatch runs are recorded (`evidence/P2/ci.md`: 40667489060, 40671958744,
-  40693498144). No passing PR quality gate run and no PR CI run is recorded, and the provisional runner row is not
-  closed on PR CI. The setup action asserts rootless and provider only; cgroup, DNS and mount proof before consumer
-  workloads is not in it. The proof job was removed in `60a35faf1`, so the four Ayo rows and the web-UI extra need
-  a new overlay dispatch on the final head wherever inputs changed (`60a35faf1` changed Ayo FE E2E steps,
-  `mermaid.tsx` and feature files after run
-  40693498144).
+  **Remaining:** CI was polled every two minutes. Closed on CI: the provisional runner row (tuple
+  `ubuntu/resolute/amd64`, Podman `5.7.0+ds2-3build1`, rootless and provider asserted by `setup-podman`; PR gate and
+  run 40758214180), Ayo rows 26 and 33 and the web-UI extra (run 40758214180 on inputs equal to the PR head's, three
+  browsers, zero retries), and the PR quality gate on the final head. Still open: row 20 has a CI receipt only from
+  run 40667489060 on `88a20850c`, and the cgroup, DNS and mount checks are not in the setup action. The PR merged with
+  these two recorded as open gaps in `evidence/P4/delivery-readiness.md`; they are not proven, and no maintainer has accepted them.
 
 - [ ] [AI] Record the green pre-archival PR head and preliminary publication/hosting proof matrix.
       Do not merge yet: Knowledge Capture and archival must land in this same PR first. Local image

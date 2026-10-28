@@ -86,3 +86,82 @@ jobs:
           npx nx run-many -t test:e2e
           --projects=crane-cli,ts-env-loader,web-ui,ferret-cli-e2e,ayokoding-cli
           --parallel=1
+
+  # TEMPORARY docker-to-podman proof job: remove after the proof run
+  # Test-only manual proof for original rows 14, 20, 26, 33 and the web-UI E2E extra. Not a deploy job.
+  docker-to-podman-ayo-proof:
+    name: docker-to-podman-ayo-proof
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      NX_SKIP_NX_CACHE: "true"
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/setup-podman
+      - uses: ./.github/actions/setup-playwright
+      - name: Record proof provenance
+        run: |
+          {
+            echo "### docker-to-podman proof provenance"
+            echo ""
+            echo "- Commit: $(git rev-parse HEAD)"
+            . /etc/os-release
+            echo "- Runner tuple: ${ID}/${VERSION_CODENAME}/$(dpkg --print-architecture)"
+            echo "- Podman: $(podman --version)"
+            echo "- Rootless: $(podman info --format '{{.Host.Security.Rootless}}')"
+            echo "- podman-compose: $(podman-compose --version)"
+            echo "- nproc: $(nproc)"
+            echo "- Free memory: $(free -h | awk '/^Mem:/ { print $7 " available of " $2 " total" }')"
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Build the Ayo www app (original row 14)
+        run: npx nx run ayokoding-www:build
+      - name: Run the Ayo www integration suite (original row 20)
+        run: npx nx run ayokoding-www:test:integration
+      # Stack steps below mirror the e2e job of _reusable-www-test-local-deploy.yml with the ayokoding-www inputs.
+      - name: Start the Ayo Compose stack with Podman Compose
+        run: podman compose -f infra/dev/ayokoding-www/docker-compose.yml up --build --detach --wait --wait-timeout 150
+      - name: Wait for Ayo health
+        run: |
+          HEALTH_URL="http://localhost:3101/api/trpc/meta.health"
+          for _ in $(seq 1 $(( 150 / 5 ))); do
+            if curl -s "$HEALTH_URL" > /dev/null 2>&1; then break; fi
+            sleep 5
+          done
+      - name: Verify the Podman service is running and healthy
+        run: |
+          set -euo pipefail
+          container_id="$(podman ps -q --filter "label=io.podman.compose.project=ayokoding-www" --filter "label=com.docker.compose.service=ayokoding-www")"
+          test -n "$container_id"
+          state="$(podman inspect --format '{{.State.Status}} {{if .State.Health}}{{.State.Health.Status}}{{end}}' "$container_id")"
+          test "$state" = "running healthy"
+      - name: Copy prerender manifest for E2E
+        run: |
+          set -euo pipefail
+          artifact_dir="apps/ayokoding-www-fe-e2e/.e2e-artifacts"
+          container_id="$(podman ps -q --filter "label=io.podman.compose.project=ayokoding-www" --filter "label=com.docker.compose.service=ayokoding-www")"
+          test -n "$container_id"
+          mkdir -p "$artifact_dir"
+          podman cp "$container_id:/app/apps/ayokoding-www/.next/prerender-manifest.json" "$artifact_dir/prerender-manifest.json"
+      # E2E_FULL_MATRIX=1 is an explicit opt-in knob, not a CI-state change: CI stays GitHub's CI=true. The BE Playwright
+      # config then runs as the local original run did (zero retries, no CI-only worker cap).
+      - name: Run the Ayo BE E2E suite (original row 26)
+        env:
+          E2E_FULL_MATRIX: "1"
+        run: npx nx run ayokoding-www-be-e2e:test:e2e
+      - name: Stop Ayo containers before FE E2E
+        run: podman compose -f infra/dev/ayokoding-www/docker-compose.yml down
+      # E2E_FULL_MATRIX=1 is an explicit opt-in knob, not a CI-state change: CI stays GitHub's CI=true. The FE Playwright
+      # config then keeps all three browser projects and zero retries, as the local original run did. Without the knob,
+      # CI=true selects Chromium only with two retries.
+      - name: Run the Ayo FE E2E suite (original row 33)
+        env:
+          E2E_FULL_MATRIX: "1"
+        run: npx nx run ayokoding-www-fe-e2e:test:e2e
+      - name: Stop Ayo containers
+        if: always()
+        run: podman compose -f infra/dev/ayokoding-www/docker-compose.yml down
+      - name: Run the web-UI full E2E extra
+        if: always()
+        run: npx nx run web-ui:test:e2e
+  # END TEMPORARY

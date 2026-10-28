@@ -56,7 +56,7 @@ export async function seedWorkoutProgress(page: Page): Promise<void> {
   await page.evaluate(async () => {
     const db = (globalThis as { __ol_db?: BrowserJournalDb }).__ol_db;
     if (!db) throw new Error("OrganicLever journal database was not initialized");
-    const timestamp = "2026-09-05T03:00:00.000Z";
+    const timestamp = new Date().toISOString();
     await db.query(
       `INSERT INTO journal_entries
         (id, name, payload, labels, started_at, finished_at, created_at, updated_at)

@@ -21,7 +21,16 @@ Given("a published page exists at slug {string}", async ({ request }, slugWithLo
 });
 Given(
   "a section exists at slug {string} with child pages weighted {int}, {int}, {int}, {int}, and {int}",
-  async ({ request }, slugWithLocale: string, ...declaredWeights: number[]) => {
+  async (
+    { request },
+    slugWithLocale: string,
+    firstWeight: number,
+    secondWeight: number,
+    thirdWeight: number,
+    fourthWeight: number,
+    fifthWeight: number,
+  ) => {
+    const declaredWeights = [firstWeight, secondWeight, thirdWeight, fourthWeight, fifthWeight];
     const [locale, ...segments] = slugWithLocale.split("/");
     const response = await request.get(
       buildTrpcUrl("content.listChildren", { locale, parentSlug: segments.join("/") }),

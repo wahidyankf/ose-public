@@ -240,11 +240,17 @@ When("a visitor opens a content page with section headings", async ({ page }) =>
 Then("each section heading is shown in the heading text colour without an underline", async ({ page }) => {
   const headingLink = page.locator("article h2 > a").first();
   await expect(headingLink).toBeVisible();
-  const styles = await headingLink.evaluate((element) => ({
-    textDecorationLine: getComputedStyle(element).textDecorationLine,
-    anchorColor: getComputedStyle(element).color,
-    headingColor: getComputedStyle(element.parentElement as Element).color,
-  }));
+  const styles = await page.evaluate(() => {
+    const element = document.querySelector("article h2 > a");
+    if (element === null) {
+      throw new Error("The first article section-heading link is missing");
+    }
+    return {
+      textDecorationLine: getComputedStyle(element).textDecorationLine,
+      anchorColor: getComputedStyle(element).color,
+      headingColor: getComputedStyle(element.parentElement as Element).color,
+    };
+  });
   expect(styles.textDecorationLine).toBe("none");
   expect(styles.anchorColor).toBe(styles.headingColor);
 });
@@ -269,10 +275,16 @@ Then("the inline code shows no backtick characters before or after it", async ({
   // the fenced-block `pre > code` pairs.
   const inlineCode = page.locator("article p code").first();
   await expect(inlineCode).toBeVisible();
-  const pseudoContent = await inlineCode.evaluate((element) => ({
-    before: getComputedStyle(element, "::before").content,
-    after: getComputedStyle(element, "::after").content,
-  }));
+  const pseudoContent = await page.evaluate(() => {
+    const element = document.querySelector("article p code");
+    if (element === null) {
+      throw new Error("The first article inline code is missing");
+    }
+    return {
+      before: getComputedStyle(element, "::before").content,
+      after: getComputedStyle(element, "::after").content,
+    };
+  });
   // A pseudo-element without generated content reports "none" (Firefox) or "normal"
   // (Chromium/WebKit); either means no literal backticks are generated around the code.
   expect(["none", "normal"]).toContain(pseudoContent.before);

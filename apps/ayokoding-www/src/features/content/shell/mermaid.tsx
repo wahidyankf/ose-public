@@ -49,7 +49,12 @@ export function MermaidDiagram({ chart }: MermaidDiagramProps) {
 
   return (
     <div ref={containerRef} className="relative">
-      <pre className={svg === "" ? "my-4 rounded bg-muted p-4 text-sm" : "invisible my-4 rounded bg-muted p-4 text-sm"}>
+      <pre
+        // Exposed source can scroll while rendering is pending or fails; WCAG 2.1.1 needs keyboard access.
+        // oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+        tabIndex={svg === "" ? 0 : -1}
+        className={svg === "" ? "my-4 rounded bg-muted p-4 text-sm" : "invisible my-4 rounded bg-muted p-4 text-sm"}
+      >
         <code>{chart}</code>
       </pre>
       {svg === "" ? null : (

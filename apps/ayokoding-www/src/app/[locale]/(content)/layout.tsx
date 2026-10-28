@@ -14,14 +14,11 @@ export default async function ContentLayout({ children, params }: Props) {
   return (
     <div className="mx-auto flex w-full max-w-screen-2xl">
       <ResizableSidebar locale={locale as Locale}>
-        <Suspense fallback={<Sidebar locale={locale} />}>
-          <SidebarHost locale={locale}>
-            <Sidebar locale={locale} />
-          </SidebarHost>
-        </Suspense>
+        <SidebarHost locale={locale}>
+          <Sidebar locale={locale} />
+        </SidebarHost>
       </ResizableSidebar>
       <div className="flex min-w-0 flex-1">{children}</div>
     </div>
   );
 }
-import { Suspense } from "react";

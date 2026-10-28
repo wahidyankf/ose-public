@@ -176,7 +176,7 @@ Given("the AI benchmark dataset is loaded", async ({ page }) => {
   pageErrors = [];
   measured = [];
   page.on("pageerror", (error) => pageErrors.push(error.message));
-  await load(page, "", "en");
+  expect(full.models.length).toBeGreaterThan(0);
 });
 
 Given("the locale is {string}", async ({}, locale: string) => {

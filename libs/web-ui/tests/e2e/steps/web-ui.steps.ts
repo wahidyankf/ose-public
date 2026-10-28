@@ -291,11 +291,13 @@ Then("the card should have no accessibility violations", async ({ page }) => {
   await expect(page.locator("body")).toHaveAttribute("data-axe-violations", "0");
 });
 
-When("the Dialog is rendered with a trigger labeled {string}", async ({ page }) => {
+When("the Dialog is rendered with a trigger labeled {string}", async ({ page }, label: string) => {
+  expect(label).toBe("Open");
   await loadHarness(page, "dialog-trigger");
 });
 
-When("the Dialog is rendered open with title {string}", async ({ page }) => {
+When("the Dialog is rendered open with title {string}", async ({ page }, title: string) => {
+  expect(title).toBe("Test Dialog");
   await loadHarness(page, "dialog-open");
 });
 
@@ -364,7 +366,9 @@ Then("the icon should have role {string} and aria-label {string}", async ({ page
   await expect(page.locator(`${STORYBOOK_ROOT} svg`)).toHaveAttribute("aria-label", label);
 });
 
-Given("I render an InfoTip with title {string} and text {string}", async ({ page }) => {
+Given("I render an InfoTip with title {string} and text {string}", async ({ page }, title: string, text: string) => {
+  expect(title).toBe("Volume");
+  expect(text).toBe("Adjust the volume");
   await loadHarness(page, "info-tip");
 });
 
@@ -400,7 +404,8 @@ When("I render an Input", async ({ page }) => {
   await loadHarness(page, "input", { ariaLabel: "Input" });
 });
 
-When("the Input is rendered with a label {string} associated via htmlFor", async ({ page }) => {
+When("the Input is rendered with a label {string} associated via htmlFor", async ({ page }, label: string) => {
+  expect(label).toBe("Email");
   await loadHarness(page, "input", { label: "Email" });
 });
 
@@ -425,13 +430,19 @@ Then("the input should have no accessibility violations", async ({ page }) => {
   await expect(page.locator("body")).toHaveAttribute("data-axe-violations", "0");
 });
 
-When("the Label is rendered with text {string}", async ({ page }) => {
+When("the Label is rendered with text {string}", async ({ page }, text: string) => {
+  expect(text).toBe("Email");
   await loadHarness(page, "label");
 });
 
-When("the Label is rendered with text {string} associated to input {string}", async ({ page }) => {
-  await loadHarness(page, "label", { input: "email-input" });
-});
+When(
+  "the Label is rendered with text {string} associated to input {string}",
+  async ({ page }, text: string, input: string) => {
+    expect(text).toBe("Email");
+    expect(input).toBe("email-input");
+    await loadHarness(page, "label", { input: "email-input" });
+  },
+);
 
 Then("the label element with text {string} should be present", async ({ page }, text: string) => {
   await expect(page.getByText(text, { exact: true })).toBeVisible();

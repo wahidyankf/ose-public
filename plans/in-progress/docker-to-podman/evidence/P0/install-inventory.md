@@ -172,3 +172,14 @@ Gatekeeper assessment inside the admitted HIPPO command before invoking the inst
 
 This command has not been run; the user installed Podman manually instead. Machine initialization
 and startup remain separate actions after the CLI and package installation.
+
+## CI pin re-resolution (first runtime PR run)
+
+- **Observed:** the `ubuntu/resolute/amd64` runner tuple's `apt-cache policy podman` candidate matched the
+  provisional pin `5.7.0+ds2-3build1`. `apt-cache madison podman` on the runner listed that version as
+  `mirror+file:/etc/apt/apt-mirrors.txt resolute/universe amd64v3 Packages`.
+- **Disposition:** the same Ubuntu suite (`resolute/universe`) with the `amd64v3` microarchitecture index,
+  which the runner's apt mirror serves. The setup action now accepts exactly `amd64` or `amd64v3` for that
+  suite. No other suite, origin, or version is accepted.
+- **Still unproven:** installed-package and rootless assertions on the hosted runner, which the same PR run
+  will show.

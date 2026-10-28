@@ -38,7 +38,7 @@ runs:
           exit 1
         fi
         origins="$(apt-cache madison podman | awk -F'|' -v pin="$PODMAN_PIN" '{ gsub(/ /, "", $2); if ($2 == pin) print $3 }')"
-        if ! grep -Fq "${VERSION_CODENAME}/universe ${arch} Packages" <<< "$origins"; then
+        if ! grep -Eq "${VERSION_CODENAME}/universe ${arch}(v[0-9])? Packages" <<< "$origins"; then
           echo "::error::podman ${PODMAN_PIN} is not listed from the reviewed ${VERSION_CODENAME}/universe ${arch} archive" >&2
           echo "::group::apt-cache madison podman (runner origins for re-resolving the pin row)" >&2
           apt-cache madison podman >&2

@@ -55,10 +55,9 @@ CMD ["node", "dist/main.js"]
   images (Alpine, distroless) include `wget` but not `curl`. Write its `CMD` in JSON (exec) form,
   as the `hadolint` gate requires; wrap it in `sh -c` when the probe needs variable expansion or
   the `|| exit 1` mapping.
-- **Docker image format**: Native builds use `podman build --layers --format docker`. That format
-  keeps the `HEALTHCHECK` metadata, so do not switch an image to an OCI-only format that drops it. Compose builds set
-  `BUILDAH_FORMAT=docker`, as the dev scripts in `package.json` do; CI Compose builds rely on
-  Compose-level healthchecks until they set it too.
+- **Docker image format**: Native builds use `podman build --layers --format docker`, which keeps the
+  `HEALTHCHECK` metadata; never switch to an OCI-only format that drops it. Dev Compose builds set
+  `BUILDAH_FORMAT=docker`; CI Compose builds rely on Compose-level healthchecks.
 - **OCI LABEL**: Every production image must carry `org.opencontainers.image.source` and
   `org.opencontainers.image.description` labels.
 
@@ -75,25 +74,22 @@ Three compose file roles exist per app:
 Compose files keep their standard filenames and schema. Run them with `podman compose`, never with
 Docker Compose.
 
-Podman Compose is never an Integration-test classifier. A container the test did not start is not
-a resource it owns, so any test that reaches one belongs to E2E and must enter through the
-application's public boundary. Integration may use only local resources it owns, including a
-review-accepted loopback socket it starts and stops itself.
+A container the test did not start is not a resource it owns, so a test that reaches one is E2E and
+must enter through the application's public boundary. Integration may use only resources it owns,
+including a review-accepted loopback socket it starts and stops itself.
 
-Every compose file must pass `podman compose -f <file> config` without errors before merging. The CI
-overlay is applied with `-f docker-compose.yml -f docker-compose.ci.yml` to keep dev and CI configs DRY.
+Every compose file must pass `podman compose -f <file> config` before merging. The CI overlay applies as
+`-f docker-compose.yml -f docker-compose.ci.yml`.
 
 ## Podman Runtime and CI Boundaries
 
-- **Rootless only**: A local script or entry point that starts, builds, or publishes a container first runs
-  the shared preflight, `scripts/container-runtime-check` (with `--compose` when it calls Compose).
-  CI workflows get the equivalent rootless and provider assertion from the `setup-podman` action.
-  The preflight rejects an unreachable or rootful engine. Workloads never run with `sudo` or against
-  a rootful engine.
+- **Rootless only**: A local script or entry point that starts, builds, or publishes a container first
+  runs `scripts/container-runtime-check` (add `--compose` when it calls Compose). CI gets the equivalent
+  assertion from `setup-podman`. Workloads never run with `sudo` or against a rootful engine.
 - **Explicit provider**: Set `PODMAN_COMPOSE_PROVIDER` to the `podman-compose` executable before any
   `podman compose` command. An installed Docker Compose must never be selected.
 - **Shared setup**: CI installs and checks Podman through the `.github/actions/setup-podman` action,
-  which installs the pinned Podman and provider versions for its runner. Do not add a second container
+  which installs the pinned versions for its runner. Do not add a second container
   setup path.
 - **Native builds with a job-local cache**: Build images with `podman build --layers --format docker`.
   The build cache stays local to the job, and derived images run from the same Podman store. Do not add
@@ -123,5 +119,4 @@ Use broad exclusions with narrow inclusions rather than enumerating every exclud
 !tsconfig*.json
 ```
 
-Broad exclusion prevents accidentally including large directories (e.g., `node_modules`, `.git`,
-`generated-reports`) that would bloat the build context and slow transfers.
+Broad exclusion keeps large directories such as `node_modules` and `.git` out of the build context.

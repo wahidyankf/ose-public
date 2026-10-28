@@ -51,21 +51,30 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/setup-podman
       - name: Generate OpenAPI contract types
         run: npx nx run organiclever-be:codegen
-      - uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Log in to GHCR with an ephemeral auth file
+        env:
+          REGISTRY_ACTOR: ${{ github.actor }}
+          REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          auth_file="${RUNNER_TEMP}/ghcr-auth.json"
+          printf '%s' "$REGISTRY_TOKEN" | podman login ghcr.io --username "$REGISTRY_ACTOR" --password-stdin --authfile "$auth_file"
       - name: Build and push organiclever-be
         run: |
-          docker build -f apps/organiclever-be/Dockerfile \
+          set -euo pipefail
+          auth_file="${RUNNER_TEMP}/ghcr-auth.json"
+          podman build --layers --format docker -f apps/organiclever-be/Dockerfile \
             -t ghcr.io/wahidyankf/organiclever-be:latest \
             -t ghcr.io/wahidyankf/organiclever-be:${{ github.sha }} \
             .
-          docker push ghcr.io/wahidyankf/organiclever-be:latest
-          docker push ghcr.io/wahidyankf/organiclever-be:${{ github.sha }}
+          podman push --authfile "$auth_file" ghcr.io/wahidyankf/organiclever-be:latest
+          podman push --authfile "$auth_file" ghcr.io/wahidyankf/organiclever-be:${{ github.sha }}
+      - name: Remove the ephemeral registry auth file
+        if: always()
+        run: rm -f "${RUNNER_TEMP}/ghcr-auth.json"
 
   publish-ose-be:
     name: Publish ose-be
@@ -75,18 +84,27 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/setup-podman
       - name: Generate OpenAPI contract types
         run: npx nx run ose-be:codegen
-      - uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Log in to GHCR with an ephemeral auth file
+        env:
+          REGISTRY_ACTOR: ${{ github.actor }}
+          REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          auth_file="${RUNNER_TEMP}/ghcr-auth.json"
+          printf '%s' "$REGISTRY_TOKEN" | podman login ghcr.io --username "$REGISTRY_ACTOR" --password-stdin --authfile "$auth_file"
       - name: Build and push ose-be
         run: |
-          docker build -f apps/ose-be/Dockerfile \
+          set -euo pipefail
+          auth_file="${RUNNER_TEMP}/ghcr-auth.json"
+          podman build --layers --format docker -f apps/ose-be/Dockerfile \
             -t ghcr.io/wahidyankf/ose-be:latest \
             -t ghcr.io/wahidyankf/ose-be:${{ github.sha }} \
             .
-          docker push ghcr.io/wahidyankf/ose-be:latest
-          docker push ghcr.io/wahidyankf/ose-be:${{ github.sha }}
+          podman push --authfile "$auth_file" ghcr.io/wahidyankf/ose-be:latest
+          podman push --authfile "$auth_file" ghcr.io/wahidyankf/ose-be:${{ github.sha }}
+      - name: Remove the ephemeral registry auth file
+        if: always()
+        run: rm -f "${RUNNER_TEMP}/ghcr-auth.json"

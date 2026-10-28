@@ -7,17 +7,17 @@ to run locally. For a local first success, start from the
 
 ## What each action prepares
 
-| Action               | What it prepares                                          | Used when                                    |
-| -------------------- | --------------------------------------------------------- | -------------------------------------------- |
-| `setup-node`         | The pinned Node.js toolchain, dependencies, and Nx cache  | A workflow runs workspace tasks              |
-| `setup-dotnet`       | .NET tooling and its cache                                | A workflow validates F# work                 |
-| `setup-java`         | The pinned Temurin JDK for openapi-generator-cli          | A workflow generates API contract code       |
-| `setup-rust`         | The pinned Rust toolchain and Rust quality tools          | A workflow validates Rust work               |
-| `setup-go`           | The pinned Go toolchain, its caches, and golangci-lint    | A workflow validates Go work                 |
-| `setup-python`       | The pinned Python, checksum-verified uv, and the uv cache | A workflow validates Python work             |
-| `setup-lint-tools`   | Digest-verified shellcheck, hadolint, and actionlint      | A workflow runs the three lint gates         |
-| `setup-playwright`   | Browsers and operating-system dependencies                | A workflow runs browser E2E checks           |
-| `setup-docker-cache` | Docker Buildx and its layer cache                         | A workflow needs an integration or E2E stack |
+| Action             | What it prepares                                                                | Used when                                          |
+| ------------------ | ------------------------------------------------------------------------------- | -------------------------------------------------- |
+| `setup-node`       | The pinned Node.js toolchain, dependencies, and Nx cache                        | A workflow runs workspace tasks                    |
+| `setup-dotnet`     | .NET tooling and its cache                                                      | A workflow validates F# work                       |
+| `setup-java`       | The pinned Temurin JDK for openapi-generator-cli                                | A workflow generates API contract code             |
+| `setup-rust`       | The pinned Rust toolchain and Rust quality tools                                | A workflow validates Rust work                     |
+| `setup-go`         | The pinned Go toolchain, its caches, and golangci-lint                          | A workflow validates Go work                       |
+| `setup-python`     | The pinned Python, checksum-verified uv, and the uv cache                       | A workflow validates Python work                   |
+| `setup-lint-tools` | Digest-verified shellcheck, hadolint, and actionlint                            | A workflow runs the three lint gates               |
+| `setup-playwright` | Browsers and operating-system dependencies                                      | A workflow runs browser E2E checks                 |
+| `setup-podman`     | Rootless Podman, its pinned podman-compose provider, and the rootless assertion | A workflow builds an image or runs a Compose stack |
 
 Workflows reference an action with `uses: ./.github/actions/<name>`. Keep
 setup behaviour in the relevant `action.yml`; this README explains intent so a

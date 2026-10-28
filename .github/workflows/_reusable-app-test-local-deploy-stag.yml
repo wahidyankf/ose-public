@@ -1,7 +1,7 @@
 name: _reusable-app-test-local-deploy-stag
 
 # Reusable heavy-test pipeline for an app-group (web + be + e2e).
-# Spins the full stack locally via docker-compose, runs integration + e2e, then
+# Spins the full stack locally via Podman Compose, runs integration + e2e, then
 # on success force-pushes BOTH the staging web branch (Vercel builds it) and the
 # staging be branch (triggers {product}-be-build-deploy-stag.yml -> GHCR; the rollout is outside this repository).
 
@@ -85,13 +85,14 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/setup-podman
 
       - name: Run integration tests
         run: npx nx run ${{ inputs.be-project }}:test:integration
 
       - name: Teardown integration
         if: always()
-        run: docker compose -f apps/${{ inputs.be-project }}/docker-compose.integration.yml down -v
+        run: podman compose -f apps/${{ inputs.be-project }}/docker-compose.integration.yml down
 
   e2e:
     name: E2E tests (BE + FE)
@@ -103,6 +104,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/setup-podman
 
       - name: Generate contract types
         run: |
@@ -110,8 +112,9 @@ jobs:
           npx nx run ${{ inputs.be-project }}:codegen
           npx nx run ${{ inputs.web-project }}:codegen
 
+      # --wait-timeout 360 is the same six-minute budget as the health loops below.
       - name: Start full stack (backend + frontend)
-        run: docker compose -f ${{ inputs.compose-dir }}/docker-compose.yml -f ${{ inputs.compose-dir }}/docker-compose.ci.yml up --build -d
+        run: podman compose -f ${{ inputs.compose-dir }}/docker-compose.yml -f ${{ inputs.compose-dir }}/docker-compose.ci.yml up --build --detach --wait --wait-timeout 360
 
       - name: Wait for backend to be healthy
         run: |
@@ -125,7 +128,7 @@ jobs:
             sleep 10
           done
           echo "Backend did not become healthy within 6 minutes"
-          docker compose -f ${{ inputs.compose-dir }}/docker-compose.yml -f ${{ inputs.compose-dir }}/docker-compose.ci.yml logs ${{ inputs.be-project }}
+          podman compose -f ${{ inputs.compose-dir }}/docker-compose.yml -f ${{ inputs.compose-dir }}/docker-compose.ci.yml logs ${{ inputs.be-project }}
           exit 1
 
       - name: Wait for frontend to be ready
@@ -140,7 +143,7 @@ jobs:
             sleep 10
           done
           echo "Frontend did not start within 6 minutes"
-          docker compose -f ${{ inputs.compose-dir }}/docker-compose.yml -f ${{ inputs.compose-dir }}/docker-compose.ci.yml logs ${{ inputs.web-project }}
+          podman compose -f ${{ inputs.compose-dir }}/docker-compose.yml -f ${{ inputs.compose-dir }}/docker-compose.ci.yml logs ${{ inputs.web-project }}
           exit 1
 
       - uses: ./.github/actions/setup-playwright
@@ -173,7 +176,7 @@ jobs:
 
       - name: Teardown
         if: always()
-        run: docker compose -f ${{ inputs.compose-dir }}/docker-compose.yml -f ${{ inputs.compose-dir }}/docker-compose.ci.yml down -v
+        run: podman compose -f ${{ inputs.compose-dir }}/docker-compose.yml -f ${{ inputs.compose-dir }}/docker-compose.ci.yml down
 
   deploy:
     name: Deploy to staging (force-push web + be branches)

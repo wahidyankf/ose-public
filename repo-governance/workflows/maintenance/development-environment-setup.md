@@ -25,7 +25,7 @@ toolchain, or verifying an environment after adding a new project language.
 ## Inputs
 
 - **`platform`** (enum: macos, linux, optional, default `macos`) — Target operating system
-- **`scope`** (enum: full, minimal, optional, default `full`) — full: every phase, covering all 21 declared toolchains; minimal: core phases only (Git, Podman, jq, Volta, Node.js, npm). Doctor has no scope: it always probes every declared toolchain
+- **`scope`** (enum: full, minimal, optional, default `full`) — full: every phase, covering every declared toolchain; minimal: core phases only (Git, Podman, jq, Volta, Node.js, npm). Doctor has no scope: it always probes every declared toolchain
 
 ## Outputs
 
@@ -35,7 +35,7 @@ toolchain, or verifying an environment after adding a new project language.
 ## Contents
 
 - [Execution Mode](./development-environment-setup/001-execution-mode.md) — manual orchestration.
-- [Tool Inventory](./development-environment-setup/002-tool-inventory.md) — the 21 toolchains declared
+- [Tool Inventory](./development-environment-setup/002-tool-inventory.md) — the toolchains declared
   under `repo-config.yml` `toolchains`, and what is deliberately undeclared.
 - [Quick Start](./development-environment-setup/003-quick-start.md) — install, validate, provision only on drift.
 

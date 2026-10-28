@@ -51,7 +51,8 @@ git commit -m "chore: update lockfile"
 
 - Node.js 24.13.1 (Volta managed)
 - npm 11.10.1 (Volta managed)
-- Podman, rootless (for local services)
+- Podman <recorded version>, rootless (for local services)
+- podman-compose 1.6.0
 - PostgreSQL 16.x (Podman or local)
 ```
 

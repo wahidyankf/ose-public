@@ -23,22 +23,23 @@ nothing here — install a reported tool through the phase or manager listed, th
 | 6   | go                     | Go projects, `gofmt` in `format-staged`         | CI `setup-go` input                   | Phase 4                     |
 | 7   | golangci-lint          | Go project lint                                 | CI `setup-go` input                   | Phase 4                     |
 | 8   | java                   | `openapi-generator-cli` (`codegen` targets)     | —                                     | SDKMAN or a JDK package     |
-| 9   | podman, podman-compose | dev stacks, E2E, container builds               | podman-compose `1.6.0` (Phase 2 pipx) | Phase 2                     |
-| 10  | jq                     | hooks, CI scripts                               | —                                     | Phase 2                     |
-| 11  | bash                   | every gate script                               | —                                     | Phase 2 (ships with the OS) |
-| 12  | curl                   | cold-cache `./rhino`, `./hippo`, safety scanner | —                                     | Phase 2 (ships with the OS) |
-| 13  | rustfmt                | `format-staged` (`*.rs`)                        | —                                     | Phase 7                     |
-| 14  | fantomas               | `format-staged` (`*.fs`)                        | `.config/dotnet-tools.json`           | Phase 9                     |
-| 15  | csharpier              | `format-staged` (`*.cs`)                        | `.config/dotnet-tools.json`           | Phase 9                     |
-| 16  | ruff                   | `format-staged` (`*.py`)                        | FERRET `uv.lock` (CI uses its venv)   | Phase 6                     |
-| 17  | mix                    | `format-staged` (`*.ex`, `*.exs`)               | —                                     | Phase 8                     |
-| 18  | dart                   | `format-staged` (`*.dart`)                      | `.fvmrc`                              | Phase 10                    |
-| 19  | shfmt                  | `format-staged` (`*.sh`)                        | CI `setup-go` input                   | Phase 2                     |
-| 20  | tofu                   | `format-staged` (`*.tf`)                        | —                                     | Phase 2                     |
-| 21  | clang-format           | `format-staged` (`*.c`, `*.h`)                  | —                                     | Phase 2                     |
-| 22  | shellcheck             | `shellcheck` gate; `actionlint` `run:` checks   | CI `setup-lint-tools` input           | Phase 2                     |
-| 23  | hadolint               | `hadolint` gate                                 | CI `setup-lint-tools` input           | Phase 2                     |
-| 24  | actionlint             | `actionlint` gate                               | CI `setup-lint-tools` input           | Phase 2                     |
+| 9   | podman                 | dev stacks, E2E, container builds               | —                                     | Phase 2                     |
+| 10  | podman-compose         | dev stacks, E2E, container builds               | `1.6.0` (Phase 2 pipx)                | Phase 2                     |
+| 11  | jq                     | hooks, CI scripts                               | —                                     | Phase 2                     |
+| 12  | bash                   | every gate script                               | —                                     | Phase 2 (ships with the OS) |
+| 13  | curl                   | cold-cache `./rhino`, `./hippo`, safety scanner | —                                     | Phase 2 (ships with the OS) |
+| 14  | rustfmt                | `format-staged` (`*.rs`)                        | —                                     | Phase 7                     |
+| 15  | fantomas               | `format-staged` (`*.fs`)                        | `.config/dotnet-tools.json`           | Phase 9                     |
+| 16  | csharpier              | `format-staged` (`*.cs`)                        | `.config/dotnet-tools.json`           | Phase 9                     |
+| 17  | ruff                   | `format-staged` (`*.py`)                        | FERRET `uv.lock` (CI uses its venv)   | Phase 6                     |
+| 18  | mix                    | `format-staged` (`*.ex`, `*.exs`)               | —                                     | Phase 8                     |
+| 19  | dart                   | `format-staged` (`*.dart`)                      | `.fvmrc`                              | Phase 10                    |
+| 20  | shfmt                  | `format-staged` (`*.sh`)                        | CI `setup-go` input                   | Phase 2                     |
+| 21  | tofu                   | `format-staged` (`*.tf`)                        | —                                     | Phase 2                     |
+| 22  | clang-format           | `format-staged` (`*.c`, `*.h`)                  | —                                     | Phase 2                     |
+| 23  | shellcheck             | `shellcheck` gate; `actionlint` `run:` checks   | CI `setup-lint-tools` input           | Phase 2                     |
+| 24  | hadolint               | `hadolint` gate                                 | CI `setup-lint-tools` input           | Phase 2                     |
+| 25  | actionlint             | `actionlint` gate                               | CI `setup-lint-tools` input           | Phase 2                     |
 
 ## Deliberately not declared
 

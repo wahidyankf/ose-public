@@ -54,8 +54,8 @@ for n in $(podman ps -a --format '{{.Names}}'); do
 done
 ```
 
-The label keys above are the ones the Compose provider writes. The runtime PR confirms them against
-`podman-compose` 1.6.0 before any script relies on them.
+The label keys above are expected to be the ones `podman-compose` writes. Confirm them against
+`podman-compose` 1.6.0 (runtime proof pending) before relying on them.
 
 Remove only those names, then re-run the listing and expect zero. `<project>` is the container's
 `com.docker.compose.project` label:

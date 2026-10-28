@@ -32,7 +32,7 @@ No external state file or convergence engine is needed when the underlying tools
 
 Terraform and Ansible solve fleet management across hundreds of servers. This repository targets one macOS laptop per developer. The overhead of a DSL, provider plugins, or inventory files provides zero value for a single-machine target.
 
-## 4. Container Dev Environments Have Unacceptable Performance Cost on macOS
+## 4. Docker Dev Containers Have Unacceptable Performance Cost on macOS (Podman Unmeasured)
 
 The figures in this section are the values this rationale originally recorded for Docker-based Dev
 Containers. They are historical Docker figures, not Podman measurements. Podman on macOS runs

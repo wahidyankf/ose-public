@@ -73,7 +73,7 @@ topology reasoning stay canonical there.
 
 ## Verification
 
-`podman ps -a` shows no container from a project this session started; `git worktree list` no longer names the path; `git branch -a` no longer lists the
+`podman ps -a` shows no container from a project this session started, and `podman volume ls` and `podman network ls` list no volume or network for that project; `git worktree list` no longer names the path; `git branch -a` no longer lists the
 branch either locally or on `origin`; this work's scratch is gone from `local-tmp/`; the divergence
 count reads `0 0`.
 

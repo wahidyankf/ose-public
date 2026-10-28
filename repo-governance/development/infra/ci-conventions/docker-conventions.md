@@ -56,7 +56,9 @@ CMD ["node", "dist/main.js"]
   as the `hadolint` gate requires; wrap it in `sh -c` when the probe needs variable expansion or
   the `|| exit 1` mapping.
 - **Docker image format**: Native builds use `podman build --layers --format docker`. That format
-  keeps the `HEALTHCHECK` metadata, so do not switch an image to an OCI-only format that drops it.
+  keeps the `HEALTHCHECK` metadata, so do not switch an image to an OCI-only format that drops it. Compose builds set
+  `BUILDAH_FORMAT=docker`, as the dev scripts in `package.json` do; CI Compose builds rely on
+  Compose-level healthchecks until they set it too.
 - **OCI LABEL**: Every production image must carry `org.opencontainers.image.source` and
   `org.opencontainers.image.description` labels.
 
@@ -83,8 +85,9 @@ overlay is applied with `-f docker-compose.yml -f docker-compose.ci.yml` to keep
 
 ## Podman Runtime and CI Boundaries
 
-- **Rootless only**: A workflow or script that starts, builds, or publishes a container first runs
+- **Rootless only**: A local script or entry point that starts, builds, or publishes a container first runs
   the shared preflight, `scripts/container-runtime-check` (with `--compose` when it calls Compose).
+  CI workflows get the equivalent rootless and provider assertion from the `setup-podman` action.
   The preflight rejects an unreachable or rootful engine. Workloads never run with `sudo` or against
   a rootful engine.
 - **Explicit provider**: Set `PODMAN_COMPOSE_PROVIDER` to the `podman-compose` executable before any

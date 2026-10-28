@@ -84,7 +84,8 @@ services:
 **Setup**:
 
 ```bash
-docker-compose up
+export PODMAN_COMPOSE_PROVIDER=podman-compose
+podman compose up
 # Identical environment for all developers
 ```
 
@@ -92,7 +93,7 @@ docker-compose up
 
 - Exact versions for all services (postgres:16.1, redis:7.2.4)
 - Same configuration for everyone
-- Works identically on macOS, Linux, Windows
+- Intended to run the same on macOS (Podman machine) and Linux; Podman runtime proof pending
 - Easy to add new services
 
 ## Documentation of Setup Process

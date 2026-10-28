@@ -33,10 +33,13 @@ podman machine list
 podman machine init --rootful=false   # Only when no machine exists
 podman machine start
 
-# Linux (Ubuntu) — install the Podman package version recorded for your release and architecture
+# Linux (Ubuntu) — install the Podman package version recorded for your release and architecture;
+# CI pins live in .github/actions/setup-podman/action.yml, and local pins are recorded per
+# docs/how-to/setup-development-environment.md
 sudo apt-get install -y "podman=<recorded-version>"
 
-# Compose provider, in an isolated pipx environment
+# Compose provider, in an isolated pipx environment (requires pipx and python3-venv)
+sudo apt-get install -y pipx python3-venv
 pipx install --python "$(command -v python3)" podman-compose==1.6.0
 export PODMAN_COMPOSE_PROVIDER="$(command -v podman-compose)"
 

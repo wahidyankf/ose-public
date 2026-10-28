@@ -25,7 +25,7 @@ This document records the architectural decision to use native toolchain managem
 Revisit this architectural decision if any of the following conditions change:
 
 - **Team scale**: The team grows to 5+ developers with frequent onboarding, making the setup friction cost significant enough to justify containerization overhead
-- **Docker performance**: macOS Docker bind-mount performance reaches native parity, eliminating the primary objection to Dev Containers
+- **Container performance**: macOS Podman or Docker bind-mount performance, once measured, reaches native parity, eliminating the primary objection to Dev Containers
 - **Cloud development**: A cloud development environment (GitHub Codespaces) becomes necessary for external contributors who cannot install toolchains locally
 - **Toolchain count**: The toolchain count exceeds what `./rhino toolchain validate` can reasonably manage as a flat list of checks
 

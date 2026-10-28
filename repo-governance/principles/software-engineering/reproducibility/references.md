@@ -21,8 +21,8 @@ when_to_use: Use when seeking further reading on version manager tooling or repr
 
 - [Podman](https://podman.io/) - Rootless container engine
 - [Podman Compose](https://docs.podman.io/en/latest/markdown/podman-compose.1.html) - Compose command wrapper for Podman
-- [Docker](https://www.docker.com/) - Containerization platform
-- [Docker Compose](https://docs.docker.com/compose/) - Multi-container orchestration
+- [Docker](https://www.docker.com/) - Containerization platform (background; not used by this repository)
+- [Docker Compose](https://docs.docker.com/compose/) - Multi-container orchestration (background; not used by this repository)
 - [Dev Containers](https://containers.dev/) - Development containers for VS Code
 
 **Build Reproducibility**:

@@ -1,5 +1,5 @@
 # Production multi-stage Dockerfile for organiclever-be (F# / Giraffe on .NET 10).
-# Build context: repo root (e.g. `docker build -f apps/organiclever-be/Dockerfile .`).
+# Build context: repo root (e.g. `podman build --layers --format docker -f apps/organiclever-be/Dockerfile .`).
 #
 # NOTE: the fsproj references generated OpenAPI contract types under
 # apps/organiclever-be/generated-contracts/ (gitignored). Run

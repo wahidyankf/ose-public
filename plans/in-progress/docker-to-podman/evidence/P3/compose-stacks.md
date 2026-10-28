@@ -3,8 +3,8 @@
 ## Result and scope
 
 The OSE and OrganicLever public stacks build, start, and report healthy on native rootless Podman
-5.7.0 with `podman-compose` 1.6.0 as the explicit provider. The AyoKoding stack result is recorded
-in its own section below. Each stack ran the packet's exact `up --build --detach --wait` command
+5.7.0 with `podman-compose` 1.6.0 as the explicit provider. **The AyoKoding stack is not proven
+yet** (see the last section). Each stack ran the packet's exact `up --build --detach --wait` command
 under HIPPO admission (service class, standard tier) with a Docker shim first on the PATH. The shim
 logged **0 calls** for every run. Stacks were stopped with `down`, never `down -v`.
 
@@ -43,3 +43,18 @@ registered regression test and is committed on this branch.
 `podman-compose` 1.6.0 returned exit `0` from `up --wait` while the container's own health state
 was `unhealthy`. The exit status therefore does not prove health. The proof reads the container's
 health state with `podman inspect` and requests a real route, as above.
+
+## AyoKoding stack: not proven locally
+
+The AyoKoding image build passes the production type-check after the fix above and then fails only
+for disk. Three attempts, from 32 GB, 44 GB and 44 GB free, each reached the end of `next build` and
+were stopped by the HIPPO disk floor (`hippo.limit.storage-blocked`, exit `124`) during the image
+export, with the host at about 3.5 GB free. The last attempt used `--layers=false` to halve the
+layer cost and still ran out. The export alone stages about 16 GB in the build temp root, on top of
+the layers. The host has one data disk, and the full image build needs roughly 40 GB or more of
+headroom above the floor.
+
+The manifest handoff (`podman cp`), the stack health, and the browser and API checks for port 3101
+therefore have **no result yet**. This row stays open. It may be closed by freeing local disk and
+rerunning `scripts` packet steps for the Ayo stack, or by a decision to accept another proof; no
+workflow with a deploy job was dispatched to get one.

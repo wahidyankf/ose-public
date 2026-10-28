@@ -33,10 +33,10 @@ podman machine list
 podman machine init --rootful=false   # Only when no machine exists
 podman machine start
 
-# Linux (Ubuntu) — install the Podman package version recorded for your release and architecture;
-# CI pins live in .github/actions/setup-podman/action.yml, and local pins are recorded per
-# docs/how-to/setup-development-environment.md
-sudo apt-get install -y "podman=<recorded-version>"
+# Linux (Ubuntu) — install the Podman version reviewed for the ubuntu/resolute/amd64 runner tuple in
+# .github/actions/setup-podman/action.yml. Other releases and architectures have no reviewed pin yet,
+# so do not install Podman there from this guide.
+sudo apt-get install -y "podman=5.7.0+ds2-3build1"
 
 # Compose provider, in an isolated pipx environment (requires pipx and python3-venv)
 sudo apt-get install -y pipx python3-venv

@@ -130,12 +130,13 @@ podman machine init --rootful=false   # Only when no machine exists; never repla
 podman machine start
 ```
 
-**Linux (Debian/Ubuntu)**: Install the Podman package version recorded for your Ubuntu release and
-architecture. Do not install an unversioned package. The runtime PR records the tested version for each
-supported release and architecture; use that value in place of `<recorded-version>`:
+**Linux (Debian/Ubuntu)**: Install the Podman version reviewed for the `ubuntu/resolute/amd64` runner tuple in
+`.github/actions/setup-podman/action.yml`. That pin is provisional until the first CI run proves it. Do not
+install an unversioned package. Other Ubuntu releases and architectures have no pin yet, so do not install
+Podman there from this guide:
 
 ```bash
-sudo apt-get install -y "podman=<recorded-version>"
+sudo apt-get install -y "podman=5.7.0+ds2-3build1"
 ```
 
 Install the Compose provider into an isolated `pipx` environment, not into system Python:
@@ -455,14 +456,14 @@ On Linux, also run:
 Versions are pinned in these config files. `npm run doctor` checks only that each declared tool
 runs; the version manager or project build enforces the pin:
 
-| Tool           | Version Source                                                                          |
-| -------------- | --------------------------------------------------------------------------------------- |
-| Node.js        | `package.json` → `volta.node`                                                           |
-| npm            | `package.json` → `volta.npm`                                                            |
-| .NET           | each .NET project's `global.json` → `sdk.version`                                       |
-| Go             | `.github/actions/setup-go` → `go-version` input                                         |
-| podman-compose | `pipx install podman-compose==1.6.0` (Step 2)                                           |
-| Podman, jq     | Podman: the package version recorded per platform (Step 2); jq: any (no pinned version) |
+| Tool           | Version Source                                                                                                      |
+| -------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Node.js        | `package.json` → `volta.node`                                                                                       |
+| npm            | `package.json` → `volta.npm`                                                                                        |
+| .NET           | each .NET project's `global.json` → `sdk.version`                                                                   |
+| Go             | `.github/actions/setup-go` → `go-version` input                                                                     |
+| podman-compose | `pipx install podman-compose==1.6.0` (Step 2)                                                                       |
+| Podman, jq     | Podman: the reviewed package pin in `.github/actions/setup-podman/action.yml` (Step 2); jq: any (no pinned version) |
 
 Never hardcode version numbers in scripts — always read from these source-of-truth files.
 

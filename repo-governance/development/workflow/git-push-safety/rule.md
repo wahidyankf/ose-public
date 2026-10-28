@@ -27,15 +27,15 @@ For every invocation outside the bounded contract and the separate incident proc
 
 ## Worktree-to-PR pre-authorization
 
-The maintainer pre-authorizes `--no-verify` on `git commit` and `git push` for a task-owned branch that lands through a pull request under the `worktree-to-pr` delivery mode, with no per-instance prompt, when every condition below holds. This is the only standing exception to the per-instance rule above. It supersedes the earlier HIPPO-congestion-only pre-authorization: a hook whose contract the pull-request gate mirrors does not need to run locally first, because the gate refuses the head when the hook would have.
+The maintainer pre-authorizes `--no-verify` on `git commit` and `git push` for a task-owned branch that lands through a pull request under the `worktree-to-pr` delivery mode, with no per-instance prompt, when every condition below holds. This is the only standing exception to the per-instance rule above. It supersedes the earlier HIPPO-congestion-only pre-authorization: when the pull-request gate mirrors the skipped hook's deterministic checks, pushing with `--no-verify` and letting CI run the gate is sound — and preferable under HIPPO contention (HIPPO deferral or failure, exit 124/125 never-started, abnormal latency, or a wait) — because the gate refuses the head when the hook would have.
 
 - The branch is a task-owned `worktree-to-pr` branch whose only route to `main` is its pull request. Direct pushes to `main` stay outside this exception: explicit per-instance authorization still applies, strongly discouraged except for manual override.
 - No reported finding is skipped: a hook that ran and reported a violation is fixed at its cause. The manual screens pass: the tracked-tree screen and the per-commit range screen both exit `0`, with no leak-review finding. The `commit-msg` hook stays enabled.
 - Formatting is done by hand or editor; the pull-request gate verifies it.
-- The bypass cites the screen evidence in the push and PR notes, and never carries into a later operation.
+- The bypass cites the HIPPO receipt and screen evidence in the push and PR notes, and never carries into a later operation.
 - The branch does not merge until the pull-request gate passes on the exact pushed head. A later push replaces that head and owes a fresh pass; nothing about this exception waives it.
 
-Enforcement: gated — `pr-quality-gate.yml` mirrors the hook contracts as merge-blocking checks, so a bypassed hook moves its failure into the gate, where it blocks the merge; review verifies the cited screen evidence against the gate result.
+Enforcement: gated — `pr-quality-gate.yml` mirrors the hook contracts as merge-blocking checks, so a bypassed hook moves its failure into the gate, where it blocks the merge; review verifies the cited receipt and screen evidence against the gate result.
 
 ## Secret-exposure history-remediation exception
 

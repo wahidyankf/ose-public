@@ -20,13 +20,13 @@ no owned service routes to the failed target.
 
 ## Resource classification
 
-| Resource                                                | Class                    | Disposition                                  |
-| ------------------------------------------------------- | ------------------------ | -------------------------------------------- |
-| Failure-run containers, network, and the failed target volume | Removable disposable | Removed by exact name                        |
-| Truncated dump copy and its error file                  | Removable disposable     | Removed                                      |
-| Source and target volumes of the PostgreSQL rehearsal   | Retained proof           | Held for the evidence, then removed by name  |
-| Backup dump of the rehearsal                            | Retained proof           | Held for the evidence, then removed          |
-| Existing images, volumes, and the default network       | Durable or shared state  | Untouched                                    |
+| Resource                                                      | Class                   | Disposition                                 |
+| ------------------------------------------------------------- | ----------------------- | ------------------------------------------- |
+| Failure-run containers, network, and the failed target volume | Removable disposable    | Removed by exact name                       |
+| Truncated dump copy and its error file                        | Removable disposable    | Removed                                     |
+| Source and target volumes of the PostgreSQL rehearsal         | Retained proof          | Held for the evidence, then removed by name |
+| Backup dump of the rehearsal                                  | Retained proof          | Held for the evidence, then removed         |
+| Existing images, volumes, and the default network             | Durable or shared state | Untouched                                   |
 
 Every created resource carried the owner label `owner=docker-to-podman-rehearsal`. After the
 failure run, no labelled container or network remained, and the only labelled volumes were the two

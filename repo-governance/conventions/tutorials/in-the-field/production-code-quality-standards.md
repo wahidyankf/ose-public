@@ -44,11 +44,11 @@ WORKDIR /app
 COPY target/myapp-1.0.jar app.jar
 # => Copies JAR from local target/ to container /app/app.jar
 # => Build JAR first: mvn clean package
-# => Must run docker build from project root
+# => Must run podman build from project root
 
 EXPOSE 8080
 # => Documents container listens on port 8080
-# => Does NOT publish port (docker run -p 8080:8080 does)
+# => Does NOT publish port (podman run -p 8080:8080 does)
 # => Information only for developers
 
 ENTRYPOINT ["java", "-jar", "app.jar"]

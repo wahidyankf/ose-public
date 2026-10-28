@@ -24,17 +24,30 @@ Tags pushed per image, unchanged from before the migration: `ghcr.io/wahidyankf/
 
 - Verified from the run: workflow trigger, credential-free login line, build with the Docker image format, both pushes
   for both images, and a successful job conclusion.
-- Not verified here: the registry's own version listing and the manifest digests. The GitHub CLI session has no
-  `read:packages` scope, and the push logs do not print the digest. A person with that scope can list the versions of
-  both packages and confirm the two tags above. This is the one AC-07 item left for a person.
+- Registry check (anonymous GHCR registry API, 2026-10-29): `ose-be:latest` and `ose-be:<merge SHA>` both resolve with
+  HTTP 200 to digest `sha256:15e530e2611ba262f96498c2b2e764204952676c34756244c3cf5a4ec5e86d28`. `organiclever-be:latest`
+  and `organiclever-be:<merge SHA>` both resolve to
+  `sha256:69cd2e031b359d4c16a0f224597e7f387f54b29cc5ce6c5c2d774a0832d0e929`. Each image's two tags point at one digest,
+  as the workflow intends. Both packages are readable anonymously.
 - The pre-merge image runtime proof is in `evidence/P2/publishing.md`.
 
 ## Other runs on `main` seen after the merge
 
-`non-product-full-quality-scheduled` and `organiclever-www-test-local-deploy-prod` failed on `main` at `de3bfa14d`,
-before this merge, so this change did not cause them. The scheduled run fails on the `ferret-cli` integration baseline
-described in `evidence/P2/ci.md`. The `organiclever-www` prod run has failed on every recorded scheduled run since
-2026-10-26 at the step `docker compose -f infra/dev/organiclever-www/docker-compose.yml up --build -d`, which was the
-Docker-era command. That workflow now uses Podman. The local `organiclever-www` stack proof passed on Podman
-(`evidence/P3/compose-stacks.md`), and the first scheduled run after this merge is the CI check of the new path. It was
-not run here.
+`non-product-full-quality-scheduled` failed on `main` at `de3bfa14d`, before this merge, on the `ferret-cli` integration
+baseline described in `evidence/P2/ci.md`. The `organiclever-www-test-local-deploy-prod` workflow had failed on every
+recorded scheduled run since 2026-10-26 at the Docker-era step `docker compose ... up --build -d`. After the merge it was
+dispatched on `main` (run 40775591629) and concluded `success` on the Podman path: Detect changes, Quick gate, Static
+behaviour coverage, Lint, Integration tests and E2E tests all passed, and the Deploy job was skipped by its own
+condition. The `ose-www` and `ayokoding-www` prod workflows were not dispatched, because their Deploy job can push a
+production branch; their next scheduled runs are the CI check for those two.
+
+## Residual Docker references on `main`
+
+A repo-wide search on `origin/main` (2026-10-29), excluding `plans/done`, `plans/backlog`, `plans/ideas`, learning
+content, social posts and this plan, for `docker` followed by a CLI verb, `docker-compose` followed by a verb,
+`DOCKER_HOST`, the Docker socket path, and the Docker GitHub actions, found only: the Docker-in-Docker sample GitLab
+pipeline in the Next.js deployment explanation (a generic third-party example, not this repository's CI), Docker
+technology teaching examples in the in-the-field tutorial conventions, and test fixtures that assert Docker calls are
+rejected (`scripts/no-docker-binary-calls.test.mjs` and the public-safety cases). The four operational mentions the
+search found were changed to Podman in #752. Compose files keep the name `docker-compose.yml`, and `Dockerfile`,
+`.dockerignore` and `docker.io` stay by plan decision.

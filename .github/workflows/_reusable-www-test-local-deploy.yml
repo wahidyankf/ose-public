@@ -95,7 +95,7 @@ jobs:
       - name: Verify the Podman service is running and healthy
         run: |
           set -euo pipefail
-          container_id="$(podman compose -f infra/dev/${{ inputs.app-name }}/docker-compose.yml ps -q "${{ inputs.app-name }}")"
+          container_id="$(podman ps -q --filter "label=io.podman.compose.project=${{ inputs.app-name }}" --filter "label=com.docker.compose.service=${{ inputs.app-name }}")"
           test -n "$container_id"
           state="$(podman inspect --format '{{.State.Status}} {{if .State.Health}}{{.State.Health.Status}}{{end}}' "$container_id")"
           test "$state" = "running healthy"
@@ -104,7 +104,7 @@ jobs:
         run: |
           set -euo pipefail
           artifact_dir="apps/${{ inputs.app-name }}-fe-e2e/.e2e-artifacts"
-          container_id="$(podman compose -f infra/dev/${{ inputs.app-name }}/docker-compose.yml ps -q "${{ inputs.app-name }}")"
+          container_id="$(podman ps -q --filter "label=io.podman.compose.project=${{ inputs.app-name }}" --filter "label=com.docker.compose.service=${{ inputs.app-name }}")"
           test -n "$container_id"
           mkdir -p "$artifact_dir"
           podman cp "$container_id:/app/apps/${{ inputs.app-name }}/.next/prerender-manifest.json" "$artifact_dir/prerender-manifest.json"

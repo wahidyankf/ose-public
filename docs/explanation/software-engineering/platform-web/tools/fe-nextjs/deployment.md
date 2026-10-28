@@ -878,14 +878,14 @@ vercel ls
 vercel rollback [deployment-url]
 ```
 
-**Docker**:
+**Podman**:
 
 ```bash
 # Rollback to previous image
-docker-compose down
-docker-compose up -d --scale nextjs=0
-docker tag ose-platform:previous ose-platform:latest
-docker-compose up -d
+podman compose down
+podman compose up -d --scale nextjs=0
+podman tag localhost/ose-platform:previous localhost/ose-platform:latest
+podman compose up -d
 ```
 
 ## Related Documentation

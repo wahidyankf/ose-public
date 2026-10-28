@@ -26,7 +26,7 @@ The repository runs containers with rootless Podman and the explicit `podman-com
 install Docker Compose for repository use.
 
 ```bash
-# macOS — install Podman from the official release page, verifying the package digest and signature
+# macOS (no pinned Podman version) — install Podman from the official release page, verifying the package digest and signature
 # https://podman.io/docs/installation
 # Create a machine only when none exists, with rootless mode; never replace an existing machine
 podman machine list
@@ -36,7 +36,7 @@ podman machine start
 # Linux (Ubuntu) — install the Podman version reviewed for the ubuntu/resolute/amd64 runner tuple in
 # .github/actions/setup-podman/action.yml. Other releases and architectures have no reviewed pin yet,
 # so do not install Podman there from this guide.
-sudo apt-get install -y "podman=5.7.0+ds2-3build1"
+sudo apt-get install -y "podman=<podman_pin>"   # podman_pin: see https://github.com/wahidyankf/ose-public/blob/main/.github/actions/setup-podman/action.yml
 
 # Compose provider, in an isolated pipx environment (requires pipx and python3-venv)
 sudo apt-get install -y pipx python3-venv

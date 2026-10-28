@@ -73,9 +73,13 @@ topology reasoning stay canonical there.
 
 ## Verification
 
-`podman ps -a` shows no container from a project this session started, and `podman volume ls` and `podman network ls` list no volume or network for that project; `git worktree list` no longer names the path; `git branch -a` no longer lists the
-branch either locally or on `origin`; this work's scratch is gone from `local-tmp/`; the divergence
-count reads `0 0`.
+`podman ps -a` shows no container from a project this session started, and `podman network ls` lists
+no network for that project. Each anonymous volume this session created is removed or reported. Retained named data
+volumes are expected to appear and are reported, per
+[Podman-Artifact Cleanup](../../development/workflow/worktree-and-artifact-cleanup/docker-artifact-cleanup.md#what-is-retained).
+
+`git worktree list` no longer names the path. `git branch -a` no longer lists the branch either
+locally or on `origin`. This work's scratch is gone from `local-tmp/`. The divergence count reads `0 0`.
 
 ## Retain Rather Than Delete
 

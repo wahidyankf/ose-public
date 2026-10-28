@@ -563,25 +563,65 @@ Never run production/shared-system examples or publish an image solely to valida
 - **Input:** P0 package/capability matrix and exact shell/npm/CI entry points.
 - **Outcome:** one small shell check rejects unreachable/rootful engines and missing providers
   before any workload mutation.
-- [ ] [AI] Write Gherkin first using the feature owners and exact scenario titles in the
+- [x] [AI] Write Gherkin first using the feature owners and exact scenario titles in the
       [runner behavior specification delta](./tech-docs.md#runner-behavior-specification-delta).
       Add only the named scenarios. Bind Unit to pure decisions and native build/local-image argv,
       Integration to fake executables and call ordering, and E2E to a rootless Podman host and the
       selected provider. Preserve the recorded E2E exemption for a real rootful engine because it
       would mutate shared runtime state; the fake Unit/Integration proof is required.
-- [ ] [AI] **RED:** add `scripts/container-runtime-check.test.mjs` (new) using Node's existing test
+
+  **Date:** 2026-10-28. **Status:** Complete. **Files Changed:**
+  `specs/apps/ayokoding/cli/behaviours/toolchains/rootless-runtime.feature` (new),
+  `toolchains/toolchain-catalog.feature`, `examples/environment-failures.feature`, and the Podman
+  bindings under `apps/ayokoding-cli/tests/bdd/`. All six exact titles from the runner behavior
+  specification delta appear once each (3 new in `rootless-runtime.feature`, 2 in
+  `toolchain-catalog.feature`, 1 in `environment-failures.feature`), and the rootful-refusal E2E
+  exemption is retained with its Integration alternative proof. `evidence/P3/target-matrix.md`
+  Note A reconciles the static mapping from 13 features/64 scenarios to 14/70 (rows 13 and 30,
+  exit 0), and the real-engine adapter passed 70 of 70 scenarios on Ubuntu and on macOS
+  (`evidence/P3/ubuntu-platform.md`, `evidence/P3/macos-platform.md`).
+
+- [x] [AI] **RED:** add `scripts/container-runtime-check.test.mjs` (new) using Node's existing test
       runner and fake executables. Cover rootless success, rootful refusal before workload invocation,
       unavailable/missing engine, missing/wrong provider, and explicit provider selection even when
       Docker Compose is installed. Run
       `rtk ./hippo run --class ephemeral --resource-tier light --disk-path . -- node --test scripts/container-runtime-check.test.mjs`;
       expect assertion failure for absent preflight behavior, not a syntax/import failure. Save RED.
-- [ ] [AI] **GREEN:** implement `scripts/container-runtime-check` (new), add its test to the existing
+
+  **Date:** 2026-10-28. **Status:** Complete. **Files Changed:**
+  `scripts/container-runtime-check.test.mjs` (new). `evidence/P1/preflight.md` saves the RED runs:
+  against an executable stub 4 of 5 cases failed on assertions; after the missing-jq and signal
+  cases an assertion expected 127 and got 125; after review findings A1 to A3 the run exited 1
+  with assertion failures (jq 125 vs 143, PATH candidate 126 vs 0, wrong call-log content). No RED
+  was a syntax or import failure. The receipts give no exit code for the first two.
+
+- [x] [AI] **GREEN:** implement `scripts/container-runtime-check` (new), add its test to the existing
       `test:validators` script, and replace Docker's tool declaration with Podman/provider checks in
       `repo-config.yml`. Use `swe-developer` for config/code. Repeat the RED command and doctor; expect
       all cases and native tool checks to pass without a Docker requirement. Save GREEN.
-- [ ] [AI] **REFACTOR:** keep the preflight limited to reachability/rootless/provider checks and
+
+  **Date:** 2026-10-28. **Status:** Complete. **Files Changed:** `scripts/container-runtime-check`
+  (new), `scripts/container-runtime-check.test.mjs`, `package.json` (`test:validators` runs the
+  test), `repo-config.yml` (lines 1120 and 1121 declare `podman` and `podman-compose` as required;
+  no Docker toolchain entry remains). `evidence/P1/preflight.md`: GREEN 3 passed 9 of 9, exit 0,
+  also after formatting; `./rhino toolchain validate` checked 25 declared toolchains with no
+  findings, exit 0. `evidence/P3/ubuntu-platform.md`: `npm run doctor` under a Docker shim exited
+  0 with no Docker finding and 0 shim calls. Both script files are unchanged since commit
+  `f3ed2332a`.
+
+- [x] [AI] **REFACTOR:** keep the preflight limited to reachability/rootless/provider checks and
       existing diagnostic conventions. Run `rtk npm run test:validators`, declared shell lint, and
       the focused cases; expect the same outcomes and no new framework/dependencies. Save proof.
+
+  **Date:** 2026-10-29. **Status:** Complete. **Files Changed:** none beyond the GREEN change set
+  (`scripts/container-runtime-check`, its test, `package.json`). `evidence/P2/local-gates.md` Gate 1:
+  `npm run test:validators` under HIPPO (ephemeral, standard) on head `60a35faf1` exited 0 with 197 tests,
+  197 pass, 0 fail, 0 skipped; the run includes `container-runtime-check.test.mjs`. Gate 3: the repo
+  `lint-shell` wrapper and a stricter `shellcheck` over `scripts/container-runtime-check` both exited 0. The
+  focused 9 of 9 cases, `shfmt` and Prettier were already clean (`evidence/P1/preflight.md`). No new
+  framework or dependency was added. The earlier 144 of 144 run and the deferred run (exit 124) are
+  superseded by this passing run.
+
 - **Proof:** `evidence/P1/preflight.md`, test identities, fake call log showing no rootful mutation,
   and doctor output on both supported platforms.
 - _Suggested executor: `swe-developer`._
@@ -590,39 +630,105 @@ Never run production/shared-system examples or publish an image solely to valida
 
 - **Input:** existing Gherkin corpus, container-plan tests, runner fixtures, and P0 capability proof.
 - **Outcome:** Podman runs the same fixture contracts without Buildx or a separate builder store.
-- [ ] [AI] Write Gherkin first under `specs/apps/ayokoding/cli/behaviours/`: extend the existing
+- [x] [AI] Write Gherkin first under `specs/apps/ayokoding/cli/behaviours/`: extend the existing
       environment-failure/toolchain scenarios for Podman default, rootful refusal, and same-store
       derived/environment builds. Map every new scenario in the existing coverage configuration and
       Unit/Integration/E2E bindings. Revalidate Docker-specific exemption reasons against Podman; do
       not weaken their assertions or stop any shared engine.
-- [ ] [AI] **RED:** extend `internal/domain/containerplan/{build,run,services}_test.go` and the
+
+  **Date:** 2026-10-28. **Status:** Complete. **Files Changed:**
+  `specs/apps/ayokoding/cli/behaviours/examples/environment-failures.feature`,
+  `toolchains/rootless-runtime.feature`, `toolchains/toolchain-catalog.feature`,
+  `specs/apps/ayokoding/cli/architecture.md`. The two Docker-specific E2E exemption reasons
+  (non-executable command, unavailable runtime) were rewritten for Podman. No step or assertion
+  was removed, and no Docker-specific exemption text remains under `specs/apps/ayokoding/cli`.
+  `ayokoding-cli:test:coverage:behaviour` maps 14 features/70 scenarios, exit 0
+  (`evidence/P3/target-matrix.md` rows 13 and 30).
+
+- [x] [AI] **RED:** extend `internal/domain/containerplan/{build,run,services}_test.go` and the
       existing adapters/CLI tests for default `podman`, native build argv, no BuildKit cache flags,
       keep-id mapping, local-only images, and rootful refusal. Run
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ayokoding-cli:test:unit`;
       expect assertion failures against Docker-specific behavior. Save `evidence/P1/runner-red.md`.
-- [ ] [AI] **GREEN:** update only the inventoried Go planner, runtime adapter, CLI settings readers,
+
+  **Date:** 2026-10-28. **Status:** Complete with one deviation. **Files Changed:**
+  `evidence/P1/runner-red.md`. Nine focused `go test` REDs fail on assertions against the Docker
+  behavior: default runtime still `docker`; local image misclassified, with keep-id and the
+  local-only pull flag missing; Buildx used and a local `FROM` kept its digest; rootful engine
+  accepted; probe ran `version` instead of `info`; status 0 instead of 125. Deviation: these were
+  focused Go test runs, not one `ayokoding-cli:test:unit` Nx run, and the receipts give no exit code
+  or count.
+
+- [x] [AI] **GREEN:** update only the inventoried Go planner, runtime adapter, CLI settings readers,
       and their fixture responses. Preserve runtime override, code/status/output contracts, tags,
       platform selection, effective ownership, resource flags, service DNS, and ownership cleanup.
       Remove Buildx-cache settings/readers; do not invent a replacement env var. Rerun the same target
       and existing Integration target; expect all applicable cases to pass with positive counts.
-- [ ] [AI] **REFACTOR:** remove now-dead cache/Buildx branches and duplicated runtime defaults while
+
+  **Date:** 2026-10-28. **Status:** Complete. **Files Changed:**
+  `apps/ayokoding-cli/internal/domain/containerplan/`, `internal/adapters/containers/`,
+  `internal/adapters/cli/`, `internal/application/`, `tests/support/fakecontainer/main.go` and the
+  BDD bindings. `evidence/P1/runner.md` records the GREEN runs. The full targets passed on the
+  later matrix run: `ayokoding-cli:test:unit` (15 Go packages ok) and
+  `ayokoding-cli:test:integration` (bdd and integration packages ok), both exit 0
+  (`evidence/P3/target-matrix.md` rows 10 and 11). Go prints package results, not case counts, so
+  no case count exists to record. `buildx` and `AYOKODING_BUILDX_CACHE` no longer appear in
+  `apps/` or `.github/`; they remain only as negative assertions in `scripts/*.test.mjs` and in
+  rule text.
+
+- [x] [AI] **REFACTOR:** remove now-dead cache/Buildx branches and duplicated runtime defaults while
       retaining the current module boundaries. Run
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ayokoding-cli:test:quick`
       and `ayokoding-cli:test:coverage:behaviour` through the same boundary. Preserve the 99% floor,
       scenario identities, and applicable coverage layers; record any new scenarios explicitly.
-- [ ] [AI] Run real `ayokoding-cli:test:integration` and `ayokoding-cli:test:e2e` under HIPPO using
+
+  **Date:** 2026-10-28. **Status:** Complete. **Files Changed:** none beyond the GREEN change set.
+  `ayokoding-cli:test:quick` exited 0 with 15 Go packages ok, selected line coverage 100.00% (25
+  of 25 statements, floor 99%) and mapping 14 features/70 scenarios.
+  `ayokoding-cli:test:coverage:behaviour` exited 0 with the same mapping
+  (`evidence/P3/target-matrix.md` rows 30 and 13).
+
+- [x] [AI] Run real `ayokoding-cli:test:integration` and `ayokoding-cli:test:e2e` under HIPPO using
       rootless Podman. Exercise runner-owned service, lockfile, cancellation, and orphan-cleanup
       fixtures. Verify resource/ownership/network assertions against actual inspect data; prove a
       derived image and environment run without a registry copy. Save AC-04–AC-06 proof.
+
+  **Date:** 2026-10-29. **Status:** Complete, with one pre-existing gap recorded. **Files Changed:**
+  `evidence/P1/runner-inspect.md` (new). On rootless Podman 5.7.0 at head `60a35faf1`,
+  `ayokoding-cli:test:integration` and `test:e2e` exited 0 under HIPPO (Nx cache off; `tests/bdd` 189.8 s
+  and 231.9 s), and the real-engine adapter passed 70 of 70 scenarios on both hosts (rows 11 and 12).
+  A throwaway two-unit driver plus a poller captured `podman inspect` and `podman network inspect` data:
+  run containers had memory and swap 1 GiB (512 MiB override), halved CPU quota on the second execution,
+  pids 256, `ayokoding.run` ownership label, `--userns=keep-id` mapping, read-only root,
+  `no-new-privileges`, the default capability set dropped, `--network none` without services; unit
+  networks were `bridge`, `internal` true, `dns_enabled` true and labelled, and the service answered by
+  its `postgres` alias. Same-store derived and environment image IDs with no registry copy are in
+  `evidence/P1/runner.md`. After the runs, no container or network carrying the run label remained and the
+  volume and image lists matched their starting state. **Gap (decision by the coordinator: pre-existing, not a
+  regression):** `ServiceStart` in `apps/ayokoding-cli/internal/domain/containerplan/services.go` sets no
+  memory, CPU, pids, capability, read-only or user flags on the PostgreSQL service container, and did the same
+  at baseline `71bb3aa5`; inspect shows the service container unlimited, with no dropped capabilities.
+  Go prints package results, not case counts, so no case count is recorded.
+
 - **Proof:** `evidence/P1/runner.md` includes failing/passing deltas, exact test counts, tool versions,
   same-store IDs, inspect assertions, and zero remaining positively owned execution resources.
 - _Suggested executor: `swe-developer`._
 
 ### Phase 1 Gate
 
-- [ ] [AI] Run the new preflight tests, `rtk npm run doctor`, and `ayokoding-cli:test:quick` plus its
+- [x] [AI] Run the new preflight tests, `rtk npm run doctor`, and `ayokoding-cli:test:quick` plus its
       Integration/E2E targets with the P0 commands and tiers. All exit 0; exclude no prior test and
       retain excluded-content hashes. Rootful and unavailable-runtime negative cases fail correctly.
+
+  **Date:** 2026-10-29. **Status:** Passed on Ubuntu, the platform of the P0 commands. **Files Changed:** none.
+  Preflight: 9 of 9 focused cases and 197 of 197 `test:validators` (exit 0, `evidence/P2/local-gates.md`).
+  `npm run doctor` exited 0 with 25 toolchains and no findings under a Docker shim with 0 calls
+  (`evidence/P3/ubuntu-platform.md`). `ayokoding-cli:test:quick` (row 30), Integration and E2E (rows 11 and 12)
+  exited 0; Integration and E2E were repeated on `60a35faf1` with inspect capture (`evidence/P1/runner-inspect.md`).
+  The rootful and unavailable-runtime negative cases fail correctly, and excluded-content hashes match
+  (`evidence/P3/ac-09.md`). macOS `npm run doctor` exits 1 on `fantomas`, `csharpier` and `mix`, which are not
+  container tools and are not part of the Ubuntu P0 command set; it reports no Podman or provider finding
+  (`evidence/P3/macos-platform.md`). The macOS doctor pass stays a Phase 3 item.
 
 > **Pause Safety**: focused code and tests are coherent in the unmerged delivery worktree; main
 > still uses its existing runtime. Re-verify with the Phase 1 quick-gate command above.
@@ -639,12 +745,31 @@ Never run production/shared-system examples or publish an image solely to valida
       and owned teardown on failure/interruption. Validate Compose files with the selected provider;
       capture the current Docker-only invocation or provider-incompatibility failure, not just a
       search assertion. Run the focused Node test command from P1 and save RED.
-- [ ] [AI] **GREEN:** migrate `package.json` container entry points and actual backend E2E shell
+
+  **Remaining:** no RED capture is saved. `scripts/caller-runtime-contract.test.mjs` was added in commit
+  `24a4c54d4` with `scripts/setup-podman-contract.test.mjs`, together with the migrated callers, so no failing
+  run against the Docker-only callers was recorded. The passing run is recorded (197 of 197, exit 0,
+  `evidence/P2/local-gates.md`), but a RED needs the same test run against the pre-migration caller bytes (for
+  example `git show 71bb3aa5:<path>` copied to scratch), with its assertion failures for provider export,
+  preflight-before-start, status preservation and owned teardown, or an explicit recorded deviation.
+
+- [x] [AI] **GREEN:** migrate `package.json` container entry points and actual backend E2E shell
       callers to the preflight plus explicitly selected `podman compose`. Adapt only reproduced
       Compose incompatibilities and provider labels. Correct Integration comments while leaving
       native Integration tests native. Preserve existing resource/port/env boundaries and unsupported
       scaffold status. Repeat focused cases, Compose config validation, and the concrete backend
       E2E targets captured in P0; save passing proof.
+
+  **Date:** 2026-10-29. **Status:** Complete. **Files Changed:** `package.json` (dev entry points export
+  `PODMAN_COMPOSE_PROVIDER` and run `scripts/container-runtime-check --compose` first),
+  `apps/ose-be/scripts/run-e2e.sh`, `apps/organiclever-be/scripts/run-e2e.sh`, the backend and public-site
+  Compose files and `evidence/P2/local-stacks.md` (new). The focused cases pass: `npm run test:validators` on
+  `60a35faf1` exited 0 with 197 of 197, including `caller-runtime-contract.test.mjs` (`evidence/P2/local-gates.md`).
+  Compose `config` exited 0 for the ose-www, organiclever-www and both backend stacks
+  (`evidence/P3/compose-stacks.md`, `evidence/P3/manual/backends.md`). The backend E2E targets passed: row 76
+  (`ose-be-e2e:test:e2e`, 5 cases) and row 88 (`organiclever-be-e2e:test:e2e`, 12 cases), with the script owning
+  startup and cleanup (`evidence/P3/target-matrix.md`).
+
 - [ ] [AI] Execute the exact site/backend ownership order in the
       [current stack command packet](./tech-docs.md#current-stack-command-packet): Ayo's prerender
       artifact copy happens before BE E2E and before stopping the owned 3101 Podman stack; stop that
@@ -654,9 +779,28 @@ Never run production/shared-system examples or publish an image solely to valida
       on 3200. Run each backend E2E target without pre-starting its dependency Compose stack; the Nx
       target's shell runner owns startup and cleanup. Keep the unsupported legacy app-scaffold
       callers syntax/caller proof only, not supported-stack runtime evidence.
-- [ ] [AI] **REFACTOR:** remove duplicate runtime checks and stale Docker operational comments from
+
+  **Remaining:** CI run 40693498144 (`evidence/P2/ci.md`) followed the Ayo order (manifest copy, BE E2E,
+  stop the stack, FE E2E), and the backend E2E targets ran without a pre-started stack, the script owning
+  startup and cleanup (`evidence/P3/manual/backends.md`). Missing: (1) a record that OrganicLever FE E2E
+  (`organiclever-www-fe-e2e:test:e2e`, row 64, 39 passed) reused the Podman server on 3200: the row passed but no
+  record shows it attached to the container; (2) the syntax-only `podman compose ... config` runs for the two
+  legacy scaffold file pairs (`infra/dev/ose-app/` and `infra/dev/organiclever-app/`, each with
+  `docker-compose.ci.yml`), which have no recorded run.
+
+- [x] [AI] **REFACTOR:** remove duplicate runtime checks and stale Docker operational comments from
       these callers only. Run shell/TypeScript/Compose lint applicable to touched paths and rerun
       their focused cases. No new command wrapper beyond the shared small preflight is introduced.
+
+  **Date:** 2026-10-29. **Status:** Complete. **Files Changed:** none beyond the GREEN change set. Each backend
+  `run-e2e.sh` calls `scripts/container-runtime-check --compose` once, before any mutation, and arms its teardown
+  after it passes; `package.json` does the same once per entry point; a search of `package.json`, `scripts/`
+  and both backends' `scripts/` and Compose files finds no Docker command or stale Docker comment. Lint: the repo
+  `lint-shell` wrapper and stricter `shellcheck` over the four backend scripts and the preflight exited 0
+  (`evidence/P2/local-gates.md`, Gate 3); the YAML parse of the changed Compose files exited 0 (Gate 4);
+  `ose-be-e2e` and `organiclever-be-e2e` lint and typecheck exited 0 (rows 73, 74, 85, 86); the focused cases pass
+  inside the 197 of 197 `test:validators` run. No wrapper beyond the shared preflight was added.
+
 - **Proof:** `evidence/P2/local-stacks.md`; exact supported stacks, rootless/provider output,
   health checks and ports, and a separate syntax-only disposition for unsupported scaffolds.
 - _Suggested executor: `swe-developer`._
@@ -675,7 +819,13 @@ Never run production/shared-system examples or publish an image solely to valida
       Docker-dependent path with fake executables, and assert native build/publish argument behavior
       without touching a registry. Run `rtk npm run test:validators` and the existing actionlint gate;
       retain the behavioral RED output separately from expected syntax validation.
-- [ ] [AI] **GREEN:** create `.github/actions/setup-podman/action.yml` (new) with the exact validated
+
+  **Remaining:** no RED capture. `scripts/setup-podman-contract.test.mjs` was added in `24a4c54d4` with the
+  action it tests, so no failing run against the Docker-dependent path was recorded. It passes today (197 of
+  197, `evidence/P2/local-gates.md`). A RED needs the same test run against the pre-migration workflow and
+  action bytes (`71bb3aa5`) with its assertion failures, or an explicit recorded deviation.
+
+- [x] [AI] **GREEN:** create `.github/actions/setup-podman/action.yml` (new) with the exact validated
       native provider version and the Ubuntu package pin selected for the executing runner tuple;
       reject any within-tuple OS/architecture/image/origin drift and rootless assertion failure.
       Replace all inventoried setup-action
@@ -683,9 +833,31 @@ Never run production/shared-system examples or publish an image solely to valida
       remove Buildx env/cache rotation. Replace both image-publication paths with ephemeral-auth
       `podman login --password-stdin`, native build, and push. Keep GHCR names/tags/triggers and
       permissions. Remove the old Docker action only after all callers migrate. Repeat validators.
-- [ ] [AI] **REFACTOR:** remove dead setup/cache branches and ensure no job depends on a Docker
+
+  **Date:** 2026-10-29. **Status:** Complete. **Files Changed:** `.github/actions/setup-podman/action.yml` (new),
+  the migrated callers, `.github/workflows/publish-images.yml` and the deleted
+  `.github/actions/setup-docker-cache/action.yml`. `setup-docker-cache`, `stop-docker-before-fe-e2e`, Buildx
+  and Docker login no longer appear under `.github/`; the image build lines use `podman build --layers
+--format docker` and `podman login --password-stdin` (fake-registry trace in `evidence/P2/publishing.md`). CI
+  run 40693498144 selected the pinned row (`ubuntu/resolute/amd64`, `podman=5.7.0+ds2-3build1`). The validators
+  repeat passes: `npm run test:validators` on `60a35faf1` exited 0, 197 of 197, including
+  `setup-podman-contract.test.mjs` (`evidence/P2/local-gates.md`). The pin remains a provisional CI row until PR
+  CI closes it (Post-Push Verification).
+
+- [x] [AI] **REFACTOR:** remove dead setup/cache branches and ensure no job depends on a Docker
       daemon, Buildx action, or Docker login action. Run the existing actionlint, shell, YAML,
       validator, and harness-enforcement checks over these files. Use no new registry-cache service.
+
+  **Date:** 2026-10-29. **Status:** Complete. **Files Changed:** none beyond the GREEN change set. Exit codes on
+  head `60a35faf1` (`evidence/P2/local-gates.md`): actionlint on the 6 changed workflows and the repo wrapper
+  over all 24 workflows exited 0; the composite `setup-podman` action parses and passes the shape check (exit 0;
+  actionlint does not lint `action.yml`); `shellcheck` exited 0; the YAML parse of 16 files exited 0;
+  `test:validators` 197 of 197 exited 0, including `workflow-container-lookup`, `workflow-language-lanes` and
+  `no-docker-binary-calls`; `git diff --check origin/main...HEAD` exited 0. No `docker` daemon call, Buildx
+  action or Docker login remains under `.github/`. The harness adapter check printed "canonical adapter
+  validation is clean" (`evidence/P4/rule-manifest.md`); its exit code was not captured, and Rhino was not run
+  for the local-gates record. No registry-cache service was added.
+
 - [ ] [AI] Complete the pre-merge evidence boundary above without contacting GHCR. Save local
       build/start/inspect outputs, fake auth-call trace with no token or credential value, and the
       exact existing tag/trigger comparison in `evidence/P2/publishing.md`. Mark publication as
@@ -697,6 +869,18 @@ Never run production/shared-system examples or publish an image solely to valida
       environment. Before the overlay snapshot the reviewed as-built workflow; restore it after proof,
       preserving P2 changes. Rediscover the normal workflow's CLI E2E Podman dependency and preserve its
       verified setup on restoration. Do not use the scheduled WWW deployment workflow for this proof.
+
+  **Remaining:** `evidence/P2/publishing.md` is complete (see the Phase 3 AC-07 item). The recipe ran: run
+  40693498144 on head `24a4c54d4` passed row 26 (37), row 33 (1,232 passed, 4 skipped, 0 failed) and the web-UI
+  extra (148); rows 14 and 20 passed in CI only in run 40667489060 on head `88a20850c`. The workflow and both Ayo
+  Playwright configs were restored to `ab27ddab2` bytes in `60a35faf1` (verified with `git diff`), and
+  `evidence/P2/ci.md` now records the dispatches, results and removal as built. Missing: the rediscovery of the
+  normal workflow's CLI E2E Podman dependency. The restored `non-product-full-quality.yml` equals `main` and its
+  `integration` and `e2e` jobs run `ayokoding-cli` Integration and E2E (real-engine BDD adapter) with no
+  `setup-podman` step and no container-runtime line; its `e2e` job was skipped in the proof run, so the dependency
+  is unproven. Settle it (add the verified setup, or record that the runner image supplies a working rootless
+  Podman) before this item closes.
+
 - **Proof:** `evidence/P2/ci.md` and `publishing.md`; caller inventory, assertion proof, image-start
   results, credential-handling checks, and preserved trigger/tag/permission comparison.
 - _Suggested executor: `swe-developer`._
@@ -709,6 +893,14 @@ Never run production/shared-system examples or publish an image solely to valida
       concrete P0 backend/public-site test commands; all applicable local outputs exit 0. The four
       named capacity-blocked Ayo rows and web-ui E2E extra remain pending first runtime PR CI until
       their proof runs.
+
+  **Remaining:** `npm run test:validators` now passes on `60a35faf1` (197 of 197, exit 0), the supported-stack
+  results are summarized in `evidence/P2/local-stacks.md`, and retained Docker mentions are classified for docs,
+  specs, READMEs and `infra/` (`evidence/P4/docs-propagation.md`) and for rule surfaces
+  (`evidence/P4/rule-manifest.md`). Still open: the two RED items above; the ownership-order residuals; the CLI E2E
+  Podman dependency of the restored workflow; the Ayo Compose stack has no local result (CI run 40693498144 plus
+  the disposition in `evidence/P2/local-stacks.md`, which needs maintainer acceptance); and the four Ayo rows and
+  the web-UI extra still need final-head CI.
 
 > **Pause Safety**: all operational callers agree in the unmerged worktree; main is unchanged.
 > Re-verify with `rtk npm run test:validators` and the recorded P2 stack command packet.
@@ -724,12 +916,32 @@ Never run production/shared-system examples or publish an image solely to valida
       fails Docker invocations, put it only on those processes' PATH, and verify the log is empty.
       Record rootless engine JSON, provider/version, cgroup limits, mount UID/GID, internal DNS,
       health checks, prerender copy, failure paths, and owned teardown. Save `evidence/P3/platforms.md`.
-- [ ] [AI] Complete AC-07's pre-merge proof only: both backend images build, inspect, and start
+
+  **Remaining:** `evidence/P3/ubuntu-platform.md` and `evidence/P3/macos-platform.md` (not `platforms.md`) cover
+  the runner, cgroup limits, mount ownership and DNS with 0 Docker-shim calls on both hosts. Ubuntu stacks (OSE,
+  OrganicLever) have container health, Compose-label lookup and 0 shim calls (`evidence/P3/compose-stacks.md`).
+  Missing: macOS Compose stack health and prerender copy (AC-03); a passing macOS `npm run doctor` (exit 1 on
+  fantomas, csharpier and mix, which are not container tools); a local Ayo stack result (CI run 40693498144
+  covers the Ubuntu runner only).
+
+- [x] [AI] Complete AC-07's pre-merge proof only: both backend images build, inspect, and start
       under rootless Podman with temporary local tags; the fake registry CLI proves auth argument
       handling without credentials; existing repositories, `latest`/commit-SHA tags, triggers, and
       permissions match. Record this separately in `evidence/P2/publishing.md`. Do not attempt
       GHCR publication before merge.
-- [ ] [AI] Rerun every P0-frozen project/target row with the exact HIPPO command and stack pairing in
+
+  **Date:** 2026-10-28. **Status:** Complete for the pre-merge boundary; publication stays pending
+  until after merge. **Files Changed:** `evidence/P2/publishing.md`. Both backend images built
+  with the workflow's `podman build --layers --format docker` shape under HIPPO (ose-be and
+  organiclever-be, each 246.6 MB, linux/amd64, ports 8302 and 8202), were inspected, and started
+  with disposable PostgreSQL 17 and NATS containers: `GET /api/v1/health` returned 200
+  `{"status":"healthy"}` and `GET /health` returned 200 `{"status":"ok"}`. The workflow's real
+  login, build-and-push and cleanup blocks ran against a fake registry CLI: the token arrived on
+  standard input only, never in an argument, and the auth file was gone after cleanup. Repository
+  names, `latest` and commit-SHA tags, the push-on-main trigger and permissions match `main`; the
+  only difference is `if: always()` on the two auth-file cleanup steps. No GHCR contact.
+
+- [x] [AI] Rerun every P0-frozen project/target row with the exact HIPPO command and stack pairing in
       the [project target](./tech-docs.md#affected-project-target-matrix) and
       [stack command](./tech-docs.md#current-stack-command-packet) matrices. Compare fresh
       executed/passed counts and outputs against P0; if a directly named caller/config changed,
@@ -737,13 +949,38 @@ Never run production/shared-system examples or publish an image solely to valida
       toolchains, select fixtures covering each used recipe, platform, service, and lockfile form;
       reuse unchanged course units read-only where the canonical scheduled/full gate requires them.
       Record exact selections and positive counts. Never regenerate lesson outputs to pass.
-- [ ] [AI] Perform AC-08 with seeded disposable PostgreSQL data using the
+
+  **Date:** 2026-10-29. **Status:** Complete for every row the plan requires locally; rows 26 and 33 and the
+  web-UI extra stay under the authorized CI exception. **Files Changed:** `evidence/P3/target-matrix.md`.
+  The first pass ran 102 of 107 audited rows at exit 0 (116 target runs; failed or shed earlier runs of 7 rows
+  are itemized). The final-head rerun on `60a35faf1` (commit `60a35faf1` changed ayokoding-www source, unit steps,
+  Ayo FE E2E steps and three feature files) reran 20 table rows at exit 0 (its summary counts 21, adding the row 107 prerequisite build): ayokoding-www rows 14 to 21, the
+  ayokoding-www-be-e2e rows 22 to 25 and 31, the ayokoding-www-fe-e2e rows 27 to 29, 32 and 34, and the legacy
+  scaffold rows 100 (1 Playwright case) and 107 (63 passed, 0 failed). Count changes are itemized: static mapping
+  500 to 509 scenarios (note F) and Vitest 4,240 to 4,291 (note G), with no retry. Row 92 is N/A (no target).
+  Rows 26 and 33 (Ayo backend and frontend E2E) and the web-UI E2E extra are CI-only under the maintainer's
+  timing decision: they passed in run 40693498144 and are closed at Post-Push Verification on the final head. The
+  changed Ayo frontend scenarios also passed 45 of 45 across Chromium, Firefox and WebKit locally on `60a35faf1`.
+
+- [x] [AI] Perform AC-08 with seeded disposable PostgreSQL data using the
       [backup/restore/compare/rollback packet](./tech-docs.md#disposable-postgresql-rehearsal-packet)
       and the discovered service-version export/restore packet. Compare table data and an
       application-level read/write before/after in a distinct Podman volume; preserve the source and
       backup. For any real owned durable data migration,
       stop only that owned stack after its rehearsal passes. If another service needs a recipe,
       record/prove its supported export/restore before switching it. Save only sanitized proof.
+
+  **Date:** 2026-10-28. **Status:** Complete. **Files Changed:**
+  `evidence/P3/postgres-rehearsal.md` (run 2, id `20261028144529-3821`) and
+  `evidence/P3/data-rehearsal.md` (run 1). The tech-docs packet ran extracted from the plan, exit
+  0, under HIPPO on rootless Podman 5.7.0 with PostgreSQL 17.11: source count and sum `3:60`,
+  restored target `3:60`, target after the application-level write `4:100`, source after the
+  target write `3:60`, backup 1,682 bytes with SHA-256
+  `1ff1feaccfa3fc7864d3908a4335e53a2cf85b435c14ace2dcd94a001504ebda`. Source and target used
+  distinct labelled volumes, and the source and dump were kept. No real durable data was in scope
+  and the NATS compose files declare no volumes, so no owned stack was switched. The two run 2
+  volumes and the dump are retained pending a disposal decision (`evidence/P3/recovery.md`).
+
 - [ ] [AI] Manually open each supported public-site container in a real browser and exercise its
       existing home/navigation/search readiness path in every supported locale. Capture screenshots
       and HTTP health responses with `rtk curl`; run one existing read-only backend API request per
@@ -751,16 +988,49 @@ Never run production/shared-system examples or publish an image solely to valida
       serving revision under `evidence/P3/manual/`. This container-health/browser/wire evidence is
       separate from native fixture-server BDD targets, especially OSE's default 3190 tests. Do not
       invent an endpoint: use that app's specs.
-- [ ] [AI] Record API/UI-feature scope dispositions: the runtime migration changes no API contract
+
+  **Remaining:** `ose-www` and `organiclever-www` (en; Chromium, Firefox, WebKit) and both backends pass in
+  `evidence/P3/manual/`. `ayokoding-www` (en, id) has no container, browser, health or API result: five local
+  image builds were stopped by the disk floor, the last from a clean context with 54 GB free
+  (`evidence/P3/manual/ayokoding-www.md`, "Run 2"). A disposition is recorded there and in
+  `evidence/P2/local-stacks.md`: the container is proven in CI run 40693498144 (stack health, `podman cp`, row 26
+  with 37 passed) and the browser and locale proof comes from a native production build
+  (`evidence/P3/ui-gates/`), which is not container-level browser proof. The plan requires an explicit maintainer
+  decision to accept that substitute; none is recorded, so this item stays open. The records were built from a
+  dirty tree on top of `24a4c54d4`.
+
+- [x] [AI] Record API/UI-feature scope dispositions: the runtime migration changes no API contract
       or unrelated product feature. The prerequisite Mermaid keyboard-access repair does change
       UI behavior; complete its applicable UI specification and sequential EWT/UWT/DWT triad
       before delivery. Rule-16 API-feature retests remain not applicable because no API contract
       changed. If implementation changes any further feature, stop to reconcile scope and add its
       applicable gates before continuing. Verify learning-content hashes and peer-worktree
       non-interference for AC-09.
-- [ ] [AI] Rehearse failure recovery on the disposable data stack, then compare the retained source
+
+  **Date:** 2026-10-29. **Status:** Complete. **Files Changed:** `evidence/P3/scope-dispositions.md` (new).
+  No API contract, router, OpenAPI document, schema or migration file changed, so the Rule-16 API-feature retests
+  are not applicable. The prerequisite Mermaid keyboard-access repair has its UI specifications (landed in
+  `60a35faf1`) and a finished EWT, UWT and DWT triad plus the UI quality gate (`evidence/P3/ui-gates/`); the
+  changed Ayo frontend scenarios passed 45 of 45 in three browsers. Decision recorded: EWT-002 (sidebar state
+  resets across the course and non-course boundary) is accepted and documented, consistent with
+  `evidence/P0/readiness.md`. The open findings are listed for the maintainer without owners, with the
+  pre-existing ones identified: UWQ-001 (HIGH, blocking, advisory FAIL), UWT-014 (CRITICAL), DWT-001 and DWT-002
+  (HIGH) and the rest. EWT-003 is an undecided changed-surface finding. AC-09 holds (`evidence/P3/ac-09.md`). The
+  maintainer's fix-or-defer decision for the blocking rows is still needed at the Plan Archival defect check.
+
+- [x] [AI] Rehearse failure recovery on the disposable data stack, then compare the retained source
       against the pre-rehearsal checks. Classify every created resource as removable disposable,
       retained proof, or durable/shared state; run no global prune. Save `evidence/P3/recovery.md`.
+
+  **Date:** 2026-10-28. **Status:** Complete. **Files Changed:** `evidence/P3/recovery.md`. Run 2
+  (id `20261028144624-19714`) on the retained source volume: pre-check `3:60`; a 300-byte
+  truncated dump made `pg_restore` exit 1 and left no `records` table; a SIGKILL (exit 137) of a
+  restored `4:100` target recovered to `4:100` by write-ahead-log replay; the retained source read
+  `3:60` again and the backup SHA-256 was identical before and after. Every created resource is
+  classified (removable disposable removed by exact name, retained proof, durable or shared
+  untouched) in the resource table and the final cleanup ledger, the labelled Podman state diff
+  shows only the two retained volumes added, and no prune ran. The ledger does not list the
+  temporary `localhost/plan-p3/*:p3` images from the AC-07 proof.
 
 ### Phase 3 Gate
 
@@ -776,6 +1046,11 @@ Never run production/shared-system examples or publish an image solely to valida
       in Plan Archival's terminal delivery audit. Re-run the recorded failing boundary after any fix;
       do not retry to obtain a lucky result.
 
+  **Remaining:** blocked by the open Phase 3 items above (macOS AC-01 and AC-03 proof, the maintainer decision on
+  the Ayo container browser row). The matrix rerun, the scope dispositions, the data rehearsal and recovery, and the
+  AC-07 pre-merge proof are done. Intentionally pending: AC-07 publication (after merge), and the CI package row,
+  the four Ayo rows and the web-UI extra (Phase 4, final head).
+
 > **Pause Safety**: supported workflows are proven and source data retained. Stop only resources
 > this plan started; resume by re-running the concrete P3 capability and smoke packet.
 
@@ -787,61 +1062,159 @@ Never run production/shared-system examples or publish an image solely to valida
 - **Outcome:** one canonical runtime requirement, all derivatives/enforcement aligned, delivered
   in the same runtime-switch unit. Only `ose-public` participates.
 
-- [ ] [AI] Start `rules-propagation` through `rules-fixer` with three falsifiable statements:
+- [x] [AI] Start `rules-propagation` through `rules-fixer` with three falsifiable statements:
       operational container tasks use rootless Podman; Compose callers explicitly use podman-compose;
       cleanup removes only positively owned disposable artifacts while retaining shared/persistent
       data. Freeze revision, dirty paths, scope, reasons, strength, and P0 inventory in the local
       placement record. Existing self-created-only safety meaning is preserved, not generalized away.
-- [ ] [AI] Scan and classify conflicts in `repo-governance/`, root instructions, `repo-config.yml`,
+
+  **Date:** 2026-10-28. **Status:** Complete. **Files Changed:** `evidence/P4/rule-manifest.md`.
+  The rules-fixer recorded the three falsifiable statements (rootless runtime, explicit
+  `podman-compose` provider, positively owned cleanup), each with followed and violated cases,
+  frozen against `origin/main`, P0 source revision `71bb3aa5cadc1043e709e6cb13c2e0ffd8f489a7`, the
+  authority documents, and a scratch list of 61 changed Markdown files in rule scope. The existing
+  self-created-only cleanup meaning was narrowed, not generalized.
+
+- [x] [AI] Scan and classify conflicts in `repo-governance/`, root instructions, `repo-config.yml`,
       enforcement scripts/workflows, software-engineering style guides, agents, canonical skills,
       and generated bindings. Resolve Docker-specific lower-level requirements against the approved
       runtime decision; record same-level unresolved conflicts for the owner. Preserve native-first
       tooling and HIPPO scheduling; create no obligation for another repository.
-- [ ] [AI] Place the canonical runtime obligation in the existing
+
+  **Date:** 2026-10-28. **Status:** Complete. **Files Changed:** `evidence/P4/rule-manifest.md`.
+  The manifest lists the superseded Docker requirements with replacement homes, the kept classes
+  (Dockerfile syntax, image names, compose filenames, label keys, historical rationale, generic
+  content) and the unresolved items with owners. Its residue recheck of six operational places
+  read those lines only; it was not a new repository-wide scan.
+
+- [x] [AI] Place the canonical runtime obligation in the existing
       `repo-governance/development/workflow/reproducible-environments/containerization-for-complex-environments.md`.
       Keep build-specific mechanics in the existing Docker-monorepo-builds modules and owned-resource
       mechanics in the existing cleanup modules. Replace duplicate obligations with links; update
       maintenance setup modules and CI conventions at their narrowest applicable homes. If a declared
       word budget would overflow, relocate weaker material in the same change rather than raising it.
-- [ ] [AI] Write canonical Markdown repairs through `rules-fixer`; dispatch any changed declarations
+
+  **Date:** 2026-10-28. **Status:** Complete. **Files Changed:**
+  `repo-governance/development/workflow/reproducible-environments/containerization-for-complex-environments.md`
+  (299 words today; states rootless Podman and the explicit `podman-compose` provider and links
+  the CI conventions and cleanup module),
+  `repo-governance/development/infra/ci-conventions/docker-conventions.md` (741 of 750 words; the
+  duplicate provider rule became a link) and
+  `repo-governance/development/workflow/worktree-and-artifact-cleanup/docker-artifact-cleanup.md`
+  (727 of 750). `./rhino governance word-budget validate` checked 3,092 files with no findings; no
+  ceiling was raised.
+
+- [x] [AI] Write canonical Markdown repairs through `rules-fixer`; dispatch any changed declarations
       or enforcement code to `swe-developer`. Reconcile `repo-config.yml` Podman/provider declarations,
       shell/runtime preflight consumers, existing hadolint coverage, and any exact operational
       instructions in `agents/` or `.agents/skills/`. Record every superseded Docker requirement and
       its replacement home in `evidence/P4/rule-manifest.md`.
-- [ ] [AI] Give each rule one enforcement disposition with discriminating proof: native tool
+
+  **Date:** 2026-10-28. **Status:** Complete. **Files Changed:**
+  `repo-governance/conventions/structure/command-line-interface/009-tiers-here.md`,
+  `repo-governance/development/workflow/README.md`,
+  `repo-governance/development/pattern/database-audit-trail/principles-and-conventions.md`,
+  `repo-governance/development/workflow/reproducible-environments/migration-guide.md`, the three
+  modules in the previous item, and four mirrored skill files. `evidence/P4/rule-manifest.md`
+  lists 11 superseded Docker requirements with their replacement homes and the kept,
+  not-superseded classes. `repo-config.yml` declares `podman` and `podman-compose` (lines 1120 and
+  1121).
+
+- [x] [AI] Give each rule one enforcement disposition with discriminating proof: native tool
       existence is covered by doctor (missing/conforming executable); runtime rootless is covered by
       preflight and Go regression cases (rootful/rootless); provider selection is covered by caller
       tests (conflicting provider installed/explicit selection). Existing ownership safeguards retain
       their documented judgement-based disposition where ownership cannot be mechanically settled.
       Link that reason and its cleanup evidence; do not claim a text search proves runtime behavior.
-- [ ] [AI] Regenerate all declared harness routes together with
+
+  **Date:** 2026-10-28. **Status:** Complete. **Files Changed:** `evidence/P4/rule-manifest.md`.
+  Rootless runtime: preflight `scripts/container-runtime-check` with Node and Go regressions.
+  Provider selection: caller tests and the `setup-podman` provider assertion. Tool existence:
+  doctor through `repo-config.yml`. Native build format: Go argv regression. Dockerfile format:
+  the hadolint gate. Owned cleanup: no mechanical gate, a documented judgement disposition linked
+  to the cleanup evidence in `evidence/P3/recovery.md`.
+
+- [x] [AI] Regenerate all declared harness routes together with
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino harness adapters generate`,
       then validate with `rtk ./hippo run --class ephemeral --resource-tier light --disk-path . -- ./rhino harness adapters validate`.
       Record every generated path in the touch ledger and land it with its source. Never hand-edit it.
+
+  **Date:** 2026-10-28. **Status:** Complete; revalidate on the final tree. **Files Changed:** 16
+  generated files in commit `deb477dac` (12 `catalog.json` and `provenance.json` files across six
+  harness directories, four skill mirror files), listed in `evidence/P4/rule-manifest.md`.
+  `./rhino harness adapters validate` printed "canonical adapter validation is clean" in the later
+  gate run, and the declared adapters check passed (public policy transport 86 passed, 0 failed).
+  The final-tree generated-binding gate stays under Local Quality Gates.
+
 - [ ] [AI] Run deterministic Markdown/frontmatter/headings/internal-link/word-budget and enforcement
       gates declared in `repo-config.yml`, judging exit codes. Run `rules-quality-gate` on this frozen
       change through its documented workflow and resolve its ledger under its bounded convergence
       rule. Record rule homes, enforcement proof, relocations, gate verdict, manifest, and final
       `rules-propagation` status; unresolved required rows block this delivery unit.
 
+  **Remaining:** `rules-quality-gate` ran in three cycles; the advisory final verdict is PASS, with no open
+  CRITICAL, HIGH or in-scope MEDIUM finding (`evidence/P4/rule-manifest.md`; C3-1 and C3-2 are LOW and deferred
+  to the plan owner, O1 and O2 are out of scope). Exit codes are recorded for the cycle 1 and cycle 2 gates (all
+  0), the shellcheck gate exited 0 (`evidence/P2/local-gates.md`), and the one emoji finding is in the gitignored,
+  untracked generated file `apps/ayokoding-www/generated/search-data.json`, outside the diff. Still open: (1) the
+  `(runtime proof pending)` note at `docker-artifact-cleanup.md` line 57, although the stack proof exists
+  (`evidence/P3/compose-stacks.md`, Compose-label lookup); it needs a `rules-fixer` edit, within that file's
+  750-word budget; (2) the owner item to wire `test:validators` or the two registry validators into a declared
+  gate (a declaration change goes to `swe-developer`); (3) the exit code of the harness adapters check, which
+  printed "canonical adapter validation is clean" without a captured code, on the final tree.
+
 ### Docs propagation and architecture reconciliation
 
-- [ ] [AI] Run `docs-propagation` on the frozen as-built change. Update only stale operational
+- [x] [AI] Run `docs-propagation` on the frozen as-built change. Update only stale operational
       setup, root/project READMEs, CI architecture, active specs, script/action indexes, and canonical
       skill guidance from the P0 inventory. Preserve lessons, generic educational examples, dated
       published records, historical plans, and unsupported-scaffold warnings. Execute every safe
       affected example via its declared entry point; record publishing/shared/secret-bearing commands
       as not-run with reason. Save workflow outputs/status in `evidence/P4/docs-manifest.md`.
-- [ ] [AI] Reconcile C4/runtime architecture descriptions in the existing app/CLI spec homes and
+
+  **Date:** 2026-10-29. **Status:** Complete for head `60a35faf1`, with D1 to D3 left for an owner.
+  **Files Changed:** `evidence/P4/docs-propagation.md` (new) and a pointer in `evidence/P4/docs-manifest.md`.
+  The docs-fixer pass applied F1 to F8 (`evidence/P4/docs-manifest.md`). The follow-up scan of `docs`, `specs`,
+  project and library READMEs and `infra` (content and `plans/done` excluded) matched 111 lines in 29 files and
+  classified every one: Dockerfile syntax, `docker.io` registry names, `.dockerignore` and `docker-compose*.yml`
+  filenames, negations, one dated historical decision record, and generic educational guides. It found 0 stale
+  operational Docker instructions, so no docs or specs file needed a further edit. The safe affected examples map
+  to earlier runs (preflight, backend stacks, OSE and OrganicLever stacks); the Ayo stack, the unsupported
+  legacy scaffold commands, host installs, publishing and generic examples are recorded as not run, each with a
+  reason. `./rhino md internal-link validate` (17,286 links) and `./rhino governance word-budget validate` (3,092
+  files) both exited 0 on 2026-10-29. D1 to D3 stay owner-pending (`evidence/P4/docs-manifest.md`).
+
+- [x] [AI] Reconcile C4/runtime architecture descriptions in the existing app/CLI spec homes and
       system-architecture docs. The app topology and public APIs do not change; update runtime nodes
       and external-tool labels only where they actually exist. Record no-delta dispositions for
       unchanged HTTP/tRPC/schema contracts and for UI-design work. Confirm the runtime prerequisites
       are reflected in Phoenix's eventual resumption instructions without changing its feature scope.
-- [ ] [AI] Recheck AC-10: enumerate every live plan README, read each `Depends-on`, compare exact
+
+  **Date:** 2026-10-29. **Status:** Complete. **Files Changed:** `evidence/P4/docs-propagation.md` (section 5).
+  Runtime nodes and tool labels that existed were already updated on the branch:
+  `specs/apps/ayokoding/cli/architecture.md` (the context diagram's engine node now reads "Podman CLI, rootless
+  engine", and its description says the CLI starts containers through the rootless Podman CLI),
+  `specs/apps/ayokoding/cli/README.md`, `docs/reference/system-architecture/ci-cd.md` (step 4, "Podman Compose
+  stack"), `docs/reference/web-sites.md`, `docs/reference/monorepo-structure.md` and `specs/apps/ose/deployment.md`.
+  The other `specs/apps/*/architecture.md` files and the C4 Level 2 diagram in `applications.md` have no engine node.
+  No-delta dispositions are recorded for HTTP, tRPC and schema contracts (no contract file changed) and for
+  UI-design work (no design source changed; see `evidence/P3/scope-dispositions.md`). Phoenix's resumption
+  instructions were read, not edited: its README keeps `Depends-on: [docker-to-podman]` and waits for the Podman
+  migration and explicit resumption, and its `delivery.md` requires the completed Podman predecessor.
+
+- [x] [AI] Recheck AC-10: enumerate every live plan README, read each `Depends-on`, compare exact
       live IDs and edges against `plans/README.md`, and verify acyclicity. Retain Phoenix's Podman
       prerequisite and direct Phoenix dependencies for 06–14; preserve 06→07 and the final join
       from every content plan 06–13 into plan 14. No
       historical completed plan appears as a live graph node. Record `evidence/P4/plan-order.md`.
+
+  **Date:** 2026-10-28 (re-read 2026-10-29). **Status:** Complete. **Files Changed:**
+  `evidence/P4/plan-order.md`. 12 live plans (3 in progress, 9 backlog); the README `Depends-on`
+  edges and the `plans/README.md` graph edges are identical at 19 each, and a Kahn sort removes
+  all 12 nodes, so there is no cycle. `docker-to-podman` to `ayokoding-app-web`,
+  `ayokoding-app-web` to plans 06 to 14, 06 to 07, and each of 06 to 13 joining 14 are retained;
+  no completed plan appears as a node. The `Depends-on` lines still match on 2026-10-29. Archival
+  removes the satisfied prerequisite and is covered by the Plan Archival items.
 
 ### Local Quality Gates (Before Push)
 
@@ -855,20 +1228,45 @@ Never run production/shared-system examples or publish an image solely to valida
       when they provide the full required selection. Confirm the terminal outputs exit 0; the four
       explicitly deferred Ayo rows and web-ui E2E extra instead require reconciled CI receipts at
       the pre-merge gate.
+
+  **Remaining:** repeat on the final head. On `60a35faf1`: `test:validators` exited 0 (197 of 197,
+  `evidence/P2/local-gates.md`), and the matrix is complete (102 rows in the first pass, 20 table rows rerun after
+  the Ayo source change, all exit 0; `evidence/P3/target-matrix.md`). `npm run doctor` exited 0 on Ubuntu with 25
+  toolchains at an earlier head and has no record on the final head. The four Ayo CI rows and the web-UI extra
+  close under Post-Push. Re-run only what a later edit invalidates.
+
 - [ ] [AI] Run Markdown lint and Prettier check on the exact changed Markdown/config paths using
       installed local binaries under ephemeral/light admission, plus `rtk git diff --check` and the
       repository's declared cross-language/YAML/workflow gates. Run link and generated-binding gates
       against the final tree. Record positive exit codes and bounded fixes.
+
+  **Remaining:** repeat on the final tree after the last edit. Recorded on `60a35faf1`
+  (`evidence/P2/local-gates.md`): Prettier on 227 changed paths, `git diff --check origin/main...HEAD`, actionlint,
+  shellcheck, YAML parse and hadolint, all exit 0. Recorded in `evidence/P4/rule-manifest.md` (cycles 1 and 2, all
+  exit 0): markdownlint over 7,881 files, frontmatter, heading hierarchy, internal link, README index, word budget
+  and vendor gates. Re-run on 2026-10-29: internal-link and word-budget, exit 0. Missing: the generated-binding
+  gate on the final tree, and the whole set after the last staged and unstaged edits.
+
 - [ ] [AI] Reconcile `git status` with the touch ledger and file-impact inventory. Review the full
       diff, verify learning content/peer work is untouched, and ensure no hosting/secret/shared-state
       change slipped in. Re-run only checks invalidated by a later edit. Freeze the delivery revision
       and the AC-to-proof matrix in `evidence/P4/delivery-readiness.md`.
+
+  **Remaining:** touch-ledger reconciliation and `evidence/P4/delivery-readiness.md`, which does
+  not exist. The Phase 4 gate below names `evidence/P4/delivery.md`; settle one filename.
 
 ### Post-Push Verification
 
 - [ ] [AI] Once this implementation change set is authorized for delivery, commit the coherent
       runtime switch, open/update its draft PR to `main`, and obtain fresh-context leak review for
       the exact push head before pushing. Root instructions and hardened push guards remain binding.
+
+  **Remaining:** commits exist on `docker-to-podman-base` and PR #749 is open (coordinator report). Its PR quality
+  gate on `60a35faf1` failed once on a broken relative link in an evidence file, since fixed
+  (`./rhino md internal-link validate` exits 0, 17,286 links, 2026-10-29). The next push needs a fresh push-head
+  leak review and a new current-head and base gate run. Neither the leak review nor the gate result is recorded in
+  the evidence yet.
+
 - [ ] [AI] Poll CI every two minutes with `gh run list`/`gh run view`; never `gh run watch`. Require
       exact-head/base PR Quality gate and applicable container CI. Investigate failures at root cause,
       preserve logs, repair and push through a fresh-head leak review, and re-run affected proof.
@@ -883,6 +1281,15 @@ Never run production/shared-system examples or publish an image solely to valida
       recipe. Before merge compare complete input inventories, additions and deletions, resolved
       dependencies and scenario identities against the final delivery revision; rerun only proofs
       invalidated by later changes. Any missing, failed or unreconciled row blocks merge.
+
+  **Remaining:** only manual dispatch runs are recorded (`evidence/P2/ci.md`: 40667489060, 40671958744,
+  40693498144). No passing PR quality gate run and no PR CI run is recorded, and the provisional runner row is not
+  closed on PR CI. The setup action asserts rootless and provider only; cgroup, DNS and mount proof before consumer
+  workloads is not in it. The proof job was removed in `60a35faf1`, so the four Ayo rows and the web-UI extra need
+  a new overlay dispatch on the final head wherever inputs changed (`60a35faf1` changed Ayo FE E2E steps,
+  `mermaid.tsx` and feature files after run
+  40693498144).
+
 - [ ] [AI] Record the green pre-archival PR head and preliminary publication/hosting proof matrix.
       Do not merge yet: Knowledge Capture and archival must land in this same PR first. Local image
       build/start and auth-command proof must already pass; only trigger-driven publication, hosted
@@ -913,19 +1320,39 @@ Never run production/shared-system examples or publish an image solely to valida
 - [ ] [AI] Apply the durable-learning litmus test, then secret/sensitivity and repo-relevance gates
       to each entry. Sanitize examples or discard entries that cannot retain meaning safely. Private
       infrastructure details never enter this public plan. Record discarded entries with reasons.
+
+  **Remaining:** `evidence/P5/knowledge-capture.md` now triages 38 entries (7 routed, 13 reported, 18
+  discarded). The seven 2026-10-29 entries cover the Ayo build context that copies native `.next` output because
+  the root `.dockerignore` lacks it, the runner disk exhaustion in run 40667489060 and its stack-first fix, the
+  Ayo image build's 54 GB-plus disk need, the unexplained intermittent Firefox `waitForURL` stall (hydration
+  hypothesis refuted), the Dockerfile `HEALTHCHECK` ignored under the OCI image format, the anonymous Postgres
+  volumes left by backend `down`, and the pre-existing UI findings. Close this item once the green pre-archival
+  PR head exists and has added no further observation.
+
 - [ ] [AI] Route each surviving non-code learning to its owning durable home and land a bounded
       inline correction with required propagation. For code-homed future work, report with handoff
       evidence unless a separate idea artifact is literally authorized. Do not create/update
       `plans/ideas/` without that authorization and never write new backlog work during Knowledge
       Capture. When idea authorization exists, search for overlap before creating a two-pager.
+
+  **Remaining:** seven inline routes landed and thirteen items are reported to the maintainer, with no plan
+  authorization and no `plans/ideas/` write (`evidence/P5/knowledge-capture.md`, items 1 to 13). Close with the
+  green pre-archival PR head.
+
 - [ ] [AI] Record each terminal state in `learnings.md`: routed inline, explicitly authorized idea
       path, reported without plan authorization with handoff evidence, or discarded with reason. If
       none arose, record `No generalizable learnings — <reason>` rather than inventing an insight.
+
+  **Remaining:** all 38 entries in `learnings.md` carry a terminal state. Add a state for any observation the
+  green pre-archival PR head adds, then close.
 
 ### Phase 5 Gate
 
 - [ ] [AI] Verify no learning remains untriaged and no future code-homed learning landed inline.
       Re-run gates invalidated by any durable-home edits; record `evidence/P5/knowledge-capture.md`.
+
+  **Remaining:** the new entries are triaged. After the green pre-archival PR head, re-run the gates invalidated by
+  the seven durable-home edits and update `evidence/P5/knowledge-capture.md`.
 
 > **Pause Safety**: each learning has a terminal state. Resume by checking `learnings.md` for open
 > entries and the current-head audit matrix before archival.

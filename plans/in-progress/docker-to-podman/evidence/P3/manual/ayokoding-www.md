@@ -264,7 +264,7 @@ Observed facts only:
 
 The local container browser row is not provable on this host: the Ayo image build alone needs more than the 54 GB that is
 free. The accepted proof for the container itself is the CI runner evidence in
-[P2/ci.md](../P2/ci.md), run 40693498144 on head 24a4c54d4:
+[P2/ci.md](../../P2/ci.md), run 40693498144 on head 24a4c54d4:
 
 - `podman compose ... up --build --detach --wait` built and started the Ayo stack on a 145 GB runner (81 GB free before,
   51 GB after) and the compose health wait passed.

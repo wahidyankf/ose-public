@@ -66,3 +66,10 @@ Total: 92.
 
 Every command ran through `./hippo run --class ephemeral --resource-tier light --disk-path .` with `TMPDIR` set to
 `local-tmp/docs-fixer/`.
+
+## Docs propagation pass (2026-10-29)
+
+The follow-up scan of `docs`, `specs`, project and library READMEs and `infra`, the classification of all 111 matches,
+the executed and not-run example map, and the C4 reconciliation are in [docs-propagation.md](./docs-propagation.md).
+The scan found no stale operational Docker instruction, so this pass added no docs edit beyond F1 to F8. D1 to D3 above
+stay with their owner.

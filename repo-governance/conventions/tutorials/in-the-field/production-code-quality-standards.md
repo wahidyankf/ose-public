@@ -31,7 +31,7 @@ when_to_use: Use when checking whether a guide's code examples meet production c
 **Example** (production Docker configuration):
 
 ```dockerfile
-FROM eclipse-temurin:21-jre-alpine
+FROM docker.io/library/eclipse-temurin:21-jre-alpine
 # => Base image: Eclipse Temurin JRE 21 on Alpine Linux
 # => alpine variant: Minimal OS (5MB vs 100MB+ Ubuntu)
 # => jre not jdk: Runtime only, no compiler (smaller image)

@@ -1,10 +1,12 @@
 # Phase 5 knowledge capture
 
-Every entry in [learnings.md](../../learnings.md) now has one terminal state. No entry is untriaged.
+Every entry in [learnings.md](../../learnings.md) now has one terminal state. No entry is untriaged. The seven entries
+dated 2026-10-29 were added after the first triage and are triaged below under "Later observations".
 Each entry was compared with the existing guidance under `repo-governance/`, `docs/`, `AGENTS.md`
 and `.agents/skills/` before its state was chosen. Each `routed inline` target was read first.
 
-Totals: 31 entries. 7 routed inline, 7 reported without plan authorization, 17 discarded.
+Totals: 38 entries. 7 routed inline, 13 reported without plan authorization, 18 discarded. The first 31 entries
+keep their original states (7, 7 and 17); the seven later entries add 6 reported and 1 discarded.
 
 ## Terminal states
 
@@ -41,6 +43,18 @@ Totals: 31 entries. 7 routed inline, 7 reported without plan authorization, 17 d
 | `localhost` is not the same address in Podman                 | reported  | Template in `docker-conventions.md` still shows `localhost`; see below                                            |
 | A running stack proves less than its health state             | reported  | Proposed home `docker-conventions.md`; see below                                                                  |
 | Staging directories from interrupted builds                   | reported  | Proposed home `docker-artifact-cleanup.md`; see below                                                             |
+
+### Later observations (2026-10-29)
+
+| Entry                                                                | State     | Destination or reason                                                                                   |
+| -------------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------- |
+| Root `.dockerignore` lacks `.next`; native build copied into context | reported  | Code-homed fix plus a note in `docker-conventions.md`; see item 8                                       |
+| Runner disk exhaustion in run 40667489060, stack-first ordering      | discarded | The ordering lived only in the temporary proof job, removed in `60a35faf1`; the durable cause is item 8 |
+| Ayo image build needs more than 54 GB of free local disk             | reported  | Proposed home `docs/how-to/setup-development-environment.md`; see item 9                                |
+| Unexplained intermittent Firefox `waitForURL` stall                  | reported  | Needs a root-cause owner (flaky-test rule); see item 10                                                 |
+| Dockerfile `HEALTHCHECK` ignored under the OCI image format          | reported  | Plan-owner decision, then `docker-conventions.md`; see item 11                                          |
+| Backend `down` leaves an anonymous Postgres volume per run           | reported  | Code-homed fix in the two E2E Compose files or scripts; see item 12                                     |
+| UI triad found pre-existing defects outside the two judged changes   | reported  | Maintainer decision on owners or deferral; list in `evidence/P3/scope-dispositions.md`; see item 13     |
 
 Paths in the table are shortened. The full paths are in each entry's disposition in `learnings.md`.
 The directories are `repo-governance/development/quality/`, `repo-governance/development/practice/`,
@@ -85,6 +99,35 @@ the change goes through rules-propagation. Nothing below was edited in this plan
    ferret apps. Owner: ferret-cli maintainers. The test name was not found by text search in this
    checkout, so the owner should confirm it.
 
+8. **Build context copies native `.next` output (and the CI disk exhaustion it caused).** The root `.dockerignore`
+   has no `.next` entry, and `apps/ayokoding-www/.dockerignore` is not read for a repo-root context, so a tree that has
+   built natively copies about 18 GB of build output into the Ayo image. The same copy filled the runner disk in run 40667489060. Evidence: `evidence/P3/manual/ayokoding-www.md` ("Root cause"), `evidence/P2/ci.md`. The root
+   `.dockerignore` is unchanged on this branch. Fix: a `swe-*` agent adds a root-level `.next` exclusion or a
+   Dockerfile-named ignore file, with BDD and gate treatment. Durable note, home `docker-conventions.md`: "A repo-root
+   build context reads only the root `.dockerignore`; an app-level ignore file is not applied." Independent of Podman.
+9. **Local Ayo image build capacity.** Five local builds stopped at the HIPPO disk floor from 32 to 54 GB free. Home:
+   the AyoKoding stack step of `docs/how-to/setup-development-environment.md`. Wording: "The AyoKoding image build
+   needs well over 54 GB of free disk; a smaller disk stops at the HIPPO floor." Facts: `evidence/P3/compose-stacks.md`,
+   `evidence/P3/manual/ayokoding-www.md`.
+10. **Intermittent Firefox `waitForURL` stall in the course-walk helper (cause open).** One of 1,236 cases in run
+    40671958744 timed out at `complete-course.ts:78`. Traces show the click and handler ran and the URL never changed.
+    The hydration-race hypothesis is refuted: the toggle was already enabled. The case passed in run 40693498144 and
+    in the local 45 of 45 browser matrix on `60a35faf1`, so the cause is unproven. The flaky-test rule requires a
+    root-cause fix. Owner: the AyoKoding frontend E2E maintainers. Facts: `evidence/P2/ci.md`, "Row 33 failure
+    investigation".
+11. **Dockerfile `HEALTHCHECK` is ignored in the OCI image format.** `ose-www` and `organiclever-www` were healthy only
+    through their Compose healthchecks. Decision for the plan owner before any such image is published: keep the
+    image-level healthcheck and build in the docker format, or drop it. Home after the decision: the `HEALTHCHECK`
+    bullet of `docker-conventions.md`. Facts: `evidence/P3/manual/ose-www.md`, observation 1.
+12. **Anonymous Postgres volumes after backend `down`.** One per script run and one per manual stack, kept by `down`
+    without `-v`. Fix: a named or `tmpfs` data mount in `apps/ose-be/docker-compose.e2e.yml` and
+    `apps/organiclever-be/docker-compose.e2e.yml`, or a script step that removes its own project's volumes. Facts:
+    `evidence/P3/manual/backends.md`, observation 1.
+13. **Pre-existing UI defects from the exploratory, usability and design passes.** One open blocking row (UWQ-001,
+    HIGH, same defect as DWT-001), a CRITICAL (UWT-014, language switch) and several HIGH rows, on components unchanged
+    from `main`. No owner is assigned. The maintainer decides a fix owner or an explicit deferral for each blocking
+    row. Facts and the full list: `evidence/P3/scope-dispositions.md`.
+
 ## Verification limits
 
 - The run IDs and the failing test count for item 7 come from the CI runs the maintainer named.
@@ -93,6 +136,10 @@ the change goes through rules-propagation. Nothing below was edited in this plan
   by file name only.
 - Entry subjects for the P0 fixture and BDD arity fixes rest on the P0 evidence files, not on a
   fresh run.
+- The seven 2026-10-29 entries rest on the cited evidence files only. No command was run for them, and the CI run
+  facts were not re-fetched.
+- Triage is complete for the observations that exist now. The green pre-archival PR head and its CI may add
+  observations; Phase 5 stays open until then.
 
 ## Closing
 

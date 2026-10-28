@@ -119,10 +119,10 @@ The repository runs its containers with rootless [Podman](https://podman.io/). P
 root daemon. Repository Compose workflows use `podman compose` with `podman-compose` as the explicit
 provider, so Docker Compose is not used.
 
-**macOS**: Podman runs containers in a Linux virtual machine that `podman machine` manages. Install
-Podman from the official release page at <https://podman.io/docs/installation>. Verify the package's
-published SHA-256 digest and its signature before you install it. Then check for an existing machine
-and create one only when none exists:
+**macOS**: The macOS path has no pinned Podman version. Podman runs containers in a Linux virtual machine
+that `podman machine` manages. Install Podman from the official release page at
+<https://podman.io/docs/installation>. Verify the package's published SHA-256 digest and its signature
+before you install it. Then check for an existing machine and create one only when none exists:
 
 ```bash
 podman machine list
@@ -136,7 +136,8 @@ install an unversioned package. Other Ubuntu releases and architectures have no 
 Podman there from this guide:
 
 ```bash
-sudo apt-get install -y "podman=5.7.0+ds2-3build1"
+# <podman_pin> is the podman_pin value in https://github.com/wahidyankf/ose-public/blob/main/.github/actions/setup-podman/action.yml
+sudo apt-get install -y "podman=<podman_pin>"
 ```
 
 Install the Compose provider into an isolated `pipx` environment, not into system Python:
@@ -456,14 +457,14 @@ On Linux, also run:
 Versions are pinned in these config files. `npm run doctor` checks only that each declared tool
 runs; the version manager or project build enforces the pin:
 
-| Tool           | Version Source                                                                                                      |
-| -------------- | ------------------------------------------------------------------------------------------------------------------- |
-| Node.js        | `package.json` → `volta.node`                                                                                       |
-| npm            | `package.json` → `volta.npm`                                                                                        |
-| .NET           | each .NET project's `global.json` → `sdk.version`                                                                   |
-| Go             | `.github/actions/setup-go` → `go-version` input                                                                     |
-| podman-compose | `pipx install podman-compose==1.6.0` (Step 2)                                                                       |
-| Podman, jq     | Podman: the reviewed package pin in `.github/actions/setup-podman/action.yml` (Step 2); jq: any (no pinned version) |
+| Tool           | Version Source                                                                                                                        |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Node.js        | `package.json` → `volta.node`                                                                                                         |
+| npm            | `package.json` → `volta.npm`                                                                                                          |
+| .NET           | each .NET project's `global.json` → `sdk.version`                                                                                     |
+| Go             | `.github/actions/setup-go` → `go-version` input                                                                                       |
+| podman-compose | `pipx install podman-compose==1.6.0` (Step 2)                                                                                         |
+| Podman, jq     | Podman: the reviewed package pin in `.github/actions/setup-podman/action.yml` (Step 2; macOS has no pin); jq: any (no pinned version) |
 
 Never hardcode version numbers in scripts — always read from these source-of-truth files.
 

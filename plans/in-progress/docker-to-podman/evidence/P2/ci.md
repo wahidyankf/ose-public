@@ -1,9 +1,19 @@
 # docker-to-podman P2 CI Evidence
 
-## Test-only proof job recipe
+## Status
 
-Status: run 40667489060 executed at head 88a20850c (see the run section below). The job was then restructured so the
-stack builds first on a fresh runner. The restructured recipe has not been dispatched.
+As built (2026-10-29): the temporary proof job was dispatched three times (runs 40667489060, 40671958744 and
+40693498144, see the run sections below). The last run, 40693498144 on head `24a4c54d4`, concluded `success` for the
+proof job. The overlay was removed in commit `60a35faf1`: `.github/workflows/non-product-full-quality.yml` and the two
+Ayo Playwright configs (`apps/ayokoding-www-fe-e2e/playwright.config.ts`, `apps/ayokoding-www-be-e2e/playwright.config.ts`)
+are byte-identical to commit `ab27ddab2`, the `E2E_FULL_MATRIX` knob appears nowhere under `apps/`, `.github/` or
+`scripts/`, and `scripts/e2e-playwright-config.test.mjs` is deleted. Only manual dispatch runs exist so far. No
+pull-request CI run is recorded in this file. The provisional runner row, the four capacity-blocked Ayo rows and the
+web-UI extra still need their closing CI proof on the final head (Phase 4, Post-Push Verification).
+
+## Test-only proof job recipe (historical; removed in `60a35faf1`)
+
+This section describes the recipe as it ran in run 40693498144. The job no longer exists in the tree.
 
 The temporary job `docker-to-podman-ayo-proof` sits at the end of `.github/workflows/non-product-full-quality.yml`,
 bracketed by `# TEMPORARY docker-to-podman proof job` and `# END TEMPORARY`. It runs only on manual dispatch with the
@@ -20,10 +30,10 @@ integration output would sit in the workspace before the image build, and the im
 in that run. The build context must not contain prior build output. No disk-clearing step is added: the reusable
 `e2e` job in `_reusable-www-test-local-deploy.yml` has none, so this job runs under the same conditions.
 
-The knob is the SWE-settled configuration that the delivery plan calls for: all three browsers, zero retries, and
-the original timeouts and assertions, without spoofing CI state. The two configs it touches,
-`apps/ayokoding-www-fe-e2e/playwright.config.ts` and `apps/ayokoding-www-be-e2e/playwright.config.ts`, are temporary
-edits. They are restored with the workflow before merge, per the delivery plan.
+The knob was the SWE-settled configuration that the delivery plan called for: all three browsers, zero retries, and
+the original timeouts and assertions, without spoofing CI state. The two configs it touched,
+`apps/ayokoding-www-fe-e2e/playwright.config.ts` and `apps/ayokoding-www-be-e2e/playwright.config.ts`, were temporary
+edits. Commit `60a35faf1` restored them with the workflow, per the delivery plan.
 
 | Step                                                 | What it does                                                                                                            | Delivery row proved               |
 | ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
@@ -43,10 +53,10 @@ edits. They are restored with the workflow before merge, per the delivery plan.
 
 Known gaps and caveats:
 
-- `E2E_FULL_MATRIX` is a new opt-in read by two Playwright configs, so this recipe edits them. The knob only changes
-  the selection when set to exactly `1`. The delivery plan requires the reviewed bytes to be restored and the knob
-  removed before merge. `scripts/e2e-playwright-config.test.mjs` proves the selection in both directions and runs in
-  `npm run test:validators`; it does not prove the CI run.
+- `E2E_FULL_MATRIX` was a new opt-in read by two Playwright configs, so this recipe edited them. The knob only changed
+  the selection when set to exactly `1`. The delivery plan required the reviewed bytes to be restored and the knob
+  removed before merge. `scripts/e2e-playwright-config.test.mjs` proved the selection in both directions while the
+  knob existed; it was deleted with the knob in `60a35faf1`, and it never proved the CI run.
 - The browser install step is the shared `setup-playwright` action, unchanged. It runs `npx playwright install
 --with-deps`, unless a cache entry matches the Playwright version, in which case it restores cached browsers. A
   branch can restore only caches saved from `main` or from its own branch, so the first run may install fresh.
@@ -57,8 +67,8 @@ Known gaps and caveats:
 - `setup-podman` accepts only the `ubuntu/resolute/amd64` tuple. Run 40667489060 selected the pinned row on
   `ubuntu-latest` (see below).
 
-Pending: the first dispatch of the restructured job, with its executed SHA, dispatch receipt, pass or fail for rows 26,
-33, and the web-UI E2E extra, and the two disk measurements.
+The restructured job (stack first) was dispatched in runs 40671958744 and 40693498144. Their executed SHAs, results for
+rows 26 and 33 and the web-UI E2E extra, and the two disk measurements are in the run sections below.
 
 ## Run 40667489060 (head 88a20850c)
 
@@ -122,3 +132,24 @@ Observed facts only:
 - `Unit and static behaviour coverage` passed. `Complete local-resource Integration suites` failed only on
   `ferret-cli:test:integration` (6 failed, 500 passed), the pre-existing baseline failure also seen on main's scheduled
   runs. `Complete public-boundary E2E suites` was skipped because of that failure.
+
+## Overlay removal and what remains for the final head
+
+Observed facts only:
+
+- Commit `60a35faf1` deleted the `docker-to-podman-ayo-proof` job (92 lines) from `non-product-full-quality.yml`. The
+  workflow, both Ayo Playwright configs and the absence of `E2E_FULL_MATRIX` were checked against `ab27ddab2` with
+  `git diff --quiet` on 2026-10-29: identical. `git diff origin/main...HEAD` on the workflow is empty, so the
+  restored workflow is the `main` workflow.
+- The same commit changed Ayo frontend E2E step bindings, `mermaid.tsx`, the Mermaid and sidebar unit tests and three
+  feature files after run 40693498144. Rows 14 and 20 passed only in run 40667489060 (head `88a20850c`) in CI; both
+  also passed locally on `60a35faf1` (`../P3/target-matrix.md`, Final-head reruns). Rows 26 and 33 and the web-UI extra
+  passed in CI at `24a4c54d4`; the local browser matrix for the changed Ayo frontend scenarios passed 45 of 45 on
+  `60a35faf1` (`../P3/target-matrix.md`). A CI proof on the final head needs a new overlay dispatch, which the
+  delivery plan assigns to Post-Push Verification.
+- The restored `non-product-full-quality.yml` has no Podman setup step: its `integration` and `e2e` jobs run
+  `ayokoding-cli` Integration and E2E, whose BDD adapter uses the real container engine, on the runner as it comes.
+  `main` has the same workflow and no container-runtime line in it. In run 40693498144 the `e2e` job was skipped
+  (an upstream `ferret-cli` failure), so this dependency was not exercised. It is an open question for the maintainer
+  (see `delivery.md`, Phase 2 AC-07 publishing item).
+- No PR quality gate run and no PR CI run is recorded here yet.

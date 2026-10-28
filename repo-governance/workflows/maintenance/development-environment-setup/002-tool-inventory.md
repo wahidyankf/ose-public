@@ -23,7 +23,7 @@ nothing here — install a reported tool through the phase or manager listed, th
 | 6   | go             | Go projects, `gofmt` in `format-staged`         | CI `setup-go` input                 | Phase 4                     |
 | 7   | golangci-lint  | Go project lint                                 | CI `setup-go` input                 | Phase 4                     |
 | 8   | java           | `openapi-generator-cli` (`codegen` targets)     | —                                   | SDKMAN or a JDK package     |
-| 9   | podman         | dev stacks, E2E, container builds               | —                                   | Phase 2                     |
+| 9   | podman         | dev stacks, E2E, container builds               | Ubuntu `setup-podman`; macOS none   | Phase 2                     |
 | 10  | podman-compose | dev stacks, E2E, container builds               | `1.6.0` (Phase 2 pipx)              | Phase 2                     |
 | 11  | jq             | hooks, CI scripts                               | —                                   | Phase 2                     |
 | 12  | bash           | every gate script                               | —                                   | Phase 2 (ships with the OS) |

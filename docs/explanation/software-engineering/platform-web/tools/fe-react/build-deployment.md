@@ -209,7 +209,7 @@ COPY . .
 RUN npm run build
 
 # Production stage
-FROM nginx:alpine
+FROM docker.io/library/nginx:alpine
 
 COPY --from=build /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
@@ -345,7 +345,7 @@ cache:
 
 test:
   stage: test
-  image: node:${NODE_VERSION}-alpine
+  image: docker.io/library/node:${NODE_VERSION}-alpine
   script:
     - npm ci
     - npm run lint
@@ -357,7 +357,7 @@ test:
 
 build:
   stage: build
-  image: node:${NODE_VERSION}-alpine
+  image: docker.io/library/node:${NODE_VERSION}-alpine
   script:
     - npm ci
     - npm run build
@@ -368,7 +368,7 @@ build:
 
 deploy-production:
   stage: deploy
-  image: node:${NODE_VERSION}-alpine
+  image: docker.io/library/node:${NODE_VERSION}-alpine
   script:
     - npm ci
     - npm run build
@@ -578,7 +578,7 @@ services:
       - ose-network
 
   db:
-    image: postgres:16-alpine
+    image: docker.io/library/postgres:16-alpine
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password

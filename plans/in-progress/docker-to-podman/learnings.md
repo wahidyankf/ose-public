@@ -382,3 +382,97 @@
 - **Response and proof:** after the builds stopped, only the task-owned staging directory and the
   ID-listed working containers were removed. The build then had its full headroom.
 - **Disposition:** reported without plan authorization. `repo-governance/development/workflow/worktree-and-artifact-cleanup/docker-artifact-cleanup.md` covers leaked containers, not Buildah working containers or build staging directories. Proposed home: that file, section "Leaked Test Containers". Proposed wording: "An interrupted image build can leave Buildah working containers and staging files; remove only the ones this session created, listed by ID." Handoff: [P5 knowledge capture](./evidence/P5/knowledge-capture.md).
+
+## 2026-10-29 — The root `.dockerignore` does not exclude `.next`, so a native build is copied into a repo-root build context
+
+- **Observation:** the AyoKoding image builds with the repository root as its context. The root `.dockerignore` has no
+  `.next` entry, and `apps/ayokoding-www/.dockerignore` (which lists `.next/`) is not read for a root context. A tree
+  that has built natively therefore copies its build output into the image: about 18 GB of `.next` in the local
+  attempt (`evidence/P3/manual/ayokoding-www.md`, "Root cause"). The same copy filled the runner disk in CI run
+  40667489060 (`no space left on device` writing under `apps/ayokoding-www/.next/`, `evidence/P2/ci.md`).
+- **Response and proof:** no fix was made in this plan. The local rerun removed the native `.next` first (a clean
+  context) to isolate the cause. The root `.dockerignore` is unchanged on this branch.
+- **Disposition:** reported without plan authorization. This is a code-homed fix: a root-level `.next` exclusion or a
+  Dockerfile-named ignore file next to the Dockerfile, with its BDD and gate treatment, dispatched to a `swe-*` agent.
+  It existed under Docker too and is independent of the Podman migration. Proposed durable note, home
+  `repo-governance/development/infra/ci-conventions/docker-conventions.md`: "A repo-root build context reads only the
+  root `.dockerignore`; an app-level ignore file is not applied." Handoff:
+  [P5 knowledge capture](./evidence/P5/knowledge-capture.md).
+
+## 2026-10-29 — Runner disk ran out in run 40667489060, and stack-first ordering fixed the proof job
+
+- **Observation:** in run 40667489060 the temporary proof job ran the Ayo build and integration steps before the image
+  build, and the image build then failed with `Free space left: 0 MB`. After the job built the stack first (runs
+  40671958744 and 40693498144), `df -h /` showed 81 GB available before the stack build and 51 GB after it.
+- **Response and proof:** the temporary proof job was reordered; run 40693498144 concluded `success`
+  (`evidence/P2/ci.md`). The job was removed in commit `60a35faf1`.
+- **Disposition:** discarded. The ordering existed only in the removed temporary job. The durable cause is the
+  build-context entry above, which is reported. The measured headroom stays in `evidence/P2/ci.md`.
+
+## 2026-10-29 — The AyoKoding image build needs more than 54 GB of free local disk
+
+- **Observation:** five local image builds stopped at the HIPPO disk floor (`hippo.limit.storage-blocked`, exit 124),
+  starting from 32, 44, 44, 36 and 54 GB free. The last had a clean context: it staged about 26 GB and was shed during
+  static-page generation with 4.3 GB free. The image holds about 18 GB of `.next` in the build, about 9 GB of standalone
+  output in the runner stage, and the export stages about 16 GB (`evidence/P3/compose-stacks.md`,
+  `evidence/P3/manual/ayokoding-www.md`). The same stack built on a 145 GB runner (81 GB free before, 51 GB after).
+- **Response and proof:** the local container browser row for Ayo was dispositioned to the CI container proof plus the
+  native browser proof (`evidence/P2/local-stacks.md`). Nothing was deleted to make room except what each attempt
+  created, removed by exact id.
+- **Disposition:** reported without plan authorization. A reader who runs `dev:ayokoding-www` meets this with no
+  warning. Proposed home: the AyoKoding stack step of `docs/how-to/setup-development-environment.md`. Proposed wording:
+  "The AyoKoding image build needs well over 54 GB of free disk; a smaller disk stops at the HIPPO floor." Handoff:
+  [P5 knowledge capture](./evidence/P5/knowledge-capture.md).
+
+## 2026-10-29 — An unexplained intermittent Firefox `waitForURL` stall in the course-walk helper
+
+- **Observation:** in run 40671958744, row 33 failed one of 1,236 cases: `[firefox] Learning progress accessibility >
+Progress screens pass automated accessibility checks` hit the 150 s test timeout in `page.waitForURL` at
+  `tests/e2e/steps/support/complete-course.ts:78`. The URL had not changed when the wait began and no navigation fired.
+  Local traces of two stalled cases show the click completed, the app's click handler ran (toggle "Completed", link
+  "Continue"), the next page's RSC fetches returned 200, and the URL never changed. A local run produced the same
+  signature once; 1 of 1, 16 of 16 and 2,678 direct clicks across 8 parallel Firefox contexts produced none.
+- **Response and proof:** a readiness guard on the completion toggle was tried and reverted: the toggle was already
+  enabled when the click stalled, so the hydration-race hypothesis is refuted. The case passed in run 40693498144 and
+  all 15 changed scenarios passed in each browser in the local matrix on `60a35faf1` (`evidence/P2/ci.md`,
+  `evidence/P3/target-matrix.md`). The cause is not established; nothing was retried, widened or skipped.
+- **Disposition:** reported without plan authorization. The flaky-test rule requires a root-cause fix, so the stall
+  needs an owner: the AyoKoding frontend E2E maintainers. No durable-rule home applies until the cause is known.
+  Handoff: [P5 knowledge capture](./evidence/P5/knowledge-capture.md).
+
+## 2026-10-29 — A Dockerfile `HEALTHCHECK` is ignored under the OCI image format
+
+- **Observation:** `podman build` warned twice, "HEALTHCHECK is not supported for OCI image format and will be
+  ignored" (`evidence/P3/manual/ose-www.md`, observation 1). The `ose-www` and `organiclever-www` containers were
+  healthy only because their Compose files define their own healthcheck. A standalone `podman run` of either image has
+  no health status. The backend publish workflow builds with `--format docker`; the Compose builds use the default.
+- **Response and proof:** none in code. Both stacks reported `healthy` through the Compose healthcheck.
+- **Disposition:** reported without plan authorization. The decision is whether to keep the image-level healthcheck and
+  build the public-site images in the docker format, or drop it, before any such image is published. Proposed home:
+  the `HEALTHCHECK` bullet of `repo-governance/development/infra/ci-conventions/docker-conventions.md`. Handoff:
+  [P5 knowledge capture](./evidence/P5/knowledge-capture.md).
+
+## 2026-10-29 — Backend `down` leaves an anonymous Postgres volume per run
+
+- **Observation:** neither backend E2E Compose file mounts a named volume, and the `postgres:17-alpine` image declares a
+  data `VOLUME`. Each `up` creates an anonymous volume that `down` without `-v` keeps: one per backend E2E script run
+  and one per manual stack. The host already held eight older anonymous volumes of undetermined origin
+  (`evidence/P3/manual/backends.md`, observation 1).
+- **Response and proof:** the four volumes this phase created were removed by exact id after an ownership check. No
+  prune ran. The behaviour is not caused by the migration; it is a Docker-era behaviour that Podman reproduces.
+- **Disposition:** reported without plan authorization. This is a code-homed fix: a named or `tmpfs` Postgres data
+  mount in the two `docker-compose.e2e.yml` files, or a script step that removes its own project's volumes. The cleanup
+  wording for owned anonymous volumes already lives in `docker-artifact-cleanup.md`. Handoff:
+  [P5 knowledge capture](./evidence/P5/knowledge-capture.md).
+
+## 2026-10-29 — The UI triad found pre-existing defects outside the two judged changes
+
+- **Observation:** the exploratory, usability and design passes on `apps/ayokoding-www` recorded 50 findings. Most are
+  on components unchanged from `main` (dark-theme diagram contrast, the language switch, Indonesian routes, clipped
+  diagram labels). The quality gate cycle 1 verdict is an advisory FAIL on one open blocking row (UWQ-001).
+- **Response and proof:** one row inside the changed surface (DWT-006) was repaired and re-checked. EWT-002 was
+  accepted as the cost of the sidebar layout. Nothing else was fixed in this plan. The list is in
+  `evidence/P3/scope-dispositions.md`.
+- **Disposition:** reported without plan authorization, to the maintainer, with no owner assigned. The plan is not the
+  place for new backlog work. A fix owner or an explicit deferral for the blocking rows is needed before archival.
+  Handoff: [P5 knowledge capture](./evidence/P5/knowledge-capture.md).

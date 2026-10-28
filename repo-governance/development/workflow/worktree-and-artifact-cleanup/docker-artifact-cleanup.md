@@ -7,7 +7,7 @@ when_to_use: Use when deciding which Podman containers, images, and volumes to r
 
 Bring down only the Podman artifacts **this session started or built**: the Compose stacks it
 brought up, the containers, networks, and anonymous volumes those projects created, and the images
-it built locally for them. Inventory before removal, the same as every other class.
+it built locally for them. Inventory before removal, as for every other class.
 
 Run this **before** the worktree is removed. `infra/dev/ose-app` and `infra/dev/organiclever-app`
 bind-mount worktree paths read-write, so a running stack holds the directory the next step deletes.
@@ -16,14 +16,13 @@ bind-mount worktree paths read-write, so a running stack holds the directory the
 
 A Compose project name derives from its `infra/dev/{app}` directory, and every dev stack binds fixed
 host ports. Both are identical in every worktree of every checkout on the machine, so a dev stack is
-identified machine-wide and **not** per worktree. `podman compose down` run from here brings down
-whatever session actually started that stack.
+identified machine-wide and **not** per worktree. `podman compose down` from here brings down
+whatever session started that stack.
 
 Tear down only a stack this session started. Ownership needs positive evidence — the command in this
 session's own history, or a container whose start time falls inside it. When ownership cannot be
 proven, leave the stack running and say so. This is the
-[self-created-only rule](./hard-safety-rules.md) applied to containers; the reasoning that protects
-a shared cache protects a shared stack for the same reason.
+[self-created-only rule](./hard-safety-rules.md) applied to containers, for the same reason as a shared cache.
 
 ## What Is Retained
 
@@ -33,15 +32,16 @@ without `-v` is the default, and `-v` requires that the volume hold disposable d
 created and that no other session shares the stack. Retain every project this session did not start,
 and retain the artifacts of an active, `partial`, or `fail` run for resumption or diagnosis.
 
-Retain Docker-engine resources as well. This gate never stops or removes them, including volumes
-that predate the Podman migration. Those source volumes and exports stay until a separately
-authorized cleanup.
+Session-created anonymous volumes are removed by exact id once unused and proven by a before/after snapshot; otherwise they are reported.
+
+Docker-engine resources are out of scope for this gate. It never stops or removes them, including any
+Docker-engine volumes or exports, which stay until a separately authorized cleanup.
 
 ## Leaked Test Containers
 
 A **leaked test container** is a container, volume, or network that a task's test or dev run created
 and that outlives the run. A run killed before its own teardown, such as one shed by HIPPO, leaks
-one. Leaked containers hold memory until they stop; on macOS they hold it in the Podman machine VM,
+one. Leaked containers hold memory until they stop; on macOS they hold it in the Podman VM,
 and HIPPO then defers unrelated work with `memory-warning` or exit 124.
 
 Detect them read-only. `$ROOT` is the task's checkout or worktree; a repository may also declare a
@@ -70,14 +70,13 @@ test data. Otherwise leave it in place and report it, per [What Is Retained](#wh
 
 Never remove a container another actor is running. When no container is left running and the engine
 runs in a Podman machine (macOS), stop that machine with `podman machine stop`; the VM keeps its memory
-until it stops. The machine is shared machine state, so apply the same ownership evidence before you
-stop it.
+until it stops. Apply the same ownership evidence before stopping it.
 
 ## What This Gate Never Runs
 
 No machine-wide prune, reset, or alias that removes every container, for Podman or Docker. That covers
 `podman system prune` in any form, `system reset`, `image prune -a`, `volume prune`, `container prune`,
 and `network prune`. They cannot separate this session's artifacts from a concurrent one's, the same
-objection that keeps `git gc` out of the gate. Reclaiming disk across the machine is human-triggered
+objection that keeps `git gc` out of the gate. Reclaiming disk machine-wide is human-triggered
 maintenance. The [Build-Artifact Sweeper](../../infra/build-artifact-sweeper.md) does not cover container
 engine state either; its removable classes are build output, tool caches, and the shared cargo `target/`.

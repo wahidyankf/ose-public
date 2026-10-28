@@ -61,7 +61,7 @@ PASS: **Reproducible (Excellent for complex setups)**:
 version: "3.8"
 services:
   postgres:
-    image: postgres:16.1
+    image: docker.io/library/postgres:16.1
     environment:
       POSTGRES_DB: ose_dev
       POSTGRES_USER: developer
@@ -70,7 +70,7 @@ services:
     # PostgreSQL keeps the stock 5432 (see docs/reference/web-sites.md).
 
   redis:
-    image: redis:7.2.4
+    image: docker.io/library/redis:7.2.4
 
   app:
     build: .
@@ -91,7 +91,7 @@ podman compose up
 
 **Why this works**:
 
-- Exact versions for all services (postgres:16.1, redis:7.2.4)
+- Exact versions for all services (docker.io/library/postgres:16.1, docker.io/library/redis:7.2.4)
 - Same configuration for everyone
 - Intended to run the same on macOS (Podman machine) and Linux; verified on rootless Podman on Linux (Compose stacks and platform checks) and macOS (platform checks)
 - Easy to add new services

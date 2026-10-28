@@ -42,14 +42,14 @@ when_to_use: Use when retrofitting Volta version pinning or Podman Compose into 
    version: "3.8"
    services:
      postgres:
-       image: postgres:16.1
+       image: docker.io/library/postgres:16.1
        # ... configuration
    ```
 
 2. **Create Dockerfile.be.dev**:
 
    ```dockerfile
-   FROM node:24.13.1-alpine
+   FROM docker.io/library/node:24.13.1-alpine
    # ... configuration
    ```
 

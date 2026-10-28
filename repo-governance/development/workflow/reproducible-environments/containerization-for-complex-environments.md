@@ -7,9 +7,10 @@ when_to_use: Use when standing up local Postgres/Redis services via Podman Compo
 
 ## Podman Compose for Local Development
 
-The repository runs containers with rootless Podman. Use `podman compose` with the explicit
-`podman-compose` provider. Set `PODMAN_COMPOSE_PROVIDER` to the `podman-compose` executable so that an
-installed Docker Compose cannot take over. The Compose file keeps its standard name and schema.
+The repository runs containers with rootless Podman. Run only the `podman` binary: no `docker` CLI,
+`docker buildx`, Docker daemon, or Docker socket. Use `podman compose` with the explicit
+`podman-compose` provider. Set `PODMAN_COMPOSE_PROVIDER` to the `podman-compose` executable name or path
+so that an installed Docker Compose cannot take over. The Compose file keeps its standard name and schema.
 
 **docker-compose.yml** (committed to git):
 
@@ -18,7 +19,7 @@ version: "3.8"
 
 services:
   postgres:
-    image: postgres:16.1
+    image: docker.io/library/postgres:16.1
     environment:
       POSTGRES_DB: ose_dev
       POSTGRES_USER: developer
@@ -29,7 +30,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   redis:
-    image: redis:7.2.4
+    image: docker.io/library/redis:7.2.4
     ports:
       - "6379:6379"
 
@@ -67,7 +68,7 @@ podman compose up
 
 ```dockerfile
 # Use specific version
-FROM node:24.13.1-alpine
+FROM docker.io/library/node:24.13.1-alpine
 
 WORKDIR /app
 

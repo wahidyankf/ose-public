@@ -84,7 +84,8 @@ These do not block the runtime switch. They need a person or a later proof.
 1. **macOS.** Compose stack health and prerender copy have no macOS run, and macOS `doctor` exits 1 on `fantomas`,
    `csharpier` and `mix`. The macOS evidence is from 2026-10-28.
 2. **Ayo Compose stack locally.** Local builds run out of disk. The CI proof stands in. This needs maintainer
-   acceptance.
+   acceptance. (Row 20 is closed: run 40781987617 passed 13 files and 192 tests on the final inputs. The cgroup, DNS and
+   mount checks are closed: they are a `setup-podman` step since #755, proven on a runner in run 40783837245.)
 3. **New `setup-podman` line in the `ayokoding-cli` `e2e` job (closed).** The job is skipped on `main` while the
    `ferret-cli` integration baseline fails. Run 40778630932 on a throwaway branch without that gate ran the step on the
    runner (podman-compose 1.6.0 installed and checked) and `ayokoding-cli` E2E passed. The same run showed a second

@@ -206,3 +206,26 @@ Observed facts only:
 
 This closes the open item in `cli-ci-rediscovery.md`: the new `e2e` step runs on the runner and `ayokoding-cli` E2E
 passes with it.
+
+## Run 40781987617 (head e47e77b4e, nonce d2p-row20-1793223651): row 20 on the final inputs
+
+Dispatched on 2026-10-29 from the throwaway branch `docker-to-podman-row20-proof`: `main` at `f03747d98` plus one
+appended job that runs `setup-podman` and then `npx nx run ayokoding-www:test:integration` with the Nx cache disabled.
+The branch was deleted after the run.
+
+- `setup-podman` selected `podman=5.7.0+ds2-3build1` for `ubuntu/resolute/amd64`.
+- Row 20: `Test Files 13 passed (13)`, `Tests 192 passed (192)`, then `Successfully ran target test:integration for
+project ayokoding-www and 3 tasks it depends on`. The counts equal the earlier receipt from run 40667489060 on
+  `88a20850c`. Row 20 now has a CI receipt on the final runtime inputs.
+
+## Run 40783837245 (head dc701041b): the setup-podman capability step on a real runner
+
+Dispatched from the throwaway branch `docker-to-podman-cap-proof` (the branch of #755 plus one appended job that runs
+`setup-podman` and prints the engine facts). The PR gate of #755 skipped every container job through its path filter,
+so this run is the runner proof for the new step. The branch was deleted after the run.
+
+- `Run ./.github/actions/setup-podman` succeeded, which includes the new step that fails unless cgroup v2 with the cpu,
+  memory and pids controllers, the netavark backend with an aardvark-dns path, and the overlay storage driver are present.
+- The facts printed afterwards: rootless `true`, `cgroupVersion` `v2`, controllers `cpu`, `memory`, `pids`,
+  `networkBackend` `netavark`, `dnsPath` the runner's aardvark-dns binary, `graphDriver` `overlay`.
+- The step reached `main` in #755 (`1c07b224f`).

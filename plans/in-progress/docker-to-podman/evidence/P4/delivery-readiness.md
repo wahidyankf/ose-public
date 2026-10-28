@@ -85,8 +85,10 @@ These do not block the runtime switch. They need a person or a later proof.
    `csharpier` and `mix`. The macOS evidence is from 2026-10-28.
 2. **Ayo Compose stack locally.** Local builds run out of disk. The CI proof stands in. This needs maintainer
    acceptance.
-3. **New `setup-podman` line in the `ayokoding-cli` `e2e` job.** The job is skipped while the `ferret-cli` baseline
-   failure persists, so the line has never run in CI. The contract test covers its placement.
+3. **New `setup-podman` line in the `ayokoding-cli` `e2e` job (closed).** The job is skipped on `main` while the
+   `ferret-cli` integration baseline fails. Run 40778630932 on a throwaway branch without that gate ran the step on the
+   runner (podman-compose 1.6.0 installed and checked) and `ayokoding-cli` E2E passed. The same run showed a second
+   pre-existing `ferret-cli` failure (`ferret-cli-e2e`, interpreter-guard scenarios) for the owner.
 4. **`ferret-cli:test:integration` baseline failure** (6 `test_hook_registrations` cases) fails on main's scheduled
    runs too. Recorded as out of scope by the maintainer.
 5. **Postgres service scenario on a cold store.** An emulated cold store failed the "example with a service reaches it

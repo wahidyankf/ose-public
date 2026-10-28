@@ -185,3 +185,24 @@ suites` failed only on `ferret-cli:test:integration` (6 failed, 500 passed, the 
 Closing state for the CI-timing rows: rows 26 and 33 and the web-UI extra now have a passing CI receipt on a head whose
 runtime inputs equal the PR head's. Row 14's build also ran in this job; row 20 has the CI receipt from run 40667489060
 and the local final-head rerun in `../P3/target-matrix.md`.
+
+## Run 40778630932 (head 6b0829daa, nonce d2p-e2e-1793220984): the `e2e` job with its new `setup-podman` step
+
+Dispatched on 2026-10-29 from the throwaway branch `docker-to-podman-e2e-proof`, which is `main` at `fd95823ac` with one
+line deleted: `needs: integration` under the `e2e` job. The deletion lets that job run although the `ferret-cli`
+integration baseline fails. Nothing else differs from `main`. The branch was not merged and was deleted after the run.
+
+Observed facts only:
+
+- The `Run ./.github/actions/setup-podman` step of the `e2e` job succeeded. It ran `pipx install` of
+  `podman-compose==1.6.0` and passed the checks `podman-compose --version` equals `podman-compose version 1.6.0` and
+  `PODMAN_COMPOSE_PROVIDER` equals the installed binary.
+- `npx nx run-many -t test:e2e --projects=crane-cli,ts-env-loader,web-ui,ferret-cli-e2e,ayokoding-cli --parallel=1`
+  ran. The `ayokoding-cli` real-engine BDD adapter printed `ok .../apps/ayokoding-cli/tests/bdd 184.306s`.
+- The only failed task was `ferret-cli-e2e:test:e2e`: three `test_interpreter_guard_steps.py` scenarios about a host
+  whose default interpreter is older than FERRET requires. That is a Python interpreter-guard test in a project this
+  migration does not touch. It had never run in CI on `main` before, because the `e2e` job is skipped while the
+  `ferret-cli` integration baseline fails. It is a second pre-existing `ferret-cli` problem, recorded for the owner.
+
+This closes the open item in `cli-ci-rediscovery.md`: the new `e2e` step runs on the runner and `ayokoding-cli` E2E
+passes with it.

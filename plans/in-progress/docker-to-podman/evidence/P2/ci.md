@@ -2,7 +2,8 @@
 
 ## Test-only proof job recipe
 
-Status: recipe prepared; no run has executed. All results are pending the first dispatch of the branch.
+Status: run 40667489060 executed at head 88a20850c (see the run section below). The job was then restructured so the
+stack builds first on a fresh runner. The restructured recipe has not been dispatched.
 
 The temporary job `docker-to-podman-ayo-proof` sits at the end of `.github/workflows/non-product-full-quality.yml`,
 bracketed by `# TEMPORARY docker-to-podman proof job` and `# END TEMPORARY`. It runs only on manual dispatch with the
@@ -14,23 +15,31 @@ three frontend browser projects (chromium, firefox, webkit) with zero retries an
 selects Chromium only with two retries. The browsers come from the Playwright default install set, which covers
 chromium, firefox and webkit.
 
+Rows 14 and 20 are not in this job. They passed in run 40667489060 and are not re-run here. Their nx build and
+integration output would sit in the workspace before the image build, and the image build then ran out of runner disk
+in that run. The build context must not contain prior build output. No disk-clearing step is added: the reusable
+`e2e` job in `_reusable-www-test-local-deploy.yml` has none, so this job runs under the same conditions.
+
 The knob is the SWE-settled configuration that the delivery plan calls for: all three browsers, zero retries, and
 the original timeouts and assertions, without spoofing CI state. The two configs it touches,
 `apps/ayokoding-www-fe-e2e/playwright.config.ts` and `apps/ayokoding-www-be-e2e/playwright.config.ts`, are temporary
 edits. They are restored with the workflow before merge, per the delivery plan.
 
-| Step                                                                      | What it does                                                                                                            | Delivery row proved               |
-| ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
-| Checkout, setup-node, setup-podman, setup-playwright                      | Installs the pinned toolchain                                                                                           | Prerequisite only; credits no row |
-| Record proof provenance                                                   | Writes the commit, runner tuple, Podman and compose versions, rootless state, CPUs, and free memory to the step summary | Provenance only; credits no row   |
-| Build the Ayo www app                                                     | `npx nx run ayokoding-www:build`                                                                                        | Row 14                            |
-| Run the Ayo www integration suite                                         | `npx nx run ayokoding-www:test:integration`                                                                             | Row 20                            |
-| Start the stack, wait for health, verify healthy, copy prerender manifest | Mirrors the reusable workflow's `e2e` job for ayokoding-www                                                             | Prerequisite for rows 26 and 33   |
-| Run the Ayo BE E2E suite                                                  | `npx nx run ayokoding-www-be-e2e:test:e2e` with `E2E_FULL_MATRIX: "1"`                                                  | Row 26                            |
-| Stop Ayo containers before FE E2E                                         | `podman compose ... down` without `-v`                                                                                  | Prerequisite for row 33           |
-| Run the Ayo FE E2E suite                                                  | `npx nx run ayokoding-www-fe-e2e:test:e2e` with `E2E_FULL_MATRIX: "1"`                                                  | Row 33                            |
-| Stop Ayo containers (always)                                              | `podman compose ... down` with `if: always()`                                                                           | Cleanup only                      |
-| Run the web-UI full E2E extra                                             | `npx nx run web-ui:test:e2e`                                                                                            | Web-UI E2E extra                  |
+| Step                                                 | What it does                                                                                                            | Delivery row proved               |
+| ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| Checkout, setup-node, setup-podman, setup-playwright | Installs the pinned toolchain                                                                                           | Prerequisite only; credits no row |
+| Record proof provenance                              | Writes the commit, runner tuple, Podman and compose versions, rootless state, CPUs, and free memory to the step summary | Provenance only; credits no row   |
+| Measure runner disk before the stack start           | `df -h /`                                                                                                               | Diagnostic only; credits no row   |
+| Start the Ayo Compose stack                          | `podman compose -f infra/dev/ayokoding-www/docker-compose.yml up --build --detach --wait --wait-timeout 150`            | Prerequisite for rows 26 and 33   |
+| Wait for Ayo health                                  | Polls `http://localhost:3101/api/trpc/meta.health` within the 150 second budget                                         | Prerequisite for rows 26 and 33   |
+| Verify the Podman service is running and healthy     | `podman inspect` must report `running healthy`                                                                          | Prerequisite for rows 26 and 33   |
+| Measure runner disk after the stack is healthy       | `df -h /`                                                                                                               | Diagnostic only; credits no row   |
+| Copy prerender manifest for E2E                      | `podman cp` of `prerender-manifest.json` into the FE E2E artifacts                                                      | Prerequisite for rows 26 and 33   |
+| Run the Ayo BE E2E suite                             | `npx nx run ayokoding-www-be-e2e:test:e2e` with `E2E_FULL_MATRIX: "1"`                                                  | Row 26                            |
+| Stop Ayo containers before FE E2E                    | `podman compose ... down` without `-v`                                                                                  | Prerequisite for row 33           |
+| Run the Ayo FE E2E suite                             | `npx nx run ayokoding-www-fe-e2e:test:e2e` with `E2E_FULL_MATRIX: "1"`                                                  | Row 33                            |
+| Stop Ayo containers (always)                         | `podman compose ... down` with `if: always()`                                                                           | Cleanup only                      |
+| Run the web-UI full E2E extra                        | `npx nx run web-ui:test:e2e`                                                                                            | Web-UI E2E extra                  |
 
 Known gaps and caveats:
 
@@ -45,7 +54,20 @@ Known gaps and caveats:
 - Steps keep default gating, so a failed earlier step skips the later steps. A dispatch also runs the workflow's
   existing jobs.
 - The knob is step-level and only this temporary job sets it. No lint rule or validator in the repo blocks it.
-- `setup-podman` accepts only the `ubuntu/resolute/amd64` tuple. The first run must prove that `ubuntu-latest` matches it.
+- `setup-podman` accepts only the `ubuntu/resolute/amd64` tuple. Run 40667489060 selected the pinned row on
+  `ubuntu-latest` (see below).
 
-Pending: executed SHA, dispatch receipt, actual runner tuple, and pass or fail for rows 14, 20, 26, 33, and the web-UI
-E2E extra.
+Pending: the first dispatch of the restructured job, with its executed SHA, dispatch receipt, pass or fail for rows 26,
+33, and the web-UI E2E extra, and the two disk measurements.
+
+## Run 40667489060 (head 88a20850c)
+
+Observed facts only:
+
+- Temporary job: setup-node, setup-podman, and setup-playwright passed.
+- Temporary job runner tuple line: `ubuntu/resolute/amd64 selects podman=5.7.0+ds2-3build1`.
+- Temporary job row 14 (`npx nx run ayokoding-www:build`) passed: `Successfully ran target build for project ayokoding-www and 2 tasks it depends on`.
+- Temporary job row 20 (`ayokoding-www:test:integration`) passed: 13 test files, 192 tests.
+- Temporary job `podman compose ... up --build --detach --wait` failed. The runner ran out of disk: `Free space left: 0 MB`, and `no space left on device` while committing the layer for `COPY apps/ayokoding-www/ ./apps/ayokoding-www/`, writing under `apps/ayokoding-www/.next/`.
+- Web-UI E2E extra passed (148 passed).
+- Integration job `Complete local-resource Integration suites` failed only on `ferret-cli:test:integration` (6 tests in `tests/integration/test_hook_registrations.py`, `KeyError 'SessionStart'` etc.). The same failure appears in main's scheduled runs 40643742153 and 40560502045, so it is a pre-existing baseline failure unrelated to this migration.

@@ -3,6 +3,80 @@
 
 # Learnings: docker-to-podman
 
+## 2026-10-28 — Short image names cannot resolve under rootless Podman on a fresh host
+
+- **Observation:** a Compose file pulled `nats:latest`. On a fresh host, rootless Podman has no
+  unqualified-search registries and failed with "short-name did not resolve". The `node` and
+  `postgres` images only worked because copies were already cached locally.
+- **Response and proof:** every image reference in a supported Compose file or Dockerfile now names
+  its registry. Fixed in commit `88a20850c`. The regression validator is
+  `scripts/container-image-qualified.test.mjs`.
+- **Disposition:** reported without plan authorization. `docker-conventions.md` (Podman Runtime and
+  CI Boundaries) has no registry-name rule. The Dockerfile `FROM` row of `pinning-policy-hard-rule.md` now
+  shows the qualified form in both its required and its anti-example text (a mechanical alignment in this
+  branch; its point stays tag pinning). Proposed home: `repo-governance/development/infra/ci-conventions/docker-conventions.md`.
+  Proposed wording: "Name the registry in every image reference, for example `docker.io/library/nats:<tag>`,
+  because rootless Podman on a fresh host cannot resolve short names." Handoff:
+  [P5 knowledge capture](./evidence/P5/knowledge-capture.md).
+
+## 2026-10-28 — An inventory built by search missed an executed `docker` call
+
+- **Observation:** the migration inventory came from searching workflows and scripts. It missed an
+  executed `docker` binary call in the TypeScript E2E step helpers (`backend-process.ts`,
+  `resetDatabaseToPending`). Only running the stack found it.
+- **Response and proof:** the call now runs through Podman. The regression validator is
+  `scripts/no-docker-binary-calls.test.mjs`, added in commit `88a20850c`. It does not catch a binary
+  held in a variable. Lesson: an inventory made by search is not proof; run the target.
+- **Disposition:** routed inline. The principle already lives in
+  `repo-governance/development/quality/plan-anti-hallucination/anti-pattern-catalog-ap-12-through-ap-14.md`
+  (heading "AP-12: Asserting completeness from a text search") and in
+  `repo-governance/development/quality/plan-anti-hallucination/absence-and-completeness-claims-completeness-claim-requires-a-diff.md`.
+  This entry only points there. No new rule.
+
+## 2026-10-28 — course-metadata unit failure appeared once and cause is open
+
+- **Observation:** the course-metadata unit check failed once in two ayokoding-www targets during a
+  long matrix run (just-enough-csharp `estimatedHours` stored 3, expected 5). It passed on rerun with
+  no change.
+- **Cause is open:** it is not confirmed. The leading hypothesis is a stray untracked or ignored file
+  in the content tree, because the check derives the expected hours from the files it reads. No
+  evidence yet supports or rules out that hypothesis.
+- **Disposition:** reported without plan authorization. The flaky-test rule
+  (`repo-governance/development/workflow/test-driven-development/flaky-tests-are-defects.md`) requires a
+  root-cause fix, so this needs an owner and not a discard. Proposed owner: the ayokoding-www
+  content-test maintainers. Proposed first step: reproduce with an extra file in the course folder
+  and compare the file list the check reads. Handoff: [P5 knowledge capture](./evidence/P5/knowledge-capture.md).
+
+## 2026-10-28 — HIPPO deferred two heavy targets that overlapped in one worktree
+
+- **Observation:** two heavy targets started together in one worktree. HIPPO deferred one with exit 124. Rerunning them one at a time passed.
+- **Response and proof:** run the targets one at a time, or let HIPPO admit them in turn. No change
+  to admission, tiers or limits.
+- **Disposition:** routed inline. `repo-governance/development/practice/resource-aware-development/recovery-and-safe-retry.md`
+  (first bullet, exit 124 and `hippo.limit.capacity-deferred`) and
+  `repo-governance/development/practice/resource-aware-development/guarded-admission-and-parallelism.md`
+  ("pressure may defer a request even when its vector fits") already state this. This entry only
+  points there.
+
+## 2026-10-28 — Log endpoints of a finished hosted job can answer not-found for a while
+
+- **Observation:** the log endpoints for a finished GitHub-hosted job returned not-found for some
+  time after the job ended.
+- **Response and proof:** wait and retry the read. The status and conclusion of the run were
+  available the whole time.
+- **Disposition:** discarded. This is transient hosted-service behavior with no repository action,
+  and the existing polling rules already read status and conclusion only.
+
+## 2026-10-28 — Baseline failure: ferret-cli integration hook registration tests
+
+- **Observation:** `ferret-cli:test:integration` has 6 failing `hook_registrations` tests on the
+  scheduled `non-product-full-quality` runs of `main` (runs 40643742153 and 40560502045, and
+  earlier). This is unrelated to the Podman migration. The test name could not be found by text
+  search in this checkout, so the owner should confirm it.
+- **Response and proof:** none in this plan. The migration branch has no change under the ferret apps.
+- **Disposition:** reported without plan authorization. Owner: ferret-cli maintainers. Handoff:
+  [P5 knowledge capture](./evidence/P5/knowledge-capture.md).
+
 ## 2026-10-28 — Privilege boundaries can change temporary-directory selection
 
 - **Observation:** a continuation stopped before its target payload because `sudo` removed the
@@ -10,8 +84,7 @@
 - **Response and proof:** a diagnostic established the environment boundary, and an explicit
   post-`sudo` environment guard passed. The later original target and its cleanup passed without
   changing the earlier stop's outcome. See [P0 readiness](./evidence/P0/readiness.md).
-- **Disposition:** untriaged. Compare existing environment guidance during Phase 5 before routing
-  or discarding the observation; it does not create a new rule.
+- **Disposition:** discarded. The cause was one host's `sudo` environment policy, and the later run passed with an explicit environment guard. It is too machine-local for a repository rule.
 
 ## 2026-10-28 — Idle capacity and build concurrency
 
@@ -24,8 +97,7 @@
   example environment template, so that content received a separate manual check. The one-worker
   full build also stopped for pressure at 2,969 of 3,278 pages; development checks and idle health
   did not prove its success under load. No new fix has been selected while diagnosis continues.
-- **Disposition:** untriaged. Compare existing resource, environment and scanner guidance in Phase 5
-  before routing or discarding these observations; this entry creates no new governance rule.
+- **Disposition:** discarded. The host pressure samples were local, the build-concurrency override is a reviewed local change with its own tests, and the cause of the pressure stop is still unconfirmed, so there is nothing durable to state yet. The temporary CI recipe is reconciled in the delivery checklist, not here.
 
 - **Later timing decision:** the maintainer authorized test-only CI for four named memory-blocked
   Ayo targets and, after another memory-pressure stop before any case outcome, the full web-UI E2E
@@ -45,8 +117,7 @@
   discriminate duplicate navigation and ordering; a real production-query regression and a 45-day
   negative control discriminate the date window. These checks do not establish the separate Ayo
   WebKit error's cause or pass either full browser target. See [P0 readiness](./evidence/P0/readiness.md).
-- **Disposition:** untriaged. Compare existing fixture and test guidance in Phase 5 before routing
-  or discarding these observations; they do not create new governance rules.
+- **Disposition:** discarded. Fixed in the named fixture with red and green fixture tests, a production-query regression test and a 45-day negative control, recorded in `evidence/P0/readiness.md`. The cause of the separate WebKit error is still unknown and is not claimed here.
 
 ## 2026-10-27 — A Go temporary directory can be outside the home bind
 
@@ -59,8 +130,7 @@
   rootless temporary-directory bind, read-only denial, representative limits and exact cleanup.
   Its selected-host UID/GID result does not establish a universal bare keep-id mapping rule or the
   production runner's environment. See [Desktop temporary-directory evidence](./evidence/P0/macos-runner-temp.md).
-- **Disposition:** untriaged. Compare this observation with existing runner and environment
-  guidance during Phase 5; the production runner still needs its own end-to-end path proof.
+- **Disposition:** discarded. This is one supplemental probe on one Desktop host. The production runner needs its own path proof, so no general rule follows.
 
 ## 2026-10-27 — Preserve keyboard access to exposed diagram source
 
@@ -75,9 +145,7 @@
   a documented one-line exception under the existing strictness policy. Exact-file lint with
   warnings denied passed; app lint also exited 0 with its old warnings in untouched files. No
   general lint rule or configuration changed. See [Mermaid prerequisite evidence](./evidence/P0/mermaid-prerequisite.md).
-- **Disposition:** untriaged. Compare this evidence with existing accessibility and lint guidance
-  in Phase 5 before routing it or discarding it; it supports this component's behavior, not a
-  general waiver for focusable noninteractive elements.
+- **Disposition:** discarded. Fixed in the component and guarded by the three real-component keyboard tests in `apps/ayokoding-www/tests/unit/features/content/shell/mermaid.test.tsx`. The entry itself rules out a general lint waiver.
 
 ## 2026-10-27 — Host profile and pinned consumer compatibility
 
@@ -89,8 +157,7 @@
   changed. Native embedded identity, current-profile status, consumer contracts and one admitted
   policy smoke passed. Preserve the profile owner's changes and distinguish old versus current
   policy provenance when retaining baseline outcomes. See [HIPPO evidence](./evidence/P0/hippo-prerequisite.md).
-- **Disposition:** untriaged. Compare existing consumer/profile rollout guidance during Phase 5;
-  this observation does not authorize deleting unknown profile fields or bypassing admission.
+- **Disposition:** discarded. The host-profile rollout is machine-local, and the compatible pin change is already recorded in `hippo.lock` and `evidence/P0/hippo-prerequisite.md`.
 
 ## 2026-10-26 — Safety-screen temporary-file quota
 
@@ -102,7 +169,7 @@
   in session `94831`; promotion PR #745 subsequently passed exact-head CI and merged.
 - **Scope:** no scanner rule, tracked configuration, foreign temporary directory, or safety
   requirement changed. Raw diagnostics stay local.
-- **Disposition:** untriaged; Phase 5 will select an existing durable home or discard with reason.
+- **Disposition:** discarded. The cause was one host account's temporary-filesystem quota. The task-owned temporary directory is a local workaround that no repository rule prescribes.
 
 ## 2026-10-26 — Native tool discovery in noninteractive commands
 
@@ -114,8 +181,7 @@
   missing prerequisite; the documented checksum-verified pinned SDK installation resolved it.
   The final standalone doctor passed all 24 checks, as recorded in
   [bootstrap evidence](./evidence/P0/bootstrap.md).
-- **Disposition:** untriaged; compare existing setup guidance before deciding whether any durable
-  correction is needed during Phase 5.
+- **Disposition:** discarded. The cause was the shell environment of one host, and the doctor check already reports the missing tools. The result is recorded in `evidence/P0/bootstrap.md`.
 
 ## 2026-10-26 — Join the existing host admission profile
 
@@ -126,8 +192,7 @@
   each command. Both installed consumer versions accept that profile; the subsequent baseline
   command passed. No pin, ledger root, admission policy, sampler, or foreign process changed.
   See [baseline admission history](./evidence/P0/baseline-targets.md#hippo-admission-history).
-- **Disposition:** untriaged; check existing host-profile guidance before proposing any durable
-  documentation correction. Host-specific paths and raw diagnostics remain ignored.
+- **Disposition:** discarded. Joining a host's admission profile through `HIPPO_CONFIG` is machine-local setup, not repository policy.
 
 ## 2026-10-26 — Scenario fixtures can retain detached DOM
 
@@ -139,8 +204,7 @@
   assertions, API call order, coverage floors, and timeouts. Independent review found zero
   issues. Focused 526/526 tests passed; the original full quick then passed 247/247 files and
   4,177/4,177 tests with 99.54% line coverage and exit 0.
-- **Disposition:** untriaged. The behavior repair already belongs to the named test fixture;
-  Phase 5 must avoid duplicating it as a new general rule without a demonstrated gap.
+- **Disposition:** discarded. Fixed by the one-file fixture repair, and the original full quick target now passes. The entry itself finds no gap that needs a general rule.
 
 ## 2026-10-26 — Preserve ownership of live command handles
 
@@ -159,8 +223,7 @@
   payload independently of the submitting client. Native lifecycle controls and the complete
   original Ayo quick, integration and unit targets passed; the remaining verifier continues.
   This proves the corrected execution route, not the earlier signal's cause.
-- **Disposition:** untriaged; compare existing continuation and evidence rules before routing
-  or discarding this operational observation.
+- **Disposition:** routed inline. `repo-governance/development/practice/trustworthy-measurement/rule-7-prove-the-run-finished.md` (heading "7. A result is complete only when a terminal marker says so", and "One gated command per unit of background work") already states it. The host-native unit that owns the driver is machine-local and is not carried over.
 
 ## 2026-10-26 — Include build dependencies in a target's admission
 
@@ -173,8 +236,7 @@
   A corrected run uses the heavy envelope already proven for that same build dependency.
   Both inner target output and outer HIPPO status are now captured durably; its result remains
   pending in [baseline evidence](./evidence/P0/baseline-targets.md).
-- **Disposition:** untriaged; compare existing dependency-aware admission guidance before
-  routing any duplicate instruction.
+- **Disposition:** routed inline. `repo-governance/development/practice/resource-aware-development/guarded-admission-and-parallelism.md` states it in the tier list ("`heavy` is a full build") and in the section "The boundary is not paperwork on a command that would have been fine" (a target that transitively starts heavy work).
 
 ## 2026-10-26 — Compose status can conceal native teardown errors
 
@@ -188,8 +250,7 @@
   independent review, guarded application and the original capability/native cleanup recheck
   passed. See [Ubuntu capability evidence](./evidence/P0/ubuntu-capabilities.md) and
   [the post-correction proof](./evidence/P0/ubuntu-policy-capability-recheck.md).
-- **Disposition:** untriaged. The eventual route and its proof must be settled before selecting
-  a durable destination; this observation does not authorize a third-party patch or policy edit.
+- **Disposition:** routed inline. `repo-governance/development/workflow/worktree-and-artifact-cleanup/docker-artifact-cleanup.md` (heading "Leaked Test Containers") says to remove only listed names and then re-run the listing and expect zero, which is the independent inventory check. The host-wide policy correction is machine-local and is not carried over.
 
 ## 2026-10-26 — Consult machine disk-recovery procedures before escalating admission
 
@@ -202,9 +263,7 @@
   The subsequent central-workflow inspection confirmed its survey, measured-row approval,
   preservation, selective-execution and savings contract. Browser dependency installation then
   passed, and all three required native browsers launched and closed successfully.
-- **Disposition:** untriaged. Compare the existing central machine procedure before creating
-  any new rule; do not turn its tool-specific exception into a blanket guard bypass. See
-  [the storage recovery evidence](./evidence/P0/disk-recovery.md).
+- **Disposition:** discarded. The recovery procedure belongs to a central machine workflow outside this public repository. The in-repo part is already in `recovery-and-safe-retry.md` (exit 124, `storage-blocked`).
 
 ## 2026-10-27 — Repository-local temporary paths can exceed socket limits
 
@@ -217,8 +276,7 @@
   unchanged admission, with the expected owner, mode 0700 and filesystem device. Only the
   invocation's `TMPDIR` changed. Earlier receipts and temporary directories remain retained;
   the original target's corrected execution is separate pending proof.
-- **Disposition:** untriaged. Compare existing environment and temporary-path guidance during
-  Phase 5 before adding any durable correction; this does not authorize foreign temp cleanup.
+- **Disposition:** discarded. It only arises from a host-specific workaround (a task-owned `TMPDIR` under the repository), which no repository rule prescribes.
 
 ## 2026-10-27 — BDD callback arity and consumed captures
 
@@ -231,8 +289,7 @@
   all ten generation/discovery groups pass. This is discovery proof, not browser runtime proof.
   Existing scenarios, fixture rendering, visual baselines, timeouts and coverage floors remain
   unchanged. See [affected target revalidation](./evidence/P0/pin-upgrade-target-results.md).
-- **Disposition:** untriaged. Check existing adapter and test guidance before proposing any
-  durable addition; avoid prescribing ignored parameters or disabling arity validation.
+- **Disposition:** discarded. Fixed in the affected step files, and the pinned adapter now fails generation on a bad arity, so the tool itself is the guard. Evidence: `evidence/P0/bdd-companion-upgrade.md`.
 
 ## 2026-10-27 — Provider cleanup selection can exceed exact-name guards
 
@@ -249,8 +306,7 @@
   corrected full probe exited 0 with exact before/after resource and VM-helper preservation.
   This is separate from the provider's ignored child exit statuses. See [Mac capability
   evidence](./evidence/P0/macos-capabilities.md).
-- **Disposition:** untriaged. Route only an established ownership-check gap during Phase 5;
-  this observation does not authorize deleting unknown resources or patching the provider.
+- **Disposition:** routed inline. `repo-governance/development/workflow/worktree-and-artifact-cleanup/docker-artifact-cleanup.md` (heading "Leaked Test Containers") states "A named volume is never removed by a project label alone", and `docker-conventions.md` bans `-v` on Compose stop commands. The probe repair itself is one-off and tested by the fake cases recorded in `evidence/P0/macos-capabilities.md`.
 
 ## 2026-10-28 — A provider's CLI subset can differ from the engine's Compose
 
@@ -262,8 +318,7 @@
   confirmed that the Compose labels (`io.podman.compose.project`, `com.docker.compose.service`)
   find exactly the service container and nothing for a wrong name. The plan's packet text, the
   workflow, and a regression test were corrected together.
-- **Disposition:** untriaged. Compare existing guidance on provider parity and on workflows outside
-  the PR gate during Phase 5; this entry creates no new rule.
+- **Disposition:** discarded. Fixed with the regression test `scripts/workflow-container-lookup.test.mjs`, which fails on `compose ps -q <service>` in workflows.
 
 ## 2026-10-28 — Verbatim command translation is not proof
 
@@ -271,19 +326,18 @@
   running it: the `ps -q` form above, and an AC-01 claim that named a doctor run not yet executed.
 - **Response and proof:** every evidence file now states only what was executed, and lists what was
   not (here, the Compose stack health and the full doctor on macOS).
-- **Disposition:** untriaged. Compare existing evidence-contract guidance during Phase 5.
+- **Disposition:** reported without plan authorization. `repo-governance/development/quality/evidence-capture/the-rule.md` requires a record of what was observed, but does not say that evidence states only what was executed and lists what was not. Proposed home: that file. Proposed wording: "An evidence file states only what was executed, and lists what was not executed." Handoff: [P5 knowledge capture](./evidence/P5/knowledge-capture.md).
 
 ## 2026-10-28 — Local capacity limits are layered and need a diagnosis each
 
 - **Observation:** the same "disk quota exceeded" text came from three different layers: the host
-  account's quota on the default temp root, a 3.8 GB tmpfs that a layer outgrew, and the HIPPO disk
+  account's quota on the default temp root, a small tmpfs that a layer outgrew, and the HIPPO disk
   floor, which stopped a full Next.js image build and reported `storage-blocked`. A failed build
   also left Buildah working containers that blocked removing their images.
 - **Response and proof:** direct Go and Podman temp to tmpfs for small outputs, never repeat a run
   without changing the cause, and remove only labelled or ID-listed resources. Full monorepo
-  image builds need roughly 18 GB of headroom above the HIPPO floor on this host.
-- **Disposition:** untriaged. Compare existing resource-aware-development and HIPPO guidance during
-  Phase 5; this entry sets no capacity number as policy.
+  image builds need large headroom above the HIPPO floor.
+- **Disposition:** routed inline. `repo-governance/development/practice/resource-aware-development/recovery-and-safe-retry.md` (first bullet, exit 124 and `hippo.limit.storage-blocked`) says to free storage safely before a retry. The sizes in the observation are machine-local and set no policy. Leftover Buildah containers are covered by the "Staging directories" entry below.
 
 ## 2026-10-28 — Debug flags can change the host's user-visible behavior
 
@@ -291,7 +345,7 @@
   generated script in a new terminal window, which popped up on a machine in use by its owner.
 - **Response and proof:** debug mode was not repeated. Its log did show the guest never sent its
   ready notice. The Machine then started only when the owner ran the start in a local terminal.
-- **Disposition:** untriaged. Compare existing remote-execution guidance during Phase 5.
+- **Disposition:** discarded. This was one debug run on one personal host, and the Machine started once its owner ran the start locally.
 
 ## 2026-10-28 — Resolver search domains make `nslookup` a poor DNS probe
 
@@ -299,7 +353,7 @@
   reported NXDOMAIN although the container name resolved.
 - **Response and proof:** `getent hosts <name>` is the resolver-faithful check and passed on both
   platforms. The search-domain value is private and was left out of the evidence.
-- **Disposition:** untriaged. Likely discard as too local during Phase 5.
+- **Disposition:** discarded. Too machine-local: it depends on one host's resolver search domain.
 
 ## 2026-10-28 — `localhost` is not the same address in Podman and Docker containers
 
@@ -309,7 +363,7 @@
   route returned `200` from the host.
 - **Response and proof:** the six probe sites now use `127.0.0.1`, with a registered regression test.
   A live rerun of the OSE and OrganicLever stacks reported `healthy`.
-- **Disposition:** untriaged. Compare existing container-health guidance during Phase 5.
+- **Disposition:** reported without plan authorization. The six probe sites are fixed and guarded by `scripts/container-healthcheck-loopback.test.mjs`, but the Dockerfile template in `repo-governance/development/infra/ci-conventions/docker-conventions.md` still shows `http://localhost:3000/health`. Proposed home: that template and its `HEALTHCHECK` bullet. Proposed wording: "Probe `http://127.0.0.1:<port>`, not `localhost`; Podman resolves `localhost` to `::1` first and BusyBox `wget` does not fall back." Handoff: [P5 knowledge capture](./evidence/P5/knowledge-capture.md).
 
 ## 2026-10-28 — A running stack proves less than its health state
 
@@ -318,13 +372,13 @@
   `main` too. Parse checks, unit tests, and the exit status all passed.
 - **Response and proof:** the stack proof now reads the health state with `podman inspect` and
   requests a real route. The probe route is checked by a test against the app's router.
-- **Disposition:** untriaged. Compare existing stack-verification guidance during Phase 5.
+- **Disposition:** reported without plan authorization. No durable text says that `up --wait` exit 0 does not prove health. Proposed home: `repo-governance/development/infra/ci-conventions/docker-conventions.md` (Podman Compose Patterns). Proposed wording: "A zero exit from `podman compose up --wait` does not prove health; read the container health state with `podman inspect` and request a real route." Handoff: [P5 knowledge capture](./evidence/P5/knowledge-capture.md).
 
 ## 2026-10-28 — Staging directories from interrupted builds can outgrow the build
 
-- **Observation:** interrupted image builds left about 17 GB of Buildah staging directories in the
+- **Observation:** interrupted image builds left a large amount of Buildah staging directories in the
   directory chosen as the build temp root, plus Buildah working containers. Together they took the
   disk to the HIPPO floor, and the next builds were stopped for it.
 - **Response and proof:** after the builds stopped, only the task-owned staging directory and the
   ID-listed working containers were removed. The build then had its full headroom.
-- **Disposition:** untriaged. Compare existing resource-aware-development guidance during Phase 5.
+- **Disposition:** reported without plan authorization. `repo-governance/development/workflow/worktree-and-artifact-cleanup/docker-artifact-cleanup.md` covers leaked containers, not Buildah working containers or build staging directories. Proposed home: that file, section "Leaked Test Containers". Proposed wording: "An interrupted image build can leave Buildah working containers and staging files; remove only the ones this session created, listed by ID." Handoff: [P5 knowledge capture](./evidence/P5/knowledge-capture.md).

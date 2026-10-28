@@ -56,7 +56,7 @@ when_to_use: Use when retrofitting Volta version pinning or Podman Compose into 
 3. **Update .gitignore**:
 
    ```
-   # Docker volumes
+   # Container volume data
    .docker/
    docker-volumes/
    ```

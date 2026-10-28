@@ -93,3 +93,9 @@ CMD ["npm", "run", "dev"]
 - npm ci installs from lockfile (deterministic)
 - Same environment for all developers
 - Intended to run the same on macOS (Podman machine) and Linux; Podman runtime proof pending
+
+## Boundaries and Cleanup
+
+- Rootless-only operation, CI setup, and image rules: [Podman Conventions](../../infra/ci-conventions/docker-conventions.md).
+- Teardown of containers, volumes, and stacks: [Podman-Artifact Cleanup](../worktree-and-artifact-cleanup/docker-artifact-cleanup.md).
+  Only positively owned, disposable artifacts are removed; shared dev stacks and persistent data are retained.

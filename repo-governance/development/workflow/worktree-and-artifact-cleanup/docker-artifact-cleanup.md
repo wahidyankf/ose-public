@@ -54,17 +54,19 @@ for n in $(podman ps -a --format '{{.Names}}'); do
 done
 ```
 
-The label keys above are expected to be the ones `podman-compose` writes. Confirm them against
-`podman-compose` 1.6.0 (runtime proof pending) before relying on them.
+Confirm these label keys against `podman-compose` 1.6.0 before relying on them (runtime proof pending).
 
 Remove only those names, then re-run the listing and expect zero. `<project>` is the container's
-`com.docker.compose.project` label:
+`com.docker.compose.project` label. `podman rm -f -v` drops only the container's own anonymous volumes:
 
 ```bash
 podman rm -f -v <name>
-podman volume rm $(podman volume ls -q --filter label=com.docker.compose.project=<project>)
 podman network rm $(podman network ls -q --filter label=com.docker.compose.project=<project>)
 ```
+
+A named volume is never removed by a project label alone, because the label does not prove the volume
+is disposable. Remove a named volume only when this session's own run created it and it holds disposable
+test data. Otherwise leave it in place and report it, per [What Is Retained](#what-is-retained).
 
 Never remove a container another actor is running. When no container is left running and the engine
 runs in a Podman machine (macOS), stop that machine with `podman machine stop`; the VM keeps its memory
@@ -73,12 +75,9 @@ stop it.
 
 ## What This Gate Never Runs
 
-No `podman system prune` in any form, including `--all` and `--volumes`. No `podman system reset`, no
-`podman image prune -a`, no `podman volume prune`, no `podman container prune`, and no
-`podman network prune`. No alias that removes every container. The Docker equivalents are never run either. These are
-machine-wide and cannot distinguish this session's artifacts from a concurrent one's — the same
+No machine-wide prune, reset, or alias that removes every container, for Podman or Docker. That covers
+`podman system prune` in any form, `system reset`, `image prune -a`, `volume prune`, `container prune`,
+and `network prune`. They cannot separate this session's artifacts from a concurrent one's, the same
 objection that keeps `git gc` out of the gate. Reclaiming disk across the machine is human-triggered
-maintenance, not a step an agent takes at teardown. The
-[Build-Artifact Sweeper](../../infra/build-artifact-sweeper.md) does not cover container engine state
-either, whether Podman or Docker; its removable classes are build output, tool caches, and the shared
-cargo `target/`.
+maintenance. The [Build-Artifact Sweeper](../../infra/build-artifact-sweeper.md) does not cover container
+engine state either; its removable classes are build output, tool caches, and the shared cargo `target/`.

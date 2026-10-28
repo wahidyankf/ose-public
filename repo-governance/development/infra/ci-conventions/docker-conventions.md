@@ -86,8 +86,8 @@ Every compose file must pass `podman compose -f <file> config` before merging. T
 - **Rootless only**: A local script or entry point that starts, builds, or publishes a container first
   runs `scripts/container-runtime-check` (add `--compose` when it calls Compose). CI gets the equivalent
   assertion from `setup-podman`. Workloads never run with `sudo` or against a rootful engine.
-- **Explicit provider**: Set `PODMAN_COMPOSE_PROVIDER` to the `podman-compose` executable before any
-  `podman compose` command. An installed Docker Compose must never be selected.
+- **Explicit provider**: Apply the [containerization provider rule](../../workflow/reproducible-environments/containerization-for-complex-environments.md).
+  `setup-podman` exports it in CI.
 - **Shared setup**: CI installs and checks Podman through the `.github/actions/setup-podman` action,
   which installs the pinned versions for its runner. Do not add a second container
   setup path.

@@ -300,3 +300,31 @@
 - **Response and proof:** `getent hosts <name>` is the resolver-faithful check and passed on both
   platforms. The search-domain value is private and was left out of the evidence.
 - **Disposition:** untriaged. Likely discard as too local during Phase 5.
+
+## 2026-10-28 — `localhost` is not the same address in Podman and Docker containers
+
+- **Observation:** health probes written as `http://localhost:<port>` passed under Docker but failed
+  under Podman. Podman containers resolve `localhost` to `::1` first, the Next servers listen on
+  IPv4 only, and BusyBox `wget` does not fall back. The container stayed `unhealthy` while the same
+  route returned `200` from the host.
+- **Response and proof:** the six probe sites now use `127.0.0.1`, with a registered regression test.
+  A live rerun of the OSE and OrganicLever stacks reported `healthy`.
+- **Disposition:** untriaged. Compare existing container-health guidance during Phase 5.
+
+## 2026-10-28 — A running stack proves less than its health state
+
+- **Observation:** `podman-compose` 1.6.0 returned `0` from `up --wait` while the container's own
+  health state was `unhealthy`, and one Compose probe had named a route the app never had, on
+  `main` too. Parse checks, unit tests, and the exit status all passed.
+- **Response and proof:** the stack proof now reads the health state with `podman inspect` and
+  requests a real route. The probe route is checked by a test against the app's router.
+- **Disposition:** untriaged. Compare existing stack-verification guidance during Phase 5.
+
+## 2026-10-28 — Staging directories from interrupted builds can outgrow the build
+
+- **Observation:** interrupted image builds left about 17 GB of Buildah staging directories in the
+  directory chosen as the build temp root, plus Buildah working containers. Together they took the
+  disk to the HIPPO floor, and the next builds were stopped for it.
+- **Response and proof:** after the builds stopped, only the task-owned staging directory and the
+  ID-listed working containers were removed. The build then had its full headroom.
+- **Disposition:** untriaged. Compare existing resource-aware-development guidance during Phase 5.

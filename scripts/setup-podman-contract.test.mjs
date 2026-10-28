@@ -20,6 +20,8 @@ const PODMAN_FILES = [ACTION, PUBLISH, REUSABLE];
 const PUBLISH_FILES = [PUBLISH, REUSABLE];
 const NON_PRODUCT = ".github/workflows/non-product-full-quality.yml";
 const PODMAN_STEP = "      - uses: ./.github/actions/setup-podman";
+const ASSERT_STEP = "Assert the rootless engine and the explicit provider";
+const CAPABILITY_STEP = "Assert cgroup v2, netavark DNS and overlay storage before consumer workloads run";
 
 // Pins the pre-migration externally visible contract (names, tags, triggers, permissions), captured once from origin/main.
 const PINNED_ON = {
@@ -108,6 +110,22 @@ function jobLines(text, job) {
     block.push(line);
   }
   return block;
+}
+
+// The steps of the composite action: each `    - name:` line opens one step, which runs to the next such line.
+function actionSteps(text) {
+  const lines = text.split("\n");
+  const starts = lines.flatMap((line, index) => (/^    - name: /.test(line) ? [index] : []));
+  return starts.map((start, index) => ({
+    name: lines[start].slice("    - name: ".length),
+    body: lines.slice(start, starts[index + 1] ?? lines.length).join("\n"),
+  }));
+}
+
+function capabilityStepBody() {
+  const step = actionSteps(read(ACTION)).find((candidate) => candidate.name === CAPABILITY_STEP);
+  assert.ok(step, `setup-podman lacks the step named: ${CAPABILITY_STEP}`);
+  return step.body;
 }
 
 test("setup-podman pins one reviewed Podman row for ubuntu/resolute/amd64 and refuses every other tuple", () => {
@@ -239,4 +257,47 @@ test(`${NON_PRODUCT} installs Podman once in the e2e job before the test:e2e run
     !jobLines(text, "integration").includes(PODMAN_STEP),
     "the integration job must not install Podman: its adapter uses a fake container CLI",
   );
+});
+
+test("setup-podman adds one capability step as the last step, after the rootless and provider assertion", () => {
+  const names = actionSteps(read(ACTION)).map((step) => step.name);
+  assert.equal(names.filter((name) => name === CAPABILITY_STEP).length, 1, "exactly one capability step");
+  assert.notEqual(names.indexOf(ASSERT_STEP), -1, "the rootless and provider assertion step must remain");
+  assert.ok(
+    names.indexOf(CAPABILITY_STEP) > names.indexOf(ASSERT_STEP),
+    "the capability step must come after the rootless and provider assertion",
+  );
+  assert.equal(names.at(-1), CAPABILITY_STEP, "the capability step must be the last step");
+});
+
+test("the setup-podman capability step reads podman info once and parses it with jq", () => {
+  const body = capabilityStepBody();
+  assert.ok(body.includes('info="$(podman info --format json)"'), "podman info is read once");
+  assert.ok(body.includes('<<< "$info"'), "jq parses the captured podman info");
+});
+
+test("the setup-podman capability step requires cgroup v2 with the cpu, memory and pids controllers", () => {
+  const body = capabilityStepBody();
+  assert.ok(body.includes('.host.cgroupVersion == "v2"'), "cgroup v2 check missing");
+  assert.ok(
+    body.includes('.host.cgroupControllers | contains(["cpu", "memory", "pids"])'),
+    "cpu, memory, pids check missing",
+  );
+});
+
+test("the setup-podman capability step requires the netavark backend with an aardvark-dns path", () => {
+  const body = capabilityStepBody();
+  assert.ok(body.includes('.host.networkBackend == "netavark"'), "netavark check missing");
+  assert.ok(body.includes(".host.networkBackendInfo.dns.path"), "aardvark-dns path check missing");
+  assert.ok(body.includes('test("(^|/)aardvark-dns$")'), "aardvark-dns basename check missing");
+});
+
+test("the setup-podman capability step requires overlay storage", () => {
+  assert.ok(capabilityStepBody().includes('.store.graphDriverName == "overlay"'), "overlay check missing");
+});
+
+test("the setup-podman capability step fails with an ::error:: message and pulls nothing from the network", () => {
+  const body = capabilityStepBody();
+  assert.match(body, /echo "::error::[^\n]*" >&2\n\s+exit 1/, "each failed check must emit ::error:: and exit 1");
+  assert.doesNotMatch(body, /podman (pull|run)|\bcurl\b|\bwget\b|apt-get|\bdocker\b/);
 });

@@ -1,3 +1,4 @@
+// Gherkin (underpins): "A page that is not a course in this locale keeps the generic sidebar when a path context query is present".
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { PathManifest } from "../../../../../src/features/course-paths/core/schemas";

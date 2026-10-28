@@ -1,5 +1,7 @@
 // Gherkin (underpins): "Progress screens pass automated accessibility checks";
-// "Mermaid diagram renders as an SVG".
+// "Mermaid diagram renders as an SVG"; "Mermaid source stays keyboard reachable while its diagram is pending";
+// "Mermaid source stays keyboard reachable when its diagram fails to render";
+// "The Mermaid source leaves keyboard focus order once the diagram renders".
 import { act, cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -108,5 +110,42 @@ describe("Mermaid source keyboard access", () => {
     expect(screen.getByRole("button", { name: "Before diagram" })).toHaveFocus();
     await user.tab();
     expect(screen.getByRole("button", { name: "After diagram" })).toHaveFocus();
+  });
+});
+
+// Gherkin (underpins): "The focused Mermaid source has a visible indicator in light and dark themes" (DSG-003, from DWT-006).
+// The focus indicator is the design system's foreground token, not the browser default (WebKit 2.70:1)
+// and not the design-system ring token (below 3:1 in dark, DWT-002).
+describe("Mermaid source focus indicator", () => {
+  const focusIndicatorClasses = [
+    "focus-visible:outline-2",
+    "focus-visible:outline-offset-2",
+    "focus-visible:outline-foreground",
+  ];
+
+  it("gives the keyboard-reachable pending source an outline in the foreground token", async () => {
+    const rendering = controlRendering();
+    const fallback = renderBetweenButtons();
+    await rendering.started;
+
+    expect(fallback.tabIndex).toBe(0);
+    for (const className of focusIndicatorClasses) {
+      expect(fallback.classList.contains(className)).toBe(true);
+    }
+    expect([...fallback.classList].some((className) => className.includes("ring"))).toBe(false);
+  });
+
+  it("drops the focus indicator once the diagram replaces the source", async () => {
+    const rendering = controlRendering();
+    const fallback = renderBetweenButtons();
+    await rendering.started;
+
+    await act(async () => {
+      rendering.result.resolve({ svg: diagramSvg });
+      await rendering.result.promise;
+    });
+
+    expect(fallback.tabIndex).toBe(-1);
+    expect([...fallback.classList].some((className) => className.startsWith("focus-visible:"))).toBe(false);
   });
 });

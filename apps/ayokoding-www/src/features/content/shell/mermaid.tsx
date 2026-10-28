@@ -53,7 +53,13 @@ export function MermaidDiagram({ chart }: MermaidDiagramProps) {
         // Exposed source can scroll while rendering is pending or fails; WCAG 2.1.1 needs keyboard access.
         // oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex
         tabIndex={svg === "" ? 0 : -1}
-        className={svg === "" ? "my-4 rounded bg-muted p-4 text-sm" : "invisible my-4 rounded bg-muted p-4 text-sm"}
+        // The keyboard focus indicator is the foreground token, offset from the source: the browser default is 2.70:1
+        // in WebKit against the code surface (DWT-006), and the ring token is below 3:1 in dark (DWT-002).
+        className={
+          svg === ""
+            ? "my-4 rounded bg-muted p-4 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+            : "invisible my-4 rounded bg-muted p-4 text-sm"
+        }
       >
         <code>{chart}</code>
       </pre>

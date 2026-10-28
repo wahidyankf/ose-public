@@ -20,16 +20,12 @@ const testDir = defineBddConfig({
   tags: "not @e2e-exempt",
 });
 
-// E2E_FULL_MATRIX=1 is an explicit opt-in that keeps the local selection (all three browsers, zero retries, no worker
-// cap) even when CI is set. It does not change CI itself, and without it CI keeps the Chromium-only selection.
-const ciSelection = !!process.env.CI && process.env.E2E_FULL_MATRIX !== "1";
-
 export default defineConfig({
   testDir,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: ciSelection ? 2 : 0,
-  workers: ciSelection ? 1 : undefined,
+  retries: process.env.CI ? 2 : 0,
+  workers: process.env.CI ? 1 : undefined,
   // Default (30s) is too tight for the handful of scenarios that fan out several
   // `page.request.get()` calls (with `getResilient`'s single-retry, and per-request timeouts up
   // to 30s) against the single local production server instance under full-suite parallel load —
@@ -41,8 +37,7 @@ export default defineConfig({
   reporter: [["list"], ["html"], ["junit", { outputFile: "test-results/junit.xml" }]],
   use: {
     baseURL: process.env.BASE_URL || "http://localhost:3101",
-    // TEMPORARY: the full-matrix proof runs with zero retries, so keep a trace of any failing case for the row 33 flake.
-    trace: process.env.E2E_FULL_MATRIX === "1" ? "retain-on-failure" : "on-first-retry",
+    trace: "on-first-retry",
     screenshot: "only-on-failure",
   },
   webServer: {
@@ -72,7 +67,7 @@ export default defineConfig({
       AYOKODING_WEB_SHOW_DRAFTS: "true",
     },
   },
-  projects: ciSelection
+  projects: process.env.CI
     ? [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }]
     : [
         { name: "chromium", use: { ...devices["Desktop Chrome"] } },

@@ -21,10 +21,14 @@ vi.mock("@/features/navigation/shell/toc", () => ({
 
 let mockPathname = "/en/browse";
 let mockSearchParams = new URLSearchParams();
+let queryReads = 0;
 
 vi.mock("next/navigation", () => ({
   usePathname: () => mockPathname,
-  useSearchParams: () => mockSearchParams,
+  useSearchParams: () => {
+    queryReads += 1;
+    return mockSearchParams;
+  },
 }));
 
 const { skillsManifest, careersManifest, contentMap, pages } = vi.hoisted(() => {
@@ -146,7 +150,7 @@ const feature = await loadFeature(
   ),
 );
 
-describeFeature(feature, ({ Scenario }) => {
+describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
   Scenario("A course deep-linked without path context renders the canonical view", ({ Given, When, Then, And }) => {
     let jsx: React.ReactElement;
 
@@ -202,6 +206,37 @@ describeFeature(feature, ({ Scenario }) => {
       And("no path rail, path readout, or path breadcrumb segment appears", () => {
         expect(screen.queryByRole("navigation", { name: /course list/i })).toBeNull();
         expect(screen.queryByText(/on path/i)).toBeNull();
+      });
+    },
+  );
+
+  // Non-course routes never read the path context query, so the sidebar cannot suspend on it. The
+  // rows are the four routes the SidebarHost route check must reject, including a lookalike prefix
+  // and a course in another locale.
+  ScenarioOutline(
+    "A page that is not a course in this locale keeps the generic sidebar when a path context query is present",
+    ({ Given, When, Then, And }, variables) => {
+      Given("a reader opens the page <page> with a path context query parameter", () => {
+        mockPathname = String(variables.page);
+        mockSearchParams = new URLSearchParams({ path: skillsManifest.pathId });
+        queryReads = 0;
+      });
+
+      When("the page renders", () => {
+        cleanup();
+        render(
+          <SidebarHost locale="en" manifests={[skillsManifest, careersManifest]} courseTitles={{}}>
+            <nav aria-label="Sidebar navigation">generic tree</nav>
+          </SidebarHost>,
+        );
+      });
+
+      Then("the generic sidebar is shown", () => {
+        expect(screen.getByRole("navigation", { name: "Sidebar navigation" })).toBeTruthy();
+      });
+
+      And("the path context query is not read", () => {
+        expect(queryReads).toBe(0);
       });
     },
   );

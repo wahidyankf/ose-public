@@ -212,6 +212,18 @@ Then("the raw Mermaid source should not be visible to the visitor", async ({ pag
   await expect(page.locator('pre code[data-language="mermaid"]')).toHaveCount(0);
 });
 
+Then("the Mermaid source should be removed from keyboard focus order", async ({ page }) => {
+  // Once the SVG exists, the reserved source (the only <pre> in the diagram's own container) is
+  // taken out of sequential focus with tabindex -1; the preceding step has already waited for the SVG.
+  const source = page
+    .getByRole("article")
+    .locator("div.relative")
+    .filter({ has: page.locator('svg[id^="mermaid-"]') })
+    .locator("pre")
+    .first();
+  await expect(source).toHaveAttribute("tabindex", "-1");
+});
+
 When("a visitor opens a content page containing a raw HTML details disclosure", async ({ page }) => {
   await page.goto("/en/learn/courses/graph-databases/drilling/overview");
 });

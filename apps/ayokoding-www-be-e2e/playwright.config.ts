@@ -25,16 +25,12 @@ const testDir = defineBddConfig({
   tags: "not @e2e-exempt",
 });
 
-// E2E_FULL_MATRIX=1 is an explicit opt-in that keeps the local run shape (zero retries, no worker cap) even when CI
-// is set. It does not change CI itself, and without it CI keeps two retries and one worker.
-const ciSelection = !!process.env.CI && process.env.E2E_FULL_MATRIX !== "1";
-
 export default defineConfig({
   testDir,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: ciSelection ? 2 : 0,
-  workers: ciSelection ? 1 : undefined,
+  retries: process.env.CI ? 2 : 0,
+  workers: process.env.CI ? 1 : undefined,
   reporter: [["list"], ["html"], ["junit", { outputFile: "test-results/junit.xml" }]],
   use: {
     baseURL: process.env.BASE_URL || "http://localhost:3101",

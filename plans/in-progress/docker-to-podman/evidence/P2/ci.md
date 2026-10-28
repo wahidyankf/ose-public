@@ -105,3 +105,20 @@ Observed facts only:
   cause is not established.
 - Temporary diagnostics added to the proof job for the next run: `trace: retain-on-failure` when `E2E_FULL_MATRIX=1`, and
   an `if: failure()` upload of `apps/ayokoding-www-fe-e2e/test-results/`.
+
+## Run 40693498144 (head 24a4c54d4, nonce d2p-ayo-1793192808)
+
+Observed facts only:
+
+- Temporary job `docker-to-podman-ayo-proof` concluded `success`. The runner tuple line again read
+  `ubuntu/resolute/amd64 selects podman=5.7.0+ds2-3build1`.
+- `df -h /`: 81G available before the Ayo stack build, 51G after it.
+- Row 26 (`ayokoding-www-be-e2e:test:e2e`, `E2E_FULL_MATRIX=1`): 37 passed (26.6s).
+- Row 33 (`ayokoding-www-fe-e2e:test:e2e`, `E2E_FULL_MATRIX=1`): 1,236 tests on 2 workers, 1,232 passed, 4 skipped, 0
+  failed (34.1m). The `if: failure()` results upload was skipped because nothing failed.
+- Web-UI E2E extra: 148 passed (1.8m).
+- The firefox case that failed in run 40671958744 passed here. The code under test is unchanged, so the earlier failure
+  is an intermittent with an unproven cause; it is recorded in the row 33 investigation above and in the final report.
+- `Unit and static behaviour coverage` passed. `Complete local-resource Integration suites` failed only on
+  `ferret-cli:test:integration` (6 failed, 500 passed), the pre-existing baseline failure also seen on main's scheduled
+  runs. `Complete public-boundary E2E suites` was skipped because of that failure.

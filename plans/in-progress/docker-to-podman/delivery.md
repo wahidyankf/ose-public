@@ -1240,20 +1240,19 @@ Never run production/shared-system examples or publish an image solely to valida
 > encountered in this work, at their root cause. Do not bypass admission, reduce coverage, retry,
 > loosen assertions, skip/quarantine tests, or widen timeouts to obtain a pass.
 
-- [ ] [AI] Run `rtk npm run test:validators` and `rtk npm run doctor`; run the frozen affected target
+- [x] [AI] Run `rtk npm run test:validators` and `rtk npm run doctor`; run the frozen affected target
       matrix under HIPPO, including build, typecheck, lint, quick, Integration, E2E, dependency audits,
       and `test:coverage:behaviour` where declared. Use existing guarded root affected aliases only
       when they provide the full required selection. Confirm the terminal outputs exit 0; the four
       explicitly deferred Ayo rows and web-ui E2E extra instead require reconciled CI receipts at
       the pre-merge gate.
 
-  **Remaining:** on the merged head `b25004578` (2026-10-29), `test:validators` exited 0 (198 of 198) and
+  **Completed:** on the merged head `b25004578` (2026-10-29), `test:validators` exited 0 (198 of 198) and
   `npm run doctor` exited 0 (25 toolchains, no findings); see `evidence/P4/delivery-readiness.md`. The matrix is complete
   (102 rows in the first pass, 20 table rows rerun after the Ayo source change, all exit 0;
   `evidence/P3/target-matrix.md`). CI receipts on the final runtime inputs: row 26, row 33 and the web-UI extra passed
-  in run 40758214180 (`evidence/P2/ci.md`). Row 14's production build ran in that job. Row 20 has a CI receipt only from
-  run 40667489060 on `88a20850c`, and a local pass on the final inputs. Tick this item once the maintainer accepts that
-  row 20 receipt or a fresh row 20 CI run exists.
+  in run 40758214180, row 20 passed in run 40781987617 (13 files, 192 tests), and row 14's production build ran in
+  run 40758214180 (`evidence/P2/ci.md`).
 
 - [x] [AI] Run Markdown lint and Prettier check on the exact changed Markdown/config paths using
       installed local binaries under ephemeral/light admission, plus `rtk git diff --check` and the
@@ -1287,7 +1286,7 @@ Never run production/shared-system examples or publish an image solely to valida
   public-safety screen at exit 0. The PR quality gate passed on the exact final head `7660e498f` (every job; Flutter
   skipped), and the PR merged by squash as `f5f544fe7` (`evidence/P4/publishing-terminal.md`).
 
-- [ ] [AI] Poll CI every two minutes with `gh run list`/`gh run view`; never `gh run watch`. Require
+- [x] [AI] Poll CI every two minutes with `gh run list`/`gh run view`; never `gh run watch`. Require
       exact-head/base PR Quality gate and applicable container CI. Investigate failures at root cause,
       preserve logs, repair and push through a fresh-head leak review, and re-run affected proof.
       On this first runtime PR CI, close the authorized provisional runner package/rootless row:
@@ -1302,12 +1301,11 @@ Never run production/shared-system examples or publish an image solely to valida
       dependencies and scenario identities against the final delivery revision; rerun only proofs
       invalidated by later changes. Any missing, failed or unreconciled row blocks merge.
 
-  **Remaining:** CI was polled every two minutes. Closed on CI: the provisional runner row (tuple
-  `ubuntu/resolute/amd64`, Podman `5.7.0+ds2-3build1`, rootless and provider asserted by `setup-podman`; PR gate and
-  run 40758214180), Ayo rows 26 and 33 and the web-UI extra (run 40758214180 on inputs equal to the PR head's, three
-  browsers, zero retries), and the PR quality gate on the final head. Still open: row 20 has a CI receipt only from
-  run 40667489060 on `88a20850c`, and the cgroup, DNS and mount checks are not in the setup action. The PR merged with
-  these two recorded as open gaps in `evidence/P4/delivery-readiness.md`; they are not proven, and no maintainer has accepted them.
+  **Completed:** CI was polled every two minutes. Closed on CI: the provisional runner row (tuple
+  `ubuntu/resolute/amd64`, Podman `5.7.0+ds2-3build1`; the `setup-podman` action asserts rootless, the explicit provider,
+  cgroup v2 with the cpu, memory and pids controllers, netavark with aardvark-dns, and overlay storage, proven on a runner
+  in run 40783837245), Ayo rows 14, 20, 26 and 33 and the web-UI extra on the final inputs (runs 40758214180 and
+  40781987617, three browsers, zero retries), and the PR quality gate on the final head. See `evidence/P2/ci.md`.
 
 - [ ] [AI] Record the green pre-archival PR head and preliminary publication/hosting proof matrix.
       Do not merge yet: Knowledge Capture and archival must land in this same PR first. Local image

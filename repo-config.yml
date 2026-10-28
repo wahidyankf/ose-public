@@ -1203,6 +1203,16 @@ gates:
             range:
               source: explicit-range
               range: explicit
+    - id: remote-dispatch-refusal
+      type: check
+      command:
+        executable: bash
+        args:
+          - literal: scripts/check-remote-dispatch-refusal.sh
+      run-on:
+        pre-commit: {}
+        pre-push: {}
+        pull-request: {}
     - id: format-staged
       type: mutation
       inputs:

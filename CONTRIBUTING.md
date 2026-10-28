@@ -219,6 +219,21 @@ that fit your project.
    nothing needed reformatting. The pre-commit hook runs the same formatter over your staged files,
    so skipping this step costs you nothing but a surprise at commit time.
 
+6. **Run compute under HIPPO admission**:
+
+   ```bash
+   ./hippo run --class <ephemeral|transactional|service> --resource-tier <light|standard|heavy> --disk-path . -- <cmd>
+   ```
+
+   Pick the class and tier for what the work is: `ephemeral` for repeatable checks, `transactional`
+   for indivisible mutations, `service` for long-running development servers. Exit `124` means a
+   limit stopped the work — `storage-blocked` means free disk first, since waiting frees none, while
+   `capacity-deferred` means retry when the host is quieter. Exit `125` means HIPPO itself refused,
+   so only `never-started` receipts apply and you replan instead of retrying. Since v0.13.0, the
+   machine file may also carry opt-in proportional thresholds (`coordination.memoryPolicy`, schema 3
+   only) and an opt-in per-machine swap gate (`coordination.swapUsedMaxMultiple`); an omitted key
+   keeps the legacy behavior, and no production percents, floors, or multiples are set anywhere yet.
+
 ## Code Conventions
 
 ### Commit Messages

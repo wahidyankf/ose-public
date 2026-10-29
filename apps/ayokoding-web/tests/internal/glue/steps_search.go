@@ -37,7 +37,7 @@ func (w *World) StepResultsLinkOnlyLocaleSPublishedContent() error {
 	if err := w.mustStatus(http.StatusOK); err != nil {
 		return err
 	}
-	if err := w.mustContain("/en/learn/go-basics/hello-world"); err != nil {
+	if err := w.mustContain("/en/learn/courses/go-basics/learning/hello-world"); err != nil {
 		return err
 	}
 	return w.mustNotContain("/id/")
@@ -79,9 +79,40 @@ func (w *World) StepReaderHasSearchResultsPublishedPage() error {
 }
 
 func (w *World) StepReaderChoosesResult() error {
-	w.searchPicked = "/en/learn/go-basics/hello-world"
+	// Real link-follow: parse the first result href from the served fragment
+	// and GET exactly that destination instead of a hard-coded URL.
+	href, err := firstResultHref(w.body)
+	if err != nil {
+		return err
+	}
+	w.searchPicked = href
 	w.searchOpen = false
-	return w.get(w.searchPicked)
+	return w.get(href)
+}
+
+// firstResultHref extracts the first result link from a search fragment.
+func firstResultHref(body string) (string, error) {
+	marker := `data-search-results`
+	start := indexOf(body, marker)
+	if start < 0 {
+		return "", fail("search fragment misses data-search-results")
+	}
+	window := body[start:]
+	hrefMarker := `href="`
+	hrefStart := indexOf(window, hrefMarker)
+	if hrefStart < 0 {
+		return "", fail("search fragment has no result href")
+	}
+	rest := window[hrefStart+len(hrefMarker):]
+	end := indexOf(rest, `"`)
+	if end < 0 {
+		return "", fail("search fragment href is unterminated")
+	}
+	href := rest[:end]
+	if href == "" || href[0] != '/' {
+		return "", fail("search result href %q is not a site path", href)
+	}
+	return href, nil
 }
 
 func (w *World) StepCorrespondingContentRouteOpens() error {

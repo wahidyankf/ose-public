@@ -11,7 +11,7 @@ Feature: AI model benchmark comparison
     Given the current shared benchmark data and an established calculation vector
     When the reader applies that vector's filters and comparison options
     Then the displayed figures, ordering, and value results match the vector
-    And TypeScript and Elixir produce the same accepted results
+    And TypeScript and Go produce the same accepted results
 
   Scenario: A benchmark URL restores all supported filter state
     Given a benchmark URL encodes supported comparison options

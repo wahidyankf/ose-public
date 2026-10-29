@@ -12,11 +12,14 @@ import (
 )
 
 // Page is one published content unit. P2 fills weight/title ordering,
-// section behavior, and outline rules behind these fields.
+// section behavior, and outline rules behind these fields. Kind records the
+// source track inside a course ("learning", "drilling", "course" for the
+// course overview, "legacy" for legacy pages); fixture pages leave it empty.
 type Page struct {
 	Locale       string
 	Course       string
 	Slug         string
+	Kind         string
 	Title        string
 	Description  string
 	BodyHTML     string
@@ -27,16 +30,18 @@ type Page struct {
 }
 
 // FakeStore is the P1H in-memory content double. P2 replaces it with the
-// file-backed catalog; the method set stays.
+// file-backed catalog; the method set stays. The loader tracks consumed
+// sources so the learn-wide sweep reports only unserved markdown.
 type FakeStore struct {
 	pages      []Page
 	diagnostic []string
 	showDrafts bool
+	consumed   map[string]bool
 }
 
 // NewFakeStore seeds the in-memory double.
 func NewFakeStore(pages []Page) *FakeStore {
-	return &FakeStore{pages: pages}
+	return &FakeStore{pages: pages, consumed: map[string]bool{}}
 }
 
 // ShowDrafts enables draft routes for owned test fixtures.

@@ -1,7 +1,11 @@
 package glue
 
 import (
+	"encoding/json"
 	"net/http"
+	"os"
+	"path/filepath"
+	"runtime"
 )
 
 func (w *World) StepCurrentSharedBenchmarkDataEstablishedCalculation() error {
@@ -33,20 +37,87 @@ func (w *World) StepDisplayedFiguresOrderingValueResultsMatchVector() error {
 }
 
 func (w *World) StepTypescriptElixirProduceSameAcceptedResults() error {
-	// The corpus names the pre-Go stack and shares this text across both
-	// tool features; the Go contract is that the served figures match
-	// the shared reference vector for the active journey. The landing
-	// unit rewords this step per tech-docs/005.
+	// The corpus names the pre-Go stack; the Go contract is that the served
+	// HANDLER body matches the checked-in test-vector JSON for the journey.
+	// This Then reads the vector file and asserts the handler response body,
+	// never the glue FakeEngine in engines.go.
+	if err := w.mustStatus(http.StatusOK); err != nil {
+		return err
+	}
 	if w.journey == "calculator" {
-		if w.calcResult.MonthlyCostUSD != 900 || w.calcResult.MinRole != "mid" {
-			return fail("served estimate = %+v, want the vector", w.calcResult)
+		figures, err := loadCalculatorVectorFigures()
+		if err != nil {
+			return err
+		}
+		for _, marker := range figures {
+			if err := w.mustContain(marker); err != nil {
+				return err
+			}
 		}
 		return nil
 	}
-	if len(w.benchResult.Models) != 2 || w.benchResult.Models[0].Name != "Model B" {
-		return fail("served result = %+v, want the vector", w.benchResult)
+	figures, err := loadBenchmarkVectorFigures()
+	if err != nil {
+		return err
+	}
+	for _, marker := range figures {
+		if err := w.mustContain(marker); err != nil {
+			return err
+		}
 	}
 	return nil
+}
+
+// fixtureVectorPath resolves one checked-in test-vector JSON under
+// apps/ayokoding-web/tests/fixtures.
+func fixtureVectorPath(name string) string {
+	_, file, _, _ := runtime.Caller(0)
+	appRoot := filepath.Join(filepath.Dir(file), "..", "..", "..")
+	return filepath.Join(appRoot, "tests", "fixtures", name)
+}
+
+func loadBenchmarkVectorFigures() ([]string, error) {
+	raw, err := os.ReadFile(fixtureVectorPath("benchmark-vectors.json"))
+	if err != nil {
+		return nil, fail("read benchmark vectors: %v", err)
+	}
+	var vectors map[string]struct {
+		Models []struct {
+			Name  string  `json:"name"`
+			Score float64 `json:"score"`
+		} `json:"models"`
+	}
+	if err := json.Unmarshal(raw, &vectors); err != nil {
+		return nil, fail("parse benchmark vectors: %v", err)
+	}
+	vector, ok := vectors["chat|mid"]
+	if !ok || len(vector.Models) != 2 {
+		return nil, fail("benchmark vector chat|mid missing or misshapen")
+	}
+	return []string{vector.Models[0].Name, vector.Models[1].Name, "9.1", "8.2"}, nil
+}
+
+func loadCalculatorVectorFigures() ([]string, error) {
+	raw, err := os.ReadFile(fixtureVectorPath("calculator-vectors.json"))
+	if err != nil {
+		return nil, fail("read calculator vectors: %v", err)
+	}
+	var vectors map[string]struct {
+		Cost   int    `json:"monthly_cost_usd"`
+		Saving int    `json:"monthly_saving"`
+		Role   string `json:"min_role"`
+	}
+	if err := json.Unmarshal(raw, &vectors); err != nil {
+		return nil, fail("parse calculator vectors: %v", err)
+	}
+	vector, ok := vectors["jakarta|mid|standard|1"]
+	if !ok {
+		return nil, fail("calculator vector jakarta|mid|standard|1 missing")
+	}
+	if vector.Cost != 900 || vector.Role != "mid" {
+		return nil, fail("calculator vector changed: %+v", vector)
+	}
+	return []string{"900", "600", "mid"}, nil
 }
 
 func (w *World) StepBenchmarkUrlEncodesSupportedComparisonOptions() error {

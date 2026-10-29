@@ -14,12 +14,26 @@
         <ol>
           {{range .Courses}}
           <li data-position="{{.Position}}" data-course="{{.ID}}">
-            <a href="/{{$.Shell.Lang}}/learn/{{.ID}}">{{.Title}}</a> <span data-position-number>{{.Position}}</span>
+            <a href="/{{$.Shell.Lang}}/learn/courses/{{.ID}}">{{.Title}}</a>
+            <span data-position-number>{{.Position}}</span>
           </li>
           {{end}}
         </ol>
       </section>
-      {{end}} {{else}}
+      {{end}} {{else if .Groups}}
+      <h1>{{if eq .Shell.Lang "id"}}Jalur{{else}}Paths{{end}}</h1>
+      {{range .Groups}}
+      <section data-category="{{.Category}}">
+        <h2>{{.Category}}</h2>
+        <ul>
+          {{range .Paths}}
+          <li data-path="{{.ID}}"><a href="/{{$.Shell.Lang}}/learn/paths/{{.ID}}">{{.Title}}</a></li>
+          {{end}}
+        </ul>
+      </section>
+      {{end}}
+      <nav data-learning-nav><a href="/{{.Shell.Lang}}/learn/courses">Courses</a></nav>
+      {{else}}
       <h1>{{if eq .Shell.Lang "id"}}Jalur{{else}}Paths{{end}}</h1>
       {{if .Names}}
       <ul>

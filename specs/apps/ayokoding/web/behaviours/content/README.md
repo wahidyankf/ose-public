@@ -9,4 +9,4 @@
 
 - [Content rendering](./content-rendering.feature) — frontmatter, drafts, rich Markdown,
   shortcodes, links, code copying, math, diagrams, direct HTML reads, and missing pages.
-  Bindings are planned.
+  Bindings are implemented.

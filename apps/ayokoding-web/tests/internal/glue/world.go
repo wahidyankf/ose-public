@@ -50,9 +50,10 @@ type World struct {
 	calcInputs   calculator.Inputs
 	calcResult   calculator.Estimate
 	// path journey state.
-	pathID   string
-	courseID string
-	history  []string
+	pathID      string
+	courseID    string
+	history     []string
+	r6FirstBody string
 	// search journey state.
 	searchOpen   bool
 	searchQuery  string
@@ -62,6 +63,7 @@ type World struct {
 	theme         string
 	sidebarWidth  int
 	mobileNavOpen bool
+	viewportWidth string
 	// content journey state.
 	diagnostic string
 	shortcode  string

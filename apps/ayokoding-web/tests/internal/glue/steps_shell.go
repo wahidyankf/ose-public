@@ -23,12 +23,12 @@ func (w *World) StepHeaderFooterPrimaryControlsUseLanguage() error {
 
 func (w *World) StepReaderPageTranslationOtherSupportedLocale() error {
 	w.locale = "en"
-	return w.get("/en/learn/go-basics/hello-world")
+	return w.get("/en/learn/courses/go-basics/learning/hello-world")
 }
 
 func (w *World) StepReaderSwitchesLocale() error {
 	w.locale = "id"
-	return w.get("/id/learn/go-basics/hello-world")
+	return w.get("/id/learn/courses/go-basics/learning/hello-world")
 }
 
 func (w *World) StepTranslatedPageOpensOtherLocale() error {
@@ -65,14 +65,28 @@ func (w *World) StepPageRetainsVisibleFocusIndicator() error {
 }
 
 func (w *World) StepReaderOpensRepresentativeCoursePageDPixelsWide(width string) error {
-	return w.get("/en/learn/go-basics/hello-world")
+	w.viewportWidth = width
+	return w.get("/en/learn/courses/go-basics/learning/hello-world")
 }
 
 func (w *World) StepMainContentRemainsReadableWithoutHorizontalDocum() error {
 	if err := w.mustStatus(200); err != nil {
 		return err
 	}
-	return w.mustContain(`name="viewport"`)
+	if err := w.mustContain(`name="viewport"`); err != nil {
+		return err
+	}
+	if w.viewportWidth == "" {
+		return fail("viewport width was not recorded")
+	}
+	// Production-observed containment: the served stylesheet must constrain
+	// the article column and scroll code blocks internally.
+	for _, marker := range []string{"min-width: 0", "overflow-wrap", "max-width: 100%", "overflow-x: auto"} {
+		if err := w.mustContain(marker); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (w *World) StepNavigationUsesLayoutIntendedViewport() error {
@@ -133,11 +147,11 @@ func (w *World) StepThemeTextControlsRemainAccessible() error {
 func (w *World) StepReaderHasResizedDesktopSidebarWithinSupportedBou() error {
 	w.sidebarWidth = 240
 	w.settings["ayokoding-sidebar-width"] = "240"
-	return w.get("/en/learn/go-basics/setup")
+	return w.get("/en/learn/courses/go-basics/learning/setup")
 }
 
 func (w *World) StepReaderOpensAnotherContentPage() error {
-	return w.get("/en/learn/go-basics/hello-world")
+	return w.get("/en/learn/courses/go-basics/learning/hello-world")
 }
 
 func (w *World) StepSidebarUsesSavedWidth() error {

@@ -8,4 +8,4 @@
 ## Contents
 
 - [Routes and navigation](./routes-and-navigation.feature) — locale entry, permanent redirects,
-  query preservation, sidebar location, breadcrumbs, and previous/next lessons. Bindings are planned.
+  query preservation, sidebar location, breadcrumbs, and previous/next lessons. Bindings are implemented.

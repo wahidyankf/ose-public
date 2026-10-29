@@ -1,0 +1,14 @@
+{
+  "project": "ayokoding-web-e2e",
+  "corpus": ["../../specs/apps/ayokoding/web/behaviours"],
+  "adapters": {
+    "unit": {
+      "bindings": ["../ayokoding-web/tests/bdd"],
+      "driver": "../ayokoding-web/go.mod"
+    },
+    "e2e": {
+      "bindings": ["tests/e2e"],
+      "driver": "playwright.config.ts"
+    }
+  }
+}

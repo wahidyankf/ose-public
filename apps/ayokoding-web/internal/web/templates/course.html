@@ -20,7 +20,7 @@
         <h2>Prerequisites</h2>
         <ul>
           {{range .Prerequisites}}
-          <li><a href="/{{$.Shell.Lang}}/learn/{{.ID}}">{{.Title}}</a></li>
+          <li><a href="/{{$.Shell.Lang}}/learn/courses/{{.ID}}">{{.Title}}</a></li>
           {{end}}
         </ul>
       </section>
@@ -29,13 +29,13 @@
         <h2>Lessons</h2>
         <ol>
           {{range .Lessons}}
-          <li><a href="/{{$.Shell.Lang}}/learn/{{.Course}}/{{.Slug}}">{{.Title}}</a></li>
+          <li><a href="/{{$.Shell.Lang}}/learn/courses/{{.Course}}/learning/{{.Slug}}">{{.Title}}</a></li>
           {{end}}
         </ol>
       </section>
       {{if .PathActive}}
       <nav data-path-controls data-path-context="{{.PathID}}">
-        <a href="/{{.Shell.Lang}}/paths/{{.PathID}}">Path</a>
+        <a href="/{{.Shell.Lang}}/learn/paths/{{.PathID}}">Path</a>
       </nav>
       {{else}}
       <nav data-canonical-nav><a href="/{{.Shell.Lang}}/learn/courses">Courses</a></nav>

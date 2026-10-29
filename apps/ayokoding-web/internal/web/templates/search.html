@@ -1,5 +1,5 @@
 {{define "search"}}{{if .Results}}
-<ul data-search-results>
+<ul data-search-results data-query="{{.Query}}">
   {{range .Results}}
   <li data-result="{{.URL}}">
     <a href="{{.URL}}">{{.Title}}</a>
@@ -8,5 +8,7 @@
   {{end}}
 </ul>
 {{else}}
-<p data-search-empty>No results.</p>
-{{end}}{{end}}
+<p data-search-empty data-query="{{.Query}}">No results.</p>
+{{end}}{{end}} {{define "search-invalid"}}
+<p data-search-invalid data-code="invalid_search" data-query="{{.Query}}">Invalid search. Try another query.</p>
+{{end}}

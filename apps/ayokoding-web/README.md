@@ -24,8 +24,10 @@ rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npm exe
 
 `test:quick` runs lint, typecheck, Unit (99% floor), and the static behaviour
 gates. Integration and browser E2E never run inside quick. Runtime browser E2E
-belongs to the future `ayokoding-web-e2e` owner, not to a duplicate target
-here; that project does not exist yet in P1H.
+proof lives in the dedicated `ayokoding-web-e2e` owner
+(`ayokoding-web-e2e:test:e2e`); the `e2e` adapter entry in this project's
+`behaviour-coverage.json` only asserts that the same 79-scenario corpus keeps
+its shape for that owner, it runs no browser here.
 
 ## Layout
 

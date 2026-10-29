@@ -8,5 +8,5 @@
 ## Contents
 
 - [Bilingual shell](./bilingual-shell.feature) — language, mobile navigation, keyboard access,
-  theme persistence, and sidebar width. Bindings are planned; browser-only helpers use the
+  theme persistence, and sidebar width. Bindings are implemented; browser-only helpers use the
   TypeScript Unit adapter.

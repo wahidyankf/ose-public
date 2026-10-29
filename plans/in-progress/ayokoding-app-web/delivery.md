@@ -23,10 +23,12 @@ original actor's identity.
 
 ### Delivery Branch Inventory
 
-| Branch                      | Mode          | Lifecycle state | Proof                                                                      |
-| --------------------------- | ------------- | --------------- | -------------------------------------------------------------------------- |
-| `ayokoding-app-web`         | `provisioned` | active          | Branch reflog creation from the authoring baseline at the timestamp above. |
-| `ayokoding-app-web-go-htmx` | `planned`     | delivered       | Go+htmx stack rewrite of this plan, merged as PR #761 at `0205fdb3e`.      |
+| Branch                      | Mode          | Lifecycle state | Proof                                                                       |
+| --------------------------- | ------------- | --------------- | --------------------------------------------------------------------------- |
+| `ayokoding-app-web`         | `provisioned` | active          | Branch reflog creation from the authoring baseline at the timestamp above.  |
+| `ayokoding-app-web-go-htmx` | `planned`     | delivered       | Go+htmx stack rewrite of this plan, merged as PR #761 at `0205fdb3e`.       |
+| `ayokoding-app-web-exec`    | `delivery`    | delivered       | Phase 0 baseline + Phase 1 (harness, shared data, rules) merged as PR #763. |
+| `ayokoding-app-web-p2`      | `delivery`    | active          | Phase 2 complete-app implementation, branched from `origin/main`.           |
 
 Append every delivery branch before use and record the merged PR plus reviewed 40-character head
 SHA. Resolve the worktree route against the selected repository at runtime and reconcile with
@@ -483,7 +485,11 @@ semantics and current source identities rather than unstable whole-document byte
 ```bash
 rtk curl -sS -D plans/in-progress/ayokoding-app-web/evidence/page-en.headers -o plans/in-progress/ayokoding-app-web/evidence/page-en.html -H 'Accept: text/html' http://localhost:3102/en
 rtk curl -sS -D plans/in-progress/ayokoding-app-web/evidence/page-id.headers -o plans/in-progress/ayokoding-app-web/evidence/page-id.html -H 'Accept: text/html' http://localhost:3102/id
-rtk curl -sS -D plans/in-progress/ayokoding-app-web/evidence/page-missing.headers -o plans/in-progress/ayokoding-app-web/evidence/page-missing.html http://localhost:3102/en/not-a-real-parity-page
+rtk curl -sS -D plans/in-progress/ayokoding-app-web/evidence/page-course.headers -o plans/in-progress/ayokoding-app-web/evidence/page-course.html -H 'Accept: text/html' http://localhost:3102/en/learn/courses/just-enough-python
+rtk curl -sS -D plans/in-progress/ayokoding-app-web/evidence/page-lesson.headers -o plans/in-progress/ayokoding-app-web/evidence/page-lesson.html -H 'Accept: text/html' http://localhost:3102/en/learn/courses/just-enough-python/learning/beginner
+rtk curl -sS -D plans/in-progress/ayokoding-app-web/evidence/page-path.headers -o plans/in-progress/ayokoding-app-web/evidence/page-path.html -H 'Accept: text/html' http://localhost:3102/en/learn/paths/careers/immediately-effective
+rtk curl -sS -D plans/in-progress/ayokoding-app-web/evidence/page-missing.headers -o plans/in-progress/ayokoding-app-web/evidence/page-missing.html http://localhost:3102/en/learn/courses/not-a-real-parity-page
+rtk curl -sS -D plans/in-progress/ayokoding-app-web/evidence/redirect-course.headers -o plans/in-progress/ayokoding-app-web/evidence/redirect-course.body 'http://localhost:3102/en/learn/fundamentally-strong/software-engineer/just-enough-python?from=local'
 rtk curl -sS -D plans/in-progress/ayokoding-app-web/evidence/redirect.headers -o plans/in-progress/ayokoding-app-web/evidence/redirect.body 'http://localhost:3102/EN?from=local'
 rtk curl -sS -D plans/in-progress/ayokoding-app-web/evidence/redirect-miss.headers -o plans/in-progress/ayokoding-app-web/evidence/redirect-miss.html http://localhost:3102/ZZ/not-a-real-parity-page
 rtk curl -sS -D plans/in-progress/ayokoding-app-web/evidence/sitemap.headers -o plans/in-progress/ayokoding-app-web/evidence/sitemap.xml -H 'Accept: application/xml' http://localhost:3102/sitemap.xml
@@ -496,8 +502,10 @@ rtk curl -sS -D plans/in-progress/ayokoding-app-web/evidence/frag-benchmark.head
 rtk curl -sS -D plans/in-progress/ayokoding-app-web/evidence/frag-calculator.headers -o plans/in-progress/ayokoding-app-web/evidence/frag-calculator.html -H 'Accept: text/html' -H 'HX-Request: true' 'http://localhost:3102/htmx/calculator?tab=cost&adults=1&preschool=0&schoolkids=0&area=center'
 ```
 
-- [ ] [AI] Assert page200 HTML with correct locale and no source/private state; missing page404
-      HTML; redirect308 `Location: /en?from=local` with no loop; redirect miss404; sitemap/feed200
+- [ ] [AI] Assert page200 HTML with correct locale and no source/private state for the
+      landing, course, lesson, and path pages; missing page404 HTML; redirect308
+      `Location: /en?from=local` with no loop; legacy course redirect308 to the canonical
+      `/en/learn/courses/...` destination with query retained; redirect miss404; sitemap/feed200
       with correct XML media types and no drafts/removed routes; robots200 plain text with configured
       origin; wrong-method robots404 HTML. Assert each fragment200 returns its HTML partial with
       the expected inline state (`invalid_search` / `invalid_filters` on the invalid cases) and no

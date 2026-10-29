@@ -1,0 +1,39 @@
+{{define "calculator-fragment"}}
+<div data-fragment="calculator" data-tool-inputs data-encoded-state="{{.Encoded}}" lang="{{.Locale}}">
+  <form method="get" data-input-form>
+    <label>Tab <input name="tab" value="{{.State.Tab}}" /></label>
+    <label>Region <input name="region" value="{{.State.Region}}" /></label>
+    <label>Country <input name="country" value="{{.State.CountryID}}" /></label>
+    <label>City <input name="city" value="{{.State.CityID}}" /></label>
+    <label>Adults <input name="adults" value="{{.State.Household.Adults}}" /></label>
+    <label>Preschool <input name="preschool" value="{{.State.Household.PreschoolKids}}" /></label>
+    <label>School kids <input name="schoolkids" value="{{.State.Household.SchoolKids}}" /></label>
+    <label>School type <input name="schooltype" value="{{.State.SchoolType}}" /></label>
+    <label>Area <input name="area" value="{{.State.Area}}" /></label>
+    <label>Gross <input name="gross" value="{{.State.Gross}}" /></label>
+    <label>Baseline <input name="baseline" value="{{.State.MinRole.BaselineSource}}" /></label>
+    <label>Target <input name="target" value="{{.State.MinRole.TargetRaw}}" /></label>
+    <label>Target currency <input name="targetcur" value="{{.State.MinRole.TargetCurrency}}" /></label>
+    <label>Reference city <input name="refcity" value="{{.State.MinRole.RefCityID}}" /></label>
+    <label>Reference role <input name="refrole" value="{{.State.MinRole.RefRole}}" /></label>
+    <label>My gross <input name="mygross" value="{{.State.MinRole.MyGrossMonthly}}" /></label>
+    <label>My salary city <input name="mysalarycity" value="{{.State.MinRole.MySalaryCityID}}" /></label>
+    <label>My gross currency <input name="mygrosscur" value="{{.State.MinRole.MyGrossCurrency}}" /></label>
+    <label>Display currency <input name="displaycur" value="{{.State.MinRole.DisplayCurrency}}" /></label>
+  </form>
+  {{if .Invalid}}
+  <p data-invalid-filters>invalid_filters: unsupported input field. Reset the inputs to continue.</p>
+  {{else if .Empty}}
+  <p data-fallback-state>No finite estimate for this selection. Results follow the fallback behavior.</p>
+  {{else}}
+  <dl data-tool-estimate>
+    <dt>Monthly cost</dt>
+    <dd data-cost>{{.CostText}}</dd>
+    <dt>Monthly saving</dt>
+    <dd data-saving>{{.SavingsText}}</dd>
+    <dt>Minimum role</dt>
+    <dd data-min-role>{{.MinRole}}</dd>
+  </dl>
+  {{end}}
+</div>
+{{end}}

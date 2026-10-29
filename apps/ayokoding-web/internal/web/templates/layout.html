@@ -4,6 +4,19 @@
 <meta name="description" content="{{.Description}}" />
 <link rel="canonical" href="{{.Canonical}}" />
 {{range .Alternates}}<link rel="alternate" hreflang="{{.Locale}}" href="{{.URL}}" /> {{end}}<style>
+  main {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  pre {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  img,
+  table,
+  iframe {
+    max-width: 100%;
+  }
   :focus-visible {
     outline: 2px solid currentColor;
     outline-offset: 2px;
@@ -47,11 +60,110 @@
     <a href="/id" data-locale-switch hreflang="id">Indonesia</a>{{end}}
   </nav>
   <button type="button" data-nav-opener aria-expanded="false">{{if eq .Lang "id"}}Menu{{else}}Menu{{end}}</button>
+  <button type="button" data-search-opener aria-haspopup="dialog">{{if eq .Lang "id"}}Cari{{else}}Search{{end}}</button>
 </header>
 <nav id="mobile-nav" data-nav="mobile" data-close-on-escape hidden>
   <button type="button" data-nav-closer>{{if eq .Lang "id"}}Tutup{{else}}Close{{end}}</button>
 </nav>
 <div data-search-dialog hidden><input type="search" data-search-input data-search-shortcut aria-label="search" /></div>
+<script>
+  (function () {
+    var lastSearchOpener = null;
+    function searchDialog() {
+      return document.querySelector("[data-search-dialog]");
+    }
+    function searchInput() {
+      return document.querySelector("[data-search-input]");
+    }
+    function searchOpener() {
+      return document.querySelector("[data-search-opener]");
+    }
+    document.addEventListener("click", function (event) {
+      var opener = event.target && event.target.closest ? event.target.closest("[data-search-opener]") : null;
+      if (opener) {
+        lastSearchOpener = opener;
+        var dialog = searchDialog();
+        if (dialog) dialog.removeAttribute("hidden");
+        var input = searchInput();
+        if (input) input.focus();
+        return;
+      }
+      var navOpener = event.target && event.target.closest ? event.target.closest("[data-nav-opener]") : null;
+      if (navOpener) {
+        var nav = document.querySelector("#mobile-nav");
+        if (nav) {
+          nav.removeAttribute("hidden");
+          navOpener.setAttribute("aria-expanded", "true");
+        }
+        return;
+      }
+      var closer = event.target && event.target.closest ? event.target.closest("[data-nav-closer]") : null;
+      if (closer) {
+        var panel = document.querySelector("#mobile-nav");
+        if (panel) panel.setAttribute("hidden", "");
+        var openerBtn = document.querySelector("[data-nav-opener]");
+        if (openerBtn) {
+          openerBtn.setAttribute("aria-expanded", "false");
+          openerBtn.focus();
+        }
+      }
+    });
+    // Preserve the current path across locale switches, mirroring the old
+    // product's locale switcher (replace the locale segment, keep the rest).
+    function preserveLocaleSwitchHrefs() {
+      try {
+        var path = window.location.pathname || "/";
+        var segments = path.split("/").filter(Boolean);
+        var links = document.querySelectorAll("[data-locale-switch]");
+        for (var i = 0; i < links.length; i++) {
+          var link = links[i];
+          var target = link.getAttribute("hreflang") || "";
+          if (!target) continue;
+          var rest = segments.slice(1).join("/");
+          var href = "/" + target + (rest ? "/" + rest : "") + window.location.search;
+          link.setAttribute("href", href);
+        }
+      } catch (e) {}
+    }
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", preserveLocaleSwitchHrefs);
+    } else {
+      preserveLocaleSwitchHrefs();
+    }
+    document.addEventListener("keydown", function (event) {
+      var isShortcut = (event.metaKey || event.ctrlKey) && event.key && event.key.toLowerCase() === "k";
+      if (isShortcut) {
+        event.preventDefault();
+        lastSearchOpener = document.activeElement;
+        var dialog = searchDialog();
+        if (dialog) dialog.removeAttribute("hidden");
+        var input = searchInput();
+        if (input) input.focus();
+        return;
+      }
+      if (event.key === "Escape") {
+        var openDialog = searchDialog();
+        if (openDialog && !openDialog.hasAttribute("hidden")) {
+          openDialog.setAttribute("hidden", "");
+          if (lastSearchOpener && lastSearchOpener.focus) lastSearchOpener.focus();
+          else {
+            var fallback = searchOpener();
+            if (fallback) fallback.focus();
+          }
+        }
+        var nav = document.querySelector("#mobile-nav");
+        if (nav && !nav.hasAttribute("hidden")) {
+          nav.setAttribute("hidden", "");
+          var navOpener = document.querySelector("[data-nav-opener]");
+          if (navOpener) {
+            navOpener.setAttribute("aria-expanded", "false");
+            navOpener.focus();
+          }
+        }
+      }
+    });
+  })();
+</script>
 {{end}}{{define "footer"}}
 <footer data-shell="footer"><p>AyoKoding</p></footer>
 {{end}}

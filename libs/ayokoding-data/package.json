@@ -3,5 +3,8 @@
   "name": "@open-sharia-enterprise/ayokoding-data",
   "version": "0.1.0",
   "type": "module",
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "@amiceli/vitest-cucumber": "6.3.0"
+  }
 }

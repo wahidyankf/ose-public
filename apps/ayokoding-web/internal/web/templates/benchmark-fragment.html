@@ -1,0 +1,22 @@
+{{define "benchmark-fragment"}}
+<div data-fragment="benchmark" data-tool-filters data-encoded-state="{{.Encoded}}" lang="{{.Locale}}">
+  <form method="get" data-filter-form>
+    <label>Harness <input name="harness" value="{{.State.Harness}}" /></label>
+    <label>Tier <input name="tier" value="{{.State.Tier}}" /></label>
+    <label>Substitute <input name="sub" value="{{.State.Sub}}" /></label>
+    <label>Substitute harness <input name="sub-harness" value="{{.State.SubHarness}}" /></label>
+  </form>
+  {{if .Invalid}}
+  <p data-invalid-filters>invalid_filters: unsupported filter field. Reset the filters to continue.</p>
+  {{else if .Empty}}
+  <p data-empty-state>No models match this combination. Change or reset the filters.</p>
+  {{else}}
+  <ol data-tool-results data-count="{{.Count}}">
+    {{range .Rows}}
+    <li data-model="{{.ID}}" data-tier="{{.Tier}}">{{.Name}} · index {{.IndexText}} · {{.PriceText}}</li>
+    {{end}}
+  </ol>
+  {{end}}
+  <p data-codec-note>Invalid values fall back to codec defaults.</p>
+</div>
+{{end}}

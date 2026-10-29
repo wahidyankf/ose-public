@@ -1,0 +1,992 @@
+<!doctype html>
+<html lang="en" data-theme-hook data-sidebar style="--sidebar-width: 240px">
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Beginner Examples</title>
+<meta name="description" content="" />
+<link rel="canonical" href="/en/learn/courses/just-enough-python/learning/beginner" />
+<link rel="alternate" hreflang="id" href="/id" /> <style>
+  main {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  pre {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  img,
+  table,
+  iframe {
+    max-width: 100%;
+  }
+  :focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+  }
+  .skip-link:focus {
+    left: 0;
+  }
+  @media (max-width: 767px) {
+    [data-nav="mobile"] {
+      display: block;
+    }
+    [data-sidebar] {
+      --sidebar-width: 100%;
+    }
+  }
+  @media (min-width: 768px) {
+    [data-nav="mobile"] {
+      display: none;
+    }
+  }
+</style>
+<script src="/assets/js/htmx.min.js" defer></script>
+<script src="/assets/js/progress.js" defer data-progress-key="ayokoding-learn-progress-v1"></script>
+
+  </head>
+  <body>
+    <a class="skip-link" href="#main"
+  >Skip to content</a
+>
+<header data-shell="header">
+  <nav aria-label="primary">
+    <a href="/en">Home</a>
+    <a href="/en/learn/courses">Courses</a>
+  </nav>
+  <nav aria-label="locale">
+    <span aria-current="true" data-locale-active
+      >English</span
+    >
+    <a href="/id" data-locale-switch hreflang="id">Indonesia</a>
+  </nav>
+  <button type="button" data-nav-opener aria-expanded="false">Menu</button>
+  <button type="button" data-search-opener aria-haspopup="dialog">Search</button>
+</header>
+<nav id="mobile-nav" data-nav="mobile" data-close-on-escape hidden>
+  <button type="button" data-nav-closer>Close</button>
+</nav>
+<div data-search-dialog hidden><input type="search" data-search-input data-search-shortcut aria-label="search" /></div>
+<script>
+(function () {
+  var lastSearchOpener = null;
+  function searchDialog() {
+    return document.querySelector("[data-search-dialog]");
+  }
+  function searchInput() {
+    return document.querySelector("[data-search-input]");
+  }
+  function searchOpener() {
+    return document.querySelector("[data-search-opener]");
+  }
+  document.addEventListener("click", function (event) {
+    var opener = event.target && event.target.closest ? event.target.closest("[data-search-opener]") : null;
+    if (opener) {
+      lastSearchOpener = opener;
+      var dialog = searchDialog();
+      if (dialog) dialog.removeAttribute("hidden");
+      var input = searchInput();
+      if (input) input.focus();
+      return;
+    }
+    var navOpener = event.target && event.target.closest ? event.target.closest("[data-nav-opener]") : null;
+    if (navOpener) {
+      var nav = document.querySelector("#mobile-nav");
+      if (nav) {
+        nav.removeAttribute("hidden");
+        navOpener.setAttribute("aria-expanded", "true");
+      }
+      return;
+    }
+    var closer = event.target && event.target.closest ? event.target.closest("[data-nav-closer]") : null;
+    if (closer) {
+      var panel = document.querySelector("#mobile-nav");
+      if (panel) panel.setAttribute("hidden", "");
+      var openerBtn = document.querySelector("[data-nav-opener]");
+      if (openerBtn) {
+        openerBtn.setAttribute("aria-expanded", "false");
+        openerBtn.focus();
+      }
+    }
+  });
+  
+  
+  function preserveLocaleSwitchHrefs() {
+    try {
+      var path = window.location.pathname || "/";
+      var segments = path.split("/").filter(Boolean);
+      var links = document.querySelectorAll("[data-locale-switch]");
+      for (var i = 0; i < links.length; i++) {
+        var link = links[i];
+        var target = link.getAttribute("hreflang") || "";
+        if (!target) continue;
+        var rest = segments.slice(1).join("/");
+        var href = "/" + target + (rest ? "/" + rest : "") + window.location.search;
+        link.setAttribute("href", href);
+      }
+    } catch (e) {}
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", preserveLocaleSwitchHrefs);
+  } else {
+    preserveLocaleSwitchHrefs();
+  }
+  document.addEventListener("keydown", function (event) {
+    var isShortcut = (event.metaKey || event.ctrlKey) && event.key && event.key.toLowerCase() === "k";
+    if (isShortcut) {
+      event.preventDefault();
+      lastSearchOpener = document.activeElement;
+      var dialog = searchDialog();
+      if (dialog) dialog.removeAttribute("hidden");
+      var input = searchInput();
+      if (input) input.focus();
+      return;
+    }
+    if (event.key === "Escape") {
+      var openDialog = searchDialog();
+      if (openDialog && !openDialog.hasAttribute("hidden")) {
+        openDialog.setAttribute("hidden", "");
+        if (lastSearchOpener && lastSearchOpener.focus) lastSearchOpener.focus();
+        else {
+          var fallback = searchOpener();
+          if (fallback) fallback.focus();
+        }
+      }
+      var nav = document.querySelector("#mobile-nav");
+      if (nav && !nav.hasAttribute("hidden")) {
+        nav.setAttribute("hidden", "");
+        var navOpener = document.querySelector("[data-nav-opener]");
+        if (navOpener) {
+          navOpener.setAttribute("aria-expanded", "false");
+          navOpener.focus();
+        }
+      }
+    }
+  });
+})();
+</script>
+
+    <main id="main">
+      <nav aria-label="breadcrumb" data-breadcrumbs>
+        <a href="/en">Home</a> /
+        <a href="/en/learn/courses/just-enough-python"></a> /
+        <span aria-current="page">Beginner Examples</span>
+      </nav>
+      <aside data-sidebar-nav data-active-page="beginner">
+        <ul>
+          <li>
+            <a href="/en/learn/courses/just-enough-python/learning/beginner" aria-current="page">Beginner Examples</a>
+          </li>
+        </ul>
+      </aside>
+      
+      <article class="article-body" data-lesson-meta data-course="just-enough-python" data-lesson="beginner">
+        <p>Examples 1-28 cover running Python three ways, virtual environments, <code>black</code>/<code>ruff</code>, the primitive
+types and type hints, operators, f-strings and string methods, the four built-in collections (lists,
+tuples, dicts, sets), slicing, conditionals, and loops. Every example is a complete, self-contained
+<code>.py</code> file (or small file set) colocated under <code>learning/code/</code>; run each one with <code>python3 &lt;file&gt;.py</code>
+from inside its own directory unless a caption says otherwise.</p>
+<hr>
+<h2>Example 1: Hello Script</h2>
+<p><em>ex-01 · exercises co-01</em></p>
+<p>The very first Python program most people write, and the one this whole primer&#39;s &#34;universal run
+command&#34; is built around. <code>print()</code> is Python&#39;s most-used built-in function -- it writes its
+arguments to standard output, separated by a single space, followed by a newline.</p>
+<p><strong><code>learning/code/ex-01-hello-script/example.py</code></strong></p>
+<pre><code>&#34;&#34;&#34;Example 1: Hello Script.&#34;&#34;&#34;
+
+print(&#34;Hello, world!&#34;)  # =&gt; calls the built-in print() with one string argument
+# =&gt; Output: Hello, world!
+</code></pre>
+<p><strong>Run</strong>: <code>python3 example.py</code></p>
+<p><strong>Output</strong>:</p>
+<pre><code>Hello, world!
+</code></pre>
+<p><strong>Key takeaway</strong>: <code>python3 &lt;file&gt;.py</code> is the one command this entire primer builds on; <code>print()</code> is
+the fastest way to see a value.</p>
+<p><strong>Why it matters</strong>: Every other example in this primer starts from this same command. There is no
+compile step, no project scaffold, and no build tool between you and running code -- CPython reads a
+file and executes it top to bottom. That immediacy is why Python works so well as a first language
+and as a default scripting tool: you can hand someone a <code>.py</code> file and trust <code>python3</code> can run it
+with zero ceremony.</p>
+<hr>
+<h2>Example 2: Run Inline Code</h2>
+<p><em>ex-02 · exercises co-01</em></p>
+<p>Besides a saved file, CPython can run a snippet directly from the command line with <code>-c</code>, or drop you
+into an interactive REPL with no arguments at all. This example&#39;s file shows the equivalent script
+form; the point is that all three forms run identical Python.</p>
+<p><strong><code>learning/code/ex-02-run-inline-code/example.py</code></strong></p>
+<pre><code>&#34;&#34;&#34;Example 2: Run Inline Code (same body as `python3 -c &#34;print(6 * 7)&#34;`).&#34;&#34;&#34;
+
+print(6 * 7)  # =&gt; evaluates 6 * 7 first, then prints the result
+# =&gt; Output: 42
+</code></pre>
+<p><strong>Run</strong>: <code>python3 -c &#34;print(6 * 7)&#34;</code> (or <code>python3 example.py</code> -- both produce the same output)</p>
+<p><strong>Output</strong>:</p>
+<pre><code>42
+</code></pre>
+<p><strong>Key takeaway</strong>: <code>python3 -c &#34;&lt;code&gt;&#34;</code> runs a snippet with no file at all; <code>python3</code> alone opens the
+interactive REPL.</p>
+<p><strong>Why it matters</strong>: Quick one-liners -- checking a calculation, testing a regex, inspecting a
+module&#39;s attributes -- don&#39;t need a saved file. Knowing all three entry points (script, <code>-c</code>, REPL)
+up front means you reach for the fastest one instead of always creating a throwaway file. The REPL
+also lets you inspect an expression immediately after entering it. Save code in a file when the same
+steps need to be reviewed, tested, or rerun.</p>
+<hr>
+<h2>Example 3: Create Venv Install</h2>
+<p><em>ex-03 · exercises co-02</em></p>
+<p><code>python3 -m venv</code> creates an isolated per-project interpreter whose <code>pip</code> installs dependencies
+without touching the system Python. This example creates one, installs <code>pytest</code> into it, and proves
+the install worked by importing <code>pytest</code> from inside that exact venv.</p>
+<p><strong><code>learning/code/ex-03-create-venv-install/check_pytest.py</code></strong></p>
+<pre><code>&#34;&#34;&#34;Example 3: Create Venv Install -- run inside the venv after `pip install pytest`.&#34;&#34;&#34;
+# =&gt; The import and printed version must come from the same venv interpreter.
+
+# Resolves ONLY inside the venv&#39;s site-packages, not the system Python.
+import pytest  # =&gt; import resolves pytest from the active environment
+
+# Proves the venv&#39;s pip install worked.
+print(
+    f&#34;pytest {pytest.__version__} importable&#34;
+)  # =&gt; version text comes from the imported package
+# =&gt; Output: pytest &lt;installed-version&gt; importable
+</code></pre>
+<p><strong>Run</strong> (historical transcript; installed versions and pip&#39;s output can differ):</p>
+<pre><code>$ python3 -m venv .venv
+$ .venv/bin/pip install pytest
+[... pip install output ...]
+$ .venv/bin/pip show pytest
+Name: pytest
+Version: 9.1.1
+Summary: pytest: simple powerful testing with Python
+...
+$ .venv/bin/python check_pytest.py
+pytest 9.1.1 importable
+</code></pre>
+<p>The <code>9.1.1</code> value records the version used for this capture. Your unpinned install may show another
+version; the check is that the same venv&#39;s interpreter can import it.</p>
+<p><strong>Key takeaway</strong>: <code>python3 -m venv .venv</code> creates the environment; <code>.venv/bin/pip</code> and <code>.venv/bin/python</code>
+(not the bare <code>pip</code>/<code>python3</code> commands) are how you use it.</p>
+<p><strong>Why it matters</strong>: Without a venv, every project&#39;s dependencies collide in one global Python
+installation -- two projects needing different versions of the same package cannot coexist. A venv
+per project is the default hygiene this book assumes for every later Python topic, exactly mirroring
+what this repository&#39;s own <code>.venv</code>-based Python tooling does.</p>
+<hr>
+<h2>Example 4: Format With Black</h2>
+<p><em>ex-04 · exercises co-03</em></p>
+<p><code>black</code> applies a consistent Python style. This example ran it against a deliberately misformatted
+file and captured the transcript; Black&#39;s messages can vary by version.</p>
+<p><strong>Before</strong> (saved locally as <code>messy.py</code> to reproduce this transcript -- not itself a tracked file in
+this repository, since this repo&#39;s own pre-commit hook runs <code>ruff format</code> on every committed <code>.py</code>
+file and would normalize it before it could ever be committed misformatted):</p>
+<pre><code>&#34;&#34;&#34;Example 4: Format With Black -- deliberately misformatted input.&#34;&#34;&#34;
+
+
+def   add(a,b):  # =&gt; defines add with two positional parameters a and b
+    # =&gt; Adds two numbers and returns the sum.
+    return a+b
+
+
+print(add(1,2))  # =&gt; calls add(1, 2), which returns 3
+# =&gt; Output: 3
+</code></pre>
+<p><strong>Run</strong> (captured for real):</p>
+<pre><code>$ black messy.py
+reformatted messy.py
+
+All done! ✨ 🍰 ✨
+1 file reformatted.
+$ black messy.py
+All done! ✨ 🍰 ✨
+1 file left unchanged.
+</code></pre>
+<p><strong><code>learning/code/ex-04-format-with-black/add.py</code></strong> (the same file, after formatting -- this is what
+is actually committed alongside this page)</p>
+<pre><code>&#34;&#34;&#34;Example 4: Format With Black -- deliberately misformatted input.&#34;&#34;&#34;
+
+
+def add(a, b):  # =&gt; defines add with two positional parameters a and b
+    # =&gt; Adds two numbers and returns the sum.
+    return a + b
+
+
+print(add(1, 2))  # =&gt; calls add(1, 2), which returns 3
+# =&gt; Output: 3
+</code></pre>
+<p><strong>Key takeaway</strong>: the first <code>black</code> run reports <code>1 file reformatted</code>; every run after that reports
+<code>1 file left unchanged</code> -- <code>black</code> is idempotent.</p>
+<p><strong>Why it matters</strong>: Formatting removes layout decisions from code review. The deliberately messy
+input exists only to show the change; the colocated <code>add.py</code> is the formatted result. A second Black
+run leaves that result unchanged, which demonstrates idempotence. This repository uses <code>ruff format</code>
+for committed Python source. Formatting and Ruff linting check different properties, so Example 5
+deliberately keeps a lint finding even though its file is formatted.</p>
+<hr>
+<h2>Example 5: Lint With Ruff</h2>
+<p><em>ex-05 · exercises co-03</em></p>
+<p><code>ruff check</code> reports source findings such as unused imports and undefined names. This example keeps
+a genuine unused import so Ruff can show its <code>F401</code> diagnostic; the script itself still runs.</p>
+<p><strong><code>learning/code/ex-05-lint-with-ruff/bad.py</code></strong></p>
+<pre><code>&#34;&#34;&#34;Example 5: Lint With Ruff -- deliberately has an unused import.&#34;&#34;&#34;
+
+# Never referenced below -- ruff&#39;s F401 rule flags exactly this.
+import json  # =&gt; imports the json module but never uses it (deliberately unused)
+
+
+def greet(name: str) -&gt; str:  # =&gt; defines greet, takes name, returns a str
+    return f&#34;hello {name}&#34;  # =&gt; builds and returns &#34;hello Ada&#34; when called below
+
+
+print(greet(&#34;Ada&#34;))  # =&gt; calls greet(&#34;Ada&#34;), prints &#34;hello Ada&#34;
+# =&gt; Output: hello Ada -- the SCRIPT runs fine; ruff still flags it
+</code></pre>
+<p><strong>Run</strong>: <code>ruff check bad.py</code></p>
+<p><strong>Output</strong> (captured by actually running <code>ruff check</code> against the file above):</p>
+<pre><code>F401 [*] `json` imported but unused
+ --&gt; bad.py:4:8
+  |
+3 | # Never referenced below -- ruff&#39;s F401 rule flags exactly this.
+4 | import json  # =&gt; imports the json module but never uses it (deliberately unused)
+  |        ^^^^
+  |
+help: Remove unused import: `json`
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+</code></pre>
+<p><strong>Exit code</strong>: non-zero (<code>$?</code> is <code>1</code>).</p>
+<p><strong>Key takeaway</strong>: <code>ruff check</code> finds problems <code>python3</code> itself would never catch -- the script above
+runs and prints correctly despite the dead import.</p>
+<p><strong>Why it matters</strong>: A script can run successfully while Ruff finds a source problem. The unused
+<code>json</code> import is intentional here, so this example must fail <code>ruff check</code> to teach the diagnostic.
+Run the check without <code>--fix</code> first to see the finding; then remove the import or apply the fix and
+check again. Example 84 similarly includes a deliberate static type error. These diagnostic examples
+are exceptions to a passing-check expectation.</p>
+<hr>
+<h2>Example 6: int And float</h2>
+<p><em>ex-06 · exercises co-04, co-05, co-06</em></p>
+<p><code>int</code> and <code>float</code> are common built-in numeric types. A name is a reference bound to a value by
+assignment (<code>=</code>), and Python is dynamically typed -- the type belongs to the value, not the name.
+The bindings in this example also have type hints so a reader and a static checker can see their
+intended types.</p>
+<p><strong><code>learning/code/ex-06-int-and-float/example.py</code></strong></p>
+<pre><code>&#34;&#34;&#34;Example 6: int And float.&#34;&#34;&#34;
+
+count: int = 3  # =&gt; an int literal, no decimal point
+ratio: float = 1.5  # =&gt; a float literal -- the decimal point makes it a float
+print(count, ratio)  # =&gt; print() joins multiple args with a single space
+# =&gt; Output: 3 1.5
+</code></pre>
+<p><strong>Run</strong>: <code>python3 example.py</code></p>
+<p><strong>Output</strong>:</p>
+<pre><code>3 1.5
+</code></pre>
+<p><strong>Key takeaway</strong>: a literal with a decimal point is a <code>float</code>; without one, it is an <code>int</code> -- the type
+hint documents this, <code>pyright</code> verifies it, but nothing stops you from writing untyped Python too.</p>
+<p><strong>Why it matters</strong>: Python does not require a type hint for each binding. Hints document an intended
+contract that a checker can inspect, while runtime values still determine what code actually does.
+In this example, <code>count</code> is an <code>int</code> and <code>ratio</code> is a <code>float</code>; their annotations agree with their
+values. A hint does not convert or enforce either value at runtime. Compare the printed values with
+the hints, then use a checker to catch mismatches across function calls.</p>
+<hr>
+<h2>Example 7: bool And None</h2>
+<p><em>ex-07 · exercises co-05, co-06</em></p>
+<p><code>bool</code> and <code>None</code> are common built-in values. <code>bool</code> is a subclass of <code>int</code>
+(<code>True == 1</code>, <code>False == 0</code>), and <code>None</code> is the language&#39;s one-and-only &#34;no value&#34; singleton.</p>
+<p><strong><code>learning/code/ex-07-bool-and-none/example.py</code></strong></p>
+<pre><code>&#34;&#34;&#34;Example 7: bool And None.&#34;&#34;&#34;
+
+flag: bool = True  # =&gt; bool is a subclass of int, but prints as True/False
+nothing: None = None  # =&gt; None is Python&#39;s one-and-only &#34;no value&#34; singleton
+print(flag, nothing)  # =&gt; Output: True None
+</code></pre>
+<p><strong>Run</strong>: <code>python3 example.py</code></p>
+<p><strong>Output</strong>:</p>
+<pre><code>True None
+</code></pre>
+<p><strong>Key takeaway</strong>: <code>True</code>/<code>False</code> are capitalized keywords, not strings; <code>None</code> (also capitalized) is
+the only value of type <code>NoneType</code>.</p>
+<p><strong>Why it matters</strong>: A function with no explicit <code>return</code> returns <code>None</code>, and a lookup such as
+Example 76&#39;s chained <code>.get(...)</code> can also yield it when a key is absent. Keep that absence separate
+from valid falsy data such as <code>False</code> and zero. All three can fail an <code>if value:</code> test, but they may
+mean different things to the caller. When a missing value has its own meaning, check it explicitly
+with <code>is None</code>.</p>
+<hr>
+<h2>Example 8: Arithmetic Operators</h2>
+<p><em>ex-08 · exercises co-07</em></p>
+<p>Python&#39;s arithmetic operators include two that surprise readers coming from other languages:
+<code>//</code> (floor division, always rounds toward negative infinity) and <code>**</code> (exponentiation, not <code>^</code>,
+which is bitwise XOR in Python).
+The three printed results separate whole-number quotient, remainder, and power: 3, 1, and 32.</p>
+<p><strong><code>learning/code/ex-08-arithmetic-operators/example.py</code></strong></p>
+<pre><code>&#34;&#34;&#34;Example 8: Arithmetic Operators.&#34;&#34;&#34;
+
+print(7 // 2)  # =&gt; floor division, discards the remainder -- Output: 3
+print(7 % 2)  # =&gt; modulo -- the remainder left over from 7 // 2 -- Output: 1
+print(2**5)  # =&gt; exponentiation, 2 to the power of 5 -- Output: 32
+</code></pre>
+<p><strong>Run</strong>: <code>python3 example.py</code></p>
+<p><strong>Output</strong>:</p>
+<pre><code>3
+1
+32
+</code></pre>
+<p><strong>Key takeaway</strong>: <code>/</code> returns a <code>float</code> for two <code>int</code> operands (true division); <code>//</code> returns the floored quotient;
+<code>**</code> is exponentiation.</p>
+<p><strong>Why it matters</strong>: Readers who have seen <code>^</code> used for powers in another tool may expect it to
+exponentiate in Python. It does not: Python uses <code>**</code> for exponentiation and <code>^</code> for bitwise XOR on
+integers. Predict each result before running the file, especially the difference between <code>/</code> and
+<code>//</code>. Choosing the right operator changes the value and, for division, can also change the result
+type. A familiar symbol is not a reliable guide across languages.</p>
+<hr>
+<h2>Example 9: Comparison Operators</h2>
+<p><em>ex-09 · exercises co-07</em></p>
+<p><code>==</code> compares values, <code>&lt;</code>/<code>&gt;</code> compare ordering, and <code>!=</code> is not-equal -- all return a <code>bool</code>.
+The last comparison is false because four equals four, even though the first two comparisons are true.</p>
+<p><strong><code>learning/code/ex-09-comparison-operators/example.py</code></strong></p>
+<pre><code>&#34;&#34;&#34;Example 9: Comparison Operators.&#34;&#34;&#34;
+# =&gt; Three comparisons yield True, True, False in source order.
+
+# print() accepts multiple positional arguments and joins them with spaces.
+# Python has six comparison operators total: &lt; &gt; &lt;= &gt;= == !=.
+print(  # =&gt; prints three comparison results in expression order
+    3 &lt; 5,  # =&gt; strictly less-than -- True (bool)
+    3 == 3,  # =&gt; value equality -- True (bool)
+    4 != 4,  # =&gt; not-equal -- False, since 4 does equal 4 (bool)
+)  # =&gt; Output: True True False
+</code></pre>
+<p><strong>Run</strong>: <code>python3 example.py</code></p>
+<p><strong>Output</strong>:</p>
+<pre><code>True True False
+</code></pre>
+<p><strong>Key takeaway</strong>: <code>==</code> checks value equality (not identity -- that&#39;s <code>is</code>, see Example 25&#39;s
+truthiness note and later <code>is</code>/<code>is not</code> usage); comparisons chain the way you would expect.</p>
+<p><strong>Why it matters</strong>: These three operators cover the vast majority of conditional logic this primer
+writes from Example 24 onward. Getting <code>==</code> vs <code>is</code> right early avoids a whole class of subtle bugs
+later, when comparing against <code>None</code> (idiomatically <code>is None</code>, not <code>== None</code>). Use equality for
+values and identity for a known singleton such as <code>None</code>. The example gives a compact way to see
+that the operators answer different questions.</p>
+<hr>
+<h2>Example 10: Boolean Operators</h2>
+<p><em>ex-10 · exercises co-07</em></p>
+<p><code>and</code>, <code>or</code>, and <code>not</code> combine boolean expressions -- spelled as words, not symbols like <code>&amp;&amp;</code>/<code>||</code>/<code>!</code>
+in many other languages.
+The output shows that conjunction, disjunction, and negation produce three different results for these inputs.</p>
+<p><strong><code>learning/code/ex-10-boolean-operators/example.py</code></strong></p>
+<pre><code>&#34;&#34;&#34;Example 10: Boolean Operators.&#34;&#34;&#34;
+# =&gt; The three expressions yield False, True, False in source order.
+
+# print() accepts multiple positional arguments and joins them with spaces.
+# and/or/not are Python&#39;s three boolean operators (no bitwise-only forms needed here).
+print(  # =&gt; prints and, or, and not results in that order
+    True and False,  # =&gt; and is True only if BOTH sides are True -- False
+    True or False,  # =&gt; or is True if EITHER side is True -- True
+    not True,  # =&gt; not flips a bool -- False
+)  # =&gt; Output: False True False
+</code></pre>
+<p><strong>Run</strong>: <code>python3 example.py</code></p>
+<p><strong>Output</strong>:</p>
+<pre><code>False True False
+</code></pre>
+<p><strong>Key takeaway</strong>: <code>and</code>/<code>or</code>/<code>not</code> are English keywords in Python, not symbolic operators.</p>
+<p><strong>Why it matters</strong>: <code>and</code>/<code>or</code> also <strong>short-circuit</strong> and return one of their actual operands (not
+always a <code>bool</code>) -- a property Example 76&#39;s chained <code>.get(...)</code> and idioms elsewhere in the
+ecosystem lean on. This example only shows the boolean-result case; the
+short-circuit/value-returning behavior is worth remembering as you read other people&#39;s Python. The
+second operand may never run when the first already decides the result. That matters when it is
+expensive, has a side effect, or could raise an exception.</p>
+<hr>
+<h2>Example 11: f-string Interpolation</h2>
+<p><em>ex-11 · exercises co-08</em></p>
+<p>f-strings (<code>f&#34;...&#34;</code>) embed expressions directly inside string literals with <code>{}</code> -- the modern,
+readable way to build strings from variables, replacing older <code>%</code>-formatting and <code>.format()</code> calls.
+With <code>name</code> bound to Ada and <code>age</code> to 36, the braces become <code>Ada is 36</code>.</p>
+<p><strong><code>learning/code/ex-11-fstring-interpolation/example.py</code></strong></p>
+<pre><code>&#34;&#34;&#34;Example 11: f-string Interpolation.&#34;&#34;&#34;
+
+name: str = &#34;Ada&#34;  # =&gt; name is &#34;Ada&#34; (type: str)
+age: int = 36  # =&gt; age is 36 (type: int)
+print(f&#34;{name} is {age}&#34;)  # =&gt; {name} and {age} are replaced by their current values
+# =&gt; Output: Ada is 36
+</code></pre>
+<p><strong>Run</strong>: <code>python3 example.py</code></p>
+<p><strong>Output</strong>:</p>
+<pre><code>Ada is 36
+</code></pre>
+<p><strong>Key takeaway</strong>: anything inside <code>{}</code> in an f-string is evaluated as a Python expression, then
+converted to its string form and inserted.</p>
+<p><strong>Why it matters</strong>: f-strings appear in nearly every later example in this primer that produces
+human-readable output -- CLI messages (Examples 61-63), error messages (Example 65), and log-style
+output (Example 79) all build on this exact syntax. The expression inside braces is evaluated when
+the string is built. This keeps a message close to its data and avoids several manual conversions
+and concatenations.</p>
+<hr>
+<h2>Example 12: f-string Formatting</h2>
+<p><em>ex-12 · exercises co-08</em></p>
+<p>A format spec after <code>:</code> inside an f-string controls presentation -- decimal places, width, alignment
+-- without any string manipulation of your own.
+Formatting 3.14159 to two places prints <code>3.14</code> without changing the stored float.</p>
+<p><strong><code>learning/code/ex-12-fstring-formatting/example.py</code></strong></p>
+<pre><code>&#34;&#34;&#34;Example 12: f-string Formatting.&#34;&#34;&#34;
+# =&gt; Two decimal places round 3.14159 to 3.14.
+
+pi: float = 3.14159  # =&gt; pi starts as a float with five decimal places
+# :.2f is a format spec -- fixed-point, 2 digits after the decimal.
+print(f&#34;{pi:.2f}&#34;)  # =&gt; Output: 3.14
+</code></pre>
+<p><strong>Run</strong>: <code>python3 example.py</code></p>
+<p><strong>Output</strong>:</p>
+<pre><code>3.14
+</code></pre>
+<p><strong>Key takeaway</strong>: <code>:.2f</code> means &#34;fixed-point notation, 2 digits after the decimal point&#34; -- the format
+spec mini-language covers width, alignment, sign, thousands separators, and more.</p>
+<p><strong>Why it matters</strong>: Example 83&#39;s <code>describe()</code> function uses this exact <code>:.2f</code> spec to format a
+computed price -- rounding for display is a different concern from rounding the underlying value
+(that&#39;s <code>round()</code>, used in the capstone), and f-string format specs are the display-side tool. Keep
+the numeric value for later arithmetic and format only at the display boundary. A visually rounded
+string is presentation, not a changed stored calculation. This float example teaches formatting;
+for exact decimal money calculations, see Python&#39;s <a href="https://docs.python.org/3/library/decimal.html" rel="nofollow">decimal documentation</a>.</p>
+<hr>
+<h2>Example 13: String Methods</h2>
+<p><em>ex-13 · exercises co-08</em></p>
+<p>Strings ship with dozens of built-in methods; <code>.upper()</code>, <code>.strip()</code>, and <code>.split()</code> cover the most
+common cleanup-and-tokenize workflow.
+The example compares uppercase text, trimmed text, and the three tokens produced after splitting.</p>
+<p><strong><code>learning/code/ex-13-string-methods/example.py</code></strong></p>
+<pre><code>&#34;&#34;&#34;Example 13: String Methods.&#34;&#34;&#34;
+
+raw: str = &#34;  a b c  &#34;
+# repr() makes the leading/trailing spaces visible as explicit quote characters --
+# a plain print() here would produce the same spaces, just invisible on the page.
+print(repr(raw.upper()))  # =&gt; .upper() keeps whitespace -- Output: &#39;  A B C  &#39;
+print(repr(raw.strip()))  # =&gt; .strip() trims leading/trailing space -- Output: &#39;a b c&#39;
+print(raw.strip().split())  # =&gt; .split() splits on any whitespace run
+# =&gt; Output: [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;]
+</code></pre>
+<p><strong>Run</strong>: <code>python3 example.py</code></p>
+<p><strong>Output</strong>:</p>
+<pre><code>&#39;  A B C  &#39;
+&#39;a b c&#39;
+[&#39;a&#39;, &#39;b&#39;, &#39;c&#39;]
+</code></pre>
+<p><strong>Key takeaway</strong>: string methods return a <strong>new</strong> string (or list) -- strings are immutable, so none
+of these mutate <code>raw</code> in place.</p>
+<p><strong>Why it matters</strong>: <code>.split()</code> with no separator is a useful way to tokenize whitespace-delimited
+text. It treats runs of whitespace as one separator and omits empty fields at the ends, so an
+earlier <code>.strip()</code> is optional for that particular result. In this example, <code>.strip()</code> also has its
+own visible output, which lets you compare the two operations. Try multiple spaces and a newline to
+see where tokens begin and end.</p>
+<hr>
+<h2>Example 14: List Basics</h2>
+<p><em>ex-14 · exercises co-09</em></p>
+<p>A <code>list</code> is an ordered, mutable sequence -- the default &#34;give me a growable collection&#34; type in
+Python.
+Appending four changes the existing list from three elements to four.</p>
+<p><strong><code>learning/code/ex-14-list-basics/example.py</code></strong></p>
+<pre><code>&#34;&#34;&#34;Example 14: List Basics.&#34;&#34;&#34;
+
+nums: list[int] = [1, 2, 3]  # =&gt; a mutable, ordered sequence literal
+nums.append(4)  # =&gt; appends in place -- no reassignment needed
+print(nums)  # =&gt; Output: [1, 2, 3, 4]
+</code></pre>
+<p><strong>Run</strong>: <code>python3 example.py</code></p>
+<p><strong>Output</strong>:</p>
+<pre><code>[1, 2, 3, 4]
+</code></pre>
+<p><strong>Key takeaway</strong>: <code>list[int]</code> is the modern (PEP 585, Python 3.9+) built-in generic syntax -- no
+<code>from typing import List</code> needed.</p>
+<p><strong>Why it matters</strong>: <code>.append()</code> mutates the list in place and returns <code>None</code> -- a common beginner
+bug is writing <code>nums = nums.append(4)</code>, which discards the list entirely. Lists back nearly every
+collection example from here through the capstone. After <code>append</code>, print the original list and the
+method result separately. The list has a new element, while the method result is <code>None</code>; assigning
+that result loses the useful reference.</p>
+<hr>
+<h2>Example 15: List Index Mutate</h2>
+<p><em>ex-15 · exercises co-09</em></p>
+<p>Index assignment (<code>nums[i] = value</code>) replaces one element in place -- only possible because lists are
+mutable, unlike tuples (Example 17).
+Replacing index zero changes the first value to nine while the other two stay in place.</p>
+<p><strong><code>learning/code/ex-15-list-index-mutate/example.py</code></strong></p>
+<pre><code>&#34;&#34;&#34;Example 15: List Index Mutate.&#34;&#34;&#34;
+
+nums: list[int] = [1, 2, 3]  # =&gt; nums is [1, 2, 3] (type: list[int])
+# Lists are mutable -- index assignment changes the list in place, no new list created.
+nums[0] = 9  # =&gt; index assignment replaces the element in place -- lists are mutable
+print(nums)  # =&gt; Output: [9, 2, 3]
+</code></pre>
+<p><strong>Run</strong>: <code>python3 example.py</code></p>
+<p><strong>Output</strong>:</p>
+<pre><code>[9, 2, 3]
+</code></pre>
+<p><strong>Key takeaway</strong>: <code>list[i] = value</code> is a mutation, not a rebinding -- every other reference to the
+same list object sees the change too (Drilling Kata 3 explores exactly this).</p>
+<p><strong>Why it matters</strong>: This is the root of a whole class of real bugs: two names pointing at the same
+mutable list, where mutating through one name is visible through the other. Understanding mutation
+versus rebinding here pays off directly in Drilling Kata 3. Rebinding one name to a new list is
+different from editing the shared list. Trace both names after each step to tell which operation
+changes the underlying object.</p>
+<hr>
+<h2>Example 16: Tuple Unpacking</h2>
+<p><em>ex-16 · exercises co-10</em></p>
+<p>A <code>tuple</code> is an ordered, <strong>immutable</strong> sequence -- most often used for a fixed-size group of related
+values, and readily unpacked into separate names in one statement.
+Unpacking <code>(10, 20)</code> binds <code>x</code> to ten and <code>y</code> to twenty.</p>
+<p><strong><code>learning/code/ex-16-tuple-unpacking/example.py</code></strong></p>
+<pre><code>&#34;&#34;&#34;Example 16: Tuple Unpacking.&#34;&#34;&#34;
+
+pair: tuple[int, int] = (10, 20)  # =&gt; a fixed-size, immutable sequence literal
+x, y = pair  # =&gt; unpacks pair&#39;s two elements into x and y in one statement
+print(x, y)  # =&gt; Output: 10 20
+</code></pre>
+<p><strong>Run</strong>: <code>python3 example.py</code></p>
+<p><strong>Output</strong>:</p>
+<pre><code>10 20
+</code></pre>
+<p><strong>Key takeaway</strong>: <code>x, y = pair</code> unpacks by position -- the number of names on the left must match the
+tuple&#39;s length exactly, or Python raises a <code>ValueError</code>.</p>
+<p><strong>Why it matters</strong>: Tuple unpacking is how Example 39&#39;s <code>divmod</code>-style function returns two values
+at once, and how the for-loop header in Example 19&#39;s <code>.items()</code> iteration destructures each
+key-value pair. Unpacking also checks the expected shape: too many or too few elements raise an
+error. Use it when the positions have a clear local meaning; name fields in a record-like structure
+when meaning must travel farther.</p>
+<hr>
+<h2>Example 17: Tuple Immutable</h2>
+<p><em>ex-17 · exercises co-10, co-21</em></p>
+<p>Attempting to assign into a tuple index raises <code>TypeError</code> at runtime -- immutability is enforced, not
+just a convention.
+The attempted replacement is caught, so the script prints <code>immutable</code> rather than terminating.</p>
+<p><strong><code>learning/code/ex-17-tuple-immutable/example.py</code></strong></p>
+<pre><code>&#34;&#34;&#34;Example 17: Tuple Immutable.&#34;&#34;&#34;
+
+point: tuple[int, int] = (1, 2)  # =&gt; point is (1, 2) (type: tuple[int, int])
+try:  # =&gt; wraps the mutation attempt so we can catch the expected error
+    # Tuples are immutable -- item assignment always raises TypeError.
+    point[0] = 9  # type: ignore[index]  # =&gt; raises TypeError before this line completes
+except TypeError:  # =&gt; catches exactly the error tuples raise on item assignment
+    print(&#34;immutable&#34;)  # =&gt; Output: immutable
+</code></pre>
+<p><strong>Run</strong>: <code>python3 example.py</code></p>
+<p><strong>Output</strong>:</p>
+<pre><code>immutable
+</code></pre>
+<p><strong>Key takeaway</strong>: tuples reject <code>__setitem__</code> entirely -- there is no way to mutate one in place, only
+to build a new tuple.</p>
+<p><strong>Why it matters</strong>: Immutability is exactly what makes a tuple <strong>hashable</strong> (when its elements are
+hashable too) and therefore safe to use as a dictionary key or a set element -- a capability plain
+lists never have, since a mutable object&#39;s hash would change as it mutates. That conditional
+hashability matters when a tuple contains a list: the tuple itself then cannot be a set element.
+Immutability of the outer container alone is not enough.</p>
+<hr>
+<h2>Example 18: Dict Basics</h2>
+<p><em>ex-18 · exercises co-11</em></p>
+<p>A <code>dict</code> maps keys to values -- Python&#39;s workhorse for anything key-value-shaped, including every
+JSON object this primer reads or writes later.
+Looking up the <code>Ada</code> key retrieves the integer 36 without scanning the mapping manually.</p>
+<p><strong><code>learning/code/ex-18-dict-basics/example.py</code></strong></p>
+<pre><code>&#34;&#34;&#34;Example 18: Dict Basics.&#34;&#34;&#34;
+
+ages: dict[str, int] = {&#34;Ada&#34;: 36}  # =&gt; a key-value mapping literal
+print(ages[&#34;Ada&#34;])  # =&gt; [] looks up the value for the &#34;Ada&#34; key -- Output: 36
+</code></pre>
+<p><strong>Run</strong>: <code>python3 example.py</code></p>
+<p><strong>Output</strong>:</p>
+<pre><code>36
+</code></pre>
+<p><strong>Key takeaway</strong>: <code>dict[str, int]</code> (PEP 585) documents the key and value types; <code>[]</code> lookup on a
+missing key raises <code>KeyError</code> (Drilling Kata 2 explores the safer <code>.get()</code> alternative).</p>
+<p><strong>Why it matters</strong>: Dicts are how this primer represents every JSON object once parsed (Examples
+55-58, 69, 72, and the capstone), because JSON objects and Python dicts share the same key-value
+shape almost exactly. The match is useful but not exact: JSON object keys are strings, while Python
+dicts allow other hashable keys. Check the boundary when serializing data back to JSON.</p>
+<hr>
+<h2>Example 19: Dict Iterate Items</h2>
+<p><em>ex-19 · exercises co-11, co-16</em></p>
+<p><code>.items()</code> yields <code>(key, value)</code> pairs in insertion order -- the standard way to loop over both a
+dict&#39;s keys and values together.
+The loop prints <code>a=1</code> before <code>b=2</code>, matching the order in which those keys were inserted.</p>
+<p><strong><code>learning/code/ex-19-dict-iterate-items/example.py</code></strong></p>
+<pre><code>&#34;&#34;&#34;Example 19: Dict Iterate Items.&#34;&#34;&#34;
+
+counts: dict[str, int] = {&#34;a&#34;: 1, &#34;b&#34;: 2}  # =&gt; counts is {&#34;a&#34;: 1, &#34;b&#34;: 2}
+# .items() yields (key, value) pairs, in insertion order.
+for key, value in counts.items():  # =&gt; unpacks each (key, value) pair per iteration
+    print(f&#34;{key}={value}&#34;)  # =&gt; Output: a=1 then b=2
+</code></pre>
+<p><strong>Run</strong>: <code>python3 example.py</code></p>
+<p><strong>Output</strong>:</p>
+<pre><code>a=1
+b=2
+</code></pre>
+<p><strong>Key takeaway</strong>: since Python 3.7, dicts preserve insertion order as a language guarantee, not an
+implementation detail -- <code>.items()</code> always walks in that same order.</p>
+<p><strong>Why it matters</strong>: <code>.keys()</code> and <code>.values()</code> are the single-field counterparts to <code>.items()</code>; all
+three appear across this primer whenever a dict needs to be iterated rather than looked up by a
+single key. Use <code>.items()</code> when the value depends on its key, rather than looking up each key again
+inside a loop. Destructuring makes the pair visible in the loop header.</p>
+<hr>
+<h2>Example 20: Set Dedup</h2>
+<p><em>ex-20 · exercises co-12</em></p>
+<p>A <code>set</code> holds unique elements with no defined order -- constructing one from a list is the idiomatic
+way to deduplicate.
+Repeated ones and threes collapse, leaving three distinct values in the set.</p>
+<p><strong><code>learning/code/ex-20-set-dedup/example.py</code></strong></p>
+<pre><code>&#34;&#34;&#34;Example 20: Set Dedup.&#34;&#34;&#34;
+
+seen: set[int] = set([1, 1, 2, 3, 3])  # =&gt; set() drops duplicates -- keeps {1, 2, 3}
+print(len(seen))  # =&gt; Output: 3
+</code></pre>
+<p><strong>Run</strong>: <code>python3 example.py</code></p>
+<p><strong>Output</strong>:</p>
+<pre><code>3
+</code></pre>
+<p><strong>Key takeaway</strong>: <code>set(iterable)</code> drops duplicates automatically -- five input values collapse to
+three unique ones.</p>
+<p><strong>Why it matters</strong>: Set membership testing (<code>x in some_set</code>) is O(1) on average, versus O(n) for a
+list -- a set is the right tool whenever the question is &#34;have I seen this before?&#34; rather than &#34;in
+what order did I see these?&#34; The set also discards duplicate counts and does not preserve the list
+as a sequence. Choose it when membership is the question; keep a list or counter when order or
+frequency matters.</p>
+<hr>
+<h2>Example 21: Set Operations</h2>
+<p><em>ex-21 · exercises co-12</em></p>
+<p><code>|</code> (union) and <code>&amp;</code> (intersection) combine two sets algebraically, mirroring set theory notation
+directly.
+The union includes all four values, while the intersection contains only two and three.</p>
+<p><strong><code>learning/code/ex-21-set-operations/example.py</code></strong></p>
+<pre><code>&#34;&#34;&#34;Example 21: Set Operations.&#34;&#34;&#34;
+
+left: set[int] = {1, 2, 3}  # =&gt; left is {1, 2, 3} (type: set[int])
+right: set[int] = {2, 3, 4}  # =&gt; right is {2, 3, 4} (type: set[int])
+# Sets are unordered, so sorted() gives deterministic output for printing.
+print(sorted(left | right))  # =&gt; union -- every element in either set -- [1, 2, 3, 4]
+print(sorted(left &amp; right))  # =&gt; intersection -- only elements in both -- [2, 3]
+</code></pre>
+<p><strong>Run</strong>: <code>python3 example.py</code></p>
+<p><strong>Output</strong>:</p>
+<pre><code>[1, 2, 3, 4]
+[2, 3]
+</code></pre>
+<p><strong>Key takeaway</strong>: <code>sorted()</code> wraps each set result because sets have no defined iteration order --
+sorting makes the output deterministic for display and for testing.</p>
+<p><strong>Why it matters</strong>: <code>-</code> (difference) and <code>^</code> (symmetric difference) round out the set-operator
+family, not shown here since they follow the identical pattern; <code>|</code>/<code>&amp;</code> alone already cover the vast
+majority of real set-comparison needs. Name the question before choosing the operator: union asks
+for either set, while intersection asks for both. Run the example with one shared and one unique
+value to check each result.</p>
+<hr>
+<h2>Example 22: Slice List</h2>
+<p><em>ex-22 · exercises co-13</em></p>
+<p><code>[start:stop:step]</code> slicing extracts a subrange from any sequence -- lists, tuples, and strings alike
+-- and a negative <code>step</code> walks backward.
+The first slice omits index four; a step of minus one then reverses the entire list.</p>
+<p><strong><code>learning/code/ex-22-slice-list/example.py</code></strong></p>
+<pre><code>&#34;&#34;&#34;Example 22: Slice List.&#34;&#34;&#34;
+
+nums: list[int] = [0, 1, 2, 3, 4]  # =&gt; nums is [0, 1, 2, 3, 4] (type: list[int])
+# Slicing never mutates nums -- each print below returns a brand-new list.
+print(nums[1:4])  # =&gt; [start:stop] -- indices 1, 2, 3 (stop is exclusive) -- [1, 2, 3]
+print(nums[::-1])  # =&gt; a step of -1 walks the whole list backward -- [4, 3, 2, 1, 0]
+</code></pre>
+<p><strong>Run</strong>: <code>python3 example.py</code></p>
+<p><strong>Output</strong>:</p>
+<pre><code>[1, 2, 3]
+[4, 3, 2, 1, 0]
+</code></pre>
+<p><strong>Key takeaway</strong>: <code>stop</code> in a slice is always exclusive; <code>nums[::-1]</code> (empty start, empty stop, step
+<code>-1</code>) is the idiomatic one-liner to reverse a sequence.</p>
+<p><strong>Why it matters</strong>: Slicing never raises <code>IndexError</code> for an out-of-range <code>start</code>/<code>stop</code> (unlike
+single-index access) -- it silently clamps to the sequence&#39;s actual bounds, which makes it forgiving
+for exploratory data work but worth knowing explicitly. A list slice creates a new list containing
+references to the selected elements. It does not mutate the source list, but nested mutable elements
+can still be shared.</p>
+<hr>
+<h2>Example 23: Slice String</h2>
+<p><em>ex-23 · exercises co-13</em></p>
+<p>Strings slice exactly like lists, character by character.
+Slicing <code>python</code> from zero to three yields <code>pyt</code> because the stop index is excluded.</p>
+<p><strong><code>learning/code/ex-23-slice-string/example.py</code></strong></p>
+<pre><code>&#34;&#34;&#34;Example 23: Slice String.&#34;&#34;&#34;
+
+word: str = &#34;python&#34;  # =&gt; word is &#34;python&#34; (type: str)
+# Strings slice exactly like lists -- slicing never mutates the original string.
+print(word[0:3])  # =&gt; characters 0, 1, 2 (stop is exclusive) -- &#34;pyt&#34;
+</code></pre>
+<p><strong>Run</strong>: <code>python3 example.py</code></p>
+<p><strong>Output</strong>:</p>
+<pre><code>pyt
+</code></pre>
+<p><strong>Key takeaway</strong>: string slicing follows the identical <code>[start:stop:step]</code> rules as list slicing --
+one mental model for every sequence type.</p>
+<p><strong>Why it matters</strong>: Because strings are also immutable sequences, every slicing rule from Example 22
+(exclusive stop, negative-step reversal, forgiving out-of-range bounds) applies here without
+modification. A string slice returns another string; it cannot modify the original. Predict the
+characters selected by the start, stop, and step before using a slice as a quick transformation.</p>
+<hr>
+<h2>Example 24: if/elif/else</h2>
+<p><em>ex-24 · exercises co-15</em></p>
+<p><code>if</code>/<code>elif</code>/<code>else</code> branches on boolean expressions, evaluated top to bottom -- the first matching
+branch runs, and the rest are skipped.
+Calling the classifier with a negative number, zero, and a positive number reaches three different branches.</p>
+<p><strong><code>learning/code/ex-24-if-elif-else/example.py</code></strong></p>
+<pre><code>&#34;&#34;&#34;Example 24: if/elif/else.&#34;&#34;&#34;
+
+
+def classify(n: int) -&gt; str:  # =&gt; defines classify, takes an int, returns a str
+    # Exactly one branch below runs per call -- elif/else are mutually exclusive.
+    if n &lt; 0:  # =&gt; checked first -- only one branch below ever runs
+        return &#34;negative&#34;  # =&gt; returns immediately, skipping elif/else
+    elif n == 0:  # =&gt; checked only if the first condition was False
+        return &#34;zero&#34;  # =&gt; returns immediately, skipping else
+    else:  # =&gt; catches everything else -- every positive n
+        return &#34;positive&#34;  # =&gt; runs only when both prior conditions were False
+
+
+for value in (-2, 0, 5):  # =&gt; exercises all three branches in one pass
+    print(classify(value))  # =&gt; Output: negative, then zero, then positive
+</code></pre>
+<p><strong>Run</strong>: <code>python3 example.py</code></p>
+<p><strong>Output</strong>:</p>
+<pre><code>negative
+zero
+positive
+</code></pre>
+<p><strong>Key takeaway</strong>: Python has no <code>switch</code>/<code>case</code> statement in this style -- <code>if</code>/<code>elif</code>/<code>else</code> (or
+<code>match</code>, out of this primer&#39;s scope) is the idiomatic multi-branch construct.</p>
+<p><strong>Why it matters</strong>: <code>elif</code> (not <code>else if</code>) is Python&#39;s own keyword for a chained conditional --
+using <code>else: if ...:</code> instead works but adds an unnecessary indentation level for every additional
+branch. Python evaluates conditions from top to bottom and runs the first true branch. Put the most
+specific condition before a broader one when both might match the same value.</p>
+<hr>
+<h2>Example 25: Truthiness</h2>
+<p><em>ex-25 · exercises co-15</em></p>
+<p>Python&#39;s truthiness rule treats several &#34;empty-like&#34; values as falsy: <code>0</code>, <code>&#34;&#34;</code>, <code>[]</code>, <code>{}</code>, <code>set()</code>,
+and <code>None</code>, alongside <code>False</code> itself -- everything else is truthy.
+An empty list takes the <code>else</code> branch, so this script prints <code>empty</code>.</p>
+<p><strong><code>learning/code/ex-25-truthiness/example.py</code></strong></p>
+<pre><code>&#34;&#34;&#34;Example 25: Truthiness.&#34;&#34;&#34;
+
+# Empty collections, 0, &#34;&#34;, and None are all falsy; everything else is truthy.
+items: list[int] = []  # =&gt; an empty list -- falsy in a boolean context
+if items:  # =&gt; equivalent to `if bool(items):` -- False for an empty collection
+    print(&#34;has items&#34;)  # =&gt; never runs -- items is empty, so the condition is False
+else:  # =&gt; runs because items is falsy
+    print(&#34;empty&#34;)  # =&gt; Output: empty
+</code></pre>
+<p><strong>Run</strong>: <code>python3 example.py</code></p>
+<p><strong>Output</strong>:</p>
+<pre><code>empty
+</code></pre>
+<p><strong>Key takeaway</strong>: <code>if items:</code> is equivalent to <code>if bool(items):</code>, and an empty collection&#39;s <code>bool()</code>
+is always <code>False</code>.</p>
+<p><strong>Why it matters</strong>: Unlike Lua&#39;s narrow two-value falsy rule, Python treats &#34;empty&#34; broadly as falsy
+-- writing <code>if some_list:</code> instead of <code>if len(some_list) &gt; 0:</code> is the idiomatic, Pythonic style, and
+this primer uses it throughout. The shortcut is concise, but distinguish an empty container from
+valid falsy data such as <code>0</code> or <code>False</code>. Use an explicit comparison when those cases have different
+meanings.</p>
+<hr>
+<h2>Example 26: for + range</h2>
+<p><em>ex-26 · exercises co-16</em></p>
+<p><code>range(start, stop)</code> generates a sequence of integers lazily, with <code>stop</code> exclusive -- the standard way
+to loop a fixed number of times.
+Adding the values one through five to the accumulator produces fifteen.</p>
+<p><strong><code>learning/code/ex-26-for-range/example.py</code></strong></p>
+<pre><code>&#34;&#34;&#34;Example 26: for + range.&#34;&#34;&#34;
+
+# range(start, stop) is a lazy sequence -- stop is never included.
+total: int = 0  # =&gt; total is 0 (type: int) -- the running-sum accumulator
+for n in range(1, 6):  # =&gt; range(1, 6) yields 1, 2, 3, 4, 5 -- stop is exclusive
+    total += n  # =&gt; accumulates a running sum across the loop
+print(total)  # =&gt; 1+2+3+4+5 -- Output: 15
+</code></pre>
+<p><strong>Run</strong>: <code>python3 example.py</code></p>
+<p><strong>Output</strong>:</p>
+<pre><code>15
+</code></pre>
+<p><strong>Key takeaway</strong>: <code>range(1, 6)</code> yields <code>1, 2, 3, 4, 5</code> -- five values, not six -- because <code>stop</code> is
+always exclusive, exactly like slicing.</p>
+<p><strong>Why it matters</strong>: <code>range()</code> produces values lazily (one at a time) rather than building a full
+list in memory -- <code>range(1_000_000)</code> costs almost nothing until you actually iterate it, unlike
+<code>list(range(1_000_000))</code>. The stop value is excluded, so <code>range(3)</code> yields zero through two. That
+boundary is easy to miss in counted loops; check the first and last value before relying on the
+result.</p>
+<hr>
+<h2>Example 27: while Loop</h2>
+<p><em>ex-27 · exercises co-16</em></p>
+<p><code>while</code> loops on a condition rather than a fixed count -- useful whenever the number of iterations
+isn&#39;t known in advance.
+The counter decreases on each pass, so the output reaches zero and the loop terminates.</p>
+<p><strong><code>learning/code/ex-27-while-loop/example.py</code></strong></p>
+<pre><code>&#34;&#34;&#34;Example 27: while Loop.&#34;&#34;&#34;
+
+# while loops require an explicit exit condition -- for loops handle known ranges instead.
+n: int = 3  # =&gt; n is 3 (type: int) -- the loop counter
+while n &gt;= 0:  # =&gt; keeps looping as long as the condition stays True
+    print(n)  # =&gt; Output: 3, then 2, then 1, then 0
+    n -= 1  # =&gt; must shrink n each pass, or the loop never ends
+</code></pre>
+<p><strong>Run</strong>: <code>python3 example.py</code></p>
+<p><strong>Output</strong>:</p>
+<pre><code>3
+2
+1
+0
+</code></pre>
+<p><strong>Key takeaway</strong>: the loop body must change something the condition depends on (<code>n -= 1</code> here), or the
+<code>while</code> loop never terminates.</p>
+<p><strong>Why it matters</strong>: <code>for</code> is idiomatic whenever you&#39;re iterating a known collection or count;
+<code>while</code> is idiomatic when the stopping condition depends on runtime state (a sentinel value, user
+input, or -- as here -- a countdown). The condition must eventually change or the loop can run
+forever. Trace the countdown value each iteration and identify the line that moves it toward
+stopping.</p>
+<hr>
+<h2>Example 28: enumerate + zip</h2>
+<p><em>ex-28 · exercises co-16</em></p>
+<p><code>enumerate()</code> pairs each element with its index; <code>zip()</code> pairs elements from multiple iterables
+positionally -- both replace manual index-tracking with a direct, readable loop header.
+The first loop prints indexed letters; the second prints numbers paired with letters.</p>
+<p><strong><code>learning/code/ex-28-enumerate-zip/example.py</code></strong></p>
+<pre><code>&#34;&#34;&#34;Example 28: enumerate + zip.&#34;&#34;&#34;
+# =&gt; Both loops produce two rows, with indices or paired values.
+
+# enumerate pairs each element with its index, starting from 0.
+for index, letter in enumerate([&#34;a&#34;, &#34;b&#34;]):  # =&gt; enumerate yields (0, a) then (1, b)
+    print(index, letter)  # =&gt; Output: 0 a, then 1 b
+
+# zip pairs elements positionally; it stops at the shortest input.
+for number, letter in zip([1, 2], [&#34;x&#34;, &#34;y&#34;]):  # =&gt; zip yields (1, x) then (2, y)
+    print(number, letter)  # =&gt; Output: 1 x, then 2 y
+</code></pre>
+<p><strong>Run</strong>: <code>python3 example.py</code></p>
+<p><strong>Output</strong>:</p>
+<pre><code>0 a
+1 b
+1 x
+2 y
+</code></pre>
+<p><strong>Key takeaway</strong>: <code>enumerate(iterable, start=N)</code> accepts an optional start index (Example 79 uses
+<code>start=1</code> for 1-based line numbers); <code>zip()</code> silently stops at the shorter of its inputs, with no
+error.</p>
+<p><strong>Why it matters</strong>: Manually tracking an index with a separate counter variable (<code>i = 0; ...; i += 1</code>) is a common anti-pattern in code written by someone new to Python -- <code>enumerate()</code> and <code>zip()</code>
+remove the need for it almost entirely, and both appear again later in this primer (Example 79 for
+<code>enumerate</code>; nothing later reuses <code>zip</code> directly, but the pattern generalizes to any
+parallel-iteration need).</p>
+<hr>
+<p>← Previous: <a href="./overview.md" rel="nofollow">Overview</a> · Next: <a href="./intermediate.md" rel="nofollow">Intermediate Examples</a> →</p>
+
+      </article>
+      <nav aria-label="lesson" data-lesson-nav>
+        <a href="/en/learn/courses/just-enough-python/learning/overview" data-prev>Previous</a><a
+          href="/en/learn/courses/just-enough-python/learning/intermediate"
+          data-next
+          >Next</a
+        >
+      </nav>
+    </main>
+    
+<footer data-shell="footer"><p>AyoKoding</p></footer>
+
+  </body>
+</html>

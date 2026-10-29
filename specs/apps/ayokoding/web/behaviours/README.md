@@ -1,17 +1,17 @@
-# AyoKoding Phoenix Web Behaviours
+# AyoKoding Go Web Behaviours
 
 > **Audience**: Engineers, Technical Product/Project Managers
 >
-> **Plain-language summary**: These Gherkin scenarios describe the planned rewrite's observable
+> **Plain-language summary**: These Gherkin scenarios describe the rewrite's observable
 > behavior. Gherkin expresses an initial situation, one action, and its expected result so the
 > same contract can guide unit, integration, and browser tests.
 
 ## Status and interpretation
 
-All bindings are **planned**. A scenario is not evidence of an implemented test. Each domain below
-requires Unit proof, applicable Integration proof, and Playwright E2E proof. Browser-only progress
-uses the JavaScript/TypeScript Unit adapter and a documented Integration exemption. When wiring
-ExBdd, apply the same scenario scope before both compilation and static verification.
+All scenarios are **bound**. A scenario is evidence of an implemented test only through its
+adapters. Each domain below requires Unit proof, applicable Integration proof, and Playwright E2E
+proof. Browser-only progress uses the JavaScript/TypeScript Unit adapter and a documented
+Integration exemption. The godog scope covers the whole corpus before static verification.
 
 The plan carries the full source-scenario parity inventory. These domains supplement rather than
 silently reduce the existing [`www` behavior corpus](../../www/behaviours/README.md).

@@ -37,7 +37,7 @@ Feature: Independent local development
   Scenario: Playwright owns an isolated local rewrite server
     Given the existing site and the rewrite development server are running
     When the rewrite browser acceptance suite starts
-    Then it starts its own Phoenix server on port 3191
+    Then it starts its own Go server on port 3191
     And it leaves both development servers running after the suite finishes
 
   Scenario: Reading shared sources does not rewrite tracked content

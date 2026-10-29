@@ -8,4 +8,4 @@
 ## Contents
 
 - [Local development](./local-development.feature) — ports, configuration failure, shared-source
-  safety, and independence from other plans. Bindings are planned.
+  safety, and independence from other plans. Bindings are implemented.

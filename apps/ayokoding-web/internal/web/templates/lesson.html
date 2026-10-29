@@ -8,13 +8,15 @@
     <main id="main">
       <nav aria-label="breadcrumb" data-breadcrumbs>
         <a href="/{{.Shell.Lang}}">{{if eq .Shell.Lang "id"}}Beranda{{else}}Home{{end}}</a> /
-        <a href="/{{.Shell.Lang}}/learn/{{.Page.Course}}">{{.Page.SectionTitle}}</a> /
+        <a href="/{{.Shell.Lang}}/learn/courses/{{.Page.Course}}">{{.Page.SectionTitle}}</a> /
         <span aria-current="page">{{.Page.Title}}</span>
       </nav>
       <aside data-sidebar-nav data-active-page="{{.Page.Slug}}">
         <ul>
           <li>
-            <a href="/{{.Shell.Lang}}/learn/{{.Page.Course}}/{{.Page.Slug}}" aria-current="page">{{.Page.Title}}</a>
+            <a href="/{{.Shell.Lang}}/learn/courses/{{.Page.Course}}/learning/{{.Page.Slug}}" aria-current="page"
+              >{{.Page.Title}}</a
+            >
           </li>
         </ul>
       </aside>

@@ -2,7 +2,7 @@
 // provenance record, and stays consistent with the checked-in test vectors.
 // In-memory only: JSON is parsed, never executed, and no product service runs.
 import { describe, expect, it } from "vitest";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 
 const ROOT = path.resolve(import.meta.dirname, "..", "..");
@@ -77,6 +77,34 @@ describe("provenance record", () => {
       "never to an edited expectation",
     ]) {
       expect(provenance, `provenance must record ${token}`).toContain(token);
+    }
+  });
+});
+
+describe("provenance sourcing rules", () => {
+  it("names sources and the re-sourcing prompt for every dataset section", () => {
+    const provenance = readFileSync(provenancePath, "utf8");
+    for (const section of ["## AI benchmark", "## Cost of living", "## FX", "## Format migration", "## Consumers"]) {
+      expect(provenance, `provenance must keep ${section}`).toContain(section);
+    }
+    for (const token of ["re-sourcing", "re-source", "extraction", "mismatch returns to extraction"]) {
+      expect(provenance, `provenance must state the sourcing rule ${token}`).toContain(token);
+    }
+  });
+
+  it("keeps migration promises in the JSON itself", () => {
+    for (const name of ["ai-benchmark.json", "cost-of-living.json", "fx.json"]) {
+      const raw = readFileSync(path.join(dataDir, name), "utf8");
+      expect(raw, `${name} must not leak undefined placeholders`).not.toContain("undefined");
+    }
+    const data = benchmark();
+    for (const model of data.dataset.models) {
+      for (const figure of model.figures) {
+        expect(figure.source, `figure needs a source`).toBeTruthy();
+      }
+      if (model.price !== undefined) {
+        expect(model.price.listedBy, `price needs listedBy`).toBeTruthy();
+      }
     }
   });
 });
@@ -264,6 +292,47 @@ describe("test-vectors consistency", () => {
           `unknown calculator state key ${key}`,
         ).toContain(key);
       }
+    }
+  });
+});
+
+describe("closed inventory", () => {
+  it("enumerates the closed three-file data and three-file vector inventory by name", () => {
+    const dataFiles = readdirSync(dataDir)
+      .filter((name) => name.endsWith(".json"))
+      .sort();
+    expect(dataFiles).toEqual(["ai-benchmark.json", "cost-of-living.json", "fx.json"]);
+    const vectorFiles = readdirSync(vectorsDir)
+      .filter((name) => name.endsWith(".json"))
+      .sort();
+    expect(vectorFiles).toEqual(["benchmark.json", "calculator.json", "url-state.json"]);
+    for (const item of ["data/ai-benchmark.json", "data/cost-of-living.json", "data/fx.json", "provenance.md"]) {
+      expect(existsSync(path.join(ROOT, item)), `missing inventory item: ${item}`).toBe(true);
+    }
+    expect(existsSync(vectorsDir), "missing inventory item: test-vectors/").toBe(true);
+  });
+
+  it("resolves every markdown reference in provenance.md to an existing repo file", () => {
+    const repoRoot = path.resolve(ROOT, "..", "..");
+    const references = [
+      "libs/ayokoding-data/data/ai-benchmark.json",
+      "libs/ayokoding-data/data/cost-of-living.json",
+      "libs/ayokoding-data/data/fx.json",
+      "libs/ayokoding-data/provenance.md",
+      "apps/ayokoding-www/docs/ai-benchmark/data-sourcing-prompt.md",
+      "apps/ayokoding-www/docs/cost-of-living-calculator/data-sourcing-prompt.md",
+      "apps/ayokoding-www/src/features/ai-benchmark/core/data/models.ts",
+      "apps/ayokoding-www/src/features/ai-benchmark/core/data/benchmarks.ts",
+      "apps/ayokoding-www/src/features/ai-benchmark/core/data/operators.ts",
+      "apps/ayokoding-www/src/features/cost-of-living-calculator/core/data/cities.ts",
+      "apps/ayokoding-www/src/features/cost-of-living-calculator/core/data/roles.ts",
+      "apps/ayokoding-www/src/features/cost-of-living-calculator/core/data/fx.ts",
+      "apps/ayokoding-web",
+    ];
+    const provenance = readFileSync(provenancePath, "utf8");
+    expect(provenance).toContain("data/ai-benchmark.json");
+    for (const reference of references) {
+      expect(existsSync(path.join(repoRoot, reference)), `provenance reference missing: ${reference}`).toBe(true);
     }
   });
 });

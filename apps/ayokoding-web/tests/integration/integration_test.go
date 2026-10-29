@@ -101,7 +101,7 @@ func TestLiveInventoryRedirects(t *testing.T) {
 
 func TestLiveLessonAndDraft(t *testing.T) {
 	server := liveServer(t)
-	response, err := http.Get(server.URL + "/en/learn/go-basics/hello-world") //nolint:gosec,noctx
+	response, err := http.Get(server.URL + "/en/learn/courses/go-basics/learning/hello-world") //nolint:gosec,noctx
 	if err != nil {
 		t.Fatalf("GET lesson: %v", err)
 	}
@@ -109,7 +109,7 @@ func TestLiveLessonAndDraft(t *testing.T) {
 	if response.StatusCode != http.StatusOK || !strings.Contains(body, "Hello World") {
 		t.Fatalf("lesson = %d, want 200 with title", response.StatusCode)
 	}
-	draft, err := http.Get(server.URL + "/en/learn/go-basics/draft-note") //nolint:gosec,noctx
+	draft, err := http.Get(server.URL + "/en/learn/courses/go-basics/learning/draft-note") //nolint:gosec,noctx
 	if err != nil {
 		t.Fatalf("GET draft: %v", err)
 	}

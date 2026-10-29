@@ -1,16 +1,16 @@
-# AyoKoding Phoenix Web — Specification Corpus
+# AyoKoding Go Web — Specification Corpus
 
 > **Audience**: Engineers, Technical Product/Project Managers
 >
-> **Plain-language summary**: These specifications describe the planned Elixir rewrite of the
+> **Plain-language summary**: These specifications describe the Go rewrite of the
 > bilingual AyoKoding learning site. They preserve the existing learner experience while allowing
 > the new site and the current site to run independently during local development.
 
 ## Status
 
-**Planned; not implemented or bound to tests yet.** The intended implementation location is
-`apps/ayokoding-web`. Phoenix LiveView is the Elixir framework selected to render pages and update
-them through a persistent browser connection. The existing Next.js implementation remains in
+**Implemented and bound to tests.** The implementation lives in
+`apps/ayokoding-web`: a Go standard-library server with `html/template` pages and htmx fragment
+endpoints. The existing Next.js implementation remains in
 [`apps/ayokoding-www`](../../../../apps/ayokoding-www/README.md).
 
 The [rewrite plan](../../../../plans/in-progress/ayokoding-app-web/README.md) owns the proposed
@@ -30,29 +30,29 @@ The [`www` corpus](../www/README.md) remains authoritative for the current imple
 existing user-facing behavior remains a rewrite parity obligation, including behavior not repeated
 in this initial corpus. The plan must map every source scenario to a retained, adapted, or explicitly
 superseded rewrite scenario before accepting the relevant implementation slice. Framework-specific
-Next.js artifacts do not become Phoenix requirements; their observable purpose does.
+Next.js artifacts do not become Go requirements; their observable purpose does.
 
 The rewrite reads the same Markdown, course manifests, and public assets in place. Existing content
 plans may continue independently. Course counts, available legacy pages, and transitional manifest
 fields follow the shared corpus already merged into `main`; they are not frozen by this document.
 
-## Planned proof ownership
+## Proof ownership
 
-| Layer       | Planned proof                                                                                                                                                 |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Unit        | ExUnit, Elixir's test runner, with the imported ExBdd Gherkin engine for pure Elixir decisions; TypeScript unit tests for browser-only state and hook helpers |
-| Integration | Real isolated content/manifests, filesystem adapters, Phoenix request handling, and disconnected and connected LiveView mounts                                |
-| E2E         | Playwright with `playwright-bdd`, exercising an owned Phoenix server and real browser or HTTP requests                                                        |
+| Layer       | Proof                                                                                                                                    |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Unit        | Plain `go test` over `internal/...` with in-memory fakes for Go decisions; TypeScript unit tests for browser-only state and hook helpers |
+| Integration | Real isolated content/manifests, filesystem adapters, and Go request handling over owned test listeners                                  |
+| E2E         | Playwright with `playwright-bdd`, exercising the owned Go server on port 3191 with real browser and HTTP requests                        |
 
 Unit proof is mandatory for every scenario. Browser-only state scenarios use the TypeScript unit
-adapter rather than a second Elixir model of browser storage. Integration exemptions name their
-alternative proof in the feature file. ExBdd and Playwright consume this one canonical corpus;
+adapter rather than a second Go model of browser storage. Integration exemptions name their
+alternative proof in the feature file. godog and Playwright consume this one canonical corpus;
 their test adapters do not create separate feature copies. Consumer acceptance suites configure
-zero retries and do not use retry tags; the imported engine retains its upstream capabilities.
+zero retries and do not use retry tags.
 
 ## Local boundary
 
-The current site keeps port **3101**. Phoenix development defaults to **3102**, with
+The current site keeps port **3101**. Go development defaults to **3102**, with
 `AYOKODING_WEB_PORT` as its prefixed override; its Playwright server uses **3191**. Different
 ports are separate browser origins, so they do not automatically share saved progress or settings.
 The explicit launcher port flag takes precedence over the prefixed variable, which takes
@@ -62,6 +62,5 @@ There is no deployment, production cutover, account system, or database requirem
 ## Related
 
 - [AyoKoding product specifications](../README.md) — current and planned logical owners.
-- [ExBdd specifications](../../../libs/ex-bdd/README.md) — the planned imported Elixir BDD engine.
 - [Spec-to-test mapping](../../../../repo-governance/development/infra/bdd-spec-test-mapping.md) —
   repository requirements for layer ownership and static binding checks.

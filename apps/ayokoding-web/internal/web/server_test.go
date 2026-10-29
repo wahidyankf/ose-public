@@ -59,7 +59,7 @@ func TestHomeUsesRouteLanguage(t *testing.T) {
 }
 
 func TestLessonRendersTitleAndBody(t *testing.T) {
-	recorder := request(t, web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler(), http.MethodGet, "/en/learn/go-basics/hello-world")
+	recorder := request(t, web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler(), http.MethodGet, "/en/learn/courses/go-basics/learning/hello-world")
 	if recorder.Code != http.StatusOK {
 		t.Fatalf("lesson status = %d, want 200", recorder.Code)
 	}
@@ -73,14 +73,14 @@ func TestLessonRendersTitleAndBody(t *testing.T) {
 }
 
 func TestDraftRouteIsNotFound(t *testing.T) {
-	recorder := request(t, web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler(), http.MethodGet, "/en/learn/go-basics/draft-note")
+	recorder := request(t, web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler(), http.MethodGet, "/en/learn/courses/go-basics/learning/draft-note")
 	if recorder.Code != http.StatusNotFound {
 		t.Fatalf("draft status = %d, want 404", recorder.Code)
 	}
 }
 
 func TestMissingPageIsLocalizedNotFound(t *testing.T) {
-	recorder := request(t, web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler(), http.MethodGet, "/en/learn/go-basics/nope")
+	recorder := request(t, web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler(), http.MethodGet, "/en/learn/courses/go-basics/learning/nope")
 	if recorder.Code != http.StatusNotFound {
 		t.Fatalf("missing status = %d, want 404", recorder.Code)
 	}
@@ -94,7 +94,7 @@ func TestInventoryRedirectPreservesQuery(t *testing.T) {
 	if recorder.Code != http.StatusPermanentRedirect {
 		t.Fatalf("inventory status = %d, want 308", recorder.Code)
 	}
-	if location := recorder.Header().Get("Location"); location != "/en/learn/go-basics/hello-world?from=local" {
+	if location := recorder.Header().Get("Location"); location != "/en/learn/courses/go-basics/learning/hello-world?from=local" {
 		t.Fatalf("inventory Location = %q, want canonical destination with query", location)
 	}
 }
@@ -109,8 +109,8 @@ func TestDiscoveryDocuments(t *testing.T) {
 		t.Fatal("sitemap must exclude drafts")
 	}
 	feed := request(t, handler, http.MethodGet, "/feed.xml")
-	if feed.Code != http.StatusOK || !strings.Contains(feed.Header().Get("Content-Type"), "application/xml") {
-		t.Fatalf("feed = %d %q, want 200 application/xml", feed.Code, feed.Header().Get("Content-Type"))
+	if feed.Code != http.StatusOK || feed.Header().Get("Content-Type") != "application/rss+xml; charset=utf-8" {
+		t.Fatalf("feed = %d %q, want 200 application/rss+xml", feed.Code, feed.Header().Get("Content-Type"))
 	}
 	robots := request(t, handler, http.MethodGet, "/robots.txt")
 	if robots.Code != http.StatusOK || !strings.Contains(robots.Header().Get("Content-Type"), "text/plain") {
@@ -134,17 +134,17 @@ func TestCatalogGroupsCourses(t *testing.T) {
 
 func TestCourseLandingShowsPrereqsAndLessons(t *testing.T) {
 	handler := web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler()
-	landing := request(t, handler, http.MethodGet, "/en/learn/go-basics")
+	landing := request(t, handler, http.MethodGet, "/en/learn/courses/go-basics")
 	if landing.Code != http.StatusOK {
 		t.Fatalf("course status = %d, want 200", landing.Code)
 	}
-	for _, marker := range []string{"Go Basics", "Setup", "Hello World", "/en/learn/go-basics/hello-world"} {
+	for _, marker := range []string{"Go Basics", "Setup", "Hello World", "/en/learn/courses/go-basics/learning/hello-world"} {
 		if !strings.Contains(landing.Body.String(), marker) {
 			t.Fatalf("course page misses %q", marker)
 		}
 	}
-	advanced := request(t, handler, http.MethodGet, "/en/learn/go-web")
-	for _, marker := range []string{"Go Web", "Go Basics", "/en/learn/go-basics", "data-prerequisites"} {
+	advanced := request(t, handler, http.MethodGet, "/en/learn/courses/go-web")
+	for _, marker := range []string{"Go Web", "Go Basics", "/en/learn/courses/go-basics", "data-prerequisites"} {
 		if !strings.Contains(advanced.Body.String(), marker) {
 			t.Fatalf("advanced course page misses %q", marker)
 		}
@@ -152,7 +152,7 @@ func TestCourseLandingShowsPrereqsAndLessons(t *testing.T) {
 }
 
 func TestOutlineCourseHonesty(t *testing.T) {
-	recorder := request(t, web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler(), http.MethodGet, "/en/learn/outline-only")
+	recorder := request(t, web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler(), http.MethodGet, "/en/learn/courses/outline-only")
 	if recorder.Code != http.StatusOK {
 		t.Fatalf("outline status = %d, want 200", recorder.Code)
 	}
@@ -163,7 +163,7 @@ func TestOutlineCourseHonesty(t *testing.T) {
 
 func TestInvalidPathContextFallsBack(t *testing.T) {
 	handler := web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler()
-	recorder := request(t, handler, http.MethodGet, "/en/learn/go-basics?path=no-such-path")
+	recorder := request(t, handler, http.MethodGet, "/en/learn/courses/go-basics?path=no-such-path")
 	if recorder.Code != http.StatusOK {
 		t.Fatalf("fallback status = %d, want 200", recorder.Code)
 	}
@@ -176,7 +176,7 @@ func TestInvalidPathContextFallsBack(t *testing.T) {
 }
 
 func TestPathRoadmapPhaseOrder(t *testing.T) {
-	recorder := request(t, web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler(), http.MethodGet, "/en/paths/backend-id")
+	recorder := request(t, web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler(), http.MethodGet, "/en/learn/paths/backend-id")
 	if recorder.Code != http.StatusOK {
 		t.Fatalf("path status = %d, want 200", recorder.Code)
 	}
@@ -189,7 +189,7 @@ func TestPathRoadmapPhaseOrder(t *testing.T) {
 }
 
 func TestEmptyPathCategory(t *testing.T) {
-	recorder := request(t, web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler(), http.MethodGet, "/en/paths/skills")
+	recorder := request(t, web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler(), http.MethodGet, "/en/learn/paths/skills")
 	if recorder.Code != http.StatusOK {
 		t.Fatalf("category status = %d, want 200", recorder.Code)
 	}
@@ -246,7 +246,7 @@ func TestUppercaseRedirectPreservesQuery(t *testing.T) {
 }
 
 func TestIndonesianLessonOutline(t *testing.T) {
-	recorder := request(t, web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler(), http.MethodGet, "/id/learn/go-basics/hello-world")
+	recorder := request(t, web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler(), http.MethodGet, "/id/learn/courses/go-basics/learning/hello-world")
 	if recorder.Code != http.StatusOK {
 		t.Fatalf("id lesson status = %d, want 200", recorder.Code)
 	}
@@ -263,7 +263,7 @@ func TestUnavailableCatalogFixture(t *testing.T) {
 }
 
 func TestSetupLessonHasNextOnly(t *testing.T) {
-	recorder := request(t, web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler(), http.MethodGet, "/en/learn/go-basics/setup")
+	recorder := request(t, web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler(), http.MethodGet, "/en/learn/courses/go-basics/learning/setup")
 	if recorder.Code != http.StatusOK {
 		t.Fatalf("setup status = %d, want 200", recorder.Code)
 	}
@@ -277,7 +277,7 @@ func TestSetupLessonHasNextOnly(t *testing.T) {
 
 func TestUnknownLocaleRoutes(t *testing.T) {
 	handler := web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler()
-	for _, target := range []string{"/xx/learn/go-basics", "/xx/learn/courses", "/xx/paths/backend-id", "/xx/search?q=x", "/xx/tools/ai-benchmark", "/xx/tools/cost-of-living-calculator", "/xx/nope", "/xx/learn/go-basics/hello-world"} {
+	for _, target := range []string{"/xx/learn/courses/go-basics", "/xx/learn/courses", "/xx/learn/paths/backend-id", "/xx/search?q=x", "/xx/tools/ai-benchmark", "/xx/tools/cost-of-living-calculator", "/xx/nope", "/xx/learn/courses/go-basics/learning/hello-world"} {
 		recorder := request(t, handler, http.MethodGet, target)
 		if recorder.Code != http.StatusNotFound {
 			t.Fatalf("%s status = %d, want 404", target, recorder.Code)
@@ -290,7 +290,7 @@ func TestUnknownLocaleRoutes(t *testing.T) {
 
 func TestUnknownCourseAndInvalidLimit(t *testing.T) {
 	handler := web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler()
-	missing := request(t, handler, http.MethodGet, "/en/learn/nope")
+	missing := request(t, handler, http.MethodGet, "/en/learn/courses/nope")
 	if missing.Code != http.StatusNotFound {
 		t.Fatalf("unknown course status = %d, want 404", missing.Code)
 	}
@@ -304,11 +304,11 @@ func TestUnknownCourseAndInvalidLimit(t *testing.T) {
 }
 
 func TestValidPathContextPreserved(t *testing.T) {
-	recorder := request(t, web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler(), http.MethodGet, "/en/learn/go-basics/setup?path=backend-id")
+	recorder := request(t, web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler(), http.MethodGet, "/en/learn/courses/go-basics/learning/setup?path=backend-id")
 	if recorder.Code != http.StatusOK {
 		t.Fatalf("path context status = %d, want 200", recorder.Code)
 	}
-	if !strings.Contains(recorder.Body.String(), "/en/learn/go-basics/hello-world?path=backend-id") {
+	if !strings.Contains(recorder.Body.String(), "/en/learn/courses/go-basics/learning/hello-world?path=backend-id") {
 		t.Fatal("next control must preserve valid path context")
 	}
 }
@@ -371,7 +371,7 @@ func indexOf(body, fragment string) int {
 }
 
 func TestPathCategoryWithPaths(t *testing.T) {
-	recorder := request(t, web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler(), http.MethodGet, "/en/paths/careers")
+	recorder := request(t, web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler(), http.MethodGet, "/en/learn/paths/careers")
 	if recorder.Code != http.StatusOK {
 		t.Fatalf("category status = %d, want 200", recorder.Code)
 	}
@@ -392,5 +392,132 @@ func TestSearchFragment(t *testing.T) {
 	empty := request(t, web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler(), http.MethodGet, "/en/search?q=%20%20")
 	if strings.Contains(empty.Body.String(), "Hello World") {
 		t.Fatal("whitespace query must clear stale results")
+	}
+}
+
+func TestStaticAssetsServeVendoredScripts(t *testing.T) {
+	handler := web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler()
+	for _, file := range []string{"htmx.min.js", "progress.js"} {
+		recorder := request(t, handler, http.MethodGet, "/assets/js/"+file)
+		if recorder.Code != http.StatusOK {
+			t.Fatalf("/assets/js/%s status = %d, want 200", file, recorder.Code)
+		}
+		if contentType := recorder.Header().Get("Content-Type"); contentType != "application/javascript" {
+			t.Fatalf("/assets/js/%s Content-Type = %q, want application/javascript", file, contentType)
+		}
+		if recorder.Body.Len() == 0 {
+			t.Fatalf("/assets/js/%s body must not be empty", file)
+		}
+	}
+}
+
+func TestStaticAssetsRejectUnknownAndTraversal(t *testing.T) {
+	handler := web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler()
+	for _, target := range []string{"/assets/js/unknown.js", "/assets/css/site.css", "/assets/go.mod"} {
+		recorder := request(t, handler, http.MethodGet, target)
+		if recorder.Code != http.StatusNotFound {
+			t.Fatalf("%s status = %d, want 404", target, recorder.Code)
+		}
+		if strings.Contains(recorder.Body.String(), "module github.com") {
+			t.Fatalf("%s body must not disclose module sources", target)
+		}
+	}
+	traversal := request(t, handler, http.MethodGet, "/assets/js/../go.mod")
+	if traversal.Code != http.StatusMovedPermanently && traversal.Code != http.StatusTemporaryRedirect && traversal.Code != http.StatusPermanentRedirect {
+		t.Fatalf("/assets/js/../go.mod status = %d, want a redirect to the cleaned path", traversal.Code)
+	}
+	cleaned := request(t, handler, http.MethodGet, "/assets/go.mod")
+	if cleaned.Code != http.StatusNotFound {
+		t.Fatalf("/assets/go.mod status = %d, want 404", cleaned.Code)
+	}
+}
+
+func TestLearnHomeListsBuckets(t *testing.T) {
+	handler := web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler()
+	for _, locale := range []string{"en", "id"} {
+		recorder := request(t, handler, http.MethodGet, "/"+locale+"/learn")
+		if recorder.Code != http.StatusOK {
+			t.Fatalf("/%s/learn status = %d, want 200", locale, recorder.Code)
+		}
+		for _, marker := range []string{"/" + locale + "/learn/paths", "/" + locale + "/learn/courses"} {
+			if !strings.Contains(recorder.Body.String(), marker) {
+				t.Fatalf("/%s/learn misses %q", locale, marker)
+			}
+		}
+	}
+	missing := request(t, handler, http.MethodGet, "/xx/learn")
+	if missing.Code != http.StatusNotFound {
+		t.Fatalf("unknown learn locale status = %d, want 404", missing.Code)
+	}
+}
+
+func TestPathsHubGroupsByCategory(t *testing.T) {
+	recorder := request(t, web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler(), http.MethodGet, "/en/learn/paths")
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("hub status = %d, want 200", recorder.Code)
+	}
+	for _, marker := range []string{`data-category="careers"`, "backend-id", "/en/learn/paths/backend-id"} {
+		if !strings.Contains(recorder.Body.String(), marker) {
+			t.Fatalf("hub misses %q", marker)
+		}
+	}
+}
+
+func TestLessonRejectsUnknownKind(t *testing.T) {
+	recorder := request(t, web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler(), http.MethodGet, "/en/learn/courses/go-basics/invalid/hello-world")
+	if recorder.Code != http.StatusNotFound {
+		t.Fatalf("unknown kind status = %d, want 404", recorder.Code)
+	}
+}
+
+func TestLegacyBucketIsLocalizedNotFound(t *testing.T) {
+	handler := web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler()
+	recorder := request(t, handler, http.MethodGet, "/en/learn/legacy/software-engineering/overview")
+	if recorder.Code != http.StatusNotFound {
+		t.Fatalf("legacy status = %d, want 404", recorder.Code)
+	}
+	if !strings.Contains(recorder.Body.String(), `lang="en"`) {
+		t.Fatal("legacy miss must keep the route locale")
+	}
+	bare := request(t, handler, http.MethodGet, "/en/learn/legacy")
+	if bare.Code != http.StatusNotFound {
+		t.Fatalf("legacy bare status = %d, want 404", bare.Code)
+	}
+}
+
+func TestTrailingSlashNormalizesToCanonical(t *testing.T) {
+	recorder := request(t, web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler(), http.MethodGet, "/en/learn/paths/careers/")
+	if recorder.Code != http.StatusPermanentRedirect {
+		t.Fatalf("trailing slash status = %d, want 308", recorder.Code)
+	}
+	if location := recorder.Header().Get("Location"); location != "/en/learn/paths/careers" {
+		t.Fatalf("trailing slash Location = %q", location)
+	}
+}
+
+func TestPathsHubUnknownLocaleNotFound(t *testing.T) {
+	recorder := request(t, web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler(), http.MethodGet, "/xx/learn/paths")
+	if recorder.Code != http.StatusNotFound {
+		t.Fatalf("hub unknown locale status = %d, want 404", recorder.Code)
+	}
+}
+
+func TestLegacyUnknownLocaleFallsBackToEnglish(t *testing.T) {
+	recorder := request(t, web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler(), http.MethodGet, "/xx/learn/legacy/software-engineering")
+	if recorder.Code != http.StatusNotFound {
+		t.Fatalf("legacy unknown locale status = %d, want 404", recorder.Code)
+	}
+	if !strings.Contains(recorder.Body.String(), `lang="en"`) {
+		t.Fatal("legacy unknown locale must fall back to English")
+	}
+}
+
+func TestBareWildcardReorgRedirectsSingleHop(t *testing.T) {
+	recorder := request(t, web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler(), http.MethodGet, "/en/learn/human")
+	if recorder.Code != http.StatusPermanentRedirect {
+		t.Fatalf("bare wildcard status = %d, want 308", recorder.Code)
+	}
+	if location := recorder.Header().Get("Location"); location != "/en/learn/personal-development" {
+		t.Fatalf("bare wildcard Location = %q", location)
 	}
 }

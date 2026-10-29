@@ -191,6 +191,13 @@ Notes:
 - Statement 3 has no mechanical gate. The judgement disposition is recorded here. Owner: the maintainer, if a
   mechanical check is wanted.
 
+Status update, 2026-10-29 (archival): the provisional Ubuntu Podman pin is proven on a GitHub runner (run 40693498144
+and later runs, `evidence/P2/ci.md`), so the "provisional" notes in `setup-development-environment.md` and at the
+`setup-podman` pin row are removed. The `com.docker.compose.*` label keys are confirmed in the installed
+`podman-compose` 1.6.0 source (`podman_compose.py`, where it sets `com.docker.compose.project` and
+`com.docker.compose.project.working_dir` beside the `io.podman.compose.project` label), and the cleanup module states
+them.
+
 Status update, 2026-10-29: the items above that say `rules-quality-gate` has not run are superseded by the three
 cycles recorded below, with an advisory final verdict of PASS. The emoji finding names
 `apps/ayokoding-www/generated/search-data.json`, which is gitignored (`apps/ayokoding-www/.gitignore`), untracked and

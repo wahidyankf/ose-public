@@ -1,6 +1,6 @@
 # Docker to Podman across ose-public
 
-> **Status:** In Progress. The runtime migration is being executed under this plan.
+> **Status:** Done. Archived 2026-10-29; the delivery record is `evidence/P4/archival-record.md`.
 
 Depends-on: []
 

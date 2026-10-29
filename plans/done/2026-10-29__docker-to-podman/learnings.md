@@ -27,7 +27,7 @@
 - **Response and proof:** the call now runs through Podman. The regression validator is
   `scripts/no-docker-binary-calls.test.mjs`, added in commit `88a20850c`. It does not catch a binary
   held in a variable. Lesson: an inventory made by search is not proof; run the target.
-- **Disposition:** routed inline. The principle already lives in
+- **Disposition:** discarded (re-triaged 2026-10-29: no edit landed, because the guidance below already states it). The principle already lives in
   `repo-governance/development/quality/plan-anti-hallucination/anti-pattern-catalog-ap-12-through-ap-14.md`
   (heading "AP-12: Asserting completeness from a text search") and in
   `repo-governance/development/quality/plan-anti-hallucination/absence-and-completeness-claims-completeness-claim-requires-a-diff.md`.
@@ -52,7 +52,7 @@
 - **Observation:** two heavy targets started together in one worktree. HIPPO deferred one with exit 124. Rerunning them one at a time passed.
 - **Response and proof:** run the targets one at a time, or let HIPPO admit them in turn. No change
   to admission, tiers or limits.
-- **Disposition:** routed inline. `repo-governance/development/practice/resource-aware-development/recovery-and-safe-retry.md`
+- **Disposition:** discarded (re-triaged 2026-10-29: no edit landed, because the guidance below already states it). `repo-governance/development/practice/resource-aware-development/recovery-and-safe-retry.md`
   (first bullet, exit 124 and `hippo.limit.capacity-deferred`) and
   `repo-governance/development/practice/resource-aware-development/guarded-admission-and-parallelism.md`
   ("pressure may defer a request even when its vector fits") already state this. This entry only
@@ -223,7 +223,7 @@
   payload independently of the submitting client. Native lifecycle controls and the complete
   original Ayo quick, integration and unit targets passed; the remaining verifier continues.
   This proves the corrected execution route, not the earlier signal's cause.
-- **Disposition:** routed inline. `repo-governance/development/practice/trustworthy-measurement/rule-7-prove-the-run-finished.md` (heading "7. A result is complete only when a terminal marker says so", and "One gated command per unit of background work") already states it. The host-native unit that owns the driver is machine-local and is not carried over.
+- **Disposition:** discarded (re-triaged 2026-10-29: no edit landed, because the guidance below already states it). `repo-governance/development/practice/trustworthy-measurement/rule-7-prove-the-run-finished.md` (heading "7. A result is complete only when a terminal marker says so", and "One gated command per unit of background work") already states it. The host-native unit that owns the driver is machine-local and is not carried over.
 
 ## 2026-10-26 — Include build dependencies in a target's admission
 
@@ -236,7 +236,7 @@
   A corrected run uses the heavy envelope already proven for that same build dependency.
   Both inner target output and outer HIPPO status are now captured durably; its result remains
   pending in [baseline evidence](./evidence/P0/baseline-targets.md).
-- **Disposition:** routed inline. `repo-governance/development/practice/resource-aware-development/guarded-admission-and-parallelism.md` states it in the tier list ("`heavy` is a full build") and in the section "The boundary is not paperwork on a command that would have been fine" (a target that transitively starts heavy work).
+- **Disposition:** discarded (re-triaged 2026-10-29: no edit landed, because the guidance below already states it). `repo-governance/development/practice/resource-aware-development/guarded-admission-and-parallelism.md` states it in the tier list ("`heavy` is a full build") and in the section "The boundary is not paperwork on a command that would have been fine" (a target that transitively starts heavy work).
 
 ## 2026-10-26 — Compose status can conceal native teardown errors
 
@@ -250,7 +250,7 @@
   independent review, guarded application and the original capability/native cleanup recheck
   passed. See [Ubuntu capability evidence](./evidence/P0/ubuntu-capabilities.md) and
   [the post-correction proof](./evidence/P0/ubuntu-policy-capability-recheck.md).
-- **Disposition:** routed inline. `repo-governance/development/workflow/worktree-and-artifact-cleanup/docker-artifact-cleanup.md` (heading "Leaked Test Containers") says to remove only listed names and then re-run the listing and expect zero, which is the independent inventory check. The host-wide policy correction is machine-local and is not carried over.
+- **Disposition:** discarded (re-triaged 2026-10-29: no edit landed, because the sentence this cites already existed before this plan). `repo-governance/development/workflow/worktree-and-artifact-cleanup/docker-artifact-cleanup.md` (heading "Leaked Test Containers") says to remove only listed names and then re-run the listing and expect zero, which is the independent inventory check. The host-wide policy correction is machine-local and is not carried over.
 
 ## 2026-10-26 — Consult machine disk-recovery procedures before escalating admission
 
@@ -337,7 +337,7 @@
 - **Response and proof:** direct Go and Podman temp to tmpfs for small outputs, never repeat a run
   without changing the cause, and remove only labelled or ID-listed resources. Full monorepo
   image builds need large headroom above the HIPPO floor.
-- **Disposition:** routed inline. `repo-governance/development/practice/resource-aware-development/recovery-and-safe-retry.md` (first bullet, exit 124 and `hippo.limit.storage-blocked`) says to free storage safely before a retry. The sizes in the observation are machine-local and set no policy. Leftover Buildah containers are covered by the "Staging directories" entry below.
+- **Disposition:** discarded (re-triaged 2026-10-29: no edit landed, because the guidance below already states it). `repo-governance/development/practice/resource-aware-development/recovery-and-safe-retry.md` (first bullet, exit 124 and `hippo.limit.storage-blocked`) says to free storage safely before a retry. The sizes in the observation are machine-local and set no policy. Leftover Buildah containers are covered by the "Staging directories" entry below.
 
 ## 2026-10-28 — Debug flags can change the host's user-visible behavior
 
@@ -363,7 +363,7 @@
   route returned `200` from the host.
 - **Response and proof:** the six probe sites now use `127.0.0.1`, with a registered regression test.
   A live rerun of the OSE and OrganicLever stacks reported `healthy`.
-- **Disposition:** reported without plan authorization. The six probe sites are fixed and guarded by `scripts/container-healthcheck-loopback.test.mjs`, but the Dockerfile template in `repo-governance/development/infra/ci-conventions/docker-conventions.md` still shows `http://localhost:3000/health`. Proposed home: that template and its `HEALTHCHECK` bullet. Proposed wording: "Probe `http://127.0.0.1:<port>`, not `localhost`; Podman resolves `localhost` to `::1` first and BusyBox `wget` does not fall back." Handoff: [P5 knowledge capture](./evidence/P5/knowledge-capture.md).
+- **Disposition:** routed inline (2026-10-29, archival change). The six probe sites are fixed and guarded by `scripts/container-healthcheck-loopback.test.mjs`, and the Dockerfile template in `repo-governance/development/infra/ci-conventions/docker-conventions.md` now probes `http://127.0.0.1:3000/health`. The mechanical template correction brings the rule in line with its guard; the `HEALTHCHECK` bullet wording proposal stays with the maintainer. Handoff: [P5 knowledge capture](./evidence/P5/knowledge-capture.md).
 
 ## 2026-10-28 — A running stack proves less than its health state
 
@@ -474,5 +474,56 @@ Progress screens pass automated accessibility checks` hit the 150 s test timeout
   accepted as the cost of the sidebar layout. Nothing else was fixed in this plan. The list is in
   `evidence/P3/scope-dispositions.md`.
 - **Disposition:** reported without plan authorization, to the maintainer, with no owner assigned. The plan is not the
-  place for new backlog work. A fix owner or an explicit deferral for the blocking rows is needed before archival.
-  Handoff: [P5 knowledge capture](./evidence/P5/knowledge-capture.md).
+  place for new backlog work. A fix owner or an explicit deferral for the blocking rows was needed before archival.
+  Maintainer decision, 2026-10-29: asked directly whether to fix or defer, the maintainer chose "Tunda semua, lapor"
+  (defer all, report) for the blocking rows and "Tunda, lapor" for EWT-003. The deferral is explicit and user-given,
+  not self-deferred. Handoff: [P5 knowledge capture](./evidence/P5/knowledge-capture.md).
+
+## 2026-10-29 — A second pre-existing ferret-cli failure hid behind the first
+
+- **Observation:** the `e2e` job of `non-product-full-quality.yml` needs the `integration` job, which fails on the
+  `ferret-cli` hook-registration baseline, so the `e2e` job never runs on `main`. With that gate removed on a throwaway
+  branch (run 40778630932), `ferret-cli-e2e:test:e2e` also failed: three interpreter-guard scenarios in
+  `test_interpreter_guard_steps.py`.
+- **Response and proof:** none in this plan; the project is outside the migration. `ayokoding-cli` E2E passed in the same
+  run.
+- **Disposition:** reported without plan authorization, to the ferret-cli maintainers. Handoff:
+  [P5 knowledge capture](./evidence/P5/knowledge-capture.md).
+
+## 2026-10-29 — The legacy `ose-app` and `organiclever-app` stag workflows fail on every scheduled run
+
+- **Observation:** `ose-app-test-local-deploy-stag` and `organiclever-app-test-local-deploy-stag` failed on every
+  recorded scheduled run from 2026-10-26 (before this migration) through 2026-10-28, including on the merged head. The
+  latest `ose-app` run fails in `ose-be:test:integration` on a missing generated F# contract file before any container
+  starts.
+- **Response and proof:** none. The plan treats these scaffolds as unsupported and syntax-checks them only.
+- **Disposition:** reported without plan authorization, with the maintainer as owner. Handoff:
+  [P5 knowledge capture](./evidence/P5/knowledge-capture.md).
+
+## 2026-10-29 — The PR gate skips every container job for an action-only change
+
+- **Observation:** PR #755 changed only `.github/actions/setup-podman/action.yml`, a test and a README. The PR gate's
+  container jobs (for example "AyoKoding examples check") were skipped by their path filters, so the gate never ran the
+  changed action on a runner.
+- **Response and proof:** the step was proven on a throwaway branch (run 40783837245) before the merge.
+- **Disposition:** reported without plan authorization. This is a code-homed fix: path filters that include
+  `.github/actions/setup-podman/**`. Handoff: [P5 knowledge capture](./evidence/P5/knowledge-capture.md).
+
+## 2026-10-29 — `test:validators` is run by no declared gate
+
+- **Observation:** the 198-test suite behind `npm run test:validators`, including the no-Docker-binary-call and
+  image-qualified validators, is referenced only by `package.json`. A regression in those validators would not fail a
+  pull request.
+- **Response and proof:** the suite passes locally on the final tree. The gap is also recorded in
+  `evidence/P4/rule-manifest.md`.
+- **Disposition:** reported without plan authorization. Asked directly on 2026-10-29 whether to wire it into a gate or
+  defer, the maintainer chose to defer and report. Handoff:
+  [P5 knowledge capture](./evidence/P5/knowledge-capture.md).
+
+## 2026-10-29 — An emulated cold Podman store failed for reasons of the emulation
+
+- **Observation:** a rehearsal on a developer host that emulated a cold image store failed the Postgres service
+  scenario twice, but a manual start of the same container failed in the emulated store's own rootless networking.
+- **Response and proof:** on a real fresh GitHub runner the same scenario passed in the full real-engine suite (run
+  40778630932, `evidence/P2/ci.md`).
+- **Disposition:** discarded. The cause was the emulation, and the real cold-runner result settles the question.

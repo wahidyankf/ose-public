@@ -107,6 +107,12 @@ UWT rows beyond those were not individually re-attributed to a source change.
 
 ## 5. What this leaves open
 
+**Maintainer decision, 2026-10-29.** Asked directly whether to fix or defer, the maintainer answered "Tunda semua,
+lapor" for the blocking rows (UWQ-001 and DWT-001, UWT-014, DWT-002 and the HIGH UWT rows) and "Tunda, lapor" for
+EWT-003. These are explicit user deferrals, not self-deferrals. Each row is reported to the maintainer as separate work
+(see the final report and `evidence/P5/knowledge-capture.md`, item 13). The bullets below are the state before that
+decision.
+
 - The maintainer decides, per blocking row, a fix owner or an explicit deferral. The Plan Archival item "Verify
   every substantive checklist item is ticked ... all applicable exploratory defect findings are fixed" forbids
   self-deferring a required defect, so the archival item needs that decision.

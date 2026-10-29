@@ -1,7 +1,7 @@
 # P4 AC-10 plan-order recheck
 
-Recheck required by `plans/in-progress/docker-to-podman/delivery.md` (P4 AC-10 item) and
-`plans/in-progress/docker-to-podman/prd.md` AC-10.
+Recheck required by `plans/done/2026-10-29__docker-to-podman/delivery.md` (P4 AC-10 item) and
+`plans/done/2026-10-29__docker-to-podman/prd.md` AC-10.
 
 ## Scope: what is live
 

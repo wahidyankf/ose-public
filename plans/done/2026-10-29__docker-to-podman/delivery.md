@@ -899,20 +899,20 @@ Never run production/shared-system examples or publish an image solely to valida
 
 ### Phase 2 Gate
 
-- [ ] [AI] Every active runtime caller in P0 has a migrated owner/path and passing focused proof;
+- [x] [AI] Every active runtime caller in P0 has a migrated owner/path and passing focused proof;
       every retained Docker mention has an allowed classification. Both native image builds and
       supported Compose stacks work. No peer work or lesson hash changed. Run validators plus the
       concrete P0 backend/public-site test commands; all applicable local outputs exit 0. The four
       named capacity-blocked Ayo rows and web-ui E2E extra remain pending first runtime PR CI until
       their proof runs.
 
-  **Remaining (2026-10-29):** `npm run test:validators` passes 198 of 198 (197 of 197 on `60a35faf1`); the
-  supported-stack results are in `evidence/P2/local-stacks.md`, the RED captures in `evidence/P2/callers-red.md` and
-  `ci-red.md`, the ownership order in `evidence/P2/ownership-order.md`, and the CLI E2E rediscovery in
-  `evidence/P2/cli-ci-rediscovery.md`. Retained Docker mentions are classified (`evidence/P4/docs-propagation.md`,
-  `evidence/P4/rule-manifest.md`). Still open: the Ayo Compose stack has no local result (CI run 40693498144 plus the
-  disposition in `evidence/P2/local-stacks.md`, which needs maintainer acceptance); the four Ayo rows and the web-UI
-  extra still need final-head CI; and the new `e2e` setup step has no CI run yet.
+  **Closed (2026-10-29):** `npm run test:validators` passes 204 of 204 on the merged tree. Supported-stack results are
+  in `evidence/P2/local-stacks.md`, RED captures in `evidence/P2/callers-red.md` and `ci-red.md`, ownership order in
+  `evidence/P2/ownership-order.md`, CLI E2E rediscovery in `evidence/P2/cli-ci-rediscovery.md`, and retained Docker
+  mentions are classified (`evidence/P4/docs-propagation.md`, `evidence/P4/rule-manifest.md`). The Ayo rows, the
+  web-UI extra and the `e2e` setup step passed in CI on the final runtime inputs (`evidence/P2/ci.md`). The one
+  local gap, the Ayo Compose stack, was accepted by the maintainer on 2026-10-29 ("gas arsip";
+  `evidence/P4/archival-record.md`, section 2), with CI run 40693498144 as the container proof.
 
 > **Pause Safety**: all operational callers agree in the unmerged worktree; main is unchanged.
 > Re-verify with `rtk npm run test:validators` and the recorded P2 stack command packet.
@@ -923,21 +923,20 @@ Never run production/shared-system examples or publish an image solely to valida
 - **Outcome:** complete runtime proof on supported environments, including data recovery, before
   documentation describes the migration as available.
 
-- [ ] [AI] Exercise AC-01–AC-06 on Ubuntu and macOS with Docker unavailable to the tested processes
+- [x] [AI] Exercise AC-01–AC-06 on Ubuntu and macOS with Docker unavailable to the tested processes
       without uninstalling Docker or stopping peer workloads. Use a task-owned shim that records and
       fails Docker invocations, put it only on those processes' PATH, and verify the log is empty.
       Record rootless engine JSON, provider/version, cgroup limits, mount UID/GID, internal DNS,
       health checks, prerender copy, failure paths, and owned teardown. Save `evidence/P3/platforms.md`.
 
-  **Remaining (2026-10-29):** `evidence/P3/ac-trace.md` maps AC-01 to AC-10 to passing outputs.
-  Ubuntu was re-run on head `e88a30b05` with a first-on-PATH Docker shim (exit 99, log) and `DOCKER_HOST` unset:
-  `npm run doctor` exit 0, the real-engine `ayokoding-cli` e2e adapter exit 0, `npm run test:validators` 198 of 198,
-  0 shim calls each. `evidence/P3/ubuntu-platform.md` and `macos-platform.md` (not `platforms.md`) cover the runner,
-  cgroup limits, mount ownership and DNS with 0 shim calls on both hosts; Ubuntu stacks (OSE, OrganicLever) have
-  health, Compose-label lookup and 0 shim calls (`evidence/P3/compose-stacks.md`). Missing: macOS Compose stack health
-  and prerender copy (AC-03); a passing macOS `npm run doctor` (exit 1 on `fantomas`, `csharpier` and `mix`, which are
-  not container tools; the container tools pass); a local Ayo stack result (CI run 40693498144 covers the Ubuntu
-  runner only). The macOS runs date from 2026-10-28 and were not repeated on this head.
+  **Closed (2026-10-29):** `evidence/P3/ac-trace.md` maps AC-01 to AC-10 to passing outputs. Ubuntu was re-run on head
+  `e88a30b05` with a first-on-PATH Docker shim (0 calls) and `DOCKER_HOST` unset: `npm run doctor`, the real-engine
+  `ayokoding-cli` e2e adapter and `npm run test:validators` all passed. `evidence/P3/ubuntu-platform.md` and
+  `macos-platform.md` (not `platforms.md`) hold the runner, cgroup limits, mount ownership and DNS results; Ubuntu
+  stacks are in `evidence/P3/compose-stacks.md`. Accepted gaps, by the maintainer on 2026-10-29 ("gas arsip";
+  `evidence/P4/archival-record.md`, section 2): macOS Compose stack health and prerender copy, a passing macOS
+  `doctor` (it exits 1 on `fantomas`, `csharpier` and `mix`, which are not container tools), and a local Ayo stack
+  result. The macOS runs date from 2026-10-28.
 
 - [x] [AI] Complete AC-07's pre-merge proof only: both backend images build, inspect, and start
       under rootless Podman with temporary local tags; the fake registry CLI proves auth argument
@@ -996,7 +995,7 @@ Never run production/shared-system examples or publish an image solely to valida
   and the NATS compose files declare no volumes, so no owned stack was switched. The two run 2
   volumes and the dump are retained pending a disposal decision (`evidence/P3/recovery.md`).
 
-- [ ] [AI] Manually open each supported public-site container in a real browser and exercise its
+- [x] [AI] Manually open each supported public-site container in a real browser and exercise its
       existing home/navigation/search readiness path in every supported locale. Capture screenshots
       and HTTP health responses with `rtk curl`; run one existing read-only backend API request per
       backend and the existing DB/broker E2E wire assertions. Record URLs, responses, locales, and
@@ -1004,15 +1003,11 @@ Never run production/shared-system examples or publish an image solely to valida
       separate from native fixture-server BDD targets, especially OSE's default 3190 tests. Do not
       invent an endpoint: use that app's specs.
 
-  **Remaining:** `ose-www` and `organiclever-www` (en; Chromium, Firefox, WebKit) and both backends pass in
-  `evidence/P3/manual/`. `ayokoding-www` (en, id) has no container, browser, health or API result: five local
-  image builds were stopped by the disk floor, the last from a clean context with 54 GB free
-  (`evidence/P3/manual/ayokoding-www.md`, "Run 2"). A disposition is recorded there and in
-  `evidence/P2/local-stacks.md`: the container is proven in CI run 40693498144 (stack health, `podman cp`, row 26
-  with 37 passed) and the browser and locale proof comes from a native production build
-  (`evidence/P3/ui-gates/`), which is not container-level browser proof. The plan requires an explicit maintainer
-  decision to accept that substitute; none is recorded, so this item stays open. The records were built from a
-  dirty tree on top of `24a4c54d4`.
+  **Closed (2026-10-29):** `ose-www` and `organiclever-www` (en; Chromium, Firefox, WebKit) and both backends pass in
+  `evidence/P3/manual/`. `ayokoding-www` (en, id) has no local container browser result because five local image
+  builds stopped at the disk floor (`evidence/P3/manual/ayokoding-www.md`, "Run 2"). The container is proven in CI
+  run 40693498144 and the browser and locale proof comes from a native production build (`evidence/P3/ui-gates/`).
+  The maintainer accepted this substitute on 2026-10-29 ("gas arsip"; `evidence/P4/archival-record.md`, section 2).
 
 - [x] [AI] Record API/UI-feature scope dispositions: the runtime migration changes no API contract
       or unrelated product feature. The prerequisite Mermaid keyboard-access repair does change
@@ -1049,7 +1044,7 @@ Never run production/shared-system examples or publish an image solely to valida
 
 ### Phase 3 Gate
 
-- [ ] [AI] Before merge, trace AC-01–AC-06 and AC-08–AC-09 to real passing outputs and supported-host
+- [x] [AI] Before merge, trace AC-01–AC-06 and AC-08–AC-09 to real passing outputs and supported-host
       evidence; verify the data round-trip and rollback rehearsal, empty Docker-call log, unchanged
       content hashes, and no unowned teardown. Also verify AC-07's named pre-merge build/auth/tag
       proof. Missing macOS or other required local-platform evidence blocks this gate. The CI
@@ -1061,13 +1056,12 @@ Never run production/shared-system examples or publish an image solely to valida
       in Plan Archival's terminal delivery audit. Re-run the recorded failing boundary after any fix;
       do not retry to obtain a lucky result.
 
-  **Remaining (2026-10-29):** The trace now exists: `evidence/P3/ac-trace.md` (AC-01 to AC-10, with counts, run
-  ids and head SHAs). AC-02, AC-04, AC-05, AC-06 (126 and 124 by integration under declared exemptions), AC-08, AC-09
-  and AC-10 are met; AC-01 and AC-03 are met on Ubuntu and not fully on macOS. Blocked by the open Phase 3 items above
-  (macOS AC-03 stack proof and a passing macOS doctor, the maintainer decision on the Ayo container browser row). The
-  matrix rerun, the scope dispositions, the data rehearsal and recovery, and the AC-07 pre-merge proof are done.
-  Intentionally pending: AC-07 publication (after merge), and the CI package row, the four Ayo rows and the web-UI extra
-  (Phase 4, final head).
+  **Closed (2026-10-29):** `evidence/P3/ac-trace.md` traces AC-01 to AC-10 with counts, run ids and head SHAs. AC-02,
+  AC-04, AC-05, AC-06, AC-08, AC-09 and AC-10 are met; AC-01 and AC-03 are met on Ubuntu and in CI, and the macOS
+  gaps (Compose stack proof, a passing macOS `doctor`) and the local Ayo container browser row are accepted by the
+  maintainer ("gas arsip"; `evidence/P4/archival-record.md`, section 2). The CI package row, the Ayo rows and the
+  web-UI extra closed in CI (`evidence/P2/ci.md`). AC-07 publication closed after merge
+  (`evidence/P4/publishing-terminal.md`).
 
 > **Pause Safety**: supported workflows are proven and source data retained. Stop only resources
 > this plan started; resume by re-running the concrete P3 capability and smoke packet.
@@ -1164,22 +1158,19 @@ Never run production/shared-system examples or publish an image solely to valida
   gate run, and the declared adapters check passed (public policy transport 86 passed, 0 failed).
   The final-tree generated-binding gate stays under Local Quality Gates.
 
-- [ ] [AI] Run deterministic Markdown/frontmatter/headings/internal-link/word-budget and enforcement
+- [x] [AI] Run deterministic Markdown/frontmatter/headings/internal-link/word-budget and enforcement
       gates declared in `repo-config.yml`, judging exit codes. Run `rules-quality-gate` on this frozen
       change through its documented workflow and resolve its ledger under its bounded convergence
       rule. Record rule homes, enforcement proof, relocations, gate verdict, manifest, and final
       `rules-propagation` status; unresolved required rows block this delivery unit.
 
-  **Remaining:** `rules-quality-gate` ran in three cycles; the advisory final verdict is PASS, with no open
-  CRITICAL, HIGH or in-scope MEDIUM finding (`evidence/P4/rule-manifest.md`; C3-1 and C3-2 are LOW and deferred
-  to the plan owner, O1 and O2 are out of scope). Exit codes are recorded for the cycle 1 and cycle 2 gates (all
-  0), the shellcheck gate exited 0 (`evidence/P2/local-gates.md`), and the one emoji finding is in the gitignored,
-  untracked generated file `apps/ayokoding-www/generated/search-data.json`, outside the diff. Still open: (1) the
-  `(runtime proof pending)` note at `docker-artifact-cleanup.md` line 57, although the stack proof exists
-  (`evidence/P3/compose-stacks.md`, Compose-label lookup); it needs a `rules-fixer` edit, within that file's
-  750-word budget; (2) the owner item to wire `test:validators` or the two registry validators into a declared
-  gate (a declaration change goes to `swe-developer`); (3) the exit code of the harness adapters check, which
-  printed "canonical adapter validation is clean" without a captured code, on the final tree.
+  **Closed (2026-10-29):** `rules-quality-gate` ran in three cycles; the advisory final verdict is PASS, with no open
+  CRITICAL, HIGH or in-scope MEDIUM finding (`evidence/P4/rule-manifest.md`; C3-1 and C3-2 are LOW and deferred to
+  the plan owner, O1 and O2 are out of scope). Gate exit codes are in `evidence/P2/local-gates.md` and
+  `evidence/P4/delivery-readiness.md`. The `(runtime proof pending)` note at `docker-artifact-cleanup.md` is
+  replaced by the Compose-label fact, `./rhino governance word-budget validate` and `./rhino harness adapters
+validate` exit 0 on the archival tree. Wiring `test:validators` into a declared gate was deferred by the
+  maintainer on 2026-10-29 ("Tunda, lapor"; knowledge-capture item 17).
 
 ### Docs propagation and architecture reconciliation
 
@@ -1307,14 +1298,18 @@ Never run production/shared-system examples or publish an image solely to valida
   in run 40783837245), Ayo rows 14, 20, 26 and 33 and the web-UI extra on the final inputs (runs 40758214180 and
   40781987617, three browsers, zero retries), and the PR quality gate on the final head. See `evidence/P2/ci.md`.
 
-- [ ] [AI] Record the green pre-archival PR head and preliminary publication/hosting proof matrix.
+- [x] [AI] Record the green pre-archival PR head and preliminary publication/hosting proof matrix.
       Do not merge yet: Knowledge Capture and archival must land in this same PR first. Local image
       build/start and auth-command proof must already pass; only trigger-driven publication, hosted
       smoke, merge confirmation, and the terminal audit remain as named final-delivery proof.
 
+  **Closed (2026-10-29):** green pre-archival PR heads and the publication matrix are recorded in
+  `evidence/P4/delivery-readiness.md`, `evidence/P4/publishing-terminal.md` and `evidence/P4/archival-record.md`,
+  section 3.
+
 ### Phase 4 Gate
 
-- [ ] [AI] Required pre-merge local/CI/manual outcomes, rules/docs manifests, generated bindings,
+- [x] [AI] Required pre-merge local/CI/manual outcomes, rules/docs manifests, generated bindings,
       AC-01–AC-06 and AC-08–AC-10 substantive proof, and AC-07's named pre-merge local
       build/auth/tag proof agree with the current PR head. Verify all four named deferred Ayo
       commands and web-UI E2E extra passed in test-only CI with original scopes and that their executed SHA and recipe
@@ -1325,6 +1320,12 @@ Never run production/shared-system examples or publish an image solely to valida
       post-merge terminal proof; name that and only other genuine post-merge evidence in
       `evidence/P4/delivery.md`, then proceed to Knowledge Capture and archival-in-PR.
 
+  **Closed (2026-10-29):** the manifests, bindings, AC proof and the Ayo rows and web-UI extra agree with the delivered
+  head (`evidence/P4/delivery-readiness.md`, `evidence/P3/ac-trace.md`, `evidence/P2/ci.md`). The macOS and local
+  Ayo gaps and the deferred UI findings are explicit user decisions, not self-deferrals
+  (`evidence/P4/archival-record.md`, sections 1 and 2). Each pull request passed its exact-head
+  `pr-quality-gate.yml`.
+
 > **Pause Safety**: the complete switch is green in an unmerged PR; main, data, and unrelated
 > workloads remain intact. Resume with the recorded current-head CI and platform smoke packet;
 > do not automatically resume Phoenix or plan 10.
@@ -1334,59 +1335,53 @@ Never run production/shared-system examples or publish an image solely to valida
 - **Input:** execution observations in `learnings.md` and the green pre-archival PR proof.
 - **Outcome:** every observation has one explicit terminal disposition.
 
-- [ ] [AI] Apply the durable-learning litmus test, then secret/sensitivity and repo-relevance gates
+- [x] [AI] Apply the durable-learning litmus test, then secret/sensitivity and repo-relevance gates
       to each entry. Sanitize examples or discard entries that cannot retain meaning safely. Private
       infrastructure details never enter this public plan. Record discarded entries with reasons.
 
-  **Remaining:** `evidence/P5/knowledge-capture.md` now triages 38 entries (7 routed, 13 reported, 18
-  discarded). The seven 2026-10-29 entries cover the Ayo build context that copies native `.next` output because
-  the root `.dockerignore` lacks it, the runner disk exhaustion in run 40667489060 and its stack-first fix, the
-  Ayo image build's 54 GB-plus disk need, the unexplained intermittent Firefox `waitForURL` stall (hydration
-  hypothesis refuted), the Dockerfile `HEALTHCHECK` ignored under the OCI image format, the anonymous Postgres
-  volumes left by backend `down`, and the pre-existing UI findings. Close this item once the green pre-archival
-  PR head exists and has added no further observation.
+  **Closed (2026-10-29):** `evidence/P5/knowledge-capture.md` triages 43 entries (2 routed, 16 reported, 25 discarded).
+  The archival audit re-triaged five entries that had been marked routed because no edit landed (the guidance
+  already existed).
 
-- [ ] [AI] Route each surviving non-code learning to its owning durable home and land a bounded
+- [x] [AI] Route each surviving non-code learning to its owning durable home and land a bounded
       inline correction with required propagation. For code-homed future work, report with handoff
       evidence unless a separate idea artifact is literally authorized. Do not create/update
       `plans/ideas/` without that authorization and never write new backlog work during Knowledge
       Capture. When idea authorization exists, search for overlap before creating a two-pager.
 
-  **Remaining:** seven inline routes landed and thirteen items are reported to the maintainer, with no plan
-  authorization and no `plans/ideas/` write (`evidence/P5/knowledge-capture.md`, items 1 to 13). Close with the
-  green pre-archival PR head.
+  **Closed (2026-10-29):** two inline routes landed and sixteen entries are reported to the maintainer, with no plan
+  authorization and no `plans/ideas/` write (`evidence/P5/knowledge-capture.md`, items 1 to 17).
 
-- [ ] [AI] Record each terminal state in `learnings.md`: routed inline, explicitly authorized idea
+- [x] [AI] Record each terminal state in `learnings.md`: routed inline, explicitly authorized idea
       path, reported without plan authorization with handoff evidence, or discarded with reason. If
       none arose, record `No generalizable learnings — <reason>` rather than inventing an insight.
 
-  **Remaining:** all 38 entries in `learnings.md` carry a terminal state. Add a state for any observation the
-  green pre-archival PR head adds, then close.
+  **Closed (2026-10-29):** all 43 entries in `learnings.md` carry a terminal state.
 
 ### Phase 5 Gate
 
-- [ ] [AI] Verify no learning remains untriaged and no future code-homed learning landed inline.
+- [x] [AI] Verify no learning remains untriaged and no future code-homed learning landed inline.
       Re-run gates invalidated by any durable-home edits; record `evidence/P5/knowledge-capture.md`.
 
-  **Remaining:** the new entries are triaged. After the green pre-archival PR head, re-run the gates invalidated by
-  the seven durable-home edits and update `evidence/P5/knowledge-capture.md`.
+  **Closed (2026-10-29):** no learning is untriaged. The gates invalidated by the durable-home edits (word budget,
+  adapters, internal links, Prettier) ran on the archival tree.
 
 > **Pause Safety**: each learning has a terminal state. Resume by checking `learnings.md` for open
 > entries and the current-head audit matrix before archival.
 
 ## Plan Archival
 
-- [ ] [AI] Perform the preliminary end-to-end completeness audit: map scope and every PRD AC to
+- [x] [AI] Perform the preliminary end-to-end completeness audit: map scope and every PRD AC to
       delivered artifacts, automated/manual/CI proof, data migration/rollback, rule/docs propagation,
       conditional recovery, and Knowledge Capture. Reopen the earliest affected packet for missing
       substantive proof; only final archival-delivery proof may remain pending.
-- [ ] [AI] Verify every substantive checklist item is ticked with evidence, supported locales were
+- [x] [AI] Verify every substantive checklist item is ticked with evidence, supported locales were
       exercised, all local/CI gates pass, and all applicable exploratory defect findings are fixed.
       If a required defect cannot be fixed, obtain explicit user deferral; do not self-defer it.
-- [ ] [AI] Register the workflow-owned terminal post-delivery audit task, including exact final
+- [x] [AI] Register the workflow-owned terminal post-delivery audit task, including exact final
       reviewed/merge head, AC matrix, CI/manual proof, backup/rollback dispositions, and Knowledge
       Capture. Do not assign terminal pass before that audit observes the delivered archival head.
-- [ ] [AI] After pre-archival gates pass, run `rtk date +%F` and resolve `<completion-date>` from
+- [x] [AI] After pre-archival gates pass, run `rtk date +%F` and resolve `<completion-date>` from
       that output. Move via
       `rtk git mv plans/in-progress/docker-to-podman/ plans/done/<completion-date>__docker-to-podman/`;
       preserve evidence, update in-progress/done indexes and live DAG/dependencies, and correct links.
@@ -1405,6 +1400,12 @@ Never run production/shared-system examples or publish an image solely to valida
       terminal delivery can be marked passed. If no existing trigger publishes, obtain separate
       authority for the existing publication path or leave terminal delivery incomplete. Never
       push a speculative image solely to validate a document.
+
+  **Annotation (2026-10-29):** the runtime merge (PR #749, reviewed head `7660e498f`, squash `f5f544fe7`), the
+  publication run 40773249804, the registry digests and the published-image start are recorded in
+  `evidence/P4/publishing-terminal.md` and `evidence/P4/archival-record.md` (sections 3 and 4). Evidence and one CI
+  hardening step followed as pull requests #751 to #757. This item stays open until the archival pull request merges.
+
 - [ ] [AI] Verify existing hosted public URLs after any already-existing deployment triggered by
       this delivery, without changing hosting/deployment configuration. Record HTTP responses and
       serving revision where exposed; a deployment that did not run is recorded as not-run. Run

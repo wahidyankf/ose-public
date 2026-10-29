@@ -54,7 +54,7 @@ for n in $(podman ps -a --format '{{.Names}}'); do
 done
 ```
 
-Confirm these label keys against `podman-compose` 1.6.0 before relying on them (runtime proof pending).
+`podman-compose` 1.6.0 sets both label keys: `com.docker.compose.project` and `com.docker.compose.project.working_dir`.
 
 Remove only those names, then re-run the listing and expect zero. `<project>` is the container's
 `com.docker.compose.project` label. `podman rm -f -v` drops only the container's own anonymous volumes:

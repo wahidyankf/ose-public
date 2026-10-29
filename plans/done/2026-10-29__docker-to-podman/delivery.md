@@ -165,13 +165,21 @@ The initial provisioning identity below remains historical provenance.
 - Created by: Codex coordinator `/root`, creation command session `16426`
 - Created at: `2026-10-26T12:03:44Z`
 
+### Recorded deviations (2026-10-29)
+
+Execution did not follow three statements above: one runtime PR carrying archival, CI proof closing before merge, and no
+follow-up archival PR. The actual sequence (nine PRs, #749 and #751 to #758), the proofs that closed after the #749
+merge, and the absence of a recorded maintainer authorization for that order are in
+[the archival record](./evidence/P4/archival-record.md), section 3. This note does not change the original text.
+
 ### Delivery Branch Inventory
 
 | Branch                  | Mode        | Lifecycle state | Proof                                                                                                                                                                                          |
 | ----------------------- | ----------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `docker-to-podman-base` | provisioned | active          | `git worktree add -b docker-to-podman-base worktrees/docker-to-podman origin/main`, session `16426`, exit 0; initial head `71bb3aa5cadc1043e709e6cb13c2e0ffd8f489a7` at `2026-10-26T12:03:44Z` |
 
-Each eventual PR entry records its merged PR and 40-character reviewed head. Before cleanup,
+Each eventual PR entry records its merged PR and 40-character reviewed head. The complete inventory, with every PR branch
+and head, is in [the archival record](./evidence/P4/archival-record.md), section 6. Before cleanup,
 classify every entry as delivered, unused, or retained/escalated. Never store machine names or
 resolved home paths in tracked docs. The separate promotion branch was already delivered and
 removed; its proof appears under the completed promotion action.
@@ -1298,6 +1306,8 @@ validate` exit 0 on the archival tree. Wiring `test:validators` into a declared 
   in run 40783837245), Ayo rows 14, 20, 26 and 33 and the web-UI extra on the final inputs (runs 40758214180 and
   40781987617, three browsers, zero retries), and the PR quality gate on the final head. See `evidence/P2/ci.md`.
 
+  **Annotation (2026-10-29):** Several proofs this item lists (the Postgres cold-runner scenario, row 20 on the final inputs, the cgroup, DNS and overlay assertion and the `ayokoding-cli` e2e step) were run on throwaway branches after #749 merged at 2026-10-28T21:35:44Z. The plan required them before merge, and no separate maintainer authorization for the order is recorded. See `evidence/P4/archival-record.md`, section 3.
+
 - [x] [AI] Record the green pre-archival PR head and preliminary publication/hosting proof matrix.
       Do not merge yet: Knowledge Capture and archival must land in this same PR first. Local image
       build/start and auth-command proof must already pass; only trigger-driven publication, hosted
@@ -1330,6 +1340,8 @@ validate` exit 0 on the archival tree. Wiring `test:validators` into a declared 
 > workloads remain intact. Resume with the recorded current-head CI and platform smoke packet;
 > do not automatically resume Phoenix or plan 10.
 
+**Annotation (2026-10-29):** Several proofs this item lists (the Postgres cold-runner scenario, row 20 on the final inputs, the cgroup, DNS and overlay assertion and the `ayokoding-cli` e2e step) were run on throwaway branches after #749 merged at 2026-10-28T21:35:44Z. The plan required them before merge, and no separate maintainer authorization for the order is recorded. See `evidence/P4/archival-record.md`, section 3.
+
 ## Phase 5: Knowledge Capture
 
 - **Input:** execution observations in `learnings.md` and the green pre-archival PR proof.
@@ -1339,7 +1351,7 @@ validate` exit 0 on the archival tree. Wiring `test:validators` into a declared 
       to each entry. Sanitize examples or discard entries that cannot retain meaning safely. Private
       infrastructure details never enter this public plan. Record discarded entries with reasons.
 
-  **Closed (2026-10-29):** `evidence/P5/knowledge-capture.md` triages 43 entries (2 routed, 16 reported, 25 discarded).
+  **Closed (2026-10-29):** `evidence/P5/knowledge-capture.md` triages 44 entries (2 routed, 17 reported, 25 discarded).
   The archival audit re-triaged five entries that had been marked routed because no edit landed (the guidance
   already existed).
 
@@ -1349,14 +1361,14 @@ validate` exit 0 on the archival tree. Wiring `test:validators` into a declared 
       `plans/ideas/` without that authorization and never write new backlog work during Knowledge
       Capture. When idea authorization exists, search for overlap before creating a two-pager.
 
-  **Closed (2026-10-29):** two inline routes landed and sixteen entries are reported to the maintainer, with no plan
-  authorization and no `plans/ideas/` write (`evidence/P5/knowledge-capture.md`, items 1 to 17).
+  **Closed (2026-10-29):** two inline routes landed and seventeen entries are reported to the maintainer, with no plan
+  authorization and no `plans/ideas/` write (`evidence/P5/knowledge-capture.md`, items 1 to 18).
 
 - [x] [AI] Record each terminal state in `learnings.md`: routed inline, explicitly authorized idea
       path, reported without plan authorization with handoff evidence, or discarded with reason. If
       none arose, record `No generalizable learnings — <reason>` rather than inventing an insight.
 
-  **Closed (2026-10-29):** all 43 entries in `learnings.md` carry a terminal state.
+  **Closed (2026-10-29):** all 44 entries in `learnings.md` carry a terminal state.
 
 ### Phase 5 Gate
 
@@ -1378,6 +1390,9 @@ validate` exit 0 on the archival tree. Wiring `test:validators` into a declared 
 - [x] [AI] Verify every substantive checklist item is ticked with evidence, supported locales were
       exercised, all local/CI gates pass, and all applicable exploratory defect findings are fixed.
       If a required defect cannot be fixed, obtain explicit user deferral; do not self-defer it.
+
+  **Annotation (2026-10-29):** Not every gate is green. macOS `doctor` exits 1 (unrelated toolchains), `non-product-full-quality` stays red on the `ferret-cli` baseline, and the blocking UI rows (UWQ-001, DWT-001, DWT-002, UWT-014) and EWT-003 were deferred, not fixed. The deferrals are explicit maintainer decisions recorded in `evidence/P4/archival-record.md`, sections 1 and 2. Attribution that every UI finding existed on `main` before this change was verified for the rows the UI gates re-attributed (`evidence/P3/scope-dispositions.md`); the remaining UWT rows were not individually re-attributed.
+
 - [x] [AI] Register the workflow-owned terminal post-delivery audit task, including exact final
       reviewed/merge head, AC matrix, CI/manual proof, backup/rollback dispositions, and Knowledge
       Capture. Do not assign terminal pass before that audit observes the delivered archival head.
@@ -1389,6 +1404,9 @@ validate` exit 0 on the archival tree. Wiring `test:validators` into a declared 
       push with a fresh head-specific leak review, and require replacement exact-head/base CI and
       applicable finite surface gates. Archival removes the satisfied live prerequisite from
       Phoenix's declaration while retaining its historical dependency and resumption requirements.
+
+  **Annotation (2026-10-29):** The move landed in a separate pull request (#758), not on the runtime PR branch, because the runtime PR had already merged and the publication proof needed the merge. See `evidence/P4/archival-record.md`, section 3.
+
 - [ ] [AI] Once the archival commit is present and hardened merge preconditions pass, merge that
       same PR under its declared AI authority. Record reviewed head, merge commit, actual jobs, and
       current-main observation. The Phase 2 evidence contains only pre-merge build/auth/tag

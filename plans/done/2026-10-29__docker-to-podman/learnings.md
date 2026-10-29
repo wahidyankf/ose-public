@@ -527,3 +527,16 @@ Progress screens pass automated accessibility checks` hit the 150 s test timeout
 - **Response and proof:** on a real fresh GitHub runner the same scenario passed in the full real-engine suite (run
   40778630932, `evidence/P2/ci.md`).
 - **Disposition:** discarded. The cause was the emulation, and the real cold-runner result settles the question.
+
+## 2026-10-29 — The HIPPO consumer smoke is outside the PR gate and caught a regression days later
+
+- **Observation:** `HIPPO Consumer Smoke` (`.github/scripts/test-hippo-consumer.sh`) requires five dev and reset scripts in
+  `package.json` to start with `./hippo run `. PR #749 put an `export ... && scripts/container-runtime-check --compose &&`
+  prefix in front of them, so the smoke has failed on `main` since the merge (scheduled run 40777857700, dispatch run
+  40803547159 on `b5a4a4f7d`). The PR quality gate does not run this check, and no local gate of this plan did either.
+- **Response and proof:** the scripts were restructured in the closeout pull request so each starts with `./hippo run` and
+  a wrapper does the environment and preflight inside the supervised command, without changing the guard. The smoke run
+  that proves it is recorded in `evidence/P4/archival-record.md`, section 9.
+- **Disposition:** reported without plan authorization. The code-homed gap is that a change to `package.json` scripts or to
+  `scripts/` is not covered by any pull-request check of the HIPPO consumer contract. Handoff:
+  [P5 knowledge capture](./evidence/P5/knowledge-capture.md).

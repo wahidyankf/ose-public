@@ -5,12 +5,12 @@ dated 2026-10-29 were added after the first triage and are triaged below under "
 Each entry was compared with the existing guidance under `repo-governance/`, `docs/`, `AGENTS.md`
 and `.agents/skills/` before its state was chosen. Each `routed inline` target was read first.
 
-Totals: 43 entries. 2 routed inline, 16 reported without plan authorization, 25 discarded. The first 31 entries
+Totals: 44 entries. 2 routed inline, 17 reported without plan authorization, 25 discarded. The first 31 entries
 kept their original states (7, 7 and 17) until the archival audit of 2026-10-29 found that five of the seven routed
 entries needed no edit, because the guidance they cite already existed; those five are now discarded (2 routed, 7
 reported, 22 discarded). The same audit moved the Compose-status entry to discarded and routed the `localhost`
-template correction that landed in the archival change, so the totals above stand. The seven entries dated 2026-10-29 add 6 reported and 1 discarded, and five entries added
-during archival add 4 reported and 1 discarded.
+template correction that landed in the archival change, so the totals above stand. The seven entries dated 2026-10-29 add 6 reported and 1 discarded, and six entries added
+during archival add 5 reported and 1 discarded.
 
 ## Terminal states
 
@@ -69,6 +69,7 @@ during archival add 4 reported and 1 discarded.
 | The PR gate skips every container job for an action-only change       | reported  | Code-homed path-filter fix; see item 16                |
 | `test:validators` is run by no declared gate                          | reported  | Maintainer deferred on 2026-10-29; see item 17         |
 | An emulated cold Podman store failed for reasons of the emulation     | discarded | Real cold runner passed the scenario (run 40778630932) |
+| The HIPPO consumer smoke is outside the PR gate                       | reported  | Code-homed gate gap; see item 18                       |
 
 Paths in the table are shortened. The full paths are in each entry's disposition in `learnings.md`.
 The directories are `repo-governance/development/quality/`, `repo-governance/development/practice/`,
@@ -152,6 +153,9 @@ else below was edited in this plan.
     container jobs so a change to the action runs on a runner before merge. Code-homed fix.
 17. **`test:validators` is in no declared gate.** Wire the suite, or its two registry validators, into the PR gate or a
     hook. The maintainer deferred this on 2026-10-29 when asked directly.
+18. **The HIPPO consumer smoke is outside the PR gate.** `HIPPO Consumer Smoke` guards the shape of the HIPPO-wrapped
+    `package.json` scripts, but no pull-request check runs it, so a regression introduced by #749 stayed on `main`
+    unnoticed until a scheduled run. Add it to the PR gate for changes to `package.json` and `scripts/`. Code-homed fix.
 
 ## Verification limits
 

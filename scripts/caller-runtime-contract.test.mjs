@@ -43,15 +43,17 @@ const CALLERS = [
   },
 ];
 
-// package.json stacks that start a Compose project in the foreground. organiclever:dev:reset runs `down -v` on purpose,
-// so only the provider, preflight-order and docker rules apply to it; the teardown rule is for E2E runners only.
-const PACKAGE_STACKS = [
-  "dev:ayokoding-www",
-  "dev:ose-www",
-  "dev:organiclever",
-  "organiclever:dev",
-  "organiclever:dev:reset",
-];
+// package.json stacks that start a Compose project in the foreground, each mapped to the HIPPO class it runs under. Each
+// runs its Compose call through scripts/container-compose inside that supervised command, so the preflight and the
+// provider are admitted with the workload. organiclever:dev:reset runs `down -v` on purpose, so only the provider,
+// preflight-order and docker rules apply to it; the teardown rule is for E2E runners only.
+const PACKAGE_STACKS = {
+  "dev:ayokoding-www": "service",
+  "dev:ose-www": "service",
+  "dev:organiclever": "service",
+  "organiclever:dev": "service",
+  "organiclever:dev:reset": "transactional",
+};
 
 const FAKES = {
   // Logs every call. `compose` dispatches only to a provider that is an executable inside FIXTURE_BIN, as a real
@@ -280,10 +282,12 @@ for (const caller of CALLERS) {
   }
 }
 
-for (const name of PACKAGE_STACKS) {
-  test(`package.json ${name} exports podman-compose and preflights before compose, never docker`, () => {
+for (const [name, supervisedClass] of Object.entries(PACKAGE_STACKS)) {
+  test(`package.json ${name} runs scripts/container-compose inside HIPPO at class ${supervisedClass}, preflights before compose, never docker`, () => {
     const f = makeFixture("stack-", { withHippo: true });
     try {
+      copyFileSync(join(REPO, "scripts", "container-compose"), join(f.root, "scripts", "container-compose"));
+      chmodSync(join(f.root, "scripts", "container-compose"), 0o755);
       const command = PACKAGE_SCRIPTS[name];
       assert.equal(typeof command, "string", `package.json scripts.${name} is missing`);
       const result = spawnSync("/bin/sh", ["-c", command], {
@@ -294,6 +298,12 @@ for (const name of PACKAGE_STACKS) {
       });
       assert.equal(result.status, 0, result.stderr);
       const lines = calls(f);
+      assert.ok(
+        lines[0]?.startsWith(
+          `hippo run --class ${supervisedClass} --resource-tier standard --disk-path . -- scripts/container-compose `,
+        ),
+        `the first call must be the HIPPO-supervised wrapper:\n${lines.join("\n")}`,
+      );
       const preflight = lines.findIndex(isPreflight);
       assert.equal(lines[preflight], "preflight --compose PCP=podman-compose");
       assert.ok(lines.findIndex(isCompose) > preflight, `preflight must precede compose:\n${lines.join("\n")}`);

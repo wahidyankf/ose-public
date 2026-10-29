@@ -26,7 +26,7 @@ original actor's identity.
 | Branch                      | Mode          | Lifecycle state | Proof                                                                      |
 | --------------------------- | ------------- | --------------- | -------------------------------------------------------------------------- |
 | `ayokoding-app-web`         | `provisioned` | active          | Branch reflog creation from the authoring baseline at the timestamp above. |
-| `ayokoding-app-web-go-htmx` | `planned`     | active          | Go+htmx stack rewrite of this plan, branched from `origin/main`.           |
+| `ayokoding-app-web-go-htmx` | `planned`     | delivered       | Go+htmx stack rewrite of this plan, merged as PR #761 at `0205fdb3e`.      |
 
 Append every delivery branch before use and record the merged PR plus reviewed 40-character head
 SHA. Resolve the worktree route against the selected repository at runtime and reconcile with

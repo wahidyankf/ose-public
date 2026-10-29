@@ -8,12 +8,12 @@ architecture documents remain honest about what currently exists.
 
 1. [Baseline and parity](./001-baseline-and-parity.md) — inspected source, scenario dispositions,
    shared-source changes, and parallel-plan coordination.
-2. [Architecture and content](./002-architecture-and-content.md) — Elixir contexts, rendering,
+2. [Architecture and content](./002-architecture-and-content.md) — Go packages, rendering,
    local configuration, shared datasets, browser state, and runtime boundaries.
-3. [BDD and verification](./003-bdd-and-verification.md) — imported library provenance, layer
+3. [BDD and verification](./003-bdd-and-verification.md) — godog harness, layer
    ownership, strict static checking, numeric coverage, and local commands.
-4. [API contract delta](./004-api-contract-delta.md) — page and discovery HTTP behavior, native
-   LiveView events, retained old tRPC boundary, and attributable wire recipes.
+4. [API contract delta](./004-api-contract-delta.md) — page and discovery HTTP behavior, htmx
+   fragment endpoints, retained old tRPC boundary, and attributable wire recipes.
 5. [Decisions and file impact](./005-decisions-and-file-impact.md) — alternatives, annotated file
    tree, concrete rule/docs impacts, and rollback.
 

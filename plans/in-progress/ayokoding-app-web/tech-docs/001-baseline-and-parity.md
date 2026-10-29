@@ -3,7 +3,7 @@
 ## Inspected state
 
 The authoring baseline is commit `88d4f0b36156b6efb10c03e532a646cea65f81b1`. At that revision
-`apps/ayokoding-www` is a Next.js application; the Phoenix app and its test projects do not exist.
+`apps/ayokoding-www` is a Next.js application; the Go app and its test projects do not exist.
 The source of truth is the current files, not an old plan's assumed route or course count.
 
 | Existing source                                               | Contract to preserve                                                                                                                          |
@@ -37,22 +37,22 @@ No empty destination is permitted for a user-facing outcome. `implementation-onl
 specific reason and its replacement proof or an explicit explanation that no product outcome is
 being removed. Never count an unexpanded outline as one passing proof for all its rows.
 
-| Source family                                                                         | Destination / disposition                                                                                                                                                                                                                                              |
-| ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `frontend/app-shell/{accessibility,responsive}.feature`; `frontend/i18n/*.feature`    | Shell, locale/navigation, and accessibility scenarios; retain user behavior.                                                                                                                                                                                           |
-| `frontend/content/{content-rendering,code-block-copy,course-content-hygiene}.feature` | Content, browser helpers, and current shared-corpus integrity; retain or adapt framework coupling.                                                                                                                                                                     |
-| `frontend/content/static-delivery.feature`                                            | Adapt readable initial HTML, correct assets, cache safety, and draft exclusion. Next prerender manifests, standalone tracing, and Next cache internals are implementation-only; never require Phoenix to fabricate those artifacts or a fixed prerendered route count. |
-| `frontend/navigation/*.feature`                                                       | Routes and navigation; preserve redirect precedence and source revision. Reconcile Learn-bucket changes already merged from plan 14.                                                                                                                                   |
-| `frontend/search/search.feature`                                                      | Search dialog, keyboard, result navigation, and static tools discovery.                                                                                                                                                                                                |
-| `frontend/course-paths/*.feature`                                                     | Course catalog and paths; every current path-order, phase, prerequisite, fallback, framing, omitted-course, and accessibility outcome must appear in the disposition ledger.                                                                                           |
-| `frontend/learning-progress/*.feature`                                                | Browser progress and learning journeys; preserve exact storage schema and privacy.                                                                                                                                                                                     |
-| `frontend/tools/*.feature`                                                            | Tools index and both tools; port all controls and modes, not just the abbreviated control count in an old comment.                                                                                                                                                     |
-| `backend/{content,navigation,search,i18n}/*.feature`                                  | Adapt data and validation semantics into context/LiveView scenarios. Do not reproduce tRPC's JSON envelope.                                                                                                                                                            |
-| `backend/health/health-check.feature`                                                 | Retain old-app tRPC checks there; prove the new server's readiness through its real `/en` HTML route. No new health API is needed.                                                                                                                                     |
-| `build-tools/index-generation/*.feature`                                              | Remain owned by the existing generator. The new app proves read-only consumption and generated-index rendering instead of duplicating the generator.                                                                                                                   |
-| `build-tools/benchmark-reference-generation/*.feature`                                | Preserve the generator and its old TS imports; shared-data extraction must leave generated reference blocks unchanged.                                                                                                                                                 |
-| `build-tools/env-loader/*.feature`                                                    | Adapt environment isolation and startup validation to Phoenix local/test configuration.                                                                                                                                                                                |
-| `build-tools/build-workers/*.feature`                                                 | Next worker budgeting remains with Next; Phoenix compile/test work goes through HIPPO with fixed admission.                                                                                                                                                            |
+| Source family                                                                         | Destination / disposition                                                                                                                                                                                                                                                 |
+| ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `frontend/app-shell/{accessibility,responsive}.feature`; `frontend/i18n/*.feature`    | Shell, locale/navigation, and accessibility scenarios; retain user behavior.                                                                                                                                                                                              |
+| `frontend/content/{content-rendering,code-block-copy,course-content-hygiene}.feature` | Content, browser helpers, and current shared-corpus integrity; retain or adapt framework coupling.                                                                                                                                                                        |
+| `frontend/content/static-delivery.feature`                                            | Adapt readable initial HTML, correct assets, cache safety, and draft exclusion. Next prerender manifests, standalone tracing, and Next cache internals are implementation-only; never require the Go app to fabricate those artifacts or a fixed prerendered route count. |
+| `frontend/navigation/*.feature`                                                       | Routes and navigation; preserve redirect precedence and source revision. Reconcile Learn-bucket changes already merged from plan 14.                                                                                                                                      |
+| `frontend/search/search.feature`                                                      | Search dialog, keyboard, result navigation, and static tools discovery.                                                                                                                                                                                                   |
+| `frontend/course-paths/*.feature`                                                     | Course catalog and paths; every current path-order, phase, prerequisite, fallback, framing, omitted-course, and accessibility outcome must appear in the disposition ledger.                                                                                              |
+| `frontend/learning-progress/*.feature`                                                | Browser progress and learning journeys; preserve exact storage schema and privacy.                                                                                                                                                                                        |
+| `frontend/tools/*.feature`                                                            | Tools index and both tools; port all controls and modes, not just the abbreviated control count in an old comment.                                                                                                                                                        |
+| `backend/{content,navigation,search,i18n}/*.feature`                                  | Adapt data and validation semantics into handler/template scenarios. Do not reproduce tRPC's JSON envelope.                                                                                                                                                               |
+| `backend/health/health-check.feature`                                                 | Retain old-app tRPC checks there; prove the new server's readiness through its real `/en` HTML route. No new health API is needed.                                                                                                                                        |
+| `build-tools/index-generation/*.feature`                                              | Remain owned by the existing generator. The new app proves read-only consumption and generated-index rendering instead of duplicating the generator.                                                                                                                      |
+| `build-tools/benchmark-reference-generation/*.feature`                                | Preserve the generator and its old TS imports; shared-data extraction must leave generated reference blocks unchanged.                                                                                                                                                    |
+| `build-tools/env-loader/*.feature`                                                    | Adapt environment isolation and startup validation to Go local/test configuration.                                                                                                                                                                                        |
+| `build-tools/build-workers/*.feature`                                                 | Next worker budgeting remains with Next; Go build/test work goes through HIPPO with fixed admission.                                                                                                                                                                      |
 
 ## Stable fixtures and current-corpus proof
 
@@ -79,7 +79,7 @@ affected contracts and tests. The source revision is a moving integration input,
 requires course authors to preserve old content. Do not inspect or consume their uncommitted
 worktrees. Respect the declared execution order without adding coordinated-merge prerequisites.
 
-When plan 07 has already removed transitional manifest fields, remove the corresponding Phoenix
+When plan 07 has already removed transitional manifest fields, remove the corresponding Go
 acceptance branches and fixtures. When plan 14 has already removed legacy content, use its surviving
 renderer fixture, current Learn buckets, current redirects, and updated search/sitemap expectations.
 If those changes have not merged, implement the current source faithfully without predicting them.
@@ -87,12 +87,12 @@ If those changes have not merged, implement the current source faithfully withou
 ```mermaid
 flowchart LR
   accTitle: Ordered content work
-  accDescr: The Podman migration precedes Phoenix, which precedes each AyoKoding plan; the rewrite consumes current merged sources.
+  accDescr: The Podman migration precedes Go, which precedes each AyoKoding plan; the rewrite consumes current merged sources.
   C["Course plans"] --> M["Merged main"]
-  R["Phoenix rewrite"] --> M
+  R["Go rewrite"] --> M
   M --> S["Shared corpus"]
   S --> N["Next.js reader"]
-  S --> P["Phoenix reader"]
+  S --> P["Go reader"]
   classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```
 

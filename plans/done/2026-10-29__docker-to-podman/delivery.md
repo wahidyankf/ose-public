@@ -1407,7 +1407,7 @@ validate` exit 0 on the archival tree. Wiring `test:validators` into a declared 
 
   **Annotation (2026-10-29):** The move landed in a separate pull request (#758), not on the runtime PR branch, because the runtime PR had already merged and the publication proof needed the merge. See `evidence/P4/archival-record.md`, section 3.
 
-- [ ] [AI] Once the archival commit is present and hardened merge preconditions pass, merge that
+- [x] [AI] Once the archival commit is present and hardened merge preconditions pass, merge that
       same PR under its declared AI authority. Record reviewed head, merge commit, actual jobs, and
       current-main observation. The Phase 2 evidence contains only pre-merge build/auth/tag
       construction proof; it does not satisfy AC-07's publication scenario. Observe the existing
@@ -1424,27 +1424,38 @@ validate` exit 0 on the archival tree. Wiring `test:validators` into a declared 
   `evidence/P4/publishing-terminal.md` and `evidence/P4/archival-record.md` (sections 3 and 4). Evidence and one CI
   hardening step followed as pull requests #751 to #757. This item stays open until the archival pull request merges.
 
-- [ ] [AI] Verify existing hosted public URLs after any already-existing deployment triggered by
+  **Closed (2026-10-29):** PR #749 (reviewed head `7660e498fd9d7bc5f8dc6d56222e4a2ccc3c1648`, squash `f5f544fe7`) and the archival PR #758 (reviewed head `3f2402a5344c431686b9a595b85d96ad1dfe8018`, squash `b5a4a4f7d`) are merged, each on a green exact-head gate. Publication run 40773249804, tag-to-digest results and the published-image start are in `evidence/P4/publishing-terminal.md` and `evidence/P4/archival-record.md` (sections 3 and 4). The order deviated from this item: see the annotation on the archival item and `evidence/P4/archival-record.md`, section 3.
+
+- [x] [AI] Verify existing hosted public URLs after any already-existing deployment triggered by
       this delivery, without changing hosting/deployment configuration. Record HTTP responses and
       serving revision where exposed; a deployment that did not run is recorded as not-run. Run
       the registered terminal audit against the delivered head, including final publication proof.
       Record pass only when artifacts, behavior, proof, and final-delivery evidence agree. A failure
       reopens execution; do not conceal it with a post-merge checkbox edit.
 
+  **Closed (2026-10-29):** Deployment is recorded as not-run: the prod workflows for `ose-www`, `ayokoding-www` and `organiclever-www` passed on `main` with Deploy skipped (runs 40795957892, 40795961949, 40775591629), production branches unchanged, and the hosted URLs answered 200, 308, 200. The changed `ayokoding-www` UI is not yet deployed. The terminal audit by `plan-execution-checker` ran on the delivered head `b5a4a4f7d` and returned PASS with two HIGH record-integrity findings, corrected in the closeout pull request (`evidence/P4/archival-record.md`, sections 3, 5 and 9).
   **Phase 0 observation capability:** the Vercel MCP initialization probe reports
   `Auth required`. Use the documented CI/deploy-branch Git and public HTTP fallback for this
   unchanged-hosting observation; claim a serving revision only where exposed. No dashboard-only
   measurement is required. See [deployment observation evidence](./evidence/P0/deployment-observation.md).
 
-- [ ] [AI] Classify every Delivery Branch Inventory entry as delivered, unused, or retained/escalated,
+- [x] [AI] Classify every Delivery Branch Inventory entry as delivered, unused, or retained/escalated,
       naming evidence and owner for retained entries. Run the
       [mandatory pre-removal checks](../../../repo-governance/development/workflow/worktree-and-artifact-cleanup/mandatory-pre-removal-checks.md)
       and [Dev Artifact Clean-Up](../../../repo-governance/workflows/maintenance/dev-artifact-clean-up.md)
       for only this plan's resources; preserve data, base images, backups, and peer worktrees.
+
+  **Closed (2026-10-29):** Every entry is classified in `evidence/P4/archival-record.md`, section 6. The two rehearsal volumes (label `owner=docker-to-podman-rehearsal`) were deleted by exact name after a check that no container used them; no base image, backup or peer worktree was touched.
+
 - [ ] [AI] Remove the now-unused execution worktree non-force from the repository root with
       `rtk git worktree remove worktrees/docker-to-podman`. Complete every created branch's proof-gated
       [branch cleanup](../../../repo-governance/development/workflow/worktree-and-artifact-cleanup/branch-cleanup.md),
       then `rtk git worktree prune`. Never delete an ambiguous, retained, or unrecorded branch.
+
+  **Status (2026-10-29):** Performed after the closeout pull request merges, from the repository root. It is left unticked here on purpose rather than ticked ahead of the action; the outcome is in the final report to the maintainer.
+
 - [ ] [AI] Report delivery, terminal audit, retained backup/resource ownership, and satisfied Podman
       prerequisite to the maintainer. Phoenix and plan 10 remain stopped until their authorized
       executors reconcile current main, checkpoints, runtime setup, and remaining gates.
+
+  **Status (2026-10-29):** Delivered in the final report to the maintainer after the closeout pull request merges and the cleanup above. Left unticked here for the same reason.

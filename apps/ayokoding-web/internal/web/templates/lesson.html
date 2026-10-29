@@ -1,0 +1,44 @@
+{{define "lesson"}}<!doctype html>
+<html lang="{{.Shell.Lang}}" data-theme-hook data-sidebar style="--sidebar-width: 240px">
+  <head>
+    {{template "head" .Shell}}
+  </head>
+  <body>
+    {{template "header" .Shell}}
+    <main id="main">
+      <nav aria-label="breadcrumb" data-breadcrumbs>
+        <a href="/{{.Shell.Lang}}">{{if eq .Shell.Lang "id"}}Beranda{{else}}Home{{end}}</a> /
+        <a href="/{{.Shell.Lang}}/learn/{{.Page.Course}}">{{.Page.SectionTitle}}</a> /
+        <span aria-current="page">{{.Page.Title}}</span>
+      </nav>
+      <aside data-sidebar-nav data-active-page="{{.Page.Slug}}">
+        <ul>
+          <li>
+            <a href="/{{.Shell.Lang}}/learn/{{.Page.Course}}/{{.Page.Slug}}" aria-current="page">{{.Page.Title}}</a>
+          </li>
+        </ul>
+      </aside>
+      {{if .TOC}}
+      <nav aria-label="table of contents" data-toc>
+        <ul>
+          {{range .TOC}}
+          <li><a href="#{{.ID}}">{{.Text}}</a></li>
+          {{end}}
+        </ul>
+      </nav>
+      {{end}}
+      <article class="article-body" data-lesson-meta data-course="{{.Page.Course}}" data-lesson="{{.Page.Slug}}">
+        {{.BodyHTML}}
+      </article>
+      <nav aria-label="lesson" data-lesson-nav>
+        {{if .PrevURL}}<a href="{{.PrevURL}}" data-prev>Previous</a>{{end}}{{if .NextURL}}<a
+          href="{{.NextURL}}"
+          data-next
+          >Next</a
+        >{{end}}{{if .PathActive}}<span data-path-context="{{.PathID}}"></span>{{end}}
+      </nav>
+    </main>
+    {{template "footer" .Shell}}
+  </body>
+</html>
+{{end}}

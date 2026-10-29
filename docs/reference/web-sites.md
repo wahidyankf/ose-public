@@ -15,6 +15,7 @@ created: 2026-08-14
 | -------------------- | -------------------------------------------------------- | ---- | --------------------------- |
 | ose-www              | [www.oseplatform.com](https://www.oseplatform.com/)      | 3100 | `prod-ose-www`              |
 | ayokoding-www        | [www.ayokoding.com](https://www.ayokoding.com/)          | 3101 | `prod-ayokoding-www`        |
+| ayokoding-web        | TBD (local Go + htmx rewrite, in progress)               | 3102 | —                           |
 | organiclever-www     | [www.organiclever.com](https://www.organiclever.com/)    | 3200 | `prod-organiclever-www`     |
 | organiclever-app-web | TBD                                                      | 3202 | `prod-organiclever-app-web` |
 | ose-app-web          | [app.oseplatform.com](https://app.oseplatform.com) (TBD) | 3300 | `prod-ose-app-web` (TBD)    |
@@ -31,6 +32,7 @@ than falling back silently.
 | -------------------- | --------------------------- |
 | ose-www              | `OSE_WWW_PORT`              |
 | ayokoding-www        | `AYOKODING_WWW_PORT`        |
+| ayokoding-web        | `AYOKODING_WEB_PORT`        |
 | organiclever-www     | `ORGANICLEVER_WWW_PORT`     |
 | organiclever-app-web | `ORGANICLEVER_APP_WEB_PORT` |
 | ose-app-web          | `OSE_APP_WEB_PORT`          |
@@ -96,10 +98,11 @@ Compose network the backend still reaches it at `postgres:5432`.
 Ports that a test suite or a developer tool binds on the host, outside the app and backend stack
 tables above:
 
-| Port | Owner                              | Use                                                       |
-| ---- | ---------------------------------- | --------------------------------------------------------- |
-| 3190 | `ose-www-fe-e2e`, `ose-www-be-e2e` | The `ose-www` server Playwright starts for the E2E suites |
-| 6006 | `libs/web-ui`                      | Storybook (`storybook` target and its Playwright suite)   |
+| Port | Owner                              | Use                                                            |
+| ---- | ---------------------------------- | -------------------------------------------------------------- |
+| 3190 | `ose-www-fe-e2e`, `ose-www-be-e2e` | The `ose-www` server Playwright starts for the E2E suites      |
+| 3191 | `ayokoding-web-e2e`                | The `ayokoding-web` server Playwright starts for the E2E suite |
+| 6006 | `libs/web-ui`                      | Storybook (`storybook` target and its Playwright suite)        |
 
 A port listed here is claimed the same way as an app port: pick a new one listed nowhere on this
 page.

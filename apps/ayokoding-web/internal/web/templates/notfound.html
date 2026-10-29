@@ -1,0 +1,18 @@
+{{define "notfound"}}<!doctype html>
+<html lang="{{.Shell.Lang}}" data-theme-hook>
+  <head>
+    {{template "head" .Shell}}
+  </head>
+  <body>
+    {{template "header" .Shell}}
+    <main id="main">
+      <h1>{{if eq .Shell.Lang "id"}}Tidak ditemukan{{else}}Not found{{end}}</h1>
+      <nav data-usable-nav>
+        <a href="/{{.Shell.Lang}}">{{if eq .Shell.Lang "id"}}Beranda{{else}}Home{{end}}</a>
+        <a href="/{{.Shell.Lang}}/learn/courses">{{if eq .Shell.Lang "id"}}Kursus{{else}}Courses{{end}}</a>
+      </nav>
+    </main>
+    {{template "footer" .Shell}}
+  </body>
+</html>
+{{end}}

@@ -1,0 +1,47 @@
+{{define "course"}}<!doctype html>
+<html lang="{{.Shell.Lang}}" data-theme-hook>
+  <head>
+    {{template "head" .Shell}}
+  </head>
+  <body>
+    {{template "header" .Shell}}
+    <main id="main">
+      <nav aria-label="breadcrumb" data-breadcrumbs>
+        <a href="/{{.Shell.Lang}}/learn/courses">{{if eq .Shell.Lang "id"}}Kursus{{else}}Courses{{end}}</a> /
+        <span aria-current="page">{{.Course.Title}}</span>
+      </nav>
+      <h1>{{.Course.Title}}</h1>
+      <p>{{.Course.Description}}</p>
+      <p>{{.Course.Format}} · {{.Course.Effort}}</p>
+      {{if .Course.Outline}}
+      <p data-outline-status>Outline: planned material, not a completed collection.</p>
+      {{end}} {{if .Prerequisites}}
+      <section data-prerequisites>
+        <h2>Prerequisites</h2>
+        <ul>
+          {{range .Prerequisites}}
+          <li><a href="/{{$.Shell.Lang}}/learn/{{.ID}}">{{.Title}}</a></li>
+          {{end}}
+        </ul>
+      </section>
+      {{end}}
+      <section data-course-lessons>
+        <h2>Lessons</h2>
+        <ol>
+          {{range .Lessons}}
+          <li><a href="/{{$.Shell.Lang}}/learn/{{.Course}}/{{.Slug}}">{{.Title}}</a></li>
+          {{end}}
+        </ol>
+      </section>
+      {{if .PathActive}}
+      <nav data-path-controls data-path-context="{{.PathID}}">
+        <a href="/{{.Shell.Lang}}/paths/{{.PathID}}">Path</a>
+      </nav>
+      {{else}}
+      <nav data-canonical-nav><a href="/{{.Shell.Lang}}/learn/courses">Courses</a></nav>
+      {{end}}
+    </main>
+    {{template "footer" .Shell}}
+  </body>
+</html>
+{{end}}

@@ -1,0 +1,5 @@
+{{define "feed"}}<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"><channel><title>AyoKoding</title><link>https://ayokoding.example/en</link>{{range .Entries}}
+<item><title>{{.Title}}</title><description>{{.Description}}</description><link>https://ayokoding.example/en/learn/{{.Course}}/{{.Slug}}</link></item>{{end}}
+</channel></rss>
+{{end}}

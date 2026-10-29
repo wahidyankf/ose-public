@@ -1,0 +1,189 @@
+{
+  "benchmark": [
+    {
+      "query": "",
+      "state": {}
+    },
+    {
+      "query": "harness=cursor",
+      "state": {
+        "harness": "cursor"
+      }
+    },
+    {
+      "query": "tier=planning",
+      "state": {
+        "tier": "planning"
+      }
+    },
+    {
+      "query": "harness=cursor&tier=planning&sub=gpt-5.6-terra&sub-harness=command-code",
+      "state": {
+        "harness": "cursor",
+        "tier": "planning",
+        "sub": "gpt-5.6-terra",
+        "subHarness": "command-code"
+      }
+    },
+    {
+      "query": "sub-harness=opencode-go",
+      "state": {
+        "subHarness": "opencode-go"
+      }
+    }
+  ],
+  "benchmarkRosterScope": {
+    "en": {
+      "frontier": "Anthropic, OpenAI, Google, xAI",
+      "catalogs": "OpenCode Go and Command Code",
+      "inHouse": "Cursor Composer"
+    },
+    "id": {
+      "frontier": "Anthropic, OpenAI, Google, xAI",
+      "catalogs": "OpenCode Go dan Command Code",
+      "inHouse": "Cursor Composer"
+    }
+  },
+  "calculator": [
+    {
+      "query": "",
+      "state": {
+        "tab": "cost",
+        "region": null,
+        "countryId": null,
+        "cityId": null,
+        "household": {
+          "adults": 1,
+          "preschoolKids": 0,
+          "schoolKids": 0
+        },
+        "schoolType": "public",
+        "area": "center",
+        "gross": 0,
+        "minRole": {
+          "baselineSource": "savings_target",
+          "targetRaw": "",
+          "targetCurrency": "USD",
+          "refCityId": null,
+          "refRole": "senior_swe",
+          "myGrossMonthly": 0,
+          "mySalaryCityId": null,
+          "myGrossCurrency": "local",
+          "displayCurrency": "USD"
+        }
+      }
+    },
+    {
+      "query": "tab=savings&gross=8000",
+      "state": {
+        "tab": "savings",
+        "region": null,
+        "countryId": null,
+        "cityId": null,
+        "household": {
+          "adults": 1,
+          "preschoolKids": 0,
+          "schoolKids": 0
+        },
+        "schoolType": "public",
+        "area": "center",
+        "gross": 8000,
+        "minRole": {
+          "baselineSource": "savings_target",
+          "targetRaw": "",
+          "targetCurrency": "USD",
+          "refCityId": null,
+          "refRole": "senior_swe",
+          "myGrossMonthly": 0,
+          "mySalaryCityId": null,
+          "myGrossCurrency": "local",
+          "displayCurrency": "USD"
+        }
+      }
+    },
+    {
+      "query": "region=asean&country=id&city=jakarta&adults=2&preschool=1&schoolkids=2&schooltype=private&area=rural",
+      "state": {
+        "tab": "cost",
+        "region": "asean",
+        "countryId": "id",
+        "cityId": "jakarta",
+        "household": {
+          "adults": 2,
+          "preschoolKids": 1,
+          "schoolKids": 2
+        },
+        "schoolType": "private",
+        "area": "rural",
+        "gross": 0,
+        "minRole": {
+          "baselineSource": "savings_target",
+          "targetRaw": "",
+          "targetCurrency": "USD",
+          "refCityId": null,
+          "refRole": "senior_swe",
+          "myGrossMonthly": 0,
+          "mySalaryCityId": null,
+          "myGrossCurrency": "local",
+          "displayCurrency": "USD"
+        }
+      }
+    },
+    {
+      "query": "tab=savings&region=japan&country=jp&city=tokyo",
+      "state": {
+        "tab": "savings",
+        "region": "japan",
+        "countryId": "jp",
+        "cityId": "tokyo",
+        "household": {
+          "adults": 1,
+          "preschoolKids": 0,
+          "schoolKids": 0
+        },
+        "schoolType": "public",
+        "area": "center",
+        "gross": 0,
+        "minRole": {
+          "baselineSource": "savings_target",
+          "targetRaw": "",
+          "targetCurrency": "USD",
+          "refCityId": null,
+          "refRole": "senior_swe",
+          "myGrossMonthly": 0,
+          "mySalaryCityId": null,
+          "myGrossCurrency": "local",
+          "displayCurrency": "USD"
+        }
+      }
+    },
+    {
+      "query": "tab=min-role&baseline=my_salary&target=0&targetcur=EUR&refcity=singapore&mygross=5000&mysalarycity=jakarta&mygrosscur=usd&displaycur=IDR",
+      "state": {
+        "tab": "min-role",
+        "region": null,
+        "countryId": null,
+        "cityId": null,
+        "household": {
+          "adults": 1,
+          "preschoolKids": 0,
+          "schoolKids": 0
+        },
+        "schoolType": "public",
+        "area": "center",
+        "gross": 0,
+        "minRole": {
+          "baselineSource": "my_salary",
+          "targetRaw": "0",
+          "targetCurrency": "EUR",
+          "refCityId": "singapore",
+          "refRole": "senior_swe",
+          "myGrossMonthly": 5000,
+          "mySalaryCityId": "jakarta",
+          "myGrossCurrency": "usd",
+          "displayCurrency": "IDR"
+        }
+      }
+    }
+  ]
+}

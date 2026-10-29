@@ -653,6 +653,7 @@ policies:
         - glob: "README.md"
         - glob: "SECURITY.md"
         - glob: "apps/ayokoding-cli/README.md"
+        - glob: "apps/ayokoding-web/README.md"
         - glob: "apps/ayokoding-www/README.md"
         - glob: "apps/ayokoding-www-be-e2e/README.md"
         - glob: "apps/ayokoding-www-fe-e2e/README.md"
@@ -670,6 +671,7 @@ policies:
         - glob: "apps/ose-www/README.md"
         - glob: "apps/ose-www-be-e2e/README.md"
         - glob: "apps/ose-www-fe-e2e/README.md"
+        - glob: "libs/ayokoding-data/README.md"
         - glob: "libs/fsharp-crane-core/README.md"
         - glob: "libs/fsharp-env-loader/README.md"
         - glob: "libs/ts-env-loader/README.md"
@@ -1069,6 +1071,7 @@ policies:
 
 environment:
   examples:
+    - { source: apps/ayokoding-web/.env.example, target: apps/ayokoding-web/.env.local }
     - { source: apps/ayokoding-www/.env.example, target: apps/ayokoding-www/.env.local }
     - { source: apps/organiclever-app-web/.env.example, target: apps/organiclever-app-web/.env.local }
     - { source: apps/organiclever-be/.env.example, target: apps/organiclever-be/.env.local }
@@ -1079,6 +1082,7 @@ environment:
   staged:
     forbidden: [".env*", "**/.env*"]
     allowed:
+      - apps/ayokoding-web/.env.example
       - apps/ayokoding-www/.env.example
       - apps/ayokoding-www/content/en/learn/courses/cicd-and-release-engineering/.env.example
       - apps/ayokoding-www/content/en/learn/courses/containers-and-orchestration/learning/capstone/.env.example
@@ -1090,6 +1094,15 @@ environment:
       - apps/ose-be/.env.example
       - apps/ose-www/.env.example
   contracts:
+    - path: apps/ayokoding-web/.env.example
+      keys:
+        [
+          AYOKODING_WEB_PORT,
+          AYOKODING_WEB_CONTENT_DIR,
+          AYOKODING_WEB_MANIFESTS_DIR,
+          AYOKODING_WEB_SHOW_DRAFTS,
+          AYOKODING_WEB_FIXTURE,
+        ]
     - path: apps/ayokoding-www/.env.example
       keys:
         [AYOKODING_WEB_CONTENT_DIR, AYOKODING_WEB_SHOW_DRAFTS, AYOKODING_WEB_MANIFESTS_DIR, AYOKODING_WWW_BUILD_WORKERS]
@@ -1104,6 +1117,9 @@ environment:
         - apps/ayokoding-www/src/build-workers.ts
         - apps/organiclever-app-web/src/env.ts
         - apps/ose-www/src/env.ts
+    - language: go
+      paths:
+        - apps/ayokoding-web/internal/web/config.go
 
 toolchains:
   entries:
@@ -1484,6 +1500,14 @@ extensions:
   # Owner: repo-governance/development/quality/stacks/repository-adapter.md
   software-development:
     projects:
+      ayokoding-web:
+        path: apps/ayokoding-web
+        kind: app
+        stacks: [golang]
+      ayokoding-web-e2e:
+        path: apps/ayokoding-web-e2e
+        kind: app
+        stacks: [typescript]
       ayokoding-www:
         path: apps/ayokoding-www
         kind: app
@@ -1563,6 +1587,10 @@ extensions:
       ose-www-fe-e2e:
         path: apps/ose-www-fe-e2e
         kind: app
+        stacks: [typescript]
+      ayokoding-data:
+        path: libs/ayokoding-data
+        kind: library
         stacks: [typescript]
       fsharp-crane-core:
         path: libs/fsharp-crane-core

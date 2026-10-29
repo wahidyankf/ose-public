@@ -5,6 +5,7 @@ learning the product; come here when you need to understand a capability shared 
 
 ## What is here
 
+- [`ayokoding-data/`](./ayokoding-data/README.md) — language-neutral AyoKoding tool datasets (JSON) with provenance and shared expectation vectors.
 - `fsharp-crane-core/` — the F# core used by the Crane PDF-to-Markdown tooling.
 - [`web-ui/`](./web-ui/README.md) — shared web interface building blocks.
 

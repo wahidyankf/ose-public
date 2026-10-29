@@ -1,0 +1,11 @@
+{
+  "project": "ayokoding-data",
+  "pending": true,
+  "corpus": ["../../specs/libs/ayokoding-data/behaviours"],
+  "adapters": {
+    "unit": {
+      "bindings": ["tests/unit"],
+      "driver": "vitest.config.ts"
+    }
+  }
+}

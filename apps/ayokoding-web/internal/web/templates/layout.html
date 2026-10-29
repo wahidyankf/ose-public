@@ -1,0 +1,57 @@
+{{define "head"}}<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{{.Title}}</title>
+<meta name="description" content="{{.Description}}" />
+<link rel="canonical" href="{{.Canonical}}" />
+{{range .Alternates}}<link rel="alternate" hreflang="{{.Locale}}" href="{{.URL}}" /> {{end}}<style>
+  :focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+  }
+  .skip-link:focus {
+    left: 0;
+  }
+  @media (max-width: 767px) {
+    [data-nav="mobile"] {
+      display: block;
+    }
+    [data-sidebar] {
+      --sidebar-width: 100%;
+    }
+  }
+  @media (min-width: 768px) {
+    [data-nav="mobile"] {
+      display: none;
+    }
+  }
+</style>
+<script src="/assets/js/htmx.min.js" defer></script>
+<script src="/assets/js/progress.js" defer data-progress-key="ayokoding-learn-progress-v1"></script>
+{{end}}{{define "header"}}<a class="skip-link" href="#main"
+  >{{if eq .Lang "id"}}Lewati ke konten{{else}}Skip to content{{end}}</a
+>
+<header data-shell="header">
+  <nav aria-label="primary">
+    <a href="/{{.Lang}}">{{if eq .Lang "id"}}Beranda{{else}}Home{{end}}</a>
+    <a href="/{{.Lang}}/learn/courses">{{if eq .Lang "id"}}Kursus{{else}}Courses{{end}}</a>
+  </nav>
+  <nav aria-label="locale">
+    {{if eq .OtherLocale "en"}}<a href="/en" data-locale-switch hreflang="en">English</a>
+    <span aria-current="true" data-locale-active>Indonesia</span>{{else}}<span aria-current="true" data-locale-active
+      >English</span
+    >
+    <a href="/id" data-locale-switch hreflang="id">Indonesia</a>{{end}}
+  </nav>
+  <button type="button" data-nav-opener aria-expanded="false">{{if eq .Lang "id"}}Menu{{else}}Menu{{end}}</button>
+</header>
+<nav id="mobile-nav" data-nav="mobile" data-close-on-escape hidden>
+  <button type="button" data-nav-closer>{{if eq .Lang "id"}}Tutup{{else}}Close{{end}}</button>
+</nav>
+<div data-search-dialog hidden><input type="search" data-search-input data-search-shortcut aria-label="search" /></div>
+{{end}}{{define "footer"}}
+<footer data-shell="footer"><p>AyoKoding</p></footer>
+{{end}}

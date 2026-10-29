@@ -1,0 +1,12 @@
+{{define "search"}}{{if .Results}}
+<ul data-search-results>
+  {{range .Results}}
+  <li data-result="{{.URL}}">
+    <a href="{{.URL}}">{{.Title}}</a>
+    <p>{{.Section}} — {{.Excerpt}}</p>
+  </li>
+  {{end}}
+</ul>
+{{else}}
+<p data-search-empty>No results.</p>
+{{end}}{{end}}

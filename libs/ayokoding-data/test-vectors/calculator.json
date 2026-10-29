@@ -1,0 +1,194 @@
+{
+  "essentialsLocal": [
+    {
+      "city": "singapore",
+      "household": {
+        "adults": 1,
+        "preschoolKids": 0,
+        "schoolKids": 0
+      },
+      "schoolType": "public",
+      "area": "center",
+      "value": 4718
+    },
+    {
+      "city": "jakarta",
+      "household": {
+        "adults": 2,
+        "preschoolKids": 1,
+        "schoolKids": 2
+      },
+      "schoolType": "private",
+      "area": "rural",
+      "value": 48167500
+    },
+    {
+      "city": "san-francisco",
+      "household": {
+        "adults": 1,
+        "preschoolKids": 0,
+        "schoolKids": 0
+      },
+      "schoolType": "public",
+      "area": "center",
+      "value": 5335
+    }
+  ],
+  "netUsd": [
+    {
+      "city": "singapore",
+      "grossMonthlyUsd": 5000,
+      "value": 4500
+    },
+    {
+      "city": "jakarta",
+      "grossMonthlyUsd": 3000,
+      "value": 2490
+    },
+    {
+      "city": "san-francisco",
+      "grossMonthlyUsd": 15000,
+      "value": 8400
+    }
+  ],
+  "savingsRow": [
+    {
+      "city": "singapore",
+      "grossMonthlyUsd": 5000,
+      "household": {
+        "adults": 1,
+        "preschoolKids": 0,
+        "schoolKids": 0
+      },
+      "schoolType": "public",
+      "area": "center",
+      "row": {
+        "cityId": "singapore",
+        "currency": "SGD",
+        "grossMonthlyUsd": 5000,
+        "netUsd": 4500,
+        "essentialsUsd": 3653.6192,
+        "lifestyleUsd": 201.344,
+        "essentialSavings": 846.3807999999999,
+        "afterLifestyleSavings": 645.0367999999999
+      }
+    },
+    {
+      "city": "jakarta",
+      "grossMonthlyUsd": 3000,
+      "household": {
+        "adults": 2,
+        "preschoolKids": 1,
+        "schoolKids": 2
+      },
+      "schoolType": "private",
+      "area": "rural",
+      "row": {
+        "cityId": "jakarta",
+        "currency": "IDR",
+        "grossMonthlyUsd": 3000,
+        "netUsd": 2490,
+        "essentialsUsd": 2665.5412825,
+        "lifestyleUsd": 121.7458,
+        "essentialSavings": -175.54128249999985,
+        "afterLifestyleSavings": -297.2870824999999
+      }
+    },
+    {
+      "city": "san-francisco",
+      "grossMonthlyUsd": 15000,
+      "household": {
+        "adults": 1,
+        "preschoolKids": 0,
+        "schoolKids": 0
+      },
+      "schoolType": "public",
+      "area": "center",
+      "row": {
+        "cityId": "san-francisco",
+        "currency": "USD",
+        "grossMonthlyUsd": 15000,
+        "netUsd": 8400,
+        "essentialsUsd": 5335,
+        "lifestyleUsd": 510,
+        "essentialSavings": 3065,
+        "afterLifestyleSavings": 2555
+      }
+    }
+  ],
+  "minimumRole": [
+    {
+      "baselineUsd": 0,
+      "role": "swe_1"
+    },
+    {
+      "baselineUsd": 2000,
+      "role": "swe_1"
+    },
+    {
+      "baselineUsd": 8000,
+      "role": "senior_swe"
+    },
+    {
+      "baselineUsd": 50000,
+      "role": "fellow"
+    },
+    {
+      "baselineUsd": 1000000,
+      "role": null
+    }
+  ],
+  "format": {
+    "fmtNum": [
+      [0, "0"],
+      [5, "5"],
+      [1234.567, "1,235"],
+      [1000000, "1,000,000"],
+      [26147, "26,147"]
+    ],
+    "fmtCurrency": [
+      [0, "0"],
+      [5, "5"],
+      [1234.567, "1,235"],
+      [26147, "26,147"]
+    ]
+  },
+  "roleMedianGrossUsd": [
+    {
+      "city": "singapore",
+      "role": "senior_swe",
+      "value": 10454.4
+    },
+    {
+      "city": "jakarta",
+      "role": "swe_1",
+      "value": 553.39
+    },
+    {
+      "city": "san-francisco",
+      "role": "staff_swe",
+      "value": 25000
+    }
+  ],
+  "policy": {
+    "areaMultipliers": {
+      "center": 1,
+      "rural": 0.75
+    },
+    "sublinearDamping": 0.5
+  },
+  "dualCurrency": [
+    {
+      "localAmount": 15000000,
+      "localCurrency": "IDR",
+      "usdAmount": 830.085,
+      "text": "IDR 15,000,000 / $830"
+    },
+    {
+      "localAmount": 5500,
+      "localCurrency": "SGD",
+      "usdAmount": 4259.2,
+      "text": "SGD 5,500 / $4,259"
+    }
+  ]
+}

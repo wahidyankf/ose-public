@@ -87,6 +87,8 @@ Flat structure - all apps at the same level, no subdirectories.
 - `ayokoding-www` - AyoKoding educational platform (Next.js 16 fullstack content platform, port 3101)
 - `ayokoding-www-be-e2e` - Playwright BE E2E tests for ayokoding-www tRPC API
 - `ayokoding-www-fe-e2e` - Playwright FE E2E tests for ayokoding-www UI
+- `ayokoding-web` - AyoKoding learning website rewrite (Go standard library + htmx, port 3102; in progress)
+- `ayokoding-web-e2e` - Playwright E2E tests for ayokoding-web (lands in plan Phase 2)
 - `ayokoding-cli` - AyoKoding course code-example harness (Go + Cobra CLI; validates, syncs,
   runs, and covers course examples in pinned containers)
 - `crane-cli` - PDF-to-Markdown pipeline CLI (F# application)
@@ -172,8 +174,13 @@ Contains reusable library packages.
 - `kt-` - Kotlin (future)
 - `py-` - Python (future)
 
+**Named exception**: `ayokoding-data` keeps its unprefixed name because the same JSON is
+consumed by TypeScript and Go readers; no single language prefix is true. Recorded in the
+repository adapter's adopter decisions.
+
 **Current Libraries**:
 
+- `ayokoding-data` - Language-neutral AyoKoding tool datasets (JSON) with provenance and shared expectation vectors (named naming exception, see above)
 - `fsharp-crane-core` - Shared F# PDF-to-Markdown core (PdfPig + Tesseract)
 - `web-ui` - Shared React component library (shadcn/ui patterns, Radix UI primitives, Tailwind CSS)
 
@@ -217,7 +224,7 @@ libs/ts-utils/
 ### Current Scope
 
 F# (`fsharp-crane-core`, `fsharp-env-loader`) and TypeScript (`web-ui`, `web-ui-token`,
-`ts-env-loader`) libraries. No Rust library exists today.
+`ts-env-loader`, `ayokoding-data`) libraries. No Rust library exists today.
 
 ## Nx Monorepo Projects (`apps/` and `libs/`)
 

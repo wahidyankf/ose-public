@@ -1,0 +1,28 @@
+{{define "catalog"}}<!doctype html>
+<html lang="{{.Shell.Lang}}" data-theme-hook>
+  <head>
+    {{template "head" .Shell}}
+  </head>
+  <body>
+    {{template "header" .Shell}}
+    <main id="main">
+      <h1>{{if eq .Shell.Lang "id"}}Kursus{{else}}Courses{{end}}</h1>
+      {{range .Groups}}
+      <section data-category="{{.Category}}">
+        <h2>{{.Category}}</h2>
+        <ul>
+          {{range .Courses}}
+          <li data-course="{{.ID}}">
+            <a href="/{{$.Shell.Lang}}/learn/{{.ID}}">{{.Title}}</a>
+            <p>{{.Description}}</p>
+            <p>{{.Format}} · {{.Effort}}</p>
+          </li>
+          {{end}}
+        </ul>
+      </section>
+      {{end}}
+    </main>
+    {{template "footer" .Shell}}
+  </body>
+</html>
+{{end}}

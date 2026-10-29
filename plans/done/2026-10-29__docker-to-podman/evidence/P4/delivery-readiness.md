@@ -99,10 +99,12 @@ These do not block the runtime switch. They need a person or a later proof.
    itself failed in rootless networking. On a real cold GitHub runner the scenario passed as part of the full
    real-engine suite (run 40778630932, `evidence/P2/ci.md`).
 6. **Open UI findings** from the UI gates (for example UWQ-001 dark-mode Mermaid contrast, UWT-014 language-switch 404)
-   were all present on `main` before this change and are listed in `evidence/P3/ui-gates/` with their dispositions.
+   were present on `main` before this change for the rows the UI gates re-attributed (`evidence/P3/scope-dispositions.md`);
+   the remaining UWT rows were not individually re-attributed. All are listed in `evidence/P3/ui-gates/`.
 7. **Intermittent firefox stall** in the lesson course-walk helper: seen once, not reproduced locally in 2,678
    direct-probe clicks, not seen in the last two CI runs. Cause unproven.
-8. **Two retained disposable PostgreSQL volumes** from the data rehearsal await a disposal decision.
+8. **Two disposable PostgreSQL volumes** from the data rehearsal were deleted on 2026-10-29 at the maintainer's
+   instruction.
 9. **Post-merge (closed):** merged as `f5f544fe7` and published (run 40773249804); see
    `evidence/P4/publishing-terminal.md`. The tag digests were checked through the anonymous registry API and both
    images were pulled by digest and started (`evidence/P4/archival-record.md`, section 4). The terminal audit runs on

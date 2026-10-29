@@ -10,7 +10,7 @@
   "scripts": {
     "build": "./hippo run --class ephemeral --resource-tier heavy --disk-path . -- nx run-many -t build",
     "test": "./hippo run --class ephemeral --resource-tier heavy --disk-path . -- nx run-many -t test:quick",
-    "test:validators": "./hippo run --class ephemeral --resource-tier light --disk-path . -- node --test scripts/behaviour-coverage.test.mjs scripts/caller-runtime-contract.test.mjs scripts/container-healthcheck-loopback.test.mjs scripts/container-image-qualified.test.mjs scripts/container-runtime-check.test.mjs scripts/dockerfile-workspace-deps.test.mjs scripts/format-staged.test.mjs scripts/lint-gates.test.mjs scripts/no-docker-binary-calls.test.mjs scripts/setup-podman-contract.test.mjs scripts/workflow-container-lookup.test.mjs scripts/workflow-language-lanes.test.mjs",
+    "test:validators": "./hippo run --class ephemeral --resource-tier light --disk-path . -- node --test scripts/behaviour-coverage.test.mjs scripts/caller-runtime-contract.test.mjs scripts/container-compose.test.mjs scripts/container-healthcheck-loopback.test.mjs scripts/container-image-qualified.test.mjs scripts/container-runtime-check.test.mjs scripts/dockerfile-workspace-deps.test.mjs scripts/format-staged.test.mjs scripts/lint-gates.test.mjs scripts/no-docker-binary-calls.test.mjs scripts/setup-podman-contract.test.mjs scripts/workflow-container-lookup.test.mjs scripts/workflow-language-lanes.test.mjs",
     "lint": "./hippo run --class ephemeral --resource-tier standard --disk-path . -- nx run-many -t lint",
     "lint:md": "markdownlint-cli2 \"**/*.md\"",
     "lint:md:fix": "markdownlint-cli2 --fix \"**/*.md\"",
@@ -23,14 +23,14 @@
     "nx": "./hippo run --class transactional --resource-tier standard --disk-path . -- nx",
     "prepare": "husky",
     "postinstall": "npm run doctor || true",
-    "organiclever:dev": "export PODMAN_COMPOSE_PROVIDER=podman-compose BUILDAH_FORMAT=docker && scripts/container-runtime-check --compose && ./hippo run --class service --resource-tier standard --disk-path . -- podman compose --env-file infra/dev/organiclever-app/.env -f infra/dev/organiclever-app/docker-compose.yml up --build",
+    "organiclever:dev": "./hippo run --class service --resource-tier standard --disk-path . -- scripts/container-compose --env-file infra/dev/organiclever-app/.env -f infra/dev/organiclever-app/docker-compose.yml up --build",
     "organiclever:dev:restart": "npm run organiclever:dev:reset && npm run organiclever:dev --",
-    "dev:ayokoding-www": "export PODMAN_COMPOSE_PROVIDER=podman-compose BUILDAH_FORMAT=docker && scripts/container-runtime-check --compose && ./hippo run --class service --resource-tier standard --disk-path . -- podman compose -f infra/dev/ayokoding-www/docker-compose.yml up --build",
-    "dev:ose-www": "export PODMAN_COMPOSE_PROVIDER=podman-compose BUILDAH_FORMAT=docker && scripts/container-runtime-check --compose && ./hippo run --class service --resource-tier standard --disk-path . -- podman compose -f infra/dev/ose-www/docker-compose.yml up --build",
-    "dev:organiclever": "export PODMAN_COMPOSE_PROVIDER=podman-compose BUILDAH_FORMAT=docker && scripts/container-runtime-check --compose && ./hippo run --class service --resource-tier standard --disk-path . -- podman compose --env-file infra/dev/organiclever-app/.env -f infra/dev/organiclever-app/docker-compose.yml up --build",
+    "dev:ayokoding-www": "./hippo run --class service --resource-tier standard --disk-path . -- scripts/container-compose -f infra/dev/ayokoding-www/docker-compose.yml up --build",
+    "dev:ose-www": "./hippo run --class service --resource-tier standard --disk-path . -- scripts/container-compose -f infra/dev/ose-www/docker-compose.yml up --build",
+    "dev:organiclever": "./hippo run --class service --resource-tier standard --disk-path . -- scripts/container-compose --env-file infra/dev/organiclever-app/.env -f infra/dev/organiclever-app/docker-compose.yml up --build",
     "doctor": ".github/scripts/run-doctor.sh",
     "nx:show": "./hippo run --class ephemeral --resource-tier light --disk-path . -- nx show",
-    "organiclever:dev:reset": "export PODMAN_COMPOSE_PROVIDER=podman-compose && scripts/container-runtime-check --compose && ./hippo run --class transactional --resource-tier standard --disk-path . -- podman compose --env-file infra/dev/organiclever-app/.env -f infra/dev/organiclever-app/docker-compose.yml down -v"
+    "organiclever:dev:reset": "./hippo run --class transactional --resource-tier standard --disk-path . -- scripts/container-compose --env-file infra/dev/organiclever-app/.env -f infra/dev/organiclever-app/docker-compose.yml down -v"
   },
   "keywords": [],
   "author": "",

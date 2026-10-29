@@ -2,6 +2,10 @@
 
 ## Status
 
+**Update, 2026-10-29:** this status was written before the later proofs. Every row below closed afterwards on throwaway
+branches (runs 40778630932, 40781987617 and 40783837245), after the runtime PR merged; see
+`evidence/P4/archival-record.md`, section 3, for the order and `evidence/P4/delivery-readiness.md` for the final state.
+
 As built (2026-10-29): the temporary proof job was dispatched three times (runs 40667489060, 40671958744 and
 40693498144, see the run sections below). The last run, 40693498144 on head `24a4c54d4`, concluded `success` for the
 proof job. The overlay was removed in commit `60a35faf1`: `.github/workflows/non-product-full-quality.yml` and the two

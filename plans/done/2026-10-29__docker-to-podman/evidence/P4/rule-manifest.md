@@ -344,3 +344,8 @@ Advisory verdict: **PASS**. No open CRITICAL or HIGH finding and no open in-scop
 Open owner items carried forward: wire `test:validators` or the two registry validators into a declared gate; the
 setup-guide `blob/main` link resolves only after this branch merges; the provisional Ubuntu Podman pin and the runtime
 proof for the `com.docker.compose.*` label keys.
+
+Late edits, 2026-10-29 (archival PR #758): the Dockerfile template in `docker-conventions.md` probes `127.0.0.1`
+instead of `localhost`, and `docker-artifact-cleanup.md` states both `com.docker.compose.*` label keys in place of the
+"runtime proof pending" note. Both are mechanical corrections. The word-budget, adapter and internal-link gates ran on
+the tree that carried them.

@@ -1,0 +1,23 @@
+#!/bin/sh
+# Runs one `podman compose` call for a package.json Compose stack inside its HIPPO-supervised command.
+# It selects the podman-compose provider, runs the rootless preflight with --compose, then replaces
+# itself with `podman compose "$@"`, so Compose keeps its own exit status. The preflight runs here, not
+# before `./hippo run`, so its probes are admitted with the workload they guard. An `up --build` call
+# builds images, so it sets BUILDAH_FORMAT=docker; any other call keeps the ambient BUILDAH_FORMAT.
+# A refused preflight ends the wrapper with the preflight's own status (2, 125, 126 or 127).
+set -eu
+
+case "$0" in
+*/*) directory=${0%/*} ;;
+*) directory=. ;;
+esac
+
+export PODMAN_COMPOSE_PROVIDER=podman-compose
+for argument in "$@"; do
+	if [ "$argument" = --build ]; then
+		export BUILDAH_FORMAT=docker
+	fi
+done
+
+"$directory/container-runtime-check" --compose
+exec podman compose "$@"

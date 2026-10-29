@@ -11,13 +11,6 @@ execution checklist.
 
 ## Active Plans
 
-### Rootless container runtime
-
-- [Docker to Podman](./docker-to-podman/README.md) — migrate operational container use across the
-  repository, including development, CI, image publishing, and the example runner, to rootless
-  Podman with an explicit podman-compose provider. AyoKoding lesson content and hosting migration
-  are excluded. This plan must finish before the Phoenix rewrite resumes.
-
 ### AyoKoding Phoenix LiveView rewrite
 
 - [AyoKoding Web](./ayokoding-app-web/README.md) — full local feature and UI parity in

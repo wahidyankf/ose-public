@@ -30,6 +30,10 @@ Tags pushed per image, unchanged from before the migration: `ghcr.io/wahidyankf/
   `sha256:69cd2e031b359d4c16a0f224597e7f387f54b29cc5ce6c5c2d774a0832d0e929`. Each image's two tags point at one digest,
   as the workflow intends. Both packages are readable anonymously.
 - The pre-merge image runtime proof is in `evidence/P2/publishing.md`.
+- Published-image start (2026-10-29): both images were pulled by the digests above, matched them on inspect, and
+  started rootless with a PostgreSQL and a NATS container. `ose-be` answered 200 `{"status":"healthy"}` and
+  `organiclever-be` answered 200 `{"status":"ok"}`. A `docker` shim first on `PATH` logged 0 calls. Details and teardown
+  are in `evidence/P4/archival-record.md`, section 4.
 
 ## Other runs on `main` seen after the merge
 

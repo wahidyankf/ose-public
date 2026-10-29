@@ -131,7 +131,7 @@ podman machine start
 ```
 
 **Linux (Debian/Ubuntu)**: Install the Podman version reviewed for the `ubuntu/resolute/amd64` runner tuple in
-`.github/actions/setup-podman/action.yml`. That pin is provisional until the first CI run proves it. Do not
+`.github/actions/setup-podman/action.yml`. That pin is proven on a GitHub runner. Do not
 install an unversioned package. Other Ubuntu releases and architectures have no pin yet, so do not install
 Podman there from this guide:
 

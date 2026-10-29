@@ -52,6 +52,9 @@ All ran under HIPPO admission on the merged tree (`b25004578`). All exited 0.
 | Full pre-commit gate set on the merge commit                                                      | passed (hadolint, actionlint, Markdown gates, commit-message screen) |
 | `scripts/public-safety/check.sh` on each outgoing range                                           | exit 0                                                               |
 
+After #754 and #755 added contract tests, `npm run test:validators` passes 204 of 204 on the merged tree (re-run
+2026-10-29 for the archival audit).
+
 ## Acceptance criteria to proof
 
 The full trace with counts, run ids and head SHAs is `evidence/P3/ac-trace.md`.
@@ -100,5 +103,10 @@ These do not block the runtime switch. They need a person or a later proof.
 7. **Intermittent firefox stall** in the lesson course-walk helper: seen once, not reproduced locally in 2,678
    direct-probe clicks, not seen in the last two CI runs. Cause unproven.
 8. **Two retained disposable PostgreSQL volumes** from the data rehearsal await a disposal decision.
-9. **Post-merge:** merged as `f5f544fe7` and published (run 40773249804); see `evidence/P4/publishing-terminal.md`.
-   The tag digests were checked through the anonymous registry API. The terminal audit is still to do.
+9. **Post-merge (closed):** merged as `f5f544fe7` and published (run 40773249804); see
+   `evidence/P4/publishing-terminal.md`. The tag digests were checked through the anonymous registry API and both
+   images were pulled by digest and started (`evidence/P4/archival-record.md`, section 4). The terminal audit runs on
+   the delivered archival head.
+
+10. **Maintainer decisions at archival (2026-10-29):** the plan archives with items 1, 2, 6 and the `test:validators`
+    gate gap accepted or deferred by explicit user answer (`evidence/P4/archival-record.md`, sections 1 and 2).

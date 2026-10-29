@@ -1,7 +1,7 @@
 # P0 Frozen Project and Target Matrix
 
 - Source revision: `71bb3aa5cadc1043e709e6cb13c2e0ffd8f489a7`.
-- Plan source: `plans/in-progress/docker-to-podman/tech-docs.md`, “Affected project target matrix” and “Current stack command packet”.
+- Plan source: `plans/done/2026-10-29__docker-to-podman/tech-docs.md`, “Affected project target matrix” and “Current stack command packet”.
 - Project files read: the 13 project files named by the plan matrix, the directly named legacy web/E2E project files, and the two `specs/apps/{ose,organiclever}/be/contracts/project.json` files named by workflow inputs.
 - Matrix targets are executed individually from repository root via the HIPPO command in `delivery.md` action 8, using transactional/standard admission for the shared-output bundle/codegen targets. Cache is disabled using the installed Nx-supported mechanism, without replacing or skipping a target.
 - Initial plan matrix: 78 existing project-target identities. Direct workflow caller expansion adds 28 more real project targets and one optional OrganicLever WWW integration caller observation, for 106 runnable identities plus 1 N/A observation (107 audited rows). The AyoKoding and OSE integration caller invocations duplicate base rows; OrganicLever WWW has no integration target and its run-many call is an expected no-op under the workflow's optional-integration contract. Its conventionally named backend E2E project is also absent, so the guarded coverage/E2E branches are skipped and add no target row.

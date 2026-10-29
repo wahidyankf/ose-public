@@ -3,7 +3,7 @@
 This file records the Phase 3 local run of the frozen project-target matrix. It compares the run with the
 Phase 0 baseline in [baseline-targets.md](../P0/baseline-targets.md) and with the later pin-upgrade results in
 [pin-upgrade-target-results.md](../P0/pin-upgrade-target-results.md). The matrix itself is defined in
-`plans/in-progress/docker-to-podman/tech-docs.md` under "Affected project target matrix", and its 107 audited rows
+`plans/done/2026-10-29__docker-to-podman/tech-docs.md` under "Affected project target matrix", and its 107 audited rows
 are listed in [target-matrix.md](../P0/target-matrix.md). The baseline revision is `71bb3aa5`.
 
 ## Result and scope

@@ -11,7 +11,7 @@ runs:
         arch="$(dpkg --print-architecture)"
         case "${ID}/${VERSION_CODENAME}/${arch}" in
           ubuntu/resolute/amd64)
-            # Provisional CI row: the first runtime CI run must prove this signed origin and candidate.
+            # Reviewed row, proven on a GitHub runner in CI (the apt candidate and signed origin matched on the first runtime run).
             podman_pin="5.7.0+ds2-3build1"
             ;;
           *)

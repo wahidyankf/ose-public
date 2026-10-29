@@ -1,9 +1,9 @@
 # AyoKoding Web — Phoenix LiveView Rewrite
 
-> **Status:** In Progress. Paused during Phase 0; implementation has not begun. Remaining work waits
-> for the Podman migration and explicit resumption.
+> **Status:** In Progress. Paused during Phase 0; implementation has not begun. The Podman migration is
+> archived (`plans/done/2026-10-29__docker-to-podman/`); remaining work waits for explicit resumption.
 
-Depends-on: [docker-to-podman]
+Depends-on: []
 
 Rebuild the existing AyoKoding learning website in Elixir and Phoenix LiveView at
 `apps/ayokoding-web`. Keep `apps/ayokoding-www` working while the new app reaches full local
@@ -48,7 +48,7 @@ database adoption, and removal of the Next.js app are outside scope.
 
 ## Execution order and related plans
 
-The Podman migration is this plan's predecessor, and every remaining AyoKoding Learn Revamp plan
+The Podman migration, now archived, was this plan's predecessor, and every remaining AyoKoding Learn Revamp plan
 depends on this plan. Respect the [plan-order DAG](../../README.md#plan-order) and the user's
 existing pause: completing a dependency does not itself resume this work. After explicit resumption,
 the executor re-reads changes already merged into `main` before each delivery boundary and updates

@@ -9,6 +9,11 @@ Archived plans and completed project planning documents.
 
 ## Completed Projects
 
+- [2026-10-29: docker-to-podman](./2026-10-29__docker-to-podman/README.md) — migrated operational container use
+  across the repository, including development, CI, image publishing, and the example runner, to rootless Podman
+  with an explicit podman-compose provider. Delivered through PR #749 and follow-ups #751 to #757. The archival
+  record lists the gaps the maintainer accepted (macOS Compose stack proof, local AyoKoding stack, deferred UI
+  findings).
 - [2026-10-19: ayokoding-learn-revamp-05-code-harness](./2026-10-19__ayokoding-learn-revamp-05-code-harness/README.md) —
   Shipped the AyoKoding course code harness: a Go + Cobra CLI (`ayokoding-cli`) that validates
   run specs and catalog references, checks lesson fences against course files (with `--write`

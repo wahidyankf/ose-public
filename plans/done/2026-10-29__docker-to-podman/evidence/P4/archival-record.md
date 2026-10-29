@@ -175,3 +175,28 @@ four references that point at live plan files (`tech-docs.md`, `prd.md`) were up
 - **Standing home for the runner proof.** The `ayokoding-cli` e2e job is skipped on `main` while the `ferret-cli`
   integration baseline fails. The runner-level proof of AC-02, AC-04, AC-05 and AC-06 rests on throwaway-branch run
   40778630932 until the `ferret-cli` owners fix their baseline.
+
+## 10. Cleanup proof (2026-10-29, after PR #759)
+
+Closeout PR #759: reviewed head `9425569e6c2fb36b3ef02a52e2df00a7cf43c645`, squash `ad809d858`, green exact-head gate, leak
+review pass on the same head, `HIPPO Consumer Smoke` green on the branch (run 40805489018) and on `main` at `ad809d858`
+(run 40806363061).
+
+Pre-removal checks run from the repository root:
+
+| Check                    | Result                                                                                                                                                                                                                                                             |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Identity and branches    | Worktree route and current branch (`docker-to-podman-closeout`) matched `git worktree list`; every inventoried branch classified in section 6                                                                                                                      |
+| Delivery, by PR and head | #749 `docker-to-podman-base`, #758 `docker-to-podman-archive`, #759 `docker-to-podman-closeout`: GitHub `MERGED`, `headRefName` and `headRefOid` equal the local branch tips                                                                                       |
+| Remote refs              | `delete_branch_on_merge` is on; a `HEAD_REF_DELETED_EVENT` exists for each of the three branches at or after `mergedAt`; no `docker-to-podman*` head remains on `origin`                                                                                           |
+| Dirty diff               | One tracked file, `.serena/project.yml` (auto-generated local Serena configuration, +177/-14, not part of any change set). Its diff was saved outside the repository before it was reverted so the non-force removal could proceed. Nothing of the plan was dirty. |
+| Unpushed commits         | None: each local tip equals its merged PR head                                                                                                                                                                                                                     |
+| Idleness and ownership   | The worktree was created by this plan. The Phoenix and plan 10 worktrees were not touched.                                                                                                                                                                         |
+
+Then `git worktree remove worktrees/docker-to-podman` (non-force) exited 0, the four local branches were deleted
+(`docker-to-podman-base`, `docker-to-podman-archive`, `docker-to-podman-closeout`, and `worktree/docker-to-podman-v2`,
+whose tip `71bb3aa5c` is on `origin/main` and which had 0 unique commits), and `git worktree prune` ran. No Podman
+container, network or volume owned by this plan remains.
+
+This closing pull request used a second, short-lived worktree (`docker-to-podman-ticks`) because the first was already
+gone. It is removed after this pull request merges, by the same checks.

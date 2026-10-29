@@ -1447,15 +1447,15 @@ validate` exit 0 on the archival tree. Wiring `test:validators` into a declared 
 
   **Closed (2026-10-29):** Every entry is classified in `evidence/P4/archival-record.md`, section 6. The two rehearsal volumes (label `owner=docker-to-podman-rehearsal`) were deleted by exact name after a check that no container used them; no base image, backup or peer worktree was touched.
 
-- [ ] [AI] Remove the now-unused execution worktree non-force from the repository root with
+- [x] [AI] Remove the now-unused execution worktree non-force from the repository root with
       `rtk git worktree remove worktrees/docker-to-podman`. Complete every created branch's proof-gated
       [branch cleanup](../../../repo-governance/development/workflow/worktree-and-artifact-cleanup/branch-cleanup.md),
       then `rtk git worktree prune`. Never delete an ambiguous, retained, or unrecorded branch.
 
-  **Status (2026-10-29):** Performed after the closeout pull request merges, from the repository root. It is left unticked here on purpose rather than ticked ahead of the action; the outcome is in the final report to the maintainer.
+  **Closed (2026-10-29):** After PR #759 merged (reviewed head `9425569e6c2fb36b3ef02a52e2df00a7cf43c645`, squash `ad809d858`), the execution worktree was removed non-force from the repository root and each created branch was deleted after proof. The six pre-removal checks, the per-branch PR and timeline evidence, and the one discarded dirty file are in `evidence/P4/archival-record.md`, section 10.
 
-- [ ] [AI] Report delivery, terminal audit, retained backup/resource ownership, and satisfied Podman
+- [x] [AI] Report delivery, terminal audit, retained backup/resource ownership, and satisfied Podman
       prerequisite to the maintainer. Phoenix and plan 10 remain stopped until their authorized
       executors reconcile current main, checkpoints, runtime setup, and remaining gates.
 
-  **Status (2026-10-29):** Delivered in the final report to the maintainer after the closeout pull request merges and the cleanup above. Left unticked here for the same reason.
+  **Closed (2026-10-29):** The final report went to the maintainer in the session on 2026-10-29: delivery, the terminal audit result and its corrected findings, the deleted rehearsal volumes (no backup or base image was touched), the deviations, the accepted gaps and the reported items. The Podman prerequisite is satisfied. The Phoenix and plan 10 worktrees were not touched, and neither plan was resumed. See `evidence/P4/archival-record.md`, section 10.

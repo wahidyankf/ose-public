@@ -97,10 +97,10 @@ a competing full scenario copy in this checklist.
 baseline and exact source/scenario ownership. **Proof:** baseline logs and a complete scenario
 disposition ledger before production code changes.
 
-- [ ] [AI] Read current `AGENTS.md`, the repository adapter, worktree setup, and this plan. Compare
+- [x] [AI] Read current `AGENTS.md`, the repository adapter, worktree setup, and this plan. Compare
       `rtk git status --short`, branch/worktree list, and the touch ledger; retain foreign work.
       Reconcile active user decisions before resuming and fail the affected packet on conflict.
-- [ ] [AI] Before any guarded command, locate and use the documented operator-approved host policy
+- [x] [AI] Before any guarded command, locate and use the documented operator-approved host policy
       through `HIPPO_CONFIG` or the correct `--config <approved-policy>` option. If HIPPO rejects
       admission because its default exclusive mode conflicts with an existing reservation-mode
       marker, inspect the effective configuration and the documented host policy before continuing.
@@ -112,29 +112,29 @@ disposition ledger before production code changes.
       Follow
       [consumer configuration and evidence](../../../repo-governance/development/practice/resource-aware-development/consumer-integrity-state-and-evidence.md)
       and the [development setup guidance](../../../docs/how-to/setup-development-environment.md).
-- [ ] [AI] Run the mandatory worktree bootstrap from the root:
+- [x] [AI] Run the mandatory worktree bootstrap from the root:
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install`,
       then `rtk npm run doctor`. Only on reported toolchain drift run the documented transactional
       `./rhino toolchain provision --apply`, then doctor again. Save baseline exit codes; do not
       change Git identity or production/staging environment files.
-- [ ] [AI] Record the latest merged `origin/main` SHA, current nine-plan statuses, shared content,
+- [x] [AI] Record the latest merged `origin/main` SHA, current nine-plan statuses, shared content,
       manifest schemas, redirect module order, tool codecs, public assets, and existing config.
       Use the bounded inventory in [001](./tech-docs/001-baseline-and-parity.md); consume no unmerged
       sibling-worktree output. Move the plan to `plans/in-progress/ayokoding-app-web/` only when
       execution actually begins; update both stage indexes and the plan-order DAG in that unit.
-- [ ] [AI] Enumerate and expand the current old-app Gherkin corpus using the existing Cucumber
+- [x] [AI] Enumerate and expand the current old-app Gherkin corpus using the existing Cucumber
       parser; record every source scenario/example and its new destination/layer disposition as
       required by 001. Include all current course-path and tool cases. Unmapped user behavior
       blocks its packet; framework-only exclusions need their concrete replacement proof.
-- [ ] [AI] Read both existing app E2E project configurations. Run the old owner's baseline with
+- [x] [AI] Read both existing app E2E project configurations. Run the old owner's baseline with
       `rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npm exec nx -- run ayokoding-www:test:quick`
       and its `test:integration` target with the same guard. Record failures and root causes;
       resolve any baseline that would invalidate subsequent parity evidence before proceeding.
-- [ ] [AI] Verify the configured listener inventory in `docs/reference/web-sites.md`. Reserve
+- [x] [AI] Verify the configured listener inventory in `docs/reference/web-sites.md`. Reserve
       3102/3191 for the new app/test server and retain 3101. A busy listener fails clearly; do not
       kill or reuse another process. Capture existing feature reference screenshots in both
       locales at 375/768/1280 px as described in PRD; own only the server processes started here.
-- [ ] [AI] Inspect the recorded Go precedent at `apps/ayokoding-cli` (go directive, godog pin,
+- [x] [AI] Inspect the recorded Go precedent at `apps/ayokoding-cli` (go directive, godog pin,
       coverage-gate script, golangci-lint/nilaway/shfmt lint shape, `lang:go` tags). Verify the
       pinned Go toolchain on the actual host with `go version` and confirm `go build` works for a
       scratch module before the new app exists. Record compatible goldmark/bluemonday/yaml/htmx
@@ -142,9 +142,9 @@ disposition ledger before production code changes.
 
 ### Phase 0 Gate
 
-- [ ] [AI] Confirm baseline commands have attributable results, every old scenario/example has a
+- [x] [AI] Confirm baseline commands have attributable results, every old scenario/example has a
       disposition row, all source paths were discovered, and no content plan became a dependency.
-- [ ] [AI] Confirm `rtk git status --short` agrees with the touch ledger and the current baseline
+- [x] [AI] Confirm `rtk git status --short` agrees with the touch ledger and the current baseline
       revision is recorded. No source corpus, secret, or old-app listener was overwritten.
 
 > **Pause Safety:** Only baseline evidence and honest lifecycle metadata have changed. Resume by

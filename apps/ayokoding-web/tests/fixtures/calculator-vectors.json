@@ -1,0 +1,8 @@
+{
+  "jakarta|mid|standard|1": {
+    "monthly_cost_usd": 900,
+    "monthly_saving": 600,
+    "min_role": "mid",
+    "empty": false
+  }
+}

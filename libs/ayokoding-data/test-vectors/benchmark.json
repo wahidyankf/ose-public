@@ -1,0 +1,182 @@
+{
+  "compositeIndex": {
+    "glm-5.3": 53.556666666666665,
+    "kimi-k3": 51.92666666666667,
+    "claude-opus-5": 59.73,
+    "gpt-5.6-sol": 54.556666666666665,
+    "claude-sonnet-5": 33.995000000000005,
+    "gemini-4-argon": 63.75666666666666,
+    "claude-haiku-4-5": null,
+    "composer-2.5": null
+  },
+  "scoredBenchmarks": {
+    "glm-5.3": ["deep-swe", "terminal-bench", "swe-atlas-qna"],
+    "kimi-k3": ["deep-swe", "terminal-bench", "swe-atlas-qna"],
+    "claude-opus-5": ["deep-swe", "terminal-bench", "swe-atlas-qna"],
+    "gpt-5.6-sol": ["deep-swe", "terminal-bench", "swe-atlas-qna"],
+    "claude-sonnet-5": ["deep-swe", "terminal-bench"],
+    "gemini-4-argon": ["deep-swe", "terminal-bench", "swe-atlas-qna"],
+    "claude-haiku-4-5": [],
+    "composer-2.5": []
+  },
+  "tiers": {
+    "glm-5.3": "execution",
+    "kimi-k3": "execution",
+    "claude-opus-5": "ultra",
+    "gpt-5.6-sol": "planning",
+    "claude-sonnet-5": "execution",
+    "gemini-4-argon": "ultra",
+    "claude-haiku-4-5": "insufficient",
+    "composer-2.5": "insufficient"
+  },
+  "blendedPrice": {
+    "glm-5.3": 2.15,
+    "kimi-k3": 6,
+    "claude-opus-5": 10,
+    "gpt-5.6-sol": 8,
+    "claude-sonnet-5": 4,
+    "gemini-4-argon": null,
+    "claude-haiku-4-5": 2,
+    "composer-2.5": 1
+  },
+  "priceRatio": [
+    {
+      "candidate": "gpt-6-luna",
+      "reference": "claude-sonnet-5",
+      "value": 0.05
+    },
+    {
+      "candidate": "gemini-4-argon",
+      "reference": "claude-opus-5",
+      "value": null
+    }
+  ],
+  "filterCounts": [
+    {
+      "state": {},
+      "count": 93
+    },
+    {
+      "state": {
+        "harness": "cursor"
+      },
+      "count": 29
+    },
+    {
+      "state": {
+        "tier": "ultra"
+      },
+      "count": 9
+    },
+    {
+      "state": {
+        "harness": "command-code-pro",
+        "tier": "planning"
+      },
+      "count": 3
+    },
+    {
+      "state": {
+        "harness": "opencode-go"
+      },
+      "count": 30
+    }
+  ],
+  "substitutes": {
+    "target": "glm-5.3",
+    "harness": "command-code-pro",
+    "kind": "matches",
+    "options": [
+      {
+        "id": "claude-sonnet-5-5",
+        "tier": "ultra",
+        "index": 68.36
+      },
+      {
+        "id": "gpt-6-sol",
+        "tier": "planning",
+        "index": 56.663333333333334
+      },
+      {
+        "id": "grok-4.7",
+        "tier": "planning",
+        "index": 56.26666666666666
+      },
+      {
+        "id": "gpt-5.6-sol",
+        "tier": "planning",
+        "index": 54.556666666666665
+      },
+      {
+        "id": "muse-spark-1.3",
+        "tier": "execution",
+        "index": 54.303333333333335
+      },
+      {
+        "id": "gpt-5.6-terra",
+        "tier": "execution",
+        "index": 52.485
+      },
+      {
+        "id": "kimi-k3",
+        "tier": "execution",
+        "index": 51.92666666666667
+      },
+      {
+        "id": "glm-5.3-flash",
+        "tier": "execution",
+        "index": 48.095
+      },
+      {
+        "id": "grok-4.6",
+        "tier": "execution",
+        "index": 46.970000000000006
+      },
+      {
+        "id": "qwen3.8-max",
+        "tier": "execution",
+        "index": 43.26666666666667
+      },
+      {
+        "id": "gpt-5.6-luna",
+        "tier": "execution",
+        "index": 43.22666666666667
+      },
+      {
+        "id": "deepseek-v4-pro",
+        "tier": "execution",
+        "index": 43.053333333333335
+      },
+      {
+        "id": "gemini-3.8-flash",
+        "tier": "execution",
+        "index": 41.86333333333334
+      },
+      {
+        "id": "claude-haiku-5-5",
+        "tier": "execution",
+        "index": 41.44
+      },
+      {
+        "id": "gpt-6-luna",
+        "tier": "execution",
+        "index": 41.07333333333333
+      },
+      {
+        "id": "gemini-3.7-flash",
+        "tier": "execution",
+        "index": 39.565
+      },
+      {
+        "id": "deepseek-v4-flash",
+        "tier": "execution",
+        "index": 38.74333333333333
+      },
+      {
+        "id": "claude-sonnet-5",
+        "tier": "execution",
+        "index": 33.995000000000005
+      }
+    ]
+  }
+}

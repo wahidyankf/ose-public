@@ -3,7 +3,11 @@
 // Everything the methodology section states (benchmarks, versions, weights, operator order,
 // minimum coverage, tier anchors) is read from here, so the page text and the scoring code cannot
 // drift apart. No figures live here.
-
+//
+// Values live in `libs/ayokoding-data/data/ai-benchmark.json` (provenance in
+// `libs/ayokoding-data/provenance.md`). This module keeps the original path and named exports;
+// the JSON is the only declaration.
+import benchmarkJson from "../../../../../../../libs/ayokoding-data/data/ai-benchmark.json";
 import type { AnchoredTier, BenchmarkId, HarnessId, OperatorId, Tier } from "./types";
 
 export type BenchmarkSpec = {
@@ -20,36 +24,13 @@ export type BenchmarkSpec = {
   url: string;
 };
 
+const config = benchmarkJson.benchmarks;
+
 /**
  * The composite benchmarks, in column order. Equal weights: each is a different kind of coding
  * work (long-horizon repository changes, terminal tasks, and codebase question answering).
  */
-export const BENCHMARK_SPECS: readonly BenchmarkSpec[] = [
-  {
-    id: "deep-swe",
-    name: "DeepSWE",
-    version: "1.1",
-    weight: 1,
-    operatorOrder: ["artificial-analysis", "datacurve"],
-    url: "https://deepswe.datacurve.ai/",
-  },
-  {
-    id: "terminal-bench",
-    name: "Terminal-Bench",
-    version: "4.0",
-    weight: 1,
-    operatorOrder: ["artificial-analysis", "terminal-bench", "vals"],
-    url: "https://www.tbench.ai/",
-  },
-  {
-    id: "swe-atlas-qna",
-    name: "SWE-Atlas",
-    version: "QnA",
-    weight: 1,
-    operatorOrder: ["artificial-analysis", "scale"],
-    url: "https://labs.scale.com/leaderboard/sweatlas-qna",
-  },
-];
+export const BENCHMARK_SPECS: readonly BenchmarkSpec[] = config.specs as BenchmarkSpec[];
 
 /** Look up a benchmark's spec. Every `BenchmarkId` has exactly one entry above. */
 export function benchmarkSpec(id: BenchmarkId): BenchmarkSpec {
@@ -57,74 +38,63 @@ export function benchmarkSpec(id: BenchmarkId): BenchmarkSpec {
 }
 
 /** A model needs independent scores on at least this many composite benchmarks to be tiered. */
-export const MIN_SCORED_BENCHMARKS = 2;
+export const MIN_SCORED_BENCHMARKS: number = config.minScoredBenchmarks;
 
 /** The composite index is a mean of percentages, so it never exceeds this. */
-export const COMPOSITE_INDEX_MAX = 100;
+export const COMPOSITE_INDEX_MAX: number = config.compositeIndexMax;
 
 /**
  * One previous-generation anchor per tier, highest tier first. A model belongs to the highest
  * tier whose anchor's composite index it matches or beats.
  */
-export const TIER_ANCHORS: Readonly<Record<AnchoredTier, string>> = {
-  ultra: "claude-opus-5",
-  planning: "gpt-5.6-sol",
-  execution: "claude-sonnet-5",
-};
+export const TIER_ANCHORS: Readonly<Record<AnchoredTier, string>> = config.tierAnchors as Record<AnchoredTier, string>;
 
 /** Anchored tiers in the order they are tested. */
-export const ANCHORED_TIERS: readonly AnchoredTier[] = ["ultra", "planning", "execution"];
+export const ANCHORED_TIERS: readonly AnchoredTier[] = config.anchoredTiers as AnchoredTier[];
 
 /** Every tier in display order. */
-export const TIERS: readonly Tier[] = ["ultra", "planning", "execution", "fast", "insufficient"];
+export const TIERS: readonly Tier[] = config.tiers as Tier[];
 
 /** Vendors treated as frontier labs; their models are the substitute finder's targets. */
-export const FRONTIER_VENDORS: readonly string[] = ["Anthropic", "OpenAI", "Google", "xAI"];
+export const FRONTIER_VENDORS: readonly string[] = config.frontierVendors;
 
 /**
  * In-house model lines of the listed harnesses: a harness vendor's own models, served only in its
  * harness. The roster carries every served generation of each line, up to three.
  */
-export const HARNESS_IN_HOUSE_LINES: readonly { harness: HarnessId; vendor: string; line: string }[] = [
-  { harness: "cursor", vendor: "Cursor", line: "Composer" },
-];
+export const HARNESS_IN_HOUSE_LINES: readonly { harness: HarnessId; vendor: string; line: string }[] =
+  config.harnessInHouseLines as { harness: HarnessId; vendor: string; line: string }[];
 
 /** The harnesses the substitute finder can search, in menu order. */
-export const SUBSTITUTE_HARNESSES: readonly HarnessId[] = ["command-code-pro", "command-code", "opencode-go"];
+export const SUBSTITUTE_HARNESSES: readonly HarnessId[] = config.substituteHarnesses as HarnessId[];
 
 /** The harness the substitute finder searches until the reader picks another. */
-export const DEFAULT_SUBSTITUTE_HARNESS: HarnessId = "command-code-pro";
+export const DEFAULT_SUBSTITUTE_HARNESS: HarnessId = config.defaultSubstituteHarness as HarnessId;
 
 /**
  * Harnesses whose whole catalog the roster covers: every model they offer that names a vendor.
  * Command Code Pro is a plan inside the Command Code catalog, so it adds no models of its own.
  */
-export const ROSTER_CATALOG_HARNESSES: readonly HarnessId[] = ["opencode-go", "command-code"];
+export const ROSTER_CATALOG_HARNESSES: readonly HarnessId[] = config.rosterCatalogHarnesses as HarnessId[];
 
 /** How many nearest options the finder shows when no substitute reaches the target's tier. */
-export const NEAREST_OPTION_COUNT = 3;
+export const NEAREST_OPTION_COUNT: number = config.nearestOptionCount;
 
 /**
  * Models the methodology's worked example uses: one model's index arithmetic, and one model compared
  * with a tier anchor.
  */
-export const METHOD_EXAMPLE = {
-  indexModel: "glm-5.3",
-  compareModel: "kimi-k3",
-  compareTier: "execution",
-} as const satisfies { indexModel: string; compareModel: string; compareTier: AnchoredTier };
+export const METHOD_EXAMPLE = config.methodExample as {
+  indexModel: string;
+  compareModel: string;
+  compareTier: AnchoredTier;
+};
 
 /** Display names for the eight harnesses — proper nouns, not translated. */
-export const HARNESS_DISPLAY_NAMES: Readonly<Record<HarnessId, string>> = {
-  "claude-code": "Claude Code",
-  "codex-cli": "Codex CLI",
-  "command-code": "Command Code",
-  "command-code-pro": "Command Code Pro",
-  cursor: "Cursor",
-  "muse-code": "Muse Code",
-  "opencode-go": "OpenCode Go",
-  "opencode-zen": "OpenCode Zen",
-};
+export const HARNESS_DISPLAY_NAMES: Readonly<Record<HarnessId, string>> = config.harnessDisplayNames as Record<
+  HarnessId,
+  string
+>;
 
 /**
  * Values for the methodology's roster sentence, read from the constants that define the roster.
@@ -141,5 +111,5 @@ export function rosterScopeParams(locale = "en"): { frontier: string; catalogs: 
 }
 
 /** Blended price weighting: three input tokens for every output token. */
-export const BLEND_INPUT_SHARE = 3;
-export const BLEND_OUTPUT_SHARE = 1;
+export const BLEND_INPUT_SHARE: number = config.blendInputShare;
+export const BLEND_OUTPUT_SHARE: number = config.blendOutputShare;

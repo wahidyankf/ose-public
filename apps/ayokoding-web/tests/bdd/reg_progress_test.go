@@ -1,0 +1,51 @@
+package bdd
+
+import (
+	"github.com/cucumber/godog"
+
+	"github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/internal/glue"
+)
+
+func registerProgressSteps(ctx *godog.ScenarioContext, world *glue.World) {
+	ctx.Given(`^a reader has no saved progress$`, world.StepReaderHasSavedProgress)
+	ctx.When(`^the reader marks a learning page complete and reloads it$`, world.StepReaderMarksLearningPageCompleteReloads)
+	ctx.Then(`^the page remains marked complete$`, world.StepPageRemainsMarkedComplete)
+	ctx.Step(`^no HTTP request or LiveView event carries the stored progress record$`, world.StepHttpRequestLiveviewEventCarriesStoredProgressRec)
+	ctx.Given(`^this origin contains a valid ayokoding-learn-progress-v1 record$`, world.StepThisOriginContainsValidAyokodingLearnProgressV1R)
+	ctx.When(`^the reader opens its saved course and path$`, world.StepReaderOpensSavedCoursePath)
+	ctx.Then(`^the saved completed pages and visit context appear correctly$`, world.StepSavedCompletedPagesVisitContextAppearCorrectly)
+	ctx.Step(`^the stored record keeps its version 1 schema$`, world.StepStoredRecordKeepsVersion1Schema)
+	ctx.Given(`^a course appears in two paths$`, world.StepCourseAppearsTwoPaths)
+	ctx.Step(`^the reader has completed its learning pages through the first path$`, world.StepReaderHasCompletedLearningPagesThroughFirstPath)
+	ctx.When(`^the reader opens the second path$`, world.StepReaderOpensSecondPath)
+	ctx.Then(`^the course shows the same completed state$`, world.StepCourseShowsSameCompletedState)
+	ctx.Given(`^a learning page is marked complete$`, world.StepLearningPageMarkedComplete)
+	ctx.When(`^the reader activates its completion control again$`, world.StepReaderActivatesCompletionControlAgain)
+	ctx.Then(`^the page becomes incomplete$`, world.StepPageBecomesIncomplete)
+	ctx.Step(`^the course completed-page count decreases by one$`, world.StepCourseCompletedPageCountDecreasesOne)
+	ctx.Given(`^the browser refuses storage reads and writes$`, world.StepBrowserRefusesStorageReadsWrites)
+	ctx.When(`^the reader marks a learning page complete$`, world.StepReaderMarksLearningPageComplete)
+	ctx.Then(`^completion remains available for the current visit$`, world.StepCompletionRemainsAvailableCurrentVisit)
+	ctx.Step(`^a notice explains that progress cannot be saved$`, world.StepNoticeExplainsProgressCannotBeSaved)
+	ctx.Step(`^the page stays usable without an error$`, world.StepPageStaysUsableWithoutError)
+	ctx.Given(`^the saved progress record is invalid$`, world.StepSavedProgressRecordInvalid)
+	ctx.When(`^the reader opens a course and marks a page complete$`, world.StepReaderOpensCourseMarksPageComplete)
+	ctx.Then(`^the invalid record does not prevent reading or completion$`, world.StepInvalidRecordDoesPreventReadingCompletion)
+	ctx.Step(`^a valid version 1 record replaces it when storage is available$`, world.StepValidVersion1RecordReplacesWhenStorageAvailable)
+	ctx.Given(`^a reader has saved progress and unrelated site settings$`, world.StepReaderHasSavedProgressUnrelatedSiteSettings)
+	ctx.When(`^the reader confirms resetting learning progress$`, world.StepReaderConfirmsResettingLearningProgress)
+	ctx.Then(`^the learning progress key is cleared$`, world.StepLearningProgressKeyCleared)
+	ctx.Step(`^unrelated site settings remain unchanged$`, world.StepUnrelatedSiteSettingsRemainUnchanged)
+	ctx.Given(`^a reader has saved progress$`, world.StepReaderHasSavedProgress2)
+	ctx.When(`^the reader opens reset confirmation and cancels it$`, world.StepReaderOpensResetConfirmationCancels)
+	ctx.Then(`^saved progress remains unchanged$`, world.StepSavedProgressRemainsUnchanged)
+	ctx.Step(`^focus returns to the reset control$`, world.StepFocusReturnsResetControl)
+	ctx.Given(`^the same course is open in two tabs of this origin$`, world.StepSameCourseOpenTwoTabsThisOrigin)
+	ctx.When(`^the reader marks a learning page complete in one tab$`, world.StepReaderMarksLearningPageCompleteOneTab)
+	ctx.Then(`^the other tab updates its progress without reloading$`, world.StepOtherTabUpdatesProgressWithoutReloading)
+	ctx.Given(`^a reader saved progress on the existing site at port 3101$`, world.StepReaderSavedProgressExistingSitePort3101)
+	ctx.Step(`^the rewrite origin has no saved progress$`, world.StepRewriteOriginHasSavedProgress)
+	ctx.When(`^the reader opens the rewrite at port 3102$`, world.StepReaderOpensRewritePort3102)
+	ctx.Then(`^the rewrite does not claim to have imported the other origin's progress$`, world.StepRewriteDoesClaimHaveImportedOtherOriginSProgress)
+	ctx.Step(`^the existing site's saved progress remains unchanged$`, world.StepExistingSiteSSavedProgressRemainsUnchanged)
+}

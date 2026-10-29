@@ -158,27 +158,27 @@ disposition ledger before production code changes.
 script. **Outcome:** a working godog harness with strict bindings and a real 99% Unit coverage
 floor. **Proof:** Go unit/coverage runs, validator regressions, and behaviour-coverage reports.
 
-- [ ] [AI] **RED:** Under `scripts/behaviour-coverage.test.mjs`, add failing cases for Go adapter
+- [x] [AI] **RED:** Under `scripts/behaviour-coverage.test.mjs`, add failing cases for Go adapter
       discovery over the new `apps/ayokoding-web/tests/bdd/` tree: missing/ambiguous/unused step
       bindings, failed/empty verification, expanded outline identities, mixed Unit ownership, and
       exemptions. Run `rtk npm run test:validators`; preserve named failing assertions, not missing
       imports. The `.go` extractor already exists; if a genuine gap is proven, extend it minimally
       in the same unit and keep existing language behavior unchanged.
-- [ ] [AI] **GREEN:** Add the new app's `behaviour-coverage.json` (unit/integration/e2e adapters
+- [x] [AI] **GREEN:** Add the new app's `behaviour-coverage.json` (unit/integration/e2e adapters
       over `tests/bdd`, corpus `specs/apps/ayokoding/web/behaviours`, driver `go.mod`) and the
       godog suite wiring that runs the consumer's discovery scope. Rerun
       `rtk npm run test:validators`; all new and existing validator cases pass.
-- [ ] [AI] **REFACTOR:** Consolidate the discovery scope between static verification and test runs,
+- [x] [AI] **REFACTOR:** Consolidate the discovery scope between static verification and test runs,
       then rerun the same validator command. Preserve verification identities and avoid changing
       other languages.
-- [ ] [AI] **RED:** Add `tests/bdd/` focused godog step stubs for the new canonical library
+- [x] [AI] **RED:** Add `tests/bdd/` focused godog step stubs for the new canonical library
       specs plus in-memory driver doubles, with at least one named failing step per domain. Run the
       new `ayokoding-web:test:unit` target through HIPPO and preserve the assertion failure showing
       the missing domain implementation — never a build error or panicking stub.
-- [ ] [AI] **GREEN:** Implement the in-memory drivers and passing step definitions against function
+- [x] [AI] **GREEN:** Implement the in-memory drivers and passing step definitions against function
       signatures that P2 will fill. Run new `ayokoding-web:test:coverage:unit` and the static
       behaviour gate; full Unit coverage enforces its real 99% floor via `COVERAGE_MINIMUM=99`.
-- [ ] [AI] **REFACTOR:** Review imports, unused dependencies, linter warnings, and
+- [x] [AI] **REFACTOR:** Review imports, unused dependencies, linter warnings, and
       support/test-code coverage denominators. Rerun those three targets; store positive test
       counts and coverage reports, not just a zero exit from an empty selection.
 
@@ -188,22 +188,22 @@ floor. **Proof:** Go unit/coverage runs, validator regressions, and behaviour-co
 neutral JSON data source with compatible old exports. **Proof:** old/new data equality, unchanged
 reference blocks, and shared vectors for later Go parity.
 
-- [ ] [AI] **RED:** Add characterization tests beside the existing tool Unit tests for evaluated
+- [x] [AI] **RED:** Add characterization tests beside the existing tool Unit tests for evaluated
       exports, ordering, optional field absence, independent FX date, comment-only provenance,
       codec duplicates/defaults, and representative scoring/cost/savings/min-role results. Introduce
       expected JSON/vector imports as new artifacts; run the existing `ayokoding-www:test:unit`
       target through HIPPO and preserve failing assertions showing the missing shared-data adapter.
-- [ ] [AI] **GREEN:** Create `libs/ayokoding-data` with the exact JSON/provenance/vector families in
+- [x] [AI] **GREEN:** Create `libs/ayokoding-data` with the exact JSON/provenance/vector families in
       002/005. Export evaluated objects once; retain all dates, numbers, policies and source notes.
       Replace only the six bounded old data modules with typed adapters retaining their named
       exports. Add library data/provenance specs and in-memory Unit tests; no product service or
       Node-to-Go export daemon is introduced.
-- [ ] [AI] **GREEN:** Register the data owner's meaningful Unit/static/quick targets and source
+- [x] [AI] **GREEN:** Register the data owner's meaningful Unit/static/quick targets and source
       inputs. Run `ayokoding-data:test:quick` and `ayokoding-www:test:unit` through HIPPO. Run the
       existing `ayokoding-www:validate-benchmark-reference` target; generated blocks must be
       unchanged. A data-value or provenance mismatch returns to extraction, not to an expectation
       update accepting different results.
-- [ ] [AI] **REFACTOR:** Remove duplicated data declarations while preserving old public exports
+- [x] [AI] **REFACTOR:** Remove duplicated data declarations while preserving old public exports
       and importer paths. Rerun library quick, old app quick, old integration, and the existing
       frontend/backend E2E targets after inspecting their current runtime setup. Keep dataset source
       code and expected vectors independently reviewable; do not generate expectations from the
@@ -211,41 +211,41 @@ reference blocks, and shared vectors for later Go parity.
 
 ### Repository-local rules and docs propagation for P1/P2
 
-- [ ] [AI] Freeze the exact rule inputs in 005 with revision, strengths, scope, user decision,
+- [x] [AI] Freeze the exact rule inputs in 005 with revision, strengths, scope, user decision,
       observed follow/violate conditions, and affected file families. This is an `ose-public`-only
       transaction; no obligation or change is recorded for BeaverNest or another sibling.
-- [ ] [AI] Scan all repo-rule surfaces for conflicts with the new Go stdlib + htmx selection,
+- [x] [AI] Scan all repo-rule surfaces for conflicts with the new Go stdlib + htmx selection,
       library naming, BDD scopes/coverage, environment rules, target shape, and language-lane
       detection. Use existing sufficient rules unchanged; record each no-change decision and precedence.
-- [ ] [AI] Place the explicit app-specific Go/htmx and test-tool decisions in repository
+- [x] [AI] Place the explicit app-specific Go/htmx and test-tool decisions in repository
       adapter/adopter decisions; place the `ayokoding-data` language-neutral naming exception in
       its narrow owner document. Keep `repo-config.yml` project/stack inventory synchronized; do
       not copy BeaverNest governance or add broad rules unrelated to these projects.
-- [ ] [AI] **RED:** Add affected-language detection tests in
+- [x] [AI] **RED:** Add affected-language detection tests in
       `scripts/workflow-language-lanes.test.mjs` proving the new Go owner is tagged `lang:go` and
       cannot be silently skipped or run in a Node-only lane. Run `rtk npm run test:validators` and
       save the assertion.
-- [ ] [AI] **GREEN:** Register the new Go projects with `lang:go` tags so the existing
+- [x] [AI] **GREEN:** Register the new Go projects with `lang:go` tags so the existing
       `lang:go` quality lane (pinned `setup-go` action) picks them up; no new workflow job, no
       deployment, no environment branch, no hosted service setup. Rerun
       `rtk npm run test:validators`; all language lanes remain covered.
-- [ ] [AI] **REFACTOR:** Reconcile the lane with HIPPO admission and project tags, remove redundant
+- [x] [AI] **REFACTOR:** Reconcile the lane with HIPPO admission and project tags, remove redundant
       statements, and rerun validator tests. Assign each changed rule a covered/gated/unenforced
       disposition with an exact owner, then validate the affected rule surfaces.
-- [ ] [AI] Update library/spec indexes, licensing notice only if a vendored-code claim changes
+- [x] [AI] Update library/spec indexes, licensing notice only if a vendored-code claim changes
       (none is introduced here), monorepo reference, and applicable project READMEs in the same
       coherent unit. Run Docs Propagation for these actual surfaces; update canonical instructions
       only if a changed contract requires it, then use pinned Rhino adapter generation/validation
       for any affected mirrors. Never edit a generated route by hand.
-- [ ] [AI] Run the repository rules-quality-gate on the frozen rule transaction after deterministic
+- [x] [AI] Run the repository rules-quality-gate on the frozen rule transaction after deterministic
       verification; record every placement, supersession, relocation, enforcement result, and final
       transaction status. Return failures to their row owner; a generic workflow link is not proof.
 
 ### Phase 1 Gate
 
-- [ ] [AI] Run the planned library targets and existing `rtk npm run test:validators` with the
+- [x] [AI] Run the planned library targets and existing `rtk npm run test:validators` with the
       documented guards; all tests execute positive counts and actual coverage floors pass.
-- [ ] [AI] Verify old-app data/calculation/reference equality, no course/manifests edits,
+- [x] [AI] Verify old-app data/calculation/reference equality, no course/manifests edits,
       no `libs/ex-bdd` subtree was created, and complete same-unit docs/spec/rules changes. Land
       independent ready units only under explicit Git authorization and the delivery-boundary
       checklist below.

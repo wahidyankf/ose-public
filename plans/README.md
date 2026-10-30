@@ -32,8 +32,7 @@ is updated in the same change that moves, adds, or removes a plan, per
 ```mermaid
 flowchart LR
   accTitle: Plan order
-  accDescr: Twelve live plans; the Podman migration precedes Phoenix, Phoenix precedes every live AyoKoding plan, and plans 06 through 13 also precede the plan 14 terminal gate.
-  POD["🏗️ docker-to-podman"]:::inprogress
+  accDescr: Eleven live plans; Phoenix precedes every live AyoKoding plan, and plans 06 through 13 also precede the plan 14 terminal gate.
   PHX["🏗️ ayokoding-app-web"]:::inprogress
   P10["🏗️ 10-migration"]:::inprogress
   P06["🔜 06-accounting"]:::backlog
@@ -45,7 +44,6 @@ flowchart LR
   P13["🔜 13-audit-prodsec"]:::backlog
   P14["🔜 14-removal"]:::backlog
   FER["🔜 ferret-02-backend"]:::backlog
-  POD --> PHX
   PHX --> P06
   PHX --> P07
   PHX --> P08
@@ -72,8 +70,9 @@ flowchart LR
 Legend: 🔜 blue = backlog; 🏗️ teal = in progress. Hexagon credentialed-machine steps do not apply here.
 `ferret-02` has no live dependencies and runs in parallel with everything.
 
-The Podman migration must complete before the [AyoKoding Phoenix LiveView rewrite](./in-progress/ayokoding-app-web/README.md),
-which must complete before each live AyoKoding Learn Revamp plan. Plans 06 through 13 may proceed in
+The Podman migration is archived under [plans/done](./done/2026-10-29__docker-to-podman/README.md). The
+[AyoKoding Phoenix LiveView rewrite](./in-progress/ayokoding-app-web/README.md) must complete before each live
+AyoKoding Learn Revamp plan. Plans 06 through 13 may proceed in
 parallel after Phoenix except for the existing plan 06 → 07 dependency. Plan 14 also waits for plans
 06 through 13 because its terminal gate verifies the complete 14-plan corpus; its other declared
 dependencies are explicit direct predecessors for that gate.

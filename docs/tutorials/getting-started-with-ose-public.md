@@ -109,7 +109,7 @@ npm run doctor
 
 The check probes every toolchain the repository declares and installs nothing. This website path
 needs only Git, Volta, Node.js, and npm, so a report that names only other toolchains, such as
-Docker, Go, or Java, does not block this tutorial.
+Podman, Go, or Java, does not block this tutorial.
 
 ## Run the public website
 
@@ -137,17 +137,17 @@ The installer has not yet updated the current shell. Close and reopen the termin
 matching version command. If it is still missing, rerun the relevant installer from
 [Install the required runtimes](#install-the-required-runtimes), reopen the terminal, and try again.
 
-### The tool check reports Docker as missing
+### The tool check reports Podman as missing
 
-Docker is not needed to run `ose-www`, so you can continue with this tutorial. Other repository
-targets may require it. When you need one, install Docker Desktop on macOS or Docker Engine on
-Ubuntu, then confirm the check finds it:
+Podman is not needed to run `ose-www`, so you can continue with this tutorial. Other repository
+targets may require it. When you need one, install rootless Podman and the Compose provider on macOS
+or Ubuntu as described in the setup guide, then confirm the check finds it:
 
 ```bash
 npm run doctor
 ```
 
-For the complete, multi-language environment and Docker guidance, see
+For the complete, multi-language environment and container guidance, see
 [Set Up Your Development Environment](../how-to/setup-development-environment.md).
 
 ### Port 3100 is already in use

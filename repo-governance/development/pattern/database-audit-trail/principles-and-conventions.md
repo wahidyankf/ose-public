@@ -16,7 +16,7 @@ This pattern implements the following core principles:
 
 - **[Automation Over Manual](../../../principles/software-engineering/automation-over-manual.md)**: DbUp discovers and applies migration scripts automatically at startup. EF Core handles entity mapping. Manual service code is only required for soft-delete columns (`deleted_at`, `deleted_by`).
 
-- **[Reproducibility First](../../../principles/software-engineering/reproducibility.md)**: DbUp applies versioned SQL scripts in deterministic order, ensuring the schema is reproducible across PostgreSQL environments (dev/staging/prod) and Dockerised test databases without divergence.
+- **[Reproducibility First](../../../principles/software-engineering/reproducibility.md)**: DbUp applies versioned SQL scripts in deterministic order, ensuring the schema is reproducible across PostgreSQL environments (dev/staging/prod) and container-based test databases without divergence.
 
 - **[Documentation First](../../../principles/content/documentation-first.md)**: This pattern documents the required columns, types, and implementation approach before any table is created, ensuring teams follow a consistent and verifiable standard.
 

@@ -31,7 +31,7 @@ and file counts never define the boundary. See
 - Run `rtk npm run doctor` to validate all tooling; only when it reports drift, run
   `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply`
   and then `rtk npm run doctor` again
-- Set up project-specific requirements (env vars, DB, Docker, etc.) as specified in the plan
+- Set up project-specific requirements (env vars, DB, Podman, etc.) as specified in the plan
 - Verify dev server starts for affected projects
 - Run existing quality gates to establish a baseline: `./rhino gate run --surface pre-push` and affected `test:quick` (the pre-push surface runs no `test:quick`)
 - Note any preexisting failures — these MUST be fixed during execution (Iron Rule 3)

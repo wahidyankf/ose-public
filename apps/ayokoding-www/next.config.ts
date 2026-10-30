@@ -37,6 +37,11 @@ const nextConfig: NextConfig = {
   // Legacy markdown pages can exceed Next's 60s default during the full SSG
   // fan-out; retain static generation instead of retrying them as failures.
   staticPageGenerationTimeout: 180,
+  // `next build` type-checks the build-only config, which leaves out the tests tree (the production image
+  // does not copy the sibling apps those tests import). The `typecheck` target still checks tests via tsconfig.json.
+  typescript: {
+    tsconfigPath: "tsconfig.build.json",
+  },
   poweredByHeader: false,
   transpilePackages: ["@t3-oss/env-nextjs", "@t3-oss/env-core"],
   outputFileTracingRoot: path.join(__dirname, "../../"),

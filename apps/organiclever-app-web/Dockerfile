@@ -1,5 +1,5 @@
 # Build context: workspace root (../../.. from infra/dev/organiclever/)
-FROM node:24-alpine AS build
+FROM docker.io/library/node:24-alpine AS build
 WORKDIR /app
 
 # Copy app package.json and strip workspace dependency before install
@@ -36,7 +36,7 @@ ARG ORGANICLEVER_BE_URL=http://organiclever-be:8202
 ENV ORGANICLEVER_BE_URL=${ORGANICLEVER_BE_URL}
 RUN npx next build
 
-FROM node:24-alpine
+FROM docker.io/library/node:24-alpine
 
 LABEL org.opencontainers.image.source="https://github.com/wahidyankf/ose-public"
 LABEL org.opencontainers.image.description="OrganicLever landing and promotional website built with Next.js"

@@ -1,0 +1,32 @@
+{{define "calculator"}}<!doctype html>
+<html lang="{{.Shell.Lang}}" data-theme-hook>
+  <head>
+    {{template "head" .Shell}}
+  </head>
+  <body>
+    {{template "header" .Shell}}
+    <main id="main">
+      <h1>Cost of Living Calculator</h1>
+      <form data-tool-inputs data-encoded-state="{{.Encoded}}">
+        <label>City <input name="city" value="{{.Inputs.City}}" /></label
+        ><label>Role <input name="role" value="{{.Inputs.Role}}" /></label
+        ><label>Mode <input name="mode" value="{{.Inputs.Mode}}" /></label
+        ><label>Workers <input name="workers" value="{{.Inputs.Workers}}" /></label>
+      </form>
+      {{if .Result.Empty}}
+      <p data-fallback-state>No finite estimate for this selection. Results follow the fallback behavior.</p>
+      {{else}}
+      <dl data-tool-estimate>
+        <dt>Monthly cost</dt>
+        <dd data-cost>{{.Result.MonthlyCostUSD}}</dd>
+        <dt>Monthly saving</dt>
+        <dd data-saving>{{.Result.MonthlySaving}}</dd>
+        <dt>Minimum role</dt>
+        <dd data-min-role>{{.Result.MinRole}}</dd>
+      </dl>
+      {{end}}
+    </main>
+    {{template "footer" .Shell}}
+  </body>
+</html>
+{{end}}

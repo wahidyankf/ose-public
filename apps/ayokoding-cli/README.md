@@ -91,7 +91,7 @@ nothing runs for it. `examples check --all` on today's content prints
 
 - Go, through `npm run doctor`. The doctor provisions the pinned Go
   toolchain; never install Go by hand.
-- Docker, running, for every command that starts a container
+- rootless Podman, running, for every command that starts a container
   (`examples run`, `examples check`, image builds). `validate`, `sync`
   without runs, `coverage`, and `affected` need no daemon.
 

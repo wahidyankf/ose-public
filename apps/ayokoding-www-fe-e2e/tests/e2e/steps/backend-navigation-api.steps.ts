@@ -34,7 +34,17 @@ Given('content exists in locale "en" with sections "about-ayokoding", "learn", a
 });
 Given(
   "a section {string} in locale {string} has child nodes with weights {int}, {int}, {int}, {int}, and {int}",
-  async ({ request }, slug: string, locale: string, ...declaredWeights: number[]) => {
+  async (
+    { request },
+    slug: string,
+    locale: string,
+    firstWeight: number,
+    secondWeight: number,
+    thirdWeight: number,
+    fourthWeight: number,
+    fifthWeight: number,
+  ) => {
+    const declaredWeights = [firstWeight, secondWeight, thirdWeight, fourthWeight, fifthWeight];
     expect(locale).toBe("en");
     const section = findNode(await requestTree(request), slug);
     expect(section?.children.map(({ weight }) => weight).sort((left, right) => left - right)).toEqual(
@@ -68,7 +78,16 @@ Then("each node should reflect its position in the directory hierarchy", async (
 
 Then(
   "the children of {string} should appear in order: weight {int}, weight {int}, weight {int}, weight {int}, weight {int}",
-  async ({}, slug: string, ...expectedWeights: number[]) => {
+  async (
+    {},
+    slug: string,
+    firstWeight: number,
+    secondWeight: number,
+    thirdWeight: number,
+    fourthWeight: number,
+    fifthWeight: number,
+  ) => {
+    const expectedWeights = [firstWeight, secondWeight, thirdWeight, fourthWeight, fifthWeight];
     const section = findNode(backendState.treeResult as NavigationNode[], slug);
     expect(section?.children.map(({ weight }) => weight)).toEqual(expectedWeights);
   },

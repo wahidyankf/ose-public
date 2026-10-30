@@ -1,0 +1,138 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "ayokoding-data",
+  "sourceRoot": "libs/ayokoding-data/data",
+  "projectType": "library",
+  "targets": {
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx tsc --noEmit",
+        "cwd": "libs/ayokoding-data"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx oxlint .",
+        "cwd": "libs/ayokoding-data"
+      }
+    },
+    "test:unit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "npx vitest run --coverage --coverage.thresholds.lines=99",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "! grep -rnE '\\.(skip|todo)\\(' --include='*.test.*' tests",
+            "forwardAllArgs": false
+          }
+        ],
+        "parallel": false,
+        "cwd": "libs/ayokoding-data",
+        "forwardAllArgs": false
+      },
+      "cache": true,
+      "inputs": ["{projectRoot}/data/**/*", "{projectRoot}/test-vectors/**/*", "{projectRoot}/tests/unit/**/*"],
+      "outputs": ["{projectRoot}/coverage"]
+    },
+    "test:quick": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "npm exec -- nx run ayokoding-data:typecheck",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ayokoding-data:lint",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ayokoding-data:test:unit",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ayokoding-data:test:coverage",
+            "forwardAllArgs": false
+          }
+        ],
+        "parallel": false,
+        "forwardAllArgs": false
+      },
+      "cache": true,
+      "inputs": [
+        "default",
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/libs/ayokoding-data/behaviour-coverage.json",
+        "{workspaceRoot}/package-lock.json",
+        "{workspaceRoot}/specs/libs/ayokoding-data/behaviours/**/*.feature",
+        "{workspaceRoot}/libs/ayokoding-data/data/**/*.{json,md}",
+        "{workspaceRoot}/libs/ayokoding-data/provenance.md",
+        "{workspaceRoot}/libs/ayokoding-data/test-vectors/**/*.json",
+        "{workspaceRoot}/libs/ayokoding-data/tests/unit/**/*.{ts,tsx,fs}",
+        "{workspaceRoot}/libs/ayokoding-data/vitest.config.ts"
+      ]
+    },
+    "test:coverage:unit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/behaviour-coverage.mjs --config libs/ayokoding-data/behaviour-coverage.json --adapter unit"
+      },
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/libs/ayokoding-data/behaviour-coverage.json",
+        "{workspaceRoot}/package-lock.json",
+        "{workspaceRoot}/specs/libs/ayokoding-data/behaviours/**/*.feature",
+        "{workspaceRoot}/libs/ayokoding-data/tests/unit/**/*.{ts,tsx,fs}",
+        "{workspaceRoot}/libs/ayokoding-data/vitest.config.ts"
+      ]
+    },
+    "test:coverage:behaviour": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/behaviour-coverage.mjs --config libs/ayokoding-data/behaviour-coverage.json --adapter behaviour"
+      },
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/libs/ayokoding-data/behaviour-coverage.json",
+        "{workspaceRoot}/package-lock.json",
+        "{workspaceRoot}/specs/libs/ayokoding-data/behaviours/**/*.feature",
+        "{workspaceRoot}/libs/ayokoding-data/tests/unit/**/*.{ts,tsx,fs}",
+        "{workspaceRoot}/libs/ayokoding-data/vitest.config.ts"
+      ]
+    },
+    "test:coverage": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "npm exec -- nx run ayokoding-data:test:coverage:unit",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ayokoding-data:test:coverage:behaviour",
+            "forwardAllArgs": false
+          }
+        ],
+        "parallel": false,
+        "forwardAllArgs": false
+      },
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/libs/ayokoding-data/behaviour-coverage.json",
+        "{workspaceRoot}/package-lock.json",
+        "{workspaceRoot}/specs/libs/ayokoding-data/behaviours/**/*.feature",
+        "{workspaceRoot}/libs/ayokoding-data/tests/unit/**/*.{ts,tsx,fs}",
+        "{workspaceRoot}/libs/ayokoding-data/vitest.config.ts"
+      ]
+    }
+  },
+  "tags": ["type:lib", "lang:ts", "domain:ayokoding"]
+}

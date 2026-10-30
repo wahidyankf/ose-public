@@ -1,21 +1,26 @@
 import path from "path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { expect, vi } from "vitest";
 import "./helpers/test-setup";
 import { MARKDOWN_PROSE_CLASS, MarkdownRenderer } from "@/features/content/shell/markdown-renderer";
+import { MermaidDiagram } from "@/features/content/shell/mermaid";
 
 const feature = await loadFeature(
   path.resolve(process.cwd(), "../../specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature"),
 );
 
 const sampleHtml = `<h2 id="intro">Introduction</h2><p>Body text paragraph.</p><h3 id="sub">Subsection</h3><p>More text.</p>`;
+const { renderDiagram } = vi.hoisted(() => ({
+  renderDiagram: vi.fn(async (_id: string, chart: string) => ({
+    svg: `<svg role="img" aria-label="${chart}"><text>diagram</text></svg>`,
+  })),
+}));
 vi.mock("mermaid", () => ({
   default: {
     initialize: vi.fn(),
-    render: vi.fn(async (_id: string, chart: string) => ({
-      svg: `<svg role="img" aria-label="${chart}"><text>diagram</text></svg>`,
-    })),
+    render: renderDiagram,
   },
 }));
 
@@ -26,6 +31,36 @@ const youtubeHtml = `<div data-youtube="dQw4w9WgXcQ"></div>`;
 const stepsHtml = `<div data-steps><ol><li>Step one</li><li>Step two</li></ol></div>`;
 const sectionHeadingHtml = `<h2 id="x"><a href="#x">X</a></h2>`;
 const inlineCodeHtml = `<p>Run <code>nvim --version</code></p>`;
+
+// Mermaid keyboard-access fixtures. The scenarios hold the renderer pending or fail it through the
+// hoisted mock, mirroring the controlled-render approach of mermaid.test.tsx.
+const diagramSource = "flowchart LR\n  A[Read the source] --> B[Follow the diagram]";
+const flowSvg = '<svg role="img" aria-label="Source flow"><text>Rendered diagram</text></svg>';
+
+function controlMermaidRendering() {
+  const started = Promise.withResolvers<void>();
+  const result = Promise.withResolvers<{ svg: string }>();
+  renderDiagram.mockImplementationOnce(() => {
+    started.resolve();
+    return result.promise;
+  });
+  return { started: started.promise, result };
+}
+
+function renderMermaidBetweenControls() {
+  render(
+    <>
+      <button type="button">Before diagram</button>
+      <MermaidDiagram chart={diagramSource} />
+      <button type="button">After diagram</button>
+    </>,
+  );
+  const fallback = screen.getByText(diagramSource, { selector: "code", normalizer: (text) => text }).parentElement;
+  if (!(fallback instanceof HTMLPreElement)) {
+    throw new Error("The diagram source must remain in its preformatted fallback");
+  }
+  return fallback;
+}
 
 describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
   AfterEachScenario(cleanup);
@@ -231,6 +266,148 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
       expect(document.querySelector("svg[role='img']")).toBeTruthy();
     });
   });
+
+  Scenario("Mermaid source stays keyboard reachable while its diagram is pending", ({ Given, And, When, Then }) => {
+    let rendering: ReturnType<typeof controlMermaidRendering>;
+    let user: ReturnType<typeof userEvent.setup>;
+    let fallback: HTMLPreElement;
+
+    Given("a visitor opens a content page with a Mermaid code block between two controls", async () => {
+      rendering = controlMermaidRendering();
+      user = userEvent.setup();
+      fallback = renderMermaidBetweenControls();
+      await rendering.started;
+    });
+    And("the diagram is still rendering", () => {
+      expect(screen.queryByRole("img", { name: "Source flow" })).not.toBeInTheDocument();
+    });
+    When("the visitor presses Tab to reach the control before the code block", async () => {
+      await user.tab();
+      expect(screen.getByRole("button", { name: "Before diagram" })).toHaveFocus();
+    });
+    And("the visitor presses Tab again", async () => {
+      await user.tab();
+    });
+    Then("the Mermaid source should have keyboard focus", () => {
+      expect(fallback).toHaveFocus();
+      expect(fallback).toHaveTextContent("Read the source");
+    });
+    When("the visitor presses Tab once more", async () => {
+      await user.tab();
+    });
+    Then("focus should move to the control after the code block", () => {
+      expect(screen.getByRole("button", { name: "After diagram" })).toHaveFocus();
+    });
+  });
+
+  Scenario("Mermaid source stays keyboard reachable when its diagram fails to render", ({ Given, When, And, Then }) => {
+    let rendering: ReturnType<typeof controlMermaidRendering>;
+    let user: ReturnType<typeof userEvent.setup>;
+    let fallback: HTMLPreElement;
+
+    Given("a visitor opens a content page with a Mermaid code block between two controls", async () => {
+      rendering = controlMermaidRendering();
+      user = userEvent.setup();
+      fallback = renderMermaidBetweenControls();
+      await rendering.started;
+    });
+    When("the diagram rendering fails", async () => {
+      const warning = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+      const failure = new Error("Synthetic Mermaid render failure");
+
+      await act(async () => {
+        rendering.result.reject(failure);
+        await rendering.result.promise.catch(() => undefined);
+      });
+
+      expect(warning).toHaveBeenCalledExactlyOnceWith("[mermaid] Failed to render diagram:", failure);
+      warning.mockRestore();
+    });
+    And("the visitor presses Tab to reach the control before the code block", async () => {
+      await user.tab();
+      expect(screen.getByRole("button", { name: "Before diagram" })).toHaveFocus();
+    });
+    And("the visitor presses Tab again", async () => {
+      await user.tab();
+    });
+    Then("the Mermaid source should have keyboard focus", () => {
+      expect(fallback).toHaveFocus();
+      expect(fallback).toHaveTextContent("Read the source");
+    });
+    When("the visitor presses Tab once more", async () => {
+      await user.tab();
+    });
+    Then("focus should move to the control after the code block", () => {
+      expect(screen.getByRole("button", { name: "After diagram" })).toHaveFocus();
+    });
+  });
+
+  Scenario("The Mermaid source leaves keyboard focus order once the diagram renders", ({ When, And, Then }) => {
+    let rendering: ReturnType<typeof controlMermaidRendering>;
+    let user: ReturnType<typeof userEvent.setup>;
+    let fallback: HTMLPreElement;
+
+    When("a visitor opens a content page containing a Mermaid code block", async () => {
+      rendering = controlMermaidRendering();
+      user = userEvent.setup();
+      fallback = renderMermaidBetweenControls();
+      await rendering.started;
+    });
+    And("the diagram should render as an inline SVG element", async () => {
+      await act(async () => {
+        rendering.result.resolve({ svg: flowSvg });
+        await rendering.result.promise;
+      });
+
+      expect(screen.getByRole("img", { name: "Source flow" })).toHaveTextContent("Rendered diagram");
+      expect(screen.getByText(diagramSource, { selector: "code", normalizer: (text) => text }).parentElement).toBe(
+        fallback,
+      );
+      expect(fallback).toHaveTextContent("Read the source");
+    });
+    Then("the Mermaid source should be removed from keyboard focus order", async () => {
+      await user.tab();
+      expect(screen.getByRole("button", { name: "Before diagram" })).toHaveFocus();
+      await user.tab();
+      expect(screen.getByRole("button", { name: "After diagram" })).toHaveFocus();
+    });
+  });
+
+  Scenario(
+    "The focused Mermaid source has a visible indicator in light and dark themes",
+    ({ Given, And, When, Then }) => {
+      let rendering: ReturnType<typeof controlMermaidRendering>;
+      let fallback: HTMLPreElement;
+
+      Given("a visitor opens a content page with a Mermaid code block", () => {
+        rendering = controlMermaidRendering();
+        fallback = renderMermaidBetweenControls();
+      });
+      And("the diagram is still rendering", async () => {
+        await rendering.started;
+        expect(screen.queryByRole("img", { name: "Source flow" })).not.toBeInTheDocument();
+      });
+      When("the visitor moves keyboard focus to the Mermaid source", () => {
+        act(() => {
+          fallback.focus();
+        });
+        expect(fallback).toHaveFocus();
+      });
+      Then("the Mermaid source should show an outline drawn in the foreground colour", () => {
+        // jsdom does not resolve the Tailwind cascade, so the binding pins the utility contract. Recorded
+        // ratios from the foreground token (warm-900 / hsl(210 40% 98%)): light 19.55:1 against the code
+        // surface, dark 14.01:1. The browser-measured ratio is the owner's live check after a rebuild.
+        expect(fallback.tabIndex).toBe(0);
+        expect(fallback.classList.contains("focus-visible:outline-2")).toBe(true);
+        expect(fallback.classList.contains("focus-visible:outline-offset-2")).toBe(true);
+        expect(fallback.classList.contains("focus-visible:outline-foreground")).toBe(true);
+      });
+      And("that outline should contrast with the code surface by at least 3 to 1 in both themes", () => {
+        // The design-system ring token is below 3:1 in dark (DWT-002), so the outline must not use it.
+        expect([...fallback.classList].some((className) => className.includes("ring"))).toBe(false);
+      });
+    },
+  );
 
   Scenario("Raw HTML details disclosure renders correctly", ({ When, Then, And }) => {
     When("a visitor opens a content page containing a raw HTML details disclosure", () => {

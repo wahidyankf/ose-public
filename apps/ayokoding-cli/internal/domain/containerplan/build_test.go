@@ -26,18 +26,18 @@ func join(argv []string) string {
 	return strings.Join(argv, " ")
 }
 
-// TestDerived_fileTravelsWithContext pins the buildkit fix: the --file
-// flag names the Dockerfile beside the context directory, because buildkit
+// TestDerived_fileTravelsWithContext pins the context fix: the --file
+// flag names the Dockerfile beside the context directory, because the builder
 // resolves a bare "Dockerfile" against the caller working directory and
 // fails with "failed to read dockerfile" anywhere else.
 func TestDerived_fileTravelsWithContext(t *testing.T) {
-	settings := containerplan.Settings{ContainerCLI: "docker", CacheDir: ""}
+	settings := containerplan.Settings{ContainerCLI: "podman"}
 	got, err := containerplan.Derived(settings, "/ctx", "typescript", baseRef, []byte(dockerfile), nil)
 	if err != nil {
 		t.Fatalf("plan derived build: %v", err)
 	}
 	want := join([]string{
-		"buildx", "build", "--load",
+		"build", "--layers", "--format", "docker",
 		"--tag", wantTag([]byte(dockerfile)),
 		"--file", "/ctx/Dockerfile", "/ctx",
 	})
@@ -48,17 +48,17 @@ func TestDerived_fileTravelsWithContext(t *testing.T) {
 
 // TestDerived_argvWithoutCache pins the exact derived build argv.
 func TestDerived_argvWithoutCache(t *testing.T) {
-	settings := containerplan.Settings{ContainerCLI: "docker", CacheDir: ""}
+	settings := containerplan.Settings{ContainerCLI: "podman"}
 	got, err := containerplan.Derived(settings, "/ctx", "typescript", baseRef, []byte(dockerfile), nil)
 	if err != nil {
 		t.Fatalf("plan derived build: %v", err)
 	}
 	want := []string{
-		"buildx", "build", "--load",
+		"build", "--layers", "--format", "docker",
 		"--tag", wantTag([]byte(dockerfile)),
 		"--file", "/ctx/Dockerfile", "/ctx",
 	}
-	if join(got.Invoke.Args) != join(want) || got.Invoke.Binary != "docker" {
+	if join(got.Invoke.Args) != join(want) || got.Invoke.Binary != "podman" {
 		t.Fatalf("argv=%q, want %q", join(got.Invoke.Args), join(want))
 	}
 	if got.Tag != wantTag([]byte(dockerfile)) {
@@ -69,28 +69,9 @@ func TestDerived_argvWithoutCache(t *testing.T) {
 	}
 }
 
-// TestDerived_argvWithCache pins the local cache flags.
-func TestDerived_argvWithCache(t *testing.T) {
-	settings := containerplan.Settings{ContainerCLI: "docker", CacheDir: "/tmp/.buildx-cache"}
-	got, err := containerplan.Derived(settings, "/ctx", "typescript", baseRef, []byte(dockerfile), nil)
-	if err != nil {
-		t.Fatalf("plan derived build: %v", err)
-	}
-	want := []string{
-		"buildx", "build", "--load",
-		"--cache-from", "type=local,src=/tmp/.buildx-cache",
-		"--cache-to", "type=local,dest=/tmp/.buildx-cache-new,mode=max",
-		"--tag", wantTag([]byte(dockerfile)),
-		"--file", "/ctx/Dockerfile", "/ctx",
-	}
-	if join(got.Invoke.Args) != join(want) {
-		t.Fatalf("argv=%q, want %q", join(got.Invoke.Args), join(want))
-	}
-}
-
 // TestDerived_buildArgsBecomeFlags carries build arguments into argv and tag.
 func TestDerived_buildArgsBecomeFlags(t *testing.T) {
-	settings := containerplan.Settings{ContainerCLI: "docker", CacheDir: ""}
+	settings := containerplan.Settings{ContainerCLI: "podman"}
 	plain, err := containerplan.Derived(settings, "/ctx", "typescript", baseRef, []byte(dockerfile), nil)
 	if err != nil {
 		t.Fatalf("plan derived build: %v", err)
@@ -103,7 +84,7 @@ func TestDerived_buildArgsBecomeFlags(t *testing.T) {
 		t.Fatalf("build args left the tag unchanged: %q", plain.Tag)
 	}
 	want := join([]string{
-		"buildx", "build", "--load",
+		"build", "--layers", "--format", "docker",
 		"--build-arg", "SNAPSHOT=20261017T204620Z",
 		"--tag", withArgs.Tag,
 		"--file", "/ctx/Dockerfile", "/ctx",
@@ -115,7 +96,7 @@ func TestDerived_buildArgsBecomeFlags(t *testing.T) {
 
 // TestDerived_tagMovesWithOneDockerfileByte proves the content-hash tag.
 func TestDerived_tagMovesWithOneDockerfileByte(t *testing.T) {
-	settings := containerplan.Settings{ContainerCLI: "docker", CacheDir: ""}
+	settings := containerplan.Settings{ContainerCLI: "podman"}
 	first, err := containerplan.Derived(settings, "/ctx", "typescript", baseRef, []byte(dockerfile), nil)
 	if err != nil {
 		t.Fatalf("plan derived build: %v", err)
@@ -139,28 +120,28 @@ func TestDerived_tagMovesWithOneDockerfileByte(t *testing.T) {
 // content-hash tag alone, so the recipe bytes still name the tag.
 func TestDerived_platformFlag(t *testing.T) {
 	plain, err := containerplan.Derived(
-		containerplan.Settings{ContainerCLI: "docker", CacheDir: ""},
+		containerplan.Settings{ContainerCLI: "podman"},
 		"/ctx", "flutter", baseRef, []byte(dockerfile), nil,
 	)
 	if err != nil {
 		t.Fatalf("plan derived build: %v", err)
 	}
 	if join(plain.Invoke.Args) != join([]string{
-		"buildx", "build", "--load",
+		"build", "--layers", "--format", "docker",
 		"--tag", plain.Tag,
 		"--file", "/ctx/Dockerfile", "/ctx",
 	}) {
 		t.Fatalf("platform-less argv moved (argv=%q)", join(plain.Invoke.Args))
 	}
 	pinned, err := containerplan.Derived(
-		containerplan.Settings{ContainerCLI: "docker", Platform: "linux/amd64"},
+		containerplan.Settings{ContainerCLI: "podman", Platform: "linux/amd64"},
 		"/ctx", "flutter", baseRef, []byte(dockerfile), nil,
 	)
 	if err != nil {
 		t.Fatalf("plan derived build with platform: %v", err)
 	}
 	if join(pinned.Invoke.Args) != join([]string{
-		"buildx", "build", "--platform", "linux/amd64", "--load",
+		"build", "--layers", "--format", "docker", "--platform", "linux/amd64",
 		"--tag", pinned.Tag,
 		"--file", "/ctx/Dockerfile", "/ctx",
 	}) {
@@ -173,7 +154,7 @@ func TestDerived_platformFlag(t *testing.T) {
 
 // TestDerived_rejectsUnpinnedBase refuses a base reference without a digest.
 func TestDerived_rejectsUnpinnedBase(t *testing.T) {
-	settings := containerplan.Settings{ContainerCLI: "docker", CacheDir: ""}
+	settings := containerplan.Settings{ContainerCLI: "podman"}
 	for _, row := range []struct {
 		name string
 		base string
@@ -192,7 +173,7 @@ func TestDerived_rejectsUnpinnedBase(t *testing.T) {
 
 // TestDerived_defaultContext pins the context fallback.
 func TestDerived_defaultContext(t *testing.T) {
-	settings := containerplan.Settings{ContainerCLI: "docker", CacheDir: ""}
+	settings := containerplan.Settings{ContainerCLI: "podman"}
 	got, err := containerplan.Derived(settings, "", "typescript", baseRef, []byte(dockerfile), nil)
 	if err != nil {
 		t.Fatalf("plan derived build: %v", err)
@@ -206,10 +187,10 @@ func TestDerived_defaultContext(t *testing.T) {
 	}
 }
 
-// TestSettings_defaultCLI resolves the Docker default.
+// TestSettings_defaultCLI resolves the Podman default.
 func TestSettings_defaultCLI(t *testing.T) {
-	if got := (containerplan.Settings{}).CLI(); got != "docker" {
-		t.Fatalf("default CLI=%q, want docker", got)
+	if got := (containerplan.Settings{}).CLI(); got != "podman" {
+		t.Fatalf("default CLI=%q, want podman", got)
 	}
 	if got := (containerplan.Settings{ContainerCLI: "podman"}).CLI(); got != "podman" {
 		t.Fatalf("custom CLI=%q, want podman", got)
@@ -227,7 +208,7 @@ func installRecipe() catalog.Install {
 
 // TestEnvironment_argvAndFiles pins the environment build plan.
 func TestEnvironment_argvAndFiles(t *testing.T) {
-	settings := containerplan.Settings{ContainerCLI: "docker", CacheDir: ""}
+	settings := containerplan.Settings{ContainerCLI: "podman"}
 	lockfile := []byte("psycopg==3.2.1 \\\n    --hash=sha256:0000000000000000000000000000000000000000000000000000000000000000\n")
 	image := "docker.io/library/python:3.15@sha256:e748956ccf3f50c9555f236753bbcd5f430d3937e665d3bd6922dd0e6e591a24"
 	got := containerplan.Environment(settings, "/ctx", "python", image, "requirements.lock", lockfile, installRecipe())
@@ -238,7 +219,7 @@ func TestEnvironment_argvAndFiles(t *testing.T) {
 		t.Fatalf("tag=%q, want a full SHA-256 suffix", got.Tag)
 	}
 	want := []string{
-		"buildx", "build", "--load",
+		"build", "--layers", "--format", "docker",
 		"--tag", got.Tag,
 		"--file", "/ctx/Dockerfile", "/ctx",
 	}
@@ -298,9 +279,9 @@ func TestEnvironmentDockerfile_withoutRecipe(t *testing.T) {
 
 // TestInspect_argv pins the presence probe.
 func TestInspect_argv(t *testing.T) {
-	got := containerplan.Inspect("docker", "img:tag@sha256:abc")
-	if got.Binary != "docker" {
-		t.Fatalf("binary=%q, want docker", got.Binary)
+	got := containerplan.Inspect("podman", "img:tag@sha256:abc")
+	if got.Binary != "podman" {
+		t.Fatalf("binary=%q, want podman", got.Binary)
 	}
 	if join(got.Args) != "image inspect img:tag@sha256:abc" {
 		t.Fatalf("argv=%q", join(got.Args))
@@ -356,4 +337,22 @@ func finalBaseDigest(recipe string) (string, bool) {
 		digest, found = reference[at+1:], true
 	}
 	return digest, found
+}
+
+func TestPodmanNativeBuildAndLocalEnvironmentFrom(t *testing.T) {
+	derived, err := containerplan.Derived(containerplan.Settings{}, "/ctx", "typescript", baseRef, []byte(dockerfile), nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := join(derived.Invoke.Args); !strings.HasPrefix(got, "build --layers --format docker ") {
+		t.Errorf("build argv=%s", got)
+	}
+	ref := "localhost/ayokoding-toolchain/typescript:tag@sha256:" + strings.Repeat("a", 64)
+	env := containerplan.Environment(containerplan.Settings{}, "/ctx", "typescript", ref, "lock", nil, catalog.Install{})
+	if got := string(env.Files["Dockerfile"]); !strings.HasPrefix(got, "FROM localhost/ayokoding-toolchain/typescript:tag\n") {
+		t.Errorf("Dockerfile=%s", got)
+	}
+	if got := join(env.Invoke.Args); !strings.HasPrefix(got, "build --layers --format docker ") {
+		t.Errorf("build argv=%s", got)
+	}
 }

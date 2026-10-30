@@ -1,6 +1,6 @@
 ---
-description: Covers the repo-root build context requirement for docker-compose files and how to handle npm's transitive dependency hoisting in Docker builds.
-when_to_use: Use when a docker-compose build fails to find libs/ files, or when a Docker build fails on a module that is not a direct dependency of the app.
+description: Covers the repo-root build context requirement for docker-compose files run with Podman Compose, and how to handle npm's transitive dependency hoisting in container builds.
+when_to_use: Use when a Podman Compose build fails to find libs/ files, or when a container build fails on a module that is not a direct dependency of the app.
 ---
 
 # Build Context and Transitive Dependency Hoisting
@@ -9,7 +9,8 @@ when_to_use: Use when a docker-compose build fails to find libs/ files, or when 
 
 All docker-compose files that build frontend apps must set `context: ../../..` (three levels up
 from `infra/dev/<app>/`) so that `COPY libs/...` instructions in the Dockerfile can reach the
-`libs/` tree. The `dockerfile` key provides the Dockerfile path relative to the context.
+`libs/` tree. The `dockerfile` key provides the Dockerfile path relative to the context. Native
+`podman build` runs use the same repo root as their final context argument.
 
 ```yaml
 # infra/dev/organiclever-app-web/docker-compose.yml
@@ -33,13 +34,13 @@ grep -r "context:" infra/dev/*/docker-compose*.yml
 
 ## Transitive Dependency Hoisting
 
-In the full monorepo, npm hoists transitive dependencies to the root `node_modules/`. A Docker
+In the full monorepo, npm hoists transitive dependencies to the root `node_modules/`. A container
 build that runs `npm ci` for a single app only installs the dependencies declared in that app's
 `package.json`. Transitive dependencies that exist in the monorepo root — but are not explicitly
 listed in the app — will be missing inside the container.
 
 **Example**: `@tanstack/react-router` depends on `tiny-warning`. In the monorepo, npm hoists
-`tiny-warning` to the root `node_modules/`. A Docker build for the app installs only the app's
+`tiny-warning` to the root `node_modules/`. A container build for the app installs only the app's
 direct deps. Because `tiny-warning` is not listed in the app's `package.json`, it is absent, and
 the build fails.
 
@@ -54,6 +55,6 @@ the build fails.
 }
 ```
 
-When a Docker build fails with "module not found" for a package that is not a direct dependency,
+When a container build fails with "module not found" for a package that is not a direct dependency,
 check whether that package exists in the root `node_modules/` of the monorepo. If it does, it is a
 hoisted transitive dependency that must be pinned explicitly in the app.

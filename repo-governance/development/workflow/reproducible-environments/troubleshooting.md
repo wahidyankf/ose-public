@@ -23,7 +23,7 @@ when_to_use: Use when diagnosing a "works on my machine but not CI/others" repro
 **"Works on my machine but fails for others"**:
 
 - Document system dependencies (OpenSSL, Python for node-gyp)
-- Use Docker to eliminate system dependency variance
+- Use rootless Podman containers to eliminate system dependency variance
 - Check for hardcoded paths (use relative paths)
 - Review .env.example is up-to-date
 

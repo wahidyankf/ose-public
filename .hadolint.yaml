@@ -18,7 +18,7 @@ trustedRegistries:
 ignored:
   # DL3008 - "pin versions in apt-get install". Exact apt version pins make
   # images brittle: upstream Debian/Ubuntu repositories drop old package
-  # versions, breaking `docker build` on any cache miss. Reproducibility comes
+  # versions, breaking `podman build` on any cache miss. Reproducibility comes
   # from the pinned base-image tag instead, not from per-package apt pins.
   - DL3008
   # DL3018 - "pin versions in apk add". Same rationale as DL3008 for the Alpine

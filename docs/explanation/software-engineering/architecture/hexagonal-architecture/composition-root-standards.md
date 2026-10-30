@@ -221,9 +221,9 @@ The composition root determines which Nx targets can run without external infras
 | Test (in-memory/fake)                  | `test:unit`        | In-process only                            |
 | Real local-resource adapter            | `test:integration` | Isolated local resource, no external net   |
 | Production public boundary (JPA/Kafka) | `test:e2e`         | Controlled networked stack, synthetic data |
-| Production startup                     | `dev`              | Docker or remote environment               |
+| Production startup                     | `dev`              | Rootless Podman or remote environment      |
 
-**REQUIRED**: `test:unit` MUST run without Docker or any real OS/resource dependency.
+**REQUIRED**: `test:unit` MUST run without containers or any real OS/resource dependency.
 `test:integration` may replace a fake with a real isolated local resource only when no external path
 is opened. A database or broker reached through HTTP/TCP/UDP belongs to `test:e2e`, which must enter
 through the application's public boundary.

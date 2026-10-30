@@ -1,13 +1,13 @@
-# AyoKoding Web — Phoenix LiveView Rewrite
+# AyoKoding Web — Go + htmx Rewrite
 
-> **Status:** In Progress. Paused during Phase 0; implementation has not begun. Remaining work waits
-> for the Podman migration and explicit resumption.
+> **Status:** In Progress. Paused during Phase 0; implementation has not begun. The Podman migration is
+> archived (`plans/done/2026-10-25__docker-to-podman/`); remaining work waits for explicit resumption.
 
-Depends-on: [docker-to-podman]
+Depends-on: []
 
-Rebuild the existing AyoKoding learning website in Elixir and Phoenix LiveView at
+Rebuild the existing AyoKoding learning website in Go with server-rendered HTML and htmx at
 `apps/ayokoding-web`. Keep `apps/ayokoding-www` working while the new app reaches full local
-feature, URL, locale, accessibility, and appearance parity. The Phoenix development server uses
+feature, URL, locale, accessibility, and appearance parity. The Go development server uses
 port **3102**, its Playwright server uses **3191**, and the existing site keeps **3101**.
 
 ## Scope and approach
@@ -15,12 +15,14 @@ port **3102**, its Playwright server uses **3191**, and the existing site keeps 
 - Preserve both supported locales, `en` and `id`, including their existing differences in content.
 - Reproduce content rendering, navigation, search, course catalogs and paths, browser-only learning
   progress, AI benchmark, cost-of-living calculator, and discovery documents.
-- Use native Elixir contexts and LiveView interfaces, an Elixir Markdown pipeline, and small browser
-  hooks. The new app does not reproduce the old app's internal tRPC transport.
+- Use Go's standard library (`net/http`, `html/template`) for pages and htmx for interactive
+  partial updates, plus small vanilla browser scripts. The new app does not reproduce the old app's
+  internal tRPC transport.
 - Read the existing Markdown, manifests, and assets in place. Share tool datasets through neutral
   JSON without changing their values, source dates, or provenance.
-- Import BeaverNest's `ex-bdd` into `libs/ex-bdd` during execution, preserving the full ownership and
-  licensing chain. Prove behavior through Unit, Integration, and Playwright E2E tests and Gherkin BDD.
+- Prove behavior through Go unit tests, godog Gherkin bindings (reusing the `ayokoding-cli`
+  pattern), Integration tests with `httptest`, and Playwright E2E tests. No vendored BDD engine
+  is copied into `libs/`; godog is a regular Go module dependency.
 - Complete this plan after the Podman migration and before the remaining AyoKoding Learn Revamp
   plans. It consumes their merged content only after its declared predecessor work completes and
   never takes ownership of their course content.
@@ -40,15 +42,15 @@ database adoption, and removal of the Next.js app are outside scope.
 
 ## Specifications
 
-- [Phoenix website corpus](../../../specs/apps/ayokoding/web/README.md) — planned observable behavior;
+- [Go website corpus](../../../specs/apps/ayokoding/web/README.md) — planned observable behavior;
   its architecture document explicitly distinguishes planned work from an existing implementation.
-- [ExBdd corpus](../../../specs/libs/ex-bdd/README.md) — the planned imported library's contracts.
+  Execution rewrites its Phoenix-worded proof ownership to Go in the same unit that lands the app.
 - [Existing website corpus](../../../specs/apps/ayokoding/www/README.md) — the parity source; its
   framework-specific assertions receive explicit dispositions rather than blind copying.
 
 ## Execution order and related plans
 
-The Podman migration is this plan's predecessor, and every remaining AyoKoding Learn Revamp plan
+The Podman migration, now archived, was this plan's predecessor, and every remaining AyoKoding Learn Revamp plan
 depends on this plan. Respect the [plan-order DAG](../../README.md#plan-order) and the user's
 existing pause: completing a dependency does not itself resume this work. After explicit resumption,
 the executor re-reads changes already merged into `main` before each delivery boundary and updates
@@ -66,9 +68,11 @@ plans. The technical design lists the bounded overlap and the required current-m
 ## Decisions and completion
 
 The user resolved the material branches before authoring: full parity, coexistence, in-place content,
-native LiveView interfaces, Elixir rendering, and shared JSON datasets. Later requirements fixed
-sequential execution, the copied BDD library with provenance, all three test layers, populated
-specs, reciprocal plan awareness, and separate ports. No material decision remains open.
+native Go server rendering with htmx partials, a Go Markdown pipeline, and shared JSON datasets.
+Later requirements fixed sequential execution, the godog BDD pattern reused from `ayokoding-cli`,
+all three test layers, populated specs, reciprocal plan awareness, and separate ports. The remaining
+open branch, stdlib versus a Go web framework, was resolved for the standard library (`net/http`
+plus `html/template`): no web framework dependency. No material decision remains open.
 
 The authoring package is complete when its documents and specs are coherent and validated. Future
 implementation is complete only after the [delivery gates](./delivery.md) prove both apps can run

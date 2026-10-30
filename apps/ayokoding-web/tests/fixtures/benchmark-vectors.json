@@ -1,0 +1,9 @@
+{
+  "chat|mid": {
+    "models": [
+      { "name": "Model B", "score": 9.1, "price_usd": 4 },
+      { "name": "Model A", "score": 8.2, "price_usd": 2 }
+    ],
+    "empty": false
+  }
+}

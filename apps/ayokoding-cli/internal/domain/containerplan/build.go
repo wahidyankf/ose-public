@@ -1,5 +1,5 @@
 // Package containerplan turns catalog entries into container build plans:
-// exact docker argv, content-hash tags, and context files. It never runs
+// exact container argv, content-hash tags, and context files. It never runs
 // anything; the containers adapter executes the plans.
 package containerplan
 
@@ -33,17 +33,15 @@ type Build struct {
 	ContextDir string
 }
 
-// Settings carries the container CLI, the optional buildx cache dir, and
-// the optional target platform one x64-only recipe builds for.
+// Settings carries the container CLI and the optional target platform one
+// x64-only recipe builds for.
 type Settings struct {
 	ContainerCLI string
-	CacheDir     string
 	Platform     string
 }
 
-// defaultContainerCLI is the Docker command-line interface (decision D4);
-// AYOKODING_CONTAINER_CLI overrides it, for example with podman.
-const defaultContainerCLI = "docker"
+// defaultContainerCLI names the default rootless container command.
+const defaultContainerCLI = "podman"
 
 // pinnedPattern requires a repository tag pinned by a full SHA-256.
 var pinnedPattern = regexp.MustCompile(`^.+@sha256:[0-9a-f]{64}$`)
@@ -51,7 +49,7 @@ var pinnedPattern = regexp.MustCompile(`^.+@sha256:[0-9a-f]{64}$`)
 // ErrUnpinnedBase reports a base image reference without a digest.
 var ErrUnpinnedBase = errors.New("base image is not digest-pinned")
 
-// CLI resolves the container binary, defaulting to docker.
+// CLI resolves the container binary, defaulting to podman.
 func (settings Settings) CLI() string {
 	if settings.ContainerCLI != "" {
 		return settings.ContainerCLI
@@ -59,12 +57,7 @@ func (settings Settings) CLI() string {
 	return defaultContainerCLI
 }
 
-// Derived plans a derived image build from an embedded Dockerfile: docker
-// buildx build --load --tag ayokoding-toolchain/<id>:<hash>, with local
-// cache flags when AYOKODING_BUILDX_CACHE names a directory and --platform
-// when the settings name a target platform. The tag hashes the base digest,
-// the Dockerfile bytes, and the build arguments, so any recipe byte moves
-// it; the platform selects the architecture, never the tag.
+// Derived plans a native build with a content-derived tag.
 func Derived(settings Settings, contextDir, toolID, baseRef string, dockerfile []byte, args []string) (Build, error) {
 	digest, err := pinnedDigest(baseRef)
 	if err != nil {
@@ -108,7 +101,7 @@ func Environment(settings Settings, contextDir, toolchain, imageRef, lockfileNam
 // install variables as sorted ENV lines.
 func EnvironmentDockerfile(imageRef, lockfileName string, install catalog.Install) []byte {
 	var rendered strings.Builder
-	_, _ = rendered.WriteString("FROM " + imageRef + "\n")
+	_, _ = rendered.WriteString("FROM " + RunRef(imageRef) + "\n")
 	_, _ = rendered.WriteString("COPY " + lockfileName + " /deps/lock/" + lockfileName + "\n")
 	if len(install.Command) != 0 {
 		encoded, err := json.Marshal(install.Command)
@@ -152,37 +145,18 @@ func pinnedDigest(ref string) (string, error) {
 	return ref[strings.LastIndex(ref, "@")+1:], nil
 }
 
-// buildArgv renders the shared buildx shape: load, then the local cache
-// flags, build arguments, tag, Dockerfile, and context. The Dockerfile
-// travels with the context directory: buildkit resolves a bare filename
-// against the caller working directory, so a relative name only builds
-// when the caller happens to stand beside it.
+// buildArgv renders the native build with an explicit recipe and context.
 func buildArgv(settings Settings, args []string, tag, contextDir string) []string {
 	argv := make([]string, 0, 10+2*len(args))
-	argv = append(argv, "buildx", "build")
+	argv = append(argv, "build", "--layers", "--format", "docker")
 	if settings.Platform != "" {
 		argv = append(argv, "--platform", settings.Platform)
 	}
-	argv = append(argv, "--load")
-	argv = append(argv, cacheFlags(settings.CacheDir)...)
 	for _, arg := range args {
 		argv = append(argv, "--build-arg", arg)
 	}
 	context := contextOrDefault(contextDir)
 	return append(argv, "--tag", tag, "--file", filepath.Join(context, "Dockerfile"), context)
-}
-
-// cacheFlags adds the local buildx cache flags when AYOKODING_BUILDX_CACHE
-// names a directory. The fresh cache lands beside the warmed one, so CI can
-// rotate it after the build.
-func cacheFlags(dir string) []string {
-	if dir == "" {
-		return nil
-	}
-	return []string{
-		"--cache-from", "type=local,src=" + dir,
-		"--cache-to", "type=local,dest=" + dir + "-new,mode=max",
-	}
 }
 
 // contextOrDefault keeps an explicit build context and falls back to the

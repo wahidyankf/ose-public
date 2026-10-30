@@ -1168,17 +1168,43 @@ When("I read a role row", async ({ page }) => {
 
 Then("the role shows its country's p25, median, and p75 salary distribution", async ({ page }) => {
   const rows = candidateRows(page);
-  expect(await rows.count()).toBeGreaterThan(20);
-  for (const row of await rows.all()) {
-    const p25 = await numericAttribute(row.locator("[data-money-column='p25']"), "data-usd");
-    const median = await numericAttribute(row.locator("[data-money-column='median']"), "data-usd");
-    const p75 = await numericAttribute(row.locator("[data-money-column='p75']"), "data-usd");
+  const rowCount = await rows.count();
+  expect(rowCount).toBeGreaterThan(20);
+  const observations = await rows.evaluateAll((elements) =>
+    elements.map((row) => ({
+      attached: row.isConnected && row.ownerDocument === document,
+      columns: ["p25", "median", "p75"].map((column) => {
+        const selector = `[data-money-column='${column}']`;
+        const cells = row.querySelectorAll(selector);
+        const displays = row.querySelectorAll(`${selector} [data-line='display']`);
+        return {
+          column,
+          cellCount: cells.length,
+          displayCount: displays.length,
+          usd: cells[0]?.getAttribute("data-usd") ?? null,
+        };
+      }),
+    })),
+  );
+  expect(observations.length).toBe(rowCount);
+  for (const observation of observations) {
+    expect(observation.attached).toBe(true);
+    for (const column of observation.columns) {
+      expect(column.cellCount, `one ${column.column} cell per row`).toBe(1);
+      expect(column.displayCount, `one ${column.column} display per row`).toBe(1);
+      expect(Number.isFinite(Number(column.usd)), "finite data-usd").toBe(true);
+    }
+    const p25 = Number(observation.columns[0]?.usd);
+    const median = Number(observation.columns[1]?.usd);
+    const p75 = Number(observation.columns[2]?.usd);
     expect(p25).toBeGreaterThan(0);
     expect(p25).toBeLessThanOrEqual(median);
     expect(median).toBeLessThanOrEqual(p75);
-    for (const column of ["p25", "median", "p75"]) {
-      await expect(row.locator(`[data-money-column='${column}'] [data-line='display']`)).toContainText(/USD$/);
-    }
+  }
+  for (const column of ["p25", "median", "p75"]) {
+    await expect(rows.locator(`[data-money-column='${column}'] [data-line='display']`)).toHaveText(
+      Array.from({ length: rowCount }, () => /USD$/),
+    );
   }
 });
 
@@ -1235,13 +1261,28 @@ When("I compare the ladder with each city's published lifestyle cost", async ({ 
   await rows.first().waitFor({ state: "visible" });
   const baseline = await numericAttribute(page.getByTestId("min-role-table"), "data-baseline-usd");
   const candidates: Array<{ key: string; cityId: string; currency: string; rank: number; essential: number }> = [];
-  for (const row of await rows.all()) {
+  const candidateAttributes = await rows.evaluateAll((elements) =>
+    elements.map((row) => ({
+      attached: row.isConnected && row.ownerDocument === document,
+      cityId: row.getAttribute("data-city-id"),
+      role: row.getAttribute("data-role"),
+      currency: row.getAttribute("data-currency"),
+      rank: row.getAttribute("data-rank"),
+      essential: row.getAttribute("data-essential-savings-usd"),
+    })),
+  );
+  for (const row of candidateAttributes) {
+    expect(row.attached).toBe(true);
+    const rank = Number(row.rank);
+    const essential = Number(row.essential);
+    expect(Number.isFinite(rank), "finite data-rank").toBe(true);
+    expect(Number.isFinite(essential), "finite data-essential-savings-usd").toBe(true);
     candidates.push({
-      key: await candidateKey(row),
-      cityId: (await row.getAttribute("data-city-id"))!,
-      currency: (await row.getAttribute("data-currency"))!,
-      rank: await numericAttribute(row, "data-rank"),
-      essential: await numericAttribute(row, "data-essential-savings-usd"),
+      key: `${row.cityId}:${row.role}`,
+      cityId: row.cityId!,
+      currency: row.currency!,
+      rank,
+      essential,
     });
   }
 
@@ -1249,10 +1290,20 @@ When("I compare the ladder with each city's published lifestyle cost", async ({ 
   await costsPage.goto("/en/tools/cost-of-living-calculator");
   await expect(costsPage.locator("[data-testid^='col-lifestyle-']").first()).toBeVisible();
   const lifestyleUsd = new Map<string, number>();
-  for (const cell of await costsPage.locator("[data-testid^='col-lifestyle-']").all()) {
-    const cityId = (await cell.getAttribute("data-testid"))!.replace("col-lifestyle-", "");
-    const local = await numericAttribute(cell, "data-raw");
-    const currency = ((await cell.textContent()) ?? "").match(/^([A-Z]{3})/)?.[1];
+  const lifestyleAttributes = await costsPage.locator("[data-testid^='col-lifestyle-']").evaluateAll((cells) =>
+    cells.map((cell) => ({
+      attached: cell.isConnected && cell.ownerDocument === document,
+      testId: cell.getAttribute("data-testid"),
+      raw: cell.getAttribute("data-raw"),
+      text: cell.textContent,
+    })),
+  );
+  for (const cell of lifestyleAttributes) {
+    expect(cell.attached).toBe(true);
+    const cityId = cell.testId!.replace("col-lifestyle-", "");
+    const local = Number(cell.raw);
+    expect(Number.isFinite(local), "finite data-raw").toBe(true);
+    const currency = (cell.text ?? "").match(/^([A-Z]{3})/)?.[1];
     expect(currency).toBeTruthy();
     lifestyleUsd.set(cityId, local * expectedFxRate(currency!));
   }
@@ -1265,8 +1316,17 @@ When("I compare the ladder with each city's published lifestyle cost", async ({ 
     .map(({ key }) => key);
   const expectedMinimumRank = Math.min(...qualifying.map(({ rank }) => rank));
   const markerRanks: number[] = [];
-  for (const markerRow of await rows.filter({ has: page.getByTestId("minimum-marker") }).all()) {
-    markerRanks.push(await numericAttribute(markerRow, "data-rank"));
+  const markerAttributes = await rows.filter({ has: page.getByTestId("minimum-marker") }).evaluateAll((elements) =>
+    elements.map((row) => ({
+      attached: row.isConnected && row.ownerDocument === document,
+      rank: row.getAttribute("data-rank"),
+    })),
+  );
+  for (const markerRow of markerAttributes) {
+    expect(markerRow.attached).toBe(true);
+    const rank = Number(markerRow.rank);
+    expect(Number.isFinite(rank), "finite data-rank").toBe(true);
+    markerRanks.push(rank);
   }
   evidenceFor(page).lifestyleRanking = {
     essentialOrder,
@@ -2330,8 +2390,12 @@ When("the drawer renders", async ({ page }) => {
 Then("it shows the site's top-level navigation links", async ({ page }) => {
   const drawer = page.getByRole("dialog");
   await expect(drawer).toBeVisible();
-  await expect(drawer.getByRole("link", { name: /belajar/i })).toHaveAttribute("href", "/id/browse");
-  await expect(drawer.getByRole("link", { name: /alat/i })).toHaveAttribute("href", "/id/tools");
+  const primaryLinks = drawer
+    .getByRole("navigation", { name: "Mobile navigation", exact: true })
+    .locator(":scope > ul");
+  await expect(primaryLinks).toHaveCount(1);
+  await expect(primaryLinks.getByRole("link", { name: /belajar/i })).toHaveAttribute("href", "/id/browse");
+  await expect(primaryLinks.getByRole("link", { name: /alat/i })).toHaveAttribute("href", "/id/tools");
 });
 
 Then("every drawer label is localized", async ({ page }) => {

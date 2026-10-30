@@ -19,7 +19,7 @@ built here, and they meet the full bar; everything that merely runs from a shell
 | `.husky/commit-msg`, `pre-commit`, `pre-push` | Floor    | Git invokes them and branches on what they return    |
 | `scripts/*.sh` and `.github/scripts/*.sh`     | Floor    | Shipped scripts a gate, a hook, or a workflow calls  |
 
-`ayokoding-cli` starts `docker` and `git` and therefore owes the supervisor statuses.
+`ayokoding-cli` starts `podman` (its default container CLI, overridable through `AYOKODING_CONTAINER_CLI`) and `git`, and therefore owes the supervisor statuses.
 
 FERRET records coding-agent harness activity. This repository builds it and carries its own capture registration under
 `.claude/hooks/`, `.codex/`, and `.opencode/plugins/`; a user-level registration steps aside here, so a session is

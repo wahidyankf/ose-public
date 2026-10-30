@@ -1,5 +1,5 @@
 // Package containers executes the image builds containerplan plans,
-// through the Docker command-line interface (decision D4).
+// through the container command-line interface.
 package containers
 
 import (
@@ -33,6 +33,10 @@ type Builder struct {
 // BuildDerived builds one derived image from its embedded Dockerfile and
 // returns its content-hash tag.
 func (b Builder) BuildDerived(ctx context.Context, settings containerplan.Settings, contextParent, toolID, baseRef string, dockerfile []byte, args []string) (string, error) {
+	settings.ContainerCLI = (&Runtime{CLI: settings.CLI()}).ResolveCLI()
+	if err := b.probe(ctx, settings.CLI()); err != nil {
+		return "", err
+	}
 	parent, err := materializeParent(contextParent)
 	if err != nil {
 		return "", fmt.Errorf("containers: build derived image for %s: %w", toolID, err)
@@ -53,6 +57,10 @@ func (b Builder) BuildDerived(ctx context.Context, settings containerplan.Settin
 // BuildEnvironment builds one environment image for a toolchain lockfile
 // and returns its content-hash tag.
 func (b Builder) BuildEnvironment(ctx context.Context, settings containerplan.Settings, contextParent, toolchain, imageRef, lockfileName string, lockfile []byte, install catalog.Install) (string, error) {
+	settings.ContainerCLI = (&Runtime{CLI: settings.CLI()}).ResolveCLI()
+	if err := b.probe(ctx, settings.CLI()); err != nil {
+		return "", err
+	}
 	parent, err := materializeParent(contextParent)
 	if err != nil {
 		return "", fmt.Errorf("containers: build environment image for %s: %w", toolchain, err)
@@ -65,6 +73,17 @@ func (b Builder) BuildEnvironment(ctx context.Context, settings containerplan.Se
 		return "", err
 	}
 	return planned.Tag, nil
+}
+
+// probe uses the same rootless check as the run entry before creating a context.
+func (b Builder) probe(ctx context.Context, cli string) error {
+	runtime := &Runtime{CLI: cli}
+	if b.Exec != nil {
+		runtime.Exec = func(ctx context.Context, cli string, args []string, _ []byte) (string, error) {
+			return b.Exec(ctx, cli, args)
+		}
+	}
+	return runtime.probeCLI(ctx, cli)
 }
 
 // Present reports whether the image reference exists locally.

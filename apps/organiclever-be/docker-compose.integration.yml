@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:17.10-alpine3.22
+    image: docker.io/library/postgres:17.10-alpine3.22
     environment:
       POSTGRES_DB: organiclever_be_test
       POSTGRES_USER: organiclever_be
@@ -16,7 +16,7 @@ services:
       - /var/lib/postgresql/data
 
   nats:
-    image: nats:latest
+    image: docker.io/library/nats:latest
     command: ["-js"]
     ports:
       - "4224:4222"

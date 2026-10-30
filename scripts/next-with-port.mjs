@@ -135,7 +135,7 @@ if (serverPath !== undefined) {
           env: process.env,
         });
 
-  // Forward the signals a developer (Ctrl-C) or a container runtime (docker stop) actually sends,
+  // Forward the signals a developer (Ctrl-C) or a container runtime (container stop) actually sends,
   // so the Next server shuts down instead of being orphaned when this wrapper exits.
   for (const signal of ["SIGINT", "SIGTERM"]) {
     process.on(signal, () => child.kill(signal));
@@ -144,7 +144,7 @@ if (serverPath !== undefined) {
   child.on("exit", (code, signal) => {
     if (signal !== null) {
       // Re-raise the same signal against this process rather than exiting 1, so the wrapper reports
-      // the conventional 128+N status. Collapsing every signal to 1 would make a normal `docker
+      // the conventional 128+N status. Collapsing every signal to 1 would make a normal `container
       // stop` (SIGTERM) look like a crash to any orchestrator reading the container's exit code.
       process.removeAllListeners(signal);
       process.kill(process.pid, signal);

@@ -215,6 +215,7 @@ Feature: AI model benchmark tool
   @integration-exempt
   Scenario: The last-updated date is shown before the substitute finder
     Given the dataset carries a last-updated date
+    And the AI benchmark page is open
     When the page renders
     Then the last-updated date is shown in text
     And the last-updated date precedes the substitute finder in document order
@@ -272,6 +273,7 @@ Feature: AI model benchmark tool
   @integration-exempt
   Scenario: Models with insufficient data are listed in a collapsed section
     Given the roster holds models scored on fewer than two benchmarks
+    And the AI benchmark page is open
     When the page renders
     Then those models are listed inside a closed disclosure
     And each listed model shows whatever independent scores it has
@@ -306,6 +308,7 @@ Feature: AI model benchmark tool
   @integration-exempt
   Scenario: Cost per task is shown where an independent operator publishes it
     Given a model whose independent operator publishes a cost per task
+    And the AI benchmark page is open
     When the data table is rendered
     Then that model's row shows its cost per task in dollars
 
@@ -334,6 +337,7 @@ Feature: AI model benchmark tool
   @integration-exempt
   Scenario: The page lists every operator with its checked date and terms
     Given the dataset names its benchmark operators and price sources
+    And the AI benchmark page is open
     When the page renders
     Then a sources section lists every named operator
     And each operator entry states the date it was last checked

@@ -11,19 +11,12 @@ execution checklist.
 
 ## Active Plans
 
-### Rootless container runtime
-
-- [Docker to Podman](./docker-to-podman/README.md) — migrate operational container use across the
-  repository, including development, CI, image publishing, and the example runner, to rootless
-  Podman with an explicit podman-compose provider. AyoKoding lesson content and hosting migration
-  are excluded. This plan must finish before the Phoenix rewrite resumes.
-
 ### AyoKoding Phoenix LiveView rewrite
 
 - [AyoKoding Web](./ayokoding-app-web/README.md) — full local feature and UI parity in
   `apps/ayokoding-web`, using Phoenix LiveView, imported BeaverNest ExBdd, Unit/Integration tests,
   and Playwright E2E with Gherkin BDD. The existing Next.js app remains on port 3101; Phoenix
-  uses 3102, with a separate E2E server on 3191. The plan follows Podman in the live DAG and must
+  uses 3102, with a separate E2E server on 3191. The Podman migration it followed is archived. It must
   finish before the live Learn Revamp plans; it consumes their content read-only and excludes
   deployment and cutover.
 

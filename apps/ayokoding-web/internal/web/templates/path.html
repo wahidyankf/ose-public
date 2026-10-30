@@ -1,0 +1,39 @@
+{{define "path"}}<!doctype html>
+<html lang="{{.Shell.Lang}}" data-theme-hook>
+  <head>
+    {{template "head" .Shell}}
+  </head>
+  <body>
+    {{template "header" .Shell}}
+    <main id="main">
+      {{if .Path}}
+      <h1>{{.Path.Title}}</h1>
+      {{range .Phases}}
+      <section data-phase="{{.Number}}">
+        <h2>Phase {{.Number}}: {{.Name}}</h2>
+        <ol>
+          {{range .Courses}}
+          <li data-position="{{.Position}}" data-course="{{.ID}}">
+            <a href="/{{$.Shell.Lang}}/learn/{{.ID}}">{{.Title}}</a> <span data-position-number>{{.Position}}</span>
+          </li>
+          {{end}}
+        </ol>
+      </section>
+      {{end}} {{else}}
+      <h1>{{if eq .Shell.Lang "id"}}Jalur{{else}}Paths{{end}}</h1>
+      {{if .Names}}
+      <ul>
+        {{range .Names}}
+        <li>{{.}}</li>
+        {{end}}
+      </ul>
+      {{else}}
+      <p data-empty-state>No paths are available in the {{.Category}} category.</p>
+      {{end}}
+      <nav data-learning-nav><a href="/{{.Shell.Lang}}/learn/courses">Courses</a></nav>
+      {{end}}
+    </main>
+    {{template "footer" .Shell}}
+  </body>
+</html>
+{{end}}

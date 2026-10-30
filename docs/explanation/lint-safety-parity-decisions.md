@@ -92,7 +92,7 @@ the same shared config.
 rules **DL3008** (apt) and **DL3018** (apk) were **ignored** in `.hadolint.yaml`
 with documented rationale: pinning exact OS-package versions makes images brittle
 because upstream Debian/Ubuntu/Alpine repositories drop old versions, breaking
-`docker build` on a cache miss; reproducibility comes from the pinned base-image
+`podman build` on a cache miss; reproducibility comes from the pinned base-image
 tag instead. `trustedRegistries` lists `docker.io`, `mcr.microsoft.com` (for the
 former PDF-pipeline backend's .NET base images, which were present at the time of this decision),
 and `ghcr.io`.

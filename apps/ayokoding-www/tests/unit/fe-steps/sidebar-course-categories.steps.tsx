@@ -1,6 +1,7 @@
 import path from "node:path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { expect, vi } from "vitest";
 
 vi.mock("next/link", () => ({
@@ -10,12 +11,56 @@ vi.mock("next/link", () => ({
     </a>
   ),
 }));
-vi.mock("next/navigation", () => ({ usePathname: () => currentPath }));
+const query = vi.hoisted(() => ({
+  calls: 0,
+  pending: false,
+  promise: Promise.resolve(),
+  value: new URLSearchParams(),
+}));
+vi.mock("next/navigation", () => ({
+  usePathname: () => currentPath,
+  useSearchParams: () => {
+    query.calls += 1;
+    if (query.pending) throw query.promise;
+    return query.value;
+  },
+}));
+// The layout's server Sidebar is replaced by a fixture tree; SidebarTree and its group controls stay real.
+vi.mock("@/features/navigation/shell/sidebar", async () => {
+  const { SidebarTree: Tree } = await import("@/features/navigation/shell/sidebar-tree");
+  const nodes = [
+    {
+      title: "Courses",
+      slug: "learn/courses",
+      weight: 0,
+      isSection: true,
+      children: [
+        {
+          title: "Git",
+          slug: "learn/courses/git",
+          weight: 0,
+          isSection: true,
+          category: "tools-and-practices",
+          children: [],
+        },
+      ],
+    },
+  ];
+  return {
+    Sidebar: ({ locale }: { locale: string }) => (
+      <nav aria-label="Sidebar navigation">
+        <Tree nodes={nodes} locale={locale} />
+      </nav>
+    ),
+  };
+});
 
 let currentPath = "/en/learn/courses";
 
 // eslint-disable-next-line import/first
 import { SidebarTree } from "@/features/navigation/shell/sidebar-tree";
+// eslint-disable-next-line import/first
+import ContentLayout from "@/app/[locale]/(content)/layout";
 import type { TreeNode } from "@/features/content/core/types";
 
 const feature = await loadFeature(
@@ -43,7 +88,9 @@ function renderSidebar() {
   render(<SidebarTree nodes={tree} locale="en" />);
 }
 
-describeFeature(feature, ({ Scenario }) => {
+describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
+  AfterEachScenario(cleanup);
+
   Scenario("The Courses section lists category groups", ({ When, Then, And }) => {
     When("a reader opens the courses page", () => {
       currentPath = "/en/learn/courses";
@@ -120,4 +167,59 @@ describeFeature(feature, ({ Scenario }) => {
       expect(screen.getByRole("button", { name: /Data and databases/ }).getAttribute("aria-expanded")).toBe("true");
     });
   });
+
+  // The catalog page is non-course, so its sidebar must not suspend while course path context loads:
+  // a suspension would swap in a fresh sidebar and lose the reader's open group.
+  Scenario(
+    "An open group stays open when course path context loads on the courses page",
+    ({ Given, When, Then, And }) => {
+      let resolveQuery: () => void = () => {
+        throw new Error("query resolver missing");
+      };
+      let user: ReturnType<typeof userEvent.setup>;
+      let button: HTMLElement;
+
+      Given('the reader has opened the "Tools and practices" group on the courses page', async () => {
+        cleanup();
+        currentPath = "/en/learn/courses";
+        query.calls = 0;
+        query.pending = true;
+        query.promise = new Promise<void>((resolve) => {
+          resolveQuery = resolve;
+        });
+        user = userEvent.setup();
+        render(await ContentLayout({ params: Promise.resolve({ locale: "en" }), children: <main>Catalog</main> }));
+        button = await screen.findByRole("button", { name: /Tools and practices/ });
+        button.focus();
+        await user.keyboard("{Enter}");
+        expect(button.getAttribute("aria-expanded")).toBe("true");
+        expect(screen.getByRole("link", { name: "Git" })).toBeTruthy();
+      });
+      When("the course path context finishes loading", async () => {
+        await act(async () => {
+          query.pending = false;
+          resolveQuery();
+          await query.promise;
+        });
+      });
+      Then('the "Tools and practices" group is still open with its course listed', () => {
+        expect(button.isConnected).toBe(true);
+        expect(screen.getByRole("button", { name: /Tools and practices/ })).toBe(button);
+        expect(button.getAttribute("aria-expanded")).toBe("true");
+        expect(screen.getByRole("link", { name: "Git" })).toBeTruthy();
+      });
+      And("the sidebar is still a single navigation region", () => {
+        expect(screen.getAllByRole("navigation", { name: "Sidebar navigation" })).toHaveLength(1);
+      });
+      And("the path context query is not read", () => {
+        expect(query.calls).toBe(0);
+      });
+      When("the reader presses Space on the group button", async () => {
+        await user.keyboard(" ");
+      });
+      Then('the "Tools and practices" group closes', () => {
+        expect(button.getAttribute("aria-expanded")).toBe("false");
+      });
+    },
+  );
 });

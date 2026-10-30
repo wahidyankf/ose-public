@@ -9,6 +9,7 @@ import (
 	"os"
 	"path"
 	"regexp"
+	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -301,7 +302,7 @@ func (flow *runner) runConfig(prep preparedUnit, run runspec.Run, seq, exec int)
 		CLI: flow.cli, RunID: flow.runID, Seq: seq, Exec: exec, Image: prep.image, Platform: toolchain.Platform, Command: run.Command,
 		Unit: prep.unit.Path, Workdir: run.Workdir, HostDir: prep.work, Stdin: run.Stdin != "",
 		CPUs: prep.spec.CPUs, MemoryBytes: prep.spec.MemoryBytes,
-		UID: os.Getuid(), GID: os.Getgid(),
+		UID: os.Getuid(), GID: os.Getgid(), KeepID: keepIDHost(),
 		ToolchainEnv: toolchain.Env, ServiceEnv: serviceEnv, RunEnv: run.Env,
 		Network: network, Seed: seed, Links: flow.req.Links,
 	}
@@ -561,4 +562,11 @@ func shortLine(line string) string {
 		line = line[:diagnosisLineCap] + "…"
 	}
 	return strconv.Quote(line)
+}
+
+// keepIDHost reports whether the run maps the host user with keep-id. Only
+// the rootless Linux mapping is proven; other hosts keep the explicit user
+// alone until their own Machine connection proves theirs.
+func keepIDHost() bool {
+	return runtime.GOOS == "linux"
 }

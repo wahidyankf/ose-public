@@ -1,6 +1,6 @@
 # OrganicLever local-stack scaffold
 
-This folder holds an early Docker Compose scaffold for a future full
+This folder holds an early Compose scaffold for a future full
 OrganicLever stack. It is **not** the supported way to get started today: the
 current OrganicLever app is local-first, and its active backend is the F#
 service in [apps/organiclever-be/](../../../apps/organiclever-be/). 🧪

@@ -4,6 +4,7 @@
     "outDir": "dist",
     "module": "CommonJS",
     "moduleResolution": "node",
+    "resolveJsonModule": true,
     "lib": ["ES2022", "DOM"]
   },
   "include": ["tests/**/*.ts", "playwright.config.ts"],

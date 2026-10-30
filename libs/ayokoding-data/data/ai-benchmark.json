@@ -1,0 +1,2888 @@
+{
+  "dataset": {
+    "lastUpdated": "2026-10-14",
+    "models": [
+      {
+        "id": "claude-fable-5-1",
+        "name": "Claude Fable 5.1",
+        "vendor": "Anthropic",
+        "line": "Fable",
+        "releaseDate": "2026-09-01",
+        "access": "general",
+        "harnesses": ["claude-code", "command-code", "cursor", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 64.31,
+            "operator": "artificial-analysis",
+            "config": "Claude Code, max effort (provider fallback on 74 attempts)",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 57.58,
+            "operator": "artificial-analysis",
+            "config": "Claude Code, max effort (provider fallback on 74 attempts)",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "swe-atlas-qna",
+            "version": "QnA",
+            "value": 64.78,
+            "operator": "artificial-analysis",
+            "config": "Claude Code, max effort (provider fallback on 74 attempts)",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          }
+        ],
+        "price": {
+          "input": 10,
+          "output": 50,
+          "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+          "listedBy": "vendor"
+        },
+        "costPerTask": {
+          "usd": 12.39,
+          "operator": "artificial-analysis",
+          "source": "https://artificialanalysis.ai/agents/coding-agents"
+        }
+      },
+      {
+        "id": "claude-fable-5",
+        "name": "Claude Fable 5",
+        "vendor": "Anthropic",
+        "line": "Fable",
+        "releaseDate": "2026-06-09",
+        "access": "general",
+        "harnesses": ["claude-code", "command-code", "cursor", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 69.91,
+            "operator": "datacurve",
+            "config": "mini-SWE-agent, xhigh effort",
+            "source": "https://deepswe.datacurve.ai/"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 42.42,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent (with provider fallback)",
+            "source": "https://artificialanalysis.ai/models/comparisons/claude-fable-5-vs-claude-opus-5-5"
+          },
+          {
+            "benchmark": "swe-atlas-qna",
+            "version": "QnA",
+            "value": 39,
+            "operator": "scale",
+            "config": "Claude Code, xhigh effort (refusals scored as failures)",
+            "source": "https://labs.scale.com/leaderboard/sweatlas-qna"
+          }
+        ],
+        "price": {
+          "input": 10,
+          "output": 50,
+          "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+          "listedBy": "vendor"
+        }
+      },
+      {
+        "id": "claude-opus-5-5",
+        "name": "Claude Opus 5.5",
+        "vendor": "Anthropic",
+        "line": "Opus",
+        "releaseDate": "2026-09-22",
+        "access": "general",
+        "harnesses": ["claude-code", "command-code", "cursor", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 68.44,
+            "operator": "artificial-analysis",
+            "config": "Claude Code, max effort (provider fallback on 78 attempts)",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 63.13,
+            "operator": "artificial-analysis",
+            "config": "Claude Code, max effort (provider fallback on 78 attempts)",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "swe-atlas-qna",
+            "version": "QnA",
+            "value": 66.4,
+            "operator": "artificial-analysis",
+            "config": "Claude Code, max effort (provider fallback on 78 attempts)",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          }
+        ],
+        "price": {
+          "input": 4,
+          "output": 20,
+          "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+          "listedBy": "vendor"
+        },
+        "costPerTask": {
+          "usd": 13.04,
+          "operator": "artificial-analysis",
+          "source": "https://artificialanalysis.ai/agents/coding-agents"
+        }
+      },
+      {
+        "id": "claude-opus-5",
+        "name": "Claude Opus 5",
+        "vendor": "Anthropic",
+        "line": "Opus",
+        "releaseDate": "2026-07-24",
+        "access": "general",
+        "harnesses": ["claude-code", "command-code", "cursor", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 62.54,
+            "operator": "artificial-analysis",
+            "config": "Claude Code, max effort (provider fallback on 3 attempts)",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 54.55,
+            "operator": "artificial-analysis",
+            "config": "Claude Code, max effort (provider fallback on 3 attempts)",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "swe-atlas-qna",
+            "version": "QnA",
+            "value": 62.1,
+            "operator": "artificial-analysis",
+            "config": "Claude Code, max effort (provider fallback on 3 attempts)",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          }
+        ],
+        "price": {
+          "input": 5,
+          "output": 25,
+          "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+          "listedBy": "vendor"
+        },
+        "costPerTask": {
+          "usd": 10.79,
+          "operator": "artificial-analysis",
+          "source": "https://artificialanalysis.ai/agents/coding-agents"
+        }
+      },
+      {
+        "id": "claude-opus-4-8",
+        "name": "Claude Opus 4.8",
+        "vendor": "Anthropic",
+        "line": "Opus",
+        "releaseDate": "2026-05-28",
+        "access": "general",
+        "harnesses": ["claude-code", "command-code", "cursor", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 58.97,
+            "operator": "datacurve",
+            "config": "mini-SWE-agent, max effort",
+            "source": "https://deepswe.datacurve.ai/"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 21.72,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent, max effort",
+            "source": "https://artificialanalysis.ai/models/comparisons/claude-opus-4-8-vs-claude-sonnet-5"
+          },
+          {
+            "benchmark": "swe-atlas-qna",
+            "version": "QnA",
+            "value": 57.26,
+            "operator": "scale",
+            "config": "Claude Code, xhigh effort",
+            "source": "https://labs.scale.com/leaderboard/sweatlas-qna"
+          }
+        ],
+        "price": {
+          "input": 5,
+          "output": 25,
+          "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+          "listedBy": "vendor"
+        }
+      },
+      {
+        "id": "claude-sonnet-5-5",
+        "name": "Claude Sonnet 5.5",
+        "vendor": "Anthropic",
+        "line": "Sonnet",
+        "releaseDate": "2026-09-28",
+        "access": "general",
+        "harnesses": ["claude-code", "command-code", "command-code-pro", "cursor", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 71.98,
+            "operator": "artificial-analysis",
+            "config": "Claude Code, max effort (provider fallback on 45 attempts)",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 66.16,
+            "operator": "artificial-analysis",
+            "config": "Claude Code, max effort (provider fallback on 45 attempts)",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "swe-atlas-qna",
+            "version": "QnA",
+            "value": 66.94,
+            "operator": "artificial-analysis",
+            "config": "Claude Code, max effort (provider fallback on 45 attempts)",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          }
+        ],
+        "price": {
+          "input": 2,
+          "output": 10,
+          "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+          "listedBy": "vendor"
+        },
+        "costPerTask": {
+          "usd": 14.19,
+          "operator": "artificial-analysis",
+          "source": "https://artificialanalysis.ai/agents/coding-agents"
+        }
+      },
+      {
+        "id": "claude-sonnet-5",
+        "name": "Claude Sonnet 5",
+        "vendor": "Anthropic",
+        "line": "Sonnet",
+        "releaseDate": "2026-06-30",
+        "access": "general",
+        "harnesses": ["claude-code", "command-code", "command-code-pro", "cursor", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 53.85,
+            "operator": "datacurve",
+            "config": "mini-SWE-agent, max effort",
+            "source": "https://deepswe.datacurve.ai/"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 14.14,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent, max effort",
+            "source": "https://artificialanalysis.ai/models/comparisons/claude-opus-4-8-vs-claude-sonnet-5"
+          }
+        ],
+        "price": {
+          "input": 2,
+          "output": 10,
+          "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+          "listedBy": "vendor"
+        }
+      },
+      {
+        "id": "claude-sonnet-4-6",
+        "name": "Claude Sonnet 4.6",
+        "vendor": "Anthropic",
+        "line": "Sonnet",
+        "releaseDate": "2026-02-17",
+        "access": "general",
+        "harnesses": ["claude-code", "command-code", "command-code-pro", "cursor", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 29.93,
+            "operator": "datacurve",
+            "config": "mini-SWE-agent, high effort",
+            "source": "https://deepswe.datacurve.ai/"
+          },
+          {
+            "benchmark": "swe-atlas-qna",
+            "version": "QnA",
+            "value": 31.2,
+            "operator": "scale",
+            "config": "Claude Code",
+            "source": "https://labs.scale.com/leaderboard/sweatlas-qna"
+          }
+        ],
+        "price": {
+          "input": 3,
+          "output": 15,
+          "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+          "listedBy": "vendor"
+        }
+      },
+      {
+        "id": "claude-haiku-5-5",
+        "name": "Claude Haiku 5.5",
+        "vendor": "Anthropic",
+        "line": "Haiku",
+        "releaseDate": "2026-10-07",
+        "access": "general",
+        "harnesses": ["claude-code", "command-code", "command-code-pro", "cursor", "opencode-go", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 48.97,
+            "operator": "artificial-analysis",
+            "config": "Claude Code, xhigh effort (provider fallback on 1 attempt)",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 23.74,
+            "operator": "artificial-analysis",
+            "config": "Claude Code, xhigh effort (provider fallback on 1 attempt)",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "swe-atlas-qna",
+            "version": "QnA",
+            "value": 51.61,
+            "operator": "artificial-analysis",
+            "config": "Claude Code, xhigh effort (provider fallback on 1 attempt)",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          }
+        ],
+        "price": {
+          "input": 0.1,
+          "output": 0.5,
+          "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+          "listedBy": "vendor",
+          "note": "Prompts over 100K tokens: $0.50 / $2.50."
+        },
+        "costPerTask": {
+          "usd": 0.61,
+          "operator": "artificial-analysis",
+          "source": "https://artificialanalysis.ai/agents/coding-agents"
+        }
+      },
+      {
+        "id": "claude-haiku-4-5",
+        "name": "Claude Haiku 4.5",
+        "vendor": "Anthropic",
+        "line": "Haiku",
+        "releaseDate": "2025-10-15",
+        "access": "general",
+        "harnesses": ["claude-code", "command-code", "command-code-pro", "cursor", "opencode-zen"],
+        "figures": [],
+        "price": {
+          "input": 1,
+          "output": 5,
+          "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+          "listedBy": "vendor"
+        }
+      },
+      {
+        "id": "claude-mythos-5-1",
+        "name": "Claude Mythos 5.1",
+        "vendor": "Anthropic",
+        "line": "Mythos",
+        "releaseDate": "2026-09-01",
+        "access": "limited",
+        "harnesses": [],
+        "figures": [],
+        "price": {
+          "input": 10,
+          "output": 50,
+          "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+          "listedBy": "vendor"
+        },
+        "note": "Invitation only (Project Glasswing)."
+      },
+      {
+        "id": "claude-mythos-5",
+        "name": "Claude Mythos 5",
+        "vendor": "Anthropic",
+        "line": "Mythos",
+        "releaseDate": "2026-06-09",
+        "access": "limited",
+        "harnesses": [],
+        "figures": [],
+        "price": {
+          "input": 10,
+          "output": 50,
+          "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+          "listedBy": "vendor"
+        },
+        "note": "Invitation only (Project Glasswing)."
+      },
+      {
+        "id": "gpt-6-astra",
+        "name": "GPT-6 Astra",
+        "vendor": "OpenAI",
+        "line": "Astra",
+        "releaseDate": "2026-09-03",
+        "access": "limited",
+        "harnesses": ["codex-cli", "command-code", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 67.55,
+            "operator": "artificial-analysis",
+            "config": "Codex, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 55.56,
+            "operator": "artificial-analysis",
+            "config": "Codex, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "swe-atlas-qna",
+            "version": "QnA",
+            "value": 61.83,
+            "operator": "artificial-analysis",
+            "config": "Codex, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          }
+        ],
+        "price": {
+          "input": 10,
+          "output": 50,
+          "source": "https://developers.openai.com/api/docs/pricing",
+          "listedBy": "vendor",
+          "note": "Prompts over 272K tokens: 2× input, 1.5× output."
+        },
+        "costPerTask": {
+          "usd": 7.47,
+          "operator": "artificial-analysis",
+          "source": "https://artificialanalysis.ai/agents/coding-agents"
+        },
+        "note": "Limited rollout in Codex; check your plan."
+      },
+      {
+        "id": "gpt-6.1-sol",
+        "name": "GPT-6.1 Sol",
+        "vendor": "OpenAI",
+        "line": "Sol",
+        "releaseDate": "2026-09-29",
+        "access": "general",
+        "harnesses": ["codex-cli", "command-code", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 73.16,
+            "operator": "artificial-analysis",
+            "config": "Codex, xhigh effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 54.55,
+            "operator": "artificial-analysis",
+            "config": "Codex, xhigh effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "swe-atlas-qna",
+            "version": "QnA",
+            "value": 61.02,
+            "operator": "artificial-analysis",
+            "config": "Codex, xhigh effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          }
+        ],
+        "price": {
+          "input": 2,
+          "output": 10,
+          "source": "https://developers.openai.com/api/docs/pricing",
+          "listedBy": "vendor"
+        },
+        "costPerTask": {
+          "usd": 1.04,
+          "operator": "artificial-analysis",
+          "source": "https://artificialanalysis.ai/agents/coding-agents"
+        }
+      },
+      {
+        "id": "gpt-6-sol",
+        "name": "GPT-6 Sol",
+        "vendor": "OpenAI",
+        "line": "Sol",
+        "releaseDate": "2026-09-22",
+        "access": "general",
+        "harnesses": ["codex-cli", "command-code", "command-code-pro", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 69.03,
+            "operator": "artificial-analysis",
+            "config": "Codex, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 43.43,
+            "operator": "artificial-analysis",
+            "config": "Codex, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "swe-atlas-qna",
+            "version": "QnA",
+            "value": 57.53,
+            "operator": "artificial-analysis",
+            "config": "Codex, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          }
+        ],
+        "price": {
+          "input": 2,
+          "output": 10,
+          "source": "https://developers.openai.com/api/docs/pricing",
+          "listedBy": "vendor"
+        },
+        "costPerTask": {
+          "usd": 2.99,
+          "operator": "artificial-analysis",
+          "source": "https://artificialanalysis.ai/agents/coding-agents"
+        }
+      },
+      {
+        "id": "gpt-5.6-sol",
+        "name": "GPT-5.6 Sol",
+        "vendor": "OpenAI",
+        "line": "Sol",
+        "releaseDate": "2026-07-09",
+        "access": "general",
+        "harnesses": ["codex-cli", "command-code", "command-code-pro", "cursor", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 72.27,
+            "operator": "artificial-analysis",
+            "config": "Codex, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 37.37,
+            "operator": "artificial-analysis",
+            "config": "Codex, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "swe-atlas-qna",
+            "version": "QnA",
+            "value": 54.03,
+            "operator": "artificial-analysis",
+            "config": "Codex, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          }
+        ],
+        "price": {
+          "input": 4,
+          "output": 20,
+          "source": "https://developers.openai.com/api/docs/pricing",
+          "listedBy": "vendor",
+          "note": "Promotional price, held at least through 2026-11-21."
+        },
+        "costPerTask": {
+          "usd": 6.35,
+          "operator": "artificial-analysis",
+          "source": "https://artificialanalysis.ai/agents/coding-agents"
+        }
+      },
+      {
+        "id": "gpt-5.6-terra",
+        "name": "GPT-5.6 Terra",
+        "vendor": "OpenAI",
+        "line": "Terra",
+        "releaseDate": "2026-07-09",
+        "access": "general",
+        "harnesses": ["codex-cli", "command-code", "command-code-pro", "cursor", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 69.62,
+            "operator": "datacurve",
+            "config": "mini-SWE-agent, max effort",
+            "source": "https://deepswe.datacurve.ai/"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 35.35,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent, max effort",
+            "source": "https://artificialanalysis.ai/models/comparisons/gpt-5-6-terra-vs-glm-5-2"
+          }
+        ],
+        "price": {
+          "input": 2,
+          "output": 12,
+          "source": "https://developers.openai.com/api/docs/pricing",
+          "listedBy": "vendor"
+        }
+      },
+      {
+        "id": "gpt-5.4-mini",
+        "name": "GPT-5.4 mini",
+        "vendor": "OpenAI",
+        "line": "Terra",
+        "releaseDate": "2026-03-17",
+        "access": "general",
+        "harnesses": ["codex-cli", "command-code", "command-code-pro", "cursor", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 2.02,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent, xhigh effort",
+            "source": "https://artificialanalysis.ai/models/comparisons/gpt-5-4-mini-vs-glm-5-2"
+          }
+        ],
+        "price": {
+          "input": 0.75,
+          "output": 4.5,
+          "source": "https://developers.openai.com/api/docs/pricing",
+          "listedBy": "vendor"
+        },
+        "note": "The mini tier that Terra succeeds. Codex CLI only with an API key."
+      },
+      {
+        "id": "gpt-6-luna",
+        "name": "GPT-6 Luna",
+        "vendor": "OpenAI",
+        "line": "Luna",
+        "releaseDate": "2026-09-22",
+        "access": "general",
+        "harnesses": ["codex-cli", "command-code", "command-code-pro", "opencode-go", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 63.72,
+            "operator": "artificial-analysis",
+            "config": "Codex, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 15.15,
+            "operator": "artificial-analysis",
+            "config": "Codex, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "swe-atlas-qna",
+            "version": "QnA",
+            "value": 44.35,
+            "operator": "artificial-analysis",
+            "config": "Codex, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          }
+        ],
+        "price": {
+          "input": 0.1,
+          "output": 0.5,
+          "source": "https://developers.openai.com/api/docs/pricing",
+          "listedBy": "vendor"
+        },
+        "costPerTask": {
+          "usd": 0.18,
+          "operator": "artificial-analysis",
+          "source": "https://artificialanalysis.ai/agents/coding-agents"
+        }
+      },
+      {
+        "id": "gpt-5.6-luna",
+        "name": "GPT-5.6 Luna",
+        "vendor": "OpenAI",
+        "line": "Luna",
+        "releaseDate": "2026-07-09",
+        "access": "general",
+        "harnesses": ["codex-cli", "command-code", "command-code-pro", "cursor", "opencode-go", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 66.37,
+            "operator": "artificial-analysis",
+            "config": "Codex, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 14.65,
+            "operator": "artificial-analysis",
+            "config": "Codex, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "swe-atlas-qna",
+            "version": "QnA",
+            "value": 48.66,
+            "operator": "artificial-analysis",
+            "config": "Codex, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          }
+        ],
+        "price": {
+          "input": 0.2,
+          "output": 1.2,
+          "source": "https://developers.openai.com/api/docs/pricing",
+          "listedBy": "vendor"
+        },
+        "costPerTask": {
+          "usd": 0.44,
+          "operator": "artificial-analysis",
+          "source": "https://artificialanalysis.ai/agents/coding-agents"
+        }
+      },
+      {
+        "id": "gpt-5.4-nano",
+        "name": "GPT-5.4 nano",
+        "vendor": "OpenAI",
+        "line": "Luna",
+        "releaseDate": "2026-03-17",
+        "access": "general",
+        "harnesses": ["cursor", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 0.51,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent, xhigh effort",
+            "source": "https://artificialanalysis.ai/models/comparisons/gpt-5-4-nano-vs-glm-5-2"
+          }
+        ],
+        "price": {
+          "input": 0.2,
+          "output": 1.25,
+          "source": "https://developers.openai.com/api/docs/pricing",
+          "listedBy": "vendor"
+        },
+        "note": "The nano tier that Luna succeeds."
+      },
+      {
+        "id": "gemini-4-argon",
+        "name": "Gemini 4 Argon",
+        "vendor": "Google",
+        "line": "Gemini Argon",
+        "releaseDate": "2026-09-30",
+        "access": "limited",
+        "harnesses": [],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 78.76,
+            "operator": "artificial-analysis",
+            "config": "Antigravity CLI, high effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 56.06,
+            "operator": "artificial-analysis",
+            "config": "Antigravity CLI, high effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "swe-atlas-qna",
+            "version": "QnA",
+            "value": 56.45,
+            "operator": "artificial-analysis",
+            "config": "Antigravity CLI, high effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          }
+        ],
+        "costPerTask": {
+          "usd": 5.84,
+          "operator": "artificial-analysis",
+          "source": "https://artificialanalysis.ai/agents/coding-agents"
+        },
+        "note": "Limited access; no public API price yet."
+      },
+      {
+        "id": "gemini-3.1-pro-preview",
+        "name": "Gemini 3.1 Pro (preview)",
+        "vendor": "Google",
+        "line": "Gemini Pro",
+        "releaseDate": "2026-02-19",
+        "access": "general",
+        "harnesses": ["cursor", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 11.73,
+            "operator": "datacurve",
+            "config": "mini-SWE-agent, high effort",
+            "source": "https://deepswe.datacurve.ai/"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 4.04,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent",
+            "source": "https://artificialanalysis.ai/models/comparisons/gemini-3-8-flash-vs-gemini-3-1-pro-preview"
+          },
+          {
+            "benchmark": "swe-atlas-qna",
+            "version": "QnA",
+            "value": 13.5,
+            "operator": "scale",
+            "config": "mini-SWE-agent",
+            "source": "https://labs.scale.com/leaderboard/sweatlas-qna"
+          }
+        ],
+        "price": {
+          "input": 2,
+          "output": 12,
+          "source": "https://ai.google.dev/gemini-api/docs/pricing",
+          "listedBy": "vendor",
+          "note": "Prompts over 200K tokens: $4 / $18."
+        }
+      },
+      {
+        "id": "gemini-3.8-flash",
+        "name": "Gemini 3.8 Flash",
+        "vendor": "Google",
+        "line": "Gemini Flash",
+        "releaseDate": "2026-09-02",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "cursor", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 65.78,
+            "operator": "artificial-analysis",
+            "config": "Antigravity SDK, high effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 14.65,
+            "operator": "artificial-analysis",
+            "config": "Antigravity SDK, high effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "swe-atlas-qna",
+            "version": "QnA",
+            "value": 45.16,
+            "operator": "artificial-analysis",
+            "config": "Antigravity SDK, high effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          }
+        ],
+        "price": {
+          "input": 0.75,
+          "output": 3.75,
+          "source": "https://ai.google.dev/gemini-api/docs/pricing",
+          "listedBy": "vendor",
+          "note": "Promotional through 2026-12-31; $1.50 / $7.50 from 2027-01-01."
+        },
+        "costPerTask": {
+          "usd": 2.47,
+          "operator": "artificial-analysis",
+          "source": "https://artificialanalysis.ai/agents/coding-agents"
+        }
+      },
+      {
+        "id": "gemini-3.7-flash",
+        "name": "Gemini 3.7 Flash",
+        "vendor": "Google",
+        "line": "Gemini Flash",
+        "releaseDate": "2026-08-13",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "cursor", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 65.49,
+            "operator": "datacurve",
+            "config": "mini-SWE-agent, medium effort",
+            "source": "https://deepswe.datacurve.ai/"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 13.64,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent, high effort",
+            "source": "https://artificialanalysis.ai/models/comparisons/gpt-5-6-terra-vs-gemini-3-7-flash"
+          }
+        ],
+        "price": {
+          "input": 0.75,
+          "output": 3.75,
+          "source": "https://ai.google.dev/gemini-api/docs/pricing",
+          "listedBy": "vendor",
+          "note": "Promotional through 2026-12-31; $1.50 / $7.50 from 2027-01-01."
+        }
+      },
+      {
+        "id": "gemini-3.6-flash",
+        "name": "Gemini 3.6 Flash",
+        "vendor": "Google",
+        "line": "Gemini Flash",
+        "releaseDate": "2026-07-21",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "cursor", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 46.68,
+            "operator": "datacurve",
+            "config": "mini-SWE-agent, high effort",
+            "source": "https://deepswe.datacurve.ai/"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 7.07,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent, high effort",
+            "source": "https://artificialanalysis.ai/models/comparisons/gemini-3-6-flash-vs-glm-5-2"
+          }
+        ],
+        "price": {
+          "input": 0.75,
+          "output": 3.75,
+          "source": "https://ai.google.dev/gemini-api/docs/pricing",
+          "listedBy": "vendor",
+          "note": "Promotional through 2026-12-31; $1.50 / $7.50 from 2027-01-01."
+        }
+      },
+      {
+        "id": "gemini-3.5-flash-lite",
+        "name": "Gemini 3.5 Flash-Lite",
+        "vendor": "Google",
+        "line": "Gemini Flash-Lite",
+        "releaseDate": "2026-07-21",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 1.01,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent",
+            "source": "https://artificialanalysis.ai/models/comparisons/gemini-3-5-flash-lite-vs-glm-5-2"
+          }
+        ],
+        "price": {
+          "input": 0.3,
+          "output": 2.5,
+          "source": "https://ai.google.dev/gemini-api/docs/pricing",
+          "listedBy": "vendor"
+        }
+      },
+      {
+        "id": "gemini-3.1-flash-lite",
+        "name": "Gemini 3.1 Flash-Lite",
+        "vendor": "Google",
+        "line": "Gemini Flash-Lite",
+        "releaseDate": "2026-05-07",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro"],
+        "figures": [],
+        "price": {
+          "input": 0.25,
+          "output": 1.5,
+          "source": "https://ai.google.dev/gemini-api/docs/pricing",
+          "listedBy": "vendor",
+          "note": "Shuts down 2027-05-07."
+        }
+      },
+      {
+        "id": "grok-4.7",
+        "name": "Grok 4.7",
+        "vendor": "xAI",
+        "line": "Grok",
+        "releaseDate": "2026-09-21",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "cursor", "opencode-go", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 72.57,
+            "operator": "artificial-analysis",
+            "config": "Grok Build, xhigh effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 33.33,
+            "operator": "artificial-analysis",
+            "config": "Grok Build, xhigh effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "swe-atlas-qna",
+            "version": "QnA",
+            "value": 62.9,
+            "operator": "artificial-analysis",
+            "config": "Grok Build, xhigh effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          }
+        ],
+        "price": {
+          "input": 2,
+          "output": 6,
+          "source": "https://docs.x.ai/docs/models",
+          "listedBy": "vendor",
+          "note": "Prompts of 200K tokens or more: $4 / $12."
+        },
+        "costPerTask": {
+          "usd": 8.82,
+          "operator": "artificial-analysis",
+          "source": "https://artificialanalysis.ai/agents/coding-agents"
+        }
+      },
+      {
+        "id": "grok-4.6",
+        "name": "Grok 4.6",
+        "vendor": "xAI",
+        "line": "Grok",
+        "releaseDate": "2026-08-12",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "cursor", "opencode-go", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 64.9,
+            "operator": "artificial-analysis",
+            "config": "Grok Build, xhigh effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 17.68,
+            "operator": "artificial-analysis",
+            "config": "Grok Build, xhigh effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "swe-atlas-qna",
+            "version": "QnA",
+            "value": 58.33,
+            "operator": "artificial-analysis",
+            "config": "Grok Build, xhigh effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          }
+        ],
+        "price": {
+          "input": 2,
+          "output": 6,
+          "source": "https://docs.x.ai/docs/models",
+          "listedBy": "vendor",
+          "note": "Prompts of 200K tokens or more: $4 / $12."
+        },
+        "costPerTask": {
+          "usd": 3.57,
+          "operator": "artificial-analysis",
+          "source": "https://artificialanalysis.ai/agents/coding-agents"
+        }
+      },
+      {
+        "id": "grok-4.5",
+        "name": "Grok 4.5",
+        "vendor": "xAI",
+        "line": "Grok",
+        "releaseDate": "2026-07-16",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "cursor", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 53.76,
+            "operator": "datacurve",
+            "config": "mini-SWE-agent, high effort",
+            "source": "https://deepswe.datacurve.ai/"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 10.61,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent, high effort",
+            "source": "https://artificialanalysis.ai/models/comparisons/grok-4-5-vs-grok-4-6"
+          }
+        ],
+        "price": {
+          "input": 2,
+          "output": 6,
+          "source": "https://docs.x.ai/docs/models",
+          "listedBy": "vendor",
+          "note": "Prompts of 200K tokens or more: $4 / $12."
+        }
+      },
+      {
+        "id": "grok-build-0.1",
+        "name": "Grok Build 0.1",
+        "vendor": "xAI",
+        "line": "Grok Build",
+        "access": "general",
+        "harnesses": ["opencode-zen"],
+        "figures": [],
+        "price": {
+          "input": 1,
+          "output": 2,
+          "source": "https://docs.x.ai/docs/models",
+          "listedBy": "vendor"
+        }
+      },
+      {
+        "id": "composer-2.5",
+        "name": "Composer 2.5",
+        "vendor": "Cursor",
+        "line": "Composer",
+        "releaseDate": "2026-05-18",
+        "access": "general",
+        "harnesses": ["cursor"],
+        "figures": [],
+        "price": {
+          "input": 0.5,
+          "output": 2.5,
+          "source": "https://cursor.com/docs/models-and-pricing",
+          "listedBy": "vendor",
+          "note": "Fast mode: $3 / $15."
+        },
+        "note": "Cursor only (app, CLI, and SDK); Composer 2 now runs as 2.5."
+      },
+      {
+        "id": "glm-5.3",
+        "name": "GLM-5.3",
+        "vendor": "Z.ai",
+        "line": "GLM",
+        "releaseDate": "2026-08-18",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "cursor", "opencode-go", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 61.36,
+            "operator": "artificial-analysis",
+            "config": "OpenCode, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 39.9,
+            "operator": "artificial-analysis",
+            "config": "OpenCode, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "swe-atlas-qna",
+            "version": "QnA",
+            "value": 59.41,
+            "operator": "artificial-analysis",
+            "config": "OpenCode, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          }
+        ],
+        "price": {
+          "input": 1.4,
+          "output": 4.4,
+          "source": "https://docs.z.ai/guides/overview/pricing",
+          "listedBy": "vendor"
+        },
+        "costPerTask": {
+          "usd": 4.24,
+          "operator": "artificial-analysis",
+          "source": "https://artificialanalysis.ai/agents/coding-agents"
+        }
+      },
+      {
+        "id": "glm-5.2",
+        "name": "GLM-5.2",
+        "vendor": "Z.ai",
+        "line": "GLM",
+        "releaseDate": "2026-06-16",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "cursor", "opencode-go", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 43.78,
+            "operator": "datacurve",
+            "config": "mini-SWE-agent, max effort",
+            "source": "https://deepswe.datacurve.ai/"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 1.01,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent, max effort",
+            "source": "https://artificialanalysis.ai/models/comparisons/glm-5-2-vs-glm-5-1"
+          },
+          {
+            "benchmark": "swe-atlas-qna",
+            "version": "QnA",
+            "value": 48.12,
+            "operator": "scale",
+            "config": "mini-SWE-agent",
+            "source": "https://labs.scale.com/leaderboard/sweatlas-qna"
+          }
+        ],
+        "price": {
+          "input": 1.4,
+          "output": 4.4,
+          "source": "https://docs.z.ai/guides/overview/pricing",
+          "listedBy": "vendor"
+        }
+      },
+      {
+        "id": "glm-5.1",
+        "name": "GLM-5.1",
+        "vendor": "Z.ai",
+        "line": "GLM",
+        "releaseDate": "2026-04-07",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 2,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent (published as a whole percent)",
+            "source": "https://artificialanalysis.ai/models/comparisons/glm-5-2-vs-glm-5-1"
+          }
+        ],
+        "price": {
+          "input": 1.4,
+          "output": 4.4,
+          "source": "https://docs.z.ai/guides/overview/pricing",
+          "listedBy": "vendor"
+        }
+      },
+      {
+        "id": "glm-5.2-fast",
+        "name": "GLM-5.2 Fast",
+        "vendor": "Z.ai",
+        "line": "GLM",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro"],
+        "figures": [],
+        "price": {
+          "input": 3,
+          "output": 10.25,
+          "source": "https://commandcode.ai/models",
+          "listedBy": "commandcode"
+        }
+      },
+      {
+        "id": "glm-5.3-flashx",
+        "name": "GLM-5.3 FlashX",
+        "vendor": "Z.ai",
+        "line": "GLM Flash",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro"],
+        "figures": [],
+        "price": {
+          "input": 0.37,
+          "output": 1.25,
+          "source": "https://docs.z.ai/guides/overview/pricing",
+          "listedBy": "vendor"
+        }
+      },
+      {
+        "id": "glm-5.3-flash",
+        "name": "GLM-5.3 Flash",
+        "vendor": "Z.ai",
+        "line": "GLM Flash",
+        "releaseDate": "2026-08-26",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "cursor", "opencode-go", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 63.39,
+            "operator": "datacurve",
+            "config": "mini-SWE-agent, max effort",
+            "source": "https://deepswe.datacurve.ai/"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 32.8,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent",
+            "source": "https://artificialanalysis.ai/evaluations/terminalbench-4-0"
+          }
+        ],
+        "price": {
+          "input": 0.15,
+          "output": 0.5,
+          "source": "https://docs.z.ai/guides/overview/pricing",
+          "listedBy": "vendor"
+        }
+      },
+      {
+        "id": "glm-4.7-flash",
+        "name": "GLM-4.7-Flash",
+        "vendor": "Z.ai",
+        "line": "GLM Flash",
+        "releaseDate": "2026-01-19",
+        "access": "general",
+        "harnesses": [],
+        "figures": [],
+        "price": {
+          "input": 0,
+          "output": 0,
+          "source": "https://docs.z.ai/guides/overview/pricing",
+          "listedBy": "vendor",
+          "note": "Free on the Z.ai API."
+        }
+      },
+      {
+        "id": "kimi-k3",
+        "name": "Kimi K3",
+        "vendor": "Moonshot AI",
+        "line": "Kimi",
+        "releaseDate": "2026-07-17",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "cursor", "opencode-go", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 68.44,
+            "operator": "artificial-analysis",
+            "config": "Kimi Code CLI",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 21.21,
+            "operator": "artificial-analysis",
+            "config": "Kimi Code CLI",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "swe-atlas-qna",
+            "version": "QnA",
+            "value": 66.13,
+            "operator": "artificial-analysis",
+            "config": "Kimi Code CLI",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          }
+        ],
+        "price": {
+          "input": 3,
+          "output": 15,
+          "source": "https://platform.kimi.ai/docs/pricing/chat",
+          "listedBy": "vendor"
+        },
+        "costPerTask": {
+          "usd": 5.05,
+          "operator": "artificial-analysis",
+          "source": "https://artificialanalysis.ai/agents/coding-agents"
+        }
+      },
+      {
+        "id": "kimi-k2.6",
+        "name": "Kimi K2.6",
+        "vendor": "Moonshot AI",
+        "line": "Kimi",
+        "releaseDate": "2026-04-20",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "opencode-go", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 0.51,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent",
+            "source": "https://artificialanalysis.ai/models/comparisons/kimi-k2-6-vs-glm-5-2"
+          }
+        ],
+        "price": {
+          "input": 0.95,
+          "output": 4,
+          "source": "https://platform.kimi.ai/docs/pricing/chat",
+          "listedBy": "vendor"
+        }
+      },
+      {
+        "id": "kimi-k2.5",
+        "name": "Kimi K2.5",
+        "vendor": "Moonshot AI",
+        "line": "Kimi",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro"],
+        "figures": [
+          {
+            "benchmark": "swe-atlas-qna",
+            "version": "QnA",
+            "value": 13.1,
+            "operator": "scale",
+            "config": "mini-SWE-agent",
+            "source": "https://labs.scale.com/leaderboard/sweatlas-qna"
+          }
+        ],
+        "price": {
+          "input": 0.6,
+          "output": 3,
+          "source": "https://commandcode.ai/models",
+          "listedBy": "commandcode"
+        },
+        "note": "Moonshot discontinued this model on 2026-08-31; Command Code still serves it."
+      },
+      {
+        "id": "kimi-k2.7-code",
+        "name": "Kimi K2.7 Code",
+        "vendor": "Moonshot AI",
+        "line": "Kimi Code",
+        "releaseDate": "2026-06-12",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "cursor", "opencode-go", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 30.53,
+            "operator": "datacurve",
+            "config": "mini-SWE-agent, default effort",
+            "source": "https://deepswe.datacurve.ai/"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 1.01,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent",
+            "source": "https://artificialanalysis.ai/models/comparisons/kimi-k2-7-code-vs-glm-5-2"
+          }
+        ],
+        "price": {
+          "input": 0.95,
+          "output": 4,
+          "source": "https://platform.kimi.ai/docs/pricing/chat",
+          "listedBy": "vendor"
+        }
+      },
+      {
+        "id": "kimi-k2.7-code-highspeed",
+        "name": "Kimi K2.7 Code HighSpeed",
+        "vendor": "Moonshot AI",
+        "line": "Kimi Code",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro"],
+        "figures": [],
+        "price": {
+          "input": 1.9,
+          "output": 8,
+          "source": "https://platform.kimi.ai/docs/pricing/chat",
+          "listedBy": "vendor"
+        }
+      },
+      {
+        "id": "deepseek-v4-pro",
+        "name": "DeepSeek V4 Pro",
+        "vendor": "DeepSeek",
+        "line": "DeepSeek Pro",
+        "releaseDate": "2026-08-13",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "opencode-go", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 57.23,
+            "operator": "artificial-analysis",
+            "config": "Codex, max effort (V4 Pro 0813)",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 10.1,
+            "operator": "artificial-analysis",
+            "config": "Codex, max effort (V4 Pro 0813)",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "swe-atlas-qna",
+            "version": "QnA",
+            "value": 61.83,
+            "operator": "artificial-analysis",
+            "config": "Codex, max effort (V4 Pro 0813)",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          }
+        ],
+        "price": {
+          "input": 1.32,
+          "output": 3.96,
+          "source": "https://api-docs.deepseek.com/quick_start/pricing",
+          "listedBy": "vendor",
+          "note": "Peak-hour rate; off-peak is half."
+        },
+        "costPerTask": {
+          "usd": 0.24,
+          "operator": "artificial-analysis",
+          "source": "https://artificialanalysis.ai/agents/coding-agents"
+        },
+        "note": "DeepSeek says it routes this name to V4.1 Flash from 2026-09-14 until V4.1 Pro launches; its price page still lists V4 Pro."
+      },
+      {
+        "id": "deepseek-v4.1-flash",
+        "name": "DeepSeek V4.1 Flash",
+        "vendor": "DeepSeek",
+        "line": "DeepSeek Flash",
+        "releaseDate": "2026-09-10",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "opencode-go", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 26.8,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent, max effort",
+            "source": "https://artificialanalysis.ai/evaluations/terminalbench-4-0"
+          }
+        ],
+        "price": {
+          "input": 0.3,
+          "output": 1.2,
+          "source": "https://api-docs.deepseek.com/quick_start/pricing",
+          "listedBy": "vendor",
+          "note": "Peak-hour rate; off-peak is half."
+        }
+      },
+      {
+        "id": "deepseek-v4.1-flash-fast",
+        "name": "DeepSeek V4.1 Flash Fast",
+        "vendor": "DeepSeek",
+        "line": "DeepSeek Flash",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro"],
+        "figures": [],
+        "price": {
+          "input": 0.32,
+          "output": 1.16,
+          "source": "https://commandcode.ai/models",
+          "listedBy": "commandcode",
+          "note": "Peak-hour rate; off-peak is half."
+        }
+      },
+      {
+        "id": "deepseek-v4-flash-fast",
+        "name": "DeepSeek V4 Flash Fast",
+        "vendor": "DeepSeek",
+        "line": "DeepSeek Flash",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro"],
+        "figures": [],
+        "price": {
+          "input": 0.28,
+          "output": 0.56,
+          "source": "https://commandcode.ai/models",
+          "listedBy": "commandcode"
+        }
+      },
+      {
+        "id": "deepseek-v4-flash",
+        "name": "DeepSeek V4 Flash",
+        "vendor": "DeepSeek",
+        "line": "DeepSeek Flash",
+        "releaseDate": "2026-04-24",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "opencode-go", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 54.28,
+            "operator": "artificial-analysis",
+            "config": "Codex, max effort (V4 Flash 0731)",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 10.61,
+            "operator": "artificial-analysis",
+            "config": "Codex, max effort (V4 Flash 0731)",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "swe-atlas-qna",
+            "version": "QnA",
+            "value": 51.34,
+            "operator": "artificial-analysis",
+            "config": "Codex, max effort (V4 Flash 0731)",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          }
+        ],
+        "price": {
+          "input": 0.3,
+          "output": 1.2,
+          "source": "https://opencode.ai/docs/go/",
+          "listedBy": "opencode",
+          "note": "DeepSeek routes this name to V4.1 Flash; peak-hour rate."
+        },
+        "costPerTask": {
+          "usd": 0.09,
+          "operator": "artificial-analysis",
+          "source": "https://artificialanalysis.ai/agents/coding-agents"
+        }
+      },
+      {
+        "id": "deepseek-v4-flash-vision-exp",
+        "name": "DeepSeek V4 Flash Vision (experimental)",
+        "vendor": "DeepSeek",
+        "line": "DeepSeek Flash Vision",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "opencode-go", "opencode-zen"],
+        "figures": [],
+        "price": {
+          "input": 0.3,
+          "output": 1.2,
+          "source": "https://opencode.ai/docs/go/",
+          "listedBy": "opencode",
+          "note": "Peak-hour rate; off-peak is half."
+        },
+        "note": "Retired by DeepSeek on 2026-09-10; the name is now served by V4.1 Flash."
+      },
+      {
+        "id": "qwen3.8-max",
+        "name": "Qwen3.8 Max",
+        "vendor": "Alibaba",
+        "line": "Qwen Max",
+        "releaseDate": "2026-08-03",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "opencode-go", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 51.03,
+            "operator": "artificial-analysis",
+            "config": "Claude Code",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 16.67,
+            "operator": "artificial-analysis",
+            "config": "Claude Code",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "swe-atlas-qna",
+            "version": "QnA",
+            "value": 62.1,
+            "operator": "artificial-analysis",
+            "config": "Claude Code",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          }
+        ],
+        "price": {
+          "input": 2,
+          "output": 6,
+          "source": "https://www.alibabacloud.com/help/en/model-studio/model-pricing",
+          "listedBy": "vendor"
+        },
+        "costPerTask": {
+          "usd": 3.48,
+          "operator": "artificial-analysis",
+          "source": "https://artificialanalysis.ai/agents/coding-agents"
+        }
+      },
+      {
+        "id": "qwen3.8-max-0902",
+        "name": "Qwen3.8 Max (0902)",
+        "vendor": "Alibaba",
+        "line": "Qwen Max",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro"],
+        "figures": [
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 38.89,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent",
+            "source": "https://artificialanalysis.ai/evaluations/terminalbench-4-0"
+          }
+        ],
+        "price": {
+          "input": 2,
+          "output": 6,
+          "source": "https://www.alibabacloud.com/help/en/model-studio/model-pricing",
+          "listedBy": "vendor"
+        }
+      },
+      {
+        "id": "qwen3.7-max",
+        "name": "Qwen3.7 Max",
+        "vendor": "Alibaba",
+        "line": "Qwen Max",
+        "releaseDate": "2026-05-20",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 2,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent (published as a whole percent)",
+            "source": "https://artificialanalysis.ai/models/comparisons/qwen3-7-max-vs-glm-5-2"
+          }
+        ],
+        "price": {
+          "input": 2.5,
+          "output": 7.5,
+          "source": "https://www.alibabacloud.com/help/en/model-studio/model-pricing",
+          "listedBy": "vendor"
+        }
+      },
+      {
+        "id": "qwen3.6-max-preview",
+        "name": "Qwen3.6 Max (preview)",
+        "vendor": "Alibaba",
+        "line": "Qwen Max",
+        "releaseDate": "2026-04-20",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro"],
+        "figures": [],
+        "price": {
+          "input": 1.3,
+          "output": 7.8,
+          "source": "https://www.alibabacloud.com/help/en/model-studio/model-pricing",
+          "listedBy": "vendor",
+          "note": "Prompts over 128K tokens: $2 / $12."
+        }
+      },
+      {
+        "id": "qwen3.8-flash",
+        "name": "Qwen3.8 Flash",
+        "vendor": "Alibaba",
+        "line": "Qwen Flash",
+        "releaseDate": "2026-08-28",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "opencode-go", "opencode-zen"],
+        "figures": [],
+        "price": {
+          "input": 0.15,
+          "output": 0.47,
+          "source": "https://www.alibabacloud.com/help/en/model-studio/model-pricing",
+          "listedBy": "vendor"
+        }
+      },
+      {
+        "id": "qwen3.7-flash",
+        "name": "Qwen3.7 Flash",
+        "vendor": "Alibaba",
+        "line": "Qwen Flash",
+        "releaseDate": "2026-07-21",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro"],
+        "figures": [],
+        "price": {
+          "input": 0.1,
+          "output": 0.4,
+          "source": "https://www.alibabacloud.com/help/en/model-studio/model-pricing",
+          "listedBy": "vendor",
+          "note": "Prompts of 32K–256K tokens; up to 32K: $0.03 / $0.13; over 256K: $0.20 / $0.80."
+        }
+      },
+      {
+        "id": "qwen3.6-flash",
+        "name": "Qwen3.6 Flash",
+        "vendor": "Alibaba",
+        "line": "Qwen Flash",
+        "releaseDate": "2026-04-16",
+        "access": "general",
+        "harnesses": [],
+        "figures": [],
+        "price": {
+          "input": 0.25,
+          "output": 1.5,
+          "source": "https://www.alibabacloud.com/help/en/model-studio/model-pricing",
+          "listedBy": "vendor",
+          "note": "Prompts over 256K tokens: $1 / $4."
+        }
+      },
+      {
+        "id": "qwen3.8-omni-flash",
+        "name": "Qwen3.8 Omni Flash",
+        "vendor": "Alibaba",
+        "line": "Qwen Omni Flash",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro"],
+        "figures": [],
+        "price": {
+          "input": 0.15,
+          "output": 0.47,
+          "source": "https://www.alibabacloud.com/help/en/model-studio/model-pricing",
+          "listedBy": "vendor"
+        }
+      },
+      {
+        "id": "qwen3.8-27b",
+        "name": "Qwen3.8 27B",
+        "vendor": "Alibaba",
+        "line": "Qwen 27B",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro"],
+        "figures": [
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 5.56,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent, xhigh effort",
+            "source": "https://artificialanalysis.ai/evaluations/terminalbench-4-0"
+          }
+        ],
+        "price": {
+          "input": 0.5,
+          "output": 3,
+          "source": "https://www.alibabacloud.com/help/en/model-studio/model-pricing",
+          "listedBy": "vendor"
+        }
+      },
+      {
+        "id": "qwen3.7-plus",
+        "name": "Qwen3.7 Plus",
+        "vendor": "Alibaba",
+        "line": "Qwen Plus",
+        "releaseDate": "2026-06-01",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "opencode-go", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 1.01,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent",
+            "source": "https://artificialanalysis.ai/models/comparisons/qwen3-7-plus-vs-glm-5-2"
+          }
+        ],
+        "price": {
+          "input": 0.4,
+          "output": 1.6,
+          "source": "https://www.alibabacloud.com/help/en/model-studio/model-pricing",
+          "listedBy": "vendor",
+          "note": "Prompts over 256K tokens: $1.20 / $4.80."
+        }
+      },
+      {
+        "id": "qwen3.6-plus",
+        "name": "Qwen3.6 Plus",
+        "vendor": "Alibaba",
+        "line": "Qwen Plus",
+        "releaseDate": "2026-04-02",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "opencode-zen"],
+        "figures": [],
+        "price": {
+          "input": 0.5,
+          "output": 3,
+          "source": "https://www.alibabacloud.com/help/en/model-studio/model-pricing",
+          "listedBy": "vendor",
+          "note": "Prompts over 256K tokens: $2 / $6."
+        }
+      },
+      {
+        "id": "qwen3.5-plus",
+        "name": "Qwen3.5 Plus",
+        "vendor": "Alibaba",
+        "line": "Qwen Plus",
+        "releaseDate": "2026-02-15",
+        "access": "general",
+        "harnesses": ["opencode-zen"],
+        "figures": [],
+        "price": {
+          "input": 0.4,
+          "output": 2.4,
+          "source": "https://www.alibabacloud.com/help/en/model-studio/model-pricing",
+          "listedBy": "vendor",
+          "note": "Prompts over 256K tokens cost more."
+        }
+      },
+      {
+        "id": "muse-wonder-full",
+        "name": "Muse Wonder Full",
+        "vendor": "Meta",
+        "line": "Muse Wonder",
+        "releaseDate": "2026-10-12",
+        "access": "limited",
+        "harnesses": ["muse-code"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 76.99,
+            "operator": "artificial-analysis",
+            "config": "Muse Code, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 59.09,
+            "operator": "artificial-analysis",
+            "config": "Muse Code, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "swe-atlas-qna",
+            "version": "QnA",
+            "value": 68.01,
+            "operator": "artificial-analysis",
+            "config": "Muse Code, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          }
+        ],
+        "note": "Muse Code subscribers only; not served through the API."
+      },
+      {
+        "id": "muse-wonder",
+        "name": "Muse Wonder",
+        "vendor": "Meta",
+        "line": "Muse Wonder",
+        "releaseDate": "2026-10-12",
+        "access": "general",
+        "harnesses": ["muse-code"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 75.81,
+            "operator": "artificial-analysis",
+            "config": "Muse Code, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 47.47,
+            "operator": "artificial-analysis",
+            "config": "Muse Code, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "swe-atlas-qna",
+            "version": "QnA",
+            "value": 67.2,
+            "operator": "artificial-analysis",
+            "config": "Muse Code, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          }
+        ],
+        "price": {
+          "input": 4,
+          "output": 20,
+          "source": "https://dev.meta.ai/docs/pricing-rate-limits",
+          "listedBy": "vendor"
+        },
+        "costPerTask": {
+          "usd": 8.05,
+          "operator": "artificial-analysis",
+          "source": "https://artificialanalysis.ai/agents/coding-agents"
+        }
+      },
+      {
+        "id": "muse-spark-1.3",
+        "name": "Muse Spark 1.3",
+        "vendor": "Meta",
+        "line": "Muse Spark",
+        "releaseDate": "2026-09-02",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "cursor", "muse-code", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 71.68,
+            "operator": "artificial-analysis",
+            "config": "Muse Code, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 31.82,
+            "operator": "artificial-analysis",
+            "config": "Muse Code, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "swe-atlas-qna",
+            "version": "QnA",
+            "value": 59.41,
+            "operator": "artificial-analysis",
+            "config": "Muse Code, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          }
+        ],
+        "price": {
+          "input": 1.25,
+          "output": 4.25,
+          "source": "https://dev.meta.ai/docs/pricing-rate-limits",
+          "listedBy": "vendor"
+        },
+        "costPerTask": {
+          "usd": 3.98,
+          "operator": "artificial-analysis",
+          "source": "https://artificialanalysis.ai/agents/coding-agents"
+        }
+      },
+      {
+        "id": "muse-spark-1.2",
+        "name": "Muse Spark 1.2",
+        "vendor": "Meta",
+        "line": "Muse Spark",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "muse-code", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 54.87,
+            "operator": "datacurve",
+            "config": "mini-SWE-agent, xhigh effort",
+            "source": "https://deepswe.datacurve.ai/"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 7.07,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent, xhigh effort",
+            "source": "https://artificialanalysis.ai/models/comparisons/muse-spark-1-2-vs-glm-5-2"
+          }
+        ],
+        "price": {
+          "input": 1.25,
+          "output": 4.25,
+          "source": "https://dev.meta.ai/docs/pricing-rate-limits",
+          "listedBy": "vendor"
+        }
+      },
+      {
+        "id": "muse-spark-1.3-contributor",
+        "name": "Muse Spark 1.3 Contributor",
+        "vendor": "Meta",
+        "line": "Muse Spark",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "opencode-go", "opencode-zen"],
+        "figures": [],
+        "price": {
+          "input": 0.1,
+          "output": 0.2,
+          "source": "https://dev.meta.ai/docs/pricing-rate-limits",
+          "listedBy": "vendor",
+          "note": "Meta's cheaper Contributor tier, on which Meta may train on submissions."
+        }
+      },
+      {
+        "id": "muse-spark-1.2-contributor",
+        "name": "Muse Spark 1.2 Contributor",
+        "vendor": "Meta",
+        "line": "Muse Spark",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "opencode-go", "opencode-zen"],
+        "figures": [],
+        "price": {
+          "input": 0.1,
+          "output": 0.2,
+          "source": "https://dev.meta.ai/docs/pricing-rate-limits",
+          "listedBy": "vendor",
+          "note": "Meta's cheaper Contributor tier, on which Meta may train on submissions."
+        }
+      },
+      {
+        "id": "muse-spark-1.1",
+        "name": "Muse Spark 1.1",
+        "vendor": "Meta",
+        "line": "Muse Spark",
+        "releaseDate": "2026-07-09",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro"],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 53.32,
+            "operator": "datacurve",
+            "config": "mini-SWE-agent, xhigh effort",
+            "source": "https://deepswe.datacurve.ai/"
+          },
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 6,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent (published as a whole percent)",
+            "source": "https://artificialanalysis.ai/models/comparisons/muse-spark-1-1-vs-glm-5-2"
+          },
+          {
+            "benchmark": "swe-atlas-qna",
+            "version": "QnA",
+            "value": 42.2,
+            "operator": "scale",
+            "config": "mini-SWE-agent, xhigh effort",
+            "source": "https://labs.scale.com/leaderboard/sweatlas-qna"
+          }
+        ],
+        "price": {
+          "input": 1.25,
+          "output": 4.25,
+          "source": "https://dev.meta.ai/docs/pricing-rate-limits",
+          "listedBy": "vendor"
+        }
+      },
+      {
+        "id": "minimax-m3",
+        "name": "MiniMax M3",
+        "vendor": "MiniMax",
+        "line": "MiniMax",
+        "releaseDate": "2026-06-01",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "opencode-go", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 2,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent",
+            "source": "https://artificialanalysis.ai/evaluations/terminalbench-4-0"
+          }
+        ],
+        "price": {
+          "input": 0.3,
+          "output": 1.2,
+          "source": "https://platform.minimax.io/docs/guides/pricing-paygo",
+          "listedBy": "vendor",
+          "note": "Up to 512K tokens, after a vendor discount with no stated end date."
+        }
+      },
+      {
+        "id": "minimax-m2.7",
+        "name": "MiniMax M2.7",
+        "vendor": "MiniMax",
+        "line": "MiniMax",
+        "releaseDate": "2026-03-18",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "opencode-go", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 0,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent",
+            "source": "https://artificialanalysis.ai/models/comparisons/minimax-m2-7-vs-glm-5-2"
+          }
+        ],
+        "price": {
+          "input": 0.3,
+          "output": 1.2,
+          "source": "https://platform.minimax.io/docs/guides/pricing-paygo",
+          "listedBy": "vendor"
+        }
+      },
+      {
+        "id": "minimax-m2.5",
+        "name": "MiniMax M2.5",
+        "vendor": "MiniMax",
+        "line": "MiniMax",
+        "releaseDate": "2026-02-12",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro"],
+        "figures": [
+          {
+            "benchmark": "swe-atlas-qna",
+            "version": "QnA",
+            "value": 10.3,
+            "operator": "scale",
+            "config": "mini-SWE-agent",
+            "source": "https://labs.scale.com/leaderboard/sweatlas-qna"
+          }
+        ],
+        "price": {
+          "input": 0.3,
+          "output": 1.2,
+          "source": "https://platform.minimax.io/docs/guides/pricing-paygo",
+          "listedBy": "vendor",
+          "note": "Listed by MiniMax as a legacy model."
+        }
+      },
+      {
+        "id": "mimo-v2.6-pro",
+        "name": "MiMo V2.6 Pro",
+        "vendor": "Xiaomi",
+        "line": "MiMo Pro",
+        "releaseDate": "2026-09-21",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "opencode-go"],
+        "figures": [
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 34.8,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent",
+            "source": "https://artificialanalysis.ai/evaluations/terminalbench-4-0"
+          }
+        ],
+        "price": {
+          "input": 0.435,
+          "output": 0.87,
+          "source": "https://opencode.ai/docs/go/",
+          "listedBy": "opencode"
+        }
+      },
+      {
+        "id": "mimo-v2.6-pro-ultraspeed",
+        "name": "MiMo V2.6 Pro UltraSpeed",
+        "vendor": "Xiaomi",
+        "line": "MiMo Pro",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro"],
+        "figures": [],
+        "price": {
+          "input": 4.35,
+          "output": 8.7,
+          "source": "https://mimo.mi.com/models/en-US/mimo-v2.6-pro-ultraspeed",
+          "listedBy": "vendor"
+        }
+      },
+      {
+        "id": "mimo-v2.5-pro",
+        "name": "MiMo V2.5 Pro",
+        "vendor": "Xiaomi",
+        "line": "MiMo Pro",
+        "releaseDate": "2026-04-22",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "opencode-go"],
+        "figures": [
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 0,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent",
+            "source": "https://artificialanalysis.ai/models/comparisons/minimax-m3-vs-mimo-v2-5-pro"
+          }
+        ],
+        "price": {
+          "input": 0.435,
+          "output": 0.87,
+          "source": "https://opencode.ai/docs/go/",
+          "listedBy": "opencode"
+        },
+        "note": "Xiaomi takes this model offline on 2026-10-21."
+      },
+      {
+        "id": "mimo-v2.6-flash",
+        "name": "MiMo V2.6 Flash",
+        "vendor": "Xiaomi",
+        "line": "MiMo Flash",
+        "releaseDate": "2026-09-21",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "opencode-go"],
+        "figures": [
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 22.73,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent",
+            "source": "https://artificialanalysis.ai/models/comparisons/mimo-v2-6-flash-vs-glm-5-3-flash"
+          }
+        ],
+        "price": {
+          "input": 0.14,
+          "output": 0.28,
+          "source": "https://opencode.ai/docs/go/",
+          "listedBy": "opencode"
+        }
+      },
+      {
+        "id": "mimo-v2.5",
+        "name": "MiMo V2.5",
+        "vendor": "Xiaomi",
+        "line": "MiMo Flash",
+        "releaseDate": "2026-04-22",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "opencode-go"],
+        "figures": [
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 0,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent",
+            "source": "https://artificialanalysis.ai/models/comparisons/minimax-m3-vs-mimo-v2-5-0424"
+          }
+        ],
+        "price": {
+          "input": 0.14,
+          "output": 0.28,
+          "source": "https://opencode.ai/docs/go/",
+          "listedBy": "opencode"
+        },
+        "note": "Xiaomi takes this model offline on 2026-10-21."
+      },
+      {
+        "id": "hy4-preview",
+        "name": "Hy4 (preview)",
+        "vendor": "Tencent",
+        "line": "Hy",
+        "releaseDate": "2026-08-28",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "opencode-go"],
+        "figures": [
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 8.08,
+            "operator": "vals",
+            "config": "mini-SWE-agent",
+            "source": "https://www.vals.ai/benchmarks/terminal-bench-4"
+          }
+        ],
+        "price": {
+          "input": 0.834,
+          "output": 2.501,
+          "source": "https://opencode.ai/docs/go/",
+          "listedBy": "opencode"
+        }
+      },
+      {
+        "id": "hy3",
+        "name": "Hy3",
+        "vendor": "Tencent",
+        "line": "Hy",
+        "releaseDate": "2026-07-06",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "opencode-go"],
+        "figures": [],
+        "price": {
+          "input": 0.14,
+          "output": 0.58,
+          "source": "https://opencode.ai/docs/go/",
+          "listedBy": "opencode"
+        }
+      },
+      {
+        "id": "longcat-2.5-preview-free",
+        "name": "LongCat 2.5 (preview)",
+        "vendor": "Meituan",
+        "line": "LongCat",
+        "access": "general",
+        "harnesses": ["opencode-go", "opencode-zen"],
+        "figures": [],
+        "note": "Free on OpenCode for a limited time; no API price published."
+      },
+      {
+        "id": "longcat-2.0",
+        "name": "LongCat 2.0",
+        "vendor": "Meituan",
+        "line": "LongCat",
+        "releaseDate": "2026-06-30",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "opencode-go"],
+        "figures": [
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 0,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent",
+            "source": "https://artificialanalysis.ai/models/comparisons/longcat-2-0-vs-glm-5-2"
+          }
+        ],
+        "price": {
+          "input": 0.3,
+          "output": 1.2,
+          "source": "https://opencode.ai/docs/go/",
+          "listedBy": "opencode",
+          "note": "Promotional rate with no published end date."
+        }
+      },
+      {
+        "id": "mistral-large-4",
+        "name": "Mistral Large 4",
+        "vendor": "Mistral AI",
+        "line": "Mistral Large",
+        "releaseDate": "2026-10-06",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 26.77,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent (run as Mistral Large 4 Preview)",
+            "source": "https://artificialanalysis.ai/models/comparisons/mistral-large-4-vs-glm-5-2"
+          }
+        ],
+        "price": {
+          "input": 0.68,
+          "output": 2.09,
+          "source": "https://docs.mistral.ai/models/mistral-large-4-0",
+          "listedBy": "vendor",
+          "note": "Two-week launch promotion from 2026-10-06; $1.36 / $4.18 after."
+        }
+      },
+      {
+        "id": "nemotron-3-ultra",
+        "name": "Nemotron 3 Ultra",
+        "vendor": "NVIDIA",
+        "line": "Nemotron Ultra",
+        "releaseDate": "2026-06-04",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 0.51,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent",
+            "source": "https://artificialanalysis.ai/evaluations/terminalbench-4-0"
+          }
+        ],
+        "price": {
+          "input": 0.6,
+          "output": 2.4,
+          "source": "https://commandcode.ai/models",
+          "listedBy": "commandcode",
+          "note": "Free on OpenCode Zen."
+        }
+      },
+      {
+        "id": "step-5-preview",
+        "name": "Step 5 (preview)",
+        "vendor": "StepFun",
+        "line": "Step",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro"],
+        "figures": [
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 33.33,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent",
+            "source": "https://artificialanalysis.ai/evaluations/terminalbench-4-0"
+          }
+        ],
+        "price": {
+          "input": 1,
+          "output": 2.7,
+          "source": "https://platform.stepfun.ai/docs/en/guides/pricing/details",
+          "listedBy": "vendor"
+        }
+      },
+      {
+        "id": "step-3.7-flash",
+        "name": "Step 3.7 Flash",
+        "vendor": "StepFun",
+        "line": "Step Flash",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro"],
+        "figures": [],
+        "price": {
+          "input": 0.2,
+          "output": 1.15,
+          "source": "https://platform.stepfun.ai/docs/en/guides/pricing/details",
+          "listedBy": "vendor"
+        }
+      },
+      {
+        "id": "step-3.5-flash",
+        "name": "Step 3.5 Flash",
+        "vendor": "StepFun",
+        "line": "Step Flash",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro"],
+        "figures": [],
+        "price": {
+          "input": 0.1,
+          "output": 0.3,
+          "source": "https://platform.stepfun.ai/docs/en/guides/pricing/details",
+          "listedBy": "vendor"
+        }
+      },
+      {
+        "id": "inkling",
+        "name": "Inkling",
+        "vendor": "Thinking Machines",
+        "line": "Inkling",
+        "releaseDate": "2026-07-15",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro"],
+        "figures": [
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 1.01,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent, xhigh effort",
+            "source": "https://artificialanalysis.ai/models/comparisons/inkling-vs-glm-5-2"
+          }
+        ],
+        "price": {
+          "input": 1,
+          "output": 4.05,
+          "source": "https://tinker-docs.thinkingmachines.ai/tinker/models/models_and_pricing/index.md",
+          "listedBy": "vendor",
+          "note": "Tinker serverless inference (beta)."
+        }
+      },
+      {
+        "id": "inkling-small",
+        "name": "Inkling Small",
+        "vendor": "Thinking Machines",
+        "line": "Inkling Small",
+        "releaseDate": "2026-07-30",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro"],
+        "figures": [
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 1.01,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent",
+            "source": "https://artificialanalysis.ai/models/comparisons/qwen3-8-27b-vs-inkling-small"
+          }
+        ],
+        "price": {
+          "input": 0.3,
+          "output": 1.2,
+          "source": "https://tinker-docs.thinkingmachines.ai/tinker/models/models_and_pricing/index.md",
+          "listedBy": "vendor",
+          "note": "Tinker serverless inference (beta)."
+        }
+      },
+      {
+        "id": "fugu-ultra",
+        "name": "Fugu Ultra",
+        "vendor": "Sakana AI",
+        "line": "Fugu Ultra",
+        "releaseDate": "2026-09-11",
+        "access": "general",
+        "harnesses": ["command-code"],
+        "figures": [],
+        "price": {
+          "input": 5,
+          "output": 30,
+          "source": "https://sakana.ai/fugu",
+          "listedBy": "vendor",
+          "note": "Prompts over 272K tokens: $10 / $45."
+        }
+      },
+      {
+        "id": "laguna-s-2.1",
+        "name": "Laguna S 2.1",
+        "vendor": "Poolside",
+        "line": "Laguna S",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro"],
+        "figures": [],
+        "note": "Free on Command Code while capacity lasts; no API price published."
+      },
+      {
+        "id": "ling-3.1-flash",
+        "name": "Ling 3.1 Flash",
+        "vendor": "inclusionAI",
+        "line": "Ling Flash",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro", "opencode-zen"],
+        "figures": [
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 33.33,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent",
+            "source": "https://artificialanalysis.ai/models/comparisons/claude-haiku-5-5-vs-glm-5-2"
+          }
+        ],
+        "note": "Free on Command Code and OpenCode Zen for a limited time; no API price published."
+      },
+      {
+        "id": "ling-3.0-flash-sante",
+        "name": "Ling 3.0 Flash Sante",
+        "vendor": "inclusionAI",
+        "line": "Ling Flash",
+        "access": "general",
+        "harnesses": ["command-code", "command-code-pro"],
+        "figures": [],
+        "note": "Free on Command Code for a limited time; no API price published."
+      }
+    ]
+  },
+  "benchmarks": {
+    "specs": [
+      {
+        "id": "deep-swe",
+        "name": "DeepSWE",
+        "version": "1.1",
+        "weight": 1,
+        "operatorOrder": ["artificial-analysis", "datacurve"],
+        "url": "https://deepswe.datacurve.ai/"
+      },
+      {
+        "id": "terminal-bench",
+        "name": "Terminal-Bench",
+        "version": "4.0",
+        "weight": 1,
+        "operatorOrder": ["artificial-analysis", "terminal-bench", "vals"],
+        "url": "https://www.tbench.ai/"
+      },
+      {
+        "id": "swe-atlas-qna",
+        "name": "SWE-Atlas",
+        "version": "QnA",
+        "weight": 1,
+        "operatorOrder": ["artificial-analysis", "scale"],
+        "url": "https://labs.scale.com/leaderboard/sweatlas-qna"
+      }
+    ],
+    "minScoredBenchmarks": 2,
+    "compositeIndexMax": 100,
+    "tierAnchors": {
+      "ultra": "claude-opus-5",
+      "planning": "gpt-5.6-sol",
+      "execution": "claude-sonnet-5"
+    },
+    "anchoredTiers": ["ultra", "planning", "execution"],
+    "tiers": ["ultra", "planning", "execution", "fast", "insufficient"],
+    "frontierVendors": ["Anthropic", "OpenAI", "Google", "xAI"],
+    "harnessInHouseLines": [
+      {
+        "harness": "cursor",
+        "vendor": "Cursor",
+        "line": "Composer"
+      }
+    ],
+    "substituteHarnesses": ["command-code-pro", "command-code", "opencode-go"],
+    "defaultSubstituteHarness": "command-code-pro",
+    "rosterCatalogHarnesses": ["opencode-go", "command-code"],
+    "nearestOptionCount": 3,
+    "methodExample": {
+      "indexModel": "glm-5.3",
+      "compareModel": "kimi-k3",
+      "compareTier": "execution"
+    },
+    "harnessDisplayNames": {
+      "claude-code": "Claude Code",
+      "codex-cli": "Codex CLI",
+      "command-code": "Command Code",
+      "command-code-pro": "Command Code Pro",
+      "cursor": "Cursor",
+      "muse-code": "Muse Code",
+      "opencode-go": "OpenCode Go",
+      "opencode-zen": "OpenCode Zen"
+    },
+    "blendInputShare": 3,
+    "blendOutputShare": 1
+  },
+  "operators": [
+    {
+      "id": "artificial-analysis",
+      "name": "Artificial Analysis — Coding Agent Index v1.5",
+      "shortName": "Artificial Analysis",
+      "url": "https://artificialanalysis.ai/agents/coding-agents",
+      "checkedOn": "2026-10-14"
+    },
+    {
+      "id": "datacurve",
+      "name": "Datacurve — DeepSWE v1.1 leaderboard",
+      "shortName": "Datacurve",
+      "url": "https://deepswe.datacurve.ai/",
+      "checkedOn": "2026-10-14",
+      "sourceUpdated": "2026-09-22"
+    },
+    {
+      "id": "terminal-bench",
+      "name": "Terminal-Bench — official 4.0 leaderboard",
+      "shortName": "Terminal-Bench board",
+      "url": "https://www.tbench.ai/leaderboard",
+      "checkedOn": "2026-10-14",
+      "sourceUpdated": "2026-09-21"
+    },
+    {
+      "id": "vals",
+      "name": "Vals AI — Terminal-Bench 4",
+      "shortName": "Vals AI",
+      "url": "https://www.vals.ai/benchmarks/terminal-bench-4",
+      "checkedOn": "2026-10-14",
+      "sourceUpdated": "2026-10-13"
+    },
+    {
+      "id": "scale",
+      "name": "Scale AI — SWE-Atlas QnA leaderboard",
+      "shortName": "Scale AI",
+      "url": "https://labs.scale.com/leaderboard/sweatlas-qna",
+      "checkedOn": "2026-10-14"
+    }
+  ],
+  "priceSources": [
+    {
+      "name": "Anthropic",
+      "url": "https://platform.claude.com/docs/en/about-claude/pricing",
+      "checkedOn": "2026-10-08"
+    },
+    {
+      "name": "OpenAI",
+      "url": "https://developers.openai.com/api/docs/pricing",
+      "checkedOn": "2026-10-08"
+    },
+    {
+      "name": "Google",
+      "url": "https://ai.google.dev/gemini-api/docs/pricing",
+      "checkedOn": "2026-10-08"
+    },
+    {
+      "name": "xAI",
+      "url": "https://docs.x.ai/docs/models",
+      "checkedOn": "2026-10-08"
+    },
+    {
+      "name": "Cursor",
+      "url": "https://cursor.com/docs/models-and-pricing",
+      "checkedOn": "2026-10-08"
+    },
+    {
+      "name": "Z.ai",
+      "url": "https://docs.z.ai/guides/overview/pricing",
+      "checkedOn": "2026-10-08"
+    },
+    {
+      "name": "Moonshot AI",
+      "url": "https://platform.kimi.ai/docs/pricing/chat",
+      "checkedOn": "2026-10-08"
+    },
+    {
+      "name": "DeepSeek",
+      "url": "https://api-docs.deepseek.com/quick_start/pricing",
+      "checkedOn": "2026-10-08"
+    },
+    {
+      "name": "Alibaba Cloud",
+      "url": "https://www.alibabacloud.com/help/en/model-studio/model-pricing",
+      "checkedOn": "2026-10-08"
+    },
+    {
+      "name": "MiniMax",
+      "url": "https://platform.minimax.io/docs/guides/pricing-paygo",
+      "checkedOn": "2026-10-08"
+    },
+    {
+      "name": "Meta",
+      "url": "https://dev.meta.ai/docs/pricing-rate-limits",
+      "checkedOn": "2026-10-08"
+    },
+    {
+      "name": "OpenCode Go",
+      "url": "https://opencode.ai/docs/go/",
+      "checkedOn": "2026-10-08"
+    },
+    {
+      "name": "OpenCode Zen",
+      "url": "https://opencode.ai/docs/zen/",
+      "checkedOn": "2026-10-08"
+    },
+    {
+      "name": "Xiaomi",
+      "url": "https://mimo.mi.com/models/en-US/mimo-v2.6-pro-ultraspeed",
+      "checkedOn": "2026-10-08"
+    },
+    {
+      "name": "Mistral AI",
+      "url": "https://docs.mistral.ai/models/mistral-large-4-0",
+      "checkedOn": "2026-10-08"
+    },
+    {
+      "name": "StepFun",
+      "url": "https://platform.stepfun.ai/docs/en/guides/pricing/details",
+      "checkedOn": "2026-10-08"
+    },
+    {
+      "name": "Thinking Machines",
+      "url": "https://tinker-docs.thinkingmachines.ai/tinker/models/models_and_pricing/index.md",
+      "checkedOn": "2026-10-08"
+    },
+    {
+      "name": "Sakana AI",
+      "url": "https://sakana.ai/fugu",
+      "checkedOn": "2026-10-08"
+    },
+    {
+      "name": "Command Code",
+      "url": "https://commandcode.ai/models",
+      "checkedOn": "2026-10-08"
+    }
+  ]
+}

@@ -51,8 +51,9 @@ git commit -m "chore: update lockfile"
 
 - Node.js 24.13.1 (Volta managed)
 - npm 11.10.1 (Volta managed)
-- Docker 24.x (for local services)
-- PostgreSQL 16.x (Docker or local)
+- Podman, rootless (for local services); the Ubuntu CI pin is in `.github/actions/setup-podman/action.yml`
+- podman-compose 1.6.0
+- PostgreSQL 16.x (Podman or local)
 ```
 
 ## 5. Provide Example Configuration
@@ -90,8 +91,9 @@ if [ ! -f .env ]; then
     echo "Created .env - please update with your values"
 fi
 
-# Start services
-docker-compose up -d
+# Start services with the explicitly selected Compose provider
+export PODMAN_COMPOSE_PROVIDER=podman-compose
+podman compose up -d
 
 echo "Setup complete! Run 'npm run dev' to start"
 ```

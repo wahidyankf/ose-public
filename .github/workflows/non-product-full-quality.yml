@@ -76,6 +76,7 @@ jobs:
       - uses: ./.github/actions/setup-go
       - uses: ./.github/actions/setup-playwright
       - uses: ./.github/actions/setup-python
+      - uses: ./.github/actions/setup-podman
       - name: Install locked Python dependencies
         run: >-
           npx nx run-many -t install

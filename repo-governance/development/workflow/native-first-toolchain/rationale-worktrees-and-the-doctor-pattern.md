@@ -32,7 +32,7 @@ Config files serve as the desired state declarations:
   only after it reports drift
 - Use version managers (Volta, rustup, dotnet-install) for language version pinning
 - Use `Brewfile` for declarative Homebrew dependencies
-- Use Docker for networked E2E stacks and CI pipelines; keep Integration on local resources it
+- Use Podman for networked E2E stacks and CI pipelines; keep Integration on local resources it
   owns, with no external network reach
 
 ### DO NOT

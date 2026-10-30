@@ -9,12 +9,15 @@ still being developed.
 ## Start it locally
 
 From the repository root, install the workspace dependencies and make sure the .NET 10 SDK is
-available. Docker is needed for the local PostgreSQL and NATS services used below.
+available. Rootless Podman with `podman-compose` 1.6.0 is needed for the local PostgreSQL and NATS
+services used below. Select the Compose provider and confirm the rootless engine before starting them:
 
 ```bash
+export PODMAN_COMPOSE_PROVIDER=podman-compose
+scripts/container-runtime-check --compose
 ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install
 ./hippo run --class service --resource-tier standard --disk-path . -- \
-  docker compose -f apps/ose-be/docker-compose.e2e.yml up
+  podman compose -f apps/ose-be/docker-compose.e2e.yml up
 ```
 
 Keep that reservation-owning terminal open while PostgreSQL and NATS run. In another terminal,
@@ -28,7 +31,7 @@ export ASPNETCORE_URLS='http://localhost:8302'
 ./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run ose-be:dev
 ```
 
-The sample connection string is only for the local Docker services defined in this repository. The
+The sample connection string is only for the local Podman services defined in this repository. The
 service applies pending database migrations when it starts. In another terminal, confirm that it is
 running:
 
@@ -43,11 +46,11 @@ Expected response:
 ```
 
 Stop the backend and dependency terminals with <kbd>Ctrl</kbd>+<kbd>C</kbd> when finished, then
-remove the stopped containers and network transactionally:
+remove the stopped containers and network transactionally. Volumes are kept:
 
 ```bash
 ./hippo run --class transactional --resource-tier standard --disk-path . -- \
-  docker compose -f apps/ose-be/docker-compose.e2e.yml down
+  podman compose -f apps/ose-be/docker-compose.e2e.yml down
 ```
 
 ## What is available today

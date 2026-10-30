@@ -7,7 +7,7 @@ tags:
   - toolchain
   - setup
   - development
-  - docker
+  - podman
   - volta
 created: 2026-04-04
 ---
@@ -32,7 +32,7 @@ and `hippo.lock`.
 
 **Three setup paths**. These name what _you_ install by hand.
 
-- **Minimal** — Node.js + Docker + jq. Covers git hooks for TypeScript and Markdown changes,
+- **Minimal** — Node.js + rootless Podman + jq. Covers git hooks for TypeScript and Markdown changes,
   TypeScript projects, and basic end-to-end (E2E) tests. `npm run doctor` (the read-only
   `./rhino toolchain validate`) probes every toolchain `repo-config.yml` declares, so on this path
   it reports the ones you skipped; that is expected. A commit that stages a file whose formatter
@@ -53,7 +53,9 @@ and `hippo.lock`.
 - **macOS** (primary) or **Linux** (Debian/Ubuntu). The Linux steps may work in WSL2, but WSL2 is
   neither supported nor verified by this project. Native Windows is not supported.
 - **Admin access** to install system packages.
-- **~5 GB disk space** for all runtimes, Docker images, and Playwright browsers.
+- **~5 GB disk space** for all runtimes, container images, and Playwright browsers.
+- **Rootless Podman** for any container-backed task. Repository workflows never run containers as root
+  and reject a rootful engine connection.
 
 ## Quick Start (Minimal Setup)
 
@@ -65,7 +67,7 @@ If you only work on TypeScript projects, this is all you need:
 
 # 2. Install core tools
 brew install jq
-# Docker Desktop: download from https://docs.docker.com/desktop/setup/install/mac-install/
+# Podman: install and start a rootless Podman Machine; see Step 2 for the exact commands
 
 # 3. Install Volta (Node.js version manager)
 curl https://get.volta.sh | bash
@@ -82,8 +84,9 @@ npm run doctor
 ```
 
 Doctor lists any declared toolchain this minimal path skipped; `git`, `volta`, `node`, `npm`,
-`docker`, `jq`, `bash`, and `curl` must not be among them. Then you are ready. To run the push hook's registry gates and see their output,
-use `./rhino gate run --surface pre-push`, which screens the push for public safety first.
+`podman`, `jq`, `bash`, and `curl` must not be among them. Then you are ready. To run the push hook's
+registry gates and see their output, use `./rhino gate run --surface pre-push`, which screens the push
+for public safety first.
 
 ## Full Setup
 
@@ -104,7 +107,7 @@ sudo apt-get update
 sudo apt-get install -y build-essential curl git
 ```
 
-### Step 2: Git and Docker
+### Step 2: Git and Podman
 
 Git is usually pre-installed on macOS (via Xcode Command Line Tools):
 
@@ -112,16 +115,53 @@ Git is usually pre-installed on macOS (via Xcode Command Line Tools):
 git --version || xcode-select --install
 ```
 
-Install Docker Desktop from <https://docs.docker.com/desktop/setup/install/mac-install/>
-(macOS) or Docker Engine from <https://docs.docker.com/engine/install/> (Linux).
+The repository runs its containers with rootless [Podman](https://podman.io/). Podman runs without a
+root daemon. Repository Compose workflows use `podman compose` with `podman-compose` as the explicit
+provider, so Docker Compose is not used.
 
-After installation, verify:
+**macOS**: The macOS path has no pinned Podman version. Podman runs containers in a Linux virtual machine
+that `podman machine` manages. Install Podman from the official release page at
+<https://podman.io/docs/installation>. Verify the package's published SHA-256 digest and its signature
+before you install it. Then check for an existing machine and create one only when none exists:
 
 ```bash
-docker --version
-docker compose version
-docker info   # Confirms daemon is running
+podman machine list
+podman machine init --rootful=false   # Only when no machine exists; never replace an existing machine
+podman machine start
 ```
+
+**Linux (Debian/Ubuntu)**: Install the Podman version reviewed for the `ubuntu/resolute/amd64` runner tuple in
+`.github/actions/setup-podman/action.yml`. That pin is proven on a GitHub runner. Do not
+install an unversioned package. Other Ubuntu releases and architectures have no pin yet, so do not install
+Podman there from this guide:
+
+```bash
+# <podman_pin> is the podman_pin value in https://github.com/wahidyankf/ose-public/blob/main/.github/actions/setup-podman/action.yml
+sudo apt-get install -y "podman=<podman_pin>"
+```
+
+Install the Compose provider into an isolated `pipx` environment, not into system Python:
+
+```bash
+pipx install --python "$(command -v python3)" podman-compose==1.6.0
+export PODMAN_COMPOSE_PROVIDER="$(command -v podman-compose)"
+```
+
+Set `PODMAN_COMPOSE_PROVIDER` in each shell where you run `podman compose` by hand. Repository entry points
+and CI set it themselves.
+
+After installation, verify the engine, the provider, and the rootless requirement:
+
+```bash
+podman --version
+podman-compose --version   # Expected: 1.6.0
+podman info --format json | jq -e '.host.security.rootless == true'
+scripts/container-runtime-check --compose
+```
+
+The check fails when the selected connection is rootful, even when your account is not root. If it fails,
+list the connections with `podman system connection list` and select a rootless one. Do not run
+repository workflows with `sudo` or against a rootful engine.
 
 Install jq (needed for Claude Code hooks and shell scripts):
 
@@ -325,8 +365,8 @@ npm exec nx -- run organiclever-be:test:integration
 ```
 
 If this passes, the app's isolated filesystem and process-environment boundaries work correctly.
-Docker-hosted databases and brokers communicate over a network path, so verify them through the
-app's E2E stack instead of `test:integration`.
+Containerized databases and brokers (run with rootless Podman) communicate over a network path, so verify
+them through the app's E2E stack instead of `test:integration`.
 
 ## Troubleshooting
 
@@ -371,14 +411,19 @@ export VOLTA_HOME="$HOME/.volta"
 export PATH="$VOLTA_HOME/bin:$PATH"
 ```
 
-### Docker "permission denied" on Linux
+### Podman reports a rootful or unreachable engine
 
-Add your user to the docker group:
+The container preflight stops before any workload starts when the selected Podman connection is
+rootful, unreachable, or missing its provider. Check the connection and its rootless state:
 
 ```bash
-sudo usermod -aG docker $USER
-# Log out and back in for changes to take effect
+podman system connection list
+podman info --format json | jq -e '.host.security.rootless == true'
 ```
+
+Select a rootless connection. On macOS, start a stopped machine with `podman machine start`. Do not run
+repository workflows with `sudo`, and do not switch to a rootful engine to work around the check. Rootful
+engines are outside the supported contract.
 
 ### Integration test fails with "port already in use"
 
@@ -388,9 +433,9 @@ whatever holds it:
 
 ```bash
 lsof -i :5434
-# If it is another Docker stack, stop that stack:
+# If it is another Podman Compose stack, stop that stack:
 ./hippo run --class transactional --resource-tier standard --disk-path . -- \
-  docker compose -f infra/dev/<other-stack>/docker-compose.yml down
+  podman compose -f infra/dev/<other-stack>/docker-compose.yml down
 ```
 
 ### Playwright "browser not found"
@@ -412,13 +457,14 @@ On Linux, also run:
 Versions are pinned in these config files. `npm run doctor` checks only that each declared tool
 runs; the version manager or project build enforces the pin:
 
-| Tool       | Version Source                                    |
-| ---------- | ------------------------------------------------- |
-| Node.js    | `package.json` → `volta.node`                     |
-| npm        | `package.json` → `volta.npm`                      |
-| .NET       | each .NET project's `global.json` → `sdk.version` |
-| Go         | `.github/actions/setup-go` → `go-version` input   |
-| Docker, jq | Any (no pinned version)                           |
+| Tool           | Version Source                                                                                                                        |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Node.js        | `package.json` → `volta.node`                                                                                                         |
+| npm            | `package.json` → `volta.npm`                                                                                                          |
+| .NET           | each .NET project's `global.json` → `sdk.version`                                                                                     |
+| Go             | `.github/actions/setup-go` → `go-version` input                                                                                       |
+| podman-compose | `pipx install podman-compose==1.6.0` (Step 2)                                                                                         |
+| Podman, jq     | Podman: the reviewed package pin in `.github/actions/setup-podman/action.yml` (Step 2; macOS has no pin); jq: any (no pinned version) |
 
 Never hardcode version numbers in scripts — always read from these source-of-truth files.
 
@@ -428,6 +474,6 @@ Never hardcode version numbers in scripts — always read from these source-of-t
   Granular workflow with phases and success criteria. Its `scope: minimal` parameter selects
   which phases you run; the checker has no scope and always inspects every declared toolchain
 - [Reproducible Environments](../../repo-governance/development/workflow/reproducible-environments.md) —
-  Volta, npm, Docker reproducibility practices
+  Volta, npm, Podman reproducibility practices
 - [Code Quality Convention](../../repo-governance/development/quality/code.md) — Git hooks and
   automated formatting

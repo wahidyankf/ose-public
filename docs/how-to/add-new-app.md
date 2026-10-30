@@ -331,11 +331,11 @@ canonical explicit boundary reason and named alternative proof.
 **Integration setup**: Apps with `test:integration` isolate real local resources such as temporary
 files, embedded databases, process environment, or child-process standard streams. A loopback socket
 the test starts and stops is allowed only where review accepts the project holding it. The target
-must reach no external network and no Docker-hosted service, and must set `"cache": false` in
+must reach no external network and no containerized service, and must set `"cache": false` in
 `project.json`.
 
-**E2E stack setup**: Put Docker-hosted PostgreSQL, message brokers, and other networked services in
-the app's E2E stack. The E2E target must enter through the app's public browser, HTTP/API, or process
+**E2E stack setup**: Put containerized PostgreSQL, message brokers, and other networked services in
+the app's E2E stack, which runs with rootless Podman Compose. The E2E target must enter through the app's public browser, HTTP/API, or process
 boundary and use isolated synthetic data.
 
 **Specs folder**: Create a `specs/apps/[domain]/` folder at the repository root holding one

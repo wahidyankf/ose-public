@@ -36,7 +36,7 @@ This also triggers Husky to install git hooks (pre-commit, commit-msg, pre-push)
 # Restore .env files from default backup location (~/ose-public-env-backup)
 ./rhino env restore --dir local-tmp/env-backup --apply --force
 
-# Include uncommitted config files (AI tool settings, Docker overrides, direnv, etc.)
+# Include uncommitted config files (AI tool settings, Compose overrides, direnv, etc.)
 ./rhino env restore --dir local-tmp/env-backup --apply --force
 ```
 

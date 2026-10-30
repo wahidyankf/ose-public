@@ -8,7 +8,7 @@ when_to_use: Use when tracing a rule's source principle or convention.
 ## Principles Implemented/Respected
 
 - **[Explicit Over Implicit](../../../principles/software-engineering/explicit-over-implicit.md)**:
-  Every hook step, target name, workflow file, and Docker layer is explicitly documented. No
+  Every hook step, target name, workflow file, and container image layer is explicitly documented. No
   implicit behaviour is tolerated — if something runs in CI, it is declared in a workflow file; if
   something runs in a hook, it is declared in the hook script.
 

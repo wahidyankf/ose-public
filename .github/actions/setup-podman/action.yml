@@ -1,0 +1,95 @@
+name: "Setup Podman"
+description: "Install the Podman release pinned for this runner tuple and the pinned podman-compose provider, then assert rootless operation"
+runs:
+  using: "composite"
+  steps:
+    - name: Select the reviewed Podman pin for this runner tuple
+      shell: bash
+      run: |
+        set -euo pipefail
+        . /etc/os-release
+        arch="$(dpkg --print-architecture)"
+        case "${ID}/${VERSION_CODENAME}/${arch}" in
+          ubuntu/resolute/amd64)
+            # Reviewed row, proven on a GitHub runner in CI (the apt candidate and signed origin matched on the first runtime run).
+            podman_pin="5.7.0+ds2-3build1"
+            ;;
+          *)
+            echo "::error::No reviewed Podman pin for runner tuple ${ID}/${VERSION_CODENAME}/${arch}; re-resolve and review its row before use." >&2
+            exit 1
+            ;;
+        esac
+        echo "PODMAN_PIN=${podman_pin}" >> "$GITHUB_ENV"
+        echo "Runner tuple ${ID}/${VERSION_CODENAME}/${arch} selects podman=${podman_pin}"
+
+    - name: Verify the signed Ubuntu candidate and install the pinned Podman
+      shell: bash
+      env:
+        DEBIAN_FRONTEND: noninteractive
+        NEEDRESTART_MODE: l
+      run: |
+        set -euo pipefail
+        . /etc/os-release
+        arch="$(dpkg --print-architecture)"
+        sudo apt-get update
+        candidate="$(apt-cache policy podman | awk '/Candidate:/ { print $2 }')"
+        if [ "$candidate" != "$PODMAN_PIN" ]; then
+          echo "::error::podman candidate ${candidate} does not match the reviewed pin ${PODMAN_PIN}" >&2
+          exit 1
+        fi
+        origins="$(apt-cache madison podman | awk -F'|' -v pin="$PODMAN_PIN" '{ gsub(/ /, "", $2); if ($2 == pin) print $3 }')"
+        if ! grep -Eq "${VERSION_CODENAME}/universe ${arch}(v[0-9])? Packages" <<< "$origins"; then
+          echo "::error::podman ${PODMAN_PIN} is not listed from the reviewed ${VERSION_CODENAME}/universe ${arch} archive" >&2
+          echo "::group::apt-cache madison podman (runner origins for re-resolving the pin row)" >&2
+          apt-cache madison podman >&2
+          echo "::endgroup::" >&2
+          exit 1
+        fi
+        sudo apt-get --print-uris --yes install "podman=${PODMAN_PIN}" > /dev/null
+        sudo env DEBIAN_FRONTEND=noninteractive NEEDRESTART_MODE=l apt-get install --yes "podman=${PODMAN_PIN}"
+        installed="$(dpkg-query --show --showformat='${Version}' podman)"
+        if [ "$installed" != "$PODMAN_PIN" ]; then
+          echo "::error::installed podman ${installed} does not match the reviewed pin ${PODMAN_PIN}" >&2
+          exit 1
+        fi
+
+    - name: Install the pinned podman-compose provider in an isolated pipx environment
+      shell: bash
+      env:
+        DEBIAN_FRONTEND: noninteractive
+        NEEDRESTART_MODE: l
+      run: |
+        set -euo pipefail
+        sudo env DEBIAN_FRONTEND=noninteractive NEEDRESTART_MODE=l apt-get install --yes --no-install-recommends pipx=1.8.0-1 python3-venv=3.14.3-0ubuntu2
+        pipx install --python "$(command -v python3)" podman-compose==1.6.0
+        echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+        export PATH="$HOME/.local/bin:$PATH"
+        echo "PODMAN_COMPOSE_PROVIDER=$(command -v podman-compose)" >> "$GITHUB_ENV"
+
+    - name: Assert the rootless engine and the explicit provider
+      shell: bash
+      run: |
+        set -euo pipefail
+        podman version
+        podman info --format json | jq -e '.host.security.rootless == true' > /dev/null
+        version="$(podman-compose --version)"
+        grep -Fxq "podman-compose version 1.6.0" <<< "$version"
+        test "$PODMAN_COMPOSE_PROVIDER" = "$(command -v podman-compose)"
+
+    - name: Assert cgroup v2, netavark DNS and overlay storage before consumer workloads run
+      shell: bash
+      run: |
+        set -euo pipefail
+        info="$(podman info --format json)"
+        if ! jq -e '.host.cgroupVersion == "v2" and (.host.cgroupControllers | contains(["cpu", "memory", "pids"]))' <<< "$info" > /dev/null; then
+          echo "::error::podman must use cgroup v2 with the cpu, memory and pids controllers; found cgroupVersion=$(jq -r '.host.cgroupVersion' <<< "$info") controllers=$(jq -c '.host.cgroupControllers' <<< "$info")" >&2
+          exit 1
+        fi
+        if ! jq -e '.host.networkBackend == "netavark" and (.host.networkBackendInfo.dns.path | type == "string" and test("(^|/)aardvark-dns$"))' <<< "$info" > /dev/null; then
+          echo "::error::podman must use the netavark network backend with an aardvark-dns path; found networkBackend=$(jq -r '.host.networkBackend' <<< "$info") dns.path=$(jq -r '.host.networkBackendInfo.dns.path' <<< "$info")" >&2
+          exit 1
+        fi
+        if ! jq -e '.store.graphDriverName == "overlay"' <<< "$info" > /dev/null; then
+          echo "::error::podman must use the overlay storage driver; found graphDriverName=$(jq -r '.store.graphDriverName' <<< "$info")" >&2
+          exit 1
+        fi

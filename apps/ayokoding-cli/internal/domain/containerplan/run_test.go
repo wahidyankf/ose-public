@@ -11,7 +11,7 @@ import (
 // baseRunConfig carries the common plan inputs every argv row reuses.
 func baseRunConfig() containerplan.RunConfig {
 	return containerplan.RunConfig{
-		CLI:         "docker",
+		CLI:         "podman",
 		RunID:       "abc123",
 		Seq:         0,
 		Image:       "docker.io/library/python:3.15.0@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -23,6 +23,21 @@ func baseRunConfig() containerplan.RunConfig {
 		MemoryBytes: 1073741824,
 		UID:         501,
 		GID:         20,
+		KeepID:      true,
+	}
+}
+
+// TestPlanRunKeepIDOnlyWhenPlanned keeps the keep-id mapping off unless the
+// application asks for the rootless Linux mapping.
+func TestPlanRunKeepIDOnlyWhenPlanned(t *testing.T) {
+	cfg := baseRunConfig()
+	cfg.KeepID = false
+	plain := argvString(t, cfg)
+	if strings.Contains(plain, "--userns") {
+		t.Fatalf("argv carries --userns without KeepID (argv=%q)", plain)
+	}
+	if !strings.Contains(plain, "--user 501:20") {
+		t.Fatalf("explicit user lost without keep-id (argv=%q)", plain)
 	}
 }
 
@@ -37,15 +52,15 @@ func argvString(t *testing.T, cfg containerplan.RunConfig) string {
 func requireExactArgv(t *testing.T, cfg containerplan.RunConfig, want []string) {
 	t.Helper()
 	planned := containerplan.PlanRun(cfg)
-	if planned.Invoke.Binary != "docker" {
-		t.Fatalf("binary=%q, want docker", planned.Invoke.Binary)
+	if planned.Invoke.Binary != "podman" {
+		t.Fatalf("binary=%q, want podman", planned.Invoke.Binary)
 	}
 	if !slices.Equal(planned.Invoke.Args, want) {
 		t.Fatalf("argv=\n%q\nwant\n%q", planned.Invoke.Args, want)
 	}
 }
 
-// TestPlanRunIsolationFlags requires the exact docker run shape: remove on
+// TestPlanRunIsolationFlags requires the exact podman run shape: remove on
 // exit, name and run label, no network, read-only root with tmpfs,
 // dropped capabilities, process and memory limits, user mapping, the fixed
 // environment, the work bind mount, the workdir, the image, and the run
@@ -62,6 +77,7 @@ func TestPlanRunIsolationFlags(t *testing.T) {
 		"--pids-limit", "256",
 		"--memory", "1073741824", "--memory-swap", "1073741824",
 		"--cpus", "2",
+		"--userns=keep-id",
 		"--user", "501:20",
 		"--env", "AYOKODING_UNIT=learning/code/ex-01-hello",
 		"--env", "HOME=/tmp/home",
@@ -268,6 +284,7 @@ func TestPlanRunPlatformOnlyWhenSet(t *testing.T) {
 		"--pids-limit", "256",
 		"--memory", "1073741824", "--memory-swap", "1073741824",
 		"--cpus", "2",
+		"--userns=keep-id",
 		"--user", "501:20",
 		"--env", "AYOKODING_UNIT=learning/code/ex-01-hello",
 		"--env", "HOME=/tmp/home",
@@ -322,5 +339,43 @@ func TestPlanRunResolvesLocalDigestToBareTag(t *testing.T) {
 				t.Fatalf("argv keeps unresolvable digest ref %q (argv=%q)", row.image, planned.Invoke.Args)
 			}
 		})
+	}
+}
+
+func TestPodmanLocalReferencesAndIdentity(t *testing.T) {
+	for _, ref := range []string{"ayokoding-env/go:tag", "localhost/ayokoding-toolchain/go:tag"} {
+		if !containerplan.IsLocalImage(ref) {
+			t.Errorf("expected local image: %s", ref)
+		}
+		plan := containerplan.PlanRun(containerplan.RunConfig{Image: ref, UID: 501, GID: 20, KeepID: true})
+		joined := strings.Join(plan.Invoke.Args, " ")
+		if !strings.Contains(joined, "--userns=keep-id") || !strings.Contains(joined, "--user 501:20") || !strings.Contains(joined, "--pull never") {
+			t.Errorf("missing Podman identity or local pull policy: %s", joined)
+		}
+	}
+	if got := (containerplan.Settings{}).CLI(); got != "podman" {
+		t.Errorf("default runtime = %q, want podman", got)
+	}
+}
+
+func TestPodmanLocalReferenceBoundaries(t *testing.T) {
+	digest := "@sha256:" + strings.Repeat("a", 64)
+	for _, testCase := range []struct {
+		ref        string
+		local      bool
+		normalized string
+	}{
+		{"ayokoding-toolchain/go:tag" + digest, true, "ayokoding-toolchain/go:tag"},
+		{"localhost/ayokoding-env/go:tag" + digest, true, "localhost/ayokoding-env/go:tag"},
+		{"registry.example/ayokoding-env/go:tag" + digest, false, "registry.example/ayokoding-env/go:tag" + digest},
+		{"ayokoding-env-other/go:tag" + digest, false, "ayokoding-env-other/go:tag" + digest},
+		{"docker.io/library/python:tag" + digest, false, "docker.io/library/python:tag" + digest},
+	} {
+		if got := containerplan.IsLocalImage(testCase.ref); got != testCase.local {
+			t.Errorf("IsLocalImage(%q)=%v", testCase.ref, got)
+		}
+		if got := containerplan.RunRef(testCase.ref); got != testCase.normalized {
+			t.Errorf("RunRef(%q)=%q, want %q", testCase.ref, got, testCase.normalized)
+		}
 	}
 }

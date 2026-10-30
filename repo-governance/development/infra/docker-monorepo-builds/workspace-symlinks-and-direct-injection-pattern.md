@@ -1,14 +1,14 @@
 ---
-description: Explains why npm workspace symlinks break inside Docker builds and the direct node_modules injection pattern that fixes it.
-when_to_use: Use when a Docker build inside this monorepo fails to resolve a workspace symlink or reports a shared library module not found.
+description: Explains why npm workspace symlinks break inside container builds and the direct node_modules injection pattern that fixes it.
+when_to_use: Use when a container build (Podman) inside this monorepo fails to resolve a workspace symlink or reports a shared library module not found.
 ---
 
 # Workspace Symlinks and the Direct Injection Pattern
 
-## The Problem: Workspace Symlinks Break Inside Docker
+## The Problem: Workspace Symlinks Break Inside Containers
 
 npm workspaces install shared packages (e.g., `@open-sharia-enterprise/web-ui-token`) as symlinks
-in the root `node_modules/`. When `npm ci` runs inside a Docker build context that only contains
+in the root `node_modules/`. When `npm ci` runs inside a container build context that only contains
 an app directory — or even the full repo root without the `libs/` tree — npm creates those symlinks
 pointing to paths that do not exist inside the container. The build fails with errors such as:
 
@@ -18,19 +18,19 @@ Module not found: Can't resolve '@open-sharia-enterprise/web-ui-token/src/tokens
 
 The root cause: npm workspace symlinks resolve to sibling directories on the host filesystem (e.g.,
 `libs/web-ui-token/`). Those directories are only present if they are explicitly copied into the
-Docker build context. A naive `COPY . .` from the repo root is insufficient because the symlinks
+container build context. A naive `COPY . .` from the repo root is insufficient because the symlinks
 are created by `npm ci`, which runs after `COPY` — and `npm ci` in a standalone container does not
 know about the workspace siblings.
 
 ## The Pattern: Direct node_modules Injection
 
 Instead of relying on workspace symlinks, copy shared library source files directly into
-`node_modules/@scope/package/` in the Docker build stage **after** `npm install` or `npm ci`. This
+`node_modules/@scope/package/` in the container build stage **after** `npm install` or `npm ci`. This
 bypasses symlink resolution entirely and makes the packages directly resolvable by Node.js.
 
 ```dockerfile
 # syntax=docker/dockerfile:1
-FROM node:24-alpine AS builder
+FROM docker.io/library/node:24-alpine AS builder
 
 WORKDIR /app
 

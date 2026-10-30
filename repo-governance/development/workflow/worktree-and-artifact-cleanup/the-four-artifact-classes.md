@@ -13,9 +13,9 @@ A complete cleanup covers all four. Stopping after the first is the common failu
 3. **Regenerable build output** — `target/`, `dist/`, `.next/`, and plan-local build caches, in this
    plan's own worktrees and in the primary checkout, excluding diagnostics, shared caches, and every
    `.env*` file or other local secret.
-4. **Docker artifacts** — the Compose stacks this session started and the images it built locally,
+4. **Podman artifacts** — the Compose stacks this session started and the images it built locally,
    excluding pulled base images, named data volumes, and any stack another session owns. See
-   [Docker-Artifact Cleanup](./docker-artifact-cleanup.md).
+   [Podman-Artifact Cleanup](./docker-artifact-cleanup.md).
 
 Alongside them, remove the scratch this plan wrote under `local-tmp/`, never another actor's; see
 [`local-tmp/`](../../infra/temporary-files/local-tmp-directory.md).

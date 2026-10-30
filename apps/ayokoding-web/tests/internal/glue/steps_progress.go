@@ -2,14 +2,14 @@ package glue
 
 func (w *World) StepReaderHasSavedProgress() error {
 	w.progress = newProgressDouble()
-	return w.get("/en/learn/go-basics/hello-world")
+	return w.get("/en/learn/courses/go-basics/learning/hello-world")
 }
 
 func (w *World) StepReaderMarksLearningPageCompleteReloads() error {
 	w.progressPage = "go-basics/hello-world"
 	w.progress.mark(w.progressPage)
 	w.progressPage = "go-basics/hello-world"
-	return w.get("/en/learn/go-basics/hello-world")
+	return w.get("/en/learn/courses/go-basics/learning/hello-world")
 }
 
 func (w *World) StepPageRemainsMarkedComplete() error {
@@ -39,7 +39,7 @@ func (w *World) StepThisOriginContainsValidAyokodingLearnProgressV1R() error {
 }
 
 func (w *World) StepReaderOpensSavedCoursePath() error {
-	return w.get("/en/learn/go-basics/setup?path=backend-id")
+	return w.get("/en/learn/courses/go-basics/learning/setup?path=backend-id")
 }
 
 func (w *World) StepSavedCompletedPagesVisitContextAppearCorrectly() error {
@@ -69,7 +69,7 @@ func (w *World) StepReaderHasCompletedLearningPagesThroughFirstPath() error {
 }
 
 func (w *World) StepReaderOpensSecondPath() error {
-	return w.get("/en/paths/backend-id")
+	return w.get("/en/learn/paths/backend-id")
 }
 
 func (w *World) StepCourseShowsSameCompletedState() error {
@@ -113,7 +113,7 @@ func (w *World) StepBrowserRefusesStorageReadsWrites() error {
 
 func (w *World) StepReaderMarksLearningPageComplete() error {
 	w.progress.mark("go-basics/hello-world")
-	return w.get("/en/learn/go-basics/hello-world")
+	return w.get("/en/learn/courses/go-basics/learning/hello-world")
 }
 
 func (w *World) StepCompletionRemainsAvailableCurrentVisit() error {
@@ -145,7 +145,7 @@ func (w *World) StepSavedProgressRecordInvalid() error {
 }
 
 func (w *World) StepReaderOpensCourseMarksPageComplete() error {
-	if err := w.get("/en/learn/go-basics/setup"); err != nil {
+	if err := w.get("/en/learn/courses/go-basics/learning/setup"); err != nil {
 		return err
 	}
 	w.progress.mark("go-basics/setup")

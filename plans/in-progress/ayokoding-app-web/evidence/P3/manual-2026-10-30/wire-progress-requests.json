@@ -1,0 +1,247 @@
+[
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/en/learn",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/htmx.min.js",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/progress.js",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/en/learn/courses/go-basics/learning/hello-world",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/htmx.min.js",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/progress.js",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "https://www.youtube.com/embed/abc",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "https://www.youtube.com/s/player/11a45ffb/www-player.css",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "https://www.youtube.com/s/_/ytembeds/_/ss/k=ytembeds.base.l4TkcKEzrz0.L.W.O/am=AAAAQA/d=1/br=1/rs=AGKMywFPYyrlUgXUYjAhMEk18j5MhdNj3g/m=root,base",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "https://www.youtube.com/s/_/ytembeds/_/js/k=ytembeds.base.en_US.hEa0Dn-EZu0.es5.O/am=AAAAQA/d=1/excm=base,root/br=1/rs=AGKMywFD7Cy1aRhZZv-WwbDoSbw4nXIVPA/m=root,base",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "https://www.youtube.com/s/player/11a45ffb/player_embed.vflset/en_US/base.js",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "https://fonts.gstatic.com/s/roboto/v48/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBA.woff2",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "https://googleads.g.doubleclick.net/pagead/id",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "https://static.doubleclick.net/instream/ad_status.js",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "https://www.youtube.com/s/_/ytembeds/_/js/k=ytembeds.base.en_US.hEa0Dn-EZu0.es5.O/ck=ytembeds.base.l4TkcKEzrz0.L.W.O/am=AAAAQA/d=1/exm=base,root/excm=base,root/ed=1/br=1/rs=AGKMywEF581fOVxgZwnFcmDWtE-5ceenqw/m=r78Drb",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "https://www.google.com/js/th/bGD28-x6-ZcW0ZMme9K_HfMIjUxcrPss2m-Wi7ll8Ys.js",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "https://googleads.g.doubleclick.net/pagead/id?slf_rd=1",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "https://www.gstatic.com/youtube/img/icons/mweb/youtube_fill/logo/v2/67px.svg",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "https://www.youtube.com/generate_204?84flUA",
+    "body": ""
+  },
+  {
+    "method": "POST",
+    "url": "https://jnn-pa.googleapis.com/$rpc/google.internal.waa.v1.Waa/GenerateIT",
+    "body": "[\"O43z0dpjhgX20SCx4KAo\",\"$pDs5O19RAAagS3bUgEvevpBV8rYHBXenAEABEArZ1JAfxxeDS2bBMfUkfdbVmFJ_ZGwBt63NVCJrZQR8meiztoaCzLvkacbQcfLE3L4fMLMgthXOlXgIrU7zngAAAJLOAAAACfQBB-IAVVs7GtEMngC7YY7_77phbL97py2PN0bnSMoM4I8MEYjRdXTrgaw-4UOare4K5QJOsJBWM9G3yQsnEPrO3kWaZHIzX_KijupvmaY6v_NwcrxR_qf0XpIFBQ_0IbOi36f-JoJH696T38OwzzcnXx8iNabylxBdFJ6y1cZVpoMJ7ondWSfPrurxBB5Ws4j6aTPAeXlsEcccasV3fT8DmRm7gq8OGabv2CWD3-eIreoa4Le0hW_K3P5gswxKHS30qupqKUaRbizpcdIJ6vw1eenTIGVxtmuKnPnSScpT2iEbO-ZUPRFhn7F6xYSW6kyB2cWfFc43UUTaykj1Pf"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/en/learn/courses/go-basics/learning/hello-world",
+    "body": ""
+  },
+  {
+    "method": "POST",
+    "url": "https://www.youtube.com/youtubei/v1/log_event?alt=json",
+    "body": "{\"context\":{\"client\":{\"hl\":\"en\",\"gl\":\"SG\",\"clientName\":56,\"clientVersion\":\"2.20261029.01.00\",\"configInfo\":{\"appInstallData\":\"CIuXkNcGEMn2gBMQyvuAExD36NIcEJj-0hwQmJLTHBDV8dIcEMGP0BwQ7PvSHBDditMcEL22rgUQnOXSHBDbrdIcELjkzhwQ2vfOHBCHrM4cENyKuCIQn8-AExDM364FEN68zhwQr_DSHBDw3tEcEIHNzhwQmY2xBRD2q7AFENj30hwQvoTRHBChgNMcEPza0hwQ5-vRHBCwg9McEK7e0RwQwZfTHBCkqdEcEMr70hwQrtbPHBDp8tIcEPyP0xwQ8bTQHBCQ79IcEL2KsAUQ8ZywBRCe0LAFELyk0BwQpePSHBC4h9McEK_40RwQibDOHBCwxdIcEL340hwQy_LSHBDCwNIcEPb30RwqZENBTVNSaFZGLVpxLUR"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/htmx.min.js",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/progress.js",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "https://www.youtube.com/embed/abc",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "https://www.youtube.com/s/player/11a45ffb/www-player.css",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "https://www.youtube.com/s/_/ytembeds/_/ss/k=ytembeds.base.l4TkcKEzrz0.L.W.O/am=AAAAQA/d=1/br=1/rs=AGKMywFPYyrlUgXUYjAhMEk18j5MhdNj3g/m=root,base",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "https://www.youtube.com/s/_/ytembeds/_/js/k=ytembeds.base.en_US.hEa0Dn-EZu0.es5.O/am=AAAAQA/d=1/excm=base,root/br=1/rs=AGKMywFD7Cy1aRhZZv-WwbDoSbw4nXIVPA/m=root,base",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "https://www.youtube.com/s/player/11a45ffb/player_embed.vflset/en_US/base.js",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "https://fonts.gstatic.com/s/roboto/v48/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBA.woff2",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "https://googleads.g.doubleclick.net/pagead/id",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "https://static.doubleclick.net/instream/ad_status.js",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "https://www.youtube.com/s/_/ytembeds/_/js/k=ytembeds.base.en_US.hEa0Dn-EZu0.es5.O/ck=ytembeds.base.l4TkcKEzrz0.L.W.O/am=AAAAQA/d=1/exm=base,root/excm=base,root/ed=1/br=1/rs=AGKMywEF581fOVxgZwnFcmDWtE-5ceenqw/m=r78Drb",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "https://googleads.g.doubleclick.net/pagead/id?slf_rd=1",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "https://www.google.com/js/th/bGD28-x6-ZcW0ZMme9K_HfMIjUxcrPss2m-Wi7ll8Ys.js",
+    "body": ""
+  },
+  {
+    "method": "POST",
+    "url": "https://www.youtube.com/youtubei/v1/log_event?alt=json",
+    "body": "{\"context\":{\"client\":{\"hl\":\"en\",\"gl\":\"SG\",\"clientName\":56,\"clientVersion\":\"2.20261029.01.00\",\"configInfo\":{\"appInstallData\":\"CIuXkNcGEMn2gBMQyvuAExD36NIcEJj-0hwQmJLTHBDV8dIcEMGP0BwQ7PvSHBDditMcEL22rgUQnOXSHBDbrdIcELjkzhwQ2vfOHBCHrM4cENyKuCIQn8-AExDM364FEN68zhwQr_DSHBDw3tEcEIHNzhwQmY2xBRD2q7AFENj30hwQvoTRHBChgNMcEPza0hwQ5-vRHBCwg9McEK7e0RwQwZfTHBCkqdEcEMr70hwQrtbPHBDp8tIcEPyP0xwQ8bTQHBCQ79IcEL2KsAUQ8ZywBRCe0LAFELyk0BwQpePSHBC4h9McEK_40RwQibDOHBCwxdIcEL340hwQy_LSHBDCwNIcEPb30RwqZENBTVNSaFZGLVpxLUR"
+  },
+  {
+    "method": "GET",
+    "url": "https://www.youtube.com/generate_204?lrlBjg",
+    "body": ""
+  },
+  {
+    "method": "POST",
+    "url": "https://jnn-pa.googleapis.com/$rpc/google.internal.waa.v1.Waa/GenerateIT",
+    "body": "[\"O43z0dpjhgX20SCx4KAo\",\"$3UI5QiZRAAagS3bUgEve7MpxqvDSOMmnAEABEArZ1P7n5NBOhfh_Q86vBdd60xsC7O385wTKWoY_OoWfaJEnipL1QO-jKVeljXGGBMRAlsp2JCVhaZNnymz2ngAAAIvOAAAAB_QBB-IAV20GwzK7CbXbiI9y0bDpGkrv6N0V9_qglLyGpNYFxJRCMSaTbP1N9fPWxhWRbygpLITZlzkX5xE12XImlPWLqdzVgu8BbfYK8wDV8p0IBek3lxJWUhDHKAUFCI4rlTQO_t1Wg9uuyfIeowpnG_NhCi8dgppt2NUb3pxMSlWTi8ocNUcDHXzE9yU9uE0qSA0G8LYh3dfNkYWjnZ7f0XqXsRruzo7igijiGnhFxZXQ1QArPPCYSSPxoeDk13Keqt4eEqSY-cZJqfXV_5KvMVBJtoSMLNRHnv1lvgdrJ8oW_na56RpTYO-Df0zoRu-m8QjJ_gl0dZzKufffoi"
+  },
+  {
+    "method": "POST",
+    "url": "https://www.youtube.com/youtubei/v1/log_event?alt=json",
+    "body": "{\"context\":{\"client\":{\"hl\":\"en\",\"gl\":\"SG\",\"clientName\":56,\"clientVersion\":\"2.20261029.01.00\",\"configInfo\":{\"appInstallData\":\"CIuXkNcGEMn2gBMQyvuAExD36NIcEJj-0hwQmJLTHBDV8dIcEMGP0BwQ7PvSHBDditMcEL22rgUQnOXSHBDbrdIcELjkzhwQ2vfOHBCHrM4cENyKuCIQn8-AExDM364FEN68zhwQr_DSHBDw3tEcEIHNzhwQmY2xBRD2q7AFENj30hwQvoTRHBChgNMcEPza0hwQ5-vRHBCwg9McEK7e0RwQwZfTHBCkqdEcEMr70hwQrtbPHBDp8tIcEPyP0xwQ8bTQHBCQ79IcEL2KsAUQ8ZywBRCe0LAFELyk0BwQpePSHBC4h9McEK_40RwQibDOHBCwxdIcEL340hwQy_LSHBDCwNIcEPb30RwqZENBTVNSaFZGLVpxLUR"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/en/learn",
+    "body": ""
+  },
+  {
+    "method": "POST",
+    "url": "https://www.youtube.com/youtubei/v1/log_event?alt=json",
+    "body": "{\"context\":{\"client\":{\"hl\":\"en\",\"gl\":\"SG\",\"clientName\":56,\"clientVersion\":\"2.20261029.01.00\",\"configInfo\":{\"appInstallData\":\"CIyXkNcGEMn2gBMQyvuAExD36NIcEJj-0hwQmJLTHBDV8dIcEMGP0BwQ7PvSHBDditMcEL22rgUQnOXSHBDcrdIcELjkzhwQ2vfOHBCHrM4cENyKuCIQn8-AExDM364FEN68zhwQr_DSHBDw3tEcEIHNzhwQmY2xBRD2q7AFENj30hwQvoTRHBChgNMcEPza0hwQ5-vRHBCwg9McEL7-0hwQrt7RHBDBl9McEKSp0RwQyvvSHBCu1s8cEOny0hwQ_I_THBDxtNAcEJDv0hwQvYqwBRDxnLAFEJ7QsAUQvKTQHBCl49IcELiH0xwQr_jRHBCJsM4cELDF0hwQvfjSHBDL8tIcEMLA0hwQ9vfRHBCcotMcEPmU0xw"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/htmx.min.js",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/progress.js",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/en/learn/courses/go-basics/learning/setup",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/htmx.min.js",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/progress.js",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/en/learn",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/htmx.min.js",
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/progress.js",
+    "body": ""
+  }
+]

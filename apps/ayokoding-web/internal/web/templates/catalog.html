@@ -5,7 +5,7 @@
   </head>
   <body>
     {{template "header" .Shell}}
-    <main id="main">
+    <main id="main" tabindex="-1">
       <h1>{{if eq .Shell.Lang "id"}}Kursus{{else}}Courses{{end}}</h1>
       {{range .Groups}}
       <section data-category="{{.Category}}">
@@ -13,7 +13,7 @@
         <ul>
           {{range .Courses}}
           <li data-course="{{.ID}}">
-            <a href="/{{$.Shell.Lang}}/learn/{{.ID}}">{{.Title}}</a>
+            <a href="/{{$.Shell.Lang}}/learn/courses/{{.ID}}">{{.Title}}</a>
             <p>{{.Description}}</p>
             <p>{{.Format}} · {{.Effort}}</p>
           </li>

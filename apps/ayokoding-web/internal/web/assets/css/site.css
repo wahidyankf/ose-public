@@ -1,0 +1,404 @@
+/*
+ * AyoKoding Go shell stylesheet. Every color, radius, and spacing value is
+ * grounded in the existing token sources — no new product design:
+ * - structural tokens: libs/web-ui-token/src/tokens.css
+ *   (--color-background/foreground/card/muted/border/primary/ring, radius)
+ * - brand overrides: apps/ayokoding-www/src/app/globals.css @theme block
+ *   (primary/ring blue hsl(221.2 83.2% 53.3%), sidebar tokens)
+ * - warm neutrals + radius scale: libs/web-ui-token/src/ayokoding.css
+ *   (--warm-0…900, --radius 0.75rem)
+ * - dark values: apps/ayokoding-www/src/app/globals.css .dark block
+ * Plain CSS (no Tailwind processing): the same values, served as-is.
+ */
+
+:root {
+  --ayk-bg: oklch(99% 0.006 85);
+  --ayk-fg: oklch(18% 0.016 70);
+  --ayk-card: #ffffff;
+  --ayk-muted: oklch(94% 0.012 85);
+  --ayk-muted-fg: oklch(48% 0.018 80);
+  --ayk-border: oklch(88% 0.014 85);
+  --ayk-primary: hsl(221.2 83.2% 53.3%);
+  --ayk-primary-fg: hsl(210 40% 98%);
+  --ayk-ring: hsl(221.2 83.2% 53.3%);
+  --ayk-radius: 0.75rem;
+  --ayk-maxw: 80rem;
+  --ayk-reading: 48rem;
+  --ayk-header-h: 4rem;
+}
+
+[data-theme="dark"] {
+  --ayk-bg: hsl(222.2 84% 4.9%);
+  --ayk-fg: hsl(210 40% 98%);
+  --ayk-card: hsl(222.2 84% 4.9%);
+  --ayk-muted: hsl(217.2 32.6% 17.5%);
+  --ayk-muted-fg: hsl(215 20.2% 65.1%);
+  --ayk-border: hsl(217.2 32.6% 17.5%);
+  --ayk-primary: hsl(217.2 91.2% 59.8%);
+  --ayk-primary-fg: hsl(222.2 47.4% 11.2%);
+  --ayk-ring: hsl(224.3 76.3% 48%);
+}
+
+html {
+  background: var(--ayk-bg);
+  color: var(--ayk-fg);
+}
+
+body {
+  margin: 0;
+  background: var(--ayk-bg);
+  color: var(--ayk-fg);
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+  font-feature-settings:
+    "rlig" 1,
+    "calt" 1;
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Shell chrome: sticky header, readable column, quiet footer. */
+[data-shell="header"] {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  border-bottom: 1px solid var(--ayk-border);
+  background: var(--ayk-bg);
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  max-width: var(--ayk-maxw);
+  margin-inline: auto;
+  padding: 0.75rem 1rem;
+}
+
+[data-shell="header"] nav[aria-label="primary"] {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  margin-inline-end: auto;
+}
+
+[data-shell="header"] a {
+  font-weight: 600;
+}
+
+[data-shell="header"] nav[aria-label="primary"] a:first-child {
+  font-size: 1.125rem;
+  letter-spacing: -0.01em;
+}
+
+[data-shell="footer"] {
+  border-top: 1px solid var(--ayk-border);
+  margin-top: auto;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  color: var(--ayk-muted-fg);
+  box-sizing: border-box;
+  width: 100%;
+}
+
+main {
+  width: 100%;
+  max-width: var(--ayk-maxw);
+  margin-inline: auto;
+  padding: 2rem 1rem 4rem;
+  box-sizing: border-box;
+  flex: 1;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin: 0 0 1rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+  line-height: 1.3;
+  margin: 2rem 0 0.75rem;
+}
+
+a {
+  color: var(--ayk-primary);
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* Controls: buttons, inputs, selects share the token border and radius. */
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: 1px solid var(--ayk-border);
+  background: var(--ayk-card);
+  border-radius: var(--ayk-radius);
+  padding: 0.375rem 0.75rem;
+}
+
+button:hover {
+  border-color: var(--ayk-primary);
+}
+
+button[aria-pressed="true"] {
+  background: var(--ayk-primary);
+  border-color: var(--ayk-primary);
+  color: var(--ayk-primary-fg);
+}
+
+input,
+select {
+  border: 1px solid var(--ayk-border);
+  background: var(--ayk-card);
+  border-radius: var(--ayk-radius);
+  padding: 0.375rem 0.5rem;
+  max-width: 100%;
+}
+
+input:focus-visible,
+select:focus-visible,
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--ayk-ring);
+  outline-offset: 2px;
+}
+
+/* Catalog, paths, and course lists read as cards in the old product. */
+section[data-category],
+section[data-phase],
+section[data-course-lessons],
+section[data-prerequisites] {
+  background: var(--ayk-card);
+  border: 1px solid var(--ayk-border);
+  border-radius: var(--ayk-radius);
+  padding: 1rem 1.25rem;
+  margin: 1rem 0;
+}
+
+section[data-category] h2,
+section[data-phase] h2 {
+  margin-top: 0;
+  font-size: 1.125rem;
+}
+
+li[data-course],
+li[data-path],
+li[data-position] {
+  margin: 0.375rem 0;
+}
+
+/* Lesson chrome: breadcrumbs, sidebar rail, outline, article. */
+nav[data-breadcrumbs] {
+  color: var(--ayk-muted-fg);
+  margin-bottom: 1rem;
+}
+
+article.article-body {
+  max-width: var(--ayk-reading);
+}
+
+article.article-body h1:first-child {
+  margin-top: 0;
+}
+
+article.article-body img {
+  display: block;
+  margin-inline: auto;
+  max-width: 100%;
+  height: auto;
+}
+
+article.article-body table {
+  border-collapse: collapse;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+article.article-body th,
+article.article-body td {
+  border: 1px solid var(--ayk-border);
+  padding: 0.375rem 0.625rem;
+}
+
+article.article-body pre {
+  background: var(--ayk-muted);
+  color: var(--ayk-fg);
+  padding: 1rem;
+  border-radius: var(--ayk-radius);
+  overflow-x: auto;
+  font-size: 0.875rem;
+}
+
+article.article-body code {
+  overflow-wrap: anywhere;
+}
+
+article.article-body details {
+  border: 1px solid var(--ayk-border);
+  border-radius: var(--ayk-radius);
+  padding: 0.5rem 0.75rem;
+  margin: 0.75rem 0;
+}
+
+article.article-body .admonition,
+article.article-body .callout {
+  border: 1px solid var(--ayk-border);
+  border-inline-start: 4px solid var(--ayk-primary);
+  border-radius: var(--ayk-radius);
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+  background: var(--ayk-card);
+}
+
+/* Mermaid diagrams fit the reserved box; math inherits text color. */
+.mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
+
+.katex {
+  color: inherit;
+}
+
+/* Tabs: the selected tab carries the primary underline. */
+[role="tablist"] {
+  display: flex;
+  gap: 0.25rem;
+  border-bottom: 1px solid var(--ayk-border);
+  margin: 1rem 0 0;
+}
+
+[role="tab"] {
+  border: 1px solid transparent;
+  border-bottom: none;
+  border-radius: var(--ayk-radius) var(--ayk-radius) 0 0;
+  background: transparent;
+}
+
+[role="tab"][aria-selected="true"] {
+  border-color: var(--ayk-border);
+  color: var(--ayk-primary);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+/* Sidebar rail: sticky on desktop at the persisted width. */
+[data-sidebar-resize] {
+  display: block;
+  width: 100%;
+  height: 0.5rem;
+  cursor: row-resize;
+  border-radius: var(--ayk-radius);
+}
+
+/* Tool pages: filter and input forms wrap; results read as data. */
+form[data-filter-form] label,
+form[data-input-form] label {
+  display: inline-flex;
+  gap: 0.375rem;
+  align-items: center;
+  margin: 0.25rem 0.75rem 0.25rem 0;
+}
+
+ol[data-tool-results] {
+  list-style: none;
+  padding: 0;
+}
+
+ol[data-tool-results] li {
+  border: 1px solid var(--ayk-border);
+  border-radius: var(--ayk-radius);
+  background: var(--ayk-card);
+  padding: 0.5rem 0.75rem;
+  margin: 0.375rem 0;
+}
+
+dl[data-tool-estimate] {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.25rem 1rem;
+  background: var(--ayk-card);
+  border: 1px solid var(--ayk-border);
+  border-radius: var(--ayk-radius);
+  padding: 1rem 1.25rem;
+  max-width: var(--ayk-reading);
+}
+
+p[data-invalid-filters],
+p[data-search-invalid] {
+  border: 1px solid var(--ayk-border);
+  border-radius: var(--ayk-radius);
+  padding: 0.75rem 1rem;
+  background: var(--ayk-muted);
+}
+
+/* Search dialog and results. */
+div[data-search-dialog] {
+  background: var(--ayk-card);
+  border: 1px solid var(--ayk-border);
+  border-radius: var(--ayk-radius);
+  padding: 1rem;
+  max-width: var(--ayk-reading);
+}
+
+ul[data-search-results] {
+  list-style: none;
+  padding: 0;
+}
+
+ul[data-search-results] li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--ayk-border);
+}
+
+/* Responsive: one predictable column on phones, sidebar rail on desktop. */
+@media (min-width: 768px) {
+  [data-sidebar-nav] {
+    position: sticky;
+    top: var(--ayk-header-h);
+    max-height: calc(100vh - var(--ayk-header-h));
+    overflow-y: auto;
+    width: var(--sidebar-width, 240px);
+  }
+
+  [data-sidebar-resize] {
+    width: 0.5rem;
+    height: auto;
+    min-height: 3rem;
+    cursor: col-resize;
+    align-self: stretch;
+  }
+
+  article.article-body {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  main {
+    padding: 1.25rem 1rem 3rem;
+  }
+}

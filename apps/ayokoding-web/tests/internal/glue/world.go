@@ -10,8 +10,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/tools/benchmark"
-	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/tools/calculator"
 	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/web"
 )
 
@@ -44,15 +42,12 @@ type World struct {
 	progressPage     string
 	focus            string
 	// tool journey state.
-	journey      string
-	benchFilters benchmark.Filters
-	benchResult  benchmark.Result
-	calcInputs   calculator.Inputs
-	calcResult   calculator.Estimate
+	journey string
 	// path journey state.
-	pathID   string
-	courseID string
-	history  []string
+	pathID      string
+	courseID    string
+	history     []string
+	r6FirstBody string
 	// search journey state.
 	searchOpen   bool
 	searchQuery  string
@@ -62,6 +57,7 @@ type World struct {
 	theme         string
 	sidebarWidth  int
 	mobileNavOpen bool
+	viewportWidth string
 	// content journey state.
 	diagnostic string
 	shortcode  string

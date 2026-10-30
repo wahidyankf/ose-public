@@ -8,4 +8,4 @@
 ## Contents
 
 - [Search](./search.feature) — dialog focus, locale-scoped results, empty input, result selection,
-  and tool discovery. Bindings are planned.
+  and tool discovery. Bindings are implemented.

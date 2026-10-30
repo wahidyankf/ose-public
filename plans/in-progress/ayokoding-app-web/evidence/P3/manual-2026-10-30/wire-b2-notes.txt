@@ -1,0 +1,43 @@
+TAB ORDER en landing: ["a[Skip to content]","a[Home]","a[Courses]","a[Indonesia]","button[Menu]","button[Search]","body[Skip to content\n\n  \n    ]","a[Skip to content]"]
+search dialog open: true; focus in input: true
+live results html length after typing 'go': 430
+after Escape dialog hidden: true; focus: BUTTON:true
+ctrl+k opens dialog: true
+after submit url: http://localhost:3102/en
+after submit main present: true; live region len: 204
+hostile query status=200 hasMain=false html=<html><head></head><body><p data-search-empty="" data-query="&lt;script&gt;alert(1)&lt;/script&gt;">No results.</p> </body></html>
+script executed check (window.alert untouched): function
+mobile nav open: hidden=false expanded=true
+mobile nav after Escape: hidden=true
+locale switch href on lesson: /id/learn/courses/go-basics/learning/hello-world
+after locale click url: http://localhost:3102/id/learn/courses/go-basics/learning/hello-world
+setup lesson prev=null next=/en/learn/courses/go-basics/learning/hello-world
+TOC links: 0
+widgets: {"mermaidSvg":0,"mermaidPre":0,"mathEls":0,"tablist":0,"copyBtns":0,"detailsEls":0,"iframes":[]}
+benchmark default count: 93
+benchmark after tier=frontier url: http://localhost:3102/en/tools/ai-benchmark; count: 93
+benchmark bogus tier shows: "Skip to content\nHome Courses\nEnglish Indonesia\nMenu Search\nAI Benchmark\nHarness  Tier  Substitute  Substitute harness \nClaude Sonnet 5.5 · index 68.4 · $4.00\nMu"; url: http://localhost:3102/en/tools/ai-benchmark
+benchmark after back url: http://localhost:3102/en/learn/courses/web/learning/section-index; count: undefined
+benchmark deep-link tier input value: ; count: 93
+calculator default cost: ""
+calculator tab=income url: http://localhost:3102/en/tools/cost-of-living-calculator; estimate present: true; fallback/invalid shown: false
+calculator adults=abc url: http://localhost:3102/htmx/calculator?locale=en&tab=income&region=&country=&city=&adults=1&preschool=0&schoolkids=0&schooltype=public&area=center&gross=0&baseline=savings_target&target=&targetcur=USD&refcity=&refrole=senior_swe&mygross=0&mysalarycity=&mygrosscur=local&displaycur=USD; estimate: ; invalid msg: false
+calculator id deep-link cost:  url: http://localhost:3102/id/tools/cost-of-living-calculator?tab=cost&country=ID&city=jkt
+missing http://localhost:3102/en/no-such-page-xyz -> status 404 lang=en h1=Not found
+missing http://localhost:3102/id/no-such-page-xyz -> status 404 lang=id h1=Tidak ditemukan
+missing http://localhost:3102/en/learn/courses/nope/learning/nope -> status 404 lang=en h1=Not found
+a11y http://localhost:3102/en: lang=en title="AyoKoding" h1=1 imgsNoAlt=0 btnsNoName=0 inputsNoLabel=0 contrast=1.00:1 skipTarget=true
+a11y http://localhost:3102/id: lang=id title="AyoKoding" h1=1 imgsNoAlt=0 btnsNoName=0 inputsNoLabel=0 contrast=1.00:1 skipTarget=true
+a11y http://localhost:3102/en/learn: lang=en title="Learn" h1=1 imgsNoAlt=0 btnsNoName=0 inputsNoLabel=0 contrast=1.00:1 skipTarget=true
+a11y http://localhost:3102/en/learn/courses: lang=en title="Courses" h1=1 imgsNoAlt=0 btnsNoName=0 inputsNoLabel=0 contrast=1.00:1 skipTarget=true
+a11y http://localhost:3102/en/learn/courses/go-basics/learning/hello-world: lang=en title="Hello World" h1=1 imgsNoAlt=0 btnsNoName=0 inputsNoLabel=0 contrast=1.00:1 skipTarget=true
+a11y http://localhost:3102/en/tools/ai-benchmark: lang=en title="AI Benchmark" h1=1 imgsNoAlt=0 btnsNoName=0 inputsNoLabel=0 contrast=1.00:1 skipTarget=true
+old app goto failed: page.goto: Timeout 30000ms exceeded.
+Call log:
+[2m  - navigating to "http://localhost:3101/en", waiting until "domcontentloaded"[22m
+
+old app title: Loading http://localhost:3101/en
+3101 sees 3102 key: ERR
+B2 console (7): ["error: Failed to load resource: the server responded with a status of 404 (Not Found)","warning: No available adapters."]
+B2 pageerrors (0): []
+B2 total requests: 98; progress leaks: 0

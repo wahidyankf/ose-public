@@ -3,7 +3,23 @@
 <title>{{.Title}}</title>
 <meta name="description" content="{{.Description}}" />
 <link rel="canonical" href="{{.Canonical}}" />
-{{range .Alternates}}<link rel="alternate" hreflang="{{.Locale}}" href="{{.URL}}" /> {{end}}<style>
+<link rel="stylesheet" href="/assets/css/site.css" />
+{{range .Alternates}}<link rel="alternate" hreflang="{{.Locale}}" href="{{.URL}}" />
+{{end}}
+<style>
+  main {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  pre {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  img,
+  table,
+  iframe {
+    max-width: 100%;
+  }
   :focus-visible {
     outline: 2px solid currentColor;
     outline-offset: 2px;
@@ -47,11 +63,244 @@
     <a href="/id" data-locale-switch hreflang="id">Indonesia</a>{{end}}
   </nav>
   <button type="button" data-nav-opener aria-expanded="false">{{if eq .Lang "id"}}Menu{{else}}Menu{{end}}</button>
+  <button type="button" data-search-opener aria-haspopup="dialog">{{if eq .Lang "id"}}Cari{{else}}Search{{end}}</button>
+  <button
+    type="button"
+    data-theme-toggle
+    aria-pressed="false"
+    aria-label="{{.ThemeToggleLabel}}"
+    data-light-label="{{.ThemeLightLabel}}"
+    data-dark-label="{{.ThemeDarkLabel}}"
+  >
+    <span data-theme-name>{{if eq .Lang "id"}}Terang{{else}}Light{{end}}</span>
+  </button>
 </header>
 <nav id="mobile-nav" data-nav="mobile" data-close-on-escape hidden>
   <button type="button" data-nav-closer>{{if eq .Lang "id"}}Tutup{{else}}Close{{end}}</button>
 </nav>
-<div data-search-dialog hidden><input type="search" data-search-input data-search-shortcut aria-label="search" /></div>
+<div data-search-dialog hidden>
+  <form
+    method="get"
+    action="/{{.Lang}}/search"
+    data-search-form
+    hx-get="/htmx/search"
+    hx-target="[data-search-results-live]"
+    hx-swap="innerHTML"
+    hx-trigger="submit, input changed delay:300ms from:[data-search-input]"
+  >
+    <input type="search" name="q" value="" data-search-input data-search-shortcut aria-label="search" />
+  </form>
+  <div data-search-results-live></div>
+</div>
+<script>
+  (function () {
+    var lastSearchOpener = null;
+    function searchDialog() {
+      return document.querySelector("[data-search-dialog]");
+    }
+    function searchInput() {
+      return document.querySelector("[data-search-input]");
+    }
+    function searchOpener() {
+      return document.querySelector("[data-search-opener]");
+    }
+    document.addEventListener("click", function (event) {
+      var skip = event.target && event.target.closest ? event.target.closest(".skip-link") : null;
+      if (skip) {
+        // A bare href="#main" only scrolls; keyboard readers resume from the
+        // skip link afterwards. Programmatically focus the main content
+        // (which carries tabindex="-1") so tabbing continues from there,
+        // keeping the hash in sync for deep-linking parity.
+        var main = document.getElementById("main");
+        if (main) {
+          event.preventDefault();
+          main.focus();
+          try {
+            history.replaceState(null, "", "#main");
+          } catch (e) {}
+        }
+        return;
+      }
+      var opener = event.target && event.target.closest ? event.target.closest("[data-search-opener]") : null;
+      if (opener) {
+        lastSearchOpener = opener;
+        var dialog = searchDialog();
+        if (dialog) dialog.removeAttribute("hidden");
+        var input = searchInput();
+        if (input) input.focus();
+        return;
+      }
+      var navOpener = event.target && event.target.closest ? event.target.closest("[data-nav-opener]") : null;
+      if (navOpener) {
+        var nav = document.querySelector("#mobile-nav");
+        if (nav) {
+          nav.removeAttribute("hidden");
+          navOpener.setAttribute("aria-expanded", "true");
+        }
+        return;
+      }
+      var closer = event.target && event.target.closest ? event.target.closest("[data-nav-closer]") : null;
+      if (closer) {
+        var panel = document.querySelector("#mobile-nav");
+        if (panel) panel.setAttribute("hidden", "");
+        var openerBtn = document.querySelector("[data-nav-opener]");
+        if (openerBtn) {
+          openerBtn.setAttribute("aria-expanded", "false");
+          openerBtn.focus();
+        }
+      }
+    });
+    // Preserve the current path across locale switches, mirroring the old
+    // product's locale switcher (replace the locale segment, keep the rest).
+    function preserveLocaleSwitchHrefs() {
+      try {
+        var path = window.location.pathname || "/";
+        var segments = path.split("/").filter(Boolean);
+        var links = document.querySelectorAll("[data-locale-switch]");
+        for (var i = 0; i < links.length; i++) {
+          var link = links[i];
+          var target = link.getAttribute("hreflang") || "";
+          if (!target) continue;
+          var rest = segments.slice(1).join("/");
+          var href = "/" + target + (rest ? "/" + rest : "") + window.location.search;
+          link.setAttribute("href", href);
+        }
+      } catch (e) {}
+    }
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", function () {
+        preserveLocaleSwitchHrefs();
+        enhanceContentHooks();
+      });
+    } else {
+      preserveLocaleSwitchHrefs();
+      enhanceContentHooks();
+    }
+    // Render authored diagrams and math through the vendored libraries the
+    // old app uses (mermaid in the browser, KaTeX in the browser), on
+    // hook-bearing pages only. The authored source stays as the fallback, so
+    // a renderer failure never blanks the lesson.
+    function loadVendorScript(src) {
+      return new Promise(function (resolve, reject) {
+        if (document.querySelector('script[data-vendor-src="' + src + '"]')) {
+          resolve();
+          return;
+        }
+        var script = document.createElement("script");
+        script.src = src;
+        script.setAttribute("data-vendor-src", src);
+        script.onload = function () {
+          resolve();
+        };
+        script.onerror = function () {
+          reject(new Error("vendor script failed: " + src));
+        };
+        document.head.appendChild(script);
+      });
+    }
+    function ensureVendorStylesheet(href) {
+      if (document.querySelector('link[data-vendor-href="' + href + '"]')) return;
+      var link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = href;
+      link.setAttribute("data-vendor-href", href);
+      document.head.appendChild(link);
+    }
+    function renderDiagrams(nodes) {
+      if (!window.mermaid) return;
+      try {
+        window.mermaid.initialize({ startOnLoad: false, theme: "default", securityLevel: "loose" });
+      } catch (e) {}
+      nodes.forEach(function (node, index) {
+        var chart = node.getAttribute("data-chart") || node.textContent || "";
+        if (!chart.trim()) return;
+        var id = "mermaid-" + index + "-" + Math.random().toString(36).slice(2, 9);
+        try {
+          window.mermaid
+            .render(id, chart)
+            .then(function (result) {
+              node.innerHTML = result.svg;
+            })
+            .catch(function (err) {
+              console.warn("[mermaid] Failed to render diagram:", err);
+            });
+        } catch (err) {
+          console.warn("[mermaid] Failed to render diagram:", err);
+        }
+      });
+    }
+    function renderMath(nodes) {
+      if (!window.katex) return;
+      nodes.forEach(function (node) {
+        var tex = node.getAttribute("data-tex") || node.textContent || "";
+        if (!tex.trim()) return;
+        try {
+          window.katex.render(tex, node, {
+            displayMode: node.classList.contains("math-display"),
+            throwOnError: false,
+          });
+        } catch (err) {
+          console.warn("[katex] Failed to render math:", err);
+        }
+      });
+    }
+    function enhanceContentHooks() {
+      var diagrams = Array.from(document.querySelectorAll(".mermaid, [data-mermaid]"));
+      var maths = Array.from(document.querySelectorAll(".math-inline, .math-display, [data-math]"));
+      if (diagrams.length > 0) {
+        loadVendorScript("/assets/vendor/mermaid/mermaid.min.js")
+          .then(function () {
+            renderDiagrams(diagrams);
+          })
+          .catch(function (err) {
+            console.warn("[mermaid] Renderer unavailable:", err);
+          });
+      }
+      if (maths.length > 0) {
+        ensureVendorStylesheet("/assets/vendor/katex/katex.min.css");
+        loadVendorScript("/assets/vendor/katex/katex.min.js")
+          .then(function () {
+            renderMath(maths);
+          })
+          .catch(function (err) {
+            console.warn("[katex] Renderer unavailable:", err);
+          });
+      }
+    }
+    document.addEventListener("keydown", function (event) {
+      var isShortcut = (event.metaKey || event.ctrlKey) && event.key && event.key.toLowerCase() === "k";
+      if (isShortcut) {
+        event.preventDefault();
+        lastSearchOpener = document.activeElement;
+        var dialog = searchDialog();
+        if (dialog) dialog.removeAttribute("hidden");
+        var input = searchInput();
+        if (input) input.focus();
+        return;
+      }
+      if (event.key === "Escape") {
+        var openDialog = searchDialog();
+        if (openDialog && !openDialog.hasAttribute("hidden")) {
+          openDialog.setAttribute("hidden", "");
+          if (lastSearchOpener && lastSearchOpener.focus) lastSearchOpener.focus();
+          else {
+            var fallback = searchOpener();
+            if (fallback) fallback.focus();
+          }
+        }
+        var nav = document.querySelector("#mobile-nav");
+        if (nav && !nav.hasAttribute("hidden")) {
+          nav.setAttribute("hidden", "");
+          var navOpener = document.querySelector("[data-nav-opener]");
+          if (navOpener) {
+            navOpener.setAttribute("aria-expanded", "false");
+            navOpener.focus();
+          }
+        }
+      }
+    });
+  })();
+</script>
 {{end}}{{define "footer"}}
 <footer data-shell="footer"><p>AyoKoding</p></footer>
 {{end}}

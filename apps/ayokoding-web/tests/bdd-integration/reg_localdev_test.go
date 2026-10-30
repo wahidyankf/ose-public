@@ -27,7 +27,7 @@ func registerLocaldevSteps(ctx *godog.ScenarioContext, world *glue.World) {
 	ctx.Step(`^no rewrite listener starts on a fallback port$`, world.StepRewriteListenerStartsFallbackPort)
 	ctx.Given(`^the existing site and the rewrite development server are running$`, world.StepExistingSiteRewriteDevelopmentServerRunning)
 	ctx.When(`^the rewrite browser acceptance suite starts$`, world.StepRewriteBrowserAcceptanceSuiteStarts)
-	ctx.Then(`^it starts its own Phoenix server on port 3191$`, world.StepStartsOwnPhoenixServerPort3191)
+	ctx.Then(`^it starts its own Go server on port 3191$`, world.StepStartsOwnPhoenixServerPort3191)
 	ctx.Step(`^it leaves both development servers running after the suite finishes$`, world.StepLeavesBothDevelopmentServersRunningAfterSuiteFin)
 	ctx.Given(`^the shared Markdown and manifests have recorded byte hashes$`, world.StepSharedMarkdownManifestsHaveRecordedByteHashes)
 	ctx.When(`^a developer starts the rewrite and browses its course pages$`, world.StepDeveloperStartsRewriteBrowsesCoursePages)

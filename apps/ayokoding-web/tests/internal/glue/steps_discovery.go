@@ -5,14 +5,14 @@ import (
 )
 
 func (w *World) StepReaderRequestsPublishedContentPage() error {
-	return w.get("/en/learn/go-basics/hello-world")
+	return w.get("/en/learn/courses/go-basics/learning/hello-world")
 }
 
 func (w *World) StepHtmlContainsCurrentTitleDescriptionCanonicalUrl() error {
 	if err := w.mustStatus(http.StatusOK); err != nil {
 		return err
 	}
-	for _, marker := range []string{"Hello World", "First program", `rel="canonical"`, "/en/learn/go-basics/hello-world"} {
+	for _, marker := range []string{"Hello World", "First program", `rel="canonical"`, "/en/learn/courses/go-basics/learning/hello-world"} {
 		if err := w.mustContain(marker); err != nil {
 			return err
 		}
@@ -49,7 +49,7 @@ func (w *World) StepReceivesSuccessfulXmlSitemapResponse() error {
 }
 
 func (w *World) StepSitemapListsCanonicalPublishedRoutes() error {
-	return w.mustContain("/en/learn/go-basics/hello-world")
+	return w.mustContain("/en/learn/courses/go-basics/learning/hello-world")
 }
 
 func (w *World) StepDraftRemovedRoutesAbsent() error {

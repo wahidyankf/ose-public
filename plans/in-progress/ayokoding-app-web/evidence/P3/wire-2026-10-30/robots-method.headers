@@ -1,0 +1,7 @@
+HTTP/1.1 405 Method Not Allowed
+Allow: GET, HEAD
+Content-Type: text/plain; charset=utf-8
+X-Content-Type-Options: nosniff
+Date: Fri, 30 Oct 2026 02:34:22 GMT
+Content-Length: 19
+

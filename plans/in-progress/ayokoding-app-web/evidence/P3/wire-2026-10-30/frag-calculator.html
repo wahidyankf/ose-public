@@ -1,0 +1,41 @@
+<div data-fragment="calculator" data-tool-inputs data-encoded-state="" lang="en">
+  <form
+    method="get"
+    action="/en/tools/cost-of-living-calculator"
+    data-input-form
+    hx-get="/htmx/calculator?locale=en"
+    hx-target="closest div[data-fragment]"
+    hx-swap="outerHTML"
+    hx-trigger="change, submit"
+    hx-push-url="true"
+  >
+    <label>Tab <input name="tab" value="cost" /></label>
+    <label>Region <input name="region" value="" /></label>
+    <label>Country <input name="country" value="" /></label>
+    <label>City <input name="city" value="" /></label>
+    <label>Adults <input name="adults" value="1" /></label>
+    <label>Preschool <input name="preschool" value="0" /></label>
+    <label>School kids <input name="schoolkids" value="0" /></label>
+    <label>School type <input name="schooltype" value="public" /></label>
+    <label>Area <input name="area" value="center" /></label>
+    <label>Gross <input name="gross" value="0" /></label>
+    <label>Baseline <input name="baseline" value="savings_target" /></label>
+    <label>Target <input name="target" value="" /></label>
+    <label>Target currency <input name="targetcur" value="USD" /></label>
+    <label>Reference city <input name="refcity" value="" /></label>
+    <label>Reference role <input name="refrole" value="senior_swe" /></label>
+    <label>My gross <input name="mygross" value="0" /></label>
+    <label>My salary city <input name="mysalarycity" value="" /></label>
+    <label>My gross currency <input name="mygrosscur" value="local" /></label>
+    <label>Display currency <input name="displaycur" value="USD" /></label>
+  </form>
+
+  <dl data-tool-estimate>
+    <dt>Monthly cost</dt>
+    <dd data-cost></dd>
+    <dt>Monthly saving</dt>
+    <dd data-saving></dd>
+    <dt>Minimum role</dt>
+    <dd data-min-role></dd>
+  </dl>
+</div>

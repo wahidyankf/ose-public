@@ -5,7 +5,7 @@
   </head>
   <body>
     {{template "header" .Shell}}
-    <main id="main">
+    <main id="main" tabindex="-1">
       <nav aria-label="breadcrumb" data-breadcrumbs>
         <a href="/{{.Shell.Lang}}/learn/courses">{{if eq .Shell.Lang "id"}}Kursus{{else}}Courses{{end}}</a> /
         <span aria-current="page">{{.Course.Title}}</span>
@@ -20,22 +20,35 @@
         <h2>Prerequisites</h2>
         <ul>
           {{range .Prerequisites}}
-          <li><a href="/{{$.Shell.Lang}}/learn/{{.ID}}">{{.Title}}</a></li>
+          <li><a href="/{{$.Shell.Lang}}/learn/courses/{{.ID}}">{{.Title}}</a></li>
           {{end}}
         </ul>
       </section>
       {{end}}
+      <section
+        data-course-progress
+        data-course="{{.Course.ID}}"
+        data-total="{{len .Lessons}}"
+        data-count-pattern="{{.CountPattern}}"
+      >
+        <p data-course-count role="status" aria-live="polite"></p>
+      </section>
       <section data-course-lessons>
         <h2>Lessons</h2>
         <ol>
           {{range .Lessons}}
-          <li><a href="/{{$.Shell.Lang}}/learn/{{.Course}}/{{.Slug}}">{{.Title}}</a></li>
+          <li>
+            <a href="/{{$.Shell.Lang}}/learn/courses/{{.Course}}/learning/{{.Slug}}">{{.Title}}</a>
+            <span data-lesson-marker data-course="{{.Course}}" data-lesson="{{.Slug}}" hidden
+              >{{if eq $.Shell.Lang "id"}}Sudah selesai{{else}}Completed{{end}}</span
+            >
+          </li>
           {{end}}
         </ol>
       </section>
       {{if .PathActive}}
       <nav data-path-controls data-path-context="{{.PathID}}">
-        <a href="/{{.Shell.Lang}}/paths/{{.PathID}}">Path</a>
+        <a href="/{{.Shell.Lang}}/learn/paths/{{.PathID}}">Path</a>
       </nav>
       {{else}}
       <nav data-canonical-nav><a href="/{{.Shell.Lang}}/learn/courses">Courses</a></nav>

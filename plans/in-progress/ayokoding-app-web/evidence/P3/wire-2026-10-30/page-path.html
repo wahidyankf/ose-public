@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en" data-theme-hook>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Backend</title>
+    <meta name="description" content="Backend" />
+    <link rel="canonical" href="/en/learn/paths/backend-id" />
+    <link rel="alternate" hreflang="id" href="/id" />
+    <style>
+      main {
+        min-width: 0;
+        overflow-wrap: anywhere;
+      }
+      pre {
+        max-width: 100%;
+        overflow-x: auto;
+      }
+      img,
+      table,
+      iframe {
+        max-width: 100%;
+      }
+      :focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: 2px;
+      }
+      .skip-link {
+        position: absolute;
+        left: -9999px;
+      }
+      .skip-link:focus {
+        left: 0;
+      }
+      @media (max-width: 767px) {
+        [data-nav="mobile"] {
+          display: block;
+        }
+        [data-sidebar] {
+          --sidebar-width: 100%;
+        }
+      }
+      @media (min-width: 768px) {
+        [data-nav="mobile"] {
+          display: none;
+        }
+      }
+    </style>
+    <script src="/assets/js/htmx.min.js" defer></script>
+    <script src="/assets/js/progress.js" defer data-progress-key="ayokoding-learn-progress-v1"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header data-shell="header">
+      <nav aria-label="primary">
+        <a href="/en">Home</a>
+        <a href="/en/learn/courses">Courses</a>
+      </nav>
+      <nav aria-label="locale">
+        <span aria-current="true" data-locale-active>English</span>
+        <a href="/id" data-locale-switch hreflang="id">Indonesia</a>
+      </nav>
+      <button type="button" data-nav-opener aria-expanded="false">Menu</button>
+      <button type="button" data-search-opener aria-haspopup="dialog">Search</button>
+    </header>
+    <nav id="mobile-nav" data-nav="mobile" data-close-on-escape hidden>
+      <button type="button" data-nav-closer>Close</button>
+    </nav>
+    <div data-search-dialog hidden>
+      <form
+        method="get"
+        action="/en/search"
+        data-search-form
+        hx-get="/htmx/search"
+        hx-target="[data-search-results-live]"
+        hx-swap="innerHTML"
+        hx-trigger="submit, input changed delay:300ms from:[data-search-input]"
+      >
+        <input type="search" name="q" value="" data-search-input data-search-shortcut aria-label="search" />
+      </form>
+      <div data-search-results-live></div>
+    </div>
+    <script>
+      (function () {
+        var lastSearchOpener = null;
+        function searchDialog() {
+          return document.querySelector("[data-search-dialog]");
+        }
+        function searchInput() {
+          return document.querySelector("[data-search-input]");
+        }
+        function searchOpener() {
+          return document.querySelector("[data-search-opener]");
+        }
+        document.addEventListener("click", function (event) {
+          var opener = event.target && event.target.closest ? event.target.closest("[data-search-opener]") : null;
+          if (opener) {
+            lastSearchOpener = opener;
+            var dialog = searchDialog();
+            if (dialog) dialog.removeAttribute("hidden");
+            var input = searchInput();
+            if (input) input.focus();
+            return;
+          }
+          var navOpener = event.target && event.target.closest ? event.target.closest("[data-nav-opener]") : null;
+          if (navOpener) {
+            var nav = document.querySelector("#mobile-nav");
+            if (nav) {
+              nav.removeAttribute("hidden");
+              navOpener.setAttribute("aria-expanded", "true");
+            }
+            return;
+          }
+          var closer = event.target && event.target.closest ? event.target.closest("[data-nav-closer]") : null;
+          if (closer) {
+            var panel = document.querySelector("#mobile-nav");
+            if (panel) panel.setAttribute("hidden", "");
+            var openerBtn = document.querySelector("[data-nav-opener]");
+            if (openerBtn) {
+              openerBtn.setAttribute("aria-expanded", "false");
+              openerBtn.focus();
+            }
+          }
+        });
+
+        function preserveLocaleSwitchHrefs() {
+          try {
+            var path = window.location.pathname || "/";
+            var segments = path.split("/").filter(Boolean);
+            var links = document.querySelectorAll("[data-locale-switch]");
+            for (var i = 0; i < links.length; i++) {
+              var link = links[i];
+              var target = link.getAttribute("hreflang") || "";
+              if (!target) continue;
+              var rest = segments.slice(1).join("/");
+              var href = "/" + target + (rest ? "/" + rest : "") + window.location.search;
+              link.setAttribute("href", href);
+            }
+          } catch (e) {}
+        }
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", preserveLocaleSwitchHrefs);
+        } else {
+          preserveLocaleSwitchHrefs();
+        }
+        document.addEventListener("keydown", function (event) {
+          var isShortcut = (event.metaKey || event.ctrlKey) && event.key && event.key.toLowerCase() === "k";
+          if (isShortcut) {
+            event.preventDefault();
+            lastSearchOpener = document.activeElement;
+            var dialog = searchDialog();
+            if (dialog) dialog.removeAttribute("hidden");
+            var input = searchInput();
+            if (input) input.focus();
+            return;
+          }
+          if (event.key === "Escape") {
+            var openDialog = searchDialog();
+            if (openDialog && !openDialog.hasAttribute("hidden")) {
+              openDialog.setAttribute("hidden", "");
+              if (lastSearchOpener && lastSearchOpener.focus) lastSearchOpener.focus();
+              else {
+                var fallback = searchOpener();
+                if (fallback) fallback.focus();
+              }
+            }
+            var nav = document.querySelector("#mobile-nav");
+            if (nav && !nav.hasAttribute("hidden")) {
+              nav.setAttribute("hidden", "");
+              var navOpener = document.querySelector("[data-nav-opener]");
+              if (navOpener) {
+                navOpener.setAttribute("aria-expanded", "false");
+                navOpener.focus();
+              }
+            }
+          }
+        });
+      })();
+    </script>
+
+    <main id="main">
+      <h1>Backend</h1>
+
+      <section data-phase="1">
+        <h2>Phase 1: Fundamentals</h2>
+        <ol>
+          <li data-position="1" data-course="go-basics">
+            <a href="/en/learn/courses/go-basics">Go Basics</a>
+            <span data-position-number>1</span>
+          </li>
+        </ol>
+      </section>
+
+      <section data-phase="2">
+        <h2>Phase 2: Practice</h2>
+        <ol>
+          <li data-position="2" data-course="go-web">
+            <a href="/en/learn/courses/go-web">Go Web</a>
+            <span data-position-number>2</span>
+          </li>
+        </ol>
+      </section>
+    </main>
+
+    <footer data-shell="footer"><p>AyoKoding</p></footer>
+  </body>
+</html>

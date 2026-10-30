@@ -8,4 +8,4 @@
 ## Contents
 
 - [Course catalog and paths](./course-catalog-and-paths.feature) — metadata, outline status,
-  prerequisites, ordered phases, invalid-path fallback, and malformed manifests. Bindings are planned.
+  prerequisites, ordered phases, invalid-path fallback, and malformed manifests. Bindings are implemented.

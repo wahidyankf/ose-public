@@ -5,11 +5,11 @@ import (
 )
 
 func (w *World) StepPublishedMarkdownLessonExistsSharedCorpus() error {
-	return w.get("/en/learn/go-basics/hello-world")
+	return w.get("/en/learn/courses/go-basics/learning/hello-world")
 }
 
 func (w *World) StepReaderRequestsRouteWithoutRunningBrowserScripts() error {
-	return w.get("/en/learn/go-basics/hello-world")
+	return w.get("/en/learn/courses/go-basics/learning/hello-world")
 }
 
 func (w *World) StepResponseContainsLessonTitleReadableArticleBody() error {
@@ -32,18 +32,18 @@ func (w *World) StepResponseDoesDependNextJsBuildArtifact() error {
 }
 
 func (w *World) StepSectionContainsPublishedPagesValidTitlesSlugsWei() error {
-	return w.get("/en/learn/go-basics")
+	return w.get("/en/learn/courses/go-basics")
 }
 
 func (w *World) StepReaderOpensSection() error {
-	return w.get("/en/learn/go-basics")
+	return w.get("/en/learn/courses/go-basics")
 }
 
 func (w *World) StepPageTitlesLinksMatchTheirAuthoredMetadata() error {
 	if err := w.mustStatus(http.StatusOK); err != nil {
 		return err
 	}
-	for _, marker := range []string{"Setup", "Hello World", "/en/learn/go-basics/setup"} {
+	for _, marker := range []string{"Setup", "Hello World", "/en/learn/courses/go-basics/learning/setup"} {
 		if err := w.mustContain(marker); err != nil {
 			return err
 		}
@@ -52,8 +52,8 @@ func (w *World) StepPageTitlesLinksMatchTheirAuthoredMetadata() error {
 }
 
 func (w *World) StepPagesFollowEstablishedWeightTitleOrdering() error {
-	setup := indexOf(w.body, "/en/learn/go-basics/setup")
-	hello := indexOf(w.body, "/en/learn/go-basics/hello-world")
+	setup := indexOf(w.body, "/en/learn/courses/go-basics/learning/setup")
+	hello := indexOf(w.body, "/en/learn/courses/go-basics/learning/hello-world")
 	if setup < 0 || hello < 0 || setup > hello {
 		return fail("section order wrong: setup at %d, hello at %d", setup, hello)
 	}
@@ -69,7 +69,7 @@ func (w *World) StepDraftViewingDisabled() error {
 }
 
 func (w *World) StepReaderRequestsLessonSearchesCorpus() error {
-	if err := w.get("/en/learn/go-basics/draft-note"); err != nil {
+	if err := w.get("/en/learn/courses/go-basics/learning/draft-note"); err != nil {
 		return err
 	}
 	if err := w.mustStatus(http.StatusNotFound); err != nil {
@@ -83,7 +83,7 @@ func (w *World) StepLessonAbsentFromPublicResults() error {
 }
 
 func (w *World) StepDirectRouteReturnsFound() error {
-	if err := w.get("/en/learn/go-basics/draft-note"); err != nil {
+	if err := w.get("/en/learn/courses/go-basics/learning/draft-note"); err != nil {
 		return err
 	}
 	return w.mustStatus(http.StatusNotFound)
@@ -116,11 +116,11 @@ func (w *World) StepDeveloperReceivesDiagnosticIdentifyingInvalidSou() error {
 }
 
 func (w *World) StepLessonContainsTablesTaskListsRawDetailsMarkupNes() error {
-	return w.get("/en/learn/go-basics/hello-world")
+	return w.get("/en/learn/courses/go-basics/learning/hello-world")
 }
 
 func (w *World) StepReaderOpensLesson() error {
-	return w.get("/en/learn/go-basics/hello-world")
+	return w.get("/en/learn/courses/go-basics/learning/hello-world")
 }
 
 func (w *World) StepThoseAuthoredStructuresRenderEstablishedArticleS() error {
@@ -150,11 +150,11 @@ func (w *World) StepTableContentsLinksStableBodyHeadingAnchors() error {
 
 func (w *World) StepLessonContainsShortcodeFixture(format string) error {
 	w.shortcode = format
-	return w.get("/en/learn/go-basics/hello-world")
+	return w.get("/en/learn/courses/go-basics/learning/hello-world")
 }
 
 func (w *World) StepReaderOpensFixtureActivatesSupportedControls() error {
-	return w.get("/en/learn/go-basics/hello-world")
+	return w.get("/en/learn/courses/go-basics/learning/hello-world")
 }
 
 func (w *World) StepAvailableReader(result string) error {
@@ -172,13 +172,13 @@ func (w *World) StepAvailableReader(result string) error {
 }
 
 func (w *World) StepSectionIndexContainsRelativeMarkdownLinkHeadingF() error {
-	return w.get("/en/learn/web/section-index")
+	return w.get("/en/learn/courses/web/learning/section-index")
 }
 
 func (w *World) StepReaderFollowsLink() error {
 	// Fragments never reach the server; the reader requests the page and
 	// the browser scrolls to the heading client-side.
-	return w.get("/en/learn/web/leaf")
+	return w.get("/en/learn/courses/web/learning/leaf")
 }
 
 func (w *World) StepDestinationResolvedRelativeSectionSDirectory() error {
@@ -198,7 +198,7 @@ func (w *World) StepReaderReachesIntendedHeadingSameLocale() error {
 }
 
 func (w *World) StepLessonContainsAnnotatedFencedCode() error {
-	return w.get("/en/learn/go-basics/hello-world")
+	return w.get("/en/learn/courses/go-basics/learning/hello-world")
 }
 
 func (w *World) StepReaderCopiesCodeBlock() error {
@@ -224,11 +224,11 @@ func (w *World) StepCodeBlockShowsLanguageLabelReadableHighlighting() error {
 
 func (w *World) StepLessonContainsFixture(format string) error {
 	w.shortcode = format
-	return w.get("/en/learn/go-basics/hello-world")
+	return w.get("/en/learn/courses/go-basics/learning/hello-world")
 }
 
 func (w *World) StepReaderOpensLesson2() error {
-	return w.get("/en/learn/go-basics/hello-world")
+	return w.get("/en/learn/courses/go-basics/learning/hello-world")
 }
 
 func (w *World) StepReaderSees(result string) error {
@@ -245,23 +245,43 @@ func (w *World) StepSourceNotationPresentedRenderedResult() error {
 }
 
 func (w *World) StepLessonContainsLongInlineTokenWideFencedCodeBlock() error {
-	return w.get("/en/learn/go-basics/hello-world")
+	return w.get("/en/learn/courses/go-basics/learning/hello-world")
 }
 
 func (w *World) StepReaderOpens375PixelsWide() error {
-	return w.get("/en/learn/go-basics/hello-world")
+	return w.get("/en/learn/courses/go-basics/learning/hello-world")
 }
 
 func (w *World) StepInlineCodeWrapsWithinArticle() error {
-	return w.mustContain("averylonginlinetokenthatmustwrapwithinthearticlereadingcolumn")
+	if err := w.mustContain("averylonginlinetokenthatmustwrapwithinthearticlereadingcolumn"); err != nil {
+		return err
+	}
+	// Production-observed containment: the served stylesheet must constrain
+	// the article column so the long token wraps instead of widening the doc.
+	for _, marker := range []string{"min-width: 0", "overflow-wrap"} {
+		if err := w.mustContain(marker); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (w *World) StepFencedBlockScrollsInternallyWithoutWideningDocum() error {
-	return w.mustContain(`class="wide"`)
+	if err := w.mustContain(`class="wide"`); err != nil {
+		return err
+	}
+	// Production-observed containment: the served stylesheet must scroll the
+	// fenced block internally instead of widening the document.
+	for _, marker := range []string{"max-width: 100%", "overflow-x: auto"} {
+		if err := w.mustContain(marker); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (w *World) StepReaderRequestsNonexistentContentRouteSupportedLo() error {
-	return w.get("/en/learn/go-basics/nope")
+	return w.get("/en/learn/courses/go-basics/learning/nope")
 }
 
 func (w *World) StepResponseStatus404() error {

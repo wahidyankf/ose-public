@@ -1,5 +1,7 @@
 package coursepaths
 
+import "sort"
+
 // Phase groups courses in manifest order. P2 fills variable-depth ID
 // handling and transitional allowances behind these fields.
 type Phase struct {
@@ -73,6 +75,19 @@ func (s *FakeStore) Path(id string) (LearningPath, bool) {
 func (s *FakeStore) Course(id string) (Course, bool) {
 	course, ok := s.courses[id]
 	return course, ok
+}
+
+// Courses lists every known catalog entry in stable ID order. The catalog
+// groups these by authored category, mirroring the old content-driven
+// catalog: a course with published lessons is listed whether or not any
+// path phase references it.
+func (s *FakeStore) Courses() []Course {
+	courses := make([]Course, 0, len(s.courses))
+	for _, course := range s.courses {
+		courses = append(courses, course)
+	}
+	sort.Slice(courses, func(i, j int) bool { return courses[i].ID < courses[j].ID })
+	return courses
 }
 
 // Prerequisites lists required courses with titles and canonical routes.

@@ -1,0 +1,394 @@
+[
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/en"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/htmx.min.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/progress.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/htmx/search?q=go"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/htmx/search?q=benchmark"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/en/search?q=%3Cscript%3Ealert(1)%3C%2Fscript%3E"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/en/learn/courses/go-basics/learning/hello-world"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/htmx.min.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/progress.js"
+  },
+  {
+    "method": "GET",
+    "url": "https://www.youtube.com/embed/abc"
+  },
+  {
+    "method": "GET",
+    "url": "https://www.youtube.com/s/player/11a45ffb/www-player.css"
+  },
+  {
+    "method": "GET",
+    "url": "https://www.youtube.com/s/_/ytembeds/_/ss/k=ytembeds.base.l4TkcKEzrz0.L.W.O/am=AAAAQABgDA/d=1/br=1/rs=AGKMywEQqlmZLY44TgyxiTO_Txlm8M69vQ/m=root,base"
+  },
+  {
+    "method": "GET",
+    "url": "https://www.youtube.com/s/_/ytembeds/_/js/k=ytembeds.base.en_US.hEa0Dn-EZu0.es5.O/am=AAAAQABgDA/d=1/excm=base,root/br=1/rs=AGKMywFDm3YXUEu8fAZriDb3u-PoCgG9iQ/m=root,base"
+  },
+  {
+    "method": "GET",
+    "url": "https://www.youtube.com/s/player/11a45ffb/player_embed.vflset/en_US/base.js"
+  },
+  {
+    "method": "GET",
+    "url": "https://fonts.gstatic.com/s/roboto/v48/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBA.woff2"
+  },
+  {
+    "method": "GET",
+    "url": "https://googleads.g.doubleclick.net/pagead/id"
+  },
+  {
+    "method": "GET",
+    "url": "https://static.doubleclick.net/instream/ad_status.js"
+  },
+  {
+    "method": "GET",
+    "url": "https://www.youtube.com/s/_/ytembeds/_/js/k=ytembeds.base.en_US.hEa0Dn-EZu0.es5.O/ck=ytembeds.base.l4TkcKEzrz0.L.W.O/am=AAAAQABgDA/d=1/exm=base,root/excm=base,root/ed=1/br=1/rs=AGKMywEvukGI0ss1WtLOqUHIryIedw3tQQ/m=r78Drb"
+  },
+  {
+    "method": "GET",
+    "url": "https://www.google.com/js/th/bGD28-x6-ZcW0ZMme9K_HfMIjUxcrPss2m-Wi7ll8Ys.js"
+  },
+  {
+    "method": "GET",
+    "url": "https://googleads.g.doubleclick.net/pagead/id?slf_rd=1"
+  },
+  {
+    "method": "GET",
+    "url": "https://www.gstatic.com/youtube/img/icons/mweb/youtube_fill/logo/v2/67px.svg"
+  },
+  {
+    "method": "GET",
+    "url": "https://www.youtube.com/generate_204?Pdxx5w"
+  },
+  {
+    "method": "POST",
+    "url": "https://jnn-pa.googleapis.com/$rpc/google.internal.waa.v1.Waa/GenerateIT"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/id/learn/courses/go-basics/learning/hello-world"
+  },
+  {
+    "method": "POST",
+    "url": "https://www.youtube.com/youtubei/v1/log_event?alt=json"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/htmx.min.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/progress.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/en/learn/courses/go-basics/learning/setup"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/htmx.min.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/progress.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/en/learn/courses/web/learning/section-index"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/htmx.min.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/progress.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/en/tools/ai-benchmark"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/htmx.min.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/progress.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/en/learn/courses/web/learning/section-index"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/htmx.min.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/progress.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/en/tools/ai-benchmark?tier=frontier"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/htmx.min.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/progress.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/en/tools/cost-of-living-calculator"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/htmx.min.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/progress.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/htmx/calculator?locale=en&tab=income&region=&country=&city=&adults=1&preschool=0&schoolkids=0&schooltype=public&area=center&gross=0&baseline=savings_target&target=&targetcur=USD&refcity=&refrole=senior_swe&mygross=0&mysalarycity=&mygrosscur=local&displaycur=USD"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/id/tools/cost-of-living-calculator?tab=cost&country=ID&city=jkt"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/htmx.min.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/progress.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/en/no-such-page-xyz"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/htmx.min.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/progress.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/id/no-such-page-xyz"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/htmx.min.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/progress.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/en/learn/courses/nope/learning/nope"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/htmx.min.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/progress.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/en/no-such-page-xyz"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/htmx.min.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/progress.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/en"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/htmx.min.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/progress.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/id"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/htmx.min.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/progress.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/en/learn"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/htmx.min.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/progress.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/en/learn/courses"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/htmx.min.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/progress.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/en/learn/courses/go-basics/learning/hello-world"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/htmx.min.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/progress.js"
+  },
+  {
+    "method": "GET",
+    "url": "https://www.youtube.com/embed/abc"
+  },
+  {
+    "method": "GET",
+    "url": "https://www.youtube.com/s/player/11a45ffb/www-player.css"
+  },
+  {
+    "method": "GET",
+    "url": "https://www.youtube.com/s/_/ytembeds/_/ss/k=ytembeds.base.l4TkcKEzrz0.L.W.O/am=AAAAQABgDA/d=1/br=1/rs=AGKMywEQqlmZLY44TgyxiTO_Txlm8M69vQ/m=root,base"
+  },
+  {
+    "method": "GET",
+    "url": "https://www.youtube.com/s/_/ytembeds/_/js/k=ytembeds.base.en_US.hEa0Dn-EZu0.es5.O/am=AAAAQABgDA/d=1/excm=base,root/br=1/rs=AGKMywFDm3YXUEu8fAZriDb3u-PoCgG9iQ/m=root,base"
+  },
+  {
+    "method": "GET",
+    "url": "https://www.youtube.com/s/player/11a45ffb/player_embed.vflset/en_US/base.js"
+  },
+  {
+    "method": "GET",
+    "url": "https://fonts.gstatic.com/s/roboto/v48/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBA.woff2"
+  },
+  {
+    "method": "GET",
+    "url": "https://googleads.g.doubleclick.net/pagead/id"
+  },
+  {
+    "method": "GET",
+    "url": "https://static.doubleclick.net/instream/ad_status.js"
+  },
+  {
+    "method": "GET",
+    "url": "https://www.youtube.com/s/_/ytembeds/_/js/k=ytembeds.base.en_US.hEa0Dn-EZu0.es5.O/ck=ytembeds.base.l4TkcKEzrz0.L.W.O/am=AAAAQABgDA/d=1/exm=base,root/excm=base,root/ed=1/br=1/rs=AGKMywEvukGI0ss1WtLOqUHIryIedw3tQQ/m=r78Drb"
+  },
+  {
+    "method": "GET",
+    "url": "https://googleads.g.doubleclick.net/pagead/id?slf_rd=1"
+  },
+  {
+    "method": "GET",
+    "url": "https://www.google.com/js/th/bGD28-x6-ZcW0ZMme9K_HfMIjUxcrPss2m-Wi7ll8Ys.js"
+  },
+  {
+    "method": "POST",
+    "url": "https://www.youtube.com/youtubei/v1/log_event?alt=json"
+  },
+  {
+    "method": "GET",
+    "url": "https://www.youtube.com/generate_204?u30kMg"
+  },
+  {
+    "method": "POST",
+    "url": "https://jnn-pa.googleapis.com/$rpc/google.internal.waa.v1.Waa/GenerateIT"
+  },
+  {
+    "method": "POST",
+    "url": "https://www.youtube.com/youtubei/v1/log_event?alt=json"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/en/tools/ai-benchmark"
+  },
+  {
+    "method": "POST",
+    "url": "https://www.youtube.com/youtubei/v1/log_event?alt=json"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/htmx.min.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/progress.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/en/learn"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/htmx.min.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://localhost:3102/assets/js/progress.js"
+  }
+]

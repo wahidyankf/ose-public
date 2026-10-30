@@ -8,17 +8,17 @@ the existing server. `APP` below is `http://localhost:3102` for development and
 origin, never an arbitrary request Host header. These are browser HTML and htmx fragment
 interfaces, not a new REST/GraphQL API. No OpenAPI/AsyncAPI/client generation is required.
 
-| Action | Operation                                                  | Packet                                      |
-| ------ | ---------------------------------------------------------- | ------------------------------------------- |
-| ADD    | `GET /{locale}` and `GET /{locale}/{route...}`             | [Page navigation](#page-navigation)         |
-| ADD    | `GET /` and established historical/uppercase-locale routes | [Permanent redirects](#permanent-redirects) |
-| ADD    | `GET /sitemap.xml`                                         | [Sitemap](#sitemap)                         |
-| ADD    | `GET /feed.xml`                                            | [RSS](#rss)                                 |
-| ADD    | `GET /robots.txt`                                          | [Robots](#robots)                           |
-| ADD    | `GET /htmx/search` fragment                                | [Search fragment](#search-fragment)         |
-| ADD    | `GET /htmx/benchmark` fragment                             | [Benchmark fragment](#benchmark-fragment)   |
-| ADD    | `GET /htmx/calculator` fragment                            | [Calculator fragment](#calculator-fragment) |
-| RETAIN | Existing origin's `GET /api/trpc/{procedures}`             | [Old tRPC boundary](#old-trpc-boundary)     |
+| Action | Operation                                                                     | Packet                                      |
+| ------ | ----------------------------------------------------------------------------- | ------------------------------------------- |
+| ADD    | Canonical pages under `/{locale}/learn/...` (courses, lessons, paths, legacy) | [Page navigation](#page-navigation)         |
+| ADD    | `GET /`, uppercase-locale entries, and the ordered legacy redirect table      | [Permanent redirects](#permanent-redirects) |
+| ADD    | `GET /sitemap.xml`                                                            | [Sitemap](#sitemap)                         |
+| ADD    | `GET /feed.xml`                                                               | [RSS](#rss)                                 |
+| ADD    | `GET /robots.txt`                                                             | [Robots](#robots)                           |
+| ADD    | `GET /htmx/search` fragment                                                   | [Search fragment](#search-fragment)         |
+| ADD    | `GET /htmx/benchmark` fragment                                                | [Benchmark fragment](#benchmark-fragment)   |
+| ADD    | `GET /htmx/calculator` fragment                                               | [Calculator fragment](#calculator-fragment) |
+| RETAIN | Existing origin's `GET /api/trpc/{procedures}`                                | [Old tRPC boundary](#old-trpc-boundary)     |
 
 ## Common constraints
 
@@ -43,10 +43,23 @@ use an injected fixture adapter, never chmod/delete a developer's corpus.
 ## Page navigation
 
 Owner: `internal/web` router and page/fragment/template handlers; caller: browser or
-crawler. Method: GET, no body, `Accept: text/html`. Supported locale, content identity, and the
-current special routes determine the screen. Tools paths are `/en/tools`, `/en/tools/ai-benchmark`,
-`/en/tools/cost-of-living-calculator` and the corresponding `id` routes. Content and locale segment
-mapping follow the existing app; do not invent untranslated course destinations.
+crawler. Method: GET, no body, `Accept: text/html`. Canonical routes follow the existing app
+exactly (bookmarks keep working); do not invent untranslated course destinations or new
+top-level sections:
+
+| Screen                            | Canonical route                                                                                |
+| --------------------------------- | ---------------------------------------------------------------------------------------------- |
+| Learn hub                         | `/{locale}/learn`                                                                              |
+| Course catalog                    | `/{locale}/learn/courses`                                                                      |
+| Course landing                    | `/{locale}/learn/courses/{course}`                                                             |
+| Lesson (`learning` or `drilling`) | `/{locale}/learn/courses/{course}/{learning\|drilling}/{lesson}`                               |
+| Paths hub and categories          | `/{locale}/learn/paths`, `/{locale}/learn/paths/{careers\|skills}`                             |
+| Path landing (variable depth)     | `/{locale}/learn/paths/{path-id...}`                                                           |
+| Legacy content                    | `/{locale}/learn/legacy/{rest...}`                                                             |
+| Tool pages                        | `/{locale}/tools`, `/{locale}/tools/ai-benchmark`, `/{locale}/tools/cost-of-living-calculator` |
+
+Locale is validated as `en|id`. Path, course, lesson, and kind segments are validated;
+unsafe segments and unknown identities return the locale's missing-page result.
 
 Query contracts: content path context uses the existing validated `path` identifier; invalid or
 nonmember context falls back to the canonical course. Tool query fields are listed in their fragment
@@ -110,8 +123,21 @@ they are part of AC-01/03/10, not exemptions left for later design.
 Owner: ordered redirect middleware before page routing; caller: browser/crawler. GET, no body;
 `Accept: text/html`; query retained. `/` permanently redirects to `/en`. Existing case variants
 such as `/EN` redirect to `/en`. Apply the exact current redirect order from `next.config.ts` and
-its typed modules, reconciled to the execution revision. Preserve current destinations and query
-strings; fragments are browser-side and are verified in browser navigation, not sent as HTTP input.
+its typed modules, reconciled to the execution revision:
+
+1. `localeEntryRedirects` (case variants such as `/EN`),
+2. `contentNamespaceRedirects` (section namespace normalization, incl. the `/en/learn/:path*`
+   umbrella rule),
+3. `learnReorgRedirects` (legacy section moves inside `learn/`, incl. temporary 307 fixups),
+4. `courseRehomeRedirects` (37 re-homed `fundamentally-strong/software-engineer/<slug>/:path*`
+   bundles plus 3 retired roots to the course library),
+5. `learnHomeRedirects` (Learn home entries),
+6. `learnThreeBucketRedirects` (Learn hub three-bucket normalization).
+
+Preserve current destinations, permanent/temporary status per rule, and query strings; fragments
+are browser-side and are verified in browser navigation, not sent as HTTP input. Legacy course
+deep links 308 to their canonical `/en/learn/courses/...` sub-pages (not to the course root);
+uppercase entries normalize once without looping.
 
 Success: 308 with `Location` set to the exact canonical destination plus retained query. A path
 matching no rule continues normal page routing and may return 404; it never redirects to itself.

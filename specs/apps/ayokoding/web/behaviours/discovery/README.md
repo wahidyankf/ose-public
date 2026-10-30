@@ -8,4 +8,4 @@
 ## Contents
 
 - [Discovery documents](./discovery-documents.feature) — canonical metadata, locale links,
-  sitemap visibility, RSS entries, and robots responses. Bindings are planned.
+  sitemap visibility, RSS entries, and robots responses. Bindings are implemented.

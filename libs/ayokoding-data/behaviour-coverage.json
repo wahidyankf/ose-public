@@ -1,6 +1,5 @@
 {
   "project": "ayokoding-data",
-  "pending": true,
   "corpus": ["../../specs/libs/ayokoding-data/behaviours"],
   "adapters": {
     "unit": {

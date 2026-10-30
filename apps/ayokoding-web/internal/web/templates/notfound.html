@@ -5,7 +5,7 @@
   </head>
   <body>
     {{template "header" .Shell}}
-    <main id="main">
+    <main id="main" tabindex="-1">
       <h1>{{if eq .Shell.Lang "id"}}Tidak ditemukan{{else}}Not found{{end}}</h1>
       <nav data-usable-nav>
         <a href="/{{.Shell.Lang}}">{{if eq .Shell.Lang "id"}}Beranda{{else}}Home{{end}}</a>

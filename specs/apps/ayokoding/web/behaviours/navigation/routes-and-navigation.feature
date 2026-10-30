@@ -46,3 +46,11 @@ Feature: Canonical routes and learning navigation
     When the reader navigates back
     Then the previous content route and its URL state are restored
     And navigation controls reflect the restored location
+
+  Scenario: A legacy archived page serves its canonical content
+    When a reader opens a legacy archived page
+    Then the legacy page serves its canonical content
+
+  Scenario: A legacy deep course URL redirects to its canonical sub-page
+    When a visitor requests a legacy deep course URL
+    Then the response permanently redirects with status 308 to "/en/learn/courses/just-enough-python/learning/intro"

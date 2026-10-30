@@ -1,11 +1,15 @@
 package glue
 
 import (
+	"fmt"
+	"net"
 	"net/http"
 	"os"
 	"path/filepath"
 	"runtime"
 	"strings"
+
+	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/web"
 )
 
 func (w *World) StepExistingLearningSiteRunningPort3101() error {
@@ -187,8 +191,22 @@ func (w *World) StepExistingSiteRewriteDevelopmentServerRunning() error {
 
 func (w *World) StepRewriteBrowserAcceptanceSuiteStarts() error {
 	if w.adapter == "unit" {
-		w.resolvedPort = 3191
+		// Resolve the isolated test port through production config, not a flag.
+		var cfg web.Config
+		if err := withScenarioEnv(map[string]string{"AYOKODING_WEB_PORT": itoa(web.TestPort)}, func() error {
+			var resolveErr error
+			cfg, resolveErr = web.ResolveConfig(nil)
+			return resolveErr
+		}); err != nil {
+			return err
+		}
+		if cfg.Port != web.TestPort {
+			return fail("resolved port = %d, want TestPort %d", cfg.Port, web.TestPort)
+		}
+		w.cfg = cfg
+		w.resolvedPort = cfg.Port
 		w.listenerStarted = true
+		w.handler = web.NewServer(cfg, seedFixtureDeps()).Handler()
 		return nil
 	}
 	// The integration suite binary already owns 3191; the scenario
@@ -204,8 +222,28 @@ func (w *World) StepStartsOwnPhoenixServerPort3191() error {
 	// acceptance suite owns an isolated test server on 3191. The landing
 	// unit rewords this step per tech-docs/005.
 	if w.adapter == "unit" {
-		if w.resolvedPort != 3191 || !w.listenerStarted {
-			return fail("test server did not resolve port 3191")
+		if w.resolvedPort != web.TestPort || !w.listenerStarted {
+			return fail("test server did not resolve port %d", web.TestPort)
+		}
+		// Bind a REAL listener on the resolved TestPort and serve one
+		// request through the app handler. A second bind while the port is
+		// taken fails here, so a conflicting listener cannot go undetected.
+		address := fmt.Sprintf("127.0.0.1:%d", w.resolvedPort)
+		listener, err := net.Listen("tcp", address)
+		if err != nil {
+			return fail("cannot bind TestPort %d: %v", w.resolvedPort, err)
+		}
+		server := &http.Server{Handler: w.handler}
+		go func() { _ = server.Serve(listener) }()
+		url := fmt.Sprintf("http://%s/en", address)
+		response, err := http.Get(url) //nolint:gosec,noctx
+		_ = server.Close()
+		if err != nil {
+			return fail("GET %s through real listener failed: %v", url, err)
+		}
+		defer func() { _ = response.Body.Close() }()
+		if response.StatusCode != http.StatusOK {
+			return fail("GET %s status = %d, want 200", url, response.StatusCode)
 		}
 		return nil
 	}
@@ -241,7 +279,7 @@ func (w *World) StepDeveloperStartsRewriteBrowsesCoursePages() error {
 	if err := w.launch(); err != nil {
 		return err
 	}
-	for _, target := range []string{"/en", "/en/learn/courses", "/en/learn/go-basics/hello-world"} {
+	for _, target := range []string{"/en", "/en/learn/courses", "/en/learn/courses/go-basics/learning/hello-world"} {
 		if err := w.get(target); err != nil {
 			return err
 		}
@@ -256,7 +294,23 @@ func (w *World) StepMarkdownManifestByteHashesRemainUnchanged() error {
 				return fail("unit request %s %s would mutate sources", request.method, request.target)
 			}
 		}
-		return nil
+		// Unit must never touch the developer corpus: the file-backed root
+		// stays unset so the canned fixture serves.
+		if value, ok := os.LookupEnv("AYOKODING_WEB_CONTENT_DIR"); ok && strings.TrimSpace(value) != "" {
+			return fail("AYOKODING_WEB_CONTENT_DIR=%q is set in unit context; unit must use the fixture", value)
+		}
+		// Fixture-only slug resolves; a real-corpus-only slug 404s, proving
+		// the unit handler serves the fixture, not the developer checkout.
+		if err := w.get("/en/learn/courses/go-basics/learning/hello-world"); err != nil {
+			return err
+		}
+		if err := w.mustStatus(http.StatusOK); err != nil {
+			return err
+		}
+		if err := w.get("/en/learn/courses/just-enough-python"); err != nil {
+			return err
+		}
+		return w.mustStatus(http.StatusNotFound)
 	}
 	for _, file := range sharedSourceFiles() {
 		raw, err := os.ReadFile(file)
@@ -292,13 +346,13 @@ func (w *World) StepRewriteLoadsCommittedCorpus() error {
 }
 
 func (w *World) StepServesAvailableContentManifestsFromState() error {
-	if err := w.get("/en/learn/go-basics/hello-world"); err != nil {
+	if err := w.get("/en/learn/courses/go-basics/learning/hello-world"); err != nil {
 		return err
 	}
 	if err := w.mustStatus(http.StatusOK); err != nil {
 		return err
 	}
-	return w.get("/en/paths/backend-id")
+	return w.get("/en/learn/paths/backend-id")
 }
 
 func (w *World) StepDoesWaitAnotherPlanFinish() error {

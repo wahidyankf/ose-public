@@ -8,12 +8,12 @@
 ## Contents
 
 - [Browser progress](./browser-progress.feature) — completion, shared course status, v1 storage,
-  blocked and corrupt storage, reset, cross-tab changes, and origin separation. Bindings are planned.
+  blocked and corrupt storage, reset, cross-tab changes, and origin separation. Bindings are implemented.
 
-## Planned layer disposition
+## Layer disposition
 
 The TypeScript Unit adapter proves state transitions, validation, and storage-failure handling.
 Playwright proves real storage, DOM updates, focus, cross-tab events, and network privacy.
-These effects have no separate local resource boundary for a Phoenix Integration adapter;
+These effects have no separate local resource boundary for a Go Integration adapter;
 the scenario-level exemptions record that disposition. Server-rendered progress placeholders
 remain covered with the content and shell integration fixtures.

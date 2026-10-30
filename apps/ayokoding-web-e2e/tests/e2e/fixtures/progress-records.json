@@ -1,0 +1,15 @@
+{
+  "validV1": {
+    "version": 1,
+    "completed": ["go-basics/setup"],
+    "lastPath": "backend-id",
+    "lastCourse": "go-basics"
+  },
+  "invalidRaw": "not-json{",
+  "wrongVersion": {
+    "version": 2,
+    "completed": ["go-basics/setup"],
+    "lastPath": "",
+    "lastCourse": ""
+  }
+}

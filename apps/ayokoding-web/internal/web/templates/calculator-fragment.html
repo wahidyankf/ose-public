@@ -1,0 +1,176 @@
+{{define "calculator-fragment"}}
+<div data-fragment="calculator" data-tool-filters data-encoded-state="{{.Encoded}}" lang="{{.Locale}}">
+  <form
+    method="get"
+    action="/{{.Locale}}/tools/cost-of-living-calculator"
+    data-input-form
+    hx-get="/htmx/calculator?locale={{.Locale}}"
+    hx-target="closest div[data-fragment]"
+    hx-swap="outerHTML"
+    hx-trigger="change, submit"
+    hx-push-url="true"
+  >
+    {{$state := .State}}{{$locale := .Locale}}{{$adults := print $state.Household.Adults}}{{$preschool := print
+    $state.Household.PreschoolKids}}{{$schoolkids := print $state.Household.SchoolKids}}
+    <label
+      >Tab
+      <select name="tab">
+        {{range .TabOptions}}
+        <option value="{{.Value}}" {{if eq .Value $state.Tab}} selected{{end}}>{{.Label}}</option>
+        {{end}}
+      </select></label
+    >
+    <label
+      >Region
+      <select name="region">
+        <option value="">{{if eq $locale "id"}}Semua{{else}}All{{end}}</option>
+        {{range .RegionOptions}}
+        <option value="{{.Value}}" {{if eq .Value $state.Region}} selected{{end}}>{{.Label}}</option>
+        {{end}}
+      </select></label
+    >
+    <label
+      >Country
+      <select name="country">
+        <option value="">{{if eq $locale "id"}}Semua{{else}}All{{end}}</option>
+        {{range .CountryOptions}}
+        <option value="{{.Value}}" {{if eq .Value $state.CountryID}} selected{{end}}>{{.Label}}</option>
+        {{end}}
+      </select></label
+    >
+    <label
+      >City
+      <select name="city">
+        <option value="">{{if eq $locale "id"}}Pilih kota{{else}}Select a city{{end}}</option>
+        {{range .CityOptions}}
+        <option value="{{.Value}}" {{if eq .Value $state.CityID}} selected{{end}}>{{.Label}}</option>
+        {{end}}
+      </select></label
+    >
+    <label
+      >Adults
+      <select name="adults">
+        {{range .AdultOptions}}
+        <option value="{{.Value}}" {{if eq .Value $adults}} selected{{end}}>{{.Label}}</option>
+        {{end}}
+      </select></label
+    >
+    <label
+      >Preschool
+      <select name="preschool">
+        {{range .KidOptions}}
+        <option value="{{.Value}}" {{if eq .Value $preschool}} selected{{end}}>{{.Label}}</option>
+        {{end}}
+      </select></label
+    >
+    <label
+      >Schoolkids
+      <select name="schoolkids">
+        {{range .KidOptions}}
+        <option value="{{.Value}}" {{if eq .Value $schoolkids}} selected{{end}}>{{.Label}}</option>
+        {{end}}
+      </select></label
+    >
+    <label
+      >School type
+      <select name="schooltype">
+        {{range .SchoolTypeOptions}}
+        <option value="{{.Value}}" {{if eq .Value $state.SchoolType}} selected{{end}}>{{.Label}}</option>
+        {{end}}
+      </select></label
+    >
+    <label
+      >Area
+      <select name="area">
+        {{range .AreaOptions}}
+        <option value="{{.Value}}" {{if eq .Value $state.Area}} selected{{end}}>{{.Label}}</option>
+        {{end}}
+      </select></label
+    >
+    <label>Gross <input name="gross" value="{{$state.Gross}}" /></label>
+    <label
+      >Baseline
+      <select name="baseline">
+        {{range .BaselineOptions}}
+        <option value="{{.Value}}" {{if eq .Value $state.MinRole.BaselineSource}} selected{{end}}>{{.Label}}</option>
+        {{end}}
+      </select></label
+    >
+    <label>Target <input name="target" value="{{$state.MinRole.TargetRaw}}" /></label>
+    <label
+      >Target currency
+      <select name="targetcur">
+        {{range .CurrencyOptions}}
+        <option value="{{.Value}}" {{if eq .Value $state.MinRole.TargetCurrency}} selected{{end}}>{{.Label}}</option>
+        {{end}}
+      </select></label
+    >
+    <label
+      >Reference role
+      <select name="refrole">
+        {{range .RoleOptions}}
+        <option value="{{.Value}}" {{if eq .Value $state.MinRole.RefRole}} selected{{end}}>{{.Label}}</option>
+        {{end}}
+      </select></label
+    >
+    <label
+      >Reference city
+      <select name="refcity">
+        <option value="">{{if eq $locale "id"}}Tidak ada{{else}}None{{end}}</option>
+        {{range .CityOptions}}
+        <option value="{{.Value}}" {{if eq .Value $state.MinRole.RefCityID}} selected{{end}}>{{.Label}}</option>
+        {{end}}
+      </select></label
+    >
+    <label>My gross <input name="mygross" value="{{$state.MinRole.MyGrossMonthly}}" /></label>
+    <label
+      >My gross currency
+      <select name="mygrosscur">
+        {{range .GrossCurOptions}}
+        <option value="{{.Value}}" {{if eq .Value $state.MinRole.MyGrossCurrency}} selected{{end}}>{{.Label}}</option>
+        {{end}}
+      </select></label
+    >
+    <label
+      >My salary city
+      <select name="mysalarycity">
+        <option value="">{{if eq $locale "id"}}Tidak ada{{else}}None{{end}}</option>
+        {{range .CityOptions}}
+        <option value="{{.Value}}" {{if eq .Value $state.MinRole.MySalaryCityID}} selected{{end}}>{{.Label}}</option>
+        {{end}}
+      </select></label
+    >
+    <label
+      >Display currency
+      <select name="displaycur">
+        {{range .CurrencyOptions}}
+        <option value="{{.Value}}" {{if eq .Value $state.MinRole.DisplayCurrency}} selected{{end}}>{{.Label}}</option>
+        {{end}}
+      </select></label
+    >
+    <a href="/{{$locale}}/tools/cost-of-living-calculator" data-filter-reset
+      >{{if eq $locale "id"}}Atur ulang{{else}}Reset{{end}}</a
+    >
+  </form>
+  {{if .Invalid}}
+  <p data-invalid-filters>invalid_filters: unsupported input field. Reset the inputs to continue.</p>
+  {{else if .NeedsCity}}
+  <p data-estimate-guidance>
+    {{if eq .Locale "id"}}Pilih kota untuk melihat estimasi biaya dan tabungan.{{else}}Select a city to see your
+    estimated cost and savings.{{end}}
+  </p>
+  {{else if .Empty}}
+  <p data-fallback-state>Nothing clears this bar. Change or reset the inputs.</p>
+  {{else}}
+  <dl data-tool-estimate>
+    <dt>Monthly cost</dt>
+    <dd data-cost>{{.CostText}}</dd>
+    <dt>Monthly saving</dt>
+    <dd data-saving>{{.SavingsText}}</dd>
+    <dt>Minimum role</dt>
+    <dd data-min-role>{{.MinRole}}</dd>
+  </dl>
+  {{end}}
+  <p data-codec-note>Invalid values fall back to codec defaults.</p>
+</div>
+{{end}}

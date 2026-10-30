@@ -4,12 +4,36 @@
   "projectType": "application",
   "sourceRoot": "apps/ayokoding-web",
   "targets": {
+    "test:unit:browser": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "vitest run",
+        "cwd": "apps/ayokoding-web"
+      },
+      "cache": true,
+      "inputs": ["{projectRoot}/assets/js/**/*", "{projectRoot}/vitest.config.ts"]
+    },
+    "build:assets": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "mkdir -p internal/tools/shareddata/data && cp ../../libs/ayokoding-data/data/ai-benchmark.json ../../libs/ayokoding-data/data/cost-of-living.json ../../libs/ayokoding-data/data/fx.json internal/tools/shareddata/data/ && ../../node_modules/.bin/esbuild assets/js/progress.ts --bundle --minify --format=iife --outfile=internal/web/assets/dist/progress.js",
+        "cwd": "apps/ayokoding-web"
+      },
+      "cache": true,
+      "inputs": ["{projectRoot}/assets/js/**/*"],
+      "outputs": ["{projectRoot}/internal/web/assets/dist"]
+    },
     "dev": {
       "executor": "nx:run-commands",
       "options": {
         "command": "go run ./cmd/ayokoding-web",
         "cwd": "apps/ayokoding-web"
       },
+      "dependsOn": [
+        {
+          "target": "build:assets"
+        }
+      ],
       "cache": false
     },
     "lint": {
@@ -28,7 +52,12 @@
         "cwd": "apps/ayokoding-web"
       },
       "cache": true,
-      "inputs": ["{projectRoot}/**/*.go", "{projectRoot}/go.mod", "{projectRoot}/go.sum"]
+      "inputs": ["{projectRoot}/**/*.go", "{projectRoot}/go.mod", "{projectRoot}/go.sum"],
+      "dependsOn": [
+        {
+          "target": "build:assets"
+        }
+      ]
     },
     "build": {
       "executor": "nx:run-commands",
@@ -38,7 +67,12 @@
       },
       "outputs": ["{projectRoot}/dist"],
       "cache": true,
-      "inputs": ["{projectRoot}/**/*.go", "{projectRoot}/go.mod", "{projectRoot}/go.sum"]
+      "inputs": ["{projectRoot}/**/*.go", "{projectRoot}/go.mod", "{projectRoot}/go.sum"],
+      "dependsOn": [
+        {
+          "target": "build:assets"
+        }
+      ]
     },
     "test:unit": {
       "executor": "nx:run-commands",
@@ -54,6 +88,11 @@
         "{projectRoot}/go.sum",
         "{workspaceRoot}/scripts/container-runtime-check",
         "{workspaceRoot}/specs/apps/ayokoding/web/behaviours/**/*.feature"
+      ],
+      "dependsOn": [
+        {
+          "target": "build:assets"
+        }
       ]
     },
     "test:coverage:unit": {
@@ -116,10 +155,22 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          { "command": "npm exec -- nx run ayokoding-web:test:coverage:unit", "forwardAllArgs": false },
-          { "command": "npm exec -- nx run ayokoding-web:test:coverage:integration", "forwardAllArgs": false },
-          { "command": "npm exec -- nx run ayokoding-web:test:coverage:e2e", "forwardAllArgs": false },
-          { "command": "npm exec -- nx run ayokoding-web:test:coverage:behaviour", "forwardAllArgs": false }
+          {
+            "command": "npm exec -- nx run ayokoding-web:test:coverage:unit",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ayokoding-web:test:coverage:integration",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ayokoding-web:test:coverage:e2e",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ayokoding-web:test:coverage:behaviour",
+            "forwardAllArgs": false
+          }
         ],
         "parallel": false,
         "forwardAllArgs": false
@@ -139,16 +190,37 @@
         "command": "AYOKODING_BDD_ADAPTER=integration go test -count=1 ./tests/bdd-integration ./tests/integration/...",
         "cwd": "apps/ayokoding-web"
       },
-      "cache": false
+      "cache": false,
+      "dependsOn": [
+        {
+          "target": "build:assets"
+        }
+      ]
     },
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          { "command": "npm exec -- nx run ayokoding-web:lint", "forwardAllArgs": false },
-          { "command": "npm exec -- nx run ayokoding-web:typecheck", "forwardAllArgs": false },
-          { "command": "npm exec -- nx run ayokoding-web:test:unit", "forwardAllArgs": false },
-          { "command": "npm exec -- nx run ayokoding-web:test:coverage", "forwardAllArgs": false }
+          {
+            "command": "npm exec -- nx run ayokoding-web:lint",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ayokoding-web:typecheck",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ayokoding-web:test:unit",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ayokoding-web:test:unit:browser",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ayokoding-web:test:coverage",
+            "forwardAllArgs": false
+          }
         ],
         "parallel": false,
         "forwardAllArgs": false
@@ -163,7 +235,9 @@
         "{projectRoot}/go.mod",
         "{projectRoot}/go.sum",
         "{workspaceRoot}/scripts/container-runtime-check",
-        "{workspaceRoot}/specs/apps/ayokoding/web/behaviours/**/*.feature"
+        "{workspaceRoot}/specs/apps/ayokoding/web/behaviours/**/*.feature",
+        "{projectRoot}/assets/js/**/*",
+        "{projectRoot}/vitest.config.ts"
       ]
     }
   },

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "ayokoding-web-e2e",
+  "version": "0.1.0",
+  "private": true,
+  "volta": {
+    "extends": "../../package.json"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.61.0",
+    "playwright-bdd": "9.2.1",
+    "typescript": "5.8.3"
+  }
+}

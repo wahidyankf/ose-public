@@ -11,7 +11,7 @@ Feature: Cost-of-living and savings calculation
     Given the current shared city, role, and foreign-exchange data
     When a reader enters an established calculator vector's inputs
     Then the displayed costs, savings, and minimum qualifying role match that vector
-    And TypeScript and Elixir produce the same accepted results
+    And TypeScript and Go produce the same accepted results
 
   Scenario: A calculator URL restores all supported input state
     Given a calculator URL encodes supported geography, household, schooling, and income options

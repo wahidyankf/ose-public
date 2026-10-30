@@ -37,7 +37,7 @@ func (w *World) StepCourseCurrentlyMarkedOutlineOnly() error {
 }
 
 func (w *World) StepLearnerOpensLandingPage() error {
-	return w.get("/en/learn/" + w.courseID)
+	return w.get("/en/learn/courses/" + w.courseID)
 }
 
 func (w *World) StepCourseShowsOutlineStatusAvailableMaterialHonestl() error {
@@ -57,7 +57,7 @@ func (w *World) StepValidPathManifestContainsOrderedPhasesCourseMemb() error {
 }
 
 func (w *World) StepLearnerOpensPath() error {
-	return w.get("/en/paths/" + w.pathID)
+	return w.get("/en/learn/paths/" + w.pathID)
 }
 
 func (w *World) StepRoadmapCourseControlsFollowManifestSPhaseOrder() error {
@@ -87,14 +87,14 @@ func (w *World) StepPublishedCourseDeclaresPrerequisites() error {
 }
 
 func (w *World) StepLearnerOpensCourseLandingPage() error {
-	return w.get("/en/learn/" + w.courseID)
+	return w.get("/en/learn/courses/" + w.courseID)
 }
 
 func (w *World) StepEachPrerequisiteShownCurrentTitleCanonicalRoute() error {
 	if err := w.mustStatus(http.StatusOK); err != nil {
 		return err
 	}
-	for _, marker := range []string{"Go Basics", "/en/learn/go-basics", "data-prerequisites"} {
+	for _, marker := range []string{"Go Basics", "/en/learn/courses/go-basics", "data-prerequisites"} {
 		if err := w.mustContain(marker); err != nil {
 			return err
 		}
@@ -103,7 +103,7 @@ func (w *World) StepEachPrerequisiteShownCurrentTitleCanonicalRoute() error {
 }
 
 func (w *World) StepPathDoesPlaceRequiredCorePrerequisiteAfterDepend() error {
-	return w.get("/en/paths/backend-id")
+	return w.get("/en/learn/paths/backend-id")
 }
 
 func (w *World) StepCourseUrlContainsPathIdentifierMissingDoesContai() error {
@@ -112,7 +112,7 @@ func (w *World) StepCourseUrlContainsPathIdentifierMissingDoesContai() error {
 }
 
 func (w *World) StepLearnerOpensUrl() error {
-	return w.get("/en/learn/go-basics?path=" + w.pathID)
+	return w.get("/en/learn/courses/go-basics?path=" + w.pathID)
 }
 
 func (w *World) StepCourseStillRendersCanonicalNavigation() error {
@@ -131,7 +131,7 @@ func (w *World) StepManifestCollectionContainsOneMalformedFileOneVal() error {
 }
 
 func (w *World) StepPathCollectionLoaded() error {
-	return w.get("/en/paths/backend-id")
+	return w.get("/en/learn/paths/backend-id")
 }
 
 func (w *World) StepValidPathRemainsAvailable() error {
@@ -155,7 +155,7 @@ func (w *World) StepPathCategoryCurrentlyContainsPublishedPaths() error {
 }
 
 func (w *World) StepLearnerOpensCategory() error {
-	return w.get("/en/paths/" + w.pathID)
+	return w.get("/en/learn/paths/" + w.pathID)
 }
 
 func (w *World) StepPageExplainsPathsAvailableCategory() error {

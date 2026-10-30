@@ -1,0 +1,64 @@
+{{define "benchmark-fragment"}}
+<div data-fragment="benchmark" data-tool-filters data-encoded-state="{{.Encoded}}" lang="{{.Locale}}">
+  <form
+    method="get"
+    action="/{{.Locale}}/tools/ai-benchmark"
+    data-filter-form
+    hx-get="/htmx/benchmark?locale={{.Locale}}"
+    hx-target="closest div[data-fragment]"
+    hx-swap="outerHTML"
+    hx-trigger="change, submit"
+    hx-push-url="true"
+  >
+    <label
+      >Harness
+      <select name="harness">
+        <option value="">{{if eq .Locale "id"}}Semua{{else}}All{{end}}</option>
+        {{range .HarnessOptions}}
+        <option value="{{.Value}}" {{if eq .Value $.State.Harness}} selected{{end}}>{{.Label}}</option>
+        {{end}}
+      </select></label
+    >
+    <label
+      >Tier
+      <select name="tier">
+        <option value="">{{if eq .Locale "id"}}Semua{{else}}All{{end}}</option>
+        {{range .TierOptions}}
+        <option value="{{.Value}}" {{if eq .Value $.State.Tier}} selected{{end}}>{{.Label}}</option>
+        {{end}}
+      </select></label
+    >
+    <label
+      >Substitute
+      <select name="sub">
+        <option value="">{{if eq .Locale "id"}}Tidak ada{{else}}None{{end}}</option>
+        {{range .SubOptions}}
+        <option value="{{.Value}}" {{if eq .Value $.State.Sub}} selected{{end}}>{{.Label}}</option>
+        {{end}}
+      </select></label
+    >
+    <label
+      >Substitute harness
+      <select name="sub-harness">
+        <option value="">{{if eq .Locale "id"}}Default{{else}}Default{{end}}</option>
+        {{range .SubHarnessOptions}}
+        <option value="{{.Value}}" {{if eq .Value $.State.SubHarness}} selected{{end}}>{{.Label}}</option>
+        {{end}}
+      </select></label
+    >
+    <a href="/{{.Locale}}/tools/ai-benchmark" data-filter-reset>{{if eq .Locale "id"}}Atur ulang{{else}}Reset{{end}}</a>
+  </form>
+  {{if .Invalid}}
+  <p data-invalid-filters>invalid_filters: unsupported filter field. Reset the filters to continue.</p>
+  {{else if .Empty}}
+  <p data-empty-state>No models match this combination. Change or reset the filters.</p>
+  {{else}}
+  <ol data-tool-results data-count="{{.Count}}">
+    {{range .Rows}}
+    <li data-model="{{.ID}}" data-tier="{{.Tier}}">{{.Name}} · index {{.IndexText}} · {{.PriceText}}</li>
+    {{end}}
+  </ol>
+  {{end}}
+  <p data-codec-note>Invalid values fall back to codec defaults.</p>
+</div>
+{{end}}

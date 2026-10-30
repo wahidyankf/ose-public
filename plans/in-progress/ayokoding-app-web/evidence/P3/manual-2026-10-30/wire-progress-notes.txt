@@ -1,0 +1,39 @@
+learn localStorage after visit: {}
+lesson localStorage after visit: {}
+seeded localStorage: {"unrelated-keep-me":"hello","ayokoding-learn-progress-v1":"{\"version\":1,\"completed\":[\"go-basics/hello-world\"],\"lastPath\":\"go-basics/hello-world\",\"lastCourse\":\"go-basics\"}"}
+after reload: {"unrelated-keep-me":"hello","ayokoding-learn-progress-v1":"{\"version\":1,\"completed\":[\"go-basics/hello-world\"],\"lastPath\":\"go-basics/hello-world\",\"lastCourse\":\"go-basics\"}"}
+second tab sees key: {"version":1,"completed":["go-basics/hello-world"],"lastPath":"go-basics/hello-w
+tab1 after tab2 write (no reload): {"unrelated-keep-me":"hello","ayokoding-learn-progress-v1":"{\"version\":1,\"completed\":[\"go-basics/setup\"],\"lastPath\":\"\",\"lastCourse\":\"\"}"}
+DIALOG type=confirm message=Reset all learning progress in this browser?
+reset status text: "Progress reset."; focus after reset: reset-control
+localStorage after reset: {"unrelated-keep-me":"hello"}
+DIALOG2 type=confirm message=Reset all learning progress in this browser?
+after cancel: key present=true
+corrupt-value page title ok, console errors so far: ["error: Failed to load resource: the server responded with a status of 404 (Not Found)"]
+after corrupt+reset: {"unrelated-keep-me":"hello"}
+blocked-storage page renders: "Skip to content\nHome Courses\nEnglish Indonesia\nMenu Search\nLearn\nPaths Courses Legacy\nReset progress\n\nAyoKoding"; blocked notice shown: false; pageerrors: []
+TOTAL requests: 49; sockets seen: 0; request leaks: 0; socket leaks: 0
+non-2xx/3xx responses: []
+request inventory: {
+ "GET /en/learn": 3,
+ "GET /assets/js/htmx.min.js": 6,
+ "GET /assets/js/progress.js": 6,
+ "GET /en/learn/courses/go-basics/learning/hello-world": 2,
+ "GET /embed/abc": 2,
+ "GET /s/player/11a45ffb/www-player.css": 2,
+ "GET /s/_/ytembeds/_/ss/k=ytembeds.base.l4TkcKEzrz0.L.W.O/am=AAAAQA/d=1/br=1/rs=AGKMywFPYyrlUgXUYjAhMEk18j5MhdNj3g/m=root,base": 2,
+ "GET /s/_/ytembeds/_/js/k=ytembeds.base.en_US.hEa0Dn-EZu0.es5.O/am=AAAAQA/d=1/excm=base,root/br=1/rs=AGKMywFD7Cy1aRhZZv-WwbDoSbw4nXIVPA/m=root,base": 2,
+ "GET /s/player/11a45ffb/player_embed.vflset/en_US/base.js": 2,
+ "GET /s/roboto/v48/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBA.woff2": 2,
+ "GET /pagead/id": 4,
+ "GET /instream/ad_status.js": 2,
+ "GET /s/_/ytembeds/_/js/k=ytembeds.base.en_US.hEa0Dn-EZu0.es5.O/ck=ytembeds.base.l4TkcKEzrz0.L.W.O/am=AAAAQA/d=1/exm=base,root/excm=base,root/ed=1/br=1/rs=AGKMywEF581fOVxgZwnFcmDWtE-5ceenqw/m=r78Drb": 2,
+ "GET /js/th/bGD28-x6-ZcW0ZMme9K_HfMIjUxcrPss2m-Wi7ll8Ys.js": 2,
+ "GET /youtube/img/icons/mweb/youtube_fill/logo/v2/67px.svg": 1,
+ "GET /generate_204": 2,
+ "POST /$rpc/google.internal.waa.v1.Waa/GenerateIT": 2,
+ "POST /youtubei/v1/log_event": 4,
+ "GET /en/learn/courses/go-basics/learning/setup": 1
+}
+CONSOLE (4): ["error: Failed to load resource: the server responded with a status of 404 (Not Found)","warning: No available adapters.","warning: No available adapters.","warning: No available adapters."]
+PAGEERRORS (0): []

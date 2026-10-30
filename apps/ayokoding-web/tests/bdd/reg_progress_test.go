@@ -10,7 +10,7 @@ func registerProgressSteps(ctx *godog.ScenarioContext, world *glue.World) {
 	ctx.Given(`^a reader has no saved progress$`, world.StepReaderHasSavedProgress)
 	ctx.When(`^the reader marks a learning page complete and reloads it$`, world.StepReaderMarksLearningPageCompleteReloads)
 	ctx.Then(`^the page remains marked complete$`, world.StepPageRemainsMarkedComplete)
-	ctx.Step(`^no HTTP request or LiveView event carries the stored progress record$`, world.StepHttpRequestLiveviewEventCarriesStoredProgressRec)
+	ctx.Step(`^no HTTP request or htmx request carries the stored progress record$`, world.StepHttpRequestLiveviewEventCarriesStoredProgressRec)
 	ctx.Given(`^this origin contains a valid ayokoding-learn-progress-v1 record$`, world.StepThisOriginContainsValidAyokodingLearnProgressV1R)
 	ctx.When(`^the reader opens its saved course and path$`, world.StepReaderOpensSavedCoursePath)
 	ctx.Then(`^the saved completed pages and visit context appear correctly$`, world.StepSavedCompletedPagesVisitContextAppearCorrectly)

@@ -1,0 +1,19 @@
+benchmark tier=ultra via change: url=http://localhost:3102/htmx/benchmark?locale=en&harness=&tier=ultra&sub=&sub-harness= count=9 input=ultra
+benchmark back: url=http://localhost:3102/en/tools/ai-benchmark count=93
+benchmark forward: url=http://localhost:3102/htmx/benchmark?locale=en&harness=&tier=ultra&sub=&sub-harness= count=9
+benchmark deep-link valid: input=ultra count=9
+benchmark bogus param: invalid=true text=invalid_filters: unsupported filter field. Reset the filters to continue.
+calculator default main: "Cost of Living Calculator\nTab  Region  Country  City  Adults  Preschool  School kids  School type  Area  Gross  Baseline  Target  Target currency  Reference city  Reference role  My gross  My salary city  My gross currency  Display currency \nMonthly "
+calculator jakarta: url=http://localhost:3102/htmx/calculator?locale=en&tab=cost&region=asean&country=ID&city=jakarta&adults=1&preschool=0&schoolkids=0&schooltype=public&area=center&gross=0&baseline=savings_target&target=&targetcur=USD&refcity=&refrole=senior_swe&mygross=0&mysalarycity=&mygrosscur=local&displaycur=USD cost=IDR 12,200,000
+hello-world widgets: {"copyBtns":1,"details":1,"svg":0,"pre":2,"toc":1,"mathText":true,"tabText":true}
+TOC first href=#setup after-click url=http://localhost:3102/en/learn/courses/go-basics/learning/hello-world#setup
+copy click: pre starts "package main // source\n\nfunc main() {}"; clipboard=""
+details toggle: was open=false now open=true
+contrast http://localhost:3102/en: body=21.00:1 h1=21.00:1 link=9.40:1 (rgb(0, 0, 0) on rgba(0, 0, 0, 0); link rgb(0, 0, 238) on rgba(0, 0, 0, 0))
+contrast http://localhost:3102/en/learn/courses/go-basics/learning/hello-world: body=21.00:1 h1=21.00:1 link=9.40:1 (rgb(0, 0, 0) on rgba(0, 0, 0, 0); link rgb(0, 0, 238) on rgba(0, 0, 0, 0))
+old app /en title: "AyoKoding"
+old app catalog title: "Courses | AyoKoding"
+3101 sees 3102 key: null
+3102 sees 3101 key (must be null): null
+B3 console unique: ["error: Failed to load resource: the server responded with a status of 404 (Not Found)","warning: No available adapters."]
+B3 pageerrors: []

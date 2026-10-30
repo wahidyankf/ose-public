@@ -29,4 +29,7 @@ func registerRoutesSteps(ctx *godog.ScenarioContext, world *glue.World) {
 	ctx.When(`^the reader navigates back$`, world.StepReaderNavigatesBack)
 	ctx.Then(`^the previous content route and its URL state are restored$`, world.StepPreviousContentRouteUrlStateRestored)
 	ctx.Step(`^navigation controls reflect the restored location$`, world.StepNavigationControlsReflectRestoredLocation)
+	ctx.When(`^a reader opens a legacy archived page$`, world.StepReaderOpensLegacyArchivedPage)
+	ctx.Then(`^the legacy page serves its canonical content$`, world.StepLegacyPageServesCanonicalContent)
+	ctx.When(`^a visitor requests a legacy deep course URL$`, world.StepVisitorRequestsLegacyDeepCourseURL)
 }

@@ -10,7 +10,7 @@ func registerToolsSteps(ctx *godog.ScenarioContext, world *glue.World) {
 	ctx.Given(`^the current shared benchmark data and an established calculation vector$`, world.StepCurrentSharedBenchmarkDataEstablishedCalculation)
 	ctx.When(`^the reader applies that vector's filters and comparison options$`, world.StepReaderAppliesVectorSFiltersComparisonOptions)
 	ctx.Then(`^the displayed figures, ordering, and value results match the vector$`, world.StepDisplayedFiguresOrderingValueResultsMatchVector)
-	ctx.Step(`^TypeScript and Elixir produce the same accepted results$`, world.StepTypescriptElixirProduceSameAcceptedResults)
+	ctx.Step(`^TypeScript and Go produce the same accepted results$`, world.StepTypescriptElixirProduceSameAcceptedResults)
 	ctx.Given(`^a benchmark URL encodes supported comparison options$`, world.StepBenchmarkUrlEncodesSupportedComparisonOptions)
 	ctx.When(`^a reader opens that URL$`, world.StepReaderOpensUrl)
 	ctx.Then(`^every supported option reflects the encoded state$`, world.StepEverySupportedOptionReflectsEncodedState)

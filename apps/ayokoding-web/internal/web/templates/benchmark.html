@@ -5,23 +5,9 @@
   </head>
   <body>
     {{template "header" .Shell}}
-    <main id="main">
-      <h1>AI Benchmark</h1>
-      <form data-tool-filters data-encoded-state="{{.Filters.UseCase}}|{{.Filters.PriceBand}}|{{.Filters.MinScore}}">
-        <label>Use case <input name="use-case" value="{{.Filters.UseCase}}" /></label
-        ><label>Price band <input name="price-band" value="{{.Filters.PriceBand}}" /></label
-        ><label>Min score <input name="min-score" value="{{.Filters.MinScore}}" /></label>
-      </form>
-      {{if .Result.Empty}}
-      <p data-empty-state>No models match this combination. Change or reset the filters.</p>
-      {{else}}
-      <ol data-tool-results>
-        {{range .Result.Models}}
-        <li data-model="{{.Name}}">{{.Name}} · score {{.Score}} · ${{.PriceUSD}}</li>
-        {{end}}
-      </ol>
-      {{end}}
-      <p data-codec-note>Invalid values fall back to codec defaults.</p>
+    <main id="main" tabindex="-1">
+      <h1>{{if eq .Shell.Lang "id"}}Benchmark AI{{else}}AI Benchmark{{end}}</h1>
+      <div id="benchmark" data-tool="benchmark">{{template "benchmark-fragment" .Fragment}}</div>
     </main>
     {{template "footer" .Shell}}
   </body>

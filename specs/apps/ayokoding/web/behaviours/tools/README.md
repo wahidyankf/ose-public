@@ -12,5 +12,5 @@
 - [Cost-of-living calculator](./cost-of-living-calculator.feature) — inputs, costs, savings,
   minimum-role results, query strings, and source dates.
 
-Bindings are planned. Shared expected-result vectors prove the TypeScript and Elixir calculations;
+Bindings are implemented. Shared expected-result vectors prove the TypeScript and Go calculations;
 Playwright proves the actual forms, links, and results in each supported locale.

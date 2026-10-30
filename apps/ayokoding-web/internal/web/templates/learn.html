@@ -1,0 +1,29 @@
+{{define "learn"}}<!doctype html>
+<html lang="{{.Shell.Lang}}" data-theme-hook>
+  <head>
+    {{template "head" .Shell}}
+  </head>
+  <body>
+    {{template "header" .Shell}}
+    <main id="main" tabindex="-1">
+      <h1>{{if eq .Shell.Lang "id"}}Belajar{{else}}Learn{{end}}</h1>
+      <nav aria-label="learn" data-learn-nav>
+        <a href="/{{.Shell.Lang}}/learn/paths">{{if eq .Shell.Lang "id"}}Jalur{{else}}Paths{{end}}</a>
+        <a href="/{{.Shell.Lang}}/learn/courses">{{if eq .Shell.Lang "id"}}Kursus{{else}}Courses{{end}}</a>
+        <a href="/{{.Shell.Lang}}/learn/legacy/software-engineering">Legacy</a>
+      </nav>
+      <div>
+        <button type="button" id="reset-control" data-progress-control="reset-trigger">
+          {{if eq .Shell.Lang "id"}}Atur ulang progres{{else}}Reset progress{{end}}
+        </button>
+        <p role="status" aria-live="polite"></p>
+        <p data-progress-blocked hidden>
+          {{if eq .Shell.Lang "id"}}Progres tidak bisa disimpan di browser ini. Progres hanya bertahan sampai tab ini
+          ditutup.{{else}}Progress can't be saved in this browser. It lasts until you close this tab.{{end}}
+        </p>
+      </div>
+    </main>
+    {{template "footer" .Shell}}
+  </body>
+</html>
+{{end}}

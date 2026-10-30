@@ -11,15 +11,16 @@ change as product, research, assurance, and platform work develops.
 This active OSE product monorepo holds product work, supporting research, and their governance and
 automation.
 
-This repository is one of the **OSE Code Repositories** (`ose-projects`), the seven repositories OSE
-is built and maintained in. The other six have distinct roles: the independent private sibling
+This repository is one of the **OSE Code Repositories** (`ose-projects`), the eight repositories OSE
+is built and maintained in. The other seven have distinct roles: the independent private sibling
 [ose-private](https://github.com/wahidyankf/ose-private) (Private) holds authorized operations,
 [RHINO](https://github.com/wahidyankf/rhino) supplies repository hygiene,
 [HIPPO](https://github.com/wahidyankf/hippo) supplies resource coordination,
 [py-typekit](https://github.com/wahidyankf/py-typekit) supplies typed result values,
-[ose-rules](https://github.com/wahidyankf/ose-rules) is a shared rules catalog, and
-[BeaverNest](https://github.com/wahidyankf/beaver-nest) is an independent family product. Each of
-the seven versions and releases on its own schedule; the name is navigation, not a shared release.
+[ose-rules](https://github.com/wahidyankf/ose-rules) is a shared rules catalog,
+[BeaverNest](https://github.com/wahidyankf/beaver-nest) is an independent family product, and
+[ex-bdd](https://github.com/wahidyankf/ex-bdd) supplies behaviour-driven development testing. Each of
+the eight versions and releases on its own schedule; the name is navigation, not a shared release.
 
 The [repository comparison](./docs/reference/related-repositories.md) says which repository answers
 which question.

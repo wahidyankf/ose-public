@@ -48,6 +48,40 @@ func TestFormatUSDAndRatio(t *testing.T) {
 	}
 }
 
+func TestBenchmarkFragmentExposesFilterOptions(t *testing.T) {
+	dataset := loadDataset(t)
+	fragment := benchmark.DecodeFragment(mustParseBenchmarkQuery(t, ""), dataset, "en")
+	if fragment.Invalid {
+		t.Fatal("default fragment must be valid")
+	}
+	if len(fragment.HarnessOptions) == 0 {
+		t.Fatal("harness options must list the closed roster")
+	}
+	foundTier := false
+	for _, option := range fragment.TierOptions {
+		if option.Value == "ultra" {
+			foundTier = true
+		}
+		if option.Label == "" {
+			t.Fatal("tier options must carry labels")
+		}
+	}
+	if !foundTier {
+		t.Fatal("tier options must include ultra")
+	}
+	if len(fragment.SubOptions) == 0 || len(fragment.SubHarnessOptions) == 0 {
+		t.Fatal("substitute options must list the closed rosters")
+	}
+	for _, option := range fragment.HarnessOptions {
+		if option.Value == "" || option.Label == "" {
+			t.Fatalf("harness option = %+v, want value and label", option)
+		}
+	}
+	if got := dataset.HarnessLabel("not-a-harness"); got != "not-a-harness" {
+		t.Fatalf("unknown harness label = %q, want the raw id", got)
+	}
+}
+
 func TestBenchmarkFragmentRendersRowsOrEmpty(t *testing.T) {
 	dataset := loadDataset(t)
 	fragment := benchmark.DecodeFragment(mustParseBenchmarkQuery(t, "harness=cursor"), dataset, "en")

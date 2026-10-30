@@ -15,35 +15,41 @@ test("search falls back to full-page results without scripts", async ({ page }) 
 test("empty search input clears results without an error", async ({ page }) => {
   await fetchText(page, "/en/search?q=%20%20");
   expect(statusOf(page)).toBe(200);
-  expect(bodyOf(page)).not.toContain("data-search-results");
   expect(bodyOf(page)).toContain("data-search-empty");
+  expect(bodyOf(page)).not.toContain("data-result=");
 });
 
 test("benchmark filters fall back to full-page rendering", async ({ page }) => {
-  await gotoPage(page, "/en/tools/ai-benchmark?use-case=chat&price-band=mid&min-score=8");
+  await gotoPage(
+    page,
+    "/en/tools/ai-benchmark?harness=cursor&tier=planning&sub=gpt-5.6-terra&sub-harness=command-code",
+  );
   expect(statusOf(page)).toBe(200);
-  expect(bodyOf(page)).toContain("Model B");
+  expect(bodyOf(page)).toContain('value="cursor"');
   expect(bodyOf(page)).toContain("data-encoded-state");
 });
 
 test("benchmark recovers unknown filter values with defaults", async ({ page }) => {
-  await fetchText(page, "/en/tools/ai-benchmark?use-case=nope&min-score=abc");
+  await fetchText(page, "/en/tools/ai-benchmark?harness=nope&tier=nope");
   expect(statusOf(page)).toBe(200);
-  expect(bodyOf(page)).toContain('value="chat"');
+  expect(bodyOf(page)).toContain('data-count="93"');
   expect(bodyOf(page)).toContain("data-encoded-state");
 });
 
 test("calculator inputs fall back to full-page rendering", async ({ page }) => {
-  await gotoPage(page, "/en/tools/cost-of-living-calculator?city=jakarta&role=mid&mode=standard&workers=1");
+  await gotoPage(
+    page,
+    "/en/tools/cost-of-living-calculator?city=singapore&gross=5000&baseline=my_salary&mygross=5000&mysalarycity=singapore",
+  );
   expect(statusOf(page)).toBe(200);
-  expect(bodyOf(page)).toContain("900");
+  expect(bodyOf(page)).toContain("SGD 4,718");
   expect(bodyOf(page)).toContain("data-encoded-state");
 });
 
 test("calculator rejects invalid arithmetic with an inline state", async ({ page }) => {
-  await fetchText(page, "/en/tools/cost-of-living-calculator?city=atlantis&workers=abc");
+  await fetchText(page, "/en/tools/cost-of-living-calculator?city=jakarta&role=mid&mode=standard&workers=1");
   expect(statusOf(page)).toBe(200);
-  expect(bodyOf(page)).toContain("data-fallback-state");
+  expect(bodyOf(page)).toContain("data-invalid-filters");
   expect(bodyOf(page)).not.toContain("data-tool-estimate");
 });
 

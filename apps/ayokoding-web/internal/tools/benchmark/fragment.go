@@ -28,6 +28,20 @@ type Fragment struct {
 	Empty   bool
 	Count   int
 	Rows    []FragmentRow
+	// HarnessOptions, TierOptions, SubOptions, and SubHarnessOptions list
+	// the closed filter vocabularies so the form renders visible options
+	// instead of free-text boxes.
+	HarnessOptions    []Option
+	TierOptions       []Option
+	SubOptions        []Option
+	SubHarnessOptions []Option
+}
+
+// Option is one closed-vocabulary select choice: the codec value and its
+// visible label.
+type Option struct {
+	Value string
+	Label string
 }
 
 // BuildFragment scores the filtered roster in tier order and formats every
@@ -35,7 +49,15 @@ type Fragment struct {
 func BuildFragment(dataset *Dataset, state UrlState, locale string) Fragment {
 	encoded := EncodeState(state, dataset.Config.DefaultSubstituteHarness)
 	groups := ComputeTierGroups(FilterModels(dataset.Models, state, dataset), dataset)
-	fragment := Fragment{Locale: locale, State: state, Encoded: encoded}
+	fragment := Fragment{
+		Locale:            locale,
+		State:             state,
+		Encoded:           encoded,
+		HarnessOptions:    dataset.HarnessOptions(),
+		TierOptions:       dataset.TierOptions(),
+		SubOptions:        dataset.SubstituteTargetOptions(),
+		SubHarnessOptions: dataset.SubstituteHarnessOptions(),
+	}
 	for _, tier := range dataset.Config.Tiers {
 		for _, scored := range groups[tier] {
 			fragment.Rows = append(fragment.Rows, FragmentRow{

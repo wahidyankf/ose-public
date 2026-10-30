@@ -13,6 +13,7 @@ import (
 	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/search"
 	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/tools/benchmark"
 	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/tools/calculator"
+	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/tools/shareddata"
 )
 
 // Read-only source roots honored by the file-backed seed. They mirror the
@@ -40,9 +41,8 @@ func SeedFixtureDeps(fixture string) Deps {
 		{Locale: "en", Course: "go-basics", Slug: "draft-note", Title: "Draft", Description: "Unpublished", Weight: 2, Draft: true, BodyHTML: "<h1>Draft</h1>"},
 		{Locale: "en", Course: "web", Slug: "section-index", Title: "Section Index", Description: "Index", Section: "web", SectionTitle: "Web", Weight: 0, BodyHTML: "<h1>Section Index</h1><a href=\"leaf#part\">relative link</a>"},
 		{Locale: "en", Course: "web", Slug: "leaf", Title: "Leaf", Description: "Leaf page", Section: "web", SectionTitle: "Web", Weight: 1, BodyHTML: "<h1>Leaf</h1><h2 id=\"part\">Part</h2>"},
-		{Locale: "id", Course: "go-basics", Slug: "hello-world", Title: "Halo Dunia", Description: "Program pertama", Section: "start", SectionTitle: "Mulai", Weight: 1, BodyHTML: "<h1>Halo Dunia</h1><h2>Persiapan</h2><p>Halo.</p>"},
+		{Locale: "id", Course: "go-basics", Slug: "hello-world", Title: "Halo Dunia", Description: "Program pertama", Section: "start", SectionTitle: "Mulai", Weight: 1, BodyHTML: "<h1>Halo Dunia</h1><h2>Persiapan</h2><p>Halo.</p>" + idLessonHooksHTML},
 		{Locale: "id", Course: "go-basics", Slug: "setup", Title: "Persiapan", Description: "Siapkan alat", Section: "start", SectionTitle: "Mulai", Weight: 0, BodyHTML: "<h1>Persiapan</h1>"},
-		{Locale: "en", Course: "legacy", Slug: "software-engineering", Title: "Legacy Software Engineering", Description: "Archived domain", Weight: 0, BodyHTML: "<h1>Legacy Software Engineering</h1><p>Archived canonical content.</p>"},
 	}
 	if empty {
 		pages = nil
@@ -60,6 +60,8 @@ func SeedFixtureDeps(fixture string) Deps {
 				{ID: "go-basics", Title: "Go Basics", Description: "Learn Go", Format: "course", Effort: "4 weeks", Category: "fundamentals"},
 				{ID: "go-web", Title: "Go Web", Description: "Serve HTTP", Format: "course", Effort: "6 weeks", Category: "fundamentals", Prerequisites: []string{"go-basics"}},
 				{ID: "outline-only", Title: "Coming Soon", Description: "Planned", Format: "course", Effort: "TBD", Category: "fundamentals", Outline: true},
+				{ID: "web", Title: "Web", Description: "Build for the web", Format: "course", Effort: "2 weeks", Category: "fundamentals"},
+				{ID: "legacy", Title: "Legacy Software Engineering", Description: "Archived canonical content", Format: "course", Effort: "1 week", Category: "fundamentals"},
 			},
 			[]string{"broken-manifest.json"},
 		),
@@ -70,19 +72,53 @@ func SeedFixtureDeps(fixture string) Deps {
 			{Title: "Cost Calculator", Section: "Tools", Excerpt: "living costs", URL: "/en/tools/cost-of-living-calculator", Locale: "en", Kind: "tool", Body: "calculator living costs savings"},
 			{Title: "Halo Dunia", Section: "Go Basics", Excerpt: "program pertama", URL: "/id/learn/courses/go-basics/learning/hello-world", Locale: "id", Kind: "lesson", Body: "halo dunia program pertama"},
 		}),
-		Benchmark: benchmark.NewFakeEngine(map[string]benchmark.Result{
-			"chat|mid": {Models: []benchmark.ModelResult{{Name: "Model B", Score: 9.1, PriceUSD: 4}, {Name: "Model A", Score: 8.2, PriceUSD: 2}}},
-		}),
-		Calculator: calculator.NewFakeEngine(map[string]calculator.Estimate{
-			"jakarta|mid|standard|1": {MonthlyCostUSD: 900, MonthlySaving: 600, MinRole: "mid"},
-		}),
+		Benchmark: mustSharedBenchmark(),
 		Redirects: map[string]string{"/en/old-guide": "/en/learn/courses/go-basics/learning/hello-world"},
 	}
+	calculatorDataset, calculatorMatrix := mustSharedCalculator()
+	deps.Calculator = calculatorDataset
+	deps.Matrix = calculatorMatrix
 	if empty {
 		deps.CatalogErr = errUnavailableCatalog
 		return deps
 	}
 	return withFileBackedSources(deps)
+}
+
+// mustSharedBenchmark loads the shared benchmark dataset from the embedded
+// copy the build:assets target vendors from libs/ayokoding-data. A load
+// failure falls back to an empty dataset (rendered as the intentional
+// empty state) with a sanitized stderr note; it never serves fixture
+// values as real results and never crashes the listener.
+func mustSharedBenchmark() *benchmark.Dataset {
+	raw, err := shareddata.Benchmark()
+	if err != nil {
+		_, _ = fmt.Fprintf(os.Stderr, "ayokoding-web: embedded benchmark data unreadable: %v\n", err)
+		return &benchmark.Dataset{}
+	}
+	dataset, err := benchmark.LoadDataset(raw)
+	if err != nil {
+		_, _ = fmt.Fprintf(os.Stderr, "ayokoding-web: shared benchmark data invalid: %v\n", err)
+		return &benchmark.Dataset{}
+	}
+	return dataset
+}
+
+// mustSharedCalculator loads the shared cost-of-living dataset, FX snapshot,
+// and role matrix from the embedded copies with the same fail-open contract.
+func mustSharedCalculator() (calculator.Dataset, calculator.RoleMatrix) {
+	costRaw, costErr := shareddata.CostOfLiving()
+	fxRaw, fxErr := shareddata.Fx()
+	if costErr != nil || fxErr != nil {
+		_, _ = fmt.Fprintf(os.Stderr, "ayokoding-web: embedded calculator data unreadable: %v %v\n", costErr, fxErr)
+		return calculator.Dataset{}, calculator.RoleMatrix{}
+	}
+	dataset, matrix, err := calculator.LoadDataset(costRaw, fxRaw)
+	if err != nil {
+		_, _ = fmt.Fprintf(os.Stderr, "ayokoding-web: shared calculator data invalid: %v\n", err)
+		return calculator.Dataset{}, calculator.RoleMatrix{}
+	}
+	return dataset, matrix
 }
 
 // withFileBackedSources replaces the canned content and path stores with
@@ -266,6 +302,15 @@ func frontEffort(value any) string {
 	return strconv.FormatFloat(hours, 'f', -1, 64) + " hours"
 }
 
+// idLessonHooksHTML mirrors the hook-bearing enrichment on the Indonesian
+// fixture lesson so renderer proof covers both locales. Markers stay
+// identical across locales; only the authored tab panel copy is localized.
+const idLessonHooksHTML = `<div class="tabs"><div class="tab-panel">panel authored yang dipilih</div></div>` +
+	`<span class="math-inline">inline mathematical notation</span>` +
+	`<span class="math-display">display mathematical notation</span>` +
+	`<div class="mermaid" role="img" aria-label="diagram" data-chart="graph TD; A-->B">an accessible SVG diagram</div>` +
+	`<div class="youtube"><iframe title="responsive video iframe" src="https://www.youtube-nocookie.com/embed/abc"></iframe></div>`
+
 // lessonBodyHTML is the canned rich lesson used by rendering scenarios. P2
 // generates it through the goldmark pipeline; the markers are the contract.
 const lessonBodyHTML = `<h1>Hello World</h1>` +
@@ -276,12 +321,12 @@ const lessonBodyHTML = `<h1>Hello World</h1>` +
 	`<div class="admonition callout"><p>labeled admonition and authored body</p></div>` +
 	`<div class="tabs"><div class="tab-panel">selected tab's authored panel</div></div>` +
 	`<ol class="steps"><li>ordered numbered learning steps</li></ol>` +
-	`<div class="youtube"><iframe title="responsive video iframe" src="https://www.youtube.com/embed/abc"></iframe></div>` +
+	`<div class="youtube"><iframe title="responsive video iframe" src="https://www.youtube-nocookie.com/embed/abc"></iframe></div>` +
 	`<span class="math-inline">inline mathematical notation</span>` +
 	`<span class="math-display">display mathematical notation</span>` +
-	`<div class="mermaid" role="img" aria-label="diagram">an accessible SVG diagram</div>` +
+	`<div class="mermaid" role="img" aria-label="diagram" data-chart="graph TD; A-->B">an accessible SVG diagram</div>` +
 	`<pre data-language="go"><code>package main // source
 
-func main() {}</code></pre><button data-copy="true">Copy</button>` +
+func main() {}</code></pre><button data-copy="true" data-copy-label="Copy" data-copied-label="Copied" data-failed-label="Copy failed">Copy</button>` +
 	`<p>wrapping inline <code>averylonginlinetokenthatmustwrapwithinthearticlereadingcolumn</code> continues</p>` +
 	`<pre class="wide"><code>wide fenced block that scrolls internally without widening the document column width</code></pre>`

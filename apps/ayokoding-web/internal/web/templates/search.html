@@ -1,4 +1,22 @@
-{{define "search"}}{{if .Results}}
+{{define "search-page"}}<!doctype html>
+<html lang="{{.Shell.Lang}}" data-theme-hook>
+  <head>
+    {{template "head" .Shell}}
+  </head>
+  <body>
+    {{template "header" .Shell}}
+    <main id="main" tabindex="-1">
+      <h1>{{if eq .Shell.Lang "id"}}Cari{{else}}Search{{end}}</h1>
+      <form method="get" action="/{{.Shell.Lang}}/search" data-search-page-form>
+        <input type="search" name="q" value="{{.Query}}" aria-label="search" data-search-page-input />
+        <button type="submit">{{if eq .Shell.Lang "id"}}Cari{{else}}Search{{end}}</button>
+      </form>
+      <div data-search-page-results>{{template "search" .}}</div>
+    </main>
+    {{template "footer" .Shell}}
+  </body>
+</html>
+{{end}} {{define "search"}}{{if .Results}}
 <ul data-search-results data-query="{{.Query}}">
   {{range .Results}}
   <li data-result="{{.URL}}">

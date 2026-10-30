@@ -4,6 +4,8 @@ import (
 	"embed"
 	"html/template"
 	"net/http"
+	"net/url"
+	"path"
 	"sort"
 	"strconv"
 	"strings"
@@ -28,13 +30,15 @@ var templates embed.FS
 // serves them because go:embed paths must stay inside the source directory;
 // the plan's app-root assets tree keeps the TypeScript authoring sources.
 //
-//go:embed assets/vendor/htmx.min.js assets/dist/progress.js
+//go:embed assets/vendor/htmx.min.js assets/dist/progress.js assets/favicon.svg assets/css/site.css assets/vendor/mermaid/mermaid.min.js assets/vendor/katex/katex.min.js assets/vendor/katex/katex.min.css assets/vendor/katex/fonts/*.woff2
 var staticAssets embed.FS
 
-// staticFiles allowlists the servable scripts by request name and embedded path.
+// staticFiles allowlists the servable scripts and styles by request name
+// and embedded path.
 var staticFiles = map[string]string{
 	"htmx.min.js": "assets/vendor/htmx.min.js",
 	"progress.js": "assets/dist/progress.js",
+	"site.css":    "assets/css/site.css",
 }
 
 // Deps wires the in-memory doubles behind the router. P2 swaps each double
@@ -43,8 +47,9 @@ type Deps struct {
 	Content    *content.FakeStore
 	Paths      *coursepaths.FakeStore
 	Index      *search.FakeIndex
-	Benchmark  *benchmark.Engine
-	Calculator *calculator.Engine
+	Benchmark  *benchmark.Dataset
+	Calculator calculator.Dataset
+	Matrix     calculator.RoleMatrix
 	Redirects  map[string]string
 	// CatalogErr signals an unavailable source catalog (owned test fixture
 	// only). Content and discovery handlers answer a generic 500 instead of
@@ -72,7 +77,9 @@ func NewServer(cfg Config, deps Deps) *Server {
 		"templates/course.html",
 		"templates/path.html",
 		"templates/benchmark.html",
+		"templates/benchmark-fragment.html",
 		"templates/calculator.html",
+		"templates/calculator-fragment.html",
 		"templates/notfound.html",
 		"templates/search.html",
 		"templates/sitemap.xml",
@@ -83,7 +90,12 @@ func NewServer(cfg Config, deps Deps) *Server {
 	server.mux.HandleFunc("GET /feed.xml", server.handleFeed)
 	server.mux.HandleFunc("GET /robots.txt", server.handleRobots)
 	server.mux.HandleFunc("GET /htmx/search", server.handleSearchFragment)
+	server.mux.HandleFunc("GET /htmx/benchmark", server.handleBenchmarkFragment)
+	server.mux.HandleFunc("GET /htmx/calculator", server.handleCalculatorFragment)
 	server.mux.HandleFunc("GET /assets/js/{file}", server.handleAsset)
+	server.mux.HandleFunc("GET /assets/css/{file}", server.handleAsset)
+	server.mux.HandleFunc("GET /assets/vendor/{rest...}", server.handleVendor)
+	server.mux.HandleFunc("GET /favicon.ico", server.handleFavicon)
 	server.mux.HandleFunc("GET /{locale}/search", server.handleSearch)
 	server.mux.HandleFunc("GET /{locale}/tools/ai-benchmark", server.handleBenchmark)
 	server.mux.HandleFunc("GET /{locale}/tools/cost-of-living-calculator", server.handleCalculator)
@@ -138,7 +150,55 @@ func (s *Server) handleAsset(writer http.ResponseWriter, request *http.Request) 
 		s.serverError(writer)
 		return
 	}
-	writer.Header().Set("Content-Type", "application/javascript")
+	contentType := "application/javascript"
+	if path.Ext(embedded) == ".css" {
+		contentType = "text/css; charset=utf-8"
+	}
+	writer.Header().Set("Content-Type", contentType)
+	writer.Header().Set("Cache-Control", "no-store")
+	_, _ = writer.Write(body)
+}
+
+// vendorContentTypes allowlists the vendored renderer library extensions.
+// Anything else — manifests, maps, or traversal targets — resolves to the
+// locale-aware missing-page response, so no source location is disclosed.
+var vendorContentTypes = map[string]string{
+	".js":    "application/javascript",
+	".css":   "text/css; charset=utf-8",
+	".woff2": "font/woff2",
+}
+
+// handleVendor serves one vendored renderer library (mermaid, KaTeX)
+// embedded with the server. Files load on demand from hook-bearing pages
+// only; the allowlist keeps the embedded tree from becoming file disclosure.
+func (s *Server) handleVendor(writer http.ResponseWriter, request *http.Request) {
+	rest := request.PathValue("rest")
+	contentType, ok := vendorContentTypes[path.Ext(rest)]
+	if !ok {
+		s.notFound(writer, request, "en")
+		return
+	}
+	body, err := staticAssets.ReadFile("assets/vendor/" + rest)
+	if err != nil {
+		s.notFound(writer, request, "en")
+		return
+	}
+	writer.Header().Set("Content-Type", contentType)
+	writer.Header().Set("Cache-Control", "no-store")
+	_, _ = writer.Write(body)
+}
+
+// handleFavicon serves the site icon so clean page loads stay console-error
+// free. No locale or content negotiation applies; the icon is identical for
+// every page.
+func (s *Server) handleFavicon(writer http.ResponseWriter, request *http.Request) {
+	_ = request
+	body, err := staticAssets.ReadFile("assets/favicon.svg")
+	if err != nil {
+		s.serverError(writer)
+		return
+	}
+	writer.Header().Set("Content-Type", "image/svg+xml")
 	writer.Header().Set("Cache-Control", "no-store")
 	_, _ = writer.Write(body)
 }
@@ -167,13 +227,33 @@ type altLink struct {
 
 // shell holds the localized chrome shared by HTML pages.
 type shell struct {
-	Lang        string
-	Title       string
-	Description string
-	Canonical   string
-	Alternates  []altLink
-	OtherLocale string
-	ThemeHook   bool
+	Lang             string
+	Title            string
+	Description      string
+	Canonical        string
+	Alternates       []altLink
+	OtherLocale      string
+	ThemeHook        bool
+	ThemeToggleLabel string
+	ThemeLightLabel  string
+	ThemeDarkLabel   string
+	ResizeLabel      string
+}
+
+// markLabel resolves the lesson completion toggle label server-side so templates
+// keep double-quoted attributes parseable; the browser island swaps the same
+// two strings without touching markup.
+func markLabel(locale string, mark bool) string {
+	if locale == "id" {
+		if mark {
+			return "Tandai selesai"
+		}
+		return "Tandai belum selesai"
+	}
+	if mark {
+		return "Mark as complete"
+	}
+	return "Mark as not complete"
 }
 
 // baseShell builds chrome for a locale, linking only available translations.
@@ -186,10 +266,20 @@ func (s *Server) baseShell(locale, title, description, canonical string) shell {
 	if IsSupportedLocale(other) {
 		alternates = []altLink{{Locale: other, URL: "/" + other}}
 	}
+	labels := map[string]string{
+		"toggle": "Toggle theme", "light": "Light", "dark": "Dark", "resize": "Resize panel",
+	}
+	if locale == "id" {
+		labels = map[string]string{
+			"toggle": "Ganti tema", "light": "Terang", "dark": "Gelap", "resize": "Ubah ukuran panel",
+		}
+	}
 	return shell{
 		Lang: locale, Title: title, Description: description,
 		Canonical: canonical, Alternates: alternates,
 		OtherLocale: other, ThemeHook: true,
+		ThemeToggleLabel: labels["toggle"], ThemeLightLabel: labels["light"],
+		ThemeDarkLabel: labels["dark"], ResizeLabel: labels["resize"],
 	}
 }
 
@@ -249,15 +339,17 @@ func (s *Server) handleLesson(writer http.ResponseWriter, request *http.Request)
 	pathActive := pathID != "" && s.deps.Paths.PathContains(pathID, course)
 	prevURL, nextURL := s.neighbors(locale, course, kind, lesson, pathID, pathActive)
 	data := map[string]any{
-		"Shell":      s.baseShell(locale, page.Title, page.Description, "/"+locale+"/learn/courses/"+course+"/"+kind+"/"+lesson),
-		"Page":       page,
-		"Kind":       kind,
-		"BodyHTML":   template.HTML(page.BodyHTML), // canned fixture markup; P2 sanitizes pipeline output
-		"PathID":     pathID,
-		"PathActive": pathActive,
-		"TOC":        lessonTOC(locale, lesson),
-		"PrevURL":    prevURL,
-		"NextURL":    nextURL,
+		"Shell":       s.baseShell(locale, page.Title, page.Description, "/"+locale+"/learn/courses/"+course+"/"+kind+"/"+lesson),
+		"Page":        page,
+		"Kind":        kind,
+		"BodyHTML":    template.HTML(page.BodyHTML), // canned fixture markup; P2 sanitizes pipeline output
+		"PathID":      pathID,
+		"PathActive":  pathActive,
+		"TOC":         lessonTOC(locale, lesson),
+		"PrevURL":     prevURL,
+		"NextURL":     nextURL,
+		"MarkLabel":   markLabel(locale, true),
+		"UnmarkLabel": markLabel(locale, false),
 	}
 	s.render(writer, "lesson", data)
 }
@@ -334,10 +426,15 @@ func (s *Server) handleCourse(writer http.ResponseWriter, request *http.Request)
 			lessons = append(lessons, page)
 		}
 	}
+	countPattern := "{done} of {total} pages done"
+	if locale == "id" {
+		countPattern = "{done} dari {total} halaman selesai"
+	}
 	data := map[string]any{
 		"Shell":         s.baseShell(locale, course.Title, course.Description, "/"+locale+"/learn/courses/"+courseID),
 		"Course":        course,
 		"Kind":          "learning",
+		"CountPattern":  countPattern,
 		"Prerequisites": s.deps.Paths.Prerequisites(courseID),
 		"Lessons":       lessons,
 		"PathID":        pathID,
@@ -361,23 +458,18 @@ func (s *Server) handleCatalog(writer http.ResponseWriter, request *http.Request
 	}
 	members := map[string][]coursepaths.Course{}
 	var order []string
-	for _, path := range s.deps.Paths.Paths() {
-		for _, phase := range path.Phases {
-			for _, id := range phase.Courses {
-				course, ok := s.deps.Paths.Course(id)
-				if !ok {
-					continue
-				}
-				if _, exists := members[course.Category]; !exists {
-					order = append(order, course.Category)
-				}
-				members[course.Category] = append(members[course.Category], course)
-			}
+	for _, course := range s.deps.Paths.Courses() {
+		if _, exists := members[course.Category]; !exists {
+			order = append(order, course.Category)
 		}
+		members[course.Category] = append(members[course.Category], course)
 	}
+	sort.Strings(order)
 	var groups []group
 	for _, category := range order {
-		groups = append(groups, group{Category: category, Courses: members[category]})
+		entries := members[category]
+		sort.Slice(entries, func(i, j int) bool { return entries[i].Title < entries[j].Title })
+		groups = append(groups, group{Category: category, Courses: entries})
 	}
 	data := map[string]any{
 		"Shell":  s.baseShell(locale, "Courses", "Catalog", "/"+locale+"/learn/courses"),
@@ -546,9 +638,12 @@ func (s *Server) handleSearch(writer http.ResponseWriter, request *http.Request)
 		}
 	}
 	results := s.deps.Index.Search(query.Get("q"), locale, limit)
-	writer.Header().Set("Cache-Control", "no-store")
-	writer.Header().Set("Content-Type", "text/html; charset=utf-8")
-	_ = s.pages.ExecuteTemplate(writer, "search", map[string]any{"Results": results, "Query": query.Get("q")})
+	data := map[string]any{
+		"Shell":   s.baseShell(locale, "Search", "Search", "/"+locale+"/search"),
+		"Results": results,
+		"Query":   query.Get("q"),
+	}
+	s.render(writer, "search-page", data)
 }
 
 func (s *Server) handleBenchmark(writer http.ResponseWriter, request *http.Request) {
@@ -557,14 +652,51 @@ func (s *Server) handleBenchmark(writer http.ResponseWriter, request *http.Reque
 		s.notFound(writer, request, "en")
 		return
 	}
-	filters := benchmark.DecodeFilters(request.URL.Query())
-	result := s.deps.Benchmark.Score(filters)
+	fragment := benchmark.DecodeFragment(request.URL.Query(), s.deps.Benchmark, locale)
 	data := map[string]any{
-		"Shell":   s.baseShell(locale, "AI Benchmark", "Compare models", "/"+locale+"/tools/ai-benchmark"),
-		"Filters": filters,
-		"Result":  result,
+		"Shell":    s.baseShell(locale, "AI Benchmark", "Compare models", "/"+locale+"/tools/ai-benchmark"),
+		"Fragment": fragment,
 	}
 	s.render(writer, "benchmark", data)
+}
+
+// firstQueryValue reads the first value of a query key following the old
+// codec's first-value-wins rule, falling back when the key is absent.
+func firstQueryValue(query url.Values, key, fallback string) string {
+	if values, ok := query[key]; ok && len(values) > 0 {
+		return values[0]
+	}
+	return fallback
+}
+
+// handleBenchmarkFragment serves the htmx benchmark partial without layout:
+// the same decoded fragment the full page embeds. Invalid nested fields and
+// unexpected keys yield the inline invalid-filters state, never a crash.
+func (s *Server) handleBenchmarkFragment(writer http.ResponseWriter, request *http.Request) {
+	locale := fragmentLocale(request)
+	query := request.URL.Query()
+	query.Del("locale")
+	fragment := benchmark.DecodeFragment(query, s.deps.Benchmark, locale)
+	writer.Header().Set("Content-Type", "text/html; charset=utf-8")
+	writer.Header().Set("Cache-Control", "no-store")
+	writer.Header().Set("HX-Push-URL", pagePushURL("/"+locale+"/tools/ai-benchmark", fragment.Encoded, fragment.Invalid))
+	if err := s.pages.ExecuteTemplate(writer, "benchmark-fragment", fragment); err != nil {
+		s.serverError(writer)
+	}
+}
+
+// pagePushURL is the shareable page URL htmx pushes after a fragment swap:
+// the canonical page route with codec-ordered, defaults-omitted state. An
+// invalid fragment suppresses the push so the raw fragment URL never lands
+// in the address bar; reloading the pushed URL renders the full page.
+func pagePushURL(page, encoded string, invalid bool) string {
+	if invalid {
+		return "false"
+	}
+	if encoded == "" {
+		return page
+	}
+	return page + "?" + encoded
 }
 
 func (s *Server) handleCalculator(writer http.ResponseWriter, request *http.Request) {
@@ -573,16 +705,33 @@ func (s *Server) handleCalculator(writer http.ResponseWriter, request *http.Requ
 		s.notFound(writer, request, "en")
 		return
 	}
-	inputs := calculator.DecodeInputs(request.URL.Query())
-	estimate := s.deps.Calculator.Compute(inputs)
+	fragment := calculator.DecodeFragment(request.URL.Query(), s.deps.Calculator, s.deps.Matrix, locale)
 	data := map[string]any{
-		"Shell":   s.baseShell(locale, "Cost Calculator", "Living costs", "/"+locale+"/tools/cost-of-living-calculator"),
-		"Inputs":  inputs,
-		"Result":  estimate,
-		"Known":   calculator.KnownCity(inputs.City),
-		"Encoded": calculator.EncodeInputs(inputs),
+		"Shell":    s.baseShell(locale, "Cost Calculator", "Living costs", "/"+locale+"/tools/cost-of-living-calculator"),
+		"Fragment": fragment,
 	}
 	s.render(writer, "calculator", data)
+}
+
+// handleCalculatorFragment serves the htmx calculator partial without
+// layout: the same decoded fragment the full page embeds. Invalid nested
+// fields and unexpected keys yield the inline invalid-filters state, and a
+// disengaged baseline yields the intentional empty state.
+func (s *Server) handleCalculatorFragment(writer http.ResponseWriter, request *http.Request) {
+	locale := firstQueryValue(request.URL.Query(), "locale", "en")
+	if !IsSupportedLocale(locale) {
+		s.notFound(writer, request, "en")
+		return
+	}
+	query := request.URL.Query()
+	query.Del("locale")
+	fragment := calculator.DecodeFragment(query, s.deps.Calculator, s.deps.Matrix, locale)
+	writer.Header().Set("Content-Type", "text/html; charset=utf-8")
+	writer.Header().Set("Cache-Control", "no-store")
+	writer.Header().Set("HX-Push-URL", pagePushURL("/"+locale+"/tools/cost-of-living-calculator", fragment.Encoded, fragment.Invalid))
+	if err := s.pages.ExecuteTemplate(writer, "calculator-fragment", fragment); err != nil {
+		s.serverError(writer)
+	}
 }
 
 // handleCatchAll renders the localized not-found experience. Ordered

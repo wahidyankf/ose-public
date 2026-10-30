@@ -1,0 +1,6 @@
+overflow sweep done
+skip-link: first tab=A.skip-link [Skip to content]; after Enter active=BODY# scrollY=0
+id dialog search 'go' hrefs: ["/id/learn/courses/go-basics/learning/hello-world"]
+id dialog after clear: live len=58
+chose result /id/learn/courses/go-basics/learning/hello-world: landed http://localhost:3102/id/learn/courses/go-basics/learning/hello-world dialog hidden=true
+dialog submit on tool page: url=http://localhost:3102/en/tools/ai-benchmark

@@ -127,6 +127,19 @@ When("a reader opens the fixture and activates its supported controls", async ({
 
 Then("the {string} is available to the reader", async ({ page }, result: string) => {
   expect(bodyOf(page)).toContain(result);
+  if (result === "selected tab's authored panel") {
+    // Tabs gain tablist semantics with keyboard travel in both locales.
+    for (const locale of ["en", "id"]) {
+      await gotoPage(page, `/${locale}/learn/courses/go-basics/learning/hello-world`);
+      await expect(page.locator('[role="tablist"]').first()).toBeVisible();
+      const selected = page.locator('[role="tab"][aria-selected="true"]').first();
+      await expect(selected).toBeVisible();
+      await selected.focus();
+      await page.keyboard.press("ArrowRight");
+      await expect(page.locator('[role="tab"][aria-selected="true"]').first()).toBeFocused();
+    }
+    await gotoPage(page, "/en/learn/courses/go-basics/learning/hello-world");
+  }
 });
 
 Given("a section index contains a relative Markdown link with a heading fragment", async ({ page }) => {
@@ -153,16 +166,26 @@ Given("a lesson contains annotated fenced code", async ({ page }) => {
 });
 
 When("a reader copies that code block", async ({ page }) => {
-  // No copy script is served yet; the step extracts the exact payload the
-  // copy control offers, through the real rendered DOM.
-  const code = await page.locator("pre[data-language] code").first().innerText();
-  stateFor(page).clipboard = code;
+  // The served copy control offers the sibling code block's own text; drive
+  // the real button. Only Chromium accepts both clipboard grants, so the
+  // clipboard read runs where it was granted and every browser asserts the
+  // confirmation feedback.
+  const granted = await page
+    .context()
+    .grantPermissions(["clipboard-read", "clipboard-write"])
+    .then(() => true)
+    .catch(() => false);
+  stateFor(page).clipboardGrant = granted;
+  await page.locator("[data-copy]").first().click();
 });
 
 Then("the clipboard contains its exact source text and newlines", async ({ page }) => {
-  const copied = stateFor(page).clipboard ?? "";
-  expect(copied).toBe("package main // source\n\nfunc main() {}");
-  expect(copied).toContain("\n");
+  if (stateFor(page).clipboardGrant === true) {
+    const copied = await page.evaluate(() => navigator.clipboard.readText());
+    expect(copied).toBe("package main // source\n\nfunc main() {}");
+    expect(copied).toContain("\n");
+  }
+  await expect(page.locator("[data-copy]").first()).toContainText("Copied");
 });
 
 Then("the code block shows its language label and readable highlighting", async ({ page }) => {
@@ -180,6 +203,29 @@ When("a reader opens the lesson", async ({ page }) => {
 });
 
 Then("the reader sees {string}", async ({ page }, result: string) => {
+  if (result === "an accessible SVG diagram") {
+    // Mermaid replaces the authored source with a rendered SVG in both
+    // locales; the accessible name stays on the container.
+    for (const locale of ["en", "id"]) {
+      await gotoPage(page, `/${locale}/learn/courses/go-basics/learning/hello-world`);
+      await expect(page.locator(".mermaid svg").first()).toBeVisible();
+      await expect(page.locator('.mermaid[role="img"][aria-label="diagram"]').first()).toBeVisible();
+    }
+    await gotoPage(page, "/en/learn/courses/go-basics/learning/hello-world");
+    return;
+  }
+  if (result === "inline mathematical notation" || result === "display mathematical notation") {
+    // KaTeX typesets the authored notation in place in both locales; the
+    // words survive inside the rendered output.
+    for (const locale of ["en", "id"]) {
+      await gotoPage(page, `/${locale}/learn/courses/go-basics/learning/hello-world`);
+      expect(bodyOf(page)).toContain(result);
+      await expect(page.locator(".math-inline .katex").first()).toBeVisible();
+      await expect(page.locator(".math-display .katex").first()).toBeVisible();
+    }
+    await gotoPage(page, "/en/learn/courses/go-basics/learning/hello-world");
+    return;
+  }
   expect(bodyOf(page)).toContain(result);
 });
 

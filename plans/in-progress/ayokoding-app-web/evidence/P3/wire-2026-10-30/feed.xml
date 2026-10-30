@@ -1,0 +1,9 @@
+&lt;?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"><channel><title>AyoKoding</title><link>https://ayokoding.example/en</link><language>en</language>
+<item><title>Legacy Software Engineering</title><description>Archived canonical content</description><link>https://ayokoding.example/en/learn/courses/legacy/learning/software-engineering</link><guid>https://ayokoding.example/en/learn/courses/legacy/learning/software-engineering</guid></item>
+<item><title>Legacy Software Engineering</title><description>Archived domain</description><link>https://ayokoding.example/en/learn/courses/legacy/learning/software-engineering</link><guid>https://ayokoding.example/en/learn/courses/legacy/learning/software-engineering</guid></item>
+<item><title>Section Index</title><description>Index</description><link>https://ayokoding.example/en/learn/courses/web/learning/section-index</link><guid>https://ayokoding.example/en/learn/courses/web/learning/section-index</guid></item>
+<item><title>Setup</title><description>Prepare tools</description><link>https://ayokoding.example/en/learn/courses/go-basics/learning/setup</link><guid>https://ayokoding.example/en/learn/courses/go-basics/learning/setup</guid></item>
+<item><title>Hello World</title><description>First program</description><link>https://ayokoding.example/en/learn/courses/go-basics/learning/hello-world</link><guid>https://ayokoding.example/en/learn/courses/go-basics/learning/hello-world</guid></item>
+<item><title>Leaf</title><description>Leaf page</description><link>https://ayokoding.example/en/learn/courses/web/learning/leaf</link><guid>https://ayokoding.example/en/learn/courses/web/learning/leaf</guid></item>
+</channel></rss>

@@ -39,6 +39,74 @@ func TestCalculatorFragmentCostAndSavings(t *testing.T) {
 	}
 }
 
+func TestCalculatorFragmentExposesInputOptions(t *testing.T) {
+	dataset, matrix := loadData(t)
+	fragment := calculator.BuildFragment(dataset, matrix, calculator.DefaultState(), "en")
+	if len(fragment.TabOptions) != 3 || len(fragment.RegionOptions) == 0 {
+		t.Fatal("tab and region options must list the closed vocabularies")
+	}
+	if len(fragment.AdultOptions) != 2 || len(fragment.KidOptions) != 4 {
+		t.Fatal("household options must list the closed counts")
+	}
+	if len(fragment.CountryOptions) == 0 || len(fragment.CityOptions) == 0 {
+		t.Fatal("country and city options must list the dataset roster")
+	}
+	if len(fragment.RoleOptions) == 0 || len(fragment.CurrencyOptions) == 0 {
+		t.Fatal("role and currency options must list the closed rosters")
+	}
+	singapore := false
+	for _, option := range fragment.CityOptions {
+		if option.Value == "" || option.Label == "" {
+			t.Fatalf("city option = %+v, want value and label", option)
+		}
+		if option.Value == "singapore" {
+			singapore = true
+		}
+	}
+	if !singapore {
+		t.Fatal("city options must include singapore")
+	}
+	localized := calculator.BuildFragment(dataset, matrix, calculator.DefaultState(), "id")
+	for _, option := range localized.CityOptions {
+		if option.Value == "singapore" && option.Label != "Singapura" {
+			t.Fatalf("id city label = %q, want the Indonesian name", option.Label)
+		}
+	}
+	for _, option := range localized.RoleOptions {
+		if option.Value == "senior_swe" && option.Label != "Insinyur Perangkat Lunak Senior" {
+			t.Fatalf("id role label = %q, want the Indonesian name", option.Label)
+		}
+	}
+	unlabeled := calculator.RoleMatrix{Ladder: []calculator.LadderRung{
+		{Role: "id-only", Rank: 1, Label: calculator.LocalizedString{ID: "Hanya ID"}},
+		{Role: "nameless", Rank: 2, Label: calculator.LocalizedString{}},
+	}}
+	english := unlabeled.RoleOptions("en")
+	if english[0].Label != "Hanya ID" {
+		t.Fatalf("missing English label = %q, want the Indonesian fallback", english[0].Label)
+	}
+	if english[1].Label != "nameless" {
+		t.Fatalf("missing labels = %q, want the raw role", english[1].Label)
+	}
+	if got := unlabeled.RoleOptions("id")[0].Label; got != "Hanya ID" {
+		t.Fatalf("id label = %q, want the Indonesian name", got)
+	}
+}
+
+func TestCalculatorFragmentNeedsCityGuidance(t *testing.T) {
+	dataset, matrix := loadData(t)
+	if !calculator.DecodeFragment(mustParseCalculatorQuery(t, ""), dataset, matrix, "en").NeedsCity {
+		t.Fatal("a missing city selection must request guidance")
+	}
+	if calculator.DecodeFragment(mustParseCalculatorQuery(t, "city=no-such-city"), dataset, matrix, "en").NeedsCity {
+		t.Fatal("a reconciled-away city keeps the fallback behavior, not guidance")
+	}
+	withCity, _ := decodeCalculatorState(t, dataset, "city=singapore")
+	if calculator.BuildFragment(dataset, matrix, withCity, "en").NeedsCity {
+		t.Fatal("a selected city must not request guidance")
+	}
+}
+
 func TestCalculatorFragmentBaselineEngagement(t *testing.T) {
 	dataset, matrix := loadData(t)
 	blank, _ := decodeCalculatorState(t, dataset, "tab=min-role")

@@ -11,8 +11,6 @@ import (
 	"testing"
 
 	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/content"
-	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/tools/benchmark"
-	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/tools/calculator"
 	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/web"
 )
 
@@ -124,28 +122,45 @@ func TestFixtureVectorsDecode(t *testing.T) {
 	if err != nil {
 		t.Fatalf("read benchmark fixture: %v", err)
 	}
-	var benchVectors map[string]benchmark.Result
+	var benchVectors map[string]struct {
+		Models []struct {
+			Name  string `json:"name"`
+			Index string `json:"index"`
+			Price string `json:"price"`
+		} `json:"models"`
+		Count int  `json:"count"`
+		Empty bool `json:"empty"`
+	}
 	if err := json.Unmarshal(benchRaw, &benchVectors); err != nil {
 		t.Fatalf("decode benchmark fixture: %v", err)
 	}
-	engine := benchmark.NewFakeEngine(benchVectors)
-	result := engine.Score(benchmark.Filters{UseCase: "chat", PriceBand: "mid"})
-	if len(result.Models) != 2 || result.Models[0].Name != "Model B" {
-		t.Fatalf("fixture vector result = %+v, want ordered Model B first", result)
+	benchVector, ok := benchVectors["harness=command-code-pro&tier=planning"]
+	if !ok || len(benchVector.Models) != 3 || benchVector.Count != 3 || benchVector.Empty {
+		t.Fatalf("fixture benchmark vector = %+v, want 3 ordered shared-dataset models", benchVector)
+	}
+	if benchVector.Models[0].Name != "GPT-6 Sol" || benchVector.Models[1].Name != "Grok 4.7" {
+		t.Fatalf("fixture benchmark vector = %+v, want GPT-6 Sol first in index order", benchVector)
 	}
 
 	calcRaw, err := os.ReadFile(fixturePath(t, "calculator-vectors.json"))
 	if err != nil {
 		t.Fatalf("read calculator fixture: %v", err)
 	}
-	var calcVectors map[string]calculator.Estimate
+	var calcVectors map[string]struct {
+		Cost   string `json:"cost"`
+		Saving string `json:"saving"`
+		Role   string `json:"min_role"`
+		Empty  bool   `json:"empty"`
+	}
 	if err := json.Unmarshal(calcRaw, &calcVectors); err != nil {
 		t.Fatalf("decode calculator fixture: %v", err)
 	}
-	calc := calculator.NewFakeEngine(calcVectors)
-	estimate := calc.Compute(calculator.Inputs{City: "jakarta", Role: "mid", Mode: "standard", Workers: 1})
-	if estimate.MonthlyCostUSD != 900 || estimate.MinRole != "mid" {
-		t.Fatalf("fixture vector estimate = %+v, want costs 900 role mid", estimate)
+	calcVector, ok := calcVectors["city=singapore&gross=5000&baseline=my_salary&mygross=5000&mysalarycity=singapore"]
+	if !ok || calcVector.Empty {
+		t.Fatalf("fixture calculator vector = %+v, want the shared-dataset estimate", calcVector)
+	}
+	if calcVector.Cost != "SGD 4,718" || calcVector.Saving != "846 USD" || calcVector.Role != "SWE I" {
+		t.Fatalf("fixture calculator vector = %+v, want cost SGD 4,718 saving 846 USD role SWE I", calcVector)
 	}
 }
 

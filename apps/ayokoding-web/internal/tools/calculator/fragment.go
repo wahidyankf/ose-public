@@ -12,6 +12,8 @@ package calculator
 import (
 	"math"
 	"net/url"
+	"sort"
+	"strconv"
 	"strings"
 )
 
@@ -30,6 +32,30 @@ type FragmentData struct {
 	MinRoleID    string
 	Qualifying   int
 	Hidden       int
+	// NeedsCity replaces the estimate block with selection guidance when no
+	// city is selected yet, so defaults never show blank money values.
+	NeedsCity bool
+	// The option lists below expose the closed input vocabularies so the
+	// form renders visible selects instead of free-text boxes.
+	TabOptions        []Option
+	RegionOptions     []Option
+	CountryOptions    []Option
+	CityOptions       []Option
+	AdultOptions      []Option
+	KidOptions        []Option
+	SchoolTypeOptions []Option
+	AreaOptions       []Option
+	BaselineOptions   []Option
+	RoleOptions       []Option
+	CurrencyOptions   []Option
+	GrossCurOptions   []Option
+}
+
+// Option is one closed-vocabulary select choice: the codec value and its
+// visible label.
+type Option struct {
+	Value string
+	Label string
 }
 
 // ResolveFragmentBaseline engages one baseline source exactly as the old
@@ -107,9 +133,22 @@ func ResolveFragmentBaseline(state CalculatorState, dataset Dataset, matrix Role
 // clears; an engaged baseline nothing clears is the empty state.
 func BuildFragment(dataset Dataset, matrix RoleMatrix, state CalculatorState, locale string) FragmentData {
 	fragment := FragmentData{
-		Locale:  locale,
-		State:   state,
-		Encoded: EncodeState(state),
+		Locale:            locale,
+		State:             state,
+		Encoded:           EncodeState(state),
+		NeedsCity:         strings.TrimSpace(state.CityID) == "",
+		TabOptions:        tabOptions(),
+		RegionOptions:     regionOptions(),
+		CountryOptions:    dataset.CountryOptions(state.Region, locale),
+		CityOptions:       cityOptions(ScopedCities(dataset, state.Region, state.CountryID, state.CityID), locale),
+		AdultOptions:      countOptions(1, 2),
+		KidOptions:        countOptions(0, 3),
+		SchoolTypeOptions: valueOptions([]string{"public", "private"}),
+		AreaOptions:       valueOptions([]string{"center", "rural"}),
+		BaselineOptions:   valueOptions([]string{BaselineSavingsTarget, BaselineReferenceRole, BaselineMySalary}),
+		RoleOptions:       matrix.RoleOptions(locale),
+		CurrencyOptions:   dataset.CurrencyOptions(),
+		GrossCurOptions:   valueOptions([]string{"local", "usd"}),
 	}
 	if city, ok := dataset.CityByID(state.CityID); ok {
 		// The country's lookup succeeds here by construction: the loader
@@ -170,11 +209,126 @@ func BuildFragment(dataset Dataset, matrix RoleMatrix, state CalculatorState, lo
 
 // DecodeFragment decodes one fragment query into its rendered fragment:
 // invalid nested or unexpected fields yield the invalid-filters fragment,
-// never a crash and never a misleading finite estimate.
+// never a crash and never a misleading finite estimate. A city value that
+// was selected but reconciled away (unknown or out of scope) keeps the
+// fallback behavior; only a missing city selection requests guidance.
 func DecodeFragment(query url.Values, dataset Dataset, matrix RoleMatrix, locale string) FragmentData {
 	state, validity := DecodeState(query, dataset)
 	if validity != Valid {
 		return FragmentData{Locale: locale, State: state, Invalid: true}
 	}
-	return BuildFragment(dataset, matrix, state, locale)
+	fragment := BuildFragment(dataset, matrix, state, locale)
+	if raw, ok := firstParam(query, ParamCity); ok && strings.TrimSpace(raw) != "" {
+		fragment.NeedsCity = false
+	}
+	return fragment
+}
+
+// tabOptions lists the calculator tabs in stable order.
+func tabOptions() []Option {
+	return valueOptions([]string{"cost", "savings", "min-role"})
+}
+
+// regionOptions lists known regions in stable order.
+func regionOptions() []Option {
+	regions := make([]string, 0, len(validRegions))
+	for region := range validRegions {
+		regions = append(regions, region)
+	}
+	sort.Strings(regions)
+	return valueOptions(regions)
+}
+
+// countOptions lists an inclusive integer range for household selects.
+func countOptions(from, to int) []Option {
+	options := make([]Option, 0, to-from+1)
+	for value := from; value <= to; value++ {
+		options = append(options, Option{Value: strconv.Itoa(value), Label: strconv.Itoa(value)})
+	}
+	return options
+}
+
+// valueOptions lifts raw codec values into self-labeled options.
+func valueOptions(values []string) []Option {
+	options := make([]Option, 0, len(values))
+	for _, value := range values {
+		options = append(options, Option{Value: value, Label: value})
+	}
+	return options
+}
+
+// localizedName resolves the visible dataset name for the locale,
+// falling back across languages before the raw id.
+func localizedName(name LocalizedString, locale string) string {
+	if locale == "id" && name.ID != "" {
+		return name.ID
+	}
+	if name.En != "" {
+		return name.En
+	}
+	return name.ID
+}
+
+// CountryOptions lists countries with a city in the region scope, or every
+// country when no region is selected, with localized labels. A missing
+// label falls back to the raw id so no visible option renders blank.
+func (d Dataset) CountryOptions(region, locale string) []Option {
+	inScope := make(map[string]bool, len(d.Countries))
+	if region == "" {
+		for _, country := range d.Countries {
+			inScope[country.ID] = true
+		}
+	} else {
+		for _, city := range d.Cities {
+			if city.Region == region {
+				inScope[city.CountryID] = true
+			}
+		}
+	}
+	options := make([]Option, 0, len(d.Countries))
+	for _, country := range d.Countries {
+		if !inScope[country.ID] {
+			continue
+		}
+		options = append(options, Option{Value: country.ID, Label: orID(country.ID, localizedName(country.Name, locale))})
+	}
+	return options
+}
+
+// cityOptions lists scoped cities with localized labels. A missing label
+// falls back to the raw id so no visible option renders blank.
+func cityOptions(cities []City, locale string) []Option {
+	options := make([]Option, 0, len(cities))
+	for _, city := range cities {
+		options = append(options, Option{Value: city.ID, Label: orID(city.ID, localizedName(city.Name, locale))})
+	}
+	return options
+}
+
+// RoleOptions lists the salary ladder roles with localized labels. A missing
+// label falls back to the raw role so no visible option renders blank.
+func (m RoleMatrix) RoleOptions(locale string) []Option {
+	options := make([]Option, 0, len(m.Ladder))
+	for _, rung := range m.Ladder {
+		options = append(options, Option{Value: rung.Role, Label: orID(rung.Role, localizedName(rung.Label, locale))})
+	}
+	return options
+}
+
+// orID keeps the visible label non-blank by falling back to the raw value.
+func orID(value, label string) string {
+	if label == "" {
+		return value
+	}
+	return label
+}
+
+// CurrencyOptions lists known FX currencies in stable order.
+func (d Dataset) CurrencyOptions() []Option {
+	codes := make([]string, 0, len(d.Fx.RatesUSDPerUnit))
+	for code := range d.Fx.RatesUSDPerUnit {
+		codes = append(codes, code)
+	}
+	sort.Strings(codes)
+	return valueOptions(codes)
 }

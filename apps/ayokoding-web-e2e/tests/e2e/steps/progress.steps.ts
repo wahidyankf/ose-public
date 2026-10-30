@@ -17,7 +17,6 @@ import {
   readRecord,
   setStoredValue,
   storedValue,
-  uncompletePage,
   writeRecord,
   type ProgressRecord,
 } from "../support/storage";
@@ -41,11 +40,14 @@ Given("a reader has no saved progress", async ({ page }) => {
 });
 
 When("the reader marks a learning page complete and reloads it", async ({ page }) => {
-  await completePage(page, "go-basics/hello-world");
+  await gotoPage(page, "/en/learn/courses/go-basics/learning/hello-world");
+  await page.locator("[data-progress-control='complete-trigger']").click();
+  await expect(page.locator("[data-progress-control='complete-trigger']")).toHaveAttribute("aria-pressed", "true");
   await page.reload();
 });
 
 Then("the page remains marked complete", async ({ page }) => {
+  await expect(page.locator("[data-progress-control='complete-trigger']")).toHaveAttribute("aria-pressed", "true");
   const record = await readRecord(page);
   expect(record.completed).toContain("go-basics/hello-world");
 });
@@ -103,10 +105,13 @@ Given("a learning page is marked complete", async ({ page }) => {
 });
 
 When("the reader activates its completion control again", async ({ page }) => {
-  await uncompletePage(page, "go-basics/hello-world");
+  await gotoPage(page, "/en/learn/courses/go-basics/learning/hello-world");
+  await expect(page.locator("[data-progress-control='complete-trigger']")).toHaveAttribute("aria-pressed", "true");
+  await page.locator("[data-progress-control='complete-trigger']").click();
 });
 
 Then("the page becomes incomplete", async ({ page }) => {
+  await expect(page.locator("[data-progress-control='complete-trigger']")).toHaveAttribute("aria-pressed", "false");
   const record = await readRecord(page);
   expect(record.completed).not.toContain("go-basics/hello-world");
 });
@@ -129,34 +134,23 @@ Given("the browser refuses storage reads and writes", async ({ page }) => {
 });
 
 When("the reader marks a learning page complete", async ({ page }) => {
-  // The app's future completion control cannot persist here; the step proves
-  // the refusal is real through the storage API itself.
-  const refusal = await page.evaluate(() => {
-    try {
-      window.localStorage.setItem("probe", "probe");
-      return "";
-    } catch (error) {
-      return error instanceof Error ? error.message : String(error);
-    }
-  });
-  expect(refusal).not.toBe("");
+  // Storage is blocked in this scenario, so the completion lands in the
+  // visit-only fallback through the real control, never in localStorage.
+  await gotoPage(page, "/en/learn/courses/go-basics/learning/setup");
+  await page.locator("[data-progress-control='complete-trigger']").click();
+  await expect(page.locator("[data-progress-control='complete-trigger']")).toHaveAttribute("aria-pressed", "true");
 });
 
 Then("completion remains available for the current visit", async ({ page }) => {
-  // Visit-scoped memory lives in the page, not in blocked storage.
-  await page.evaluate(() => {
-    (window as unknown as { __visit: string[] }).__visit = ["go-basics/hello-world"];
-  });
-  const visit = await page.evaluate(() => (window as unknown as { __visit: string[] }).__visit);
-  expect(visit).toContain("go-basics/hello-world");
+  await expect(page.locator("[data-progress-control='complete-trigger']")).toHaveAttribute("aria-pressed", "true");
+  const usable = await page.evaluate(() => document.readyState);
+  expect(["interactive", "complete"]).toContain(usable);
 });
 
 Then("a notice explains that progress cannot be saved", async ({ page }) => {
-  // No notice UI is served yet; the step proves the refusal the notice must
-  // explain, and records the notice text as shell-lane UI follow-up.
   expect(stateFor(page).diagnostic).toBe("blocked");
-  const usable = await page.evaluate(() => document.readyState);
-  expect(["interactive", "complete"]).toContain(usable);
+  await expect(page.locator("[data-progress-blocked]")).toBeVisible();
+  await expect(page.locator("[data-progress-blocked]")).toContainText("can't be saved");
 });
 
 Then("the page stays usable without an error", async ({ page }) => {

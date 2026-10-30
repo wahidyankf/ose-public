@@ -1,3 +1,4 @@
 dist/
 coverage/
 internal/web/assets/dist/
+internal/tools/shareddata/data/

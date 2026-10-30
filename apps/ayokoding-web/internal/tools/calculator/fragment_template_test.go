@@ -37,9 +37,10 @@ func TestCalculatorFragmentTemplateRendersEstimate(t *testing.T) {
 	fragment := calculator.BuildFragment(dataset, matrix, state, "en")
 	body := renderFragment(t, fragmentTemplate(t), fragment)
 	for _, marker := range []string{
-		`data-fragment="calculator"`, `data-tool-inputs`, `data-encoded-state="`,
+		`data-fragment="calculator"`, `data-input-form`, `data-encoded-state="`,
 		`data-tool-estimate`, `data-cost`, `data-saving`, `data-min-role`,
 		`value="jakarta"`, `value="3000"`, "<dl", "</dl>",
+		`<select name="city"`, `<select name="tab"`, `data-filter-reset`,
 	} {
 		if !strings.Contains(body, marker) {
 			t.Fatalf("fragment misses %q", marker)
@@ -52,17 +53,35 @@ func TestCalculatorFragmentTemplateRendersEstimate(t *testing.T) {
 
 func TestCalculatorFragmentTemplateRendersFallbackState(t *testing.T) {
 	dataset, matrix := loadData(t)
-	state, _ := decodeCalculatorState(t, dataset, "tab=min-role&target=Infinity")
-	fragment := calculator.BuildFragment(dataset, matrix, state, "en")
+	fragment := calculator.DecodeFragment(mustParseCalculatorQuery(t, "tab=min-role&target=Infinity&city=no-such-city"), dataset, matrix, "en")
 	if !fragment.Empty {
 		t.Fatal("infinite target must be the empty state")
+	}
+	if fragment.NeedsCity {
+		t.Fatal("a reconciled-away city keeps the fallback behavior, not guidance")
 	}
 	body := renderFragment(t, fragmentTemplate(t), fragment)
 	if !strings.Contains(body, "data-fallback-state") {
 		t.Fatal("empty fragment must show the fallback state")
 	}
-	if strings.Contains(body, "data-tool-estimate") {
-		t.Fatal("empty fragment must render no estimate")
+	if strings.Contains(body, "data-tool-estimate") || strings.Contains(body, "data-estimate-guidance") {
+		t.Fatal("empty fragment must render no estimate and no guidance")
+	}
+}
+
+func TestCalculatorFragmentTemplateRendersGuidance(t *testing.T) {
+	dataset, matrix := loadData(t)
+	state, _ := decodeCalculatorState(t, dataset, "")
+	fragment := calculator.BuildFragment(dataset, matrix, state, "en")
+	if !fragment.NeedsCity {
+		t.Fatal("a missing city selection must request guidance")
+	}
+	body := renderFragment(t, fragmentTemplate(t), fragment)
+	if !strings.Contains(body, "data-estimate-guidance") {
+		t.Fatal("guidance fragment must explain that a city selection is needed")
+	}
+	if strings.Contains(body, "data-tool-estimate") || strings.Contains(body, "data-fallback-state") {
+		t.Fatal("guidance fragment must render neither the estimate nor the fallback state")
 	}
 }
 

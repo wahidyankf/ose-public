@@ -30,7 +30,7 @@ func (w *World) StepMatchingPublishedContentExistsBothSupportedLocal() error {
 
 func (w *World) StepReaderSearchesMatchingTermOneLocale() error {
 	w.searchQuery = "hello"
-	return w.get("/en/search?q=hello")
+	return w.get("/htmx/search?q=hello")
 }
 
 func (w *World) StepResultsLinkOnlyLocaleSPublishedContent() error {
@@ -55,12 +55,12 @@ func (w *World) StepEachResultShowsTitleSectionPathMatchingExcerpt() error {
 func (w *World) StepSearchDialogHasResultsEarlierQuery() error {
 	w.searchOpen = true
 	w.searchQuery = "hello"
-	return w.get("/en/search?q=hello")
+	return w.get("/htmx/search?q=hello")
 }
 
 func (w *World) StepReaderClearsQueryWhitespace() error {
 	w.searchQuery = "   "
-	return w.get("/en/search?q=%20%20")
+	return w.get("/htmx/search?q=%20%20")
 }
 
 func (w *World) StepEarlierResultsDisappear() error {
@@ -75,7 +75,7 @@ func (w *World) StepDialogRemainsUsableWithoutError() error {
 }
 
 func (w *World) StepReaderHasSearchResultsPublishedPage() error {
-	return w.get("/en/search?q=hello")
+	return w.get("/htmx/search?q=hello")
 }
 
 func (w *World) StepReaderChoosesResult() error {
@@ -130,7 +130,7 @@ func (w *World) StepSearchDialogCloses() error {
 }
 
 func (w *World) StepReaderSearchesNameEitherInteractiveTool() error {
-	return w.get("/en/search?q=benchmark")
+	return w.get("/htmx/search?q=benchmark")
 }
 
 func (w *World) StepMatchingToolPageAppearsResultCurrentLocale() error {

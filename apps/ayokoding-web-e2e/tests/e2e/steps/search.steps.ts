@@ -36,7 +36,7 @@ Given("matching published content exists in both supported locales", async () =>
 });
 
 When("a reader searches for the matching term in one locale", async ({ page }) => {
-  await fetchText(page, "/en/search?q=hello");
+  await fetchText(page, "/htmx/search?q=hello", { headers: { "HX-Request": "true" } });
 });
 
 Then("results link only to that locale's published content", async ({ page }) => {
@@ -53,11 +53,11 @@ Then("each result shows a title, section path, and matching excerpt", async ({ p
 
 Given("the search dialog has results for an earlier query", async ({ page }) => {
   stateFor(page).searchOpen = true;
-  await fetchText(page, "/en/search?q=hello");
+  await fetchText(page, "/htmx/search?q=hello", { headers: { "HX-Request": "true" } });
 });
 
 When("the reader clears the query to whitespace", async ({ page }) => {
-  await fetchText(page, "/en/search?q=%20%20");
+  await fetchText(page, "/htmx/search?q=%20%20", { headers: { "HX-Request": "true" } });
 });
 
 Then("the earlier results disappear", async ({ page }) => {
@@ -70,17 +70,31 @@ Then("the dialog remains usable without an error", async ({ page }) => {
 });
 
 Given("a reader has search results for a published page", async ({ page }) => {
-  await fetchText(page, "/en/search?q=hello");
+  await fetchText(page, "/htmx/search?q=hello", { headers: { "HX-Request": "true" } });
 });
 
 When("the reader chooses that result", async ({ page }) => {
   stateFor(page).searchOpen = false;
-  await gotoPage(page, "/en/learn/courses/go-basics/learning/hello-world");
+  // Open the server-rendered shell-wrapped search page and follow its first
+  // result link, scoped to the page results region, instead of navigating to
+  // a hardcoded URL.
+  await gotoPage(page, "/en/search?q=hello");
+  const target = await page.evaluate(() => {
+    const anchor = document.querySelector("[data-search-page-results] a[href]");
+    const href = anchor?.getAttribute("href") ?? "";
+    if (!href.startsWith("/en/learn/")) throw new Error("no result link to follow");
+    return href;
+  });
+  await Promise.all([
+    page.waitForURL((url) => url.pathname === target),
+    page.locator(`[data-search-page-results] a[href="${target}"]`).click(),
+  ]);
 });
 
 Then("the corresponding content route opens", async ({ page }) => {
-  expect(statusOf(page)).toBe(200);
-  expect(bodyOf(page)).toContain("Hello World");
+  expect(page.url()).toContain("/en/learn/courses/go-basics/learning/hello-world");
+  expect(await page.locator("main h1").count()).toBe(1);
+  await expect(page.locator("main h1")).toContainText("Hello World");
 });
 
 Then("the search dialog closes", async ({ page }) => {
@@ -88,7 +102,7 @@ Then("the search dialog closes", async ({ page }) => {
 });
 
 When("a reader searches for the name of either interactive tool", async ({ page }) => {
-  await fetchText(page, "/en/search?q=benchmark");
+  await fetchText(page, "/htmx/search?q=benchmark", { headers: { "HX-Request": "true" } });
 });
 
 Then("the matching tool page appears as a result in the current locale", async ({ page }) => {

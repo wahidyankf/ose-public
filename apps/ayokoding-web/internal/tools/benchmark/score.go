@@ -244,6 +244,82 @@ func (d *Dataset) IsKnownTier(value string) bool {
 	return d.tierSet[value]
 }
 
+// Harnesses lists known harness ids in stable order for filter selects.
+func (d *Dataset) Harnesses() []string {
+	out := make([]string, 0, len(d.harnessSet))
+	for id := range d.harnessSet {
+		out = append(out, id)
+	}
+	sort.Strings(out)
+	return out
+}
+
+// Tiers lists known tiers in config order for filter selects.
+func (d *Dataset) Tiers() []string {
+	return append([]string(nil), d.Config.Tiers...)
+}
+
+// SubstituteHarnesses lists finder harnesses in config order for filter selects.
+func (d *Dataset) SubstituteHarnesses() []string {
+	return append([]string(nil), d.Config.SubstituteHarnesses...)
+}
+
+// FrontierModelsInDisplayOrder lists frontier substitute targets for filter selects.
+func (d *Dataset) FrontierModelsInDisplayOrder() []Model {
+	return FrontierModels(d.Models, d)
+}
+
+// HarnessLabel resolves the proper-noun display name for a harness id,
+// falling back to the id itself.
+func (d *Dataset) HarnessLabel(id string) string {
+	if label, ok := d.DisplayNames[id]; ok && label != "" {
+		return label
+	}
+	return id
+}
+
+// HarnessOptions lists known harnesses with display labels for filter selects.
+func (d *Dataset) HarnessOptions() []Option {
+	harnesses := d.Harnesses()
+	options := make([]Option, 0, len(harnesses))
+	for _, id := range harnesses {
+		options = append(options, Option{Value: id, Label: d.HarnessLabel(id)})
+	}
+	return options
+}
+
+// TierOptions lists known tiers in config order for filter selects.
+func (d *Dataset) TierOptions() []Option {
+	tiers := d.Tiers()
+	options := make([]Option, 0, len(tiers))
+	for _, tier := range tiers {
+		options = append(options, Option{Value: tier, Label: tier})
+	}
+	return options
+}
+
+// SubstituteTargetOptions lists frontier substitute targets in display order
+// for filter selects, labeled by model name.
+func (d *Dataset) SubstituteTargetOptions() []Option {
+	targets := d.FrontierModelsInDisplayOrder()
+	options := make([]Option, 0, len(targets))
+	for _, model := range targets {
+		options = append(options, Option{Value: model.ID, Label: model.Name})
+	}
+	return options
+}
+
+// SubstituteHarnessOptions lists finder harnesses in config order for filter
+// selects, labeled by display name.
+func (d *Dataset) SubstituteHarnessOptions() []Option {
+	harnesses := d.SubstituteHarnesses()
+	options := make([]Option, 0, len(harnesses))
+	for _, id := range harnesses {
+		options = append(options, Option{Value: id, Label: d.HarnessLabel(id)})
+	}
+	return options
+}
+
 // IsSubstituteHarness reports whether a harness is offered by the finder.
 func (d *Dataset) IsSubstituteHarness(value string) bool {
 	return d.substituteSet[value]

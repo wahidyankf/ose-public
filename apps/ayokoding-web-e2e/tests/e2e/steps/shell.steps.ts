@@ -5,7 +5,7 @@
 import { createBdd } from "playwright-bdd";
 import { expect } from "@playwright/test";
 import { bodyOf, gotoPage, statusOf } from "../support/http";
-import { setStoredValue, storedValue, THEME_KEY } from "../support/storage";
+import { storedValue, THEME_KEY } from "../support/storage";
 import { stateFor } from "../support/state";
 
 const { Given, When, Then } = createBdd();
@@ -41,11 +41,11 @@ When("the reader switches locale", async ({ page }) => {
 });
 
 Then("the translated page opens in the other locale", async ({ page }) => {
-  // The header switch links to the other locale home; the translated lesson
-  // is the content destination the scenario names.
-  await gotoPage(page, "/id/learn/courses/go-basics/learning/hello-world");
-  expect(statusOf(page)).toBe(200);
-  await expect(page.locator("main")).toContainText("Halo Dunia");
+  // The click above performs a real navigation; assert where it landed and
+  // what it rendered instead of navigating afresh.
+  expect(page.url()).toContain("/id/learn/courses/go-basics/learning/hello-world");
+  const html = await page.content();
+  expect(html).toContain("Halo Dunia");
 });
 
 Then("the active locale control matches the destination", async ({ page }) => {
@@ -66,6 +66,8 @@ Then("focus moves to the main content", async ({ page }) => {
   await expect(page.locator("#main")).toBeVisible();
   expect(bodyOf(page)).toContain('href="#main"');
   expect(bodyOf(page)).toContain('id="main"');
+  const active = await page.evaluate(() => document.activeElement?.id ?? "");
+  expect(active).toBe("main");
 });
 
 Then("the page retains a visible focus indicator", async ({ page }) => {
@@ -128,29 +130,36 @@ Then("focus returns to its opener", async ({ page }) => {
 
 Given("a reader has chosen the dark theme", async ({ page }) => {
   await gotoPage(page, "/en");
-  await setStoredValue(page, THEME_KEY, "dark");
+  await page.locator("[data-theme-toggle]").click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   stateFor(page).theme = "dark";
 });
 
 When("the reader reloads the page", async ({ page }) => {
   await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
 });
 
 Then("the page uses the dark theme", async ({ page }) => {
   expect(stateFor(page).theme).toBe("dark");
   expect(await storedValue(page, THEME_KEY)).toBe("dark");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   // The shell exposes the theming hook the app bundle consumes.
   expect(await page.content()).toContain("data-theme");
 });
 
 Then("theme text and controls remain accessible", async ({ page }) => {
   expect(await page.content()).toContain("progress.js");
+  await expect(page.locator("[data-theme-toggle]")).toBeVisible();
 });
 
 Given("a reader has resized the desktop sidebar within the supported bounds", async ({ page }) => {
   await gotoPage(page, "/en/learn/courses/go-basics/learning/setup");
-  await setStoredValue(page, "ayokoding-sidebar-width", "240");
-  stateFor(page).sidebarWidth = 240;
+  await page.locator("[data-sidebar-resize]").focus();
+  await page.keyboard.press("ArrowRight");
+  const width = await storedValue(page, "ayokoding-sidebar-width");
+  expect(width).not.toBeNull();
+  stateFor(page).sidebarWidth = Number(width);
 });
 
 When("the reader opens another content page", async ({ page }) => {
@@ -158,9 +167,10 @@ When("the reader opens another content page", async ({ page }) => {
 });
 
 Then("the sidebar uses the saved width", async ({ page }) => {
-  expect(stateFor(page).sidebarWidth).toBe(240);
-  expect(await storedValue(page, "ayokoding-sidebar-width")).toBe("240");
-  expect(await page.content()).toContain("--sidebar-width: 240px");
+  const expected = stateFor(page).sidebarWidth as number;
+  expect(await storedValue(page, "ayokoding-sidebar-width")).toBe(String(expected));
+  const applied = await page.evaluate(() => document.documentElement.style.getPropertyValue("--sidebar-width").trim());
+  expect(applied).toBe(`${expected}px`);
 });
 
 Then("the content remains reachable at the current viewport size", async ({ page }) => {

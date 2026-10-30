@@ -5,7 +5,7 @@
   </head>
   <body>
     {{template "header" .Shell}}
-    <main id="main" data-theme="light">
+    <main id="main" tabindex="-1" data-theme="light">
       <h1>{{if eq .Shell.Lang "id"}}Belajar{{else}}Learn{{end}}</h1>
       <p data-lesson-meta data-public-metadata>{{.Shell.Description}}</p>
     </main>

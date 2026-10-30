@@ -5,13 +5,20 @@
   </head>
   <body>
     {{template "header" .Shell}}
-    <main id="main">
+    <main id="main" tabindex="-1">
       <nav aria-label="breadcrumb" data-breadcrumbs>
         <a href="/{{.Shell.Lang}}">{{if eq .Shell.Lang "id"}}Beranda{{else}}Home{{end}}</a> /
         <a href="/{{.Shell.Lang}}/learn/courses/{{.Page.Course}}">{{.Page.SectionTitle}}</a> /
         <span aria-current="page">{{.Page.Title}}</span>
       </nav>
       <aside data-sidebar-nav data-active-page="{{.Page.Slug}}">
+        <div
+          data-sidebar-resize
+          role="separator"
+          aria-orientation="vertical"
+          tabindex="0"
+          aria-label="{{.Shell.ResizeLabel}}"
+        ></div>
         <ul>
           <li>
             <a href="/{{.Shell.Lang}}/learn/courses/{{.Page.Course}}/learning/{{.Page.Slug}}" aria-current="page"
@@ -32,6 +39,23 @@
       <article class="article-body" data-lesson-meta data-course="{{.Page.Course}}" data-lesson="{{.Page.Slug}}">
         {{.BodyHTML}}
       </article>
+      <div data-progress-region data-course="{{.Page.Course}}" data-lesson="{{.Page.Slug}}">
+        <button
+          type="button"
+          data-progress-control="complete-trigger"
+          data-page="{{.Page.Course}}/{{.Page.Slug}}"
+          data-mark-label="{{.MarkLabel}}"
+          data-unmark-label="{{.UnmarkLabel}}"
+          aria-pressed="false"
+        >
+          {{.MarkLabel}}
+        </button>
+        <p data-progress-status role="status" aria-live="polite"></p>
+        <p data-progress-blocked hidden>
+          {{if eq .Shell.Lang "id"}}Progres tidak bisa disimpan di browser ini. Progres hanya bertahan sampai tab ini
+          ditutup.{{else}}Progress can't be saved in this browser. It lasts until you close this tab.{{end}}
+        </p>
+      </div>
       <nav aria-label="lesson" data-lesson-nav>
         {{if .PrevURL}}<a href="{{.PrevURL}}" data-prev>Previous</a>{{end}}{{if .NextURL}}<a
           href="{{.NextURL}}"

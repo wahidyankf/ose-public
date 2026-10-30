@@ -5,7 +5,7 @@
   </head>
   <body>
     {{template "header" .Shell}}
-    <main id="main">
+    <main id="main" tabindex="-1">
       {{if .Path}}
       <h1>{{.Path.Title}}</h1>
       {{range .Phases}}

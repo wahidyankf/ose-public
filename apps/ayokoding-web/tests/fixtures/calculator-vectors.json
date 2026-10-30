@@ -1,8 +1,8 @@
 {
-  "jakarta|mid|standard|1": {
-    "monthly_cost_usd": 900,
-    "monthly_saving": 600,
-    "min_role": "mid",
+  "city=singapore&gross=5000&baseline=my_salary&mygross=5000&mysalarycity=singapore": {
+    "cost": "SGD 4,718",
+    "saving": "846 USD",
+    "min_role": "SWE I",
     "empty": false
   }
 }

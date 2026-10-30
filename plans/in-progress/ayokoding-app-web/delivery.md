@@ -490,6 +490,10 @@ bootstrap is invoked only after the complete bindings are implemented.
       Evidence: origin/main at `b2f11c908` unchanged (worktree contains it, nothing to absorb);
       old app 200 on 3101 and new app 200 on 3102 simultaneously 2026-10-30; both owned
       servers stopped and probe artifacts removed after.
+      Addendum 2026-10-30: origin/main advanced to `959d2f4f1` (#765, docs + hippo.lock only —
+      zero file overlap with this delivery). A merge-commit refresh is blocked by a hook defect
+      (`public-safety-commit-message` rejects Git's worktree MERGE_MSG path); the branch stays at
+      the pushed `feae0f3cf` and CI validates the PR merge commit instead. No history rewritten.
       Unfinished course plans do not block this gate. Any unmapped behavior returns to its P2 packet.
 
 > **Pause Safety:** The complete local app, specs, tests, source dependencies, and documentation are

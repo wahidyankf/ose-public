@@ -11,17 +11,17 @@ created: 2026-04-18
 
 # Related Repositories
 
-The **OSE Code Repositories** (`ose-projects`) are exactly the seven repositories Open Sharia
+The **OSE Code Repositories** (`ose-projects`) are exactly the eight repositories Open Sharia
 Enterprise is built and maintained in: `ose-public`, the private sibling `ose-private`, RHINO,
-HIPPO, BeaverNest, ose-rules, and py-typekit. The name labels that set so a reader can find every
-part of the project from any one of them. It is navigation only: not a GitHub organization, not a
-parent or container repository, not a parity group, and not a shared release train — each of the
-seven versions, gates, and releases on its own schedule.
+HIPPO, BeaverNest, ose-rules, py-typekit, and ex-bdd. The name labels that set so a reader can find
+every part of the project from any one of them. It is navigation only: not a GitHub organization, not
+a parent or container repository, not a parity group, and not a shared release train — each of the
+eight versions, gates, and releases on its own schedule.
 
-All seven are independent repositories: two supply OSE itself, three supply upstream tools, one is a
-separate product, and one is a shared rules catalog. Each has a different job, so choose the
-repository that matches what you are trying to understand rather than treating them as
-interchangeable copies.
+All eight are independent repositories: two supply OSE itself, three supply upstream tools, one is a
+separate product, one is a shared rules catalog, and one supplies behaviour-driven development testing.
+Each has a different job, so choose the repository that matches what you are trying to understand
+rather than treating them as interchangeable copies.
 
 This page is the descriptive catalogue. The canonical independence and consumer-boundary rules are
 governed by the
@@ -36,6 +36,7 @@ governed by the
 | [BeaverNest](https://github.com/wahidyankf/beaver-nest)    | Public, MIT | Independent family product and applied learning lab              | You are changing the BeaverNest product.                           |
 | [py-typekit](https://github.com/wahidyankf/py-typekit)     | Public, MIT | Upstream typed-result library `ferret-cli` bundles               | You are changing py-typekit rather than FERRET's use of it.        |
 | [ose-rules](https://github.com/wahidyankf/ose-rules)       | Public, MIT | Shared rules catalog, adopted here only by explicit copy         | You want to propose a rule that holds beyond this repository.      |
+| [ex-bdd](https://github.com/wahidyankf/ex-bdd)             | Public, MIT | Behaviour-driven development testing for Elixir                  | You are changing ex-bdd rather than its use.                       |
 
 ## The reader path that matters most
 

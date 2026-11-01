@@ -57,15 +57,28 @@ setting, so external verification is required.
 
 ## Recorded Baseline
 
-A 2026-09-05 audit established this baseline for `ose-public`:
+A 2026-11-01 audit summed live artifact bytes across every owner repository:
 
-| Repository   | Active artifacts                                   | Framework-dependent forecast | Cache data      |
-| ------------ | -------------------------------------------------- | ---------------------------- | --------------- |
-| `ose-public` | 962,885,080 B; 24 Rhino handoffs use 954,191,871 B | About 64.8 MB for 24 copies  | About 11.008 GB |
+| Scope             | Artifacts        |
+| ----------------- | ---------------- |
+| `ose-public`      | 105.8 MB (15)    |
+| Other owner repos | 185.9 MB         |
+| Owner total       | 291.7 MB (58.3%) |
 
-This repository caps caches at 10 GB for 7 days. The revised workflow restores on non-default
-refs and saves on `main`. It currently publishes no Packages. Refresh these measurements after
-storage changes.
+Most `ose-public` artifacts are older staging reports that expire within 7 days. Its Actions cache
+holds 0 B. This repository caps caches at 10 GB for 7 days, restores them on non-default refs, and
+saves on `main`. It publishes no Packages. Refresh these measurements after storage changes.
+
+### Current Settings and Lesson
+
+Repository retention is 2 days; GitHub silently caps longer uploads at 2 days. Playwright staging
+reports upload only on failure and keep 1 day.
+
+On 2026-10-30, 7-day staging reports from this repository (about 46-51 MB per run, about two runs a
+day) filled the owner-wide pool. Deploys in another owner repository then failed with "Failed to CreateArtifact:
+Artifact storage quota has been hit", though that repository held almost nothing. A quota failure
+can come from another repository, so sum every owner repository's live artifacts before trusting
+one estimate.
 
 ## Validation and Enforcement
 

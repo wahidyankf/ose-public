@@ -20,6 +20,25 @@ HOOK="$(cd "$(dirname "$0")" && pwd)/agent-hippo-guard.sh"
 pass=0
 fail=0
 
+# The guard acts only inside a consuming repository, so every case below runs from one: a git checkout holding a
+# ./hippo and a hippo.lock. Run from a checkout without them, each deny case would fail for the wrong reason.
+scratch="$(mktemp -d)"
+scratch=$(cd "$scratch" && pwd -P) || exit 1
+trap 'rm -rf "$scratch"' EXIT
+mkdir "$scratch/git-template" || exit 1
+# Fixture repositories take no global or system Git configuration and no template hooks.
+init_repo() {
+	GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_SYSTEM=/dev/null GIT_CONFIG_NOSYSTEM=1 \
+		GIT_CEILING_DIRECTORIES="$scratch" GIT_TEMPLATE_DIR="$scratch/git-template" \
+		git init -q "$1" 2>/dev/null || exit 1
+}
+consumer="$scratch/consumer"
+init_repo "$consumer"
+printf '#!/bin/sh\n' >"$consumer/hippo"
+chmod +x "$consumer/hippo"
+: >"$consumer/hippo.lock"
+cd "$consumer" || exit 1
+
 bash_payload() { jq -nc --arg c "$1" '{tool_name:"Bash",tool_input:{command:$c}}'; }
 
 expect() {
@@ -162,6 +181,63 @@ cmd_denies "unguarded mix deps.get" "rtk mix deps.get"
 cmd_denies "unguarded mix test" "mix test"
 cmd_denies "unguarded mix phx.server" "rtk mix phx.server"
 
+# --- go ------------------------------------------------------------------------------------------------
+# Compile, run, network, or code-generating subcommands take the boundary. Metadata, help, environment,
+# and formatter subcommands stay unguarded, because they read or rewrite sources without a build graph.
+cmd_denies "unguarded go test" "go test ./..."
+cmd_denies "go test behind rtk" "rtk go test ./..."
+cmd_denies "go build after a cd" "cd x && go build"
+cmd_denies "go vet" "go vet ./..."
+cmd_denies "go run" "go run ./cmd/tool"
+cmd_denies "go install" "go install ./..."
+cmd_denies "go generate" "go generate ./..."
+cmd_denies "go get" "go get example.com/mod@latest"
+cmd_denies "go fix compiles packages" "go fix ./..."
+cmd_denies "go mod download" "go mod download"
+cmd_denies "go mod tidy behind rtk" "rtk go mod tidy"
+cmd_denies "go mod vendor" "go mod vendor"
+cmd_denies "go mod verify hashes the module cache" "go mod verify"
+cmd_denies "go work sync" "go work sync"
+cmd_denies "go work vendor" "go work vendor"
+cmd_denies "go tool runs a named tool" "go tool golangci-lint run"
+cmd_denies "go -C before the subcommand" "go -C tools test ./..."
+cmd_denies "repeated go -C" "go -C a -C b build ./..."
+cmd_denies "go -C then a guarded mod verb" "rtk go -C tools mod tidy"
+cmd_denies "go behind an environment assignment" "GOFLAGS=-mod=mod go test ./..."
+cmd_denies "path-qualified go" "/usr/local/go/bin/go test ./..."
+cmd_denies "quoted go program" '"go" test ./...'
+cmd_denies "go test in a then branch" "if true; then go test ./...; fi"
+cmd_denies "go vet inside a command substitution" "echo \$(go vet ./...)"
+cmd_denies "go test chained after a read" "rtk git status && go test ./..."
+cmd_denies "find -exec go vet" "find . -name '*.go' -exec go vet {} +"
+cmd_denies "go mod download with quoted words" 'go "mod" "download"'
+cmd_denies "go with an attached -C directory" "go -Cdir test ./..."
+cmd_denies "go test as the second stage of a pipe" "cat x | go test ./..."
+cmd_denies "go -C behind an environment assignment" "GOFLAGS=x go -C d vet"
+cmd_allows "bare go mod prints help" "go mod"
+cmd_allows "go test inside its boundary" "./hippo run --class ephemeral --resource-tier standard --disk-path . -- go test ./..."
+cmd_allows "rtk go vet inside its boundary" "rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- go vet ./..."
+cmd_allows "go version" "go version"
+cmd_allows "rtk go version" "rtk go version"
+cmd_allows "go env" "go env GOPATH"
+cmd_allows "go help" "go help test"
+cmd_allows "go list reads package metadata" "go list ./..."
+cmd_allows "go doc reads sources" "go doc fmt"
+cmd_allows "go fmt is a formatter, like gofmt" "go fmt ./..."
+cmd_allows "gofmt is not the go command" "gofmt -l ."
+cmd_allows "go mod graph reads the graph" "go mod graph"
+cmd_allows "go mod edit rewrites go.mod without compute" "go mod edit -require=example.com/x@v1.0.0"
+cmd_allows "go clean spawns nothing" "go clean -cache"
+cmd_allows "go work init" "go work init ./a"
+cmd_allows "bare go tool lists the tools" "go tool"
+cmd_allows "go test help" "go test -h"
+cmd_allows "go test long help" "rtk go test --help"
+cmd_allows "go -C with a metadata verb" "go -C tools list ./..."
+cmd_allows "grep for a go verb" "grep -rn 'go test' docs/"
+cmd_allows "echo of a go verb" "echo go build"
+cmd_allows "search pattern naming a go verb" "rg 'go vet' --glob '*.md'"
+cmd_allows "commit message naming a go verb" "rtk git commit -m 'go test passes'"
+
 # --- Command position: a verb is only a verb when the shell would execute it ------------------------
 # REGRESSION, observed live during authoring: the guard once matched these verbs anywhere in the
 # line, so an ordinary search for the string was refused — including the command that was running
@@ -223,30 +299,24 @@ consumer_case() {
 	pass=$((pass + 1))
 }
 
-scratch="$(mktemp -d)"
-scratch=$(cd "$scratch" && pwd -P) || exit 1
-trap 'rm -rf "$scratch"' EXIT
 consumer_case "outside any git repository" "$scratch"
 
 [[ -d $scratch && ! -e $scratch/.git ]] || exit 1
-mkdir "$scratch/git-template" || exit 1
-GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_SYSTEM=/dev/null GIT_CONFIG_NOSYSTEM=1 \
-	GIT_CEILING_DIRECTORIES="$scratch" GIT_TEMPLATE_DIR="$scratch/git-template" \
-	git --git-dir="$scratch/.git" --work-tree="$scratch" -C "$scratch" init -q 2>/dev/null || exit 1
-fixture_root=$(GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_SYSTEM=/dev/null \
-	GIT_CEILING_DIRECTORIES="$scratch" git --git-dir="$scratch/.git" -C "$scratch" rev-parse --show-toplevel) || exit 1
-[[ $fixture_root == "$scratch" ]] || exit 1
-consumer_case "git repository with no ./hippo consumer" "$scratch"
+init_repo "$scratch/plain"
+fixture_root=$(GIT_CEILING_DIRECTORIES="$scratch" git -C "$scratch/plain" rev-parse --show-toplevel) || exit 1
+[[ $fixture_root == "$scratch/plain" ]] || exit 1
+consumer_case "git repository with no ./hippo consumer" "$scratch/plain"
 
 # HIPPO's own source checkout: an executable `./hippo` bootstrap with no `hippo.lock`. HIPPO cannot
 # guard HIPPO, so its documented direct setup must pass.
-printf '#!/bin/sh\n' >"$scratch/hippo"
-chmod +x "$scratch/hippo"
-consumer_case "HIPPO source checkout with no hippo.lock" "$scratch"
+init_repo "$scratch/source"
+printf '#!/bin/sh\n' >"$scratch/source/hippo"
+chmod +x "$scratch/source/hippo"
+consumer_case "HIPPO source checkout with no hippo.lock" "$scratch/source"
 
 # The same tree with the lock is a consumer again, which proves the lock is the deciding difference.
-: >"$scratch/hippo.lock"
-out="$(cd "$scratch" && printf '%s' "$(bash_payload "rtk npm install")" | "$HOOK" 2>/dev/null)"
+: >"$scratch/source/hippo.lock"
+out="$(cd "$scratch/source" && printf '%s' "$(bash_payload "rtk npm install")" | "$HOOK" 2>/dev/null)"
 if printf '%s' "$out" | jq -e '.hookSpecificOutput.permissionDecision == "deny"' >/dev/null 2>&1; then
 	pass=$((pass + 1))
 else

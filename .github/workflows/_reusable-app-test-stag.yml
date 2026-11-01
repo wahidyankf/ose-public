@@ -42,9 +42,9 @@ jobs:
           PLAYWRIGHT_GREP_INVERT: "@local-fullstack"
 
       - name: Upload FE E2E report
-        if: always()
+        if: failure()
         uses: actions/upload-artifact@v7
         with:
           name: playwright-report-${{ inputs.fe-e2e-project }}-staging
           path: apps/${{ inputs.fe-e2e-project }}/playwright-report/
-          retention-days: 7
+          retention-days: 1

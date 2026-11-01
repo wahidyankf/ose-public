@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Repository-local consumer integration using the existing bounded HIPPO evaluator.
+# PreToolUse guard: refuses compute verbs run outside one HIPPO boundary, in a repository that ships a pinned ./hippo.
 set -euo pipefail
 
 input="$(cat)"
@@ -31,10 +31,10 @@ fi
 # trivially, so the repository copies need no variant of their own; in the machine-wide copy it is
 # the whole reason a scratch directory or a non-consuming repository is left alone.
 #
-# A consumer's `./hippo` is checksum-pinned by a tracked `hippo.lock`. HIPPO's own source checkout
-# also ships an executable `./hippo`, but it is a bootstrap that builds the tool under test and has
-# no lock. HIPPO cannot guard HIPPO, so that repository runs its gates directly by its own rule, and
-# requiring the lock is what leaves it alone instead of denying its documented setup.
+# A consumer's `./hippo` is checksum-pinned by a tracked `hippo.lock`. The tool's own source checkout may also
+# ship an executable `./hippo`, but it is a bootstrap that builds the tool under test and has no lock. A tool
+# cannot guard itself, so that checkout runs its gates directly; requiring the lock is what leaves it alone
+# instead of denying its documented setup.
 # The hook can run outside the Bash tool's requested working directory.
 repo_root="$(git -C "${workdir:-.}" rev-parse --show-toplevel 2>/dev/null || true)"
 [ -n "$repo_root" ] && [ -x "$repo_root/hippo" ] && [ -f "$repo_root/hippo.lock" ] || exit 0
@@ -291,6 +291,44 @@ while IFS= read -r seg; do
 		case "$second" in
 		deps.get | deps.compile | compile | test | run | release | phx.server | dialyzer | credo | format) deny "'mix $second'" ;;
 		ecto.*) deny "'mix $second'" ;;
+		esac
+		;;
+	go)
+		# Subcommands that spawn a compile graph, run code, or reach the network take the boundary. Metadata,
+		# help, environment, and formatter subcommands stay unguarded: `list`, `doc`, `env`, `version`, `help`,
+		# `fmt`, `clean`, `mod graph`, `mod edit`, `mod init`, and `work init|use|edit` read or rewrite sources
+		# without a build graph, as `cargo metadata` and `gofmt` do. `mod verify` is guarded because it hashes
+		# every module tree in the cache. A leading `-C <dir>` changes only the directory, so the subcommand is
+		# the word after it.
+		go_index=1
+		while [ "$go_index" -lt "${#words[@]}" ]; do
+			go_word="${words[$go_index]//[\"\'\\]/}"
+			case "$go_word" in
+			-C) go_index=$((go_index + 2)) ;;
+			-C*) go_index=$((go_index + 1)) ;;
+			*) break ;;
+			esac
+		done
+		go_verb="${words[$go_index]:-}"
+		go_verb="${go_verb//[\"\'\\]/}"
+		go_arg="${words[$((go_index + 1))]:-}"
+		go_arg="${go_arg//[\"\'\\]/}"
+		case "$go_verb" in
+		build | test | vet | run | install | generate | get | fix) deny "'go $go_verb'" ;;
+		tool)
+			# Bare `go tool` lists the tools; naming one runs it.
+			if [ -n "$go_arg" ]; then deny "'go tool'"; fi
+			;;
+		mod)
+			case "$go_arg" in
+			download | tidy | vendor | verify) deny "'go mod $go_arg'" ;;
+			esac
+			;;
+		work)
+			case "$go_arg" in
+			sync | vendor) deny "'go work $go_arg'" ;;
+			esac
+			;;
 		esac
 		;;
 	esac

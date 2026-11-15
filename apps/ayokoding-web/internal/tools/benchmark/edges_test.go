@@ -92,7 +92,7 @@ func TestScoreEdgesReturnUndefined(t *testing.T) {
 	if _, ok := benchmark.BlendedPrice(nil, 3, 1); ok {
 		t.Fatal("missing price must not blend")
 	}
-	unpriced := modelByID(t, dataset, "gemini-4-argon")
+	unpriced := modelByID(t, dataset, "ling-3.1-flash")
 	priced := modelByID(t, dataset, "claude-opus-5")
 	if _, ok := benchmark.PriceRatio(unpriced, priced, 3, 1); ok {
 		t.Fatal("unpriced candidate must not ratio")

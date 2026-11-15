@@ -32,7 +32,7 @@ test("benchmark filters fall back to full-page rendering", async ({ page }) => {
 test("benchmark recovers unknown filter values with defaults", async ({ page }) => {
   await fetchText(page, "/en/tools/ai-benchmark?harness=nope&tier=nope");
   expect(statusOf(page)).toBe(200);
-  expect(bodyOf(page)).toContain('data-count="93"');
+  expect(bodyOf(page)).toContain('data-count="109"');
   expect(bodyOf(page)).toContain("data-encoded-state");
 });
 

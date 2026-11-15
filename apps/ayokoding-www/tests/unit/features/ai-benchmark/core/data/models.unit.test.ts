@@ -37,16 +37,16 @@ describe("roster invariants", () => {
     }
   });
 
-  it("includes every OpenCode Go model with an identified vendor (30 as of 2026-10-08)", () => {
-    expect(models.filter((m) => m.harnesses.includes("opencode-go"))).toHaveLength(30);
+  it("includes every OpenCode Go model with an identified vendor (33 as of 2026-11-14)", () => {
+    expect(models.filter((m) => m.harnesses.includes("opencode-go"))).toHaveLength(33);
   });
 
-  it("includes every Command Code model with an identified vendor inside the generation window (80 as of 2026-10-08)", () => {
-    expect(models.filter((m) => m.harnesses.includes("command-code"))).toHaveLength(80);
+  it("includes every Command Code model with an identified vendor inside the generation window (95 as of 2026-11-14)", () => {
+    expect(models.filter((m) => m.harnesses.includes("command-code"))).toHaveLength(95);
   });
 
-  it("includes every model on Command Code's Pro plan list (72 as of 2026-10-08)", () => {
-    expect(models.filter((m) => m.harnesses.includes("command-code-pro"))).toHaveLength(72);
+  it("includes every model on Command Code's Pro plan list (86 as of 2026-11-14)", () => {
+    expect(models.filter((m) => m.harnesses.includes("command-code-pro"))).toHaveLength(86);
   });
 
   it("offers every Command Code Pro model in the Command Code catalog", () => {
@@ -55,7 +55,7 @@ describe("roster invariants", () => {
     }
   });
 
-  it("keeps Claude Opus, Claude Fable, GPT-6 Astra, GPT-6.1 Sol, and Fugu Ultra off the Pro plan (as of 2026-10-08)", () => {
+  it("keeps Claude Opus, Claude Fable, GPT-6 Astra, GPT-6.1 Sol, and Fugu Ultra off the Pro plan (as of 2026-11-14)", () => {
     const maxOnly = models.filter(
       (m) => m.harnesses.includes("command-code") && !m.harnesses.includes("command-code-pro"),
     );
@@ -63,6 +63,7 @@ describe("roster invariants", () => {
       [
         "claude-fable-5",
         "claude-fable-5-1",
+        "claude-fable-5-2",
         "claude-opus-4-8",
         "claude-opus-5",
         "claude-opus-5-5",

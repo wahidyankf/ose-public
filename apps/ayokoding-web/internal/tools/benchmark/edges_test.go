@@ -32,8 +32,8 @@ func TestComputeTierGroupsCoversRosterInTierOrder(t *testing.T) {
 	if total != len(dataset.Models) {
 		t.Fatalf("tier groups hold %d models, want %d", total, len(dataset.Models))
 	}
-	if len(groups["ultra"]) != 9 {
-		t.Fatalf("ultra group = %d, want the shared filter count 9", len(groups["ultra"]))
+	if len(groups["ultra"]) != 1 {
+		t.Fatalf("ultra group = %d, want the shared filter count 1", len(groups["ultra"]))
 	}
 }
 

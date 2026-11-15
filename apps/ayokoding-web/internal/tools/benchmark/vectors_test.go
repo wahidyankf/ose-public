@@ -67,7 +67,7 @@ func mustParseBenchmarkQuery(t *testing.T, encoded string) url.Values {
 
 func TestLoadDatasetPreservesOrderDatesAndProvenance(t *testing.T) {
 	dataset := loadDataset(t)
-	if dataset.LastUpdated != "2026-11-14" {
+	if dataset.LastUpdated != "2026-11-15" {
 		t.Fatalf("lastUpdated = %q, want the shared source date", dataset.LastUpdated)
 	}
 	if len(dataset.Models) != 109 {
@@ -80,6 +80,7 @@ func TestLoadDatasetPreservesOrderDatesAndProvenance(t *testing.T) {
 		{ID: "deep-swe", Version: "1.1"},
 		{ID: "terminal-bench", Version: "4.0"},
 		{ID: "swe-atlas-qna", Version: "QnA"},
+		{ID: "frontiercode-aa", Version: "2.0"},
 	}
 	for index, want := range specs {
 		got, ok := dataset.Spec(want.ID)

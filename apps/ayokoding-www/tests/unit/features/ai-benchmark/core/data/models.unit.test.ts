@@ -55,6 +55,15 @@ describe("roster invariants", () => {
     }
   });
 
+  it("drops models older than two years at lastUpdated (anchors exempt)", () => {
+    const twoYearsAgo = `${Number(dataset.lastUpdated.slice(0, 4)) - 2}${dataset.lastUpdated.slice(4)}`;
+    for (const m of models) {
+      if (m.releaseDate === undefined) continue;
+      if (Object.values(TIER_ANCHORS).includes(m.id)) continue;
+      expect(m.releaseDate >= twoYearsAgo, `${m.id} older than two years`).toBe(true);
+    }
+  });
+
   it("keeps Claude Opus, Claude Fable, GPT-6 Astra, GPT-6.1 Sol, and Fugu Ultra off the Pro plan (as of 2026-11-14)", () => {
     const maxOnly = models.filter(
       (m) => m.harnesses.includes("command-code") && !m.harnesses.includes("command-code-pro"),

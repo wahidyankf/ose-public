@@ -48,8 +48,8 @@ compute runs through `./hippo run`, per
 A data refresh never changes methodology silently. Methodology means `BENCHMARK_SPECS`, `TIER_ANCHORS`, and
 the tier rule in `core/data/benchmarks.ts` and `core/tiers.ts`.
 
-- **Condition**: research shows a pinned benchmark version superseded, a tier anchor retired or no longer
-  general-access, or a reason to change the tier rule
+- **Condition**: research shows a pinned benchmark version superseded, a tier anchor retired, aged past
+  the two-year cap, or no longer general-access, or a reason to change the tier rule
 - **Depends on**: Step 1
 - **Prompt**: report the finding with its sources and ask through `AskUserQuestion`, per
   [Human Checkpoints](../../../conventions/structure/workflow-pattern/human-checkpoints.md): "Methodology change found.

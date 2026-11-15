@@ -131,7 +131,7 @@ describe("ModelTable readability", () => {
     table();
     const row = screen.getAllByTestId("ai-bench-table-row").find((r) => r.dataset.modelId === "glm-5.3")!;
     const link = within(row).getAllByRole("link")[0]!;
-    expect(link.getAttribute("aria-label")).toMatch(/^GLM-5\.3, DeepSWE 1\.1: 61\.4%/);
+    expect(link.getAttribute("aria-label")).toMatch(/^GLM-5\.3, DeepSWE 1\.1: 69\.0%/);
   });
 
   it("shows an em dash for a model no harness exposes", () => {

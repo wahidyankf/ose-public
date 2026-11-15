@@ -131,7 +131,7 @@ describe("renderTables — pure derivation from the dataset", () => {
   it("renders the ultra anchor (Claude Opus 5) with its composite index and tier", () => {
     const { "capability-summary": summary, frontier } = renderTables(dataset);
     expect(summary).toMatch(
-      /\| Claude Opus 5 +\| Anthropic +\| 62\.54% \(AA\) +\| 54\.55% \(AA\) +\| 62\.10% \(AA\) +\| 59\.73 +\| ultra +\| \$10\.79 +\|/,
+      /\| Claude Opus 5 +\| Anthropic +\| 73\.65% \(Datacurve\) +\| 54\.55% \(AA\) +\| 63\.17% \(Scale\) +\| — +\| 63\.79 +\| ultra +\| \$10\.79 +\|/,
     );
     expect(frontier).toContain("Claude Opus 5");
   });
@@ -139,7 +139,7 @@ describe("renderTables — pure derivation from the dataset", () => {
   it("names the operator of every non-AA figure and dashes a missing one", () => {
     const { "capability-summary": summary } = renderTables(dataset);
     expect(summary).toMatch(
-      /\| GPT-5\.6 Terra +\| OpenAI +\| 69\.62% \(Datacurve\) +\| 35\.35% \(AA\) +\| — +\| 52\.48 +\| execution +\| — +\|/,
+      /\| GPT-5\.6 Terra +\| OpenAI +\| 69\.62% \(Datacurve\) +\| 35\.35% \(AA\) +\| — +\| — +\| 52\.48 +\| planning +\| — +\|/,
     );
   });
 

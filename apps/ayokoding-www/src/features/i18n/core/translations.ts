@@ -106,10 +106,11 @@ export const translations: Record<Locale, Record<string, string>> = {
 
     aiBenchMethodHeading: "How the score works",
     aiBenchMethodBenchmarksIntro:
-      "Three coding-agent benchmarks, equally weighted. Only the version listed counts, and each score comes from the first listed source that has it.",
+      "Four coding-agent benchmarks, equally weighted. Only the version listed counts, and each score comes from the first listed source that has it.",
     aiBenchMethodBenchDeepSwe: "Long-horizon changes across real repositories.",
     aiBenchMethodBenchTerminal: "Autonomous work in real shell environments.",
     aiBenchMethodBenchQna: "Answering questions about large, unfamiliar codebases.",
+    aiBenchMethodBenchFrontier: "Frontier coding tasks run independently by Artificial Analysis.",
     aiBenchMethodVersion: "version {version}",
     aiBenchMethodWeight: "weight {weight}",
     aiBenchMethodSourceOrderIntro: "Sources, in order of preference:",
@@ -634,10 +635,11 @@ export const translations: Record<Locale, Record<string, string>> = {
 
     aiBenchMethodHeading: "Cara skor dihitung",
     aiBenchMethodBenchmarksIntro:
-      "Tiga benchmark agen koding dengan bobot sama. Hanya versi yang tercantum yang dihitung, dan tiap skor diambil dari sumber pertama dalam daftar yang memilikinya.",
+      "Empat benchmark agen koding dengan bobot sama. Hanya versi yang tercantum yang dihitung, dan tiap skor diambil dari sumber pertama dalam daftar yang memilikinya.",
     aiBenchMethodBenchDeepSwe: "Perubahan jangka panjang di repositori nyata.",
     aiBenchMethodBenchTerminal: "Kerja mandiri di lingkungan shell nyata.",
     aiBenchMethodBenchQna: "Menjawab pertanyaan tentang codebase besar yang belum dikenal.",
+    aiBenchMethodBenchFrontier: "Tugas coding frontier yang dijalankan independen oleh Artificial Analysis.",
     aiBenchMethodVersion: "versi {version}",
     aiBenchMethodWeight: "bobot {weight}",
     aiBenchMethodSourceOrderIntro: "Sumber, urut prioritas:",

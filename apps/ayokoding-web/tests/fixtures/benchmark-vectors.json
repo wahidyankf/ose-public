@@ -1,11 +1,13 @@
 {
   "harness=command-code-pro&tier=planning": {
     "models": [
+      { "name": "Claude Sonnet 5.5", "index": "60.4", "price": "$4.00" },
       { "name": "GPT-6 Sol", "index": "56.7", "price": "$4.00" },
-      { "name": "Grok 4.7", "index": "56.3", "price": "$3.00" },
-      { "name": "GPT-5.6 Sol", "index": "54.6", "price": "$8.00" }
+      { "name": "Gemini 4 Argon", "index": "54.0", "price": "$4.00" },
+      { "name": "GPT-5.6 Terra", "index": "52.5", "price": "$4.50" },
+      { "name": "GPT-5.6 Sol", "index": "52.0", "price": "$8.00" }
     ],
-    "count": 3,
+    "count": 5,
     "empty": false
   }
 }

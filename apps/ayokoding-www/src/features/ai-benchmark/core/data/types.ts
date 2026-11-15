@@ -4,8 +4,8 @@
 // read these types. Only independently run results are stored — vendor-reported figures are never
 // recorded, so nothing here needs an "origin" flag to keep them out of the score.
 
-/** The three benchmarks that make up the composite index. Versions are pinned in `benchmarks.ts`. */
-export type BenchmarkId = "deep-swe" | "terminal-bench" | "swe-atlas-qna";
+/** The benchmarks that make up the composite index. Versions are pinned in `benchmarks.ts`. */
+export type BenchmarkId = "deep-swe" | "terminal-bench" | "swe-atlas-qna" | "frontiercode-aa";
 
 /** The independent operators whose published runs supply the figures. */
 export type OperatorId = "artificial-analysis" | "datacurve" | "terminal-bench" | "vals" | "scale";

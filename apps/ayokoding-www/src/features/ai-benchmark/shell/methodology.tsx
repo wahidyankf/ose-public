@@ -25,6 +25,7 @@ const DESCRIPTION_KEYS: Record<BenchmarkId, string> = {
   "deep-swe": "aiBenchMethodBenchDeepSwe",
   "terminal-bench": "aiBenchMethodBenchTerminal",
   "swe-atlas-qna": "aiBenchMethodBenchQna",
+  "frontiercode-aa": "aiBenchMethodBenchFrontier",
 };
 
 function IndexExample({ dataset, locale }: { dataset: Dataset; locale: Locale }) {

@@ -14,7 +14,7 @@ const benchVectorURL = "/en/tools/ai-benchmark?harness=command-code-pro&tier=pla
 const benchRestoreURL =
   "/en/tools/ai-benchmark?harness=cursor&tier=planning&sub=gpt-5.6-terra&sub-harness=command-code";
 const benchUnknownURL = "/en/tools/ai-benchmark?harness=nope&tier=nope";
-const benchEmptyURL = "/en/tools/ai-benchmark?harness=claude-code&tier=planning";
+const benchEmptyURL = "/en/tools/ai-benchmark?harness=codex-cli&tier=ultra";
 const calcVectorURL =
   "/en/tools/cost-of-living-calculator?city=singapore&gross=5000&baseline=my_salary&mygross=5000&mysalarycity=singapore";
 const calcRestoreURL =
@@ -24,9 +24,9 @@ const calcLegacyURL = "/en/tools/cost-of-living-calculator?city=jakarta&role=mid
 const calcFallbackURL = "/en/tools/cost-of-living-calculator?tab=min-role&target=1000000&city=no-such-city";
 const calcSavingsURL = "/en/tools/cost-of-living-calculator?city=singapore&gross=5000";
 
-const benchNames = ["GPT-6 Sol", "Grok 4.7", "GPT-5.6 Sol"];
-const benchIndices = ["56.7", "56.3", "54.6"];
-const benchPrices = ["$4.00", "$3.00", "$8.00"];
+const benchNames = ["Claude Sonnet 5.5", "GPT-6 Sol", "Gemini 4 Argon", "GPT-5.6 Terra", "GPT-5.6 Sol"];
+const benchIndices = ["60.4", "56.7", "54.0", "52.5", "52.0"];
+const benchPrices = ["$4.00", "$4.00", "$4.00", "$4.50", "$8.00"];
 
 function benchmarkResults(body: string): string {
   // The order assertion scopes to the results list because the
@@ -38,12 +38,18 @@ function benchmarkResults(body: string): string {
 
 function expectBenchmarkOrder(body: string): void {
   const results = benchmarkResults(body);
-  const [first = -1, second = -1, third = -1] = benchNames.map((name) => results.indexOf(name));
+  const [first = -1, second = -1, third = -1, fourth = -1, fifth = -1] = benchNames.map((name) =>
+    results.indexOf(name),
+  );
   expect(first).toBeGreaterThanOrEqual(0);
   expect(second).toBeGreaterThan(0);
   expect(third).toBeGreaterThan(0);
+  expect(fourth).toBeGreaterThan(0);
+  expect(fifth).toBeGreaterThan(0);
   expect(first).toBeLessThan(second);
   expect(second).toBeLessThan(third);
+  expect(third).toBeLessThan(fourth);
+  expect(fourth).toBeLessThan(fifth);
 }
 
 Given("the current shared benchmark data and an established calculation vector", async () => {
@@ -121,7 +127,7 @@ When("either implementation reads the data and generates its reference results",
 });
 
 Then("model figures, prices, ordering policies, and reference results remain unchanged", async ({ page }) => {
-  expect(bodyOf(page)).toContain('data-count="3"');
+  expect(bodyOf(page)).toContain('data-count="5"');
   expectBenchmarkOrder(bodyOf(page));
   for (const marker of benchPrices) {
     expect(bodyOf(page)).toContain(marker);
@@ -136,7 +142,7 @@ Then("the source links, source dates, notes, and methodology remain available", 
 });
 
 Given("a supported filter combination matches no model", async () => {
-  // harness=claude-code with tier=planning is valid under the current codec
+  // harness=codex-cli with tier=ultra is valid under the current codec
   // and matches no model in the shared roster.
 });
 

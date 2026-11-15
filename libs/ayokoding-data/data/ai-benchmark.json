@@ -1,6 +1,6 @@
 {
   "dataset": {
-    "lastUpdated": "2026-11-14",
+    "lastUpdated": "2026-11-15",
     "models": [
       {
         "id": "claude-fable-5-2",
@@ -10,7 +10,24 @@
         "releaseDate": "2026-11-09",
         "access": "general",
         "harnesses": ["claude-code", "command-code", "opencode-zen"],
-        "figures": [],
+        "figures": [
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 65.15,
+            "operator": "vals",
+            "config": "mini-SWE-agent (effort not published)",
+            "source": "https://www.vals.ai/benchmarks/terminal-bench-4"
+          },
+          {
+            "benchmark": "frontiercode-aa",
+            "version": "2.0",
+            "value": 49.18,
+            "operator": "artificial-analysis",
+            "config": "Claude Code, xhigh effort (provider fallback on 55 attempts)",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          }
+        ],
         "price": {
           "input": 8,
           "output": 40,
@@ -46,9 +63,17 @@
           {
             "benchmark": "swe-atlas-qna",
             "version": "QnA",
-            "value": 64.78,
+            "value": 59.95,
+            "operator": "scale",
+            "config": "Claude Code, xhigh effort",
+            "source": "https://labs.scale.com/leaderboard/sweatlas-qna"
+          },
+          {
+            "benchmark": "frontiercode-aa",
+            "version": "2.0",
+            "value": 32.99,
             "operator": "artificial-analysis",
-            "config": "Claude Code, max effort (provider fallback on 74 attempts)",
+            "config": "Claude Code, max effort (provider fallback on 79 attempts)",
             "source": "https://artificialanalysis.ai/agents/coding-agents"
           }
         ],
@@ -59,7 +84,7 @@
           "listedBy": "vendor"
         },
         "costPerTask": {
-          "usd": 12.39,
+          "usd": 11.7,
           "operator": "artificial-analysis",
           "source": "https://artificialanalysis.ai/agents/coding-agents"
         }
@@ -125,10 +150,10 @@
           {
             "benchmark": "terminal-bench",
             "version": "4.0",
-            "value": 63.13,
-            "operator": "artificial-analysis",
-            "config": "Claude Code, max effort (provider fallback on 78 attempts)",
-            "source": "https://artificialanalysis.ai/agents/coding-agents"
+            "value": 65.15,
+            "operator": "vals",
+            "config": "mini-SWE-agent (effort not published)",
+            "source": "https://www.vals.ai/benchmarks/terminal-bench-4"
           },
           {
             "benchmark": "swe-atlas-qna",
@@ -136,6 +161,14 @@
             "value": 66.4,
             "operator": "artificial-analysis",
             "config": "Claude Code, max effort (provider fallback on 78 attempts)",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "frontiercode-aa",
+            "version": "2.0",
+            "value": 43.97,
+            "operator": "artificial-analysis",
+            "config": "Claude Code, max effort (provider fallback on 77 attempts)",
             "source": "https://artificialanalysis.ai/agents/coding-agents"
           }
         ],
@@ -146,7 +179,7 @@
           "listedBy": "vendor"
         },
         "costPerTask": {
-          "usd": 13.04,
+          "usd": 12.61,
           "operator": "artificial-analysis",
           "source": "https://artificialanalysis.ai/agents/coding-agents"
         }
@@ -163,10 +196,10 @@
           {
             "benchmark": "deep-swe",
             "version": "1.1",
-            "value": 62.54,
-            "operator": "artificial-analysis",
-            "config": "Claude Code, max effort (provider fallback on 3 attempts)",
-            "source": "https://artificialanalysis.ai/agents/coding-agents"
+            "value": 73.65,
+            "operator": "datacurve",
+            "config": "mini-SWE-agent, max effort",
+            "source": "https://deepswe.datacurve.ai/"
           },
           {
             "benchmark": "terminal-bench",
@@ -179,10 +212,10 @@
           {
             "benchmark": "swe-atlas-qna",
             "version": "QnA",
-            "value": 62.1,
-            "operator": "artificial-analysis",
-            "config": "Claude Code, max effort (provider fallback on 3 attempts)",
-            "source": "https://artificialanalysis.ai/agents/coding-agents"
+            "value": 63.17,
+            "operator": "scale",
+            "config": "Claude Code, xhigh effort",
+            "source": "https://labs.scale.com/leaderboard/sweatlas-qna"
           }
         ],
         "price": {
@@ -258,15 +291,23 @@
           {
             "benchmark": "terminal-bench",
             "version": "4.0",
-            "value": 66.16,
+            "value": 63.6,
             "operator": "artificial-analysis",
-            "config": "Claude Code, max effort (provider fallback on 45 attempts)",
-            "source": "https://artificialanalysis.ai/agents/coding-agents"
+            "config": "mini-SWE-agent, Max effort (Default Fallback)",
+            "source": "https://artificialanalysis.ai/evaluations/terminalbench-4-0"
           },
           {
             "benchmark": "swe-atlas-qna",
             "version": "QnA",
             "value": 66.94,
+            "operator": "artificial-analysis",
+            "config": "Claude Code, max effort (provider fallback on 45 attempts)",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "frontiercode-aa",
+            "version": "2.0",
+            "value": 39.09,
             "operator": "artificial-analysis",
             "config": "Claude Code, max effort (provider fallback on 45 attempts)",
             "source": "https://artificialanalysis.ai/agents/coding-agents"
@@ -279,7 +320,7 @@
           "listedBy": "vendor"
         },
         "costPerTask": {
-          "usd": 14.19,
+          "usd": 11.4,
           "operator": "artificial-analysis",
           "source": "https://artificialanalysis.ai/agents/coding-agents"
         }
@@ -382,6 +423,14 @@
             "operator": "artificial-analysis",
             "config": "Claude Code, xhigh effort (provider fallback on 1 attempt)",
             "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "frontiercode-aa",
+            "version": "2.0",
+            "value": 23.08,
+            "operator": "artificial-analysis",
+            "config": "Claude Code, max effort (provider fallback on 3 attempts)",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
           }
         ],
         "price": {
@@ -392,7 +441,7 @@
           "note": "Prompts over 100K tokens: $0.50 / $2.50."
         },
         "costPerTask": {
-          "usd": 0.61,
+          "usd": 2.25,
           "operator": "artificial-analysis",
           "source": "https://artificialanalysis.ai/agents/coding-agents"
         }
@@ -476,10 +525,10 @@
           {
             "benchmark": "deep-swe",
             "version": "1.1",
-            "value": 67.55,
-            "operator": "artificial-analysis",
-            "config": "Codex, max effort",
-            "source": "https://artificialanalysis.ai/agents/coding-agents"
+            "value": 74.12,
+            "operator": "datacurve",
+            "config": "mini-SWE-agent, xhigh effort",
+            "source": "https://deepswe.datacurve.ai/"
           },
           {
             "benchmark": "terminal-bench",
@@ -492,7 +541,15 @@
           {
             "benchmark": "swe-atlas-qna",
             "version": "QnA",
-            "value": 61.83,
+            "value": 59.14,
+            "operator": "scale",
+            "config": "Codex, xhigh effort",
+            "source": "https://labs.scale.com/leaderboard/sweatlas-qna"
+          },
+          {
+            "benchmark": "frontiercode-aa",
+            "version": "2.0",
+            "value": 42.58,
             "operator": "artificial-analysis",
             "config": "Codex, max effort",
             "source": "https://artificialanalysis.ai/agents/coding-agents"
@@ -506,7 +563,7 @@
           "note": "Prompts over 272K tokens: 2× input, 1.5× output."
         },
         "costPerTask": {
-          "usd": 7.47,
+          "usd": 7.63,
           "operator": "artificial-analysis",
           "source": "https://artificialanalysis.ai/agents/coding-agents"
         },
@@ -544,6 +601,14 @@
             "operator": "artificial-analysis",
             "config": "Codex, xhigh effort",
             "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "frontiercode-aa",
+            "version": "2.0",
+            "value": 42.49,
+            "operator": "artificial-analysis",
+            "config": "Codex, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
           }
         ],
         "price": {
@@ -553,7 +618,7 @@
           "listedBy": "vendor"
         },
         "costPerTask": {
-          "usd": 1.04,
+          "usd": 1.51,
           "operator": "artificial-analysis",
           "source": "https://artificialanalysis.ai/agents/coding-agents"
         }
@@ -566,12 +631,26 @@
         "releaseDate": "2026-10-26",
         "access": "general",
         "harnesses": ["codex-cli", "command-code", "command-code-pro"],
-        "figures": [],
+        "figures": [
+          {
+            "benchmark": "frontiercode-aa",
+            "version": "2.0",
+            "value": 41.41,
+            "operator": "artificial-analysis",
+            "config": "Codex, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          }
+        ],
         "price": {
           "input": 1,
           "output": 5,
           "source": "https://developers.openai.com/api/docs/pricing",
           "listedBy": "vendor"
+        },
+        "costPerTask": {
+          "usd": 1.53,
+          "operator": "artificial-analysis",
+          "source": "https://artificialanalysis.ai/agents/coding-agents"
         }
       },
       {
@@ -632,10 +711,10 @@
           {
             "benchmark": "deep-swe",
             "version": "1.1",
-            "value": 72.27,
-            "operator": "artificial-analysis",
-            "config": "Codex, max effort",
-            "source": "https://artificialanalysis.ai/agents/coding-agents"
+            "value": 72.67,
+            "operator": "datacurve",
+            "config": "mini-SWE-agent, max effort",
+            "source": "https://deepswe.datacurve.ai/"
           },
           {
             "benchmark": "terminal-bench",
@@ -648,10 +727,10 @@
           {
             "benchmark": "swe-atlas-qna",
             "version": "QnA",
-            "value": 54.03,
-            "operator": "artificial-analysis",
-            "config": "Codex, max effort",
-            "source": "https://artificialanalysis.ai/agents/coding-agents"
+            "value": 46.0,
+            "operator": "scale",
+            "config": "Codex, xhigh effort",
+            "source": "https://labs.scale.com/leaderboard/sweatlas-qna"
           }
         ],
         "price": {
@@ -758,6 +837,14 @@
             "operator": "artificial-analysis",
             "config": "Codex, max effort",
             "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "frontiercode-aa",
+            "version": "2.0",
+            "value": 24.09,
+            "operator": "artificial-analysis",
+            "config": "Codex, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
           }
         ],
         "price": {
@@ -767,7 +854,7 @@
           "listedBy": "vendor"
         },
         "costPerTask": {
-          "usd": 0.18,
+          "usd": 0.19,
           "operator": "artificial-analysis",
           "source": "https://artificialanalysis.ai/agents/coding-agents"
         }
@@ -784,10 +871,10 @@
           {
             "benchmark": "deep-swe",
             "version": "1.1",
-            "value": 66.37,
-            "operator": "artificial-analysis",
-            "config": "Codex, max effort",
-            "source": "https://artificialanalysis.ai/agents/coding-agents"
+            "value": 67.19,
+            "operator": "datacurve",
+            "config": "mini-SWE-agent, max effort",
+            "source": "https://deepswe.datacurve.ai/"
           },
           {
             "benchmark": "terminal-bench",
@@ -876,10 +963,18 @@
             "operator": "artificial-analysis",
             "config": "Antigravity CLI, high effort",
             "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "frontiercode-aa",
+            "version": "2.0",
+            "value": 24.82,
+            "operator": "artificial-analysis",
+            "config": "Antigravity CLI, high effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
           }
         ],
         "costPerTask": {
-          "usd": 5.84,
+          "usd": 6.84,
           "operator": "artificial-analysis",
           "source": "https://artificialanalysis.ai/agents/coding-agents"
         },
@@ -915,13 +1010,35 @@
         "releaseDate": "2026-11-10",
         "access": "general",
         "harnesses": ["command-code", "command-code-pro", "opencode-zen"],
-        "figures": [],
+        "figures": [
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 65.2,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent, High effort",
+            "source": "https://artificialanalysis.ai/evaluations/terminalbench-4-0"
+          },
+          {
+            "benchmark": "frontiercode-aa",
+            "version": "2.0",
+            "value": 38.04,
+            "operator": "artificial-analysis",
+            "config": "Antigravity CLI, high effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          }
+        ],
         "price": {
           "input": 2,
           "output": 10,
           "source": "https://ai.google.dev/gemini-api/docs/pricing",
           "listedBy": "vendor",
           "note": "Promotional $2 / $10 through 2026-11-30; $4 / $20 from 2026-12-01."
+        },
+        "costPerTask": {
+          "usd": 7.13,
+          "operator": "artificial-analysis",
+          "source": "https://artificialanalysis.ai/agents/coding-agents"
         }
       },
       {
@@ -978,10 +1095,10 @@
           {
             "benchmark": "deep-swe",
             "version": "1.1",
-            "value": 65.78,
-            "operator": "artificial-analysis",
-            "config": "Antigravity SDK, high effort",
-            "source": "https://artificialanalysis.ai/agents/coding-agents"
+            "value": 73.83,
+            "operator": "datacurve",
+            "config": "mini-SWE-agent, high effort",
+            "source": "https://deepswe.datacurve.ai/"
           },
           {
             "benchmark": "terminal-bench",
@@ -994,10 +1111,10 @@
           {
             "benchmark": "swe-atlas-qna",
             "version": "QnA",
-            "value": 45.16,
-            "operator": "artificial-analysis",
-            "config": "Antigravity SDK, high effort",
-            "source": "https://artificialanalysis.ai/agents/coding-agents"
+            "value": 47.04,
+            "operator": "scale",
+            "config": "Mini-SWE-agent (effort not published)",
+            "source": "https://labs.scale.com/leaderboard/sweatlas-qna"
           }
         ],
         "price": {
@@ -1088,7 +1205,16 @@
         "line": "Gemini Flash",
         "access": "general",
         "harnesses": ["command-code", "command-code-pro", "opencode-zen"],
-        "figures": [],
+        "figures": [
+          {
+            "benchmark": "deep-swe",
+            "version": "1.1",
+            "value": 36.06,
+            "operator": "datacurve",
+            "config": "mini-SWE-agent, high effort",
+            "source": "https://deepswe.datacurve.ai/"
+          }
+        ],
         "price": {
           "input": 1.5,
           "output": 9.0,
@@ -1170,6 +1296,14 @@
             "operator": "artificial-analysis",
             "config": "Grok Build, xhigh effort",
             "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "frontiercode-aa",
+            "version": "2.0",
+            "value": 29.69,
+            "operator": "artificial-analysis",
+            "config": "Grok Build, xhigh effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
           }
         ],
         "price": {
@@ -1180,7 +1314,7 @@
           "note": "Prompts of 200K tokens or more: $4 / $12."
         },
         "costPerTask": {
-          "usd": 8.82,
+          "usd": 15.35,
           "operator": "artificial-analysis",
           "source": "https://artificialanalysis.ai/agents/coding-agents"
         }
@@ -1197,10 +1331,10 @@
           {
             "benchmark": "deep-swe",
             "version": "1.1",
-            "value": 64.9,
-            "operator": "artificial-analysis",
-            "config": "Grok Build, xhigh effort",
-            "source": "https://artificialanalysis.ai/agents/coding-agents"
+            "value": 67.48,
+            "operator": "datacurve",
+            "config": "mini-SWE-agent, medium effort",
+            "source": "https://deepswe.datacurve.ai/"
           },
           {
             "benchmark": "terminal-bench",
@@ -1311,10 +1445,10 @@
           {
             "benchmark": "deep-swe",
             "version": "1.1",
-            "value": 61.36,
-            "operator": "artificial-analysis",
-            "config": "OpenCode, max effort",
-            "source": "https://artificialanalysis.ai/agents/coding-agents"
+            "value": 68.96,
+            "operator": "datacurve",
+            "config": "mini-SWE-agent, max effort",
+            "source": "https://deepswe.datacurve.ai/"
           },
           {
             "benchmark": "terminal-bench",
@@ -1331,6 +1465,14 @@
             "operator": "artificial-analysis",
             "config": "OpenCode, max effort",
             "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "frontiercode-aa",
+            "version": "2.0",
+            "value": 21.35,
+            "operator": "artificial-analysis",
+            "config": "OpenCode, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
           }
         ],
         "price": {
@@ -1340,7 +1482,7 @@
           "listedBy": "vendor"
         },
         "costPerTask": {
-          "usd": 4.24,
+          "usd": 5.41,
           "operator": "artificial-analysis",
           "source": "https://artificialanalysis.ai/agents/coding-agents"
         }
@@ -1498,12 +1640,34 @@
         "line": "Kimi",
         "access": "general",
         "harnesses": ["command-code", "command-code-pro", "opencode-go"],
-        "figures": [],
+        "figures": [
+          {
+            "benchmark": "terminal-bench",
+            "version": "4.0",
+            "value": 67.2,
+            "operator": "artificial-analysis",
+            "config": "mini-SWE-agent (effort not published)",
+            "source": "https://artificialanalysis.ai/evaluations/terminalbench-4-0"
+          },
+          {
+            "benchmark": "frontiercode-aa",
+            "version": "2.0",
+            "value": 22.02,
+            "operator": "artificial-analysis",
+            "config": "Kimi Code CLI, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          }
+        ],
         "price": {
           "input": 2,
           "output": 10,
           "source": "https://commandcode.ai/models",
           "listedBy": "commandcode"
+        },
+        "costPerTask": {
+          "usd": 2.94,
+          "operator": "artificial-analysis",
+          "source": "https://artificialanalysis.ai/agents/coding-agents"
         }
       },
       {
@@ -1518,10 +1682,10 @@
           {
             "benchmark": "deep-swe",
             "version": "1.1",
-            "value": 68.44,
-            "operator": "artificial-analysis",
-            "config": "Kimi Code CLI",
-            "source": "https://artificialanalysis.ai/agents/coding-agents"
+            "value": 68.51,
+            "operator": "datacurve",
+            "config": "mini-SWE-agent, max effort",
+            "source": "https://deepswe.datacurve.ai/"
           },
           {
             "benchmark": "terminal-bench",
@@ -1662,10 +1826,10 @@
           {
             "benchmark": "deep-swe",
             "version": "1.1",
-            "value": 57.23,
-            "operator": "artificial-analysis",
-            "config": "Codex, max effort (V4 Pro 0813)",
-            "source": "https://artificialanalysis.ai/agents/coding-agents"
+            "value": 62.83,
+            "operator": "datacurve",
+            "config": "mini-SWE-agent, max effort",
+            "source": "https://deepswe.datacurve.ai/"
           },
           {
             "benchmark": "terminal-bench",
@@ -1678,10 +1842,10 @@
           {
             "benchmark": "swe-atlas-qna",
             "version": "QnA",
-            "value": 61.83,
-            "operator": "artificial-analysis",
-            "config": "Codex, max effort (V4 Pro 0813)",
-            "source": "https://artificialanalysis.ai/agents/coding-agents"
+            "value": 27.15,
+            "operator": "scale",
+            "config": "Mini-SWE-agent (effort not published)",
+            "source": "https://labs.scale.com/leaderboard/sweatlas-qna"
           }
         ],
         "price": {
@@ -1782,10 +1946,10 @@
           {
             "benchmark": "deep-swe",
             "version": "1.1",
-            "value": 54.28,
-            "operator": "artificial-analysis",
-            "config": "Codex, max effort (V4 Flash 0731)",
-            "source": "https://artificialanalysis.ai/agents/coding-agents"
+            "value": 53.32,
+            "operator": "datacurve",
+            "config": "mini-SWE-agent, max effort",
+            "source": "https://deepswe.datacurve.ai/"
           },
           {
             "benchmark": "terminal-bench",
@@ -1861,10 +2025,10 @@
           {
             "benchmark": "deep-swe",
             "version": "1.1",
-            "value": 51.03,
-            "operator": "artificial-analysis",
-            "config": "Claude Code",
-            "source": "https://artificialanalysis.ai/agents/coding-agents"
+            "value": 57.46,
+            "operator": "datacurve",
+            "config": "mini-SWE-agent, xhigh effort",
+            "source": "https://deepswe.datacurve.ai/"
           },
           {
             "benchmark": "terminal-bench",
@@ -1881,6 +2045,14 @@
             "operator": "artificial-analysis",
             "config": "Claude Code",
             "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "frontiercode-aa",
+            "version": "2.0",
+            "value": 24.83,
+            "operator": "artificial-analysis",
+            "config": "Claude Code (effort not published)",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
           }
         ],
         "price": {
@@ -1890,7 +2062,7 @@
           "listedBy": "vendor"
         },
         "costPerTask": {
-          "usd": 3.48,
+          "usd": 4.03,
           "operator": "artificial-analysis",
           "source": "https://artificialanalysis.ai/agents/coding-agents"
         }
@@ -2142,6 +2314,14 @@
             "operator": "artificial-analysis",
             "config": "Muse Code, max effort",
             "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "frontiercode-aa",
+            "version": "2.0",
+            "value": 35.02,
+            "operator": "artificial-analysis",
+            "config": "Muse Code, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
           }
         ],
         "note": "Muse Code subscribers only; not served through the API."
@@ -2178,6 +2358,14 @@
             "operator": "artificial-analysis",
             "config": "Muse Code, max effort",
             "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "frontiercode-aa",
+            "version": "2.0",
+            "value": 24.39,
+            "operator": "artificial-analysis",
+            "config": "Muse Code, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
           }
         ],
         "price": {
@@ -2187,7 +2375,7 @@
           "listedBy": "vendor"
         },
         "costPerTask": {
-          "usd": 8.05,
+          "usd": 7.59,
           "operator": "artificial-analysis",
           "source": "https://artificialanalysis.ai/agents/coding-agents"
         }
@@ -2200,13 +2388,27 @@
         "releaseDate": "2026-11-09",
         "access": "general",
         "harnesses": ["command-code", "command-code-pro", "muse-code", "opencode-zen"],
-        "figures": [],
+        "figures": [
+          {
+            "benchmark": "frontiercode-aa",
+            "version": "2.0",
+            "value": 20.79,
+            "operator": "artificial-analysis",
+            "config": "Muse Code, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
+          }
+        ],
         "price": {
           "input": 0.1,
           "output": 0.5,
           "source": "https://dev.meta.ai/docs/pricing-rate-limits",
           "listedBy": "vendor",
           "note": "Prompts over 200K tokens: $0.30 / $1.50."
+        },
+        "costPerTask": {
+          "usd": 0.22,
+          "operator": "artificial-analysis",
+          "source": "https://artificialanalysis.ai/agents/coding-agents"
         }
       },
       {
@@ -2257,6 +2459,14 @@
             "operator": "artificial-analysis",
             "config": "Muse Code, max effort",
             "source": "https://artificialanalysis.ai/agents/coding-agents"
+          },
+          {
+            "benchmark": "frontiercode-aa",
+            "version": "2.0",
+            "value": 21.91,
+            "operator": "artificial-analysis",
+            "config": "Muse Code, max effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
           }
         ],
         "price": {
@@ -2266,7 +2476,7 @@
           "listedBy": "vendor"
         },
         "costPerTask": {
-          "usd": 3.98,
+          "usd": 4.34,
           "operator": "artificial-analysis",
           "source": "https://artificialanalysis.ai/agents/coding-agents"
         }
@@ -2678,6 +2888,14 @@
             "operator": "artificial-analysis",
             "config": "mini-SWE-agent (run as Mistral Large 4 Preview)",
             "source": "https://artificialanalysis.ai/models/comparisons/mistral-large-4-vs-glm-5-2"
+          },
+          {
+            "benchmark": "frontiercode-aa",
+            "version": "2.0",
+            "value": 20.47,
+            "operator": "artificial-analysis",
+            "config": "Mistral Vibe, high effort",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
           }
         ],
         "price": {
@@ -2686,6 +2904,11 @@
           "source": "https://docs.mistral.ai/models/mistral-large-4-0",
           "listedBy": "vendor",
           "note": "Two-week launch promotion from 2026-10-06; $1.36 / $4.18 after."
+        },
+        "costPerTask": {
+          "usd": 2.94,
+          "operator": "artificial-analysis",
+          "source": "https://artificialanalysis.ai/agents/coding-agents"
         }
       },
       {
@@ -2759,6 +2982,14 @@
             "operator": "artificial-analysis",
             "config": "mini-SWE-agent",
             "source": "https://artificialanalysis.ai/evaluations/terminalbench-4-0"
+          },
+          {
+            "benchmark": "frontiercode-aa",
+            "version": "2.0",
+            "value": 18.45,
+            "operator": "artificial-analysis",
+            "config": "Claude Code (effort not published)",
+            "source": "https://artificialanalysis.ai/agents/coding-agents"
           }
         ],
         "price": {
@@ -2766,6 +2997,11 @@
           "output": 2.7,
           "source": "https://platform.stepfun.ai/docs/en/guides/pricing/details",
           "listedBy": "vendor"
+        },
+        "costPerTask": {
+          "usd": 3.55,
+          "operator": "artificial-analysis",
+          "source": "https://artificialanalysis.ai/agents/coding-agents"
         }
       },
       {
@@ -2958,6 +3194,14 @@
         "weight": 1,
         "operatorOrder": ["artificial-analysis", "scale"],
         "url": "https://labs.scale.com/leaderboard/sweatlas-qna"
+      },
+      {
+        "id": "frontiercode-aa",
+        "name": "FrontierCode-AA",
+        "version": "2.0",
+        "weight": 1,
+        "operatorOrder": ["artificial-analysis"],
+        "url": "https://artificialanalysis.ai/agents/coding-agents"
       }
     ],
     "minScoredBenchmarks": 2,
@@ -3002,17 +3246,17 @@
   "operators": [
     {
       "id": "artificial-analysis",
-      "name": "Artificial Analysis — Coding Agent Index v1.5",
+      "name": "Artificial Analysis — Coding Agent Index v2.1",
       "shortName": "Artificial Analysis",
       "url": "https://artificialanalysis.ai/agents/coding-agents",
-      "checkedOn": "2026-10-14"
+      "checkedOn": "2026-11-15"
     },
     {
       "id": "datacurve",
       "name": "Datacurve — DeepSWE v1.1 leaderboard",
       "shortName": "Datacurve",
       "url": "https://deepswe.datacurve.ai/",
-      "checkedOn": "2026-10-14",
+      "checkedOn": "2026-11-15",
       "sourceUpdated": "2026-09-22"
     },
     {
@@ -3020,7 +3264,7 @@
       "name": "Terminal-Bench — official 4.0 leaderboard",
       "shortName": "Terminal-Bench board",
       "url": "https://www.tbench.ai/leaderboard",
-      "checkedOn": "2026-10-14",
+      "checkedOn": "2026-11-15",
       "sourceUpdated": "2026-09-21"
     },
     {
@@ -3028,15 +3272,15 @@
       "name": "Vals AI — Terminal-Bench 4",
       "shortName": "Vals AI",
       "url": "https://www.vals.ai/benchmarks/terminal-bench-4",
-      "checkedOn": "2026-10-14",
-      "sourceUpdated": "2026-10-13"
+      "checkedOn": "2026-11-15",
+      "sourceUpdated": "2026-11-11"
     },
     {
       "id": "scale",
       "name": "Scale AI — SWE-Atlas QnA leaderboard",
       "shortName": "Scale AI",
       "url": "https://labs.scale.com/leaderboard/sweatlas-qna",
-      "checkedOn": "2026-10-14"
+      "checkedOn": "2026-11-15"
     }
   ],
   "priceSources": [

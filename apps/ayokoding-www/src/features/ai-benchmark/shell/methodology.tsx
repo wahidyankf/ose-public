@@ -93,6 +93,14 @@ export function Methodology({ dataset, locale }: { dataset: Dataset; locale: Loc
         </div>
         <p data-testid="ai-bench-method-roster">{tf(locale, "aiBenchMethodRoster", rosterScopeParams(locale))}</p>
         <p data-testid="ai-bench-method-index">{tf(locale, "aiBenchMethodIndex", { min: MIN_SCORED_BENCHMARKS })}</p>
+        <p data-testid="ai-bench-method-score-basis">
+          {tf(locale, "aiBenchMethodScoreBasis", {
+            average: t(locale, "aiBenchScoreBasisAverage"),
+            options: BENCHMARK_SPECS.map((b) => b.name).join(", "),
+          })}
+        </p>
+        <p data-testid="ai-bench-method-raw">{t(locale, "aiBenchMethodRawScores")}</p>
+        <p data-testid="ai-bench-method-unranked">{t(locale, "aiBenchMethodUnranked")}</p>
         <p>{t(locale, "aiBenchMethodTiers")}</p>
         <div>
           <p>{t(locale, "aiBenchMethodAnchorsIntro")}</p>

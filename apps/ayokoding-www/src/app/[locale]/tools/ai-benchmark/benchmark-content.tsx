@@ -9,7 +9,7 @@ import { dataset } from "@/features/ai-benchmark/core/data/models";
 import type { Dataset } from "@/features/ai-benchmark/core/data/types";
 import { filterModels } from "@/features/ai-benchmark/core/filter";
 import { frontierModels } from "@/features/ai-benchmark/core/substitute";
-import { computeTierGroups, scoreModels, tierAnchors } from "@/features/ai-benchmark/core/tiers";
+import { computeTierGroups, rankBenchmarkModels, scoreModels, tierAnchors } from "@/features/ai-benchmark/core/tiers";
 import { decodeState, encodeState, type UrlState } from "@/features/ai-benchmark/core/url-state";
 import { BenchmarkFilters } from "@/features/ai-benchmark/shell/benchmark-filters";
 import { formatDate } from "@/features/ai-benchmark/shell/format";
@@ -19,7 +19,7 @@ import { ModelTable } from "@/features/ai-benchmark/shell/model-table";
 import { Sources } from "@/features/ai-benchmark/shell/sources";
 import { SubstituteFinder } from "@/features/ai-benchmark/shell/substitute-finder";
 import { TAP_TARGET_MIN_CLASS } from "@/features/ai-benchmark/shell/tap-target";
-import { RATED_TIERS, TierMap } from "@/features/ai-benchmark/shell/tier-map";
+import { BenchmarkRankList, RATED_TIERS, TierMap } from "@/features/ai-benchmark/shell/tier-map";
 
 const FRONTIER_IDS = new Set(frontierModels(dataset).map((m) => m.id));
 
@@ -41,6 +41,9 @@ export function BenchmarkContent() {
   // Tiers are always judged against the full roster's anchors, so filtering never moves a model.
   const groups = computeTierGroups(shown, dataset);
   const tiers = state.tier === undefined ? RATED_TIERS : RATED_TIERS.filter((tier) => tier === state.tier);
+  // The per-benchmark view ranks the shown models by one benchmark's raw score instead of tiering
+  // them; models without a scored figure there are listed as unranked.
+  const ranking = state.benchmark === undefined ? undefined : rankBenchmarkModels(shown.models, state.benchmark);
 
   // `router.push` is asynchronous: two quick changes would both merge onto the same stale render
   // state and the second would drop the first. The ref is updated synchronously in `navigate` and
@@ -105,10 +108,22 @@ export function BenchmarkContent() {
           <span className="mb-1 block font-medium text-foreground">{t(locale, "aiBenchEmptyStateTitle")}</span>
           {t(locale, "aiBenchEmptyStateMessage")}
         </p>
-      ) : (
+      ) : ranking === undefined ? (
         <>
           {tiers.length > 0 && <TierMap groups={groups} anchors={tierAnchors(dataset)} tiers={tiers} locale={locale} />}
           <InsufficientList models={groups.insufficient} locale={locale} />
+          <ModelTable rows={scoreModels(shown, dataset)} locale={locale} />
+        </>
+      ) : (
+        <>
+          {ranking.ranked.length > 0 && (
+            <BenchmarkRankList rows={ranking.ranked} benchmark={state.benchmark!} locale={locale} />
+          )}
+          <InsufficientList
+            models={scoreModels({ ...dataset, models: ranking.unranked }, dataset)}
+            locale={locale}
+            unrankedBenchmark={state.benchmark}
+          />
           <ModelTable rows={scoreModels(shown, dataset)} locale={locale} />
         </>
       )}

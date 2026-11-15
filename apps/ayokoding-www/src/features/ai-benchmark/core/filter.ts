@@ -1,8 +1,8 @@
 // AI BENCHMARK — roster filtering by harness and tier (intersection). Unknown values never reach
 // here: `url-state.ts` drops them first.
 
-import { TIERS } from "./data/benchmarks";
-import type { Dataset, HarnessId, Model, Tier } from "./data/types";
+import { BENCHMARK_SPECS, TIERS } from "./data/benchmarks";
+import type { BenchmarkId, Dataset, HarnessId, Model, Tier } from "./data/types";
 import { assignTier } from "./tiers";
 
 export const HARNESS_IDS: readonly HarnessId[] = [
@@ -24,10 +24,18 @@ export function isKnownTier(v: string): v is Tier {
   return (TIERS as readonly string[]).includes(v);
 }
 
-/** Either axis may be unset (= unfiltered). */
+/** The benchmarks the score-basis control offers, in column order. */
+export const BENCHMARK_IDS: readonly BenchmarkId[] = BENCHMARK_SPECS.map((s) => s.id);
+
+export function isKnownBenchmark(v: string): v is BenchmarkId {
+  return (BENCHMARK_IDS as readonly string[]).includes(v);
+}
+
+/** Either axis may be unset (= unfiltered). `benchmark` is the score basis: unset means the composite average. */
 export type FilterState = {
   harness?: HarnessId;
   tier?: Tier;
+  benchmark?: BenchmarkId;
 };
 
 /**

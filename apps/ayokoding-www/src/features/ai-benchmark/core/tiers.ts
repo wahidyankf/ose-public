@@ -7,8 +7,8 @@
 // `insufficient`.
 
 import { ANCHORED_TIERS, MIN_SCORED_BENCHMARKS, TIERS, TIER_ANCHORS } from "./data/benchmarks";
-import type { AnchoredTier, Dataset, Model, Tier } from "./data/types";
-import { compositeIndex, scoredBenchmarks } from "./score";
+import type { AnchoredTier, BenchmarkId, Dataset, Model, Tier } from "./data/types";
+import { benchmarkScore, compositeIndex, scoredBenchmarks } from "./score";
 
 /** A model with its composite index and tier — the unit every page section renders. */
 export type ScoredModel = {
@@ -84,4 +84,35 @@ export function tierAnchors(full: Dataset): Record<AnchoredTier, ScoredModel | u
 /** Higher is more capable: ultra 4 … insufficient 0. */
 export function tierRank(tier: Tier): number {
   return TIERS.length - 1 - TIERS.indexOf(tier);
+}
+
+/** One model with its raw score on the chosen benchmark — the unit the per-benchmark list renders. */
+export type BenchmarkRow = {
+  model: Model;
+  score: number;
+};
+
+/** Descending raw score, then ascending id — the per-benchmark mirror of {@link byIndexDesc}. */
+export function byBenchmarkScoreDesc(a: BenchmarkRow, b: BenchmarkRow): number {
+  if (a.score !== b.score) return b.score - a.score;
+  return a.model.id < b.model.id ? -1 : a.model.id > b.model.id ? 1 : 0;
+}
+
+/**
+ * Split `models` into the ranked list (those with a scored figure on `benchmark`, highest raw
+ * score first) and the unranked rest. Figures on any other version do not count.
+ */
+export function rankBenchmarkModels(
+  models: readonly Model[],
+  benchmark: BenchmarkId,
+): { ranked: BenchmarkRow[]; unranked: Model[] } {
+  const ranked: BenchmarkRow[] = [];
+  const unranked: Model[] = [];
+  for (const model of models) {
+    const score = benchmarkScore(model, benchmark);
+    if (score === undefined) unranked.push(model);
+    else ranked.push({ model, score });
+  }
+  ranked.sort(byBenchmarkScoreDesc);
+  return { ranked, unranked };
 }

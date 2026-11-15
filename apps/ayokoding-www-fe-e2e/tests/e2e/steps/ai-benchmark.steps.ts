@@ -21,6 +21,7 @@ import type { HarnessId, Model, Tier } from "../../../../ayokoding-www/src/featu
 import { HARNESS_IDS, filterModels } from "../../../../ayokoding-www/src/features/ai-benchmark/core/filter";
 import { blendedPrice, priceRatio } from "../../../../ayokoding-www/src/features/ai-benchmark/core/price";
 import {
+  benchmarkScore,
   compositeIndex,
   scoredBenchmarks,
   scoredFigure,
@@ -847,6 +848,118 @@ Then("an explicit empty-state message is shown", async ({ page }) => {
 Then("the tier map and the data table do not render", async ({ page }) => {
   await expect(page.getByTestId("ai-bench-tier-map")).toHaveCount(0);
   await expect(page.getByTestId("ai-bench-table")).toHaveCount(0);
+});
+
+// ── Score basis (average vs per-benchmark) ────────────────────────────────────
+
+const scoreBasisSelect = (page: Page) =>
+  page.getByTestId("ai-bench-filters").getByLabel(t("en", "aiBenchScoreBasisLabel"), { exact: true });
+
+const rankedIdsBefore: { ids: string[] } = { ids: [] };
+
+Given("the URL carries no benchmark parameter", async ({ page }) => {
+  await load(page, "");
+});
+
+Then("the tier map orders models by composite index", async ({ page }) => {
+  expect(await tierMapIds(page)).toEqual([...rated].sort(byIndexDesc).map((s) => s.model.id));
+});
+
+Then('the score basis control shows "Average"', async ({ page }) => {
+  await expect(scoreBasisSelect(page)).toHaveValue("");
+  await expect(scoreBasisSelect(page).locator("option:checked")).toHaveText(t("en", "aiBenchScoreBasisAverage"));
+  await expect(scoreBasisSelect(page).locator("option")).toHaveCount(BENCHMARK_SPECS.length + 1);
+});
+
+Given("the roster holds models with no scored FrontierCode-AA figure", async () => {
+  const missing = full.models.filter((m) => benchmarkScore(m, "frontiercode-aa") === undefined);
+  expect(missing.length).toBeGreaterThan(0);
+  expect(missing.length).toBeLessThan(full.models.length);
+});
+
+Given("the URL carries a benchmark parameter naming FrontierCode-AA", async ({ page }) => {
+  await load(page, "?benchmark=frontiercode-aa");
+});
+
+Then("those models are listed inside the closed unranked disclosure", async ({ page }) => {
+  const details = page.getByTestId("ai-bench-insufficient");
+  expect(await details.evaluate((d) => d.tagName === "DETAILS" && !(d as HTMLDetailsElement).open)).toBe(true);
+  const expected = sorted(
+    full.models.filter((m) => benchmarkScore(m, "frontiercode-aa") === undefined).map((m) => m.id),
+  );
+  expect(sorted(await idsIn(page, '[data-testid="ai-bench-insufficient"]', "ai-bench-insufficient-item"))).toEqual(
+    expected,
+  );
+});
+
+Then(
+  "the ranked list holds only models with a scored FrontierCode-AA figure in descending raw-score order",
+  async ({ page }) => {
+    const expected = full.models
+      .flatMap((m) => {
+        const score = benchmarkScore(m, "frontiercode-aa");
+        return score === undefined ? [] : [{ id: m.id, score }];
+      })
+      .sort((a, b) => b.score - a.score || (a.id < b.id ? -1 : 1));
+    expect(expected.length).toBeGreaterThan(0);
+    expect(await tierMapIds(page)).toEqual(expected.map((e) => e.id));
+    for (const e of expected) {
+      await expect(
+        page
+          .locator(`[data-testid="ai-bench-tier-row"][data-model-id="${e.id}"]`)
+          .getByTestId("ai-bench-tier-row-index"),
+      ).toHaveText(fmtPercent(e.score));
+    }
+  },
+);
+
+Given("the URL carries a benchmark parameter with an unknown value", async ({ page }) => {
+  await load(page, "?benchmark=not-a-benchmark");
+});
+
+When('the reader changes the score basis to "Terminal-Bench"', async ({ page }) => {
+  await scoreBasisSelect(page).selectOption("terminal-bench");
+  await expect(page).toHaveURL(/[?&]benchmark=terminal-bench(&|$)/);
+  rankedIdsBefore.ids = await tierMapIds(page);
+});
+
+Then("the URL carries that benchmark as the score basis", async ({ page }) => {
+  expect(new URL(page.url()).searchParams.get("benchmark")).toBe("terminal-bench");
+});
+
+Then("reloading that URL shows the same per-benchmark ranking", async ({ page }) => {
+  await page.reload();
+  await page.waitForLoadState("networkidle");
+  await expect(scoreBasisSelect(page)).toHaveValue("terminal-bench");
+  expect(rankedIdsBefore.ids.length).toBeGreaterThan(0);
+  expect(await tierMapIds(page)).toEqual(rankedIdsBefore.ids);
+});
+
+Given("the URL carries a benchmark parameter naming a known benchmark", async ({ page }) => {
+  await load(page, "?benchmark=deep-swe");
+});
+
+When('the reader resets the score basis to "Average"', async ({ page }) => {
+  await scoreBasisSelect(page).selectOption("");
+  await expect(page).not.toHaveURL(/[?&]benchmark=/);
+});
+
+Then("the URL no longer carries the benchmark parameter", async ({ page }) => {
+  expect(new URL(page.url()).searchParams.has("benchmark")).toBe(false);
+});
+
+Then("it names the five score basis options: the composite average and the four benchmarks", async ({ page }) => {
+  const text = await page.getByTestId("ai-bench-method-score-basis").innerText();
+  expect(text).toContain(t("en", "aiBenchScoreBasisAverage"));
+  for (const b of BENCHMARK_SPECS) expect(text).toContain(b.name);
+});
+
+Then("it states that a per-benchmark view shows raw operator figures with no normalization", async ({ page }) => {
+  await expect(page.getByTestId("ai-bench-method-raw")).toHaveText(t("en", "aiBenchMethodRawScores"));
+});
+
+Then("it states that models without a scored figure on the chosen benchmark are unranked", async ({ page }) => {
+  await expect(page.getByTestId("ai-bench-method-unranked")).toHaveText(t("en", "aiBenchMethodUnranked"));
 });
 
 // ── Contrast ──────────────────────────────────────────────────────────────────

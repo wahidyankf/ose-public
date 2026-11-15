@@ -57,6 +57,19 @@ describe("decodeState", () => {
   it("treats every substitute target as unknown by default", () => {
     expect(decodeState(new URLSearchParams("sub=gpt-5.6-terra")).sub).toBeUndefined();
   });
+
+  it("reads a known benchmark as the score basis", () => {
+    expect(decodeState(new URLSearchParams("benchmark=terminal-bench")).benchmark).toBe("terminal-bench");
+  });
+
+  it("drops an unknown benchmark value instead of throwing", () => {
+    expect(decodeState(new URLSearchParams("benchmark=not-a-benchmark")).benchmark).toBeUndefined();
+    expect(decodeState(new URLSearchParams("benchmark=")).benchmark).toBeUndefined();
+  });
+
+  it("uses the first value of a duplicated benchmark parameter", () => {
+    expect(decodeState(new URLSearchParams("benchmark=deep-swe&benchmark=terminal-bench")).benchmark).toBe("deep-swe");
+  });
 });
 
 describe("encodeState", () => {
@@ -81,6 +94,15 @@ describe("encodeState", () => {
   it("round-trips through decodeState", () => {
     const state = { harness: "cursor", tier: "execution", sub: "gpt-5.6-terra", subHarness: "opencode-go" } as const;
     expect(decodeState(encodeState(state), knownSub)).toEqual(state);
+  });
+
+  it("writes the score basis under the benchmark key and omits Average", () => {
+    expect(encodeState({ benchmark: "terminal-bench" }).get(PARAM_KEYS.benchmark)).toBe("terminal-bench");
+    expect(encodeState({}).has(PARAM_KEYS.benchmark)).toBe(false);
+  });
+
+  it("round-trips the score basis through decodeState", () => {
+    expect(decodeState(encodeState({ benchmark: "deep-swe" })).benchmark).toBe("deep-swe");
   });
 
   it("round-trips the default substitute harness to unset", () => {

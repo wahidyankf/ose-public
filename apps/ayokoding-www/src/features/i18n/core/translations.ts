@@ -66,6 +66,13 @@ export const translations: Record<Locale, Record<string, string>> = {
     aiBenchEmptyStateTitle: "No model matches these filters",
     aiBenchEmptyStateMessage: "Try a different harness or tier, or reset the filters.",
 
+    aiBenchScoreBasisLabel: "Score basis",
+    aiBenchScoreBasisAverage: "Average",
+    aiBenchScoreLabel: "Score",
+    aiBenchRankListHeading: "Ranking by {benchmark}",
+    aiBenchUnrankedHeading: "Not ranked on {benchmark} ({count} models)",
+    aiBenchUnrankedIntro: "These models have no scored {benchmark} figure, so they are unranked on this score basis.",
+
     aiBenchTierMapHeading: "Capability tiers",
     aiBenchTierUltra: "Ultra",
     aiBenchTierPlanning: "Planning & orchestration",
@@ -118,6 +125,9 @@ export const translations: Record<Locale, Record<string, string>> = {
       "Roster: models from the frontier vendors ({frontier}), every {catalogs} model with a named vendor, and each listed harness's own in-house models ({inHouse}), up to three generations per model line.",
     aiBenchMethodIndex:
       "Index: the average of a model's scores on the benchmarks it has. A model needs at least {min} to get an index and a tier.",
+    aiBenchMethodScoreBasis: "Score basis: the composite average, or one benchmark at a time ({average}, {options}).",
+    aiBenchMethodRawScores: "A per-benchmark view shows raw operator figures with no normalization or weighting.",
+    aiBenchMethodUnranked: "Models without a scored figure on the chosen benchmark are unranked.",
     aiBenchMethodTiers:
       "Tiers: each one is defined by a previous-generation anchor model. A model goes in the highest tier whose anchor's index it matches or beats, so a model's tier always follows its index.",
     aiBenchMethodAnchorsIntro: "Tier anchors:",
@@ -595,6 +605,14 @@ export const translations: Record<Locale, Record<string, string>> = {
     aiBenchEmptyStateTitle: "Tidak ada model yang cocok dengan filter ini",
     aiBenchEmptyStateMessage: "Coba harness atau tingkat lain, atau atur ulang filter.",
 
+    aiBenchScoreBasisLabel: "Dasar skor",
+    aiBenchScoreBasisAverage: "Rata-rata",
+    aiBenchScoreLabel: "Skor",
+    aiBenchRankListHeading: "Peringkat {benchmark}",
+    aiBenchUnrankedHeading: "Tidak diperingkat pada {benchmark} ({count} model)",
+    aiBenchUnrankedIntro:
+      "Model-model ini tidak memiliki angka {benchmark} yang dihitung, sehingga tidak diperingkat pada dasar skor ini.",
+
     aiBenchTierMapHeading: "Tingkat kemampuan",
     aiBenchTierUltra: "Ultra",
     aiBenchTierPlanning: "Perencanaan & orkestrasi",
@@ -647,6 +665,11 @@ export const translations: Record<Locale, Record<string, string>> = {
       "Daftar model: model dari vendor frontier ({frontier}), semua model {catalogs} yang vendornya jelas, dan model buatan sendiri tiap harness yang tercantum ({inHouse}), hingga tiga generasi per lini model.",
     aiBenchMethodIndex:
       "Indeks: rata-rata skor model pada benchmark yang dimilikinya. Model butuh setidaknya {min} benchmark untuk mendapat indeks dan tingkat.",
+    aiBenchMethodScoreBasis:
+      "Dasar skor: rata-rata gabungan, atau satu benchmark dalam satu waktu ({average}, {options}).",
+    aiBenchMethodRawScores:
+      "Tampilan per benchmark menunjukkan angka mentah operator tanpa normalisasi atau pembobotan.",
+    aiBenchMethodUnranked: "Model tanpa angka yang dihitung pada benchmark yang dipilih tidak diperingkat.",
     aiBenchMethodTiers:
       "Tingkat: masing-masing ditentukan oleh satu model patokan generasi sebelumnya. Model masuk ke tingkat tertinggi yang indeks patokannya ia samai atau lampaui, jadi tingkat model selalu mengikuti indeksnya.",
     aiBenchMethodAnchorsIntro: "Model patokan tiap tingkat:",

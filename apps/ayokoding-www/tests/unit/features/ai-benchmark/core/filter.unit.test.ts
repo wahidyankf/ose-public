@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { HARNESS_IDS, filterModels, isKnownHarness, isKnownTier } from "@/features/ai-benchmark/core/filter";
+import {
+  BENCHMARK_IDS,
+  HARNESS_IDS,
+  filterModels,
+  isKnownBenchmark,
+  isKnownHarness,
+  isKnownTier,
+} from "@/features/ai-benchmark/core/filter";
 import { anchors, dataset, flat, goModel, harnessModel, model } from "./fixtures";
 
 const roster = dataset([
@@ -36,6 +43,13 @@ describe("known values", () => {
     expect(isKnownTier("insufficient")).toBe(true);
     expect(isKnownTier("opus")).toBe(false);
   });
+
+  it("recognises the four score-basis benchmarks", () => {
+    expect(BENCHMARK_IDS).toEqual(["deep-swe", "terminal-bench", "swe-atlas-qna", "frontiercode-aa"]);
+    for (const id of BENCHMARK_IDS) expect(isKnownBenchmark(id)).toBe(true);
+    expect(isKnownBenchmark("average")).toBe(false);
+    expect(isKnownBenchmark("vim")).toBe(false);
+  });
 });
 
 describe("filterModels", () => {
@@ -61,5 +75,10 @@ describe("filterModels", () => {
     expect(ids(filterModels(roster, { harness: "claude-code", tier: "planning" }))).toEqual(["gpt-5.6-sol"]);
     expect(filterModels(roster, { harness: "opencode-go", tier: "fast" })).toEqual([]);
     expect(ids(filterModels(roster, { harness: "command-code-pro", tier: "fast" }))).toEqual(["pro-fast"]);
+  });
+
+  it("leaves the roster untouched when only a score basis is set", () => {
+    expect(ids(filterModels(roster, { benchmark: "deep-swe" }))).toEqual(ids(filterModels(roster, {})));
+    expect(ids(filterModels(roster, { harness: "opencode-go", benchmark: "deep-swe" }))).toEqual(["go-planning"]);
   });
 });

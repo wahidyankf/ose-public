@@ -3,8 +3,9 @@
 
 import type { Locale } from "@/features/i18n/core/config";
 import { t } from "@/features/i18n/core/translations";
-import { BENCHMARK_SPECS, MIN_SCORED_BENCHMARKS } from "../core/data/benchmarks";
+import { BENCHMARK_SPECS, MIN_SCORED_BENCHMARKS, benchmarkSpec } from "../core/data/benchmarks";
 import { operatorById } from "../core/data/operators";
+import type { BenchmarkId } from "../core/data/types";
 import { scoredFigure } from "../core/score";
 import type { ScoredModel } from "../core/tiers";
 import { formatPercent, tf } from "./format";
@@ -13,6 +14,11 @@ import { LimitedChip } from "./model-bits";
 export type InsufficientListProps = {
   models: readonly ScoredModel[];
   locale: Locale;
+  /**
+   * When set, the disclosure lists models with no scored figure on this benchmark (the
+   * per-benchmark view's unranked rest) instead of the composite's insufficient-data models.
+   */
+  unrankedBenchmark?: BenchmarkId;
 };
 
 function Scores({ s, locale }: { s: ScoredModel; locale: Locale }) {
@@ -29,17 +35,24 @@ function Scores({ s, locale }: { s: ScoredModel; locale: Locale }) {
   );
 }
 
-export function InsufficientList({ models, locale }: InsufficientListProps) {
+export function InsufficientList({ models, locale, unrankedBenchmark }: InsufficientListProps) {
   if (models.length === 0) return null;
   const sorted = [...models].sort((a, b) => a.model.name.localeCompare(b.model.name));
+  const name = unrankedBenchmark === undefined ? undefined : benchmarkSpec(unrankedBenchmark).name;
   return (
     <details data-testid="ai-bench-insufficient" className="rounded-lg border bg-card">
       <summary className="flex min-h-11 cursor-pointer items-center px-4 py-2 font-semibold">
-        <h2 className="text-base">{tf(locale, "aiBenchInsufficientHeading", { count: models.length })}</h2>
+        <h2 className="text-base">
+          {name === undefined
+            ? tf(locale, "aiBenchInsufficientHeading", { count: models.length })
+            : tf(locale, "aiBenchUnrankedHeading", { benchmark: name, count: models.length })}
+        </h2>
       </summary>
       <div className="space-y-2 border-t px-4 py-3">
         <p className="text-sm text-muted-foreground">
-          {tf(locale, "aiBenchInsufficientIntro", { min: MIN_SCORED_BENCHMARKS })}
+          {name === undefined
+            ? tf(locale, "aiBenchInsufficientIntro", { min: MIN_SCORED_BENCHMARKS })
+            : tf(locale, "aiBenchUnrankedIntro", { benchmark: name })}
         </p>
         <ul className="divide-y">
           {sorted.map((s) => (

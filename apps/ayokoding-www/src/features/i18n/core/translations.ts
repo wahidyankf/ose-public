@@ -85,6 +85,8 @@ export const translations: Record<Locale, Record<string, string>> = {
     aiBenchTierFastUse: "For quick, well-scoped edits and lookups.",
     aiBenchTierFloor: "Floor: index {index}, set by {anchor}.",
     aiBenchTierFastFloor: "Rated models below the Execution floor.",
+    aiBenchTierBenchmarkFloor: "Floor: raw {benchmark} score {score}, set by {anchor}.",
+    aiBenchTierBenchmarkFastFloor: "Scored models below the {benchmark} Execution floor.",
     aiBenchTierEmpty: "No model in this tier matches the current filters.",
     aiBenchAnchorBadge: "anchor",
     aiBenchLimitedAccess: "Limited access",
@@ -131,6 +133,9 @@ export const translations: Record<Locale, Record<string, string>> = {
     aiBenchMethodTiers:
       "Tiers: each one is defined by a previous-generation anchor model. A model goes in the highest tier whose anchor's index it matches or beats, so a model's tier always follows its index.",
     aiBenchMethodAnchorsIntro: "Tier anchors:",
+    aiBenchMethodBenchmarkTiers:
+      "Per-benchmark tiers compare raw scores on that benchmark only: a model goes in the highest tier whose anchor's score on that benchmark it matches or beats.",
+    aiBenchMethodBenchmarkAnchorsIntro: "Tier anchors on each benchmark:",
     aiBenchMethodPrice:
       "Price: the vendor's standard API rate per 1M tokens. Blended = (3 × input + output) ÷ 4, a typical coding-agent mix. Where a vendor publishes no price page, the rate OpenCode lists is used and marked “OpenCode rate”; where OpenCode does not carry the model either, the rate Command Code lists is used and marked “Command Code rate”.",
     aiBenchMethodCostPerTask:
@@ -625,6 +630,8 @@ export const translations: Record<Locale, Record<string, string>> = {
     aiBenchTierFastUse: "Untuk perubahan kecil yang jelas dan pencarian cepat.",
     aiBenchTierFloor: "Batas bawah: indeks {index}, ditetapkan oleh {anchor}.",
     aiBenchTierFastFloor: "Model ber-skor di bawah batas Eksekusi.",
+    aiBenchTierBenchmarkFloor: "Batas bawah: skor mentah {benchmark} {score}, ditetapkan oleh {anchor}.",
+    aiBenchTierBenchmarkFastFloor: "Model ber-skor di bawah batas Eksekusi {benchmark}.",
     aiBenchTierEmpty: "Tidak ada model di tingkat ini yang cocok dengan filter saat ini.",
     aiBenchAnchorBadge: "patokan",
     aiBenchLimitedAccess: "Akses terbatas",
@@ -673,6 +680,9 @@ export const translations: Record<Locale, Record<string, string>> = {
     aiBenchMethodTiers:
       "Tingkat: masing-masing ditentukan oleh satu model patokan generasi sebelumnya. Model masuk ke tingkat tertinggi yang indeks patokannya ia samai atau lampaui, jadi tingkat model selalu mengikuti indeksnya.",
     aiBenchMethodAnchorsIntro: "Model patokan tiap tingkat:",
+    aiBenchMethodBenchmarkTiers:
+      "Tingkat per benchmark hanya membandingkan skor mentah pada benchmark itu: model masuk ke tingkat tertinggi yang skor patokannya pada benchmark itu ia samai atau lampaui.",
+    aiBenchMethodBenchmarkAnchorsIntro: "Model patokan tiap tingkat pada tiap benchmark:",
     aiBenchMethodPrice:
       "Harga: tarif API standar vendor per 1 juta token. Gabungan = (3 × input + output) ÷ 4, campuran yang umum untuk agen koding. Bila vendor tidak menerbitkan halaman harga, tarif yang dicantumkan OpenCode dipakai dan ditandai “tarif OpenCode”; bila OpenCode juga tidak menyediakan modelnya, tarif yang dicantumkan Command Code dipakai dan ditandai “tarif Command Code”.",
     aiBenchMethodCostPerTask:

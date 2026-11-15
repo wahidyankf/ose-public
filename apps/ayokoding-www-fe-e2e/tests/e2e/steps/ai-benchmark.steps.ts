@@ -3,6 +3,7 @@ import { expect } from "@playwright/test";
 import type { Page } from "@playwright/test";
 import {
   BENCHMARK_SPECS,
+  BENCHMARK_TIER_ANCHORS,
   DEFAULT_SUBSTITUTE_HARNESS,
   HARNESS_DISPLAY_NAMES,
   HARNESS_IN_HOUSE_LINES,
@@ -27,7 +28,14 @@ import {
   scoredFigure,
 } from "../../../../ayokoding-www/src/features/ai-benchmark/core/score";
 import { frontierModels, substitutesFor } from "../../../../ayokoding-www/src/features/ai-benchmark/core/substitute";
-import { byIndexDesc, scoreModels, tierAnchors } from "../../../../ayokoding-www/src/features/ai-benchmark/core/tiers";
+import {
+  assignBenchmarkTier,
+  benchmarkTierAnchors,
+  byIndexDesc,
+  computeBenchmarkTierGroups,
+  scoreModels,
+  tierAnchors,
+} from "../../../../ayokoding-www/src/features/ai-benchmark/core/tiers";
 import { t } from "../../../../ayokoding-www/src/features/i18n/core/translations";
 
 const { Given, When, Then } = createBdd();
@@ -960,6 +968,85 @@ Then("it states that a per-benchmark view shows raw operator figures with no nor
 
 Then("it states that models without a scored figure on the chosen benchmark are unranked", async ({ page }) => {
   await expect(page.getByTestId("ai-bench-method-unranked")).toHaveText(t("en", "aiBenchMethodUnranked"));
+});
+
+// ── Per-benchmark tiers ───────────────────────────────────────────────────────
+
+When("every model's tier is assigned on DeepSWE", async ({ page }) => {
+  await load(page, "?benchmark=deep-swe");
+  await expect(page.getByTestId("ai-bench-tier-map")).toBeVisible();
+});
+
+Then("the DeepSWE {word} anchor is in the {string} tier on DeepSWE", async ({ page }, which: string, tier: string) => {
+  const anchorId = BENCHMARK_TIER_ANCHORS["deep-swe"][which as (typeof ANCHORED)[number]];
+  expect(assignBenchmarkTier(byId(anchorId), "deep-swe", full)).toBe(tier);
+  await expect(page.locator(`[data-testid="ai-bench-tier-${tier}"] [data-model-id="${anchorId}"]`)).toHaveCount(1);
+});
+
+Given("the URL carries a benchmark parameter naming Terminal-Bench", async ({ page }) => {
+  await load(page, "?benchmark=terminal-bench");
+});
+
+Then("the ultra, planning, and execution sections each name their Terminal-Bench anchor model", async ({ page }) => {
+  const anchors = benchmarkTierAnchors(full, "terminal-bench");
+  for (const tier of ANCHORED) {
+    await expect(page.getByTestId(`ai-bench-tier-${tier}`).getByTestId("ai-bench-tier-floor")).toContainText(
+      anchors[tier]!.model.name,
+    );
+  }
+});
+
+Then("each of those sections states its floor as a raw Terminal-Bench score", async ({ page }) => {
+  const anchors = benchmarkTierAnchors(full, "terminal-bench");
+  for (const tier of ANCHORED) {
+    const floor = page.getByTestId(`ai-bench-tier-${tier}`).getByTestId("ai-bench-tier-floor");
+    await expect(floor).toContainText("Terminal-Bench");
+    await expect(floor).toContainText(fmtPercent(anchors[tier]!.score));
+  }
+});
+
+Then("the fast section states that it holds models below the Terminal-Bench execution floor", async ({ page }) => {
+  await expect(page.getByTestId("ai-bench-tier-fast").getByTestId("ai-bench-tier-floor")).toHaveText(
+    fill(t("en", "aiBenchTierBenchmarkFastFloor"), { benchmark: "Terminal-Bench" }),
+  );
+});
+
+Given(
+  "the URL carries a benchmark parameter naming DeepSWE and a tier parameter naming a known tier",
+  async ({ page }) => {
+    await load(page, "?benchmark=deep-swe&tier=planning");
+  },
+);
+
+Then("only models in that tier on DeepSWE are shown in the ranked list", async ({ page }) => {
+  const shown = filterModels(full, { benchmark: "deep-swe", tier: "planning" }, full);
+  expect(shown.length).toBeGreaterThan(0);
+  const { groups } = computeBenchmarkTierGroups({ ...full, models: shown }, "deep-swe", full);
+  expect(await tierMapIds(page)).toEqual(groups.planning.map((r) => r.model.id));
+  for (const id of await tierMapIds(page)) {
+    expect(assignBenchmarkTier(byId(id), "deep-swe", full)).toBe("planning");
+  }
+});
+
+Then("only models in that tier on DeepSWE are shown in the data table", async ({ page }) => {
+  expect(sorted(await tableIds(page))).toEqual(sorted(await tierMapIds(page)));
+});
+
+Then("it lists every benchmark with its ultra, planning, and execution anchor and floor score", async ({ page }) => {
+  await expect(page.getByTestId("ai-bench-method-benchmark-anchor")).toHaveCount(BENCHMARK_SPECS.length);
+  for (const b of BENCHMARK_SPECS) {
+    const item = page.locator(`[data-testid="ai-bench-method-benchmark-anchor"][data-benchmark="${b.id}"]`);
+    await expect(item).toContainText(b.name);
+    for (const tier of ANCHORED) {
+      const anchor = byId(BENCHMARK_TIER_ANCHORS[b.id][tier]);
+      await expect(item).toContainText(anchor.name);
+      await expect(item).toContainText(fmtPercent(benchmarkScore(anchor, b.id)!));
+    }
+  }
+});
+
+Then("it states that a per-benchmark tier compares raw scores on that benchmark only", async ({ page }) => {
+  await expect(page.getByTestId("ai-bench-method-benchmark-tiers")).toHaveText(t("en", "aiBenchMethodBenchmarkTiers"));
 });
 
 // ── Contrast ──────────────────────────────────────────────────────────────────

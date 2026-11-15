@@ -506,6 +506,72 @@ Feature: AI model benchmark tool
     And it states that a per-benchmark view shows raw operator figures with no normalization
     And it states that models without a scored figure on the chosen benchmark are unranked
 
+  # ── Per-benchmark tiers ───────────────────────────────────────────────────
+
+  # Exemption(integration): per-benchmark tier assignment is pure in-process logic with no local-resource boundary; alternative-proof: ayokoding-www:test:unit / A model is placed in the highest per-benchmark tier whose anchor it meets on that benchmark
+  @integration-exempt
+  # Exemption(e2e): the fixture anchors and model figures are private scoring inputs with no public browser control; alternative-proof: ayokoding-www:test:unit / A model is placed in the highest per-benchmark tier whose anchor it meets on that benchmark
+  @e2e-exempt
+  Scenario Outline: A model is placed in the highest per-benchmark tier whose anchor it meets on that benchmark
+    Given fixture DeepSWE anchors scoring 60 for ultra, 55 for planning, and 45 for execution
+    And a fixture model scoring <score> on DeepSWE 1.1
+    When its DeepSWE tier is assigned
+    Then that model's DeepSWE tier is "<tier>"
+
+    Examples:
+      | score | tier      |
+      | 61    | ultra     |
+      | 60    | ultra     |
+      | 57    | planning  |
+      | 45    | execution |
+      | 30    | fast      |
+
+  # Exemption(integration): the roster invariant is pure in-process data validation with no local-resource boundary; alternative-proof: ayokoding-www:test:unit / Every benchmark has descending per-benchmark anchor floors
+  @integration-exempt
+  # Exemption(e2e): anchor sets are dataset constants with no public browser control; alternative-proof: ayokoding-www:test:unit / Every benchmark has descending per-benchmark anchor floors
+  @e2e-exempt
+  Scenario: Every benchmark has descending per-benchmark anchor floors
+    Given the full roster is loaded
+    When the per-benchmark tier anchors are inspected
+    Then every benchmark names an ultra, a planning, and an execution anchor
+    And every anchor is a general-access model with a scored figure on that benchmark
+    And every anchor has a newer model from the same vendor in the roster
+    And on every benchmark the ultra floor is above the planning floor, which is above the execution floor
+
+  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Each per-benchmark anchor lands in the tier it defines on its benchmark
+  @integration-exempt
+  Scenario: Each per-benchmark anchor lands in the tier it defines on its benchmark
+    Given the full roster is loaded
+    When every model's tier is assigned on DeepSWE
+    Then the DeepSWE ultra anchor is in the "ultra" tier on DeepSWE
+    And the DeepSWE planning anchor is in the "planning" tier on DeepSWE
+    And the DeepSWE execution anchor is in the "execution" tier on DeepSWE
+
+  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Per-benchmark tier sections name their benchmark anchor and floor
+  @integration-exempt
+  Scenario: Per-benchmark tier sections name their benchmark anchor and floor
+    Given the URL carries a benchmark parameter naming Terminal-Bench
+    When the page renders
+    Then the ultra, planning, and execution sections each name their Terminal-Bench anchor model
+    And each of those sections states its floor as a raw Terminal-Bench score
+    And the fast section states that it holds models below the Terminal-Bench execution floor
+
+  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / A tier parameter in a per-benchmark view narrows to that benchmark's tier
+  @integration-exempt
+  Scenario: A tier parameter in a per-benchmark view narrows to that benchmark's tier
+    Given the URL carries a benchmark parameter naming DeepSWE and a tier parameter naming a known tier
+    When the page renders
+    Then only models in that tier on DeepSWE are shown in the ranked list
+    And only models in that tier on DeepSWE are shown in the data table
+
+  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / The methodology lists every benchmark's tier anchors
+  @integration-exempt
+  Scenario: The methodology lists every benchmark's tier anchors
+    Given the AI benchmark page is open
+    When the reader opens the methodology section
+    Then it lists every benchmark with its ultra, planning, and execution anchor and floor score
+    And it states that a per-benchmark tier compares raw scores on that benchmark only
+
   # ── Accessibility and layout ──────────────────────────────────────────────────
 
   # jsdom cannot resolve `oklch()` custom properties through a cascade, so the rasterized contrast

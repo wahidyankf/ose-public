@@ -32,6 +32,12 @@ export type AnchoredTier = "ultra" | "planning" | "execution";
 /** Every tier a model can land in: the anchored tiers, `fast` below them, and `insufficient`. */
 export type Tier = AnchoredTier | "fast" | "insufficient";
 
+/**
+ * Every tier a model can land in on one benchmark: the anchored tiers, `fast` below them, and
+ * `unranked` when the model has no scored figure there.
+ */
+export type BenchmarkTier = AnchoredTier | "fast" | "unranked";
+
 /** `limited` = invite-only or staged rollout; such a model is shown and labelled, never an anchor. */
 export type Access = "general" | "limited";
 

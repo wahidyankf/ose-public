@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   ANCHORED_TIERS,
   BENCHMARK_SPECS,
+  BENCHMARK_TIER_ANCHORS,
   MIN_SCORED_BENCHMARKS,
   TIER_ANCHORS,
   benchmarkSpec,
@@ -9,8 +10,8 @@ import {
 import { dataset } from "@/features/ai-benchmark/core/data/models";
 import { OPERATORS, PRICE_SOURCES } from "@/features/ai-benchmark/core/data/operators";
 import { HARNESS_IDS } from "@/features/ai-benchmark/core/filter";
-import { isScoredFigure, scoredBenchmarks } from "@/features/ai-benchmark/core/score";
-import { assignTier } from "@/features/ai-benchmark/core/tiers";
+import { benchmarkScore, isScoredFigure, scoredBenchmarks } from "@/features/ai-benchmark/core/score";
+import { assignBenchmarkTier, assignTier } from "@/features/ai-benchmark/core/tiers";
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 const models = dataset.models;
@@ -57,9 +58,13 @@ describe("roster invariants", () => {
 
   it("drops models older than two years at lastUpdated (anchors exempt)", () => {
     const twoYearsAgo = `${Number(dataset.lastUpdated.slice(0, 4)) - 2}${dataset.lastUpdated.slice(4)}`;
+    const exempt = new Set([
+      ...Object.values(TIER_ANCHORS),
+      ...Object.values(BENCHMARK_TIER_ANCHORS).flatMap(Object.values),
+    ]);
     for (const m of models) {
       if (m.releaseDate === undefined) continue;
-      if (Object.values(TIER_ANCHORS).includes(m.id)) continue;
+      if (exempt.has(m.id)) continue;
       expect(m.releaseDate >= twoYearsAgo, `${m.id} older than two years`).toBe(true);
     }
   });
@@ -161,6 +166,33 @@ describe("tier anchor invariants", () => {
       );
       expect(newer.length).toBeGreaterThan(0);
       expect(assignTier(anchor, dataset)).toBe(tier);
+    });
+  }
+});
+
+describe("per-benchmark tier anchor invariants", () => {
+  for (const spec of BENCHMARK_SPECS) {
+    const tiers = BENCHMARK_TIER_ANCHORS[spec.id];
+
+    it(`${spec.id}: every anchor is a scored, general-access, previous-generation model in its own benchmark tier`, () => {
+      for (const tier of ANCHORED_TIERS) {
+        const anchor = models.find((m) => m.id === tiers[tier]);
+        expect(anchor, `${spec.id}/${tier} anchor`).toBeDefined();
+        if (anchor === undefined) continue;
+        expect(anchor.access).toBe("general");
+        expect(benchmarkScore(anchor, spec.id), `${spec.id}/${tier} scored figure`).toBeDefined();
+        const newer = models.filter(
+          (m) => m.vendor === anchor.vendor && (m.releaseDate ?? "") > (anchor.releaseDate ?? "9999"),
+        );
+        expect(newer.length, `${spec.id}/${tier} newer same-vendor model`).toBeGreaterThan(0);
+        expect(assignBenchmarkTier(anchor, spec.id, dataset), `${spec.id}/${tier} own tier`).toBe(tier);
+      }
+    });
+
+    it(`${spec.id}: the ultra floor is above the planning floor, which is above the execution floor`, () => {
+      const floors = ANCHORED_TIERS.map((tier) => benchmarkScore(models.find((m) => m.id === tiers[tier])!, spec.id)!);
+      expect(floors[0]).toBeGreaterThan(floors[1]!);
+      expect(floors[1]).toBeGreaterThan(floors[2]!);
     });
   }
 });

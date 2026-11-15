@@ -30,6 +30,7 @@ import "./helpers/test-setup";
 import AiBenchmarkPage from "@/app/[locale]/tools/ai-benchmark/page";
 import {
   BENCHMARK_SPECS,
+  BENCHMARK_TIER_ANCHORS,
   DEFAULT_SUBSTITUTE_HARNESS,
   FRONTIER_VENDORS,
   HARNESS_DISPLAY_NAMES,
@@ -45,7 +46,7 @@ import {
 } from "@/features/ai-benchmark/core/data/benchmarks";
 import { dataset } from "@/features/ai-benchmark/core/data/models";
 import { OPERATORS, operatorById } from "@/features/ai-benchmark/core/data/operators";
-import type { HarnessId, Model, Tier } from "@/features/ai-benchmark/core/data/types";
+import type { BenchmarkTier, HarnessId, Model, Tier } from "@/features/ai-benchmark/core/data/types";
 import { HARNESS_IDS, filterModels } from "@/features/ai-benchmark/core/filter";
 import { blendedPrice, priceRatio } from "@/features/ai-benchmark/core/price";
 import {
@@ -57,8 +58,11 @@ import {
 } from "@/features/ai-benchmark/core/score";
 import { frontierModels, substitutesFor, type SubstituteResult } from "@/features/ai-benchmark/core/substitute";
 import {
+  assignBenchmarkTier,
   assignTier,
+  benchmarkTierAnchors,
   byIndexDesc,
+  computeBenchmarkTierGroups,
   computeTierGroups,
   meetsAnchor,
   rankBenchmarkModels,
@@ -79,6 +83,7 @@ import { t } from "@/features/i18n/core/translations";
 import type { Locale } from "@/features/i18n/core/config";
 import {
   anchors,
+  benchmarkAnchors,
   dataset as fixtureDataset,
   fig,
   flat,
@@ -105,6 +110,7 @@ type Ctx = {
   roster?: Model[];
   index?: number;
   tier?: Tier;
+  benchmarkTier?: BenchmarkTier;
   blended?: number;
   result?: SubstituteResult;
   locale?: Locale;
@@ -1431,6 +1437,169 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
     And("it states that models without a scored figure on the chosen benchmark are unranked", () => {
       expect(screen.getByTestId("ai-bench-method-unranked").textContent).toBe(t("en", "aiBenchMethodUnranked"));
+    });
+  });
+
+  // ── Per-benchmark tiers ────────────────────────────────────────────────────
+
+  ScenarioOutline(
+    "A model is placed in the highest per-benchmark tier whose anchor it meets on that benchmark",
+    ({ Given, And, When, Then }, variables) => {
+      Given("fixture DeepSWE anchors scoring 60 for ultra, 55 for planning, and 45 for execution", () => {
+        ctx.roster = benchmarkAnchors("deep-swe", 60, 55, 45);
+      });
+      And("a fixture model scoring <score> on DeepSWE 1.1", () => {
+        ctx.model = model("m", [fig("deep-swe", Number(variables.score), "1.1")]);
+      });
+      When("its DeepSWE tier is assigned", () => {
+        ctx.benchmarkTier = assignBenchmarkTier(ctx.model!, "deep-swe", fixtureDataset([...ctx.roster!, ctx.model!]));
+      });
+      Then('that model\'s DeepSWE tier is "<tier>"', () => {
+        expect(ctx.benchmarkTier).toBe(variables.tier);
+      });
+    },
+  );
+
+  Scenario("Every benchmark has descending per-benchmark anchor floors", ({ Given, When, Then, And }) => {
+    Given("the full roster is loaded", () => {
+      expect(full.models.length).toBeGreaterThan(0);
+    });
+    When("the per-benchmark tier anchors are inspected", () => {
+      ctx.roster = full.models;
+    });
+    Then("every benchmark names an ultra, a planning, and an execution anchor", () => {
+      for (const b of BENCHMARK_SPECS) {
+        expect(Object.keys(BENCHMARK_TIER_ANCHORS[b.id]).sort()).toEqual(["execution", "planning", "ultra"]);
+      }
+    });
+    And("every anchor is a general-access model with a scored figure on that benchmark", () => {
+      for (const b of BENCHMARK_SPECS) {
+        for (const tier of ["ultra", "planning", "execution"] as const) {
+          const anchor = byId(BENCHMARK_TIER_ANCHORS[b.id][tier]);
+          expect(anchor.access, `${b.id}/${tier}`).toBe("general");
+          expect(benchmarkScore(anchor, b.id), `${b.id}/${tier}`).not.toBeUndefined();
+        }
+      }
+    });
+    And("every anchor has a newer model from the same vendor in the roster", () => {
+      for (const b of BENCHMARK_SPECS) {
+        for (const tier of ["ultra", "planning", "execution"] as const) {
+          const anchor = byId(BENCHMARK_TIER_ANCHORS[b.id][tier]);
+          const newer = full.models.filter(
+            (m) => m.vendor === anchor.vendor && m.releaseDate !== undefined && m.releaseDate > anchor.releaseDate!,
+          );
+          expect(newer.length, `${b.id}/${tier}`).toBeGreaterThan(0);
+        }
+      }
+    });
+    And("on every benchmark the ultra floor is above the planning floor, which is above the execution floor", () => {
+      for (const b of BENCHMARK_SPECS) {
+        const floors = (["ultra", "planning", "execution"] as const).map(
+          (tier) => benchmarkScore(byId(BENCHMARK_TIER_ANCHORS[b.id][tier]), b.id)!,
+        );
+        expect(floors[0]).toBeGreaterThan(floors[1]!);
+        expect(floors[1]).toBeGreaterThan(floors[2]!);
+      }
+    });
+  });
+
+  Scenario("Each per-benchmark anchor lands in the tier it defines on its benchmark", ({ Given, When, Then, And }) => {
+    Given("the full roster is loaded", () => {
+      expect(full.models.length).toBeGreaterThan(0);
+    });
+    When("every model's tier is assigned on DeepSWE", () => {
+      ctx.roster = full.models;
+    });
+    Then('the DeepSWE ultra anchor is in the "ultra" tier on DeepSWE', () => {
+      expect(assignBenchmarkTier(byId(BENCHMARK_TIER_ANCHORS["deep-swe"].ultra), "deep-swe", full)).toBe("ultra");
+    });
+    And('the DeepSWE planning anchor is in the "planning" tier on DeepSWE', () => {
+      expect(assignBenchmarkTier(byId(BENCHMARK_TIER_ANCHORS["deep-swe"].planning), "deep-swe", full)).toBe("planning");
+    });
+    And('the DeepSWE execution anchor is in the "execution" tier on DeepSWE', () => {
+      expect(assignBenchmarkTier(byId(BENCHMARK_TIER_ANCHORS["deep-swe"].execution), "deep-swe", full)).toBe(
+        "execution",
+      );
+    });
+  });
+
+  Scenario("Per-benchmark tier sections name their benchmark anchor and floor", ({ Given, When, Then, And }) => {
+    const anchors = benchmarkTierAnchors(full, "terminal-bench");
+    Given("the URL carries a benchmark parameter naming Terminal-Bench", () => {
+      navState.search = "benchmark=terminal-bench";
+    });
+    When("the page renders", () => {
+      renderPage("en", navState.search);
+    });
+    Then("the ultra, planning, and execution sections each name their Terminal-Bench anchor model", () => {
+      for (const tier of ["ultra", "planning", "execution"] as const) {
+        const floor = within(screen.getByTestId(`ai-bench-tier-${tier}`)).getByTestId("ai-bench-tier-floor");
+        expect(floor.textContent).toContain(anchors[tier]!.model.name);
+      }
+    });
+    And("each of those sections states its floor as a raw Terminal-Bench score", () => {
+      for (const tier of ["ultra", "planning", "execution"] as const) {
+        const floor = within(screen.getByTestId(`ai-bench-tier-${tier}`)).getByTestId("ai-bench-tier-floor");
+        expect(floor.textContent).toContain("Terminal-Bench");
+        expect(floor.textContent).toContain(formatPercent(anchors[tier]!.score, "en"));
+      }
+    });
+    And("the fast section states that it holds models below the Terminal-Bench execution floor", () => {
+      expect(within(screen.getByTestId("ai-bench-tier-fast")).getByTestId("ai-bench-tier-floor").textContent).toBe(
+        tf("en", "aiBenchTierBenchmarkFastFloor", { benchmark: "Terminal-Bench" }),
+      );
+    });
+  });
+
+  Scenario(
+    "A tier parameter in a per-benchmark view narrows to that benchmark's tier",
+    ({ Given, When, Then, And }) => {
+      Given("the URL carries a benchmark parameter naming DeepSWE and a tier parameter naming a known tier", () => {
+        navState.search = "benchmark=deep-swe&tier=planning";
+      });
+      When("the page renders", () => {
+        renderPage("en", navState.search);
+      });
+      Then("only models in that tier on DeepSWE are shown in the ranked list", () => {
+        const shown = filterModels(full, { benchmark: "deep-swe", tier: "planning" }, full);
+        expect(shown.length).toBeGreaterThan(0);
+        const { groups } = computeBenchmarkTierGroups({ ...full, models: shown }, "deep-swe", full);
+        expect(tierMapIds()).toEqual(groups.planning.map((r) => r.model.id));
+        for (const id of tierMapIds()) {
+          expect(assignBenchmarkTier(byId(id), "deep-swe", full)).toBe("planning");
+        }
+      });
+      And("only models in that tier on DeepSWE are shown in the data table", () => {
+        expect(sorted(tableIds())).toEqual(sorted(tierMapIds()));
+      });
+    },
+  );
+
+  Scenario("The methodology lists every benchmark's tier anchors", ({ Given, When, Then, And }) => {
+    Given("the AI benchmark page is open", () => {
+      renderPage("en", "");
+    });
+    When("the reader opens the methodology section", () => {
+      fireEvent.click(screen.getByRole("link", { name: t("en", "aiBenchJumpToMethod") }));
+    });
+    Then("it lists every benchmark with its ultra, planning, and execution anchor and floor score", () => {
+      const items = screen.getAllByTestId("ai-bench-method-benchmark-anchor");
+      expect(items.map((i) => i.getAttribute("data-benchmark"))).toEqual(BENCHMARK_SPECS.map((b) => b.id));
+      for (const item of items) {
+        const benchmark = item.getAttribute("data-benchmark") as (typeof BENCHMARK_SPECS)[number]["id"];
+        for (const tier of ["ultra", "planning", "execution"] as const) {
+          const anchor = byId(BENCHMARK_TIER_ANCHORS[benchmark][tier]);
+          expect(item.textContent, `${benchmark}/${tier}`).toContain(anchor.name);
+          expect(item.textContent, `${benchmark}/${tier}`).toContain(
+            formatPercent(benchmarkScore(anchor, benchmark)!, "en"),
+          );
+        }
+      }
+    });
+    And("it states that a per-benchmark tier compares raw scores on that benchmark only", () => {
+      expect(screen.getByTestId("ai-bench-method-benchmark-tiers").textContent).toBe(
+        t("en", "aiBenchMethodBenchmarkTiers"),
+      );
     });
   });
 

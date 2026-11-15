@@ -52,6 +52,14 @@ export const TIER_ANCHORS: Readonly<Record<AnchoredTier, string>> = config.tierA
 /** Anchored tiers in the order they are tested. */
 export const ANCHORED_TIERS: readonly AnchoredTier[] = config.anchoredTiers as AnchoredTier[];
 
+/**
+ * One previous-generation anchor per tier on each benchmark, highest tier first. A model belongs
+ * to the highest per-benchmark tier whose anchor's raw score on that benchmark it matches or
+ * beats. The composite {@link TIER_ANCHORS} stay the anchors of the Average view.
+ */
+export const BENCHMARK_TIER_ANCHORS: Readonly<Record<BenchmarkId, Readonly<Record<AnchoredTier, string>>>> =
+  config.benchmarkTierAnchors as Record<BenchmarkId, Record<AnchoredTier, string>>;
+
 /** Every tier in display order. */
 export const TIERS: readonly Tier[] = config.tiers as Tier[];
 

@@ -232,6 +232,34 @@ describe("BenchmarkContent — structure", () => {
   });
 });
 
+describe("BenchmarkContent — per-benchmark tiers", () => {
+  it("renders per-benchmark tier sections naming the benchmark when a score basis is set", () => {
+    nav.search = "benchmark=terminal-bench";
+    render(<BenchmarkContent />);
+    const map = screen.getByTestId("ai-bench-tier-map");
+    expect(map.querySelector("#ai-bench-rank-list-heading")!.textContent).toContain("Terminal-Bench");
+    for (const tier of ["ultra", "planning", "execution", "fast"]) {
+      expect(map.querySelector(`[data-testid="ai-bench-tier-${tier}"]`)).toBeTruthy();
+    }
+    expect(screen.getByTestId("ai-bench-insufficient")).toBeTruthy();
+  });
+
+  it("narrows the per-benchmark sections to the filtered tier", () => {
+    nav.search = "benchmark=terminal-bench&tier=planning";
+    render(<BenchmarkContent />);
+    const map = screen.getByTestId("ai-bench-tier-map");
+    expect(map.querySelector('[data-testid="ai-bench-tier-planning"]')).toBeTruthy();
+    expect(map.querySelector('[data-testid="ai-bench-tier-ultra"]')).toBeNull();
+  });
+
+  it("hides the per-benchmark tier map but keeps the unranked list when filtering to insufficient", () => {
+    nav.search = "benchmark=terminal-bench&tier=insufficient";
+    render(<BenchmarkContent />);
+    expect(screen.queryByTestId("ai-bench-tier-map")).toBeNull();
+    expect(screen.getByTestId("ai-bench-insufficient")).toBeTruthy();
+  });
+});
+
 describe("BenchmarkContent — usability regressions", () => {
   it("shows the purpose sentence at every width", () => {
     render(<BenchmarkContent />);

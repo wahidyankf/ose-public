@@ -18,7 +18,7 @@ const (
 	benchVectorURL  = "/en/tools/ai-benchmark?harness=command-code-pro&tier=planning"
 	benchRestoreURL = "/en/tools/ai-benchmark?harness=cursor&tier=planning&sub=gpt-5.6-terra&sub-harness=command-code"
 	benchUnknownURL = "/en/tools/ai-benchmark?harness=nope&tier=nope"
-	benchEmptyURL   = "/en/tools/ai-benchmark?harness=opencode-go&tier=ultra"
+	benchEmptyURL   = "/en/tools/ai-benchmark?harness=claude-code&tier=planning"
 	benchLegacyURL  = "/en/tools/ai-benchmark?use-case=chat&price-band=mid"
 	calcVectorURL   = "/en/tools/cost-of-living-calculator?city=singapore&gross=5000&baseline=my_salary&mygross=5000&mysalarycity=singapore"
 	calcRestoreURL  = "/en/tools/cost-of-living-calculator?region=asean&country=id&city=jakarta&adults=2&preschool=1&schoolkids=2&schooltype=private&area=rural"
@@ -211,7 +211,7 @@ func (w *World) StepToolUsesExistingCodecSValidDefaultsThoseValues() error {
 	if err := w.get(benchUnknownURL); err != nil {
 		return err
 	}
-	if err := w.mustContain(`data-count="93"`); err != nil {
+	if err := w.mustContain(`data-count="109"`); err != nil {
 		return err
 	}
 	return w.mustNotContain("data-invalid-filters")
@@ -264,7 +264,7 @@ func (w *World) StepSupportedFilterCombinationMatchesModel() error {
 }
 
 func (w *World) StepReaderAppliesCombination() error {
-	// harness=opencode-go with tier=ultra is valid under the current codec
+	// harness=claude-code with tier=planning is valid under the current codec
 	// and matches no model in the shared roster.
 	return w.get(benchEmptyURL)
 }

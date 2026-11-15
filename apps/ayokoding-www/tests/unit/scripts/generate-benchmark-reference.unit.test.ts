@@ -152,7 +152,7 @@ describe("renderTables — pure derivation from the dataset", () => {
   it("prices every model with its blended rate and a dash when unpublished", () => {
     const { pricing } = renderTables(dataset);
     expect(pricing).toMatch(/\| Claude Opus 5\.5 +\| Anthropic +\| \$4 +\| \$20 +\| \$8 +\| vendor +\|/);
-    expect(pricing).toMatch(/\| Gemini 4 Argon +\| Google +\| — +\| — +\| — +\| — +\|/);
+    expect(pricing).toMatch(/\| Gemini 4 Argon +\| Google +\| \$2 +\| \$10 +\| \$4 +\| vendor +\|/);
   });
 
   it("is deterministic: two calls over the same dataset are byte-identical", () => {

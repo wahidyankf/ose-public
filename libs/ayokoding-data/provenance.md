@@ -7,7 +7,15 @@ was re-sourced during the JSON migration.
 
 ## AI benchmark — `data/ai-benchmark.json`
 
-- **Last checked as a whole:** `2026-10-14` (`dataset.lastUpdated`).
+- **Last checked as a whole:** `2026-11-14` (`dataset.lastUpdated`). The
+  November refresh added 16 models — Claude Fable 5.2, Claude Mythos 5.2,
+  GPT-6.1 Terra, Gemini 4 Carbon, Gemini 4 Hydrogen, Muse Ember, Kimi K3.1 Pro,
+  MiniMax M3.1 Flash, Muse Spark Open, Nemotron 3.5 Super VL, DeepSeek V4.1
+  Flash Ultrafast, Ling 3.1 Flash 1019, Qwen 3.8 Max Prime, Gemini 3.5 Flash,
+  Inkling 2 Small, and Ornith 1.5 — gave Gemini 4 Argon its Command Code, Pro,
+  Go, and Zen harnesses plus its vendor price, and recorded Zen and Go harness
+  support across the roster; no independent figure was re-read, so the operator
+  boards below keep their October read dates.
 - **Roster rule.** Every model from the four frontier vendors (Anthropic,
   OpenAI, Google, xAI); every model on the catalog harnesses (OpenCode Go and
   Command Code) with an identified vendor; each listed harness's own in-house
@@ -27,8 +35,8 @@ was re-sourced during the JSON migration.
   Code-listed rate (`listedBy: "commandcode"`).
 - **Operator checks.** All five operator pages last read `2026-10-14`.
   Source-stated updates: Datacurve `2026-09-22`, Terminal-Bench board
-  `2026-09-21`, Vals AI `2026-10-13`. All pricing pages last read
-  `2026-10-08`.
+  `2026-09-21`, Vals AI `2026-10-13`. Pricing pages last read `2026-10-08`,
+  except Anthropic, OpenAI, Google, and Meta, re-read `2026-11-14`.
 - **Scoring configuration.** Three composite benchmarks (DeepSWE 1.1,
   Terminal-Bench 4.0, SWE-Atlas QnA), equal weights, pinned operator order,
   minimum coverage of 2, anchored tiers (ultra → `claude-opus-5`, planning →

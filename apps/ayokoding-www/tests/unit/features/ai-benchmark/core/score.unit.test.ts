@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  benchmarkScore,
   compositeIndex,
   isScoredFigure,
   scoreOver,
@@ -49,6 +50,20 @@ describe("scoreOver", () => {
 
   it("is undefined for an empty benchmark list", () => {
     expect(scoreOver(model("m", [fig("deep-swe", 70)]), [])).toBeUndefined();
+  });
+});
+
+describe("benchmarkScore", () => {
+  it("returns the raw scored figure value with no normalization", () => {
+    expect(benchmarkScore(model("m", [fig("deep-swe", 70)]), "deep-swe")).toBe(70);
+  });
+
+  it("ignores a figure on a non-pinned version", () => {
+    expect(benchmarkScore(model("m", [fig("terminal-bench", 90, "2.1")]), "terminal-bench")).toBeUndefined();
+  });
+
+  it("is undefined when the model has no figure for the benchmark", () => {
+    expect(benchmarkScore(model("m", [fig("deep-swe", 70)]), "terminal-bench")).toBeUndefined();
   });
 });
 

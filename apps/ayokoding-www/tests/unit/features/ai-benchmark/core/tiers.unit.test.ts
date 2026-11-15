@@ -5,6 +5,7 @@ import {
   compareDesc,
   computeTierGroups,
   meetsAnchor,
+  rankBenchmarkModels,
   scoreModels,
   tierAnchors,
   tierRank,
@@ -100,6 +101,37 @@ describe("computeTierGroups", () => {
     expect(groups.insufficient.map((s) => s.model.id)).toEqual(["bare", "thin"]);
     const total = Object.values(groups).reduce((n, g) => n + g.length, 0);
     expect(total).toBe(full.models.length);
+  });
+});
+
+describe("rankBenchmarkModels", () => {
+  it("orders models by raw score from highest to lowest", () => {
+    const models = [
+      model("low", [fig("deep-swe", 60)]),
+      model("high", [fig("deep-swe", 80)]),
+      model("mid", [fig("deep-swe", 70)]),
+    ];
+    const { ranked, unranked } = rankBenchmarkModels(models, "deep-swe");
+    expect(ranked.map((r) => r.model.id)).toEqual(["high", "mid", "low"]);
+    expect(ranked.map((r) => r.score)).toEqual([80, 70, 60]);
+    expect(unranked).toEqual([]);
+  });
+
+  it("breaks score ties by ascending model id", () => {
+    const models = [model("b", [fig("deep-swe", 70)]), model("a", [fig("deep-swe", 70)])];
+    expect(rankBenchmarkModels(models, "deep-swe").ranked.map((r) => r.model.id)).toEqual(["a", "b"]);
+  });
+
+  it("leaves models without a scored figure for the benchmark unranked", () => {
+    const models = [
+      model("scored", [fig("deep-swe", 70)]),
+      model("wrong-version", [fig("deep-swe", 90, "0.9")]),
+      model("other-benchmark", [fig("terminal-bench", 80)]),
+      model("bare"),
+    ];
+    const { ranked, unranked } = rankBenchmarkModels(models, "deep-swe");
+    expect(ranked.map((r) => r.model.id)).toEqual(["scored"]);
+    expect(unranked.map((m) => m.id)).toEqual(["wrong-version", "other-benchmark", "bare"]);
   });
 });
 

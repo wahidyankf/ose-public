@@ -435,6 +435,77 @@ Feature: AI model benchmark tool
     Then an explicit empty-state message is shown
     But the tier map and the data table do not render
 
+  # ── Score basis (average vs per-benchmark) ────────────────────────────────
+
+  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / The score basis defaults to the composite average
+  @integration-exempt
+  Scenario: The score basis defaults to the composite average
+    Given the URL carries no benchmark parameter
+    When the page renders
+    Then the tier map orders models by composite index
+    And the score basis control shows "Average"
+
+  # Exemption(integration): per-benchmark ranking is pure in-process logic with no local-resource boundary; alternative-proof: ayokoding-www:test:unit / Naming a benchmark ranks models by its raw score
+  @integration-exempt
+  # Exemption(e2e): fixture figures are private scoring inputs with no public browser control; alternative-proof: ayokoding-www:test:unit / Naming a benchmark ranks models by its raw score
+  @e2e-exempt
+  Scenario: Naming a benchmark ranks models by its raw score
+    Given fixture models scoring 60, 80, and 70 on DeepSWE 1.1
+    When the models are ranked for the DeepSWE score basis
+    Then the ranked order is 80, 70, then 60
+    And each shown score equals that model's DeepSWE figure with no normalization
+
+  # Exemption(integration): figure selection is pure in-process logic with no local-resource boundary; alternative-proof: ayokoding-www:test:unit / Only the pinned version counts in a per-benchmark view
+  @integration-exempt
+  # Exemption(e2e): a wrongly versioned fixture figure cannot be injected through the public page; alternative-proof: ayokoding-www:test:unit / Only the pinned version counts in a per-benchmark view
+  @e2e-exempt
+  Scenario: Only the pinned version counts in a per-benchmark view
+    Given a fixture model scoring 90 on Terminal-Bench 2.1 with no Terminal-Bench 4.0 figure
+    When the models are ranked for the Terminal-Bench score basis
+    Then that model is unranked
+
+  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Models without a score on the chosen benchmark are listed as unranked
+  @integration-exempt
+  Scenario: Models without a score on the chosen benchmark are listed as unranked
+    Given the roster holds models with no scored FrontierCode-AA figure
+    And the URL carries a benchmark parameter naming FrontierCode-AA
+    When the page renders
+    Then those models are listed inside the closed unranked disclosure
+    And the ranked list holds only models with a scored FrontierCode-AA figure in descending raw-score order
+
+  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / An unrecognized benchmark falls back to the composite average
+  @integration-exempt
+  Scenario: An unrecognized benchmark falls back to the composite average
+    Given the URL carries a benchmark parameter with an unknown value
+    When the page renders
+    Then the tier map orders models by composite index
+    But no error is surfaced to the reader
+
+  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / The chosen benchmark is kept in the URL
+  @integration-exempt
+  Scenario: The chosen benchmark is kept in the URL
+    Given the AI benchmark page is open
+    When the reader changes the score basis to "Terminal-Bench"
+    Then the URL carries that benchmark as the score basis
+    And reloading that URL shows the same per-benchmark ranking
+
+  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Resetting the score basis to Average removes it from the URL
+  @integration-exempt
+  Scenario: Resetting the score basis to Average removes it from the URL
+    Given the URL carries a benchmark parameter naming a known benchmark
+    When the reader resets the score basis to "Average"
+    Then the URL no longer carries the benchmark parameter
+    And the tier map orders models by composite index
+
+  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / The methodology explains the per-benchmark view
+  @integration-exempt
+  Scenario: The methodology explains the per-benchmark view
+    Given the AI benchmark page is open
+    When the reader opens the methodology section
+    Then it names the five score basis options: the composite average and the four benchmarks
+    And it states that a per-benchmark view shows raw operator figures with no normalization
+    And it states that models without a scored figure on the chosen benchmark are unranked
+
   # ── Accessibility and layout ──────────────────────────────────────────────────
 
   # jsdom cannot resolve `oklch()` custom properties through a cascade, so the rasterized contrast

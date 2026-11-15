@@ -3,10 +3,10 @@
 
 import type { Locale } from "@/features/i18n/core/config";
 import { t } from "@/features/i18n/core/translations";
-import { COMPOSITE_INDEX_MAX, TIER_ANCHORS } from "../core/data/benchmarks";
-import type { AnchoredTier, Tier } from "../core/data/types";
-import type { ScoredModel, TierGroups } from "../core/tiers";
-import { formatIndex, tf } from "./format";
+import { COMPOSITE_INDEX_MAX, TIER_ANCHORS, benchmarkSpec } from "../core/data/benchmarks";
+import type { AnchoredTier, BenchmarkId, Tier } from "../core/data/types";
+import type { BenchmarkRow, ScoredModel, TierGroups } from "../core/tiers";
+import { formatIndex, formatPercent, tf } from "./format";
 import { AnchorChip, LimitedChip, PriceText } from "./model-bits";
 import { TIER_BG_CLASS, TIER_BORDER_CLASS, TierSwatch, tierLabel, tierUse } from "./tier-style";
 
@@ -75,6 +75,65 @@ function FloorLine({ tier, anchors, locale }: { tier: RatedTier; anchors: TierMa
     <p data-testid="ai-bench-tier-floor">
       {tf(locale, "aiBenchTierFloor", { anchor: anchor.model.name, index: formatIndex(anchor.index, locale) })}
     </p>
+  );
+}
+
+function BenchmarkRowView({ r, locale }: { r: BenchmarkRow; locale: Locale }) {
+  return (
+    <li data-testid="ai-bench-tier-row" data-model-id={r.model.id} className="py-2">
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+        <span data-testid="ai-bench-tier-row-name" className="text-sm font-semibold">
+          {r.model.name}
+        </span>
+        <span className="text-xs text-muted-foreground">{r.model.vendor}</span>
+        <LimitedChip model={r.model} locale={locale} />
+      </div>
+      <div className="mt-1 flex items-center gap-2">
+        <div aria-hidden="true" className="h-2.5 min-w-0 flex-1 overflow-hidden rounded-full bg-muted">
+          <div
+            data-testid="ai-bench-bar"
+            className="h-full rounded-full bg-primary"
+            style={{ width: barWidth(r.score) }}
+          />
+        </div>
+        <span className="w-16 shrink-0 text-right text-sm tabular-nums">
+          <span className="sr-only">{t(locale, "aiBenchScoreLabel")} </span>
+          <span data-testid="ai-bench-tier-row-index" className="font-semibold">
+            {formatPercent(r.score, locale)}
+          </span>
+        </span>
+      </div>
+      <p className="mt-0.5 text-xs text-muted-foreground">
+        <PriceText model={r.model} locale={locale} />
+      </p>
+    </li>
+  );
+}
+
+export type BenchmarkRankListProps = {
+  rows: readonly BenchmarkRow[];
+  benchmark: BenchmarkId;
+  locale: Locale;
+};
+
+/**
+ * The per-benchmark view: one flat list ordered by the raw score on `benchmark`, replacing the
+ * tier sections. Bars scale with the raw score, and each row shows that score.
+ */
+export function BenchmarkRankList({ rows, benchmark, locale }: BenchmarkRankListProps) {
+  return (
+    <section aria-labelledby="ai-bench-rank-list-heading" data-testid="ai-bench-tier-map" className="space-y-4">
+      <h2 id="ai-bench-rank-list-heading" className="text-xl font-semibold">
+        {tf(locale, "aiBenchRankListHeading", { benchmark: benchmarkSpec(benchmark).name })}
+      </h2>
+      <div data-testid="ai-bench-rank-list" className="rounded-lg border bg-card p-4">
+        <ol className="divide-y">
+          {rows.map((r) => (
+            <BenchmarkRowView key={r.model.id} r={r} locale={locale} />
+          ))}
+        </ol>
+      </div>
+    </section>
   );
 }
 

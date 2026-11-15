@@ -48,15 +48,23 @@ import { OPERATORS, operatorById } from "@/features/ai-benchmark/core/data/opera
 import type { HarnessId, Model, Tier } from "@/features/ai-benchmark/core/data/types";
 import { HARNESS_IDS, filterModels } from "@/features/ai-benchmark/core/filter";
 import { blendedPrice, priceRatio } from "@/features/ai-benchmark/core/price";
-import { compositeIndex, scoreOver, scoredBenchmarks, scoredFigure } from "@/features/ai-benchmark/core/score";
+import {
+  benchmarkScore,
+  compositeIndex,
+  scoreOver,
+  scoredBenchmarks,
+  scoredFigure,
+} from "@/features/ai-benchmark/core/score";
 import { frontierModels, substitutesFor, type SubstituteResult } from "@/features/ai-benchmark/core/substitute";
 import {
   assignTier,
   byIndexDesc,
   computeTierGroups,
   meetsAnchor,
+  rankBenchmarkModels,
   scoreModels,
   tierAnchors,
+  type BenchmarkRow,
 } from "@/features/ai-benchmark/core/tiers";
 import {
   formatDate,
@@ -105,6 +113,8 @@ type Ctx = {
   finderHarness?: HarnessId;
   filterTier?: Tier;
   subIds?: string[];
+  ranked?: BenchmarkRow[];
+  unranked?: Model[];
   viewportWidth?: number;
   viewportHeight?: number;
   errorSpy?: ReturnType<typeof vi.spyOn>;
@@ -1246,6 +1256,181 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
       expect(screen.queryByTestId("ai-bench-tier-map")).toBeNull();
       expect(screen.queryByTestId("ai-bench-table")).toBeNull();
       expect(screen.queryByTestId("ai-bench-insufficient")).toBeNull();
+    });
+  });
+
+  // ── Score basis (average vs per-benchmark) ─────────────────────────────────
+
+  Scenario("The score basis defaults to the composite average", ({ Given, When, Then, And }) => {
+    const scoreBasisSelect = () => screen.getByLabelText(t("en", "aiBenchScoreBasisLabel")) as HTMLSelectElement;
+    Given("the URL carries no benchmark parameter", () => {
+      navState.search = "";
+    });
+    When("the page renders", () => {
+      renderPage("en", navState.search);
+    });
+    Then("the tier map orders models by composite index", () => {
+      expect(tierMapIds()).toEqual([...rated].sort(byIndexDesc).map((s) => s.model.id));
+    });
+    And('the score basis control shows "Average"', () => {
+      expect(scoreBasisSelect().value).toBe("");
+      expect(selectedLabel(scoreBasisSelect())).toBe(t("en", "aiBenchScoreBasisAverage"));
+      expect(scoreBasisSelect().options).toHaveLength(1 + BENCHMARK_SPECS.length);
+    });
+  });
+
+  Scenario("Naming a benchmark ranks models by its raw score", ({ Given, When, Then, And }) => {
+    Given("fixture models scoring 60, 80, and 70 on DeepSWE 1.1", () => {
+      ctx.roster = [
+        model("low", [fig("deep-swe", 60, "1.1")]),
+        model("high", [fig("deep-swe", 80, "1.1")]),
+        model("mid", [fig("deep-swe", 70, "1.1")]),
+      ];
+    });
+    When("the models are ranked for the DeepSWE score basis", () => {
+      const { ranked, unranked } = rankBenchmarkModels(ctx.roster!, "deep-swe");
+      ctx.ranked = ranked;
+      ctx.unranked = unranked;
+    });
+    Then("the ranked order is 80, 70, then 60", () => {
+      expect(ctx.ranked!.map((r) => r.score)).toEqual([80, 70, 60]);
+      expect(ctx.unranked).toEqual([]);
+    });
+    And("each shown score equals that model's DeepSWE figure with no normalization", () => {
+      for (const r of ctx.ranked!) expect(r.score).toBe(benchmarkScore(r.model, "deep-swe"));
+    });
+  });
+
+  Scenario("Only the pinned version counts in a per-benchmark view", ({ Given, When, Then }) => {
+    Given("a fixture model scoring 90 on Terminal-Bench 2.1 with no Terminal-Bench 4.0 figure", () => {
+      ctx.model = model("m", [fig("terminal-bench", 90, "2.1")]);
+    });
+    When("the models are ranked for the Terminal-Bench score basis", () => {
+      const { ranked, unranked } = rankBenchmarkModels([ctx.model!], "terminal-bench");
+      ctx.ranked = ranked;
+      ctx.unranked = unranked;
+    });
+    Then("that model is unranked", () => {
+      expect(ctx.ranked).toEqual([]);
+      expect(ctx.unranked!.map((m) => m.id)).toEqual([ctx.model!.id]);
+    });
+  });
+
+  Scenario("Models without a score on the chosen benchmark are listed as unranked", ({ Given, And, When, Then }) => {
+    Given("the roster holds models with no scored FrontierCode-AA figure", () => {
+      const missing = full.models.filter((m) => benchmarkScore(m, "frontiercode-aa") === undefined);
+      expect(missing.length).toBeGreaterThan(0);
+      expect(missing.length).toBeLessThan(full.models.length);
+    });
+    And("the URL carries a benchmark parameter naming FrontierCode-AA", () => {
+      navState.search = "benchmark=frontiercode-aa";
+    });
+    When("the page renders", () => {
+      renderPage("en", navState.search);
+    });
+    Then("those models are listed inside the closed unranked disclosure", () => {
+      const details = screen.getByTestId("ai-bench-insufficient") as HTMLDetailsElement;
+      expect(details.open).toBe(false);
+      const expected = sorted(
+        full.models.filter((m) => benchmarkScore(m, "frontiercode-aa") === undefined).map((m) => m.id),
+      );
+      expect(sorted(idsIn("ai-bench-insufficient-item", details))).toEqual(expected);
+    });
+    And("the ranked list holds only models with a scored FrontierCode-AA figure in descending raw-score order", () => {
+      const expected = full.models
+        .flatMap((m) => {
+          const score = benchmarkScore(m, "frontiercode-aa");
+          return score === undefined ? [] : [{ id: m.id, score }];
+        })
+        .sort((a, b) => b.score - a.score || (a.id < b.id ? -1 : 1));
+      expect(expected.length).toBeGreaterThan(0);
+      expect(tierMapIds()).toEqual(expected.map((e) => e.id));
+      for (const e of expected) {
+        const row = screen.getByTestId("ai-bench-tier-map").querySelector(`[data-model-id="${e.id}"]`)!;
+        expect(within(row as HTMLElement).getByTestId("ai-bench-tier-row-index").textContent).toBe(
+          formatPercent(e.score, "en"),
+        );
+      }
+    });
+  });
+
+  Scenario("An unrecognized benchmark falls back to the composite average", ({ Given, When, Then, But }) => {
+    Given("the URL carries a benchmark parameter with an unknown value", () => {
+      ctx.errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+      navState.search = "benchmark=not-a-benchmark";
+    });
+    When("the page renders", () => {
+      renderPage("en", navState.search);
+    });
+    Then("the tier map orders models by composite index", () => {
+      expect(tierMapIds()).toEqual([...rated].sort(byIndexDesc).map((s) => s.model.id));
+      expect((screen.getByLabelText(t("en", "aiBenchScoreBasisLabel")) as HTMLSelectElement).value).toBe("");
+    });
+    But("no error is surfaced to the reader", () => {
+      expect(screen.queryByRole("alert")).toBeNull();
+      expect(ctx.errorSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  Scenario("The chosen benchmark is kept in the URL", ({ Given, When, Then, And }) => {
+    Given("the AI benchmark page is open", () => {
+      renderPage("en", "");
+    });
+    When('the reader changes the score basis to "Terminal-Bench"', () => {
+      fireEvent.change(screen.getByLabelText(t("en", "aiBenchScoreBasisLabel")), {
+        target: { value: "terminal-bench" },
+      });
+      followPush();
+      ctx.subIds = tierMapIds();
+    });
+    Then("the URL carries that benchmark as the score basis", () => {
+      expect(new URLSearchParams(navState.search).get("benchmark")).toBe("terminal-bench");
+    });
+    And("reloading that URL shows the same per-benchmark ranking", () => {
+      cleanup();
+      renderPage("en", navState.search);
+      expect((screen.getByLabelText(t("en", "aiBenchScoreBasisLabel")) as HTMLSelectElement).value).toBe(
+        "terminal-bench",
+      );
+      expect(tierMapIds()).toEqual(ctx.subIds);
+    });
+  });
+
+  Scenario("Resetting the score basis to Average removes it from the URL", ({ Given, When, Then, And }) => {
+    Given("the URL carries a benchmark parameter naming a known benchmark", () => {
+      navState.search = "benchmark=deep-swe";
+    });
+    When('the reader resets the score basis to "Average"', () => {
+      renderPage("en", navState.search);
+      fireEvent.change(screen.getByLabelText(t("en", "aiBenchScoreBasisLabel")), { target: { value: "" } });
+      followPush();
+    });
+    Then("the URL no longer carries the benchmark parameter", () => {
+      expect(new URLSearchParams(navState.search).has("benchmark")).toBe(false);
+      expect((screen.getByLabelText(t("en", "aiBenchScoreBasisLabel")) as HTMLSelectElement).value).toBe("");
+    });
+    And("the tier map orders models by composite index", () => {
+      expect(tierMapIds()).toEqual([...rated].sort(byIndexDesc).map((s) => s.model.id));
+    });
+  });
+
+  Scenario("The methodology explains the per-benchmark view", ({ Given, When, Then, And }) => {
+    Given("the AI benchmark page is open", () => {
+      renderPage("en", "");
+    });
+    When("the reader opens the methodology section", () => {
+      fireEvent.click(screen.getByRole("link", { name: t("en", "aiBenchJumpToMethod") }));
+    });
+    Then("it names the five score basis options: the composite average and the four benchmarks", () => {
+      const text = screen.getByTestId("ai-bench-method-score-basis").textContent!;
+      expect(text).toContain(t("en", "aiBenchScoreBasisAverage"));
+      for (const b of BENCHMARK_SPECS) expect(text).toContain(b.name);
+    });
+    And("it states that a per-benchmark view shows raw operator figures with no normalization", () => {
+      expect(screen.getByTestId("ai-bench-method-raw").textContent).toBe(t("en", "aiBenchMethodRawScores"));
+    });
+    And("it states that models without a scored figure on the chosen benchmark are unranked", () => {
+      expect(screen.getByTestId("ai-bench-method-unranked").textContent).toBe(t("en", "aiBenchMethodUnranked"));
     });
   });
 

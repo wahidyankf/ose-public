@@ -162,6 +162,43 @@ describe("BenchmarkContent — substitute harness", () => {
   });
 });
 
+describe("BenchmarkContent — score basis", () => {
+  const basisSelect = () => screen.getByLabelText("Score basis") as HTMLSelectElement;
+
+  it("shows Average with five options when the URL carries no benchmark parameter", () => {
+    render(<BenchmarkContent />);
+    expect(basisSelect().value).toBe("");
+    expect(basisSelect().options).toHaveLength(5);
+    expect(basisSelect().selectedOptions[0]!.textContent).toBe("Average");
+  });
+
+  it("reads the score basis from the URL", () => {
+    nav.search = "benchmark=deep-swe";
+    render(<BenchmarkContent />);
+    expect(basisSelect().value).toBe("deep-swe");
+  });
+
+  it("falls back to Average for an unknown benchmark", () => {
+    nav.search = "benchmark=not-a-benchmark";
+    render(<BenchmarkContent />);
+    expect(basisSelect().value).toBe("");
+  });
+
+  it("pushes the chosen benchmark under the benchmark key", () => {
+    render(<BenchmarkContent />);
+    change("Score basis", "terminal-bench");
+    expect(pushed(0).get("benchmark")).toBe("terminal-bench");
+  });
+
+  it("removes the benchmark parameter when Average is chosen again", () => {
+    nav.search = "benchmark=deep-swe&harness=cursor";
+    render(<BenchmarkContent />);
+    change("Score basis", "");
+    expect(pushed(0).has("benchmark")).toBe(false);
+    expect(pushed(0).get("harness")).toBe("cursor");
+  });
+});
+
 describe("BenchmarkContent — structure", () => {
   it("orders header → finder → filters → tier map → insufficient → table → methodology → sources", () => {
     render(<BenchmarkContent />);

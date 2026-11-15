@@ -5,12 +5,13 @@
 
 import { DEFAULT_SUBSTITUTE_HARNESS } from "./data/benchmarks";
 import type { HarnessId } from "./data/types";
-import { isKnownHarness, isKnownTier, type FilterState } from "./filter";
+import { isKnownBenchmark, isKnownHarness, isKnownTier, type FilterState } from "./filter";
 import { isSubstituteHarness } from "./substitute";
 
 export const PARAM_KEYS = {
   harness: "harness",
   tier: "tier",
+  benchmark: "benchmark",
   sub: "sub",
   subHarness: "sub-harness",
 } as const;
@@ -32,11 +33,13 @@ export type UrlState = FilterState & {
 export function decodeState(params: URLSearchParams, isKnownSub: (id: string) => boolean = () => false): UrlState {
   const harness = params.get(PARAM_KEYS.harness);
   const tier = params.get(PARAM_KEYS.tier);
+  const benchmark = params.get(PARAM_KEYS.benchmark);
   const sub = params.get(PARAM_KEYS.sub);
   const subHarness = params.get(PARAM_KEYS.subHarness);
   return {
     harness: harness !== null && isKnownHarness(harness) ? harness : undefined,
     tier: tier !== null && isKnownTier(tier) ? tier : undefined,
+    benchmark: benchmark !== null && isKnownBenchmark(benchmark) ? benchmark : undefined,
     sub: sub !== null && isKnownSub(sub) ? sub : undefined,
     subHarness: subHarness !== null && isSubstituteHarness(subHarness) ? subHarness : undefined,
   };
@@ -46,6 +49,7 @@ export function encodeState(state: UrlState): URLSearchParams {
   const params = new URLSearchParams();
   if (state.harness !== undefined) params.set(PARAM_KEYS.harness, state.harness);
   if (state.tier !== undefined) params.set(PARAM_KEYS.tier, state.tier);
+  if (state.benchmark !== undefined) params.set(PARAM_KEYS.benchmark, state.benchmark);
   if (state.sub !== undefined) params.set(PARAM_KEYS.sub, state.sub);
   if (state.subHarness !== undefined && state.subHarness !== DEFAULT_SUBSTITUTE_HARNESS) {
     params.set(PARAM_KEYS.subHarness, state.subHarness);

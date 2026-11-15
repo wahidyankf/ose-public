@@ -20,6 +20,14 @@ export function scoredFigure(model: Model, benchmark: BenchmarkId): Figure | und
   return model.figures.find((f) => f.benchmark === benchmark && isScoredFigure(f));
 }
 
+/**
+ * The model's raw scored figure value for one benchmark — the pinned version's operator figure
+ * with no normalization and no weighting. Undefined when the model has no scored figure there.
+ */
+export function benchmarkScore(model: Model, benchmark: BenchmarkId): number | undefined {
+  return scoredFigure(model, benchmark)?.value;
+}
+
 /** The benchmarks the model has a scored figure for, in column order. */
 export function scoredBenchmarks(model: Model): BenchmarkId[] {
   return BENCHMARK_SPECS.filter((s) => scoredFigure(model, s.id) !== undefined).map((s) => s.id);

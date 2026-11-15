@@ -251,7 +251,7 @@ func TestBenchmarkPage(t *testing.T) {
 			t.Fatalf("benchmark misses vector figure %q", marker)
 		}
 	}
-	empty := request(t, handler, http.MethodGet, "/en/tools/ai-benchmark?harness=opencode-go&tier=ultra")
+	empty := request(t, handler, http.MethodGet, "/en/tools/ai-benchmark?harness=claude-code&tier=planning")
 	if empty.Code != http.StatusOK {
 		t.Fatalf("empty benchmark status = %d, want 200", empty.Code)
 	}
@@ -324,7 +324,7 @@ func TestHtmxBenchmarkFragment(t *testing.T) {
 	if !strings.Contains(invalid.Body.String(), "data-invalid-filters") {
 		t.Fatal("unexpected benchmark field must yield the invalid-filters state")
 	}
-	empty := request(t, handler, http.MethodGet, "/htmx/benchmark?harness=opencode-go&tier=ultra")
+	empty := request(t, handler, http.MethodGet, "/htmx/benchmark?harness=claude-code&tier=planning")
 	if !strings.Contains(empty.Body.String(), "data-empty-state") {
 		t.Fatal("no-match benchmark fragment must show the empty state")
 	}

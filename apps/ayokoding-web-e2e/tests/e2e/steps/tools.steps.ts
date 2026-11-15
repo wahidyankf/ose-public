@@ -14,7 +14,7 @@ const benchVectorURL = "/en/tools/ai-benchmark?harness=command-code-pro&tier=pla
 const benchRestoreURL =
   "/en/tools/ai-benchmark?harness=cursor&tier=planning&sub=gpt-5.6-terra&sub-harness=command-code";
 const benchUnknownURL = "/en/tools/ai-benchmark?harness=nope&tier=nope";
-const benchEmptyURL = "/en/tools/ai-benchmark?harness=opencode-go&tier=ultra";
+const benchEmptyURL = "/en/tools/ai-benchmark?harness=claude-code&tier=planning";
 const calcVectorURL =
   "/en/tools/cost-of-living-calculator?city=singapore&gross=5000&baseline=my_salary&mygross=5000&mysalarycity=singapore";
 const calcRestoreURL =
@@ -104,7 +104,7 @@ Given("a benchmark URL contains invalid or unknown filter values", async ({ page
 Then("the tool uses the existing codec's valid defaults for those values", async ({ page }) => {
   // Unknown scalars recover to unset under the current codec, so the
   // comparison stays usable over the full shared roster.
-  expect(bodyOf(page)).toContain('data-count="93"');
+  expect(bodyOf(page)).toContain('data-count="109"');
   expect(bodyOf(page)).not.toContain("data-invalid-filters");
 });
 
@@ -136,7 +136,7 @@ Then("the source links, source dates, notes, and methodology remain available", 
 });
 
 Given("a supported filter combination matches no model", async () => {
-  // harness=opencode-go with tier=ultra is valid under the current codec
+  // harness=claude-code with tier=planning is valid under the current codec
   // and matches no model in the shared roster.
 });
 

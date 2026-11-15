@@ -11,6 +11,8 @@ export const ID_NOTES: Readonly<Record<string, string>> = {
   "Cursor only (app, CLI, and SDK); Composer 2 now runs as 2.5.":
     "Hanya di Cursor (aplikasi, CLI, dan SDK); Composer 2 kini dijalankan sebagai 2.5.",
   "Invitation only (Project Glasswing).": "Hanya lewat undangan (Project Glasswing).",
+  "Restricted to vetted cybersecurity and life sciences organizations.":
+    "Terbatas untuk organisasi keamanan siber dan ilmu hayati yang terverifikasi.",
   "Muse Code subscribers only; not served through the API.":
     "Hanya untuk pelanggan Muse Code; tidak dilayani lewat API.",
   "Limited rollout in Codex; check your plan.": "Dirilis terbatas di Codex; cek paket Anda.",
@@ -19,10 +21,11 @@ export const ID_NOTES: Readonly<Record<string, string>> = {
   "The mini tier that Terra succeeds. Codex CLI only with an API key.":
     "Tingkat mini yang digantikan Terra. Di Codex CLI hanya dengan API key.",
   "The nano tier that Luna succeeds.": "Tingkat nano yang digantikan Luna.",
-  "Limited access; no public API price yet.": "Akses terbatas; belum ada harga API publik.",
   "Prompts over 200K tokens: $4 / $18.": "Prompt di atas 200K token: US$4 / US$18.",
   "Promotional through 2026-12-31; $1.50 / $7.50 from 2027-01-01.":
     "Promo sampai 2026-12-31; US$1,50 / US$7,50 mulai 2027-01-01.",
+  "Promotional $2 / $10 through 2026-11-30; $4 / $20 from 2026-12-01.":
+    "Promo US$2 / US$10 sampai 2026-11-30; US$4 / US$20 mulai 2026-12-01.",
   "Shuts down 2027-05-07.": "Dihentikan pada 2027-05-07.",
   "Prompts of 200K tokens or more: $4 / $12.": "Prompt 200K token atau lebih: US$4 / US$12.",
   "Free on the Z.ai API.": "Gratis di API Z.ai.",
@@ -43,6 +46,7 @@ export const ID_NOTES: Readonly<Record<string, string>> = {
   "Meta's cheaper Contributor tier, on which Meta may train on submissions.":
     "Tingkat Contributor Meta yang lebih murah; Meta boleh melatih modelnya dengan data yang dikirim.",
   "Prompts over 100K tokens: $0.50 / $2.50.": "Prompt di atas 100K token: US$0,50 / US$2,50.",
+  "Prompts over 200K tokens: $0.30 / $1.50.": "Prompt di atas 200K token: US$0,30 / US$1,50.",
   "Moonshot discontinued this model on 2026-08-31; Command Code still serves it.":
     "Moonshot menghentikan model ini pada 2026-08-31; Command Code masih menyediakannya.",
   "Two-week launch promotion from 2026-10-06; $1.36 / $4.18 after.":

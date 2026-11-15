@@ -35,7 +35,7 @@
     "claude-opus-5": 10,
     "gpt-5.6-sol": 8,
     "claude-sonnet-5": 4,
-    "gemini-4-argon": null,
+    "gemini-4-argon": 4,
     "claude-haiku-4-5": 2,
     "composer-2.5": 1
   },
@@ -48,13 +48,13 @@
     {
       "candidate": "gemini-4-argon",
       "reference": "claude-opus-5",
-      "value": null
+      "value": 0.4
     }
   ],
   "filterCounts": [
     {
       "state": {},
-      "count": 93
+      "count": 109
     },
     {
       "state": {
@@ -79,7 +79,7 @@
       "state": {
         "harness": "opencode-go"
       },
-      "count": 30
+      "count": 33
     }
   ],
   "substitutes": {
@@ -91,6 +91,11 @@
         "id": "claude-sonnet-5-5",
         "tier": "ultra",
         "index": 68.36
+      },
+      {
+        "id": "gemini-4-argon",
+        "tier": "ultra",
+        "index": 63.75666666666666
       },
       {
         "id": "gpt-6-sol",

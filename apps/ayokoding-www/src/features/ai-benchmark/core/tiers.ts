@@ -6,8 +6,8 @@
 // equality. A rated model below every anchor is `fast`; a model with too few scored benchmarks is
 // `insufficient`.
 
-import { ANCHORED_TIERS, MIN_SCORED_BENCHMARKS, TIERS, TIER_ANCHORS } from "./data/benchmarks";
-import type { AnchoredTier, BenchmarkId, Dataset, Model, Tier } from "./data/types";
+import { ANCHORED_TIERS, BENCHMARK_TIER_ANCHORS, MIN_SCORED_BENCHMARKS, TIERS, TIER_ANCHORS } from "./data/benchmarks";
+import type { AnchoredTier, BenchmarkId, BenchmarkTier, Dataset, Model, Tier } from "./data/types";
 import { benchmarkScore, compositeIndex, scoredBenchmarks } from "./score";
 
 /** A model with its composite index and tier — the unit every page section renders. */
@@ -115,4 +115,81 @@ export function rankBenchmarkModels(
   }
   ranked.sort(byBenchmarkScoreDesc);
   return { ranked, unranked };
+}
+
+/** Does `model`'s raw score on `benchmark` match or beat `anchor`'s? False when either is unscored. */
+export function meetsBenchmarkAnchor(model: Model, anchor: Model | undefined, benchmark: BenchmarkId): boolean {
+  if (anchor === undefined) return false;
+  const mine = benchmarkScore(model, benchmark);
+  const theirs = benchmarkScore(anchor, benchmark);
+  return mine !== undefined && theirs !== undefined && mine >= theirs;
+}
+
+function findBenchmarkAnchor(full: Dataset, benchmark: BenchmarkId, tier: AnchoredTier): Model | undefined {
+  return full.models.find((m) => m.id === BENCHMARK_TIER_ANCHORS[benchmark][tier]);
+}
+
+/**
+ * The tier `model` belongs to on one benchmark: the highest anchored tier whose anchor's raw
+ * score on that benchmark it matches or beats. Below every anchor is `fast`; with no scored
+ * figure there the model is `unranked`, outside the tiers.
+ */
+export function assignBenchmarkTier(model: Model, benchmark: BenchmarkId, full: Dataset): BenchmarkTier {
+  if (benchmarkScore(model, benchmark) === undefined) return "unranked";
+  for (const tier of ANCHORED_TIERS) {
+    if (meetsBenchmarkAnchor(model, findBenchmarkAnchor(full, benchmark, tier), benchmark)) return tier;
+  }
+  return "fast";
+}
+
+/** One model with its raw score and per-benchmark tier — the unit the per-benchmark sections render. */
+export type BenchmarkTierRow = BenchmarkRow & { tier: Exclude<BenchmarkTier, "unranked"> };
+
+/** The rated per-benchmark tiers in display order: ultra, planning, execution, fast. */
+export type BenchmarkTierGroups = Record<Exclude<BenchmarkTier, "unranked">, BenchmarkTierRow[]>;
+
+/**
+ * Group the shown models by per-benchmark tier, plus the unranked rest. Anchors always come from
+ * `full`, so filtering the shown roster never moves a model between tiers. Each group is ordered
+ * by descending raw score (ties by ascending id), so concatenating the groups in display order
+ * reproduces the {@link rankBenchmarkModels} order.
+ */
+export function computeBenchmarkTierGroups(
+  shown: Dataset,
+  benchmark: BenchmarkId,
+  full: Dataset = shown,
+): { groups: BenchmarkTierGroups; unranked: Model[] } {
+  const groups: BenchmarkTierGroups = { ultra: [], planning: [], execution: [], fast: [] };
+  const unranked: Model[] = [];
+  for (const model of shown.models) {
+    const score = benchmarkScore(model, benchmark);
+    if (score === undefined) {
+      unranked.push(model);
+      continue;
+    }
+    const tier = assignBenchmarkTier(model, benchmark, full);
+    if (tier === "unranked") {
+      unranked.push(model);
+      continue;
+    }
+    groups[tier].push({ model, score, tier });
+  }
+  for (const tier of Object.keys(groups) as (keyof BenchmarkTierGroups)[]) {
+    groups[tier].sort(byBenchmarkScoreDesc);
+  }
+  return { groups, unranked };
+}
+
+/** Each anchored tier's per-benchmark anchor, scored; undefined when the anchor is missing or unscored. */
+export function benchmarkTierAnchors(
+  full: Dataset,
+  benchmark: BenchmarkId,
+): Record<AnchoredTier, BenchmarkTierRow | undefined> {
+  const out = {} as Record<AnchoredTier, BenchmarkTierRow | undefined>;
+  for (const tier of ANCHORED_TIERS) {
+    const anchor = findBenchmarkAnchor(full, benchmark, tier);
+    const score = anchor === undefined ? undefined : benchmarkScore(anchor, benchmark);
+    out[tier] = anchor === undefined || score === undefined ? undefined : { model: anchor, score, tier };
+  }
+  return out;
 }

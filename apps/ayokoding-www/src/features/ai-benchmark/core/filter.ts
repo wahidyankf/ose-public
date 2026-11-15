@@ -3,7 +3,7 @@
 
 import { BENCHMARK_SPECS, TIERS } from "./data/benchmarks";
 import type { BenchmarkId, Dataset, HarnessId, Model, Tier } from "./data/types";
-import { assignTier } from "./tiers";
+import { assignBenchmarkTier, assignTier } from "./tiers";
 
 export const HARNESS_IDS: readonly HarnessId[] = [
   "claude-code",
@@ -40,12 +40,22 @@ export type FilterState = {
 
 /**
  * Models satisfying both filters. Tiers are judged against `full`'s anchors so that narrowing
- * `shown` never changes a model's tier.
+ * `shown` never changes a model's tier. When a score basis (`benchmark`) is set, the tier filter
+ * means the per-benchmark tier; otherwise it means the composite tier. The tier menu's
+ * "insufficient" option matches the models outside the current view's tiers: composite
+ * `insufficient` models in the Average view, `unranked` models in a per-benchmark view.
  */
 export function filterModels(shown: Dataset, state: FilterState, full: Dataset = shown): Model[] {
   return shown.models.filter(
     (m) =>
       (state.harness === undefined || m.harnesses.includes(state.harness)) &&
-      (state.tier === undefined || assignTier(m, full) === state.tier),
+      (state.tier === undefined || tierForFilter(m, state, full) === state.tier),
   );
+}
+
+function tierForFilter(m: Model, state: FilterState, full: Dataset): Tier {
+  if (state.benchmark === undefined) return assignTier(m, full);
+  const tier = assignBenchmarkTier(m, state.benchmark, full);
+  // "unranked" is outside the tier menu; the menu's "insufficient" option selects those models.
+  return tier === "unranked" ? "insufficient" : tier;
 }

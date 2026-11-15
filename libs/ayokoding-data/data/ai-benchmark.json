@@ -3211,6 +3211,28 @@
       "planning": "gpt-5.6-sol",
       "execution": "claude-sonnet-5"
     },
+    "benchmarkTierAnchors": {
+      "deep-swe": {
+        "ultra": "claude-opus-5",
+        "planning": "gpt-5.6-sol",
+        "execution": "claude-sonnet-5"
+      },
+      "terminal-bench": {
+        "ultra": "claude-opus-5",
+        "planning": "gpt-5.6-sol",
+        "execution": "claude-sonnet-5"
+      },
+      "swe-atlas-qna": {
+        "ultra": "claude-opus-5",
+        "planning": "gpt-5.6-sol",
+        "execution": "claude-sonnet-4-6"
+      },
+      "frontiercode-aa": {
+        "ultra": "claude-fable-5-1",
+        "planning": "muse-wonder",
+        "execution": "muse-spark-1.3"
+      }
+    },
     "anchoredTiers": ["ultra", "planning", "execution"],
     "tiers": ["ultra", "planning", "execution", "fast", "insufficient"],
     "frontierVendors": ["Anthropic", "OpenAI", "Google", "xAI"],

@@ -15,8 +15,8 @@ import {
 import { operatorById } from "../core/data/operators";
 import type { BenchmarkId, Dataset } from "../core/data/types";
 import { compositeIndex, scoredBenchmarks, scoredFigure } from "../core/score";
-import { meetsAnchor, tierAnchors } from "../core/tiers";
-import { formatIndex, tf } from "./format";
+import { benchmarkTierAnchors, meetsAnchor, tierAnchors } from "../core/tiers";
+import { formatIndex, formatPercent, tf } from "./format";
 import { tierLabel } from "./tier-style";
 
 export const METHODOLOGY_ID = "ai-bench-methodology";
@@ -63,6 +63,30 @@ function CompareExample({ dataset, locale }: { dataset: Dataset; locale: Locale 
         result: t(locale, meetsAnchor(model, anchor) ? "aiBenchMethodMeets" : "aiBenchMethodMisses"),
       })}
     </p>
+  );
+}
+
+function BenchmarkAnchorItem({
+  dataset,
+  benchmark,
+  locale,
+}: {
+  dataset: Dataset;
+  benchmark: BenchmarkId;
+  locale: Locale;
+}) {
+  const anchors = benchmarkTierAnchors(dataset, benchmark);
+  const parts = ANCHORED_TIERS.flatMap((tier) => {
+    const a = anchors[tier];
+    return a === undefined ? [] : [`${tierLabel(tier, locale)} ${a.model.name} (${formatPercent(a.score, locale)})`];
+  });
+  if (parts.length === 0) return null;
+  return (
+    <li data-testid="ai-bench-method-benchmark-anchor" data-benchmark={benchmark}>
+      <span className="font-semibold">{BENCHMARK_SPECS.find((b) => b.id === benchmark)!.name}</span>
+      {": "}
+      {parts.join(" · ")}
+    </li>
   );
 }
 
@@ -115,6 +139,15 @@ export function Methodology({ dataset, locale }: { dataset: Dataset; locale: Loc
                 </li>
               );
             })}
+          </ul>
+        </div>
+        <p data-testid="ai-bench-method-benchmark-tiers">{t(locale, "aiBenchMethodBenchmarkTiers")}</p>
+        <div>
+          <p>{t(locale, "aiBenchMethodBenchmarkAnchorsIntro")}</p>
+          <ul className="mt-1 list-disc space-y-1 pl-5">
+            {BENCHMARK_SPECS.map((b) => (
+              <BenchmarkAnchorItem key={b.id} dataset={dataset} benchmark={b.id} locale={locale} />
+            ))}
           </ul>
         </div>
         <p>{t(locale, "aiBenchMethodPrice")}</p>

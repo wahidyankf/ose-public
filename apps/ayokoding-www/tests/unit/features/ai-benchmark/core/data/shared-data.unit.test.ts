@@ -9,6 +9,7 @@ import path from "node:path";
 import {
   ANCHORED_TIERS,
   BENCHMARK_SPECS,
+  BENCHMARK_TIER_ANCHORS,
   BLEND_INPUT_SHARE,
   BLEND_OUTPUT_SHARE,
   DEFAULT_SUBSTITUTE_HARNESS,
@@ -81,6 +82,7 @@ describe("evaluated exports equal the shared JSON", () => {
       minScoredBenchmarks: MIN_SCORED_BENCHMARKS,
       compositeIndexMax: COMPOSITE_INDEX_MAX,
       tierAnchors: TIER_ANCHORS,
+      benchmarkTierAnchors: BENCHMARK_TIER_ANCHORS,
       anchoredTiers: ANCHORED_TIERS,
       tiers: TIERS,
       frontierVendors: FRONTIER_VENDORS,

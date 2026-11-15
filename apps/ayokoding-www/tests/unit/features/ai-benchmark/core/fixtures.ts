@@ -1,6 +1,6 @@
 // Shared fixture builders for the AI benchmark core tests and the Gherkin unit steps.
 
-import { benchmarkSpec, TIER_ANCHORS } from "@/features/ai-benchmark/core/data/benchmarks";
+import { BENCHMARK_TIER_ANCHORS, benchmarkSpec, TIER_ANCHORS } from "@/features/ai-benchmark/core/data/benchmarks";
 import type { ApiPrice, BenchmarkId, Dataset, Figure, HarnessId, Model } from "@/features/ai-benchmark/core/data/types";
 
 export const SRC = "https://example.test/source";
@@ -72,5 +72,15 @@ export function anchors(ultra = 60, planning = 55, execution = 45): Model[] {
     flat(TIER_ANCHORS.ultra, ultra, { vendor: "Anthropic" }),
     flat(TIER_ANCHORS.planning, planning, { vendor: "OpenAI" }),
     flat(TIER_ANCHORS.execution, execution, { vendor: "OpenAI" }),
+  ];
+}
+
+/** The three per-benchmark tier anchors on `benchmark` at raw scores ultra / planning / execution. */
+export function benchmarkAnchors(benchmark: BenchmarkId, ultra = 60, planning = 55, execution = 45): Model[] {
+  const ids = BENCHMARK_TIER_ANCHORS[benchmark];
+  return [
+    model(ids.ultra, [fig(benchmark, ultra)]),
+    model(ids.planning, [fig(benchmark, planning)]),
+    model(ids.execution, [fig(benchmark, execution)]),
   ];
 }

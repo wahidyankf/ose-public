@@ -45,8 +45,20 @@ compute runs through `./hippo run`, per
 
 ## 2. Methodology Checkpoint (Conditional, Human Checkpoint)
 
-A data refresh never changes methodology silently. Methodology means `BENCHMARK_SPECS`, `TIER_ANCHORS`, and
-the tier rule in `core/data/benchmarks.ts` and `core/tiers.ts`.
+A data refresh never changes methodology silently. Methodology means the pinned benchmark versions in
+`BENCHMARK_SPECS`, the per-benchmark tier anchors in `benchmarkTierAnchors`, and the tier rules in
+`core/tiers.ts`: a model's tier on one benchmark is set by that benchmark's anchors, and its overall
+tier is the consensus tier — the tier it holds on the most benchmarks, ties to the highest tied tier,
+from at least two tiered benchmarks. The page computes no composite or average score. The shared JSON
+still carries `tierAnchors`, `weight`, and `compositeIndexMax` for the Go port; a www data refresh
+never removes them.
+
+This workflow runs on demand only; no schedule triggers it.
+
+One candidate benchmark is waitlisted: SWE-bench Pro (Scale standardized public set). Add it as a new
+benchmark only when its standardized board covers most of the current frontier roster including
+usable tier anchors — at the 2026-11-15 check it covered 3 of 109 roster models, with current frontier
+models present only as vendor-reported scores, which the roster never records.
 
 - **Condition**: research shows a pinned benchmark version superseded, a tier anchor retired, aged past
   the two-year cap, or no longer general-access, or a reason to change the tier rule

@@ -31,9 +31,8 @@ open-sharia-enterprise/
 ├── plans/                     # Project planning documents
 ├── .claude/                   # Claude Code configuration
 ├── infra/                     # Infrastructure configurations
-│   ├── dev/                  # Local development Compose files per service (run with Podman Compose)
-│   │   └── [service]/        # docker-compose.yml for local dev environment
-│   └── k8s/                  # Kubernetes deployments
+│   └── dev/                  # Local development Compose files per service (run with Podman Compose)
+│       └── [service]/        # docker-compose.yml for local dev environment
 ├── specs/                     # Gherkin acceptance specs, C4 diagrams, and OpenAPI contracts
 │   ├── apps/                  # Per-app specs (one logical owner corpus per surface)
 │   │   └── [product]/        # e.g. organiclever/, crane/
@@ -58,6 +57,8 @@ open-sharia-enterprise/
 ├── CLAUDE.md                  # Claude Code guidance
 └── README.md                  # Project README
 ```
+
+Deployment infrastructure as code lives in the private [`ose-private`](https://github.com/wahidyankf/ose-private) repository.
 
 ## Apps Folder (`apps/`)
 

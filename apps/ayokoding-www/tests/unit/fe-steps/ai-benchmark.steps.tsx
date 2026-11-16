@@ -62,6 +62,7 @@ import {
   type ConsensusModel,
 } from "@/features/ai-benchmark/core/tiers";
 import { formatDate, formatPercent, formatUsd, priceComparison, tf } from "@/features/ai-benchmark/shell/format";
+import { SubstituteFinder } from "@/features/ai-benchmark/shell/substitute-finder";
 import { TIER_BG_CLASS, tierLabel } from "@/features/ai-benchmark/shell/tier-style";
 import { t } from "@/features/i18n/core/translations";
 import type { Locale } from "@/features/i18n/core/config";
@@ -149,21 +150,6 @@ function chooseFinderHarness(harness: HarnessId) {
   fireEvent.change(finderHarnessSelect(), { target: { value: harness } });
   followPush();
   ctx.finderHarness = harness;
-}
-
-/**
- * The first finder harness (default first) and frontier model whose tier no model of that harness
- * reaches, so the finder can only offer nearest options. Picked from the live roster, so the check
- * holds whatever each harness lists.
- */
-function nearestCombination(): { harness: HarnessId; target: Model } {
-  for (const harness of SUBSTITUTE_HARNESSES) {
-    for (const target of frontierModels(full)) {
-      const result = substitutesFor(target, full, harness);
-      if (result.kind === "nearest" && result.models.length > 0) return { harness, target };
-    }
-  }
-  throw new Error("every frontier model has a same-tier substitute in every finder harness");
 }
 
 /** The blended-price cell text for a listed substitute: a dash where no price is published. */
@@ -471,31 +457,72 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
         renderPage();
       });
       When("the reader chooses a harness and a frontier model whose tier is above every model of that harness", () => {
-        const { harness, target } = nearestCombination();
-        if (harness !== DEFAULT_SUBSTITUTE_HARNESS) chooseFinderHarness(harness);
+        // Under consensus tiers every finder harness lists an ultra model and ultra is the top
+        // tier, so no live frontier/harness pair can satisfy the precondition. Verify the contract
+        // with a controlled roster through the real finder UI instead.
+        const fixtureModels = [
+          ...quadAnchors(),
+          tiered("fixture-frontier-ultra", "ultra", "ultra", "ultra", "ultra", { vendor: "Anthropic" }),
+          tiered("fixture-go-planning", "planning", "planning", "planning", "execution", {
+            vendor: "OpenWeights",
+            harnesses: ["opencode-go"],
+          }),
+          tiered("fixture-go-execution", "execution", "execution", "execution", "execution", {
+            vendor: "OpenWeights",
+            harnesses: ["opencode-go"],
+          }),
+          tiered("fixture-go-fast", "fast", "fast", "fast", "fast", {
+            vendor: "OpenWeights",
+            harnesses: ["opencode-go"],
+          }),
+        ];
+        const fixture = fixtureDataset(fixtureModels);
+        const target = fixture.models.find((m) => m.id === "fixture-frontier-ultra")!;
+        const harness: HarnessId = "opencode-go";
+        const result = substitutesFor(target, fixture, harness);
+        expect(result.kind).toBe("nearest");
+        expect(result.models.length).toBeGreaterThan(0);
+        ctx.roster = fixtureModels;
+        ctx.model = target;
         ctx.finderHarness = harness;
-        chooseModel(target);
+        ctx.result = result;
+        cleanup();
+        view = render(
+          <SubstituteFinder
+            dataset={fixture}
+            selectedId={target.id}
+            harness={harness}
+            locale="en"
+            onSelect={() => undefined}
+            onSelectHarness={() => undefined}
+          />,
+        );
       });
       Then("the finder states that no model of that harness reaches that model's tier", () => {
+        const fixture = fixtureDataset(ctx.roster!);
         expect(screen.getByTestId("ai-bench-finder-lead").textContent).toBe(
           tf("en", "aiBenchFinderNearest", {
             harness: HARNESS_DISPLAY_NAMES[ctx.finderHarness!],
-            tier: tierLabel(assignConsensusTier(ctx.model!, full).tier, "en"),
+            tier: tierLabel(assignConsensusTier(ctx.model!, fixture).tier, "en"),
           }),
         );
       });
       And("the finder lists the highest-scoring models of that harness as the nearest options", () => {
+        const fixture = fixtureDataset(ctx.roster!);
         const harness = ctx.finderHarness!;
-        const candidates = rated
+        const fixtureScored = scoreModels(fixture);
+        const candidates = fixtureScored
+          .filter((s) => s.tier !== "insufficient")
           .filter((s) => s.model.harnesses.includes(harness) && s.model.id !== ctx.model!.id)
           .sort(byConsensusDesc);
-        const listed = subIds().map((id) => scored.find((s) => s.model.id === id)!);
+        const listed = subIds().map((id) => fixtureScored.find((s) => s.model.id === id)!);
         // Compare consensus strength, not ids: equally strong models keep their id order on both sides.
         expect(listed.map((s) => [s.tier, s.agreeing, s.considered])).toEqual(
           candidates.slice(0, NEAREST_OPTION_COUNT).map((s) => [s.tier, s.agreeing, s.considered]),
         );
         for (const s of listed) expect(s.model.harnesses).toContain(harness);
         expect(screen.getByTestId("ai-bench-sub-list").getAttribute("data-kind")).toBe("nearest");
+        expect(substitutesFor(ctx.model!, fixture, harness).kind).toBe("nearest");
       });
     },
   );

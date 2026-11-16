@@ -230,7 +230,10 @@ function fixtureQuadAnchors(): Model[] {
   for (const benchmark of Object.keys(BENCHMARK_TIER_ANCHORS) as BenchmarkId[]) {
     for (const tier of ["ultra", "planning", "execution"] as const) {
       const id = BENCHMARK_TIER_ANCHORS[benchmark][tier];
-      byId.set(id, [...(byId.get(id) ?? []), fixtureFigure(benchmark, { ultra: 60, planning: 55, execution: 45 }[tier])]);
+      byId.set(id, [
+        ...(byId.get(id) ?? []),
+        fixtureFigure(benchmark, { ultra: 60, planning: 55, execution: 45 }[tier]),
+      ]);
     }
   }
   return [...byId.entries()].map(([id, figures]) => fixtureModel(id, figures));

@@ -9,7 +9,8 @@ import { byConsensusDesc, scoreModels, tierRank, type ConsensusModel } from "./t
 /**
  * `matches` — models of the chosen harness in the target's tier or higher;
  * `nearest` — none reaches the tier, so the best consensus-rated models of that harness are offered;
- * `insufficient` — the target itself has too little data to compare.
+ * `insufficient` — the target itself has too little data to compare, or its benchmarks agree on
+ * no tier.
  */
 export type SubstituteResult = {
   kind: "matches" | "nearest" | "insufficient";
@@ -33,10 +34,15 @@ export function frontierModels(dataset: Dataset): Model[] {
 export function substitutesFor(target: Model, full: Dataset, harness: HarnessId): SubstituteResult {
   const scored = scoreModels(full);
   const targetTier = scored.find((s) => s.model.id === target.id)?.tier ?? "insufficient";
-  if (targetTier === "insufficient") return { kind: "insufficient", models: [] };
+  // A target with no consensus tier cannot be compared, like an insufficient-data target.
+  if (targetTier === "insufficient" || targetTier === "no-consensus") return { kind: "insufficient", models: [] };
 
   const rated = scored.filter(
-    (s) => s.model.id !== target.id && s.model.harnesses.includes(harness) && s.tier !== "insufficient",
+    (s) =>
+      s.model.id !== target.id &&
+      s.model.harnesses.includes(harness) &&
+      s.tier !== "insufficient" &&
+      s.tier !== "no-consensus",
   );
   const matches = rated.filter((s) => tierRank(s.tier) >= tierRank(targetTier)).sort(byConsensusDesc);
   if (matches.length > 0) return { kind: "matches", models: matches };

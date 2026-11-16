@@ -22,7 +22,16 @@ export type InsufficientListProps = {
   unrankedBenchmark?: BenchmarkId;
 };
 
-function Scores({ s, locale }: { s: ConsensusModel; locale: Locale }) {
+/** Whatever independent scores a tierless model has, in text. Shared with the no-consensus disclosure. */
+export function ModelScores({
+  s,
+  locale,
+  testId = "ai-bench-insufficient-scores",
+}: {
+  s: ConsensusModel;
+  locale: Locale;
+  testId?: string;
+}) {
   const parts = BENCHMARK_SPECS.flatMap((b) => {
     const f = scoredFigure(s.model, b.id);
     return f === undefined
@@ -30,9 +39,33 @@ function Scores({ s, locale }: { s: ConsensusModel; locale: Locale }) {
       : [`${b.name} ${b.version} ${formatPercent(f.value, locale)} (${operatorById(f.operator).shortName})`];
   });
   return (
-    <span data-testid="ai-bench-insufficient-scores" className="text-xs text-muted-foreground">
+    <span data-testid={testId} className="text-xs text-muted-foreground">
       {parts.length === 0 ? t(locale, "aiBenchInsufficientNone") : parts.join(" · ")}
     </span>
+  );
+}
+
+/** One tierless model row: name, vendor, access label, and whatever independent scores it has. */
+export function TierlessModelItem({
+  s,
+  locale,
+  itemTestId = "ai-bench-insufficient-item",
+  scoresTestId = "ai-bench-insufficient-scores",
+}: {
+  s: ConsensusModel;
+  locale: Locale;
+  itemTestId?: string;
+  scoresTestId?: string;
+}) {
+  return (
+    <li key={s.model.id} data-testid={itemTestId} data-model-id={s.model.id} className="py-2">
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
+        <span className="font-semibold">{s.model.name}</span>
+        <span className="text-xs text-muted-foreground">{s.model.vendor}</span>
+        <LimitedChip model={s.model} locale={locale} />
+      </div>
+      <ModelScores s={s} locale={locale} testId={scoresTestId} />
+    </li>
   );
 }
 
@@ -57,14 +90,7 @@ export function InsufficientList({ models, locale, unrankedBenchmark }: Insuffic
         </p>
         <ul className="divide-y">
           {sorted.map((s) => (
-            <li key={s.model.id} data-testid="ai-bench-insufficient-item" data-model-id={s.model.id} className="py-2">
-              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
-                <span className="font-semibold">{s.model.name}</span>
-                <span className="text-xs text-muted-foreground">{s.model.vendor}</span>
-                <LimitedChip model={s.model} locale={locale} />
-              </div>
-              <Scores s={s} locale={locale} />
-            </li>
+            <TierlessModelItem key={s.model.id} s={s} locale={locale} />
           ))}
         </ul>
       </div>

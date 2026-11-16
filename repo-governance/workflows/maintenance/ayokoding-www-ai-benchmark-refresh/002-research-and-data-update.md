@@ -49,7 +49,9 @@ A data refresh never changes methodology silently. Methodology means the pinned 
 `BENCHMARK_SPECS`, the per-benchmark tier anchors in `benchmarkTierAnchors`, and the tier rules in
 `core/tiers.ts`: a model's tier on one benchmark is set by that benchmark's anchors, and its overall
 tier is the consensus tier — the tier it holds on the most benchmarks, ties to the highest tied tier,
-from at least two tiered benchmarks. The page computes no composite or average score. The shared JSON
+from at least two tiered benchmarks, and only when at least half of its tiered benchmarks agree on
+that tier; a model below half has no consensus tier and is listed separately. The page computes no
+composite or average score. The shared JSON
 still carries `tierAnchors`, `weight`, and `compositeIndexMax` for the Go port; a www data refresh
 never removes them.
 

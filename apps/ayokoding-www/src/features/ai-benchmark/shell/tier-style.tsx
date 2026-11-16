@@ -11,22 +11,28 @@ const LABEL_KEYS: Record<Tier, string> = {
   planning: "aiBenchTierPlanning",
   execution: "aiBenchTierExecution",
   fast: "aiBenchTierFast",
+  "no-consensus": "aiBenchTierNoConsensus",
   insufficient: "aiBenchTierInsufficient",
 };
 
-const USE_KEYS: Record<Exclude<Tier, "insufficient">, string> = {
+const USE_KEYS: Record<Exclude<Tier, "insufficient" | "no-consensus">, string> = {
   ultra: "aiBenchTierUltraUse",
   planning: "aiBenchTierPlanningUse",
   execution: "aiBenchTierExecutionUse",
   fast: "aiBenchTierFastUse",
 };
 
-/** Background colour for a tier's bar fill and swatch. */
+/**
+ * Background colour for a tier's bar fill and swatch. No-consensus models render in no tier
+ * section and carry no bar; the table dot reuses the insufficient token so no new chart token
+ * is needed.
+ */
 export const TIER_BG_CLASS: Record<Tier, string> = {
   ultra: "bg-[var(--chart-tier-ultra)]",
   planning: "bg-[var(--chart-tier-planning)]",
   execution: "bg-[var(--chart-tier-execution)]",
   fast: "bg-[var(--chart-tier-fast)]",
+  "no-consensus": "bg-[var(--chart-tier-insufficient)]",
   insufficient: "bg-[var(--chart-tier-insufficient)]",
 };
 
@@ -36,6 +42,7 @@ export const TIER_BORDER_CLASS: Record<Tier, string> = {
   planning: "border-l-[var(--chart-tier-planning)]",
   execution: "border-l-[var(--chart-tier-execution)]",
   fast: "border-l-[var(--chart-tier-fast)]",
+  "no-consensus": "border-l-[var(--chart-tier-insufficient)]",
   insufficient: "border-l-[var(--chart-tier-insufficient)]",
 };
 
@@ -43,7 +50,7 @@ export function tierLabel(tier: Tier, locale: Locale): string {
   return t(locale, LABEL_KEYS[tier]);
 }
 
-export function tierUse(tier: Exclude<Tier, "insufficient">, locale: Locale): string {
+export function tierUse(tier: Exclude<Tier, "insufficient" | "no-consensus">, locale: Locale): string {
   return t(locale, USE_KEYS[tier]);
 }
 

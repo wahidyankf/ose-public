@@ -200,7 +200,7 @@ describe("BenchmarkContent — score basis", () => {
 });
 
 describe("BenchmarkContent — structure", () => {
-  it("orders header → finder → filters → tier map → insufficient → table → methodology → sources", () => {
+  it("orders header → finder → filters → tier map → insufficient → no-consensus → table → methodology → sources", () => {
     render(<BenchmarkContent />);
     const order = [
       "ai-bench-last-updated",
@@ -208,6 +208,7 @@ describe("BenchmarkContent — structure", () => {
       "ai-bench-filters",
       "ai-bench-tier-map",
       "ai-bench-insufficient",
+      "ai-bench-no-consensus",
       "ai-bench-table",
       "ai-bench-methodology",
       "ai-bench-sources",
@@ -229,6 +230,7 @@ describe("BenchmarkContent — structure", () => {
     render(<BenchmarkContent />);
     expect(screen.queryByTestId("ai-bench-tier-map")).toBeNull();
     expect(screen.getByTestId("ai-bench-insufficient")).toBeTruthy();
+    expect(screen.queryByTestId("ai-bench-no-consensus")).toBeNull();
   });
 });
 

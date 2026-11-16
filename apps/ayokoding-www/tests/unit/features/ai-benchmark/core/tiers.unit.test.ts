@@ -28,6 +28,7 @@ describe("assignConsensusTier", () => {
     ["planning", "ultra", "planning", "ultra", "ultra", 2, 4],
     ["fast", "fast", "fast", "planning", "fast", 3, 4],
     ["ultra", "ultra", "unranked", "unranked", "ultra", 2, 2],
+    ["ultra", "planning", "unranked", "unranked", "ultra", 1, 2],
   ])(
     "holds %s/%s/%s/%s → consensus %s, agreeing %d of %d",
     (deepSwe, terminalBench, sweAtlas, frontierCode, tier, agreeing, considered) => {
@@ -47,12 +48,43 @@ describe("assignConsensusTier", () => {
     expect(assignConsensusTier(roster.models[roster.models.length - 1]!, roster).tier).toBe("ultra");
   });
 
-  it("sends a three-way tie to the highest tied tier", () => {
-    const roster = dataset([...quadAnchors(), tiered("m", "ultra", "planning", "execution", "unranked")]);
+  it.each([
+    ["ultra", "planning", "execution", "unranked"],
+    ["ultra", "planning", "execution", "fast"],
+  ] as const)(
+    "holds %s/%s/%s/%s across four benchmarks → no consensus tier",
+    (deepSwe, terminalBench, sweAtlas, frontierCode) => {
+      const roster = dataset([...quadAnchors(), tiered("m", deepSwe, terminalBench, sweAtlas, frontierCode)]);
+      const s = assignConsensusTier(roster.models[roster.models.length - 1]!, roster);
+      expect(s.tier).toBe("no-consensus");
+      expect(s.agreeing).toBe(1);
+      expect(s.considered).toBe(frontierCode === "unranked" ? 3 : 4);
+    },
+  );
+
+  it("puts a below-half split in the no-consensus group, not the insufficient group", () => {
+    const roster = dataset([
+      ...quadAnchors(),
+      tiered("split", "ultra", "planning", "execution", "unranked"),
+      model("thin", [fig("deep-swe", 90)]),
+    ]);
+    const groups = computeTierGroups(roster);
+    expect(groups["no-consensus"].map((s) => s.model.id)).toEqual(["split"]);
+    // The single-benchmark frontiercode anchors plus the thin model have too little data.
+    const fc = BENCHMARK_TIER_ANCHORS["frontiercode-aa"];
+    const swe = BENCHMARK_TIER_ANCHORS["swe-atlas-qna"];
+    expect(groups.insufficient.map((s) => s.model.id).sort()).toEqual(
+      [fc.ultra, fc.planning, fc.execution, swe.execution, "thin"].sort(),
+    );
+  });
+
+  it("still tiers a 1-of-2 split at the tied tier: agreeing half counts as consensus", () => {
+    const roster = dataset([...quadAnchors(), tiered("m", "ultra", "planning", "unranked", "unranked")]);
     const s = assignConsensusTier(roster.models[roster.models.length - 1]!, roster);
     expect(s.tier).toBe("ultra");
     expect(s.agreeing).toBe(1);
-    expect(s.considered).toBe(3);
+    expect(s.considered).toBe(2);
+    expect(s.share).toBe(0.5);
   });
 
   it("marks a model tiered on fewer than two benchmarks insufficient with no consensus count", () => {
@@ -95,6 +127,18 @@ describe("scoreModels", () => {
 });
 
 describe("byConsensusDesc", () => {
+  it("breaks an agreeing tie by considered desc, ignoring share", () => {
+    const f = dataset([
+      ...quadAnchors(),
+      tiered("high-share", "planning", "planning", "unranked", "unranked"),
+      tiered("low-share", "planning", "planning", "execution", "execution"),
+    ]);
+    const pair = scoreModels(f).filter((s) => s.model.id === "high-share" || s.model.id === "low-share");
+    expect(pair.find((s) => s.model.id === "high-share")).toMatchObject({ agreeing: 2, considered: 2 });
+    expect(pair.find((s) => s.model.id === "low-share")).toMatchObject({ agreeing: 2, considered: 4 });
+    expect([...pair].sort(byConsensusDesc).map((s) => s.model.id)).toEqual(["low-share", "high-share"]);
+  });
+
   it("orders tier rank first, even when a lower tier agrees more", () => {
     const f = dataset([
       ...quadAnchors(),
@@ -107,7 +151,7 @@ describe("byConsensusDesc", () => {
     expect([exec, plan].sort(byConsensusDesc).map((s) => s.model.id)).toEqual(["plan-2of4", "exec-4of4"]);
   });
 
-  it("orders agreeing desc, then share desc, then ascending id", () => {
+  it("orders agreeing desc, then considered desc, then ascending id", () => {
     const deep = BENCHMARK_TIER_ANCHORS["deep-swe"];
     const f = dataset([
       ...quadAnchors(),
@@ -116,8 +160,9 @@ describe("byConsensusDesc", () => {
       tiered("a-3of3", "planning", "planning", "planning", "unranked"),
     ]);
     const groups = computeTierGroups(f);
-    // The planning anchor holds 3 of 3 like a-3of3 and loses the id tiebreak to it.
-    expect(groups.planning.map((s) => s.model.id)).toEqual(["a-3of3", deep.planning, "b-3of4", "c-2of4"]);
+    // b-3of4 wins on considered; the planning anchor holds 3 of 3 like a-3of3 and
+    // loses the id tiebreak to it.
+    expect(groups.planning.map((s) => s.model.id)).toEqual(["b-3of4", "a-3of3", deep.planning, "c-2of4"]);
   });
 });
 
@@ -132,19 +177,23 @@ describe("computeTierGroups", () => {
       tiered("p", "planning", "planning", "planning", "execution"),
       tiered("e", "execution", "execution", "execution", "fast"),
       tiered("f", "fast", "fast", "fast", "fast"),
+      tiered("split", "ultra", "planning", "execution", "fast"),
       model("thin", [fig("deep-swe", 90)]),
       model("bare"),
     ]);
     const groups = computeTierGroups(f);
     // The multi-benchmark anchors are rated too: opus ultra, sol planning, sonnet execution.
+    // p agrees on more benchmarks than sol, so it sorts first.
     expect(groups.ultra.map((s) => s.model.id)).toEqual(["u", deep.ultra]);
-    expect(groups.planning.map((s) => s.model.id)).toEqual([deep.planning, "p"]);
+    expect(groups.planning.map((s) => s.model.id)).toEqual(["p", deep.planning]);
     expect(groups.execution.map((s) => s.model.id)).toEqual(["e", deep.execution]);
     expect(groups.fast.map((s) => s.model.id)).toEqual(["f"]);
-    // Single-benchmark anchors plus the two thin models have too little data.
+    // Single-benchmark anchors plus the two thin models have too little data; the split
+    // model agreed on only 1 of 4, so it lands in no-consensus instead.
     expect(groups.insufficient.map((s) => s.model.id).sort()).toEqual(
       [swe.execution, fc.ultra, fc.planning, fc.execution, "thin", "bare"].sort(),
     );
+    expect(groups["no-consensus"].map((s) => s.model.id)).toEqual(["split"]);
     const total = Object.values(groups).reduce((n, g) => n + g.length, 0);
     expect(total).toBe(f.models.length);
   });
@@ -183,17 +232,32 @@ describe("tableRows", () => {
     const rows = tableRows(f, undefined);
     const rated = rows.filter((r) => r.tier !== "insufficient");
     // The multi-benchmark anchors are rated alongside the fixtures: ultra, then planning
-    // (a-plan and the anchor both 3 of 3, id order), then execution, then fast.
+    // (b-plan rated on more benchmarks first; a-plan and the anchor both 3 of 3, id order),
+    // then execution, then fast.
     expect(rated.map((r) => r.model.id)).toEqual([
       deep.ultra,
+      "b-plan",
       "a-plan",
       deep.planning,
-      "b-plan",
       deep.execution,
       "fast",
     ]);
     expect(rows.length - rated.length).toBe(5);
     expect(rows.slice(rated.length).every((r) => r.tier === "insufficient")).toBe(true);
+  });
+
+  it("sorts a below-half model as no-consensus below fast and above insufficient", () => {
+    const f = dataset([
+      ...quadAnchors(),
+      tiered("fastie", "fast", "fast", "fast", "fast"),
+      tiered("split", "ultra", "planning", "execution", "fast"),
+      model("thin", [fig("deep-swe", 90)]),
+    ]);
+    const rows = tableRows(f, undefined);
+    expect(rows.find((r) => r.model.id === "split")).toMatchObject({ tier: "no-consensus" });
+    const order = rows.map((r) => r.model.id);
+    expect(order.indexOf("split")).toBeGreaterThan(order.indexOf("fastie"));
+    expect(order.indexOf("split")).toBeLessThan(order.indexOf("thin"));
   });
 
   it("keeps the per-benchmark meaning when a score basis is set", () => {
@@ -389,10 +453,11 @@ describe("benchmarkTierAnchors", () => {
 });
 
 describe("tierRank", () => {
-  it("orders the tiers from ultra down to insufficient", () => {
+  it("orders the tiers from ultra down to insufficient, with no-consensus just above insufficient", () => {
     expect(tierRank("ultra")).toBeGreaterThan(tierRank("planning"));
     expect(tierRank("planning")).toBeGreaterThan(tierRank("execution"));
     expect(tierRank("execution")).toBeGreaterThan(tierRank("fast"));
-    expect(tierRank("fast")).toBeGreaterThan(tierRank("insufficient"));
+    expect(tierRank("fast")).toBeGreaterThan(tierRank("no-consensus"));
+    expect(tierRank("no-consensus")).toBeGreaterThan(tierRank("insufficient"));
   });
 });

@@ -4,14 +4,14 @@
 
 import type { Locale } from "@/features/i18n/core/config";
 import { t } from "@/features/i18n/core/translations";
-import { benchmarkSpec } from "../core/data/benchmarks";
+import { BENCHMARK_SPECS, benchmarkSpec } from "../core/data/benchmarks";
 import type { AnchoredTier, BenchmarkId, Tier } from "../core/data/types";
 import type { BenchmarkTierGroups, BenchmarkTierRow, ConsensusModel, TierGroups } from "../core/tiers";
 import { formatPercent, tf } from "./format";
 import { AnchorChip, LimitedChip, PriceText } from "./model-bits";
 import { TIER_BG_CLASS, TIER_BORDER_CLASS, TierSwatch, tierLabel, tierUse } from "./tier-style";
 
-export type RatedTier = Exclude<Tier, "insufficient">;
+export type RatedTier = Exclude<Tier, "insufficient" | "no-consensus">;
 
 export const RATED_TIERS: readonly RatedTier[] = ["ultra", "planning", "execution", "fast"];
 
@@ -37,7 +37,7 @@ function TierRow({ s, locale }: { s: ConsensusModel; locale: Locale }) {
           <div
             data-testid="ai-bench-bar"
             className={`h-full rounded-full ${TIER_BG_CLASS[s.tier]}`}
-            style={{ width: `${s.share * 100}%` }}
+            style={{ width: `${(s.agreeing / BENCHMARK_SPECS.length) * 100}%` }}
           />
         </div>
         <span className="shrink-0 text-right text-sm tabular-nums">

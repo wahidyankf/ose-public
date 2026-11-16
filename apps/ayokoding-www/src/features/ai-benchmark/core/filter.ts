@@ -44,6 +44,7 @@ export type FilterState = {
  * means the per-benchmark tier; otherwise it means the consensus tier. The tier menu's
  * "insufficient" option matches the models outside the current view's tiers: consensus
  * `insufficient` models in the Consensus tiers view, `unranked` models in a per-benchmark view.
+ * `no-consensus` models match no tier filter option.
  */
 export function filterModels(shown: Dataset, state: FilterState, full: Dataset = shown): Model[] {
   return shown.models.filter(

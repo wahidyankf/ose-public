@@ -27,6 +27,7 @@ Feature: AI model benchmark tool
       | planning | ultra         | planning | ultra        | ultra     | 2        | 4          |
       | fast     | fast          | fast     | planning     | fast      | 3        | 4          |
       | ultra    | ultra         | unranked | unranked     | ultra     | 2        | 2          |
+      | ultra    | planning      | unranked | unranked     | ultra     | 1        | 2          |
 
   # Exemption(integration): the minimum-coverage rule is pure in-process logic with no local-resource boundary; alternative-proof: ayokoding-www:test:unit / A model tiered on fewer than two benchmarks has insufficient data
   @integration-exempt
@@ -38,6 +39,31 @@ Feature: AI model benchmark tool
     Then that model's consensus tier is "insufficient"
     And that model has no consensus count
 
+  # Exemption(integration): consensus assignment is pure in-process logic with no local-resource boundary; alternative-proof: ayokoding-www:test:unit / A model whose benchmarks split below half has no consensus tier
+  @integration-exempt
+  # Exemption(e2e): fixture per-benchmark tiers are private scoring inputs with no public browser control; alternative-proof: ayokoding-www:test:unit / A model whose benchmarks split below half has no consensus tier
+  @e2e-exempt
+  Scenario Outline: A model whose benchmarks split below half has no consensus tier
+    Given a fixture model holding "<deepSwe>", "<terminalBench>", "<sweAtlas>", and "<frontierCode>" tiers on the four benchmarks
+    When its consensus tier is assigned
+    Then that model has no consensus tier
+    And that model is not in the insufficient group
+
+    Examples:
+      | deepSwe | terminalBench | sweAtlas  | frontierCode |
+      | ultra   | planning      | execution | unranked     |
+      | ultra   | planning      | execution | fast         |
+
+  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Models with no consensus tier are listed in their own closed disclosure
+  @integration-exempt
+  Scenario: Models with no consensus tier are listed in their own closed disclosure
+    Given the roster holds models whose benchmarks split below half
+    And the AI benchmark page is open in the Consensus tiers view
+    When the page renders
+    Then those models are listed inside the closed no-consensus disclosure
+    And those models appear in no tier section
+    And the insufficient-data disclosure does not list them
+
   # Exemption(integration): consensus ordering is pure in-process logic with no local-resource boundary; alternative-proof: ayokoding-www:test:unit / Models in one consensus section are ordered by consensus strength
   @integration-exempt
   # Exemption(e2e): fixture consensus counts are private scoring inputs with no public browser control; alternative-proof: ayokoding-www:test:unit / Models in one consensus section are ordered by consensus strength
@@ -45,7 +71,7 @@ Feature: AI model benchmark tool
   Scenario: Models in one consensus section are ordered by consensus strength
     Given fixture models in the planning consensus tier agreeing on 2 of 4, 3 of 4, and 3 of 3 benchmarks
     When the planning consensus section is ordered
-    Then the order is 3 of 3, then 3 of 4, then 2 of 4
+    Then the order is 3 of 4, then 3 of 3, then 2 of 4
 
   # ── Tiers ─────────────────────────────────────────────────────────────────────
 
@@ -219,12 +245,12 @@ Feature: AI model benchmark tool
     And every rated model row carries its input and output API price in text, or states that no public API price exists
     But no rated model row shows a composite index
 
-  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Bar length is proportional to the consensus share
+  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Bar length is proportional to the agreeing count
   @integration-exempt
-  Scenario: Bar length is proportional to the consensus share
-    Given two rated models whose consensus shares differ
+  Scenario: Bar length is proportional to the agreeing count
+    Given two rated models agreeing on different numbers of benchmarks
     When the tier map is rendered in the Consensus tiers view
-    Then the ratio of their bar lengths equals the ratio of their consensus shares
+    Then the ratio of their bar lengths equals the ratio of their agreeing counts out of all benchmarks
 
   # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / The tier is carried in text, not by colour alone
   @integration-exempt
@@ -303,7 +329,8 @@ Feature: AI model benchmark tool
     When the reader opens the methodology section
     Then it states that a model's consensus tier is the tier it holds on the most benchmarks
     And it states that a consensus tie goes to the highest tied tier
-    And it states that models are ordered inside a tier by how many benchmarks agree, then by the share that agree
+    And it states that a tier needs at least half of the model's tiered benchmarks to agree, and a model below half has no consensus tier
+    And it states that models are ordered inside a tier by how many benchmarks agree, then by how many benchmarks rated the model
 
   # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / The page lists every operator with its checked date and terms
   @integration-exempt

@@ -20,6 +20,7 @@ import { decodeState, encodeState, type UrlState } from "@/features/ai-benchmark
 import { BenchmarkFilters } from "@/features/ai-benchmark/shell/benchmark-filters";
 import { formatDate } from "@/features/ai-benchmark/shell/format";
 import { InsufficientList } from "@/features/ai-benchmark/shell/insufficient-list";
+import { NoConsensusList } from "@/features/ai-benchmark/shell/no-consensus-list";
 import { METHODOLOGY_ID, Methodology } from "@/features/ai-benchmark/shell/methodology";
 import { ModelTable } from "@/features/ai-benchmark/shell/model-table";
 import { Sources } from "@/features/ai-benchmark/shell/sources";
@@ -126,6 +127,7 @@ export function BenchmarkContent() {
         <>
           {tiers.length > 0 && <TierMap groups={groups} tiers={tiers} locale={locale} />}
           <InsufficientList models={groups.insufficient} locale={locale} />
+          <NoConsensusList models={groups["no-consensus"]} locale={locale} />
           <ModelTable rows={tableRows(shown, undefined, dataset)} locale={locale} />
         </>
       ) : (

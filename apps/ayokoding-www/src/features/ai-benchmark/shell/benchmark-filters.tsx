@@ -45,7 +45,7 @@ export function BenchmarkFilters({ state, shownCount, totalCount, locale, onChan
           id="ai-bench-filter-benchmark"
           label={t(locale, "aiBenchScoreBasisLabel")}
           value={state.benchmark ?? ""}
-          emptyLabel={t(locale, "aiBenchScoreBasisAverage")}
+          emptyLabel={t(locale, "aiBenchScoreBasisConsensus")}
           options={BENCHMARK_SPECS.map((b) => ({ value: b.id, label: b.name }))}
           onChange={(v) => onChange({ benchmark: isKnownBenchmark(v) ? v : undefined })}
         />

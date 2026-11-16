@@ -147,19 +147,22 @@ own "last updated" date, and the benchmark version each score belongs to.
 6. When adding a benchmark parameter (only on explicit user direction, never silently): extend
    `BenchmarkId` in `core/data/types.ts`, append its spec (id, name, pinned version, weight,
    operator order, home URL) to `BENCHMARK_SPECS`, and update the methodology copy
-   (`aiBenchMethodBenchmarksIntro` count in both locales, `DESCRIPTION_KEYS`) plus the worked-example
-   tiers if an example model changed tier. The Go port reads specs generically; extend its spec-date
+   (`aiBenchMethodBenchmarksIntro` count in both locales, `DESCRIPTION_KEYS`). Weight stays in the
+   spec for the shared config's other consumers; the page computes no weighted score and shows no
+   worked example. The Go port reads specs generically; extend its spec-date
    test to the new id and version.
 7. Re-derive the shared vectors from the implementation and review every diff: `filterCounts` per
-   harness/tier, the `substitutes` options list, per-model `compositeIndex` / `scoredBenchmarks` /
-   `tiers` / `blendedPrice` / `priceRatio` entries (unchanged prices mean unchanged price vectors —
-   verify, don't assume). Then update every hard-coded consumer of the old numbers: the Go benchmark
-   fragment order and marker test, the Go and e2e empty-combination URLs (recompute the harness×tier
-   matrix and pick a combo with zero models), the e2e `benchNames` / `benchIndices` / `benchPrices`
-   plus its order assertion, the usability aria-label figure test, and the
-   `METHOD_EXAMPLE.compareTier` when the example model moved tier.
-8. Check the tiers still make sense: every anchor must land in its own tier (an invariant test), and
-   any model that moves tier should be explainable from its figures.
+   harness (tier counts now follow consensus tiers — verify, don't assume), per-model
+   `scoredBenchmarks` / `blendedPrice` / `priceRatio` entries (unchanged prices mean unchanged price
+   vectors — verify, don't assume). The `compositeIndex`, `tiers`, and `substitutes` vectors belong
+   to the retired composite scoring and are no longer re-derived from the page. Then update every
+   hard-coded consumer of the old numbers: the Go benchmark fragment order and marker test, the
+   Go and e2e empty-combination URLs (recompute the harness×tier matrix and pick a combo with zero
+   models), the e2e `benchNames` / `benchPrices` plus its order assertion, and the
+   usability aria-label figure test.
+8. Check the tiers still make sense: every per-benchmark anchor must land in its own benchmark tier
+   (an invariant test), and any model that moves consensus tier should be explainable from its
+   per-benchmark tiers.
 9. Run the guards:
    `./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ayokoding-www:test:quick`,
    then regenerate the reference with

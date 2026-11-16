@@ -1,82 +1,53 @@
-# The page ranks coding models by a composite index built only from independently run benchmark
-# results, places each model in one of four capability tiers anchored on previous-generation
-# models, compares API prices, and suggests substitutes for frontier models from a chosen harness
-# (Command Code Pro by default).
+# The page places coding models in capability tiers by consensus across independently run
+# benchmarks, ranks them inside one benchmark by its raw operator scores, compares API prices,
+# and suggests substitutes for frontier models from a chosen harness (Command Code Pro by
+# default). No composite or average score is computed anywhere on the page.
 Feature: AI model benchmark tool
 
   Background:
     Given the AI benchmark dataset is loaded
 
-  # ── Composite index ───────────────────────────────────────────────────────────
+  # ── Consensus tiers ─────────────────────────────────────────────────────────
 
-  # Exemption(integration): the composite index is pure in-process arithmetic with no local-resource boundary; alternative-proof: ayokoding-www:test:unit / The composite index is the equal-weight mean of the scored benchmarks
+  # Exemption(integration): consensus assignment is pure in-process logic with no local-resource boundary; alternative-proof: ayokoding-www:test:unit / The consensus tier is the tier the model holds on the most benchmarks
   @integration-exempt
-  # Exemption(e2e): the fixture model's figures are private scoring inputs with no public browser control; alternative-proof: ayokoding-www:test:unit / The composite index is the equal-weight mean of the scored benchmarks
+  # Exemption(e2e): fixture per-benchmark tiers are private scoring inputs with no public browser control; alternative-proof: ayokoding-www:test:unit / The consensus tier is the tier the model holds on the most benchmarks
   @e2e-exempt
-  Scenario: The composite index is the equal-weight mean of the scored benchmarks
-    Given a fixture model scoring 70 on DeepSWE, 40 on Terminal-Bench, and 61 on SWE-Atlas-QnA
-    When its composite index is computed
-    Then the composite index is 57
-
-  # Exemption(integration): figure selection is pure in-process logic with no local-resource boundary; alternative-proof: ayokoding-www:test:unit / Only figures for the pinned benchmark version enter the composite index
-  @integration-exempt
-  # Exemption(e2e): a wrongly versioned fixture figure cannot be injected through the public page; alternative-proof: ayokoding-www:test:unit / Only figures for the pinned benchmark version enter the composite index
-  @e2e-exempt
-  Scenario: Only figures for the pinned benchmark version enter the composite index
-    Given a fixture model scoring 60 on DeepSWE 1.1 and 40 on Terminal-Bench 4.0
-    And that model also carries a Terminal-Bench 2.1 figure of 90
-    When its composite index is computed
-    Then the composite index is 50
-
-  # Exemption(integration): the minimum-coverage rule is pure in-process logic with no local-resource boundary; alternative-proof: ayokoding-www:test:unit / A model scored on fewer than two benchmarks has insufficient data
-  @integration-exempt
-  # Exemption(e2e): the single-figure fixture is a private scoring input with no public browser control; alternative-proof: ayokoding-www:test:unit / A model scored on fewer than two benchmarks has insufficient data
-  @e2e-exempt
-  Scenario: A model scored on fewer than two benchmarks has insufficient data
-    Given a fixture model with a score on only one composite benchmark
-    When its tier is assigned
-    Then that model's tier is "insufficient"
-    And that model has no composite index
-
-  # ── Tiers ─────────────────────────────────────────────────────────────────────
-
-  # Exemption(integration): the anchor comparison is pure in-process logic with no local-resource boundary; alternative-proof: ayokoding-www:test:unit / A model meets an anchor when its composite index reaches the anchor's
-  @integration-exempt
-  # Exemption(e2e): the fixture anchor and model figures are private scoring inputs with no public browser control; alternative-proof: ayokoding-www:test:unit / A model meets an anchor when its composite index reaches the anchor's
-  @e2e-exempt
-  Scenario: A model meets an anchor when its composite index reaches the anchor's
-    Given a fixture anchor scoring 70 on DeepSWE and 20 on Terminal-Bench with no SWE-Atlas-QnA score
-    And a fixture model scoring 66 on DeepSWE, 22 on Terminal-Bench, and 70 on SWE-Atlas-QnA
-    When the model is compared with the anchor
-    Then the model's composite index is above the anchor's even though it trails on DeepSWE and Terminal-Bench
-    And the model meets the anchor
-
-  # Exemption(integration): tier assignment is pure in-process logic with no local-resource boundary; alternative-proof: ayokoding-www:test:unit / A model is placed in the highest tier whose anchor it meets
-  @integration-exempt
-  # Exemption(e2e): the fixture anchors and model are private scoring inputs with no public browser control; alternative-proof: ayokoding-www:test:unit / A model is placed in the highest tier whose anchor it meets
-  @e2e-exempt
-  Scenario Outline: A model is placed in the highest tier whose anchor it meets
-    Given fixture tier anchors scoring 60 for ultra, 55 for planning, and 45 for execution on every composite benchmark
-    And a fixture model scoring <score> on every composite benchmark
-    When its tier is assigned
-    Then that model's tier is "<tier>"
+  Scenario Outline: The consensus tier is the tier the model holds on the most benchmarks
+    Given a fixture model holding "<deepSwe>", "<terminalBench>", "<sweAtlas>", and "<frontierCode>" tiers on the four benchmarks
+    When its consensus tier is assigned
+    Then that model's consensus tier is "<tier>"
+    And its consensus count is <agreeing> of <considered> benchmarks
 
     Examples:
-      | score | tier      |
-      | 61    | ultra     |
-      | 60    | ultra     |
-      | 57    | planning  |
-      | 45    | execution |
-      | 30    | fast      |
+      | deepSwe  | terminalBench | sweAtlas | frontierCode | tier      | agreeing | considered |
+      | ultra    | ultra         | planning | execution    | ultra     | 2        | 4          |
+      | planning | planning      | ultra    | execution    | planning  | 2        | 4          |
+      | ultra    | ultra         | planning | planning     | ultra     | 2        | 4          |
+      | planning | ultra         | planning | ultra        | ultra     | 2        | 4          |
+      | fast     | fast          | fast     | planning     | fast      | 3        | 4          |
+      | ultra    | ultra         | unranked | unranked     | ultra     | 2        | 2          |
 
-  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Each tier anchor lands in the tier it defines
+  # Exemption(integration): the minimum-coverage rule is pure in-process logic with no local-resource boundary; alternative-proof: ayokoding-www:test:unit / A model tiered on fewer than two benchmarks has insufficient data
   @integration-exempt
-  Scenario: Each tier anchor lands in the tier it defines
-    Given the full roster is loaded
-    When every model's tier is assigned
-    Then the ultra anchor is in the "ultra" tier
-    And the planning anchor is in the "planning" tier
-    And the execution anchor is in the "execution" tier
+  # Exemption(e2e): the single-benchmark fixture is a private scoring input with no public browser control; alternative-proof: ayokoding-www:test:unit / A model tiered on fewer than two benchmarks has insufficient data
+  @e2e-exempt
+  Scenario: A model tiered on fewer than two benchmarks has insufficient data
+    Given a fixture model holding a tier on only one benchmark
+    When its consensus tier is assigned
+    Then that model's consensus tier is "insufficient"
+    And that model has no consensus count
+
+  # Exemption(integration): consensus ordering is pure in-process logic with no local-resource boundary; alternative-proof: ayokoding-www:test:unit / Models in one consensus section are ordered by consensus strength
+  @integration-exempt
+  # Exemption(e2e): fixture consensus counts are private scoring inputs with no public browser control; alternative-proof: ayokoding-www:test:unit / Models in one consensus section are ordered by consensus strength
+  @e2e-exempt
+  Scenario: Models in one consensus section are ordered by consensus strength
+    Given fixture models in the planning consensus tier agreeing on 2 of 4, 3 of 4, and 3 of 3 benchmarks
+    When the planning consensus section is ordered
+    Then the order is 3 of 3, then 3 of 4, then 2 of 4
+
+  # ── Tiers ─────────────────────────────────────────────────────────────────────
 
   # Exemption(integration): the roster invariant is pure in-process data validation with no local-resource boundary; alternative-proof: ayokoding-www:test:unit / Every tier anchor is a previous-generation model with general access
   @integration-exempt
@@ -128,7 +99,7 @@ Feature: AI model benchmark tool
     And fixture models of the "opencode-go" harness in the "ultra" and "planning" tiers
     When substitutes are listed for the frontier model from the "command-code-pro" harness
     Then the substitutes are only the "ultra" and "planning" models of the "command-code-pro" harness
-    And the substitutes are ordered by composite index from highest to lowest
+    And the substitutes are ordered by consensus tier from highest to lowest, then by consensus strength
 
   # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / The substitute finder offers three harnesses with Command Code Pro chosen first
   @integration-exempt
@@ -143,7 +114,7 @@ Feature: AI model benchmark tool
   Scenario: Choosing a frontier model lists its Command Code Pro substitutes with a price comparison
     Given the AI benchmark page is open
     When the reader chooses a frontier model that has Command Code Pro models in its tier or higher
-    Then the finder lists Command Code Pro models with their tier, composite index, and blended price
+    Then the finder lists Command Code Pro models with their consensus tier, consensus count, and blended price
     And each listed model states how its blended price compares with the chosen model's
 
   # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / A frontier model above every model of the chosen harness shows the nearest options
@@ -230,30 +201,30 @@ Feature: AI model benchmark tool
 
   # ── Tier map ──────────────────────────────────────────────────────────────────
 
-  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Each tier section names its anchor and floor score
+  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Each consensus tier section states the consensus rule
   @integration-exempt
-  Scenario: Each tier section names its anchor and floor score
+  Scenario: Each consensus tier section states the consensus rule
     Given the full roster is loaded
-    When the tier map is rendered
-    Then the ultra, planning, and execution sections each name their anchor model
-    And each of those sections states its floor score
-    And the fast section states that it holds rated models below the execution floor
+    When the tier map is rendered in the Consensus tiers view
+    Then every tier section states that its models hold that tier on the most benchmarks
+    And no tier section names a composite anchor or a composite floor score
 
-  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Every rated model row shows its bar, index, and API price in text
+  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Every rated model row shows its bar, consensus count, and API price in text
   @integration-exempt
-  Scenario: Every rated model row shows its bar, index, and API price in text
+  Scenario: Every rated model row shows its bar, consensus count, and API price in text
     Given the full roster is loaded
-    When the tier map is rendered
-    Then every rated model row carries the model name and its composite index in text
+    When the tier map is rendered in the Consensus tiers view
+    Then every rated model row carries the model name and its consensus count in text
     And every rated model row carries one capability bar
     And every rated model row carries its input and output API price in text, or states that no public API price exists
+    But no rated model row shows a composite index
 
-  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Bar length is proportional to the composite index
+  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Bar length is proportional to the consensus share
   @integration-exempt
-  Scenario: Bar length is proportional to the composite index
-    Given two rated models whose composite indices differ
-    When the tier map is rendered
-    Then the ratio of their bar lengths equals the ratio of their composite indices
+  Scenario: Bar length is proportional to the consensus share
+    Given two rated models whose consensus shares differ
+    When the tier map is rendered in the Consensus tiers view
+    Then the ratio of their bar lengths equals the ratio of their consensus shares
 
   # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / The tier is carried in text, not by colour alone
   @integration-exempt
@@ -294,7 +265,7 @@ Feature: AI model benchmark tool
   Scenario: The table lists every model's scores, tier, and prices
     Given the full roster is loaded
     When the data table is rendered
-    Then each model row lists its tier, every benchmark score, composite index, input price, output price, and blended price
+    Then each model row lists the tier of the active view, every benchmark score, input price, output price, and blended price
 
   # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Every benchmark score names and links its operator
   @integration-exempt
@@ -319,19 +290,20 @@ Feature: AI model benchmark tool
   Scenario: The page explains how the score is calculated
     Given the AI benchmark page is open
     When the reader opens the methodology section
-    Then it lists every composite benchmark with its version and weight
+    Then it lists every benchmark with its version
     And it states which models the roster covers
     And it states the operator order used to pick each figure
-    And it states the minimum number of benchmarks needed for a tier
-    And it lists every tier anchor with its floor score
+    And it states the minimum number of benchmarks needed for a consensus tier
+    And it states that no average or composite score is computed
 
-  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / The worked example matches the computed index
+  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / The methodology states the consensus rule
   @integration-exempt
-  Scenario: The worked example matches the computed index
+  Scenario: The methodology states the consensus rule
     Given the AI benchmark page is open
     When the reader opens the methodology section
-    Then the worked example shows a model's benchmark scores and the resulting composite index
-    And the worked example's composite index equals that model's index in the data table
+    Then it states that a model's consensus tier is the tier it holds on the most benchmarks
+    And it states that a consensus tie goes to the highest tied tier
+    And it states that models are ordered inside a tier by how many benchmarks agree, then by the share that agree
 
   # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / The page lists every operator with its checked date and terms
   @integration-exempt
@@ -435,15 +407,15 @@ Feature: AI model benchmark tool
     Then an explicit empty-state message is shown
     But the tier map and the data table do not render
 
-  # ── Score basis (average vs per-benchmark) ────────────────────────────────
+  # ── Score basis (consensus tiers vs per-benchmark) ────────────────────────
 
-  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / The score basis defaults to the composite average
+  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / The score basis defaults to the consensus tiers
   @integration-exempt
-  Scenario: The score basis defaults to the composite average
+  Scenario: The score basis defaults to the consensus tiers
     Given the URL carries no benchmark parameter
     When the page renders
-    Then the tier map orders models by composite index
-    And the score basis control shows "Average"
+    Then the tier map groups models by consensus tier
+    And the score basis control shows "Consensus tiers"
 
   # Exemption(integration): per-benchmark ranking is pure in-process logic with no local-resource boundary; alternative-proof: ayokoding-www:test:unit / Naming a benchmark ranks models by its raw score
   @integration-exempt
@@ -473,12 +445,12 @@ Feature: AI model benchmark tool
     Then those models are listed inside the closed unranked disclosure
     And the ranked list holds only models with a scored FrontierCode-AA figure in descending raw-score order
 
-  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / An unrecognized benchmark falls back to the composite average
+  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / An unrecognized benchmark falls back to the consensus tiers
   @integration-exempt
-  Scenario: An unrecognized benchmark falls back to the composite average
+  Scenario: An unrecognized benchmark falls back to the consensus tiers
     Given the URL carries a benchmark parameter with an unknown value
     When the page renders
-    Then the tier map orders models by composite index
+    Then the tier map groups models by consensus tier
     But no error is surfaced to the reader
 
   # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / The chosen benchmark is kept in the URL
@@ -489,20 +461,20 @@ Feature: AI model benchmark tool
     Then the URL carries that benchmark as the score basis
     And reloading that URL shows the same per-benchmark ranking
 
-  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Resetting the score basis to Average removes it from the URL
+  # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Resetting the score basis to Consensus tiers removes it from the URL
   @integration-exempt
-  Scenario: Resetting the score basis to Average removes it from the URL
+  Scenario: Resetting the score basis to Consensus tiers removes it from the URL
     Given the URL carries a benchmark parameter naming a known benchmark
-    When the reader resets the score basis to "Average"
+    When the reader resets the score basis to "Consensus tiers"
     Then the URL no longer carries the benchmark parameter
-    And the tier map orders models by composite index
+    And the tier map groups models by consensus tier
 
   # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / The methodology explains the per-benchmark view
   @integration-exempt
   Scenario: The methodology explains the per-benchmark view
     Given the AI benchmark page is open
     When the reader opens the methodology section
-    Then it names the five score basis options: the composite average and the four benchmarks
+    Then it names the five score basis options: the consensus tiers and the four benchmarks
     And it states that a per-benchmark view shows raw operator figures with no normalization
     And it states that models without a scored figure on the chosen benchmark are unranked
 

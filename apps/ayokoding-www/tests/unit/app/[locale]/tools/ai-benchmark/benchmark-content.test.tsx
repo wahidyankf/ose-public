@@ -165,11 +165,11 @@ describe("BenchmarkContent — substitute harness", () => {
 describe("BenchmarkContent — score basis", () => {
   const basisSelect = () => screen.getByLabelText("Score basis") as HTMLSelectElement;
 
-  it("shows Average with five options when the URL carries no benchmark parameter", () => {
+  it("shows Consensus tiers with five options when the URL carries no benchmark parameter", () => {
     render(<BenchmarkContent />);
     expect(basisSelect().value).toBe("");
     expect(basisSelect().options).toHaveLength(5);
-    expect(basisSelect().selectedOptions[0]!.textContent).toBe("Average");
+    expect(basisSelect().selectedOptions[0]!.textContent).toBe("Consensus tiers");
   });
 
   it("reads the score basis from the URL", () => {
@@ -178,7 +178,7 @@ describe("BenchmarkContent — score basis", () => {
     expect(basisSelect().value).toBe("deep-swe");
   });
 
-  it("falls back to Average for an unknown benchmark", () => {
+  it("falls back to Consensus tiers for an unknown benchmark", () => {
     nav.search = "benchmark=not-a-benchmark";
     render(<BenchmarkContent />);
     expect(basisSelect().value).toBe("");
@@ -190,7 +190,7 @@ describe("BenchmarkContent — score basis", () => {
     expect(pushed(0).get("benchmark")).toBe("terminal-bench");
   });
 
-  it("removes the benchmark parameter when Average is chosen again", () => {
+  it("removes the benchmark parameter when Consensus tiers is chosen again", () => {
     nav.search = "benchmark=deep-swe&harness=cursor";
     render(<BenchmarkContent />);
     change("Score basis", "");

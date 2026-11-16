@@ -34,7 +34,7 @@ describe("BENCHMARK_TIER_ANCHORS", () => {
     }
   });
 
-  it("keeps the composite tier anchors unchanged for the Average view", () => {
+  it("keeps the retired composite tier anchors pinned in the shared config", () => {
     expect(TIER_ANCHORS).toEqual({ ultra: "claude-opus-5", planning: "gpt-5.6-sol", execution: "claude-sonnet-5" });
   });
 });

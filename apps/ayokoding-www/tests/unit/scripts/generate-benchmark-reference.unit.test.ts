@@ -128,10 +128,10 @@ describe("renderTables — pure derivation from the dataset", () => {
     for (const block of Object.values(renderTables(dataset))) expect(block).toContain(dataset.lastUpdated);
   });
 
-  it("renders the ultra anchor (Claude Opus 5) with its composite index and tier", () => {
+  it("renders the ultra anchor (Claude Opus 5) with its consensus count and tier", () => {
     const { "capability-summary": summary, frontier } = renderTables(dataset);
     expect(summary).toMatch(
-      /\| Claude Opus 5 +\| Anthropic +\| 73\.65% \(Datacurve\) +\| 54\.55% \(AA\) +\| 63\.17% \(Scale\) +\| — +\| 63\.79 +\| ultra +\| \$10\.79 +\|/,
+      /\| Claude Opus 5 +\| Anthropic +\| 73\.65% \(Datacurve\) +\| 54\.55% \(AA\) +\| 63\.17% \(Scale\) +\| — +\| 3\/3 +\| ultra +\| \$10\.79 +\|/,
     );
     expect(frontier).toContain("Claude Opus 5");
   });
@@ -139,13 +139,13 @@ describe("renderTables — pure derivation from the dataset", () => {
   it("names the operator of every non-AA figure and dashes a missing one", () => {
     const { "capability-summary": summary } = renderTables(dataset);
     expect(summary).toMatch(
-      /\| GPT-5\.6 Terra +\| OpenAI +\| 69\.62% \(Datacurve\) +\| 35\.35% \(AA\) +\| — +\| — +\| 52\.48 +\| planning +\| — +\|/,
+      /\| GPT-5\.6 Terra +\| OpenAI +\| 69\.62% \(Datacurve\) +\| 35\.35% \(AA\) +\| — +\| — +\| 2\/2 +\| execution +\| — +\|/,
     );
   });
 
   it("lists only OpenCode Go models in the roster block", () => {
     const { roster } = renderTables(dataset);
-    expect(roster).toMatch(/\| glm-5\.3 +\| GLM-5\.3 +\| Z\.ai +\| execution +\|/);
+    expect(roster).toMatch(/\| glm-5\.3 +\| GLM-5\.3 +\| Z\.ai +\| planning +\| 2\/4 +\|/);
     expect(roster).not.toContain("claude-opus-5");
   });
 

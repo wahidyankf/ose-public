@@ -1,5 +1,5 @@
-// The methodology names the five score-basis options and the per-benchmark rules, in both
-// locales, without leaking raw translation keys.
+// The methodology names the consensus score basis with its rule and the per-benchmark rules,
+// in both locales, without leaking raw translation keys.
 
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
@@ -17,13 +17,29 @@ import { t } from "../../../../../src/features/i18n/core/translations";
 
 afterEach(cleanup);
 
-describe.each<[Locale]>([["en"], ["id"]])("Methodology per-benchmark statements in %s", (locale) => {
-  it("names the five score basis options with no raw keys", () => {
+describe.each<[Locale]>([["en"], ["id"]])("Methodology score basis in %s", (locale) => {
+  it("names the consensus tiers basis with the four benchmarks and no raw keys", () => {
     render(<Methodology dataset={dataset} locale={locale} />);
     const text = screen.getByTestId("ai-bench-method-score-basis").textContent!;
-    expect(text).toContain(t(locale, "aiBenchScoreBasisAverage"));
+    expect(text).toContain(t(locale, "aiBenchScoreBasisConsensus"));
     for (const b of BENCHMARK_SPECS) expect(text, b.id).toContain(b.name);
     expect(text).not.toMatch(/aiBench|\{\w+\}/);
+  });
+
+  it("states the consensus rule, the ordering, and that no average is computed", () => {
+    render(<Methodology dataset={dataset} locale={locale} />);
+    expect(screen.getByTestId("ai-bench-method-consensus").textContent).toBe(t(locale, "aiBenchMethodConsensus"));
+    expect(screen.getByTestId("ai-bench-method-consensus-order").textContent).toBe(
+      t(locale, "aiBenchMethodConsensusOrder"),
+    );
+    expect(screen.getByTestId("ai-bench-method-no-average").textContent).toBe(t(locale, "aiBenchMethodNoAverage"));
+    for (const id of [
+      "ai-bench-method-consensus",
+      "ai-bench-method-consensus-order",
+      "ai-bench-method-no-average",
+    ] as const) {
+      expect(screen.getByTestId(id).textContent).not.toMatch(/aiBench|\{\w+\}/);
+    }
   });
 
   it("states raw figures and the unranked rule with no raw keys", () => {

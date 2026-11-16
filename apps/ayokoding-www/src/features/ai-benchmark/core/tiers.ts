@@ -1,89 +1,125 @@
-// AI BENCHMARK — tier assignment.
+// AI BENCHMARK — consensus tiers.
 //
-// Each anchored tier is defined by one previous-generation model (TIER_ANCHORS). A model is placed
-// in the highest tier whose anchor's composite index it matches or beats, so a model's tier always
-// agrees with its index (and its bar). Anchors are not pinned: an anchor reaches its own tier by
-// equality. A rated model below every anchor is `fast`; a model with too few scored benchmarks is
-// `insufficient`.
+// Each benchmark's tier is assigned independently (highest per-benchmark tier whose anchor's raw
+// score the model matches or beats). A model's consensus tier is the mode of its per-benchmark
+// tiers: the tier it holds on the most benchmarks. Ties go to the highest tied tier
+// (ultra > planning > execution > fast). A model tiered on fewer than MIN_SCORED_BENCHMARKS
+// benchmarks has insufficient data and no consensus count. No average or composite score is
+// computed anywhere.
 
-import { ANCHORED_TIERS, BENCHMARK_TIER_ANCHORS, MIN_SCORED_BENCHMARKS, TIERS, TIER_ANCHORS } from "./data/benchmarks";
+import {
+  ANCHORED_TIERS,
+  BENCHMARK_SPECS,
+  BENCHMARK_TIER_ANCHORS,
+  MIN_SCORED_BENCHMARKS,
+  TIERS,
+} from "./data/benchmarks";
 import type { AnchoredTier, BenchmarkId, BenchmarkTier, Dataset, Model, Tier } from "./data/types";
-import { benchmarkScore, compositeIndex, scoredBenchmarks } from "./score";
+import { benchmarkScore } from "./score";
 
-/** A model with its composite index and tier — the unit every page section renders. */
-export type ScoredModel = {
+/** A model with its consensus tier — the unit every consensus page section renders. */
+export type ConsensusModel = {
   model: Model;
-  index: number | undefined;
   tier: Tier;
+  /** Benchmarks holding the modal tier; 0 when the model has insufficient data. */
+  agreeing: number;
+  /** Benchmarks where the model holds a tier. */
+  considered: number;
+  /** agreeing / considered; 0 when the model has insufficient data. */
+  share: number;
 };
 
-export type TierGroups = Record<Tier, ScoredModel[]>;
-
-/** Does `model`'s composite index match or beat `anchor`'s? False when either has no index. */
-export function meetsAnchor(model: Model, anchor: Model | undefined): boolean {
-  if (anchor === undefined) return false;
-  const mine = compositeIndex(model);
-  const theirs = compositeIndex(anchor);
-  return mine !== undefined && theirs !== undefined && mine >= theirs;
-}
-
-function findAnchor(full: Dataset, tier: AnchoredTier): Model | undefined {
-  return full.models.find((m) => m.id === TIER_ANCHORS[tier]);
-}
-
-/** The tier `model` belongs to, judged against the anchors in `full`. */
-export function assignTier(model: Model, full: Dataset): Tier {
-  if (scoredBenchmarks(model).length < MIN_SCORED_BENCHMARKS) return "insufficient";
-  for (const tier of ANCHORED_TIERS) {
-    if (meetsAnchor(model, findAnchor(full, tier))) return tier;
-  }
-  return "fast";
-}
+export type TierGroups = Record<Tier, ConsensusModel[]>;
 
 /**
- * Score and tier every model in `shown`. Anchors always come from `full`, so filtering the shown
- * roster never moves a model between tiers.
+ * The consensus tier `model` belongs to: the mode of its per-benchmark tiers, ties going to the
+ * highest tied tier. Anchors always come from `full`, so filtering the shown roster never moves a
+ * model between tiers.
  */
-export function scoreModels(shown: Dataset, full: Dataset = shown): ScoredModel[] {
-  return shown.models.map((model) => ({ model, index: compositeIndex(model), tier: assignTier(model, full) }));
+export function assignConsensusTier(model: Model, full: Dataset): ConsensusModel {
+  const held: Exclude<BenchmarkTier, "unranked">[] = [];
+  for (const spec of BENCHMARK_SPECS) {
+    const tier = assignBenchmarkTier(model, spec.id, full);
+    if (tier !== "unranked") held.push(tier);
+  }
+  const considered = held.length;
+  if (considered < MIN_SCORED_BENCHMARKS) return { model, tier: "insufficient", agreeing: 0, considered, share: 0 };
+  const counts = new Map<Exclude<BenchmarkTier, "unranked">, number>();
+  for (const tier of held) counts.set(tier, (counts.get(tier) ?? 0) + 1);
+  let best: Exclude<BenchmarkTier, "unranked"> = "fast";
+  let bestCount = -1;
+  for (const [tier, count] of counts) {
+    if (count > bestCount || (count === bestCount && tierRank(tier) > tierRank(best))) {
+      best = tier;
+      bestCount = count;
+    }
+  }
+  return { model, tier: best, agreeing: bestCount, considered, share: bestCount / considered };
 }
 
-/** Descending index (unrated last), then ascending id. */
-export function byIndexDesc(a: ScoredModel, b: ScoredModel): number {
-  const diff = compareDesc(a.index, b.index);
-  if (diff !== 0) return diff;
+/** Score every model in `shown` with its consensus tier. */
+export function scoreModels(shown: Dataset, full: Dataset = shown): ConsensusModel[] {
+  return shown.models.map((model) => assignConsensusTier(model, full));
+}
+
+/** Consensus tier rank desc, then agreeing desc, then share desc, then ascending id. */
+export function byConsensusDesc(a: ConsensusModel, b: ConsensusModel): number {
+  const byTier = tierRank(b.tier) - tierRank(a.tier);
+  if (byTier !== 0) return byTier;
+  if (a.agreeing !== b.agreeing) return b.agreeing - a.agreeing;
+  if (a.share !== b.share) return b.share - a.share;
   return a.model.id < b.model.id ? -1 : a.model.id > b.model.id ? 1 : 0;
 }
 
-/** Descending numeric order with undefined last. Never NaN, even when both are undefined. */
-export function compareDesc(a: number | undefined, b: number | undefined): number {
-  if (a === b) return 0;
-  if (a === undefined) return 1;
-  if (b === undefined) return -1;
-  return b - a;
-}
-
-/** Group the shown models by tier; each group is ordered by {@link byIndexDesc}. */
+/** Group the shown models by consensus tier; each group is ordered by {@link byConsensusDesc}. */
 export function computeTierGroups(shown: Dataset, full: Dataset = shown): TierGroups {
-  const groups = Object.fromEntries(TIERS.map((t) => [t, [] as ScoredModel[]])) as TierGroups;
+  const groups = Object.fromEntries(TIERS.map((t) => [t, [] as ConsensusModel[]])) as TierGroups;
   for (const s of scoreModels(shown, full)) groups[s.tier].push(s);
-  for (const t of TIERS) groups[t].sort(byIndexDesc);
+  for (const t of TIERS) groups[t].sort(byConsensusDesc);
   return groups;
-}
-
-/** Each anchored tier's anchor, scored; undefined when the anchor is missing from `full`. */
-export function tierAnchors(full: Dataset): Record<AnchoredTier, ScoredModel | undefined> {
-  const out = {} as Record<AnchoredTier, ScoredModel | undefined>;
-  for (const tier of ANCHORED_TIERS) {
-    const anchor = findAnchor(full, tier);
-    out[tier] = anchor === undefined ? undefined : { model: anchor, index: compositeIndex(anchor), tier };
-  }
-  return out;
 }
 
 /** Higher is more capable: ultra 4 … insufficient 0. */
 export function tierRank(tier: Tier): number {
   return TIERS.length - 1 - TIERS.indexOf(tier);
+}
+
+/** One model with its tier on the active view — the unit the data table renders. */
+export type TableRow = {
+  model: Model;
+  /** The active view's tier: the consensus tier, or the per-benchmark tier (`unranked` included). */
+  tier: Tier | "unranked";
+  agreeing: number;
+  considered: number;
+  share: number;
+};
+
+function activeRank(tier: TableRow["tier"]): number {
+  return tier === "unranked" ? -1 : tierRank(tier);
+}
+
+/** Highest active tier first, then consensus strength, then ascending id. */
+export function tableOrder(a: TableRow, b: TableRow): number {
+  const byTier = activeRank(b.tier) - activeRank(a.tier);
+  if (byTier !== 0) return byTier;
+  if (a.agreeing !== b.agreeing) return b.agreeing - a.agreeing;
+  if (a.share !== b.share) return b.share - a.share;
+  return a.model.id < b.model.id ? -1 : a.model.id > b.model.id ? 1 : 0;
+}
+
+/**
+ * Every shown model with the active view's tier, in table order. The tier filter's "insufficient"
+ * option matches the models outside the current view's tiers: consensus `insufficient` models in
+ * the Consensus tiers view, `unranked` models in a per-benchmark view.
+ */
+export function tableRows(shown: Dataset, benchmark: BenchmarkId | undefined, full: Dataset = shown): TableRow[] {
+  return scoreModels(shown, full)
+    .map((s): TableRow => {
+      const tier =
+        benchmark === undefined ? s.tier : (assignBenchmarkTier(s.model, benchmark, full) as TableRow["tier"]);
+      return { model: s.model, tier, agreeing: s.agreeing, considered: s.considered, share: s.share };
+    })
+    .sort(tableOrder);
 }
 
 /** One model with its raw score on the chosen benchmark — the unit the per-benchmark list renders. */
@@ -92,7 +128,7 @@ export type BenchmarkRow = {
   score: number;
 };
 
-/** Descending raw score, then ascending id — the per-benchmark mirror of {@link byIndexDesc}. */
+/** Descending raw score, then ascending id. */
 export function byBenchmarkScoreDesc(a: BenchmarkRow, b: BenchmarkRow): number {
   if (a.score !== b.score) return b.score - a.score;
   return a.model.id < b.model.id ? -1 : a.model.id > b.model.id ? 1 : 0;

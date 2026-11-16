@@ -11,7 +11,7 @@ import { dataset } from "@/features/ai-benchmark/core/data/models";
 import { OPERATORS, PRICE_SOURCES } from "@/features/ai-benchmark/core/data/operators";
 import { HARNESS_IDS } from "@/features/ai-benchmark/core/filter";
 import { benchmarkScore, isScoredFigure, scoredBenchmarks } from "@/features/ai-benchmark/core/score";
-import { assignBenchmarkTier, assignTier } from "@/features/ai-benchmark/core/tiers";
+import { assignBenchmarkTier, assignConsensusTier } from "@/features/ai-benchmark/core/tiers";
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 const models = dataset.models;
@@ -152,11 +152,11 @@ describe("price invariants", () => {
   });
 });
 
-describe("tier anchor invariants", () => {
+describe("retired composite anchor invariants", () => {
   for (const tier of ANCHORED_TIERS) {
     const anchor = models.find((m) => m.id === TIER_ANCHORS[tier]);
 
-    it(`${tier} anchor is a rated, general-access, previous-generation model in its own tier`, () => {
+    it(`${tier} composite anchor is a rated, general-access, previous-generation model`, () => {
       expect(anchor).toBeDefined();
       if (anchor === undefined) return;
       expect(anchor.access).toBe("general");
@@ -165,7 +165,9 @@ describe("tier anchor invariants", () => {
         (m) => m.vendor === anchor.vendor && (m.releaseDate ?? "") > (anchor.releaseDate ?? "9999"),
       );
       expect(newer.length).toBeGreaterThan(0);
-      expect(assignTier(anchor, dataset)).toBe(tier);
+      // The page no longer tiers by the composite index; the anchor keeps whatever consensus tier
+      // its per-benchmark tiers produce, and it must be rated, never insufficient.
+      expect(assignConsensusTier(anchor, dataset).tier).not.toBe("insufficient");
     });
   }
 });

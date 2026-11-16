@@ -44,8 +44,10 @@ export const translations: Record<Locale, Record<string, string>> = {
     aiBenchFinderLabel: "Frontier model",
     aiBenchFinderHarnessLabel: "Substitute harness",
     aiBenchFinderPlaceholder: "Choose a model…",
-    aiBenchFinderTarget: "{model} is in the {tier} tier, index {index}, blended price {price}.",
-    aiBenchFinderTargetNoPrice: "{model} is in the {tier} tier, index {index}; no public API price.",
+    aiBenchFinderTarget:
+      "{model} is in the {tier} tier ({agreeing} of {considered} benchmarks), blended price {price}.",
+    aiBenchFinderTargetNoPrice:
+      "{model} is in the {tier} tier ({agreeing} of {considered} benchmarks); no public API price.",
     aiBenchFinderMatches: "{harness} models in the same tier or higher:",
     aiBenchFinderNearest: "No {harness} model reaches the {tier} tier yet. The closest options:",
     aiBenchFinderInsufficient:
@@ -67,7 +69,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     aiBenchEmptyStateMessage: "Try a different harness or tier, or reset the filters.",
 
     aiBenchScoreBasisLabel: "Score basis",
-    aiBenchScoreBasisAverage: "Average",
+    aiBenchScoreBasisConsensus: "Consensus tiers",
     aiBenchScoreLabel: "Score",
     aiBenchRankListHeading: "Ranking by {benchmark}",
     aiBenchUnrankedHeading: "Not ranked on {benchmark} ({count} models)",
@@ -83,28 +85,27 @@ export const translations: Record<Locale, Record<string, string>> = {
     aiBenchTierPlanningUse: "For planning, review, and orchestrating other agents.",
     aiBenchTierExecutionUse: "For carrying out a well-defined plan.",
     aiBenchTierFastUse: "For quick, well-scoped edits and lookups.",
-    aiBenchTierFloor: "Floor: index {index}, set by {anchor}.",
-    aiBenchTierFastFloor: "Rated models below the Execution floor.",
+    aiBenchTierConsensusRule: "Models here hold the {tier} tier on the most benchmarks.",
+    aiBenchTierConsensusCount: "{agreeing} of {considered} benchmarks",
+    aiBenchTierUnranked: "Unranked",
     aiBenchTierBenchmarkFloor: "Floor: raw {benchmark} score {score}, set by {anchor}.",
     aiBenchTierBenchmarkFastFloor: "Scored models below the {benchmark} Execution floor.",
     aiBenchTierEmpty: "No model in this tier matches the current filters.",
     aiBenchAnchorBadge: "anchor",
     aiBenchLimitedAccess: "Limited access",
-    aiBenchIndexLabel: "Index",
     aiBenchPriceInOut: "{input} / {output} per 1M tokens",
     aiBenchNoPrice: "No public API price",
 
     aiBenchInsufficientHeading: "Not enough independent data yet ({count} models)",
     aiBenchInsufficientIntro:
-      "These models have independent results on fewer than {min} benchmarks, so they get no index or tier yet.",
+      "These models have independent results on fewer than {min} benchmarks, so they get no consensus tier yet.",
     aiBenchInsufficientNone: "no independent results yet",
 
     aiBenchTableHeading: "All models",
     aiBenchTableCaption:
-      "Independent benchmark scores, composite index, tier, and API price in USD per 1M tokens. Each score links to its source.",
+      "Independent benchmark scores, tier of the active view, and API price in USD per 1M tokens. Each score links to its source.",
     aiBenchColModel: "Model",
     aiBenchColTier: "Tier",
-    aiBenchColIndex: "Index",
     aiBenchColInput: "Input",
     aiBenchColOutput: "Output",
     aiBenchColBlended: "Blended",
@@ -115,24 +116,25 @@ export const translations: Record<Locale, Record<string, string>> = {
 
     aiBenchMethodHeading: "How the score works",
     aiBenchMethodBenchmarksIntro:
-      "Four coding-agent benchmarks, equally weighted. Only the version listed counts, and each score comes from the first listed source that has it.",
+      "Four coding-agent benchmarks. Only the version listed counts, and each score comes from the first listed source that has it.",
     aiBenchMethodBenchDeepSwe: "Long-horizon changes across real repositories.",
     aiBenchMethodBenchTerminal: "Autonomous work in real shell environments.",
     aiBenchMethodBenchQna: "Answering questions about large, unfamiliar codebases.",
     aiBenchMethodBenchFrontier: "Frontier coding tasks run independently by Artificial Analysis.",
     aiBenchMethodVersion: "version {version}",
-    aiBenchMethodWeight: "weight {weight}",
     aiBenchMethodSourceOrderIntro: "Sources, in order of preference:",
     aiBenchMethodRoster:
       "Roster: models from the frontier vendors ({frontier}), every {catalogs} model with a named vendor, and each listed harness's own in-house models ({inHouse}), up to three generations per model line.",
     aiBenchMethodIndex:
-      "Index: the average of a model's scores on the benchmarks it has. A model needs at least {min} to get an index and a tier.",
-    aiBenchMethodScoreBasis: "Score basis: the composite average, or one benchmark at a time ({average}, {options}).",
+      "Consensus tier: a model needs scores on at least {min} benchmarks; with fewer, it is listed as having insufficient data.",
+    aiBenchMethodScoreBasis: "Score basis: the consensus tiers, or one benchmark at a time ({consensus}, {options}).",
+    aiBenchMethodConsensus:
+      "A model's consensus tier is the tier it holds on the most benchmarks; a tie goes to the highest tied tier.",
+    aiBenchMethodConsensusOrder:
+      "Inside a tier, models are ordered by how many benchmarks agree, then by the share that agree.",
+    aiBenchMethodNoAverage: "No average or composite score is computed anywhere on this page.",
     aiBenchMethodRawScores: "A per-benchmark view shows raw operator figures with no normalization or weighting.",
     aiBenchMethodUnranked: "Models without a scored figure on the chosen benchmark are unranked.",
-    aiBenchMethodTiers:
-      "Tiers: each one is defined by a previous-generation anchor model. A model goes in the highest tier whose anchor's index it matches or beats, so a model's tier always follows its index.",
-    aiBenchMethodAnchorsIntro: "Tier anchors:",
     aiBenchMethodBenchmarkTiers:
       "Per-benchmark tiers compare raw scores on that benchmark only: a model goes in the highest tier whose anchor's score on that benchmark it matches or beats.",
     aiBenchMethodBenchmarkAnchorsIntro: "Tier anchors on each benchmark:",
@@ -141,15 +143,9 @@ export const translations: Record<Locale, Record<string, string>> = {
     aiBenchMethodCostPerTask:
       "Cost per task: Artificial Analysis' average spend per benchmark task, where it publishes one.",
     aiBenchMethodCaveat:
-      "Operators run models in different harnesses and effort settings (each score names its configuration), and some Anthropic runs were served by another model on a share of attempts. An index averages only the benchmarks a model has, so two indexes built from different benchmarks are not exactly comparable (GPT-5.6 Terra, for one, has no independent SWE-Atlas QnA result); the table shows which scores each index uses. Treat differences of a few points as noise.",
+      "Operators run models in different harnesses and effort settings (each score names its configuration), and some Anthropic runs were served by another model on a share of attempts. Figures from different benchmarks are not exactly comparable (GPT-5.6 Terra, for one, has no independent SWE-Atlas QnA result); the table shows every score. Treat differences of a few points as noise.",
     aiBenchMethodExcluded:
       "Not scored: vendor-reported results, older benchmark versions, SWE-bench Verified and GPQA Diamond (saturated), and SWE-bench Pro (task-quality problems). Space Bunny Free on OpenCode Go is left out because it names no vendor.",
-    aiBenchMethodExampleHeading: "Worked example",
-    aiBenchMethodExampleIndex: "{model}: ({scores}) ÷ {count} = index {index}.",
-    aiBenchMethodExampleCompare:
-      "{model} (index {modelScore}) against the {tier} anchor {anchor} (index {anchorScore}): {model} {result}.",
-    aiBenchMethodMeets: "reaches that tier",
-    aiBenchMethodMisses: "stays below that tier",
     aiBenchOpencodeRate: "OpenCode rate",
     aiBenchCommandCodeRate: "Command Code rate",
 
@@ -588,8 +584,10 @@ export const translations: Record<Locale, Record<string, string>> = {
     aiBenchFinderLabel: "Model frontier",
     aiBenchFinderHarnessLabel: "Harness pengganti",
     aiBenchFinderPlaceholder: "Pilih model…",
-    aiBenchFinderTarget: "{model} ada di tingkat {tier}, indeks {index}, harga gabungan {price}.",
-    aiBenchFinderTargetNoPrice: "{model} ada di tingkat {tier}, indeks {index}; belum ada harga API publik.",
+    aiBenchFinderTarget:
+      "{model} ada di tingkat {tier} ({agreeing} dari {considered} benchmark), harga gabungan {price}.",
+    aiBenchFinderTargetNoPrice:
+      "{model} ada di tingkat {tier} ({agreeing} dari {considered} benchmark); belum ada harga API publik.",
     aiBenchFinderMatches: "Model {harness} di tingkat yang sama atau lebih tinggi:",
     aiBenchFinderNearest: "Belum ada model {harness} yang mencapai tingkat {tier}. Pilihan terdekat:",
     aiBenchFinderInsufficient:
@@ -611,7 +609,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     aiBenchEmptyStateMessage: "Coba harness atau tingkat lain, atau atur ulang filter.",
 
     aiBenchScoreBasisLabel: "Dasar skor",
-    aiBenchScoreBasisAverage: "Rata-rata",
+    aiBenchScoreBasisConsensus: "Tier konsensus",
     aiBenchScoreLabel: "Skor",
     aiBenchRankListHeading: "Peringkat {benchmark}",
     aiBenchUnrankedHeading: "Tidak diperingkat pada {benchmark} ({count} model)",
@@ -628,28 +626,27 @@ export const translations: Record<Locale, Record<string, string>> = {
     aiBenchTierPlanningUse: "Untuk perencanaan, review, dan mengorkestrasi agen lain.",
     aiBenchTierExecutionUse: "Untuk menjalankan rencana yang sudah jelas.",
     aiBenchTierFastUse: "Untuk perubahan kecil yang jelas dan pencarian cepat.",
-    aiBenchTierFloor: "Batas bawah: indeks {index}, ditetapkan oleh {anchor}.",
-    aiBenchTierFastFloor: "Model ber-skor di bawah batas Eksekusi.",
+    aiBenchTierConsensusRule: "Model di sini memegang tingkat {tier} pada benchmark terbanyak.",
+    aiBenchTierConsensusCount: "{agreeing} dari {considered} benchmark",
+    aiBenchTierUnranked: "Tidak diperingkat",
     aiBenchTierBenchmarkFloor: "Batas bawah: skor mentah {benchmark} {score}, ditetapkan oleh {anchor}.",
     aiBenchTierBenchmarkFastFloor: "Model ber-skor di bawah batas Eksekusi {benchmark}.",
     aiBenchTierEmpty: "Tidak ada model di tingkat ini yang cocok dengan filter saat ini.",
     aiBenchAnchorBadge: "patokan",
     aiBenchLimitedAccess: "Akses terbatas",
-    aiBenchIndexLabel: "Indeks",
     aiBenchPriceInOut: "{input} / {output} per 1 juta token",
     aiBenchNoPrice: "Belum ada harga API publik",
 
     aiBenchInsufficientHeading: "Data independen belum cukup ({count} model)",
     aiBenchInsufficientIntro:
-      "Model-model ini punya hasil independen di kurang dari {min} benchmark, jadi belum mendapat indeks maupun tingkat.",
+      "Model-model ini punya hasil independen di kurang dari {min} benchmark, jadi belum mendapat tier konsensus.",
     aiBenchInsufficientNone: "belum ada hasil independen",
 
     aiBenchTableHeading: "Semua model",
     aiBenchTableCaption:
-      "Skor benchmark independen, indeks gabungan, tingkat, dan harga API dalam USD per 1 juta token. Setiap skor tertaut ke sumbernya.",
+      "Skor benchmark independen, tingkat pada tampilan aktif, dan harga API dalam USD per 1 juta token. Setiap skor tertaut ke sumbernya.",
     aiBenchColModel: "Model",
     aiBenchColTier: "Tingkat",
-    aiBenchColIndex: "Indeks",
     aiBenchColInput: "Input",
     aiBenchColOutput: "Output",
     aiBenchColBlended: "Gabungan",
@@ -660,26 +657,27 @@ export const translations: Record<Locale, Record<string, string>> = {
 
     aiBenchMethodHeading: "Cara skor dihitung",
     aiBenchMethodBenchmarksIntro:
-      "Empat benchmark agen koding dengan bobot sama. Hanya versi yang tercantum yang dihitung, dan tiap skor diambil dari sumber pertama dalam daftar yang memilikinya.",
+      "Empat benchmark agen koding. Hanya versi yang tercantum yang dihitung, dan tiap skor diambil dari sumber pertama dalam daftar yang memilikinya.",
     aiBenchMethodBenchDeepSwe: "Perubahan jangka panjang di repositori nyata.",
     aiBenchMethodBenchTerminal: "Kerja mandiri di lingkungan shell nyata.",
     aiBenchMethodBenchQna: "Menjawab pertanyaan tentang codebase besar yang belum dikenal.",
     aiBenchMethodBenchFrontier: "Tugas coding frontier yang dijalankan independen oleh Artificial Analysis.",
     aiBenchMethodVersion: "versi {version}",
-    aiBenchMethodWeight: "bobot {weight}",
     aiBenchMethodSourceOrderIntro: "Sumber, urut prioritas:",
     aiBenchMethodRoster:
       "Daftar model: model dari vendor frontier ({frontier}), semua model {catalogs} yang vendornya jelas, dan model buatan sendiri tiap harness yang tercantum ({inHouse}), hingga tiga generasi per lini model.",
     aiBenchMethodIndex:
-      "Indeks: rata-rata skor model pada benchmark yang dimilikinya. Model butuh setidaknya {min} benchmark untuk mendapat indeks dan tingkat.",
+      "Tier konsensus: model butuh skor di setidaknya {min} benchmark; bila kurang, ia tercatat sebagai data belum cukup.",
     aiBenchMethodScoreBasis:
-      "Dasar skor: rata-rata gabungan, atau satu benchmark dalam satu waktu ({average}, {options}).",
+      "Dasar skor: tier konsensus, atau satu benchmark dalam satu waktu ({consensus}, {options}).",
+    aiBenchMethodConsensus:
+      "Tier konsensus sebuah model adalah tingkat yang paling sering ia pegang; bila seri, tingkat tertinggi yang seri dipakai.",
+    aiBenchMethodConsensusOrder:
+      "Di dalam satu tingkat, model diurutkan berdasarkan jumlah benchmark yang sepakat, lalu berdasarkan porsi yang sepakat.",
+    aiBenchMethodNoAverage: "Tidak ada skor rata-rata atau gabungan yang dihitung di halaman ini.",
     aiBenchMethodRawScores:
       "Tampilan per benchmark menunjukkan angka mentah operator tanpa normalisasi atau pembobotan.",
     aiBenchMethodUnranked: "Model tanpa angka yang dihitung pada benchmark yang dipilih tidak diperingkat.",
-    aiBenchMethodTiers:
-      "Tingkat: masing-masing ditentukan oleh satu model patokan generasi sebelumnya. Model masuk ke tingkat tertinggi yang indeks patokannya ia samai atau lampaui, jadi tingkat model selalu mengikuti indeksnya.",
-    aiBenchMethodAnchorsIntro: "Model patokan tiap tingkat:",
     aiBenchMethodBenchmarkTiers:
       "Tingkat per benchmark hanya membandingkan skor mentah pada benchmark itu: model masuk ke tingkat tertinggi yang skor patokannya pada benchmark itu ia samai atau lampaui.",
     aiBenchMethodBenchmarkAnchorsIntro: "Model patokan tiap tingkat pada tiap benchmark:",
@@ -688,15 +686,9 @@ export const translations: Record<Locale, Record<string, string>> = {
     aiBenchMethodCostPerTask:
       "Biaya per tugas: rata-rata biaya per tugas benchmark menurut Artificial Analysis, bila mereka menerbitkannya.",
     aiBenchMethodCaveat:
-      "Tiap operator menjalankan model dengan harness dan tingkat effort berbeda (setiap skor menyebut konfigurasinya), dan sebagian run Anthropic dilayani model lain pada sebagian percobaan. Indeks hanya merata-ratakan benchmark yang dimiliki model, jadi dua indeks dari benchmark berbeda tidak sepenuhnya setara (GPT-5.6 Terra, misalnya, belum punya hasil SWE-Atlas QnA independen); tabel menunjukkan skor mana yang dipakai tiap indeks. Anggap selisih beberapa poin sebagai noise.",
+      "Tiap operator menjalankan model dengan harness dan tingkat effort berbeda (setiap skor menyebut konfigurasinya), dan sebagian run Anthropic dilayani model lain pada sebagian percobaan. Angka dari benchmark berbeda tidak sepenuhnya setara (GPT-5.6 Terra, misalnya, belum punya hasil SWE-Atlas QnA independen); tabel menampilkan semua skor. Anggap selisih beberapa poin sebagai noise.",
     aiBenchMethodExcluded:
       "Tidak dihitung: hasil yang dilaporkan vendor, versi benchmark lama, SWE-bench Verified dan GPQA Diamond (sudah jenuh), serta SWE-bench Pro (masalah kualitas tugas). Space Bunny Free di OpenCode Go tidak dimasukkan karena tidak menyebut vendornya.",
-    aiBenchMethodExampleHeading: "Contoh perhitungan",
-    aiBenchMethodExampleIndex: "{model}: ({scores}) ÷ {count} = indeks {index}.",
-    aiBenchMethodExampleCompare:
-      "{model} (indeks {modelScore}) dibandingkan dengan patokan tingkat {tier}, {anchor} (indeks {anchorScore}): {model} {result}.",
-    aiBenchMethodMeets: "mencapai tingkat itu",
-    aiBenchMethodMisses: "masih di bawah tingkat itu",
     aiBenchOpencodeRate: "tarif OpenCode",
     aiBenchCommandCodeRate: "tarif Command Code",
 

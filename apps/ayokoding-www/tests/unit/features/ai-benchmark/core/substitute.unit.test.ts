@@ -7,36 +7,60 @@ import {
   isSubstituteHarness,
   substitutesFor,
 } from "@/features/ai-benchmark/core/substitute";
-import { anchors, dataset, flat, goModel, harnessModel, model, price } from "./fixtures";
+import { dataset, flat, model, price, quadAnchors, tiered } from "./fixtures";
 
-const frontierPlanning = flat("frontier-planning", 57, { vendor: "OpenAI", price: price(4, 20) });
-const frontierUltra = flat("frontier-ultra", 70, { vendor: "Anthropic" });
+const frontierPlanning = tiered("frontier-planning", "planning", "planning", "planning", "execution", {
+  vendor: "OpenAI",
+  price: price(4, 20),
+});
+const frontierUltra = tiered("frontier-ultra", "ultra", "ultra", "ultra", "ultra", { vendor: "Anthropic" });
 const frontierThin = model("frontier-thin", [], { vendor: "Google" });
 
 const roster = dataset([
-  ...anchors(),
+  ...quadAnchors(),
   frontierPlanning,
   frontierUltra,
   frontierThin,
-  goModel("go-ultra", 62, { price: price(3, 15) }),
-  goModel("go-planning-cheap", 56, { price: price(1, 1) }),
-  goModel("go-planning-dear", 56, { price: price(2, 2) }),
-  goModel("go-execution", 50),
-  goModel("go-fast", 20),
-  goModel("go-thin", undefined),
-  flat("go-frontier", 58, { vendor: "OpenAI", harnesses: ["opencode-go"] }),
+  tiered("go-ultra", "ultra", "ultra", "ultra", "ultra", {
+    vendor: "OpenWeights",
+    harnesses: ["opencode-go"],
+    price: price(3, 15),
+  }),
+  tiered("go-planning-cheap", "planning", "planning", "planning", "execution", {
+    vendor: "OpenWeights",
+    harnesses: ["opencode-go"],
+    price: price(1, 1),
+  }),
+  tiered("go-planning-dear", "planning", "planning", "planning", "execution", {
+    vendor: "OpenWeights",
+    harnesses: ["opencode-go"],
+    price: price(2, 2),
+  }),
+  tiered("go-execution", "execution", "execution", "execution", "execution", {
+    vendor: "OpenWeights",
+    harnesses: ["opencode-go"],
+  }),
+  tiered("go-fast", "fast", "fast", "fast", "fast", { vendor: "OpenWeights", harnesses: ["opencode-go"] }),
+  tiered("go-thin", "planning", "unranked", "unranked", "unranked", {
+    vendor: "OpenWeights",
+    harnesses: ["opencode-go"],
+  }),
+  tiered("go-frontier", "planning", "planning", "planning", "execution", {
+    vendor: "OpenAI",
+    harnesses: ["opencode-go"],
+  }),
 ]);
 
 describe("isFrontier / frontierModels", () => {
   it("treats Anthropic, OpenAI, Google, and xAI models as frontier", () => {
     expect(isFrontier(frontierPlanning)).toBe(true);
-    expect(isFrontier(goModel("x", 1))).toBe(false);
+    expect(isFrontier(tiered("x", "fast", "fast", "fast", "fast", { vendor: "OpenWeights" }))).toBe(false);
   });
 
   it("lists the frontier models sorted by name", () => {
-    const names = frontierModels(
-      dataset([flat("b", 1, { vendor: "xAI" }), flat("a", 1, { vendor: "Google" }), goModel("c", 1)]),
-    ).map((m) => m.id);
+    const names = frontierModels(dataset([flat("b", 1, { vendor: "xAI" }), flat("a", 1, { vendor: "Google" })])).map(
+      (m) => m.id,
+    );
     expect(names).toEqual(["a", "b"]);
   });
 });
@@ -60,7 +84,7 @@ describe("substitute harnesses", () => {
 });
 
 describe("substitutesFor", () => {
-  it("returns models of the chosen harness in the same or a higher tier, by index then blended price", () => {
+  it("returns models of the chosen harness in the same or a higher tier, ordered by consensus tier then strength", () => {
     const result = substitutesFor(frontierPlanning, roster, "opencode-go");
     expect(result.kind).toBe("matches");
     expect(result.models.map((s) => s.model.id)).toEqual([
@@ -71,52 +95,71 @@ describe("substitutesFor", () => {
     ]);
   });
 
+  it("orders equal tiers by agreeing, then share, then id — never by price", () => {
+    const r = dataset([
+      ...quadAnchors(),
+      tiered("t", "planning", "planning", "planning", "execution", { vendor: "xAI" }),
+      tiered("go-b", "planning", "planning", "planning", "execution", {
+        vendor: "OpenWeights",
+        harnesses: ["opencode-go"],
+        price: price(1, 1),
+      }),
+      tiered("go-a", "planning", "planning", "planning", "execution", {
+        vendor: "OpenWeights",
+        harnesses: ["opencode-go"],
+        price: price(99, 99),
+      }),
+    ]);
+    // go-a sorts first by id even though it is far pricier.
+    const target = r.models.find((m) => m.id === "t")!;
+    expect(substitutesFor(target, r, "opencode-go").models.map((s) => s.model.id)).toEqual(["go-a", "go-b"]);
+  });
+
   it("never lists the target itself", () => {
     const target = roster.models.find((m) => m.id === "go-frontier")!;
     expect(substitutesFor(target, roster, "opencode-go").models.map((s) => s.model.id)).not.toContain("go-frontier");
   });
 
-  it("offers the nearest rated models of the chosen harness when none reaches the target's tier", () => {
+  it("offers the nearest consensus-rated models of the chosen harness when none reaches the target's tier", () => {
     const highRoster = dataset([
-      ...anchors(),
+      ...quadAnchors(),
       frontierUltra,
-      goModel("go-a", 50),
-      goModel("go-b", 56),
-      goModel("go-c", 20),
-      goModel("go-d", 30),
-      goModel("go-thin", undefined),
+      tiered("go-a", "execution", "execution", "execution", "execution", {
+        vendor: "OpenWeights",
+        harnesses: ["opencode-go"],
+      }),
+      tiered("go-b", "planning", "planning", "planning", "execution", {
+        vendor: "OpenWeights",
+        harnesses: ["opencode-go"],
+      }),
+      tiered("go-c", "fast", "fast", "fast", "fast", { vendor: "OpenWeights", harnesses: ["opencode-go"] }),
+      tiered("go-d", "fast", "fast", "fast", "unranked", { vendor: "OpenWeights", harnesses: ["opencode-go"] }),
+      tiered("go-thin", "planning", "unranked", "unranked", "unranked", {
+        vendor: "OpenWeights",
+        harnesses: ["opencode-go"],
+      }),
     ]);
     const result = substitutesFor(frontierUltra, highRoster, "opencode-go");
     expect(result.kind).toBe("nearest");
-    expect(result.models.map((s) => s.model.id)).toEqual(["go-b", "go-a", "go-d"]);
-  });
-
-  it("puts an unpriced model after priced ones of the same index", () => {
-    const r = dataset([
-      ...anchors(),
-      flat("t", 30, { vendor: "xAI" }),
-      goModel("go-free", 40),
-      goModel("go-paid", 40, { price: price(1, 1) }),
-    ]);
-    expect(substitutesFor(r.models[3]!, r, "opencode-go").models.map((s) => s.model.id)).toEqual([
-      "go-paid",
-      "go-free",
-    ]);
+    expect(result.models.map((s) => s.model.id)).toEqual(["go-b", "go-a", "go-c"]);
   });
 
   describe("by harness", () => {
     const mixed = dataset([
-      ...anchors(),
+      ...quadAnchors(),
       frontierPlanning,
       frontierUltra,
-      harnessModel("command-code-pro", "pro-ultra", 62),
-      harnessModel("command-code-pro", "pro-planning", 56),
-      harnessModel("command-code-pro", "pro-fast", 20),
-      harnessModel("command-code", "cc-ultra", 64),
-      harnessModel("command-code", "cc-execution", 50),
-      goModel("go-planning", 57),
+      tiered("pro-ultra", "ultra", "ultra", "ultra", "ultra", { harnesses: ["command-code-pro"] }),
+      tiered("pro-planning", "planning", "planning", "planning", "execution", { harnesses: ["command-code-pro"] }),
+      tiered("pro-fast", "fast", "fast", "fast", "fast", { harnesses: ["command-code-pro"] }),
+      tiered("cc-ultra", "ultra", "ultra", "ultra", "ultra", { harnesses: ["command-code"] }),
+      tiered("cc-execution", "execution", "execution", "execution", "execution", { harnesses: ["command-code"] }),
+      tiered("go-planning", "planning", "planning", "planning", "execution", { harnesses: ["opencode-go"] }),
       // On two harnesses at once: listed under each.
-      flat("pro-and-go", 58, { vendor: "Moonshot", harnesses: ["command-code-pro", "opencode-go"] }),
+      tiered("pro-and-go", "planning", "planning", "planning", "execution", {
+        vendor: "Moonshot",
+        harnesses: ["command-code-pro", "opencode-go"],
+      }),
     ]);
     const idsFor = (harness: HarnessId) =>
       substitutesFor(frontierPlanning, mixed, harness).models.map((s) => s.model.id);
@@ -130,10 +173,10 @@ describe("substitutesFor", () => {
     });
 
     it("lists only OpenCode Go models for the OpenCode Go harness", () => {
-      expect(idsFor("opencode-go")).toEqual(["pro-and-go", "go-planning"]);
+      expect(idsFor("opencode-go")).toEqual(["go-planning", "pro-and-go"]);
     });
 
-    it("never lists a model of another harness, even when it scores higher", () => {
+    it("never lists a model of another harness, even when it tiers higher", () => {
       expect(idsFor("command-code-pro")).not.toContain("cc-ultra");
       expect(idsFor("command-code")).not.toContain("pro-ultra");
     });
@@ -147,7 +190,7 @@ describe("substitutesFor", () => {
     it("falls back to the nearest options of the chosen harness alone", () => {
       const result = substitutesFor(frontierUltra, mixed, "opencode-go");
       expect(result.kind).toBe("nearest");
-      expect(result.models.map((s) => s.model.id)).toEqual(["pro-and-go", "go-planning"]);
+      expect(result.models.map((s) => s.model.id)).toEqual(["go-planning", "pro-and-go"]);
     });
   });
 

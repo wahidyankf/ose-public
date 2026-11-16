@@ -14,7 +14,7 @@ import {
   computeBenchmarkTierGroups,
   computeTierGroups,
   scoreModels,
-  tierAnchors,
+  tableRows,
 } from "@/features/ai-benchmark/core/tiers";
 import { decodeState, encodeState, type UrlState } from "@/features/ai-benchmark/core/url-state";
 import { BenchmarkFilters } from "@/features/ai-benchmark/shell/benchmark-filters";
@@ -44,11 +44,12 @@ export function BenchmarkContent() {
   const state = decodeState(searchParams, (id) => FRONTIER_IDS.has(id));
   const shown: Dataset = { ...dataset, models: filterModels(dataset, state, dataset) };
   const isEmpty = shown.models.length === 0;
-  // Tiers are always judged against the full roster's anchors, so filtering never moves a model.
+  // Consensus tiers are always judged against the full roster's anchors, so filtering never moves
+  // a model.
   const groups = computeTierGroups(shown, dataset);
   const tiers = state.tier === undefined ? RATED_TIERS : RATED_TIERS.filter((tier) => tier === state.tier);
   // The per-benchmark view groups the shown models into per-benchmark tiers on one benchmark's
-  // raw scores instead of the composite tiers; models without a scored figure there are unranked.
+  // raw scores instead of the consensus tiers; models without a scored figure there are unranked.
   const benchmarkView =
     state.benchmark === undefined
       ? undefined
@@ -123,9 +124,9 @@ export function BenchmarkContent() {
         </p>
       ) : benchmarkView === undefined ? (
         <>
-          {tiers.length > 0 && <TierMap groups={groups} anchors={tierAnchors(dataset)} tiers={tiers} locale={locale} />}
+          {tiers.length > 0 && <TierMap groups={groups} tiers={tiers} locale={locale} />}
           <InsufficientList models={groups.insufficient} locale={locale} />
-          <ModelTable rows={scoreModels(shown, dataset)} locale={locale} />
+          <ModelTable rows={tableRows(shown, undefined, dataset)} locale={locale} />
         </>
       ) : (
         <>
@@ -143,7 +144,7 @@ export function BenchmarkContent() {
             locale={locale}
             unrankedBenchmark={benchmarkView.benchmark}
           />
-          <ModelTable rows={scoreModels(shown, dataset)} locale={locale} />
+          <ModelTable rows={tableRows(shown, benchmarkView.benchmark, dataset)} locale={locale} />
         </>
       )}
 

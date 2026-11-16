@@ -1,7 +1,15 @@
 // Shared fixture builders for the AI benchmark core tests and the Gherkin unit steps.
 
 import { BENCHMARK_TIER_ANCHORS, benchmarkSpec, TIER_ANCHORS } from "@/features/ai-benchmark/core/data/benchmarks";
-import type { ApiPrice, BenchmarkId, Dataset, Figure, HarnessId, Model } from "@/features/ai-benchmark/core/data/types";
+import type {
+  ApiPrice,
+  BenchmarkId,
+  BenchmarkTier,
+  Dataset,
+  Figure,
+  HarnessId,
+  Model,
+} from "@/features/ai-benchmark/core/data/types";
 
 export const SRC = "https://example.test/source";
 
@@ -83,4 +91,60 @@ export function benchmarkAnchors(benchmark: BenchmarkId, ultra = 60, planning = 
     model(ids.planning, [fig(benchmark, planning)]),
     model(ids.execution, [fig(benchmark, execution)]),
   ];
+}
+
+/** Raw score that lands the matching per-benchmark tier against the default 60 / 55 / 45 anchors. */
+const TIER_SCORE: Record<Exclude<BenchmarkTier, "unranked">, number> = {
+  ultra: 70,
+  planning: 57,
+  execution: 46,
+  fast: 10,
+};
+
+/**
+ * A model holding the given tier on each benchmark, in BENCHMARK_SPECS order
+ * (deep-swe, terminal-bench, swe-atlas-qna, frontiercode-aa); "unranked" leaves that benchmark
+ * without a figure. "insufficient" is not a per-benchmark tier and is rejected by the types.
+ */
+export function tiered(
+  id: string,
+  deepSwe: Exclude<BenchmarkTier, "unranked"> | "unranked",
+  terminalBench: Exclude<BenchmarkTier, "unranked"> | "unranked",
+  sweAtlas: Exclude<BenchmarkTier, "unranked"> | "unranked",
+  frontierCode: Exclude<BenchmarkTier, "unranked"> | "unranked",
+  extras: ModelExtras = {},
+): Model {
+  const entries: [BenchmarkId, Exclude<BenchmarkTier, "unranked"> | "unranked"][] = [
+    ["deep-swe", deepSwe],
+    ["terminal-bench", terminalBench],
+    ["swe-atlas-qna", sweAtlas],
+    ["frontiercode-aa", frontierCode],
+  ];
+  return model(
+    id,
+    entries.flatMap(([b, tier]) => (tier === "unranked" ? [] : [fig(b, TIER_SCORE[tier])])),
+    extras,
+  );
+}
+
+/**
+ * The per-benchmark tier anchors on all four benchmarks. One model per anchor id — an id that
+ * anchors several benchmarks carries a figure on each of them, mirroring the real dataset where
+ * anchor models have multiple scored figures.
+ */
+export function quadAnchors(ultra = 60, planning = 55, execution = 45): Model[] {
+  const byId = new Map<string, Figure[]>();
+  for (const benchmark of Object.keys(BENCHMARK_TIER_ANCHORS) as BenchmarkId[]) {
+    const floors = { ultra, planning, execution } as const;
+    for (const tier of Object.keys(floors) as (keyof typeof floors)[]) {
+      const id = BENCHMARK_TIER_ANCHORS[benchmark][tier];
+      byId.set(id, [...(byId.get(id) ?? []), fig(benchmark, floors[tier])]);
+    }
+  }
+  return [...byId.entries()].map(([id, figures]) => model(id, figures));
+}
+
+/** A consensus-planning model (planning on three benchmarks, execution on the fourth). */
+export function planningModel(id: string, extras: ModelExtras = {}): Model {
+  return tiered(id, "planning", "planning", "planning", "execution", extras);
 }

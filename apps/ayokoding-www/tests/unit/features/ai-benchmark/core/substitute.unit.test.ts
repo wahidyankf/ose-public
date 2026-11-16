@@ -197,4 +197,35 @@ describe("substitutesFor", () => {
   it("returns nothing for a target with insufficient data", () => {
     expect(substitutesFor(frontierThin, roster, "opencode-go")).toEqual({ kind: "insufficient", models: [] });
   });
+
+  it("treats a no-consensus target like an insufficient one", () => {
+    const r = dataset([
+      ...quadAnchors(),
+      tiered("split-target", "ultra", "planning", "execution", "fast", { vendor: "OpenAI" }),
+      tiered("go-ultra", "ultra", "ultra", "ultra", "ultra", {
+        vendor: "OpenWeights",
+        harnesses: ["opencode-go"],
+      }),
+    ]);
+    const target = r.models.find((m) => m.id === "split-target")!;
+    expect(substitutesFor(target, r, "opencode-go")).toEqual({ kind: "insufficient", models: [] });
+  });
+
+  it("never offers a no-consensus model as a substitute", () => {
+    const r = dataset([
+      ...quadAnchors(),
+      frontierPlanning,
+      tiered("go-split", "ultra", "planning", "execution", "fast", {
+        vendor: "OpenWeights",
+        harnesses: ["opencode-go"],
+      }),
+      tiered("go-planning", "planning", "planning", "planning", "execution", {
+        vendor: "OpenWeights",
+        harnesses: ["opencode-go"],
+      }),
+    ]);
+    const result = substitutesFor(frontierPlanning, r, "opencode-go");
+    expect(result.kind).toBe("matches");
+    expect(result.models.map((s) => s.model.id)).toEqual(["go-planning"]);
+  });
 });

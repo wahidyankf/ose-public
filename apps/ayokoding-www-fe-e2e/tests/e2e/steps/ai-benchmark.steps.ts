@@ -51,7 +51,7 @@ const RATED_TIERS = ["ultra", "planning", "execution", "fast"] as const;
 
 const full = dataset;
 const scored = scoreModels(full);
-const rated = scored.filter((s) => s.tier !== "insufficient");
+const rated = scored.filter((s) => s.tier !== "insufficient" && s.tier !== "no-consensus");
 const byId = (id: string): Model => full.models.find((m) => m.id === id)!;
 const tierOf = (id: string): Tier => scored.find((s) => s.model.id === id)!.tier;
 
@@ -340,10 +340,39 @@ Then(
     const ids = [
       ...(await tierMapIds(page)),
       ...(await idsIn(page, '[data-testid="ai-bench-insufficient"]', "ai-bench-insufficient-item")),
+      ...(await idsIn(page, '[data-testid="ai-bench-no-consensus"]', "ai-bench-no-consensus-item")),
     ];
     expect(sorted(ids)).toEqual(sorted(full.models.map((m) => m.id)));
   },
 );
+
+Given("the roster holds models whose benchmarks split below half", async ({}) => {
+  expect(scored.some((s) => s.tier === "no-consensus")).toBe(true);
+});
+
+Given("the AI benchmark page is open in the Consensus tiers view", async ({ page }) => {
+  await load(page);
+});
+
+Then("those models are listed inside the closed no-consensus disclosure", async ({ page }) => {
+  const details = page.getByTestId("ai-bench-no-consensus");
+  expect(await details.evaluate((d) => d.tagName === "DETAILS" && !(d as HTMLDetailsElement).open)).toBe(true);
+  const expected = scored.filter((s) => s.tier === "no-consensus").map((s) => s.model.id);
+  expect(expected.length).toBeGreaterThan(0);
+  expect(sorted(await idsIn(page, '[data-testid="ai-bench-no-consensus"]', "ai-bench-no-consensus-item"))).toEqual(
+    sorted(expected),
+  );
+});
+
+Then("those models appear in no tier section", async ({ page }) => {
+  const inSections = await tierMapIds(page);
+  for (const s of scored.filter((x) => x.tier === "no-consensus")) expect(inSections).not.toContain(s.model.id);
+});
+
+Then("the insufficient-data disclosure does not list them", async ({ page }) => {
+  const inInsufficient = await idsIn(page, '[data-testid="ai-bench-insufficient"]', "ai-bench-insufficient-item");
+  for (const s of scored.filter((x) => x.tier === "no-consensus")) expect(inInsufficient).not.toContain(s.model.id);
+});
 
 // ── Substitute finder ─────────────────────────────────────────────────────────
 
@@ -612,24 +641,27 @@ Then(
   },
 );
 
-Given("two rated models whose consensus shares differ", async ({ page }) => {
+Given("two rated models agreeing on different numbers of benchmarks", async ({ page }) => {
   const ordered = [...rated].sort(byConsensusDesc);
   pair = [ordered[0]!.model.id, ordered[ordered.length - 1]!.model.id];
-  expect(ordered[0]!.share).not.toBe(ordered[ordered.length - 1]!.share);
+  expect(ordered[0]!.agreeing).not.toBe(ordered[ordered.length - 1]!.agreeing);
   await load(page);
 });
 
-Then("the ratio of their bar lengths equals the ratio of their consensus shares", async ({ page }) => {
-  const width = async (id: string) =>
-    (await page
-      .locator(`[data-testid="ai-bench-tier-row"][data-model-id="${id}"] [data-testid="ai-bench-bar"]`)
-      .boundingBox())!.width;
-  const byShare = (id: string) => scored.find((s) => s.model.id === id)!.share;
-  const [a, b] = pair;
-  const measuredRatio = (await width(a)) / (await width(b));
-  const expected = byShare(a) / byShare(b);
-  expect(Math.abs(measuredRatio - expected) / expected).toBeLessThan(0.02);
-});
+Then(
+  "the ratio of their bar lengths equals the ratio of their agreeing counts out of all benchmarks",
+  async ({ page }) => {
+    const width = async (id: string) =>
+      (await page
+        .locator(`[data-testid="ai-bench-tier-row"][data-model-id="${id}"] [data-testid="ai-bench-bar"]`)
+        .boundingBox())!.width;
+    const byAgreeing = (id: string) => scored.find((s) => s.model.id === id)!.agreeing;
+    const [a, b] = pair;
+    const measuredRatio = (await width(a)) / (await width(b));
+    const expected = byAgreeing(a) / byAgreeing(b);
+    expect(Math.abs(measuredRatio - expected) / expected).toBeLessThan(0.02);
+  },
+);
 
 Then("every tier section has a text heading naming its tier", async ({ page }) => {
   for (const tier of RATED_TIERS) {
@@ -806,7 +838,16 @@ Then("it states that a consensus tie goes to the highest tied tier", async ({ pa
 });
 
 Then(
-  "it states that models are ordered inside a tier by how many benchmarks agree, then by the share that agree",
+  "it states that a tier needs at least half of the model's tiered benchmarks to agree, and a model below half has no consensus tier",
+  async ({ page }) => {
+    const text = page.getByTestId("ai-bench-method-consensus");
+    await expect(text).toContainText("half");
+    await expect(text).toContainText("no consensus tier");
+  },
+);
+
+Then(
+  "it states that models are ordered inside a tier by how many benchmarks agree, then by how many benchmarks rated the model",
   async ({ page }) => {
     await expect(page.getByTestId("ai-bench-method-consensus-order")).toHaveText(
       t("en", "aiBenchMethodConsensusOrder"),

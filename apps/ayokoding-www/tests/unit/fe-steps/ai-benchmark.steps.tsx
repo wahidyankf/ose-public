@@ -114,7 +114,7 @@ let view: ReturnType<typeof render> | undefined;
 
 const full = dataset;
 const scored = scoreModels(full);
-const rated = scored.filter((s) => s.tier !== "insufficient");
+const rated = scored.filter((s) => s.tier !== "insufficient" && s.tier !== "no-consensus");
 const byId = (id: string) => full.models.find((m) => m.id === id)!;
 
 function renderPage(locale: Locale = "en", search = "") {
@@ -239,6 +239,34 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  ScenarioOutline(
+    "A model whose benchmarks split below half has no consensus tier",
+    ({ Given, When, Then, And }, variables) => {
+      type Held = "ultra" | "planning" | "execution" | "fast" | "unranked";
+      Given(
+        'a fixture model holding "<deepSwe>", "<terminalBench>", "<sweAtlas>", and "<frontierCode>" tiers on the four benchmarks',
+        () => {
+          const held = [variables.deepSwe, variables.terminalBench, variables.sweAtlas, variables.frontierCode].map(
+            (t) => t as Held,
+          );
+          ctx.model = tiered("m", held[0]!, held[1]!, held[2]!, held[3]!);
+          ctx.roster = [...quadAnchors(), ctx.model];
+        },
+      );
+      When("its consensus tier is assigned", () => {
+        ctx.consensus = assignConsensusTier(ctx.model!, fixtureDataset(ctx.roster!));
+      });
+      Then("that model has no consensus tier", () => {
+        expect(ctx.consensus!.tier).toBe("no-consensus");
+      });
+      And("that model is not in the insufficient group", () => {
+        const groups = computeTierGroups(fixtureDataset(ctx.roster!));
+        expect(groups["no-consensus"].map((s) => s.model.id)).toContain("m");
+        expect(groups.insufficient.map((s) => s.model.id)).not.toContain("m");
+      });
+    },
+  );
+
   Scenario("Models in one consensus section are ordered by consensus strength", ({ Given, When, Then }) => {
     Given("fixture models in the planning consensus tier agreeing on 2 of 4, 3 of 4, and 3 of 3 benchmarks", () => {
       ctx.roster = [
@@ -251,12 +279,42 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     When("the planning consensus section is ordered", () => {
       ctx.section = computeTierGroups(fixtureDataset(ctx.roster!)).planning;
     });
-    Then("the order is 3 of 3, then 3 of 4, then 2 of 4", () => {
+    Then("the order is 3 of 4, then 3 of 3, then 2 of 4", () => {
       // The per-benchmark anchor in the planning tier also agrees 3 of 3; assert relative order.
       const ids = ctx.section!.map((s) => s.model.id);
-      expect(ids.indexOf("a-3of3")).toBeLessThan(ids.indexOf("b-3of4"));
-      expect(ids.indexOf("b-3of4")).toBeLessThan(ids.indexOf("c-2of4"));
-      expect(ids.indexOf("a-3of3")).toBe(0);
+      expect(ids.indexOf("b-3of4")).toBeLessThan(ids.indexOf("a-3of3"));
+      expect(ids.indexOf("a-3of3")).toBeLessThan(ids.indexOf("c-2of4"));
+      expect(ids.indexOf("b-3of4")).toBe(0);
+    });
+  });
+
+  Scenario("Models with no consensus tier are listed in their own closed disclosure", ({ Given, And, When, Then }) => {
+    let split: Model[] = [];
+    Given("the roster holds models whose benchmarks split below half", () => {
+      split = scored.filter((s) => s.tier === "no-consensus").map((s) => s.model);
+      expect(split.length).toBeGreaterThan(0);
+    });
+    And("the AI benchmark page is open in the Consensus tiers view", () => {
+      renderPage();
+    });
+    When("the page renders", () => {
+      expect(screen.getByTestId("ai-bench-page")).toBeTruthy();
+    });
+    Then("those models are listed inside the closed no-consensus disclosure", () => {
+      const details = screen.getByTestId("ai-bench-no-consensus") as HTMLDetailsElement;
+      expect(details.tagName).toBe("DETAILS");
+      expect(details.open).toBe(false);
+      expect(sorted(idsIn("ai-bench-no-consensus-item", details))).toEqual(sorted(split.map((m) => m.id)));
+    });
+    And("those models appear in no tier section", () => {
+      const inSections = tierMapIds();
+      for (const m of split) expect(inSections).not.toContain(m.id);
+    });
+    And("the insufficient-data disclosure does not list them", () => {
+      const insufficient = screen.getByTestId("ai-bench-insufficient");
+      for (const m of split) {
+        expect(insufficient.querySelector(`[data-model-id="${m.id}"]`)).toBeNull();
+      }
     });
   });
 
@@ -316,7 +374,8 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
     Then('each model appears in exactly one of "ultra", "planning", "execution", "fast", or "insufficient"', () => {
       const all = TIERS.flatMap((tier) => groups[tier].map((s) => s.model.id));
-      expect(sorted(all)).toEqual(sorted(full.models.map((m) => m.id)));
+      const noConsensus = groups["no-consensus"].map((s) => s.model.id);
+      expect(sorted([...all, ...noConsensus])).toEqual(sorted(full.models.map((m) => m.id)));
     });
   });
 
@@ -774,24 +833,24 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     },
   );
 
-  Scenario("Bar length is proportional to the consensus share", ({ Given, When, Then }) => {
+  Scenario("Bar length is proportional to the agreeing count", ({ Given, When, Then }) => {
     let pair: [string, string];
-    Given("two rated models whose consensus shares differ", () => {
+    Given("two rated models agreeing on different numbers of benchmarks", () => {
       const top = [...rated].sort(byConsensusDesc);
       pair = [top[0]!.model.id, top[top.length - 1]!.model.id];
-      expect(top[0]!.share).not.toBe(top[top.length - 1]!.share);
+      expect(top[0]!.agreeing).not.toBe(top[top.length - 1]!.agreeing);
     });
     When("the tier map is rendered in the Consensus tiers view", () => {
       renderPage();
     });
-    Then("the ratio of their bar lengths equals the ratio of their consensus shares", () => {
+    Then("the ratio of their bar lengths equals the ratio of their agreeing counts out of all benchmarks", () => {
       const width = (id: string) => {
         const row = document.querySelector(`[data-testid="ai-bench-tier-row"][data-model-id="${id}"]`)!;
         return parseFloat((row.querySelector('[data-testid="ai-bench-bar"]') as HTMLElement).style.width);
       };
-      const byShare = (id: string) => scored.find((s) => s.model.id === id)!.share;
+      const byAgreeing = (id: string) => scored.find((s) => s.model.id === id)!.agreeing;
       const [a, b] = pair;
-      expect(width(a) / width(b)).toBeCloseTo(byShare(a) / byShare(b), 6);
+      expect(width(a) / width(b)).toBeCloseTo(byAgreeing(a) / byAgreeing(b), 6);
     });
   });
 
@@ -1025,7 +1084,15 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
       expect(within(details).getByTestId("ai-bench-method-consensus").textContent).toMatch(/highest/);
     });
     And(
-      "it states that models are ordered inside a tier by how many benchmarks agree, then by the share that agree",
+      "it states that a tier needs at least half of the model's tiered benchmarks to agree, and a model below half has no consensus tier",
+      () => {
+        const text = within(details).getByTestId("ai-bench-method-consensus").textContent!;
+        expect(text).toMatch(/half/);
+        expect(text).toContain("no consensus tier");
+      },
+    );
+    And(
+      "it states that models are ordered inside a tier by how many benchmarks agree, then by how many benchmarks rated the model",
       () => {
         expect(within(details).getByTestId("ai-bench-method-consensus-order").textContent).toBe(
           t("en", "aiBenchMethodConsensusOrder"),
@@ -1725,6 +1792,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
         expect(screen.getByTestId(`ai-bench-tier-${tier}`)).toBeTruthy();
       }
       expect(screen.getByTestId("ai-bench-insufficient")).toBeTruthy();
+      expect(screen.getByTestId("ai-bench-no-consensus")).toBeTruthy();
     });
     And("no raw translation key is rendered", () => {
       expect(document.body.textContent).not.toMatch(/aiBench|\{\w+\}/);

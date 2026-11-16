@@ -29,8 +29,12 @@ export type HarnessId =
 /** The three tiers defined by an anchor model, highest first. */
 export type AnchoredTier = "ultra" | "planning" | "execution";
 
-/** Every tier a model can land in: the anchored tiers, `fast` below them, and `insufficient`. */
-export type Tier = AnchoredTier | "fast" | "insufficient";
+/**
+ * Every tier a model can land in: the anchored tiers, `fast` below them, `insufficient` when
+ * fewer than two benchmarks rate it, and `no-consensus` when at least two do but fewer than
+ * half agree on the modal tier.
+ */
+export type Tier = AnchoredTier | "fast" | "no-consensus" | "insufficient";
 
 /**
  * Every tier a model can land in on one benchmark: the anchored tiers, `fast` below them, and

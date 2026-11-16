@@ -80,6 +80,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     aiBenchTierPlanning: "Planning & orchestration",
     aiBenchTierExecution: "Execution",
     aiBenchTierFast: "Fast",
+    aiBenchTierNoConsensus: "No consensus",
     aiBenchTierInsufficient: "Insufficient data",
     aiBenchTierUltraUse: "For the hardest, longest-running work.",
     aiBenchTierPlanningUse: "For planning, review, and orchestrating other agents.",
@@ -100,6 +101,9 @@ export const translations: Record<Locale, Record<string, string>> = {
     aiBenchInsufficientIntro:
       "These models have independent results on fewer than {min} benchmarks, so they get no consensus tier yet.",
     aiBenchInsufficientNone: "no independent results yet",
+
+    aiBenchNoConsensusHeading: "No consensus ({count} models)",
+    aiBenchNoConsensusIntro: "These models' benchmarks do not agree on one tier, so they have no consensus tier.",
 
     aiBenchTableHeading: "All models",
     aiBenchTableCaption:
@@ -129,9 +133,9 @@ export const translations: Record<Locale, Record<string, string>> = {
       "Consensus tier: a model needs scores on at least {min} benchmarks; with fewer, it is listed as having insufficient data.",
     aiBenchMethodScoreBasis: "Score basis: the consensus tiers, or one benchmark at a time ({consensus}, {options}).",
     aiBenchMethodConsensus:
-      "A model's consensus tier is the tier it holds on the most benchmarks; a tie goes to the highest tied tier.",
+      "A model's consensus tier is the tier it holds on the most benchmarks, when at least half of its tiered benchmarks agree on it; a tie goes to the highest tied tier, and a model below half has no consensus tier.",
     aiBenchMethodConsensusOrder:
-      "Inside a tier, models are ordered by how many benchmarks agree, then by the share that agree.",
+      "Inside a tier, models are ordered by how many benchmarks agree, then by how many benchmarks rated the model.",
     aiBenchMethodNoAverage: "No average or composite score is computed anywhere on this page.",
     aiBenchMethodRawScores: "A per-benchmark view shows raw operator figures with no normalization or weighting.",
     aiBenchMethodUnranked: "Models without a scored figure on the chosen benchmark are unranked.",
@@ -621,6 +625,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     aiBenchTierPlanning: "Perencanaan & orkestrasi",
     aiBenchTierExecution: "Eksekusi",
     aiBenchTierFast: "Cepat",
+    aiBenchTierNoConsensus: "Tidak ada konsensus",
     aiBenchTierInsufficient: "Data belum cukup",
     aiBenchTierUltraUse: "Untuk pekerjaan tersulit dan paling panjang.",
     aiBenchTierPlanningUse: "Untuk perencanaan, review, dan mengorkestrasi agen lain.",
@@ -641,6 +646,10 @@ export const translations: Record<Locale, Record<string, string>> = {
     aiBenchInsufficientIntro:
       "Model-model ini punya hasil independen di kurang dari {min} benchmark, jadi belum mendapat tier konsensus.",
     aiBenchInsufficientNone: "belum ada hasil independen",
+
+    aiBenchNoConsensusHeading: "Tidak ada konsensus ({count} model)",
+    aiBenchNoConsensusIntro:
+      "Benchmark-benchmark model ini tidak sepakat pada satu tingkat, sehingga model tersebut tidak memiliki tier konsensus.",
 
     aiBenchTableHeading: "Semua model",
     aiBenchTableCaption:
@@ -671,9 +680,9 @@ export const translations: Record<Locale, Record<string, string>> = {
     aiBenchMethodScoreBasis:
       "Dasar skor: tier konsensus, atau satu benchmark dalam satu waktu ({consensus}, {options}).",
     aiBenchMethodConsensus:
-      "Tier konsensus sebuah model adalah tingkat yang paling sering ia pegang; bila seri, tingkat tertinggi yang seri dipakai.",
+      "Tier konsensus sebuah model adalah tingkat yang paling sering ia pegang, bila setidaknya separuh benchmark yang menilainya sepakat; bila seri, tingkat tertinggi yang seri dipakai, dan model di bawah separuh tidak memiliki tier konsensus.",
     aiBenchMethodConsensusOrder:
-      "Di dalam satu tingkat, model diurutkan berdasarkan jumlah benchmark yang sepakat, lalu berdasarkan porsi yang sepakat.",
+      "Di dalam satu tingkat, model diurutkan berdasarkan jumlah benchmark yang sepakat, lalu berdasarkan jumlah benchmark yang menilai model tersebut.",
     aiBenchMethodNoAverage: "Tidak ada skor rata-rata atau gabungan yang dihitung di halaman ini.",
     aiBenchMethodRawScores:
       "Tampilan per benchmark menunjukkan angka mentah operator tanpa normalisasi atau pembobotan.",

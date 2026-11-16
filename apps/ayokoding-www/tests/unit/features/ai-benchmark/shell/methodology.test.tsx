@@ -42,6 +42,15 @@ describe.each<[Locale]>([["en"], ["id"]])("Methodology score basis in %s", (loca
     }
   });
 
+  it("states the at-least-half rule and the no-consensus outcome", () => {
+    render(<Methodology dataset={dataset} locale={locale} />);
+    const text = screen.getByTestId("ai-bench-method-consensus").textContent!;
+    expect(text).toBe(t(locale, "aiBenchMethodConsensus"));
+    expect(text).toMatch(locale === "en" ? /half/ : /separuh/);
+    expect(text).toMatch(/no consensus tier|tidak memiliki tier konsensus/);
+    expect(text).not.toMatch(/aiBench|\{\w+\}/);
+  });
+
   it("states raw figures and the unranked rule with no raw keys", () => {
     render(<Methodology dataset={dataset} locale={locale} />);
     expect(screen.getByTestId("ai-bench-method-raw").textContent).toBe(t(locale, "aiBenchMethodRawScores"));

@@ -12,7 +12,7 @@ import { SubstituteFinder } from "@/features/ai-benchmark/shell/substitute-finde
 import { tierLabel } from "@/features/ai-benchmark/shell/tier-style";
 import type { Locale } from "@/features/i18n/core/config";
 import { t } from "@/features/i18n/core/translations";
-import { anchors, dataset, flat, harnessModel, price } from "../core/fixtures";
+import { anchors, dataset, flat, harnessModel, price, quadAnchors, tiered } from "../core/fixtures";
 
 afterEach(cleanup);
 
@@ -157,6 +157,26 @@ describe("SubstituteFinder lists the chosen harness's models", () => {
     finder("command-code", ultraTarget.id);
     expect(screen.getByTestId("ai-bench-sub-list").getAttribute("data-kind")).toBe("nearest");
     expect(listedIds()).toEqual(["cc-planning", "cc-fast"]);
+  });
+
+  it("points to the data table instead of substitutes when the chosen model has no consensus tier", () => {
+    const splitRoster = dataset([
+      ...quadAnchors(),
+      tiered("split-target", "ultra", "planning", "execution", "fast", { vendor: "OpenAI" }),
+      harnessModel("opencode-go", "go-planning", 57),
+    ]);
+    render(
+      <SubstituteFinder
+        dataset={splitRoster}
+        selectedId="split-target"
+        harness="opencode-go"
+        locale="en"
+        onSelect={() => undefined}
+        onSelectHarness={() => undefined}
+      />,
+    );
+    expect(screen.getByTestId("ai-bench-finder-summary").textContent).toMatch(/table/);
+    expect(screen.queryByTestId("ai-bench-sub-item")).toBeNull();
   });
 });
 

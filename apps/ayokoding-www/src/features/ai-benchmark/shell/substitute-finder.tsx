@@ -26,7 +26,8 @@ export type SubstituteFinderProps = {
 
 function TargetSummary({ target, dataset, locale }: { target: Model; dataset: Dataset; locale: Locale }) {
   const consensus = assignConsensusTier(target, dataset);
-  if (consensus.tier === "insufficient") {
+  // A target with no consensus tier cannot be compared, like an insufficient-data target.
+  if (consensus.tier === "insufficient" || consensus.tier === "no-consensus") {
     return (
       <p data-testid="ai-bench-finder-summary">{tf(locale, "aiBenchFinderInsufficient", { model: target.name })}</p>
     );

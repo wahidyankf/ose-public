@@ -5,8 +5,11 @@ import { cleanup, fireEvent, render, screen, within } from "@testing-library/rea
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { HARNESS_DISPLAY_NAMES, SUBSTITUTE_HARNESSES } from "@/features/ai-benchmark/core/data/benchmarks";
 import type { HarnessId } from "@/features/ai-benchmark/core/data/types";
-import { tf } from "@/features/ai-benchmark/shell/format";
+import { blendedPrice } from "@/features/ai-benchmark/core/price";
+import { assignConsensusTier } from "@/features/ai-benchmark/core/tiers";
+import { formatUsd, tf } from "@/features/ai-benchmark/shell/format";
 import { SubstituteFinder } from "@/features/ai-benchmark/shell/substitute-finder";
+import { tierLabel } from "@/features/ai-benchmark/shell/tier-style";
 import type { Locale } from "@/features/i18n/core/config";
 import { t } from "@/features/i18n/core/translations";
 import { anchors, dataset, flat, harnessModel, price } from "../core/fixtures";
@@ -100,6 +103,38 @@ describe("SubstituteFinder lists the chosen harness's models", () => {
   ] as const)("lists only %s models in the target's tier or higher", (harness, expected) => {
     finder(harness);
     expect(listedIds()).toEqual(expected);
+  });
+
+  it("summarises the target with its consensus tier and count, not an index", () => {
+    finder("command-code-pro");
+    const s = assignConsensusTier(target, roster);
+    expect(screen.getByTestId("ai-bench-finder-summary").textContent).toBe(
+      tf("en", "aiBenchFinderTarget", {
+        model: target.name,
+        tier: tierLabel(s.tier, "en"),
+        agreeing: s.agreeing,
+        considered: s.considered,
+        price: formatUsd(blendedPrice(target.price)!, "en"),
+      }),
+    );
+    expect(screen.getByTestId("ai-bench-finder-summary").textContent).not.toMatch(/index/i);
+  });
+
+  it("shows each substitute's consensus tier, count, and blended price", () => {
+    finder("command-code-pro");
+    for (const id of listedIds()) {
+      const item = screen.getByTestId("ai-bench-finder").querySelector(`[data-model-id="${id}"]`)!;
+      const s = assignConsensusTier(roster.models.find((m) => m.id === id)!, roster);
+      expect(within(item as HTMLElement).getByTestId("ai-bench-sub-tier").textContent).toBe(tierLabel(s.tier, "en"));
+      expect(within(item as HTMLElement).getByTestId("ai-bench-sub-count").textContent).toBe(
+        tf("en", "aiBenchTierConsensusCount", { agreeing: s.agreeing, considered: s.considered }),
+      );
+      const blended = blendedPrice(s.model.price);
+      expect(within(item as HTMLElement).getByTestId("ai-bench-sub-blended").textContent).toBe(
+        blended === undefined ? "—" : formatUsd(blended, "en"),
+      );
+      expect(within(item as HTMLElement).queryByTestId("ai-bench-sub-index")).toBeNull();
+    }
   });
 
   it("changes the list when the harness prop changes", () => {

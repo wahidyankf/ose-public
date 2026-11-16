@@ -7,12 +7,10 @@ import {
   DEFAULT_SUBSTITUTE_HARNESS,
   HARNESS_DISPLAY_NAMES,
   HARNESS_IN_HOUSE_LINES,
-  METHOD_EXAMPLE,
   MIN_SCORED_BENCHMARKS,
   NEAREST_OPTION_COUNT,
   ROSTER_CATALOG_HARNESSES,
   SUBSTITUTE_HARNESSES,
-  TIER_ANCHORS,
   TIERS,
   rosterScopeParams,
 } from "../../../../ayokoding-www/src/features/ai-benchmark/core/data/benchmarks";
@@ -21,20 +19,15 @@ import { OPERATORS, operatorById } from "../../../../ayokoding-www/src/features/
 import type { HarnessId, Model, Tier } from "../../../../ayokoding-www/src/features/ai-benchmark/core/data/types";
 import { HARNESS_IDS, filterModels } from "../../../../ayokoding-www/src/features/ai-benchmark/core/filter";
 import { blendedPrice, priceRatio } from "../../../../ayokoding-www/src/features/ai-benchmark/core/price";
-import {
-  benchmarkScore,
-  compositeIndex,
-  scoredBenchmarks,
-  scoredFigure,
-} from "../../../../ayokoding-www/src/features/ai-benchmark/core/score";
+import { benchmarkScore, scoredFigure } from "../../../../ayokoding-www/src/features/ai-benchmark/core/score";
 import { frontierModels, substitutesFor } from "../../../../ayokoding-www/src/features/ai-benchmark/core/substitute";
 import {
   assignBenchmarkTier,
   benchmarkTierAnchors,
-  byIndexDesc,
+  byConsensusDesc,
   computeBenchmarkTierGroups,
+  computeTierGroups,
   scoreModels,
-  tierAnchors,
 } from "../../../../ayokoding-www/src/features/ai-benchmark/core/tiers";
 import { t } from "../../../../ayokoding-www/src/features/i18n/core/translations";
 
@@ -48,7 +41,7 @@ const RATED_TIERS = ["ultra", "planning", "execution", "fast"] as const;
 
 const full = dataset;
 const scored = scoreModels(full);
-const rated = scored.filter((s) => s.index !== undefined);
+const rated = scored.filter((s) => s.tier !== "insufficient");
 const byId = (id: string): Model => full.models.find((m) => m.id === id)!;
 const tierOf = (id: string): Tier => scored.find((s) => s.model.id === id)!.tier;
 
@@ -78,7 +71,6 @@ const usd = new Intl.NumberFormat("en-US", {
   minimumFractionDigits: 2,
   maximumFractionDigits: 3,
 });
-const fmtIndex = (v: number) => index1.format(v);
 const fmtPercent = (v: number) => `${index1.format(v)}%`;
 const fmtUsd = (v: number) => usd.format(v);
 const fmtDate = (iso: string) =>
@@ -204,15 +196,16 @@ Given("the AI benchmark page is open", async ({ page }) => {
   await load(page);
 });
 
-When("every model's tier is assigned", async ({ page }) => {
-  await expect(page.getByTestId("ai-bench-tier-map")).toBeVisible();
-});
-
 When("the tier groups are computed", async ({ page }) => {
   await expect(page.getByTestId("ai-bench-tier-map")).toBeVisible();
 });
 
 When("the tier map is rendered", async ({ page }) => {
+  await expect(page.getByTestId("ai-bench-tier-map")).toBeVisible();
+});
+
+When("the tier map is rendered in the Consensus tiers view", async ({ page }) => {
+  await load(page);
   await expect(page.getByTestId("ai-bench-tier-map")).toBeVisible();
 });
 
@@ -225,11 +218,6 @@ When("the data table is rendered", async ({ page }) => {
 });
 
 // ── Tiers ─────────────────────────────────────────────────────────────────────
-
-Then("the {word} anchor is in the {string} tier", async ({ page }, which: string, tier: string) => {
-  const anchorId = TIER_ANCHORS[which as (typeof ANCHORED)[number]];
-  await expect(page.locator(`[data-testid="ai-bench-tier-${tier}"] [data-model-id="${anchorId}"]`)).toHaveCount(1);
-});
 
 Then(
   'each model appears in exactly one of "ultra", "planning", "execution", "fast", or "insufficient"',
@@ -270,7 +258,7 @@ When("the reader chooses a frontier model that has Command Code Pro models in it
 });
 
 Then(
-  "the finder lists Command Code Pro models with their tier, composite index, and blended price",
+  "the finder lists Command Code Pro models with their consensus tier, consensus count, and blended price",
   async ({ page }) => {
     const expected = substitutesFor(target!, full, "command-code-pro");
     expect(expected.kind).toBe("matches");
@@ -279,7 +267,9 @@ Then(
       expect(s.model.harnesses).toContain("command-code-pro");
       const item = page.locator(`[data-testid="ai-bench-sub-item"][data-model-id="${s.model.id}"]`);
       await expect(item.getByTestId("ai-bench-sub-tier")).toHaveText(tierLabel(s.tier));
-      await expect(item.getByTestId("ai-bench-sub-index")).toHaveText(fmtIndex(s.index!));
+      await expect(item.getByTestId("ai-bench-sub-count")).toHaveText(
+        fill(t("en", "aiBenchTierConsensusCount"), { agreeing: s.agreeing, considered: s.considered }),
+      );
       await expect(item.getByTestId("ai-bench-sub-blended")).toHaveText(blendedText(s.model));
     }
   },
@@ -314,10 +304,11 @@ Then("the finder states that no model of that harness reaches that model's tier"
 Then("the finder lists the highest-scoring models of that harness as the nearest options", async ({ page }) => {
   const candidates = rated
     .filter((s) => s.model.harnesses.includes(finderHarness) && s.model.id !== target!.id)
-    .sort(byIndexDesc);
+    .sort(byConsensusDesc);
   const listed = (await subIds(page)).map((id) => scored.find((s) => s.model.id === id)!);
-  // Compare indexes, not ids: equal-index models may swap places without changing the claim.
-  expect(listed.map((s) => s.index)).toEqual(candidates.slice(0, NEAREST_OPTION_COUNT).map((s) => s.index));
+  // Compare consensus strength, not ids: equally strong models keep their id order on both sides.
+  const strength = (s: (typeof listed)[number]) => [s.tier, s.agreeing, s.considered] as const;
+  expect(listed.map(strength)).toEqual(candidates.slice(0, NEAREST_OPTION_COUNT).map(strength));
   for (const s of listed) expect(s.model.harnesses).toContain(finderHarness);
   await expect(page.getByTestId("ai-bench-sub-list")).toHaveAttribute("data-kind", "nearest");
 });
@@ -432,36 +423,34 @@ Then("that line states that vendor-reported results are excluded", async ({ page
 
 // ── Tier map ──────────────────────────────────────────────────────────────────
 
-Then("the ultra, planning, and execution sections each name their anchor model", async ({ page }) => {
-  for (const tier of ANCHORED) {
-    await expect(page.getByTestId(`ai-bench-tier-${tier}`).getByTestId("ai-bench-tier-floor")).toContainText(
-      byId(TIER_ANCHORS[tier]).name,
+Then("every tier section states that its models hold that tier on the most benchmarks", async ({ page }) => {
+  for (const tier of RATED_TIERS) {
+    await expect(page.getByTestId(`ai-bench-tier-${tier}`).getByTestId("ai-bench-tier-rule")).toHaveText(
+      fill(t("en", "aiBenchTierConsensusRule"), { tier: tierLabel(tier) }),
     );
   }
 });
 
-Then("each of those sections states its floor score", async ({ page }) => {
-  const a = tierAnchors(full);
-  for (const tier of ANCHORED) {
-    await expect(page.getByTestId(`ai-bench-tier-${tier}`).getByTestId("ai-bench-tier-floor")).toContainText(
-      fmtIndex(a[tier]!.index!),
-    );
+Then("no tier section names a composite anchor or a composite floor score", async ({ page }) => {
+  for (const tier of RATED_TIERS) {
+    await expect(page.getByTestId(`ai-bench-tier-${tier}`).getByTestId("ai-bench-tier-floor")).toHaveCount(0);
   }
+  await expect(page.getByTestId("ai-bench-tier-map")).not.toContainText(/composite|average/i);
 });
 
-Then("the fast section states that it holds rated models below the execution floor", async ({ page }) => {
-  await expect(page.getByTestId("ai-bench-tier-fast").getByTestId("ai-bench-tier-floor")).toHaveText(
-    t("en", "aiBenchTierFastFloor"),
-  );
-});
-
-Then("every rated model row carries the model name and its composite index in text", async ({ page }) => {
+Then("every rated model row carries the model name and its consensus count in text", async ({ page }) => {
   expect(sorted(await tierMapIds(page))).toEqual(sorted(rated.map((s) => s.model.id)));
   for (const s of rated) {
     const row = page.locator(`[data-testid="ai-bench-tier-row"][data-model-id="${s.model.id}"]`);
     await expect(row.getByTestId("ai-bench-tier-row-name")).toHaveText(s.model.name);
-    await expect(row.getByTestId("ai-bench-tier-row-index")).toHaveText(fmtIndex(s.index!));
+    await expect(row.getByTestId("ai-bench-tier-row-count")).toHaveText(
+      fill(t("en", "aiBenchTierConsensusCount"), { agreeing: s.agreeing, considered: s.considered }),
+    );
   }
+});
+
+Then("no rated model row shows a composite index", async ({ page }) => {
+  await expect(page.locator('[data-testid="ai-bench-tier-row-index"]')).toHaveCount(0);
 });
 
 Then("every rated model row carries one capability bar", async ({ page }) => {
@@ -489,21 +478,22 @@ Then(
   },
 );
 
-Given("two rated models whose composite indices differ", async ({ page }) => {
-  const ordered = [...rated].sort(byIndexDesc);
+Given("two rated models whose consensus shares differ", async ({ page }) => {
+  const ordered = [...rated].sort(byConsensusDesc);
   pair = [ordered[0]!.model.id, ordered[ordered.length - 1]!.model.id];
-  expect(ordered[0]!.index).not.toBe(ordered[ordered.length - 1]!.index);
+  expect(ordered[0]!.share).not.toBe(ordered[ordered.length - 1]!.share);
   await load(page);
 });
 
-Then("the ratio of their bar lengths equals the ratio of their composite indices", async ({ page }) => {
+Then("the ratio of their bar lengths equals the ratio of their consensus shares", async ({ page }) => {
   const width = async (id: string) =>
     (await page
       .locator(`[data-testid="ai-bench-tier-row"][data-model-id="${id}"] [data-testid="ai-bench-bar"]`)
       .boundingBox())!.width;
+  const byShare = (id: string) => scored.find((s) => s.model.id === id)!.share;
   const [a, b] = pair;
   const measuredRatio = (await width(a)) / (await width(b));
-  const expected = compositeIndex(byId(a))! / compositeIndex(byId(b))!;
+  const expected = byShare(a) / byShare(b);
   expect(Math.abs(measuredRatio - expected) / expected).toBeLessThan(0.02);
 });
 
@@ -574,14 +564,14 @@ Then("every table header cell declares a scope", async ({ page }) => {
 });
 
 Then(
-  "each model row lists its tier, every benchmark score, composite index, input price, output price, and blended price",
+  "each model row lists the tier of the active view, every benchmark score, input price, output price, and blended price",
   async ({ page }) => {
     expect(sorted(await tableIds(page))).toEqual(sorted(full.models.map((m) => m.id)));
     for (const s of scored) {
       const row = tableRow(page, s.model.id);
       const p = s.model.price;
       await expect(row.getByTestId("ai-bench-table-tier")).toHaveText(tierLabel(s.tier));
-      await expect(row.getByTestId("ai-bench-table-index")).toHaveText(s.index === undefined ? "—" : fmtIndex(s.index));
+      await expect(row.getByTestId("ai-bench-table-index")).toHaveCount(0);
       await expect(row.getByTestId("ai-bench-table-input")).toHaveText(p === undefined ? "—" : fmtUsd(p.input));
       await expect(row.getByTestId("ai-bench-table-output")).toHaveText(p === undefined ? "—" : fmtUsd(p.output));
       await expect(row.getByTestId("ai-bench-table-blended")).toHaveText(
@@ -639,13 +629,12 @@ When("the reader opens the methodology section", async ({ page }) => {
   await openMethodology(page);
 });
 
-Then("it lists every composite benchmark with its version and weight", async ({ page }) => {
+Then("it lists every benchmark with its version", async ({ page }) => {
   const items = page.getByTestId("ai-bench-method-benchmark");
   await expect(items).toHaveCount(BENCHMARK_SPECS.length);
   for (const [i, b] of BENCHMARK_SPECS.entries()) {
     await expect(items.nth(i)).toContainText(b.name);
     await expect(items.nth(i)).toContainText(fill(t("en", "aiBenchMethodVersion"), { version: b.version }));
-    await expect(items.nth(i)).toContainText(fill(t("en", "aiBenchMethodWeight"), { weight: b.weight }));
   }
 });
 
@@ -664,34 +653,32 @@ Then("it states the operator order used to pick each figure", async ({ page }) =
   }
 });
 
-Then("it states the minimum number of benchmarks needed for a tier", async ({ page }) => {
+Then("it states the minimum number of benchmarks needed for a consensus tier", async ({ page }) => {
   await expect(page.getByTestId("ai-bench-method-index")).toHaveText(
     fill(t("en", "aiBenchMethodIndex"), { min: MIN_SCORED_BENCHMARKS }),
   );
 });
 
-Then("it lists every tier anchor with its floor score", async ({ page }) => {
-  const a = tierAnchors(full);
-  for (const tier of ANCHORED) {
-    const item = page.locator(`[data-testid="ai-bench-method-anchor"][data-tier="${tier}"]`);
-    await expect(item).toContainText(a[tier]!.model.name);
-    await expect(item).toContainText(fmtIndex(a[tier]!.index!));
-  }
+Then("it states that no average or composite score is computed", async ({ page }) => {
+  await expect(page.getByTestId("ai-bench-method-no-average")).toHaveText(t("en", "aiBenchMethodNoAverage"));
 });
 
-Then("the worked example shows a model's benchmark scores and the resulting composite index", async ({ page }) => {
-  const m = byId(METHOD_EXAMPLE.indexModel);
-  const example = page.getByTestId("ai-bench-method-example-index");
-  await expect(example).toBeVisible();
-  await expect(example).toContainText(m.name);
-  for (const b of scoredBenchmarks(m)) await expect(example).toContainText(fmtIndex(scoredFigure(m, b)!.value));
-  await expect(example).toContainText(fmtIndex(compositeIndex(m)!));
+Then("it states that a model's consensus tier is the tier it holds on the most benchmarks", async ({ page }) => {
+  await expect(page.getByTestId("ai-bench-method-consensus")).toHaveText(t("en", "aiBenchMethodConsensus"));
 });
 
-Then("the worked example's composite index equals that model's index in the data table", async ({ page }) => {
-  const tableIndex = await tableRow(page, METHOD_EXAMPLE.indexModel).getByTestId("ai-bench-table-index").innerText();
-  await expect(page.getByTestId("ai-bench-method-example-index")).toContainText(`index ${tableIndex}.`);
+Then("it states that a consensus tie goes to the highest tied tier", async ({ page }) => {
+  await expect(page.getByTestId("ai-bench-method-consensus")).toContainText("highest");
 });
+
+Then(
+  "it states that models are ordered inside a tier by how many benchmarks agree, then by the share that agree",
+  async ({ page }) => {
+    await expect(page.getByTestId("ai-bench-method-consensus-order")).toHaveText(
+      t("en", "aiBenchMethodConsensusOrder"),
+    );
+  },
+);
 
 Given("the dataset names its benchmark operators and price sources", async ({}) => {
   const used = new Set(full.models.flatMap((m) => m.figures.map((f) => f.operator)));
@@ -869,13 +856,18 @@ Given("the URL carries no benchmark parameter", async ({ page }) => {
   await load(page, "");
 });
 
-Then("the tier map orders models by composite index", async ({ page }) => {
-  expect(await tierMapIds(page)).toEqual([...rated].sort(byIndexDesc).map((s) => s.model.id));
+function consensusTierMapIds(): string[] {
+  const groups = computeTierGroups(full);
+  return (["ultra", "planning", "execution", "fast"] as const).flatMap((tier) => groups[tier].map((s) => s.model.id));
+}
+
+Then("the tier map groups models by consensus tier", async ({ page }) => {
+  expect(await tierMapIds(page)).toEqual(consensusTierMapIds());
 });
 
-Then('the score basis control shows "Average"', async ({ page }) => {
+Then('the score basis control shows "Consensus tiers"', async ({ page }) => {
   await expect(scoreBasisSelect(page)).toHaveValue("");
-  await expect(scoreBasisSelect(page).locator("option:checked")).toHaveText(t("en", "aiBenchScoreBasisAverage"));
+  await expect(scoreBasisSelect(page).locator("option:checked")).toHaveText(t("en", "aiBenchScoreBasisConsensus"));
   await expect(scoreBasisSelect(page).locator("option")).toHaveCount(BENCHMARK_SPECS.length + 1);
 });
 
@@ -947,7 +939,7 @@ Given("the URL carries a benchmark parameter naming a known benchmark", async ({
   await load(page, "?benchmark=deep-swe");
 });
 
-When('the reader resets the score basis to "Average"', async ({ page }) => {
+When('the reader resets the score basis to "Consensus tiers"', async ({ page }) => {
   await scoreBasisSelect(page).selectOption("");
   await expect(page).not.toHaveURL(/[?&]benchmark=/);
 });
@@ -956,9 +948,9 @@ Then("the URL no longer carries the benchmark parameter", async ({ page }) => {
   expect(new URL(page.url()).searchParams.has("benchmark")).toBe(false);
 });
 
-Then("it names the five score basis options: the composite average and the four benchmarks", async ({ page }) => {
+Then("it names the five score basis options: the consensus tiers and the four benchmarks", async ({ page }) => {
   const text = await page.getByTestId("ai-bench-method-score-basis").innerText();
-  expect(text).toContain(t("en", "aiBenchScoreBasisAverage"));
+  expect(text).toContain(t("en", "aiBenchScoreBasisConsensus"));
   for (const b of BENCHMARK_SPECS) expect(text).toContain(b.name);
 });
 

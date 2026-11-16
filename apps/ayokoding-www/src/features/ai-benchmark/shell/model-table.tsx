@@ -1,6 +1,6 @@
-// AI BENCHMARK — the full data table: every shown model with its tier, each scored benchmark
-// figure (linked to its source and naming its operator), index, prices, cost per task, and
-// harnesses. Rows run from the highest tier down, by index within a tier.
+// AI BENCHMARK — the full data table: every shown model with the active view's tier, each
+// scored benchmark figure (linked to its source and naming its operator), prices, cost per task,
+// and harnesses. Rows run from the highest tier down, by consensus strength within a tier.
 
 import type { Locale } from "@/features/i18n/core/config";
 import { t } from "@/features/i18n/core/translations";
@@ -9,14 +9,14 @@ import { operatorById } from "../core/data/operators";
 import type { Model } from "../core/data/types";
 import { blendedPrice } from "../core/price";
 import { scoredFigure } from "../core/score";
-import { byIndexDesc, tierRank, type ScoredModel } from "../core/tiers";
-import { formatIndex, formatPercent, formatUsd, tf } from "./format";
+import { tableOrder, type TableRow } from "../core/tiers";
+import { formatPercent, formatUsd, tf } from "./format";
 import { LimitedChip, listedRateLabel, modelNotes } from "./model-bits";
 import { TAP_TARGET_MIN_CLASS } from "./tap-target";
-import { TierSwatch, tierLabel } from "./tier-style";
+import { TIER_BG_CLASS, TierSwatch, tierLabel } from "./tier-style";
 
 export type ModelTableProps = {
-  rows: readonly ScoredModel[];
+  rows: readonly TableRow[];
   locale: Locale;
 };
 
@@ -30,9 +30,24 @@ const DASH = "—";
  */
 const PINNED = "sticky left-0 z-10 border-r";
 
-/** Highest tier first, then {@link byIndexDesc}. */
-export function tableOrder(a: ScoredModel, b: ScoredModel): number {
-  return tierRank(b.tier) - tierRank(a.tier) || byIndexDesc(a, b);
+function tierCell(tier: TableRow["tier"], locale: Locale) {
+  if (tier === "unranked") {
+    return (
+      <span className="inline-flex items-center gap-1.5">
+        <span
+          aria-hidden="true"
+          className={`inline-block h-2.5 w-2.5 shrink-0 rounded-full ${TIER_BG_CLASS.insufficient}`}
+        />
+        {t(locale, "aiBenchTierUnranked")}
+      </span>
+    );
+  }
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      <TierSwatch tier={tier} />
+      {tierLabel(tier, locale)}
+    </span>
+  );
 }
 
 function ScoreCell({
@@ -67,7 +82,7 @@ function ScoreCell({
   );
 }
 
-function Row({ s, locale }: { s: ScoredModel; locale: Locale }) {
+function Row({ s, locale }: { s: TableRow; locale: Locale }) {
   const { model } = s;
   const blended = blendedPrice(model.price);
   const rateLabel = listedRateLabel(model.price, locale);
@@ -87,17 +102,11 @@ function Row({ s, locale }: { s: ScoredModel; locale: Locale }) {
         ))}
       </th>
       <td className={`${TD} whitespace-nowrap`} data-testid="ai-bench-table-tier">
-        <span className="inline-flex items-center gap-1.5">
-          <TierSwatch tier={s.tier} />
-          {tierLabel(s.tier, locale)}
-        </span>
+        {tierCell(s.tier, locale)}
       </td>
       {BENCHMARK_SPECS.map((b) => (
         <ScoreCell key={b.id} model={model} benchmark={b} locale={locale} />
       ))}
-      <td className={`${NUM} font-semibold`} data-testid="ai-bench-table-index">
-        {s.index === undefined ? DASH : formatIndex(s.index, locale)}
-      </td>
       <td className={NUM} data-testid="ai-bench-table-input">
         {model.price === undefined ? DASH : formatUsd(model.price.input, locale)}
       </td>
@@ -150,9 +159,6 @@ export function ModelTable({ rows, locale }: ModelTableProps) {
                   {b.name} <span className="font-normal">{b.version}</span>
                 </th>
               ))}
-              <th scope="col" className={`${TH} text-right`}>
-                {t(locale, "aiBenchColIndex")}
-              </th>
               <th scope="col" className={`${TH} text-right`}>
                 {t(locale, "aiBenchColInput")}
               </th>

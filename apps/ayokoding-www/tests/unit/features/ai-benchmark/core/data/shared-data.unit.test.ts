@@ -28,12 +28,9 @@ import {
 import { dataset } from "@/features/ai-benchmark/core/data/models";
 import { OPERATORS, PRICE_SOURCES } from "@/features/ai-benchmark/core/data/operators";
 import type { Model } from "@/features/ai-benchmark/core/data/types";
-import { compositeIndex, scoredBenchmarks } from "@/features/ai-benchmark/core/score";
+import { scoredBenchmarks } from "@/features/ai-benchmark/core/score";
 import { blendedPrice, priceRatio } from "@/features/ai-benchmark/core/price";
-import { assignTier } from "@/features/ai-benchmark/core/tiers";
 import { filterModels, type FilterState } from "@/features/ai-benchmark/core/filter";
-import { substitutesFor } from "@/features/ai-benchmark/core/substitute";
-import type { HarnessId } from "@/features/ai-benchmark/core/data/types";
 import { encodeState, decodeState } from "@/features/ai-benchmark/core/url-state";
 import { rosterScopeParams } from "@/features/ai-benchmark/core/data/benchmarks";
 
@@ -118,29 +115,17 @@ describe("evaluated exports equal the shared JSON", () => {
 });
 
 describe("representative scoring results match the shared vectors", () => {
-  it("reproduces every shared vector case", () => {
+  it("reproduces every shared vector case the page still computes", () => {
     const vectors = mustReadJson(benchmarkVectorsPath) as {
-      compositeIndex: Record<string, number | null>;
       scoredBenchmarks: Record<string, string[]>;
-      tiers: Record<string, string>;
       blendedPrice: Record<string, number | null>;
       priceRatio: { candidate: string; reference: string; value: number | null }[];
       filterCounts: { state: FilterState; count: number }[];
-      substitutes: {
-        target: string;
-        harness: HarnessId;
-        kind: string;
-        options: { id: string; tier: string; index: number | null }[];
-      };
     };
-    for (const [id, expected] of Object.entries(vectors.compositeIndex)) {
-      expect(compositeIndex(byId(id)) ?? null, `compositeIndex ${id}`).toBe(expected);
-    }
+    // The composite vectors (compositeIndex, tiers, substitutes with index) belong to the retired
+    // scoring and are no longer asserted here; the shared JSON keeps them for the Go port.
     for (const [id, expected] of Object.entries(vectors.scoredBenchmarks)) {
       expect(scoredBenchmarks(byId(id)), `scoredBenchmarks ${id}`).toEqual(expected);
-    }
-    for (const [id, expected] of Object.entries(vectors.tiers)) {
-      expect(assignTier(byId(id), dataset), `tier ${id}`).toBe(expected);
     }
     for (const [id, expected] of Object.entries(vectors.blendedPrice)) {
       expect(blendedPrice(byId(id).price) ?? null, `blendedPrice ${id}`).toBe(expected);
@@ -149,16 +134,9 @@ describe("representative scoring results match the shared vectors", () => {
       expect(priceRatio(byId(candidate), byId(reference)) ?? null, `priceRatio ${candidate}/${reference}`).toBe(value);
     }
     for (const { state, count } of vectors.filterCounts) {
+      if (state.tier !== undefined) continue;
       expect(filterModels(dataset, state), `filterModels ${JSON.stringify(state)}`).toHaveLength(count);
     }
-    const { target, harness, kind, options } = vectors.substitutes;
-    expect(target).toBe(METHOD_EXAMPLE.indexModel);
-    const result = substitutesFor(byId(target), dataset, harness);
-    expect(result.kind).toBe(kind);
-    expect(
-      result.models.map((s) => ({ id: s.model.id, tier: s.tier, index: s.index ?? null })),
-      `substitutesFor ${target} in ${harness}`,
-    ).toEqual(options);
   });
 
   it("keeps the roster scope wording from the defining constants", () => {

@@ -4,7 +4,7 @@
 // read these types. Only independently run results are stored — vendor-reported figures are never
 // recorded, so nothing here needs an "origin" flag to keep them out of the score.
 
-/** The benchmarks that make up the composite index. Versions are pinned in `benchmarks.ts`. */
+/** The benchmarks whose pinned-version figures are scored. Versions are pinned in `benchmarks.ts`. */
 export type BenchmarkId = "deep-swe" | "terminal-bench" | "swe-atlas-qna" | "frontiercode-aa";
 
 /** The independent operators whose published runs supply the figures. */
@@ -44,7 +44,7 @@ export type Access = "general" | "limited";
 /** One independently run benchmark result. */
 export type Figure = {
   benchmark: BenchmarkId;
-  /** The benchmark version the operator ran; only the pinned version enters the composite. */
+  /** The benchmark version the operator ran; only the pinned version is scored. */
   version: string;
   /** Percentage of tasks solved, 0–100. */
   value: number;

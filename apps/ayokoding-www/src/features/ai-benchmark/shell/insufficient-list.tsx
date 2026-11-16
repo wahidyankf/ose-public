@@ -1,5 +1,6 @@
-// AI BENCHMARK — models with too few independent results for an index, in a closed disclosure so
-// they stay reachable without crowding the tier map. Each shows whatever scored figures it has.
+// AI BENCHMARK — models with too few independent results for a consensus tier, in a closed
+// disclosure so they stay reachable without crowding the tier map. Each shows whatever scored
+// figures it has.
 
 import type { Locale } from "@/features/i18n/core/config";
 import { t } from "@/features/i18n/core/translations";
@@ -7,12 +8,12 @@ import { BENCHMARK_SPECS, MIN_SCORED_BENCHMARKS, benchmarkSpec } from "../core/d
 import { operatorById } from "../core/data/operators";
 import type { BenchmarkId } from "../core/data/types";
 import { scoredFigure } from "../core/score";
-import type { ScoredModel } from "../core/tiers";
+import type { ConsensusModel } from "../core/tiers";
 import { formatPercent, tf } from "./format";
 import { LimitedChip } from "./model-bits";
 
 export type InsufficientListProps = {
-  models: readonly ScoredModel[];
+  models: readonly ConsensusModel[];
   locale: Locale;
   /**
    * When set, the disclosure lists models with no scored figure on this benchmark (the
@@ -21,7 +22,7 @@ export type InsufficientListProps = {
   unrankedBenchmark?: BenchmarkId;
 };
 
-function Scores({ s, locale }: { s: ScoredModel; locale: Locale }) {
+function Scores({ s, locale }: { s: ConsensusModel; locale: Locale }) {
   const parts = BENCHMARK_SPECS.flatMap((b) => {
     const f = scoredFigure(s.model, b.id);
     return f === undefined

@@ -1,111 +1,214 @@
 import { describe, expect, it } from "vitest";
-import { BENCHMARK_TIER_ANCHORS, TIER_ANCHORS } from "@/features/ai-benchmark/core/data/benchmarks";
-import type { BenchmarkId } from "@/features/ai-benchmark/core/data/types";
+import { BENCHMARK_TIER_ANCHORS } from "@/features/ai-benchmark/core/data/benchmarks";
+import type { BenchmarkId, BenchmarkTier } from "@/features/ai-benchmark/core/data/types";
 import {
   assignBenchmarkTier,
-  assignTier,
+  assignConsensusTier,
   benchmarkTierAnchors,
-  compareDesc,
+  byBenchmarkScoreDesc,
+  byConsensusDesc,
   computeBenchmarkTierGroups,
   computeTierGroups,
-  meetsAnchor,
   meetsBenchmarkAnchor,
   rankBenchmarkModels,
   scoreModels,
-  tierAnchors,
+  tableOrder,
+  tableRows,
   tierRank,
 } from "@/features/ai-benchmark/core/tiers";
-import { anchors, benchmarkAnchors, dataset, fig, flat, model } from "./fixtures";
+import { benchmarkAnchors, dataset, fig, model, quadAnchors, tiered } from "./fixtures";
 
-describe("meetsAnchor", () => {
-  it("compares composite indices, even when the two cover different benchmarks", () => {
-    const anchor = model("a", [fig("deep-swe", 70), fig("terminal-bench", 20)]);
-    // Behind the anchor on DeepSWE + Terminal-Bench (44 vs 45), but index 52.67 vs 45 → met.
-    const ahead = model("m", [fig("deep-swe", 66), fig("terminal-bench", 22), fig("swe-atlas-qna", 70)]);
-    expect(meetsAnchor(ahead, anchor)).toBe(true);
-    // Ahead on the shared two (46 vs 45), but index 34 vs 45 → not met.
-    const behind = model("m", [fig("deep-swe", 66), fig("terminal-bench", 26), fig("swe-atlas-qna", 10)]);
-    expect(meetsAnchor(behind, anchor)).toBe(false);
+const full = () => dataset([...quadAnchors(), tiered("m", "ultra", "ultra", "planning", "execution")]);
+
+describe("assignConsensusTier", () => {
+  it.each<[string, string, string, string, string, number, number]>([
+    ["ultra", "ultra", "planning", "execution", "ultra", 2, 4],
+    ["planning", "planning", "ultra", "execution", "planning", 2, 4],
+    ["ultra", "ultra", "planning", "planning", "ultra", 2, 4],
+    ["planning", "ultra", "planning", "ultra", "ultra", 2, 4],
+    ["fast", "fast", "fast", "planning", "fast", 3, 4],
+    ["ultra", "ultra", "unranked", "unranked", "ultra", 2, 2],
+  ])(
+    "holds %s/%s/%s/%s → consensus %s, agreeing %d of %d",
+    (deepSwe, terminalBench, sweAtlas, frontierCode, tier, agreeing, considered) => {
+      type Held = Exclude<BenchmarkTier, "unranked"> | "unranked";
+      const held = [deepSwe, terminalBench, sweAtlas, frontierCode].map((t) => t as Held);
+      const roster = dataset([...quadAnchors(), tiered("m", held[0]!, held[1]!, held[2]!, held[3]!)]);
+      const s = assignConsensusTier(roster.models[roster.models.length - 1]!, roster);
+      expect(s.tier).toBe(tier);
+      expect(s.agreeing).toBe(agreeing);
+      expect(s.considered).toBe(considered);
+      expect(s.share).toBeCloseTo(agreeing / considered, 10);
+    },
+  );
+
+  it("sends a two-way tie to the highest tied tier", () => {
+    const roster = dataset([...quadAnchors(), tiered("m", "planning", "planning", "ultra", "ultra")]);
+    expect(assignConsensusTier(roster.models[roster.models.length - 1]!, roster).tier).toBe("ultra");
   });
 
-  it("is met on equality", () => {
-    expect(meetsAnchor(flat("m", 50), flat("a", 50))).toBe(true);
+  it("sends a three-way tie to the highest tied tier", () => {
+    const roster = dataset([...quadAnchors(), tiered("m", "ultra", "planning", "execution", "unranked")]);
+    const s = assignConsensusTier(roster.models[roster.models.length - 1]!, roster);
+    expect(s.tier).toBe("ultra");
+    expect(s.agreeing).toBe(1);
+    expect(s.considered).toBe(3);
   });
 
-  it("is not met when the model's index is lower", () => {
-    expect(meetsAnchor(flat("m", 49.99), flat("a", 50))).toBe(false);
+  it("marks a model tiered on fewer than two benchmarks insufficient with no consensus count", () => {
+    const roster = dataset([...quadAnchors(), model("m", [fig("deep-swe", 90)])]);
+    const s = assignConsensusTier(roster.models[roster.models.length - 1]!, roster);
+    expect(s.tier).toBe("insufficient");
+    expect(s.considered).toBe(1);
+    expect(s.agreeing).toBe(0);
+    expect(s.share).toBe(0);
   });
 
-  it("is not met when either model has no index", () => {
-    expect(meetsAnchor(model("m", [fig("deep-swe", 99)]), flat("a", 1))).toBe(false);
-    expect(meetsAnchor(flat("m", 99), model("a", [fig("terminal-bench", 1)]))).toBe(false);
+  it("marks a model with no figures insufficient", () => {
+    const roster = dataset([...quadAnchors(), model("bare")]);
+    const s = assignConsensusTier(roster.models[roster.models.length - 1]!, roster);
+    expect(s.tier).toBe("insufficient");
+    expect(s.considered).toBe(0);
   });
 
-  it("is not met when the anchor is missing from the roster", () => {
-    expect(meetsAnchor(flat("m", 99), undefined)).toBe(false);
-  });
-});
-
-describe("assignTier", () => {
-  const roster = dataset(anchors());
-
-  it.each([
-    [61, "ultra"],
-    [60, "ultra"],
-    [57, "planning"],
-    [55, "planning"],
-    [50, "execution"],
-    [45, "execution"],
-    [30, "fast"],
-  ])("places a model scoring %d everywhere in %s", (score, tier) => {
-    expect(assignTier(flat("m", score), roster)).toBe(tier);
-  });
-
-  it("marks a model with fewer than two scored benchmarks insufficient", () => {
-    expect(assignTier(model("m", [fig("deep-swe", 99)]), roster)).toBe("insufficient");
-  });
-
-  it("places every anchor in the tier it defines without pinning", () => {
-    expect(assignTier(roster.models[0]!, roster)).toBe("ultra");
-    expect(assignTier(roster.models[1]!, roster)).toBe("planning");
-    expect(assignTier(roster.models[2]!, roster)).toBe("execution");
-  });
-
-  it("falls through to fast when no anchor is in the roster", () => {
-    expect(assignTier(flat("m", 99), dataset([]))).toBe("fast");
+  it("judges each benchmark against its own anchors", () => {
+    // planning on DeepSWE (57), ultra on FrontierCode-AA (70): consensus is the 1–1 tie → ultra.
+    const roster = dataset([...quadAnchors(), tiered("m", "planning", "unranked", "unranked", "ultra")]);
+    expect(assignConsensusTier(roster.models[roster.models.length - 1]!, roster).tier).toBe("ultra");
   });
 });
 
 describe("scoreModels", () => {
   it("scores the shown models against the full roster's anchors", () => {
-    const full = dataset([...anchors(), flat("m", 57)]);
-    const shown = dataset([full.models[3]!]);
-    expect(scoreModels(shown, full)).toEqual([{ model: full.models[3], index: 57, tier: "planning" }]);
+    const all = [...quadAnchors(), tiered("m", "planning", "planning", "planning", "execution")];
+    const f = dataset(all);
+    const shown = dataset([all[all.length - 1]!]);
+    expect(scoreModels(shown, f)).toEqual([
+      { model: all[all.length - 1], tier: "planning", agreeing: 3, considered: 4, share: 0.75 },
+    ]);
   });
 
   it("defaults the full roster to the shown roster", () => {
-    expect(scoreModels(dataset(anchors()))[0]?.tier).toBe("ultra");
+    const f = dataset([...quadAnchors(), tiered("m", "ultra", "ultra", "ultra", "ultra")]);
+    expect(scoreModels(f).find((s) => s.model.id === "m")?.tier).toBe("ultra");
+  });
+});
+
+describe("byConsensusDesc", () => {
+  it("orders tier rank first, even when a lower tier agrees more", () => {
+    const f = dataset([
+      ...quadAnchors(),
+      tiered("exec-4of4", "execution", "execution", "execution", "execution"),
+      tiered("plan-2of4", "planning", "planning", "execution", "execution"),
+    ]);
+    const scored = scoreModels(f);
+    const plan = scored.find((s) => s.model.id === "plan-2of4")!;
+    const exec = scored.find((s) => s.model.id === "exec-4of4")!;
+    expect([exec, plan].sort(byConsensusDesc).map((s) => s.model.id)).toEqual(["plan-2of4", "exec-4of4"]);
+  });
+
+  it("orders agreeing desc, then share desc, then ascending id", () => {
+    const deep = BENCHMARK_TIER_ANCHORS["deep-swe"];
+    const f = dataset([
+      ...quadAnchors(),
+      tiered("c-2of4", "planning", "planning", "execution", "execution"),
+      tiered("b-3of4", "planning", "planning", "planning", "execution"),
+      tiered("a-3of3", "planning", "planning", "planning", "unranked"),
+    ]);
+    const groups = computeTierGroups(f);
+    // The planning anchor holds 3 of 3 like a-3of3 and loses the id tiebreak to it.
+    expect(groups.planning.map((s) => s.model.id)).toEqual(["a-3of3", deep.planning, "b-3of4", "c-2of4"]);
   });
 });
 
 describe("computeTierGroups", () => {
-  it("puts every model in exactly one group, ordered by index then id", () => {
-    const full = dataset([
-      ...anchors(),
-      flat("b", 57),
-      flat("a", 57),
-      flat("z", 20),
+  it("puts every model in exactly one group", () => {
+    const deep = BENCHMARK_TIER_ANCHORS["deep-swe"];
+    const swe = BENCHMARK_TIER_ANCHORS["swe-atlas-qna"];
+    const fc = BENCHMARK_TIER_ANCHORS["frontiercode-aa"];
+    const f = dataset([
+      ...quadAnchors(),
+      tiered("u", "ultra", "ultra", "ultra", "ultra"),
+      tiered("p", "planning", "planning", "planning", "execution"),
+      tiered("e", "execution", "execution", "execution", "fast"),
+      tiered("f", "fast", "fast", "fast", "fast"),
       model("thin", [fig("deep-swe", 90)]),
       model("bare"),
     ]);
-    const groups = computeTierGroups(full);
-    expect(groups.ultra.map((s) => s.model.id)).toEqual([TIER_ANCHORS.ultra]);
-    expect(groups.planning.map((s) => s.model.id)).toEqual(["a", "b", TIER_ANCHORS.planning]);
-    expect(groups.execution.map((s) => s.model.id)).toEqual([TIER_ANCHORS.execution]);
-    expect(groups.fast.map((s) => s.model.id)).toEqual(["z"]);
-    expect(groups.insufficient.map((s) => s.model.id)).toEqual(["bare", "thin"]);
+    const groups = computeTierGroups(f);
+    // The multi-benchmark anchors are rated too: opus ultra, sol planning, sonnet execution.
+    expect(groups.ultra.map((s) => s.model.id)).toEqual(["u", deep.ultra]);
+    expect(groups.planning.map((s) => s.model.id)).toEqual([deep.planning, "p"]);
+    expect(groups.execution.map((s) => s.model.id)).toEqual(["e", deep.execution]);
+    expect(groups.fast.map((s) => s.model.id)).toEqual(["f"]);
+    // Single-benchmark anchors plus the two thin models have too little data.
+    expect(groups.insufficient.map((s) => s.model.id).sort()).toEqual(
+      [swe.execution, fc.ultra, fc.planning, fc.execution, "thin", "bare"].sort(),
+    );
     const total = Object.values(groups).reduce((n, g) => n + g.length, 0);
-    expect(total).toBe(full.models.length);
+    expect(total).toBe(f.models.length);
+  });
+});
+
+describe("tableRows", () => {
+  it("shows the consensus tier when no benchmark is chosen", () => {
+    const f = full();
+    expect(tableRows(f, undefined).find((r) => r.model.id === "m")).toMatchObject({
+      tier: "ultra",
+      agreeing: 2,
+      considered: 4,
+    });
+  });
+
+  it("shows the per-benchmark tier, unranked included, when a benchmark is chosen", () => {
+    const f = dataset([
+      ...quadAnchors(),
+      tiered("rated", "planning", "planning", "planning", "planning"),
+      tiered("missing", "planning", "planning", "planning", "unranked"),
+    ]);
+    const rows = tableRows(f, "frontiercode-aa");
+    expect(rows.find((r) => r.model.id === "rated")).toMatchObject({ tier: "planning" });
+    expect(rows.find((r) => r.model.id === "missing")).toMatchObject({ tier: "unranked" });
+  });
+
+  it("orders the highest active tier first, unranked last, then consensus strength, then id", () => {
+    const deep = BENCHMARK_TIER_ANCHORS["deep-swe"];
+    const f = dataset([
+      ...quadAnchors(),
+      tiered("b-plan", "planning", "planning", "planning", "execution"),
+      tiered("a-plan", "planning", "planning", "planning", "unranked"),
+      tiered("fast", "fast", "fast", "fast", "fast"),
+      model("thin", [fig("deep-swe", 90)]),
+    ]);
+    const rows = tableRows(f, undefined);
+    const rated = rows.filter((r) => r.tier !== "insufficient");
+    // The multi-benchmark anchors are rated alongside the fixtures: ultra, then planning
+    // (a-plan and the anchor both 3 of 3, id order), then execution, then fast.
+    expect(rated.map((r) => r.model.id)).toEqual([
+      deep.ultra,
+      "a-plan",
+      deep.planning,
+      "b-plan",
+      deep.execution,
+      "fast",
+    ]);
+    expect(rows.length - rated.length).toBe(5);
+    expect(rows.slice(rated.length).every((r) => r.tier === "insufficient")).toBe(true);
+  });
+
+  it("keeps the per-benchmark meaning when a score basis is set", () => {
+    // Consensus ultra (tie) but merely planning on FrontierCode-AA.
+    const f = dataset([...quadAnchors(), tiered("m", "ultra", "planning", "ultra", "planning")]);
+    expect(tableRows(f, undefined).find((r) => r.model.id === "m")?.tier).toBe("ultra");
+    expect(tableRows(f, "frontiercode-aa").find((r) => r.model.id === "m")?.tier).toBe("planning");
+  });
+});
+
+describe("tableOrder", () => {
+  it("is the order tableRows uses", () => {
+    const f = full();
+    const rows = tableRows(f, undefined);
+    expect([...rows].sort(tableOrder).map((r) => r.model.id)).toEqual(rows.map((r) => r.model.id));
   });
 });
 
@@ -140,17 +243,11 @@ describe("rankBenchmarkModels", () => {
   });
 });
 
-describe("tierAnchors", () => {
-  it("returns each anchor with its own index", () => {
-    const a = tierAnchors(dataset(anchors()));
-    expect(a.ultra?.model.id).toBe(TIER_ANCHORS.ultra);
-    expect(a.ultra?.index).toBe(60);
-    expect(a.planning?.index).toBe(55);
-    expect(a.execution?.index).toBe(45);
-  });
-
-  it("returns undefined for an anchor missing from the roster", () => {
-    expect(tierAnchors(dataset([])).ultra).toBeUndefined();
+describe("byBenchmarkScoreDesc", () => {
+  it("is the order rankBenchmarkModels uses", () => {
+    const models = [model("b", [fig("deep-swe", 70)]), model("a", [fig("deep-swe", 70)])];
+    const { ranked } = rankBenchmarkModels(models, "deep-swe");
+    expect([...ranked].sort(byBenchmarkScoreDesc).map((r) => r.model.id)).toEqual(["a", "b"]);
   });
 });
 
@@ -288,16 +385,6 @@ describe("benchmarkTierAnchors", () => {
     expect(benchmarkTierAnchors(dataset([]), "deep-swe").ultra).toBeUndefined();
     const unscored = dataset([model(BENCHMARK_TIER_ANCHORS["deep-swe"].ultra, [fig("terminal-bench", 10)])]);
     expect(benchmarkTierAnchors(unscored, "deep-swe").ultra).toBeUndefined();
-  });
-});
-
-describe("compareDesc", () => {
-  it("orders descending with undefined last and never returns NaN", () => {
-    expect(compareDesc(2, 1)).toBeLessThan(0);
-    expect(compareDesc(1, 2)).toBeGreaterThan(0);
-    expect(compareDesc(undefined, 1)).toBe(1);
-    expect(compareDesc(1, undefined)).toBe(-1);
-    expect(compareDesc(undefined, undefined)).toBe(0);
   });
 });
 

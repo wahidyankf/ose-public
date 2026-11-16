@@ -5,7 +5,7 @@
 import { cleanup, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { dataset } from "../../../../../src/features/ai-benchmark/core/data/models";
-import { scoreModels } from "../../../../../src/features/ai-benchmark/core/tiers";
+import { scoreModels, tableRows } from "../../../../../src/features/ai-benchmark/core/tiers";
 import { ModelTable } from "../../../../../src/features/ai-benchmark/shell/model-table";
 import { ID_NOTES, noteText } from "../../../../../src/features/ai-benchmark/shell/note-text";
 import { SubstituteFinder } from "../../../../../src/features/ai-benchmark/shell/substitute-finder";
@@ -110,7 +110,7 @@ describe("SubstituteFinder caveats and price basis", () => {
 
 describe("ModelTable readability", () => {
   function table(locale: "en" | "id" = "en") {
-    render(<ModelTable rows={scoreModels(dataset)} locale={locale} />);
+    render(<ModelTable rows={tableRows(dataset, undefined)} locale={locale} />);
   }
 
   it("keeps each row's model name pinned while the table scrolls sideways", () => {

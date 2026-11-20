@@ -186,7 +186,7 @@ expect_created "1 no settings file creates worktrees/<name> on worktree/<name>" 
 
 # Case 2: a project WorktreeCreate hook running another command defers, and nothing is created.
 make_repo foreign-hook
-register_worktree_hooks "hansip worktree create"
+register_worktree_hooks "project-tool worktree create"
 run_hook "$REPO" feature-foreign
 expect_deferred "2 project WorktreeCreate hook running another command defers" feature-foreign
 if [ -e "$REPO/worktrees" ]; then
@@ -218,17 +218,17 @@ expect_created "3c relative self-registration is not deferred" feature-self-rela
 
 # Case 4: a mix of self and foreign entries defers, whatever the order, in the nested or the flat shape.
 make_repo mixed-self-first
-register_worktree_hooks "bash .claude/hooks/worktree-create.sh" "hansip worktree create"
+register_worktree_hooks "bash .claude/hooks/worktree-create.sh" "project-tool worktree create"
 run_hook "$REPO" feature-mixed-self-first
 expect_deferred "4a one self entry plus one foreign entry defers" feature-mixed-self-first
 
 make_repo mixed-foreign-first
-register_worktree_hooks "hansip worktree create" "\"\$CLAUDE_PROJECT_DIR\"/.claude/hooks/worktree-create.sh"
+register_worktree_hooks "project-tool worktree create" "\"\$CLAUDE_PROJECT_DIR\"/.claude/hooks/worktree-create.sh"
 run_hook "$REPO" feature-mixed-foreign-first
 expect_deferred "4b foreign entry before a self entry still defers" feature-mixed-foreign-first
 
 make_repo flat-foreign
-write_settings '{"hooks":{"WorktreeCreate":[{"command":"hansip worktree create"}]}}'
+write_settings '{"hooks":{"WorktreeCreate":[{"command":"project-tool worktree create"}]}}'
 run_hook "$REPO" feature-flat-foreign
 expect_deferred "4c flat entry with a top-level foreign command defers" feature-flat-foreign
 
@@ -255,7 +255,7 @@ expect_created "5c malformed settings JSON creates the worktree" feature-malform
 
 # Case 6: a cwd inside a linked worktree resolves the main repository, and the main repository's settings decide.
 make_repo linked-cwd-foreign-main
-register_worktree_hooks "hansip worktree create"
+register_worktree_hooks "project-tool worktree create"
 assert_fixture_root "$REPO"
 git_in -C "$REPO" worktree add -q -b worktree/existing "$REPO/worktrees/existing"
 run_hook "$REPO/worktrees/existing" feature-from-linked
@@ -265,7 +265,7 @@ make_repo linked-cwd-foreign-linked
 assert_fixture_root "$REPO"
 git_in -C "$REPO" worktree add -q -b worktree/existing "$REPO/worktrees/existing"
 mkdir -p "$REPO/worktrees/existing/.claude"
-printf '%s\n' '{"hooks":{"WorktreeCreate":[{"hooks":[{"type":"command","command":"hansip worktree create"}]}]}}' \
+printf '%s\n' '{"hooks":{"WorktreeCreate":[{"hooks":[{"type":"command","command":"project-tool worktree create"}]}]}}' \
 	>"$REPO/worktrees/existing/.claude/settings.json"
 run_hook "$REPO/worktrees/existing" feature-from-linked-plain
 expect_created "6b a linked worktree's own foreign hook does not defer; creation lands under the main root" feature-from-linked-plain
@@ -277,7 +277,7 @@ auto_name_shape "${LAST##*/}" || bad "7a auto name has the wrong shape: '$LAST'"
 expect_created "7a payload without a name creates an auto-named worktree" "${LAST##*/}"
 
 make_repo auto-name-deferred
-register_worktree_hooks "hansip worktree create"
+register_worktree_hooks "project-tool worktree create"
 run_hook "$REPO"
 auto_name_shape "${LAST##*/}" || bad "7b auto name has the wrong shape: '$LAST'"
 expect_deferred "7b payload without a name defers with an auto-generated name" "${LAST##*/}"
@@ -295,7 +295,7 @@ else
 fi
 
 make_repo rerun-deferred
-register_worktree_hooks "hansip worktree create"
+register_worktree_hooks "project-tool worktree create"
 run_hook "$REPO" feature-rerun-deferred
 expect_deferred "8c first deferred run creates nothing" feature-rerun-deferred
 run_hook "$REPO" feature-rerun-deferred

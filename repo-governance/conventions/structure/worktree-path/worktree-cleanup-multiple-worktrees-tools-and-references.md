@@ -51,7 +51,7 @@ worktrees/
 
 Reference agents or tools that interact with this convention:
 
-- **WorktreeCreate hook** (`.claude/hooks/worktree-create.sh`) — Routes `claude --worktree` to custom path
+- **WorktreeCreate hook** (`.claude/hooks/worktree-create.sh`) — Routes `claude --worktree` to custom path, deferring when the repository declares its own project WorktreeCreate hook
 - **rules-checker** — Validates worktree-related rules and gitignore compliance
 
 ## References

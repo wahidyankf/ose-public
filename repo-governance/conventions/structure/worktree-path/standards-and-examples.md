@@ -28,7 +28,7 @@ Worktree creation is routed via a `WorktreeCreate` hook:
 - **Location**: `.claude/hooks/worktree-create.sh`
 - **Naming**: kebab-case with `.sh` extension
 - **Protocol**: reads a JSON payload from **stdin** with fields `hook_event_name`, `cwd`, `name`; prints the absolute worktree path to stdout (last line); writes any informational output to stderr; exits `0` on success (non-zero fails creation). The exact field names and stdin transport are dictated by the coding agent platform under which the hook runs — see Platform Binding Compatibility below for the binding-specific reference.
-- **Behaviour**: routes the new worktree to `<repo-root>/worktrees/<name>/` instead of the default `.claude/worktrees/<name>/`.
+- **Behaviour**: routes the new worktree to `<repo-root>/worktrees/<name>/` instead of the default `.claude/worktrees/<name>/`, unless the repository has a project hook, in which case it defers (see Deferral to a Project Hook).
 
 **Hook contract:**
 
@@ -46,6 +46,15 @@ echo "/path/to/repo/worktrees/$NAME"
 
 # Exit code: 0 on success; non-zero fails worktree creation
 ```
+
+### Deferral to a Project Hook
+
+A **project hook** is at least one `WorktreeCreate` hook command in `<repo-root>/.claude/settings.json` that does not run `worktree-create.sh`. A missing or invalid settings file, or one whose only `WorktreeCreate` registration runs this script, means there is no project hook.
+
+- With a project hook, the script MUST defer: it prints `<repo-root>/worktrees/<name>` as the last stdout line, exits `0`, and creates no worktree, branch, or directory.
+- Without a project hook, the script MUST create the worktree at `<repo-root>/worktrees/<name>/` on branch `worktree/<name>`.
+
+Reason: the primary coding agent runs hooks from every settings level in parallel, so a global creator racing a repository's own hook (one that starts from a fresh `origin/main` and bootstraps) creates the worktree twice, from the wrong base.
 
 ### Naming Requirements
 
@@ -106,4 +115,13 @@ PASS: worktree-create.sh        # kebab-case + .sh extension
 FAIL: worktreeCreate.sh          # camelCase
 FAIL: WorktreeCreate.sh          # PascalCase
 FAIL: worktree-create           # missing .sh extension
+```
+
+### Deferral Examples
+
+```
+PASS: settings.json registers a foreign WorktreeCreate command; script run leaves `git worktree list` with only the main checkout, creates no worktrees/ directory, prints <repo-root>/worktrees/<name> as the last line, exits 0
+FAIL: same fixture; script run ends with a worktrees/<name> checkout or a worktree/<name> branch
+PASS: no settings.json, invalid JSON, or only worktree-create.sh registered; script run creates worktrees/<name>/ on branch worktree/<name>
+FAIL: same fixtures; script run creates no worktree, or creates it at another path or on another branch
 ```

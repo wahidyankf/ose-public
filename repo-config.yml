@@ -1275,6 +1275,15 @@ gates:
       run-on:
         pre-commit: {}
         pull-request: {}
+    - id: agent-hooks-worktree-create
+      type: check
+      command:
+        executable: bash
+        args:
+          - literal: .claude/hooks/worktree-create.test.sh
+      run-on:
+        pre-commit: {}
+        pull-request: {}
     - id: governance-vendor
       type: check
       command:

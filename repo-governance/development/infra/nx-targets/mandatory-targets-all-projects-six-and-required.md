@@ -9,9 +9,9 @@ Every registered project exposes real `lint` and `test:quick` targets. Add `type
 `dev`, `start`, or code-generation targets only when the project capability requires them.
 
 Every behaviour owner exposes real `test:unit`, `test:coverage:unit`, and
-`test:coverage:behaviour` targets. Add Integration and E2E runtime/static coverage pairs only when
+`test:behaviour:coverage` targets. Add Integration and E2E runtime/static coverage pairs only when
 the project's real boundary makes that adapter applicable. Dedicated E2E projects expose
-`test:e2e`, `test:coverage:e2e`, and `test:coverage:behaviour` for their owner's corpus; they do not
+`test:e2e`, `test:coverage:e2e`, and `test:behaviour:coverage` for their owner's corpus; they do not
 invent Unit or Integration targets.
 
 An owner's `test:unit` command collects native line coverage and fails below 99%. A dedicated E2E

@@ -41,7 +41,7 @@ when_to_use: Use when deciding whether a target should be cached, or where a pro
     "test:coverage:e2e": {
       "cache": true
     },
-    "test:coverage:behaviour": {
+    "test:behaviour:coverage": {
       "cache": true
     },
     "test:integration": {

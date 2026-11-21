@@ -68,7 +68,7 @@ doc-drift, out of this dimension's scope.
 ### D7 — Shell lint (shellcheck)
 
 **Decision**: Gate all 14 tracked `.sh` files at `--severity=warning` in CI
-(new always-run `shell` job), in `.husky/pre-commit` (staged scripts), and add
+(new always-run `shell` job), on the pull-request surface over changed scripts (the local hooks run no linter), and add
 `shellcheck` to the retired in-tree Rhino doctor converger. Add a root `.shellcheckrc`
 (`shell=bash`, `external-sources=true`).
 
@@ -80,7 +80,7 @@ the gate locks in the existing quality. No repo-wide rule disables were required
 ### D6 — Dockerfile lint (hadolint)
 
 **Decision**: Gate all 17 Dockerfiles (10 under `apps/*` + 7 under `infra/dev/**`)
-at `--failure-threshold warning` in CI (new `dockerfile` job), pre-commit, and
+at `--failure-threshold warning` in CI (new `dockerfile` job), on the pull-request surface, and
 doctor. Add a root `.hadolint.yaml`.
 
 **Why `infra/dev/**` is included\*\*: the plan left dev Dockerfiles to the
@@ -100,7 +100,7 @@ and `ghcr.io`.
 ### D8 — GitHub Actions lint (actionlint)
 
 **Decision**: Gate all 22 workflow files with `actionlint` in CI (new `actions`
-job), pre-commit, and doctor.
+job), the pull-request surface, and doctor.
 
 **Cleanup**: `actionlint` runs an embedded `shellcheck` over every `run:` block.
 All findings were **fixed** rather than suppressed where reasonable: SC2034 unused

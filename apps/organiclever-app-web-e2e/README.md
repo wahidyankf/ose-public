@@ -40,6 +40,6 @@ The behaviour source of truth is in
 [the OrganicLever app-web Gherkin specs](../../specs/apps/organiclever/app-web/behaviours/README.md).
 
 This dedicated E2E project owns no independent corpus. Its `test:e2e` adapter observes the owner
-application's public browser boundary; `test:coverage:e2e`, `test:coverage:behaviour`, and
+application's public browser boundary; `test:coverage:e2e`, `test:behaviour:coverage`, and
 aggregate `test:coverage` validate it statically. Unit and Integration are omitted because their
 in-process and local-resource boundaries belong to the owner application.

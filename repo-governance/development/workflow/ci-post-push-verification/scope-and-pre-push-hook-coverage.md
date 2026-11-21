@@ -26,8 +26,8 @@ This convention does not apply to pushes that exclusively touch:
 - `social-media-posts/` — social content only
 - `agents/`, `.agents/skills/`, and their generated harness routes — agent/skill definitions only, no app code impact
 
-The pre-push hook runs only the registry-declared `pre-push` gates (the public-safety screens and
-environment validation) and runs no `test:quick`; quick owns Unit runtime and
+The pre-push hook runs only the registry-declared `pre-push` gate, the leak scan over the pushed range, and runs
+no `test:quick`; quick owns Unit runtime and
 every applicable static `test:coverage:*` validator, and runs in the PR workflow's language jobs.
 
 ## What the Pre-Push Hook Covers vs. What This Convention Covers
@@ -35,7 +35,7 @@ every applicable static `test:coverage:*` validator, and runs in the PR workflow
 | Quality Gate                        | Pre-Push Hook | CI Post-Push Verification |
 | ----------------------------------- | ------------- | ------------------------- |
 | Public-safety screens               | Yes           | Yes (as part of CI)       |
-| Environment validation              | Yes           | Yes (as part of CI)       |
+| Environment validation              | No            | Yes (as part of CI)       |
 | Typecheck                           | No            | Yes (as part of CI)       |
 | Lint                                | No            | Yes (as part of CI)       |
 | Unit tests (`test:quick`)           | No            | Yes (as part of CI)       |

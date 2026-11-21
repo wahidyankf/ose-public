@@ -7,7 +7,7 @@ when_to_use: "Use when checking lifecycle execution or the Rhino command surface
 
 ## Invariant B2 — Closed Fast Gates
 
-Pre-commit runs staged deterministic checks only. Pre-push and the PR gate run affected
+Pre-commit runs staged formatting only, and pre-push runs only the leak scan. The PR gate runs affected
 `test:quick --parallel=1`. Quick includes every applicable static `test:coverage:*` validator and
 Unit runtime for each behaviour owner. Integration/E2E runtime is unreachable directly or
 transitively from hooks, PR gates, quick, and coverage validators.

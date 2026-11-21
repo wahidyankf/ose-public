@@ -79,6 +79,10 @@
           {
             "command": "npm exec -- nx run fsharp-env-loader:test:coverage",
             "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run fsharp-env-loader:test:behaviour:coverage",
+            "forwardAllArgs": false
           }
         ],
         "parallel": false,
@@ -94,7 +98,15 @@
         "{workspaceRoot}/libs/fsharp-env-loader/tests/unit/**/*.{ts,tsx,fs}",
         "{workspaceRoot}/libs/fsharp-env-loader/tests/unit/fsharp-env-loader-unit-tests.fsproj",
         "{workspaceRoot}/libs/fsharp-env-loader/tests/integration/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/libs/fsharp-env-loader/tests/integration/fsharp-env-loader-integration-tests.fsproj"
+        "{workspaceRoot}/libs/fsharp-env-loader/tests/integration/fsharp-env-loader-integration-tests.fsproj",
+        "{workspaceRoot}/repo-config.yml",
+        "{workspaceRoot}/rhino.lock",
+        "{workspaceRoot}/specs/**/*",
+        "{workspaceRoot}/apps/ayokoding-www/content/**/*.feature",
+        "{workspaceRoot}/apps/*/tests/**/*",
+        "{workspaceRoot}/apps/*-e2e/steps/**/*",
+        "{workspaceRoot}/apps/*-e2e/src/**/*",
+        "{workspaceRoot}/libs/*/tests/**/*"
       ]
     },
     "deps:audit": {
@@ -134,21 +146,22 @@
         "{workspaceRoot}/libs/fsharp-env-loader/tests/integration/fsharp-env-loader-integration-tests.fsproj"
       ]
     },
-    "test:coverage:behaviour": {
+    "test:behaviour:coverage": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config libs/fsharp-env-loader/behaviour-coverage.json --adapter behaviour"
+        "command": "./rhino behaviour coverage validate",
+        "cwd": "{workspaceRoot}"
       },
       "cache": true,
       "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/libs/fsharp-env-loader/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/libs/fsharp-env-loader/behaviours/**/*.feature",
-        "{workspaceRoot}/libs/fsharp-env-loader/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/libs/fsharp-env-loader/tests/unit/fsharp-env-loader-unit-tests.fsproj",
-        "{workspaceRoot}/libs/fsharp-env-loader/tests/integration/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/libs/fsharp-env-loader/tests/integration/fsharp-env-loader-integration-tests.fsproj"
+        "{workspaceRoot}/repo-config.yml",
+        "{workspaceRoot}/rhino.lock",
+        "{workspaceRoot}/specs/**/*",
+        "{workspaceRoot}/apps/ayokoding-www/content/**/*.feature",
+        "{workspaceRoot}/apps/*/tests/**/*",
+        "{workspaceRoot}/apps/*-e2e/steps/**/*",
+        "{workspaceRoot}/apps/*-e2e/src/**/*",
+        "{workspaceRoot}/libs/*/tests/**/*"
       ]
     },
     "test:coverage": {
@@ -161,10 +174,6 @@
           },
           {
             "command": "npm exec -- nx run fsharp-env-loader:test:coverage:integration",
-            "forwardAllArgs": false
-          },
-          {
-            "command": "npm exec -- nx run fsharp-env-loader:test:coverage:behaviour",
             "forwardAllArgs": false
           }
         ],

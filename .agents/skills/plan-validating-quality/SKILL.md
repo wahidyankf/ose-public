@@ -75,7 +75,7 @@ production-disabled flag, tests for both paths, and rollout/rollback/removal.
 ## Quality-Gate Lifecycle Handoff
 
 Under a quality gate, never report or fix a property the gate's Deterministic Boundary lists; its declared tool
-owns it, per the [Quality Gate Contract](../../../repo-governance/development/workflow/quality-gate-contract.md). Project-local `test:coverage:behaviour` owns static
+owns it, per the [Quality Gate Contract](../../../repo-governance/development/workflow/quality-gate-contract.md). Project-local `test:behaviour:coverage` owns static
 Gherkin corpus, adapter, exemption, and journey-shape evidence; semantic journey quality, plan structure, semantics,
 evidence, and executability remain in scope.
 

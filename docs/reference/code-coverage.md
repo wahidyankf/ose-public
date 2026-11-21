@@ -38,8 +38,8 @@ The `ayokoding-cli` Go project holds a 99% line floor over its deterministic cor
 | `test:coverage:unit`        | Every active expanded scenario has exactly one Unit implementation                            |
 | `test:coverage:integration` | Every applicable scenario has exactly one Integration implementation or valid exemption       |
 | `test:coverage:e2e`         | Every applicable scenario has exactly one E2E implementation or valid exemption               |
-| `test:coverage:behaviour`   | Exact recursive corpus, valid scenarios, bindings, adapter completeness, and exemption syntax |
-| `test:coverage`             | Aggregate of every applicable static validator                                                |
+| `test:behaviour:coverage`   | Exact recursive corpus, valid scenarios, bindings, adapter completeness, and exemption syntax |
+| `test:coverage`             | Aggregate of every applicable per-layer static validator                                      |
 
 These targets inspect source, tests, Gherkin, and configuration without executing tests directly or
 transitively. Every applicable validator is mandatory in `test:quick`. Static success proves

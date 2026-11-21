@@ -12,7 +12,7 @@ Every plan must include steps for running affected quality checks locally before
 - [ ] Run affected typecheck: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- affected -t typecheck`
 - [ ] Run affected linting: `rtk npm run affected:lint`
 - [ ] Run affected quick tests: `rtk npm run affected:test`
-- [ ] Run affected spec coverage: `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- affected -t test:coverage:behaviour`
+- [ ] Run affected spec coverage: `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- affected -t test:behaviour:coverage`
 - [ ] Fix ALL failures found — including preexisting issues not caused by your changes
 - [ ] Verify all checks pass before pushing
 ```

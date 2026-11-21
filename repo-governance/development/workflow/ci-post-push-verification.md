@@ -22,4 +22,4 @@ After pushing app or library code, you MUST manually trigger all related GitHub 
 - [CI Blocker Resolution Convention](../quality/ci-blocker-resolution.md) — How to investigate and fix CI failures found during verification.
 - [Trunk Based Development Convention](../workflow/trunk-based-development.md) — Why `main` must remain releasable at all times.
 - [Git Push Default Convention](../workflow/git-push-default.md) — Default push behaviour (a PR branch under the default `worktree-to-pr`; direct to `origin main` under the explicitly-selected direct-push modes, which have no PR buffer).
-- [Code Quality Convention](../quality/code.md) — Pre-push hook quality gates that this convention extends.
+- [Code Quality Convention](../quality/code.md) — Quality gates, including the pre-push leak scan, that this convention extends.

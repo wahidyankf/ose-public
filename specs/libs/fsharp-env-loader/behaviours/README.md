@@ -17,6 +17,7 @@ The Unit adapter uses injected environment and filesystem doubles under
 `libs/fsharp-env-loader/tests/unit/Behaviour/`; the Integration adapter under
 `libs/fsharp-env-loader/tests/integration/Behaviour/` exercises isolated real local resources.
 Run them with `fsharp-env-loader:test:unit` and `fsharp-env-loader:test:integration`. Static
-`test:coverage:unit`, `test:coverage:integration`, `test:coverage:behaviour`, and aggregate
-`test:coverage` validate corpus/binding closure without executing either adapter. E2E is omitted
-because this library exposes no public browser, HTTP, or process boundary.
+`test:coverage:unit`, `test:coverage:integration`, and aggregate `test:coverage` validate
+corpus/binding closure without executing either adapter. `test:behaviour:coverage` runs RHINO's
+shared static check. E2E is omitted because this library exposes no public browser, HTTP, or
+process boundary.

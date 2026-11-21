@@ -9,7 +9,7 @@ when_to_use: "Use to trace this convention's rationale."
 
 This practice respects the following core principles:
 
-- **[Automation Over Manual](../../../principles/software-engineering/automation-over-manual.md)**: Git hooks (Husky) automatically run the registry gates, including staged formatting, before commits. Humans write code, machines enforce formatting. Commit-message format is the exception: no hook runs Commitlint, so review checks it.
+- **[Automation Over Manual](../../../principles/software-engineering/automation-over-manual.md)**: Git hooks (Husky) automatically run the registry gates, including staged formatting, before commits. Humans write code, machines enforce formatting. The commit-msg hook lints the message format with Commitlint; review checks the composition.
 
 - **[Simplicity Over Complexity](../../../principles/general/simplicity-over-complexity.md)**: Prettier keeps its defaults except for the few options `.prettierrc.json` sets (print width, prose wrap, and two plugins). The retained Commitlint config extends the standard Conventional Commits preset. Minimal tooling configuration reduces complexity.
 

@@ -13,7 +13,7 @@ word ceiling (progressive disclosure applied to itself).
 
 `./rhino governance word-budget validate` runs the pinned RHINO executable against every surface
 declared under `policies.governance.word-budget` in `repo-config.yml`. It is the declared gate
-`word-budget` at pre-commit and on the `pull-request` surface (see `./rhino gate list`), so a breach
+`word-budget` on the `pull-request` surface (see `./rhino gate list`), so a breach
 blocks the commit that introduces it. Because a declared gate owns the threshold, the
 [Rules Quality Gate](../../workflows/quality/rules-quality-gate.md#deterministic-boundary) treats a
 budget breach as deterministic: `rules-checker` neither counts words by hand nor re-reports the

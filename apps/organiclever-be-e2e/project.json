@@ -41,6 +41,10 @@
           {
             "command": "npm exec -- nx run organiclever-be-e2e:test:coverage",
             "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run organiclever-be-e2e:test:behaviour:coverage",
+            "forwardAllArgs": false
           }
         ],
         "parallel": false,
@@ -56,7 +60,15 @@
         "{workspaceRoot}/apps/organiclever-be/tests/unit/**/*.{ts,tsx,fs}",
         "{workspaceRoot}/apps/organiclever-be/tests/unit/OrganicleverBe.UnitTests.fsproj",
         "{workspaceRoot}/apps/organiclever-be-e2e/steps/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/organiclever-be-e2e/playwright.config.ts"
+        "{workspaceRoot}/apps/organiclever-be-e2e/playwright.config.ts",
+        "{workspaceRoot}/repo-config.yml",
+        "{workspaceRoot}/rhino.lock",
+        "{workspaceRoot}/specs/**/*",
+        "{workspaceRoot}/apps/ayokoding-www/content/**/*.feature",
+        "{workspaceRoot}/apps/*/tests/**/*",
+        "{workspaceRoot}/apps/*-e2e/steps/**/*",
+        "{workspaceRoot}/apps/*-e2e/src/**/*",
+        "{workspaceRoot}/libs/*/tests/**/*"
       ]
     },
     "test:e2e": {
@@ -103,21 +115,22 @@
         "{workspaceRoot}/apps/organiclever-be-e2e/playwright.config.ts"
       ]
     },
-    "test:coverage:behaviour": {
+    "test:behaviour:coverage": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config apps/organiclever-be-e2e/behaviour-coverage.json --adapter behaviour"
+        "command": "./rhino behaviour coverage validate",
+        "cwd": "{workspaceRoot}"
       },
       "cache": true,
       "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/organiclever-be-e2e/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/apps/organiclever/be/behaviours/**/*.feature",
-        "{workspaceRoot}/apps/organiclever-be/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/organiclever-be/tests/unit/OrganicleverBe.UnitTests.fsproj",
-        "{workspaceRoot}/apps/organiclever-be-e2e/steps/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/organiclever-be-e2e/playwright.config.ts"
+        "{workspaceRoot}/repo-config.yml",
+        "{workspaceRoot}/rhino.lock",
+        "{workspaceRoot}/specs/**/*",
+        "{workspaceRoot}/apps/ayokoding-www/content/**/*.feature",
+        "{workspaceRoot}/apps/*/tests/**/*",
+        "{workspaceRoot}/apps/*-e2e/steps/**/*",
+        "{workspaceRoot}/apps/*-e2e/src/**/*",
+        "{workspaceRoot}/libs/*/tests/**/*"
       ]
     },
     "test:coverage": {
@@ -126,10 +139,6 @@
         "commands": [
           {
             "command": "npm exec -- nx run organiclever-be-e2e:test:coverage:e2e",
-            "forwardAllArgs": false
-          },
-          {
-            "command": "npm exec -- nx run organiclever-be-e2e:test:coverage:behaviour",
             "forwardAllArgs": false
           }
         ],

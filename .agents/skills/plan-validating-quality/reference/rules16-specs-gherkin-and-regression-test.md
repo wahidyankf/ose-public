@@ -6,7 +6,7 @@ Enforces the
 [Feature Change Completeness Convention §Two Paths](../../../../repo-governance/development/quality/feature-change-completeness.md)
 for the plan path: a plan creating, modifying, or deleting observable behaviour in `apps/`, `libs/`,
 or `specs/` MUST carry explicit steps adding/updating companion `specs/` `.feature` files and running
-`test:coverage:behaviour`.
+`test:behaviour:coverage`.
 
 **What to validate**:
 
@@ -16,8 +16,8 @@ or `specs/` MUST carry explicit steps adding/updating companion `specs/` `.featu
 2. **Specs/Gherkin authoring step present** — if yes, the checklist includes at least one step
    creating/updating the relevant `specs/apps/**` or `specs/libs/**` feature file(s). Missing:
    **HIGH**.
-3. **`test:coverage:behaviour` gate present** — the checklist or a phase gate runs the project's
-   `test:coverage:behaviour` target. Missing: **HIGH**.
+3. **`test:behaviour:coverage` gate present** — the checklist or a phase gate runs the project's
+   `test:behaviour:coverage` target. Missing: **HIGH**.
 4. **Owner-scoped copy-ready Gherkin** — packets destined for `specs/` contain no plan slug, number,
    phase, delivery-unit name, or plan acceptance-criterion ID. The external delta map records the plan
    requirement, action, exact feature path, durable scenario title, and adapter disposition. Leakage or
@@ -27,7 +27,7 @@ or `specs/` MUST carry explicit steps adding/updating companion `specs/` `.featu
    the exemption is legitimate and stated; an illegitimate exemption is **HIGH**.
 
 **Finding severity**: behaviour-affecting plan with no specs/Gherkin step: **HIGH**. Specs step present
-but no `test:coverage:behaviour` gate: **HIGH**. Step present but vague (no specific feature path/domain):
+but no `test:behaviour:coverage` gate: **HIGH**. Step present but vague (no specific feature path/domain):
 **MEDIUM**. Plan identity inside copy-ready Gherkin or missing external traceability: **HIGH**.
 Illegitimate "no behaviour change" exemption: **HIGH**.
 

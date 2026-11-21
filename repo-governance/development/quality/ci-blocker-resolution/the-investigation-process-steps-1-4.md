@@ -30,7 +30,7 @@ Reproduce the failure in isolation to confirm it is preexisting:
 npx nx run <project>:typecheck
 npx nx run <project>:lint
 npx nx run <project>:test:quick
-npx nx run <project>:test:coverage:behaviour
+npx nx run <project>:test:behaviour:coverage
 ```
 
 ## Step 4: Trace to Root Cause

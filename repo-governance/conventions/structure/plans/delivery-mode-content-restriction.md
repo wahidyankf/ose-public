@@ -29,7 +29,7 @@ reconcile when a plan folder's push includes non-markdown evidence files.
 **below, which is the current binding rule** — read that subsection before relying on either
 condition above.
 
-The `*-to-pr` modes require the exact-current-head/base `Quality gate` plus one clean
+The `*-to-pr` modes require the exact-current-head/base `quality-gate` plus one clean
 current-head [`pr-leak-review`](../../../workflows/quality/pr-leak-review.md) verdict, held by the delivery harness, before merge. Broad
 semantic review is absent by default and may
 appear only when the user explicitly requests [`pr-review`](../../../workflows/quality/pr-review.md) or

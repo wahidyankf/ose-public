@@ -8,7 +8,7 @@ when_to_use: Use immediately before merging any pull request, to confirm all fiv
 **AI agents and automation MUST NOT merge a pull request until all five hardened preconditions
 hold.**
 
-- **(a) Exact-head PR CI** — the `Quality gate` check from
+- **(a) Exact-head PR CI** — the `quality-gate` check from
   `.github/workflows/pr-quality-gate.yml` is green for the PR's current head SHA and current base
   branch. A run for an earlier head or different base does not count.
 - **(b) Leak review** — every pushed commit passed the

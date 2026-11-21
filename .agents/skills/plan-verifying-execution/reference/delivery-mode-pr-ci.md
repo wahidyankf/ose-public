@@ -17,7 +17,7 @@ PR to be merged.
    finding.
 2. **For `worktree-to-pr` / `main-to-pr`**:
    - **PR exists** and targets `main` from the plan's branch. Missing: **CRITICAL**.
-   - **Exact-head/base PR CI is green** — `.github/workflows/pr-quality-gate.yml`'s `Quality gate`
+   - **Exact-head/base PR CI is green** — `.github/workflows/pr-quality-gate.yml`'s `quality-gate`
      matches the current head SHA and base. Missing, stale, pending, or failed: **CRITICAL**.
    - **Leak review passes** — the delivery harness holds a `pass` verdict from a fresh-context
      `leak-reviewer` for that head. Missing, stale, failed, or findings-bearing verdict: **CRITICAL**. A head-changing

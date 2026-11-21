@@ -46,6 +46,10 @@
           {
             "command": "npm exec -- nx run web-ui:test:coverage",
             "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run web-ui:test:behaviour:coverage",
+            "forwardAllArgs": false
           }
         ],
         "parallel": false,
@@ -61,7 +65,15 @@
         "{workspaceRoot}/libs/web-ui/tests/unit/**/*.{ts,tsx,fs}",
         "{workspaceRoot}/libs/web-ui/vitest.config.ts",
         "{workspaceRoot}/libs/web-ui/tests/e2e/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/libs/web-ui/tests/e2e/playwright.config.ts"
+        "{workspaceRoot}/libs/web-ui/tests/e2e/playwright.config.ts",
+        "{workspaceRoot}/repo-config.yml",
+        "{workspaceRoot}/rhino.lock",
+        "{workspaceRoot}/specs/**/*",
+        "{workspaceRoot}/apps/ayokoding-www/content/**/*.feature",
+        "{workspaceRoot}/apps/*/tests/**/*",
+        "{workspaceRoot}/apps/*-e2e/steps/**/*",
+        "{workspaceRoot}/apps/*-e2e/src/**/*",
+        "{workspaceRoot}/libs/*/tests/**/*"
       ]
     },
     "storybook": {
@@ -130,21 +142,22 @@
         "{workspaceRoot}/libs/web-ui/tests/e2e/playwright.config.ts"
       ]
     },
-    "test:coverage:behaviour": {
+    "test:behaviour:coverage": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config libs/web-ui/behaviour-coverage.json --adapter behaviour"
+        "command": "./rhino behaviour coverage validate",
+        "cwd": "{workspaceRoot}"
       },
       "cache": true,
       "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/libs/web-ui/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/libs/web-ui/behaviours/**/*.feature",
-        "{workspaceRoot}/libs/web-ui/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/libs/web-ui/vitest.config.ts",
-        "{workspaceRoot}/libs/web-ui/tests/e2e/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/libs/web-ui/tests/e2e/playwright.config.ts"
+        "{workspaceRoot}/repo-config.yml",
+        "{workspaceRoot}/rhino.lock",
+        "{workspaceRoot}/specs/**/*",
+        "{workspaceRoot}/apps/ayokoding-www/content/**/*.feature",
+        "{workspaceRoot}/apps/*/tests/**/*",
+        "{workspaceRoot}/apps/*-e2e/steps/**/*",
+        "{workspaceRoot}/apps/*-e2e/src/**/*",
+        "{workspaceRoot}/libs/*/tests/**/*"
       ]
     },
     "test:coverage": {
@@ -157,10 +170,6 @@
           },
           {
             "command": "npm exec -- nx run web-ui:test:coverage:e2e",
-            "forwardAllArgs": false
-          },
-          {
-            "command": "npm exec -- nx run web-ui:test:coverage:behaviour",
             "forwardAllArgs": false
           }
         ],

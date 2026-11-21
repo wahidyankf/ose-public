@@ -27,9 +27,9 @@ nx run web-ui:test:coverage
 The Unit adapter consumes every scenario through the matching `*.steps.tsx` files under
 `libs/web-ui/src/`. The E2E adapter under `libs/web-ui/tests/e2e/` drives Chromium against
 Storybook, the library's genuine public browser boundary. Static `test:coverage:unit`,
-`test:coverage:e2e`, `test:coverage:behaviour`, and aggregate `test:coverage` validate both
-adapters without executing them. Integration is omitted because the library owns no non-networked
-local-resource boundary.
+`test:coverage:e2e`, and aggregate `test:coverage` validate both adapters without executing them.
+`test:behaviour:coverage` runs RHINO's shared static check. Integration is omitted because the
+library owns no non-networked local-resource boundary.
 
 - [Architecture — web-ui](./architecture.md) — The current, as-built shared React component library
 - [Behaviours — web-ui](./behaviours/README.md) — Gherkin feature files, one folder per component

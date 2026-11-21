@@ -19,6 +19,6 @@ when_to_use: Use when deriving a new `{domain}:{work}` target name from a subjec
 | `validate:mermaid` | `./rhino md mermaid validate` (gate `md-mermaid`) | `validate:*` prefix abolished; repository-wide, not Nx     |
 | `validate:links`   | `./rhino md internal-link validate`               | same                                                       |
 | `validate:deps`    | `deps:audit`                                      | `validate:*` prefix abolished                              |
-| `spec-coverage`    | `test:coverage:behaviour`                         | Hyphen dropped; domain clarified                           |
+| `spec-coverage`    | `test:behaviour:coverage`                         | Hyphen dropped; domain clarified                           |
 | `fmt:check`        | the `format-staged` registry gate (no Nx target)  | Formatting is a registry gate, not a per-project Nx target |
 | `check:msrv`       | `compat:min-version`                              | Verb follows domain: `{domain}:{verb}`                     |

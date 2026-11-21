@@ -21,7 +21,7 @@ One push of a task-owned branch may skip its pre-push hook when every condition 
 3. The outbound safety screen passed for the range being pushed. The screen has no bypass; run
    `scripts/public-safety/check.sh` directly for the range when the hook that normally carries it is the one held back.
 4. The hosted pull-request gate repeats the hook's deterministic checks and a merge cannot skip it, and the push opens
-   or updates the pull request that runs it. The `Quality gate` aggregate in `.github/workflows/pr-quality-gate.yml` is
+   or updates the pull request that runs it. The `quality-gate` aggregate in `.github/workflows/pr-quality-gate.yml` is
    that mirror. A repository path with no hosted mirror, or a delivery reaching its trunk without such a gate, never
    qualifies.
 

@@ -62,9 +62,9 @@ flowchart TD
 ```mermaid
 flowchart TD
     accTitle: Test Pyramid
-    accDescr: E2E Tests Real public boundary Impacted manual + scheduled leads to Integration Tests Real local · no remote calls Impacted manual + scheduled; and 1 more links.
+    accDescr: E2E Tests Real public boundary Impacted manual + scheduled leads to Integration Tests Real local · no remote calls Affected PR gate + scheduled; and 1 more links.
     A[E2E Tests<br/>Real public boundary<br/>Impacted manual +<br/>scheduled]
-    B[Integration Tests<br/>Real local · no<br/>remote calls<br/>Impacted manual +<br/>scheduled]
+    B[Integration Tests<br/>Real local · no<br/>remote calls<br/>Affected PR gate +<br/>scheduled]
     C[Unit Tests<br/>In process<br/>Every quick gate]
 
     A --> B
@@ -352,15 +352,15 @@ coverage: {
 }
 ```
 
-Runtime code coverage is collected and enforced by the runtime target that produces it—normally
-`test:unit` for TypeScript projects. Static `test:coverage:unit`,
-`test:coverage:integration`, `test:coverage:e2e`, `test:coverage:behaviour`, and their aggregate
-inspect the corpus/adapters without executing tests or consuming a runtime report.
-Dedicated E2E projects do not own Unit and do not waive the source owner's 99% threshold. Exclude
-an explicitly enumerated boundary adapter from Unit only when it is wholly a resource, process,
-generated-code, or static-data boundary and named Integration or E2E runtime proof exercises it.
-Keep exclusions to named files or narrow functions; broad path globs, mixed core-logic exclusions,
-and boundary code without higher-layer proof are forbidden.
+Runtime code coverage is collected and enforced by the runtime target that produces it, normally
+`test:unit` for TypeScript projects. `test:behaviour:coverage` inspects the corpus statically, without
+executing tests or consuming a runtime report.
+
+Dedicated E2E projects do not own Unit and do not waive the source owner's 99% threshold. Unit exclusions
+are allowed only for a named category: generated output, declarative configuration, vendored code, or
+non-production code. Each exclusion names a file or a narrow function. Code a unit test cannot reach moves
+behind a port instead of being excluded. Broad path globs, mixed core-logic exclusions, and code left to a
+higher layer are forbidden.
 
 ---
 

@@ -1212,15 +1212,15 @@ test("accepts the closed project target contract", async () => {
         "test:coverage:integration": {
           options: { command: "node scripts/behaviour-coverage.mjs --adapter integration" },
         },
-        "test:coverage:behaviour": {
-          options: { command: "node scripts/behaviour-coverage.mjs --adapter behaviour" },
+        "test:behaviour:coverage": {
+          options: { command: "./rhino behaviour coverage validate" },
         },
         "test:coverage": {
           options: {
             commands: [
               "npx nx run example:test:coverage:unit",
               "npx nx run example:test:coverage:integration",
-              "npx nx run example:test:coverage:behaviour",
+              "npx nx run example:test:behaviour:coverage",
             ],
             parallel: false,
           },
@@ -1244,6 +1244,41 @@ test("accepts the closed project target contract", async () => {
   );
 });
 
+test("requires the behaviour owner to run the shared Rhino check under the current target name", async () => {
+  const checkWith = async (behaviourTargets) => {
+    const root = await fixture({
+      "project.json": JSON.stringify({
+        name: "example",
+        targets: {
+          "test:unit": { options: { command: "npx vitest run --coverage --coverage.thresholds.lines=99" } },
+          "test:coverage:unit": { options: { command: "node scripts/behaviour-coverage.mjs --adapter unit" } },
+          "test:coverage": { options: { commands: ["npx nx run example:test:coverage:unit"], parallel: false } },
+          "test:quick": {
+            options: {
+              commands: ["npx nx run example:test:unit", "npx nx run example:test:coverage"],
+              parallel: false,
+            },
+          },
+          ...behaviourTargets,
+        },
+      }),
+    });
+    return validateProjectTargetContract(path.join(root, "project.json"), "example", { unit: {} });
+  };
+
+  assert.ok((await checkWith({})).some((error) => error.includes("requires test:behaviour:coverage")));
+  const retiredCommand = await checkWith({
+    "test:behaviour:coverage": { options: { command: "node scripts/behaviour-coverage.mjs --adapter behaviour" } },
+  });
+  assert.ok(retiredCommand.some((error) => error.includes("must run ./rhino behaviour coverage validate")));
+  assert.deepEqual(
+    await checkWith({
+      "test:behaviour:coverage": { options: { command: "./rhino behaviour coverage validate" } },
+    }),
+    [],
+  );
+});
+
 test("rejects runtime coverage, incomplete quick composition, and missing adapter pairs", async () => {
   const root = await fixture({
     "project.json": JSON.stringify({
@@ -1251,8 +1286,8 @@ test("rejects runtime coverage, incomplete quick composition, and missing adapte
       targets: {
         "test:unit": { options: { command: "npx vitest run" } },
         "test:coverage:unit": { options: { command: "npx vitest run --coverage" } },
-        "test:coverage:behaviour": {
-          options: { command: "node scripts/behaviour-coverage.mjs --adapter behaviour" },
+        "test:behaviour:coverage": {
+          options: { command: "./rhino behaviour coverage validate" },
         },
         "test:coverage": {
           options: { command: "npx nx run example:test:unit" },
@@ -1288,12 +1323,12 @@ test("rejects a Unit line coverage threshold below the 99% hard minimum", async 
         "test:coverage:unit": {
           options: { command: "node scripts/behaviour-coverage.mjs --adapter unit" },
         },
-        "test:coverage:behaviour": {
-          options: { command: "node scripts/behaviour-coverage.mjs --adapter behaviour" },
+        "test:behaviour:coverage": {
+          options: { command: "./rhino behaviour coverage validate" },
         },
         "test:coverage": {
           options: {
-            commands: ["npx nx run example:test:coverage:unit", "npx nx run example:test:coverage:behaviour"],
+            commands: ["npx nx run example:test:coverage:unit", "npx nx run example:test:behaviour:coverage"],
             parallel: false,
           },
         },
@@ -1324,12 +1359,12 @@ test("accepts a 99% Coverlet Unit line coverage hard gate", async () => {
         "test:coverage:unit": {
           options: { command: "node scripts/behaviour-coverage.mjs --adapter unit" },
         },
-        "test:coverage:behaviour": {
-          options: { command: "node scripts/behaviour-coverage.mjs --adapter behaviour" },
+        "test:behaviour:coverage": {
+          options: { command: "./rhino behaviour coverage validate" },
         },
         "test:coverage": {
           options: {
-            commands: ["npx nx run example:test:coverage:unit", "npx nx run example:test:coverage:behaviour"],
+            commands: ["npx nx run example:test:coverage:unit", "npx nx run example:test:behaviour:coverage"],
             parallel: false,
           },
         },
@@ -1360,12 +1395,12 @@ test("accepts a 99% XPlat collector Unit line coverage hard gate", async () => {
         "test:coverage:unit": {
           options: { command: "node scripts/behaviour-coverage.mjs --adapter unit" },
         },
-        "test:coverage:behaviour": {
-          options: { command: "node scripts/behaviour-coverage.mjs --adapter behaviour" },
+        "test:behaviour:coverage": {
+          options: { command: "./rhino behaviour coverage validate" },
         },
         "test:coverage": {
           options: {
-            commands: ["npx nx run example:test:coverage:unit", "npx nx run example:test:coverage:behaviour"],
+            commands: ["npx nx run example:test:coverage:unit", "npx nx run example:test:behaviour:coverage"],
             parallel: false,
           },
         },
@@ -1391,12 +1426,12 @@ test("rejects a bare line-threshold argument without the XPlat hard-gate helper"
         "test:coverage:unit": {
           options: { command: "node scripts/behaviour-coverage.mjs --adapter unit" },
         },
-        "test:coverage:behaviour": {
-          options: { command: "node scripts/behaviour-coverage.mjs --adapter behaviour" },
+        "test:behaviour:coverage": {
+          options: { command: "./rhino behaviour coverage validate" },
         },
         "test:coverage": {
           options: {
-            commands: ["npx nx run example:test:coverage:unit", "npx nx run example:test:coverage:behaviour"],
+            commands: ["npx nx run example:test:coverage:unit", "npx nx run example:test:behaviour:coverage"],
             parallel: false,
           },
         },
@@ -1423,12 +1458,12 @@ test("dedicated E2E projects do not need to own the Unit runtime", async () => {
         "test:coverage:e2e": {
           options: { command: "node scripts/behaviour-coverage.mjs --adapter e2e" },
         },
-        "test:coverage:behaviour": {
-          options: { command: "node scripts/behaviour-coverage.mjs --adapter behaviour" },
+        "test:behaviour:coverage": {
+          options: { command: "./rhino behaviour coverage validate" },
         },
         "test:coverage": {
           options: {
-            commands: ["npx nx run example-e2e:test:coverage:e2e", "npx nx run example-e2e:test:coverage:behaviour"],
+            commands: ["npx nx run example-e2e:test:coverage:e2e", "npx nx run example-e2e:test:behaviour:coverage"],
             parallel: false,
           },
         },
@@ -1462,12 +1497,12 @@ test("accepts a 99% JaCoCo Unit line coverage hard gate", async () => {
         "test:coverage:unit": {
           options: { command: "node scripts/behaviour-coverage.mjs --adapter unit" },
         },
-        "test:coverage:behaviour": {
-          options: { command: "node scripts/behaviour-coverage.mjs --adapter behaviour" },
+        "test:behaviour:coverage": {
+          options: { command: "./rhino behaviour coverage validate" },
         },
         "test:coverage": {
           options: {
-            commands: ["npx nx run example:test:coverage:unit", "npx nx run example:test:coverage:behaviour"],
+            commands: ["npx nx run example:test:coverage:unit", "npx nx run example:test:behaviour:coverage"],
             parallel: false,
           },
         },
@@ -1495,12 +1530,12 @@ test("rejects a JaCoCo verification task that declares no line minimum", async (
         "test:coverage:unit": {
           options: { command: "node scripts/behaviour-coverage.mjs --adapter unit" },
         },
-        "test:coverage:behaviour": {
-          options: { command: "node scripts/behaviour-coverage.mjs --adapter behaviour" },
+        "test:behaviour:coverage": {
+          options: { command: "./rhino behaviour coverage validate" },
         },
         "test:coverage": {
           options: {
-            commands: ["npx nx run example:test:coverage:unit", "npx nx run example:test:coverage:behaviour"],
+            commands: ["npx nx run example:test:coverage:unit", "npx nx run example:test:behaviour:coverage"],
             parallel: false,
           },
         },
@@ -1538,12 +1573,12 @@ test("rejects a coverage target that executes the Gradle test task", async () =>
             parallel: false,
           },
         },
-        "test:coverage:behaviour": {
-          options: { command: "node scripts/behaviour-coverage.mjs --adapter behaviour" },
+        "test:behaviour:coverage": {
+          options: { command: "./rhino behaviour coverage validate" },
         },
         "test:coverage": {
           options: {
-            commands: ["npx nx run example:test:coverage:unit", "npx nx run example:test:coverage:behaviour"],
+            commands: ["npx nx run example:test:coverage:unit", "npx nx run example:test:behaviour:coverage"],
             parallel: false,
           },
         },
@@ -1577,12 +1612,12 @@ const goCoverageProject = (unitCommand) =>
       "test:coverage:unit": {
         options: { command: "node scripts/behaviour-coverage.mjs --adapter unit" },
       },
-      "test:coverage:behaviour": {
-        options: { command: "node scripts/behaviour-coverage.mjs --adapter behaviour" },
+      "test:behaviour:coverage": {
+        options: { command: "./rhino behaviour coverage validate" },
       },
       "test:coverage": {
         options: {
-          commands: ["npx nx run example:test:coverage:unit", "npx nx run example:test:coverage:behaviour"],
+          commands: ["npx nx run example:test:coverage:unit", "npx nx run example:test:behaviour:coverage"],
           parallel: false,
         },
       },
@@ -1929,12 +1964,12 @@ const pythonOwnerProject = (
     typecheck: { options: { command: "uv run pyright" } },
     "test:unit": { options: { command: unitCommand } },
     "test:coverage:unit": { options: { command: coverageCommand } },
-    "test:coverage:behaviour": {
-      options: { command: "node scripts/behaviour-coverage.mjs --adapter behaviour" },
+    "test:behaviour:coverage": {
+      options: { command: "./rhino behaviour coverage validate" },
     },
     "test:coverage": {
       options: {
-        commands: ["npx nx run example:test:coverage:unit", "npx nx run example:test:coverage:behaviour"],
+        commands: ["npx nx run example:test:coverage:unit", "npx nx run example:test:behaviour:coverage"],
         parallel: false,
       },
     },
@@ -2020,12 +2055,12 @@ const pythonE2eProject = ({
     typecheck: { options: { command: "uv run pyright" } },
     "test:e2e": { options: { command: "uv run pytest tests" } },
     "test:coverage:e2e": { options: { command: coverageCommand } },
-    "test:coverage:behaviour": {
-      options: { command: "node scripts/behaviour-coverage.mjs --adapter behaviour" },
+    "test:behaviour:coverage": {
+      options: { command: "./rhino behaviour coverage validate" },
     },
     "test:coverage": {
       options: {
-        commands: ["npx nx run example-e2e:test:coverage:e2e", "npx nx run example-e2e:test:coverage:behaviour"],
+        commands: ["npx nx run example-e2e:test:coverage:e2e", "npx nx run example-e2e:test:behaviour:coverage"],
         parallel: false,
       },
     },
@@ -2464,8 +2499,8 @@ test("the FERRET owner declares exactly the mandatory target matrix and its tags
     "install",
     "lint",
     "run",
+    "test:behaviour:coverage",
     "test:coverage",
-    "test:coverage:behaviour",
     "test:coverage:integration",
     "test:coverage:unit",
     "test:integration",
@@ -2482,8 +2517,8 @@ test("the FERRET E2E project declares exactly the mandatory target matrix and ow
   assert.deepEqual(Object.keys(project.targets).toSorted(), [
     "install",
     "lint",
+    "test:behaviour:coverage",
     "test:coverage",
-    "test:coverage:behaviour",
     "test:coverage:e2e",
     "test:e2e",
     "test:quick",
@@ -2529,25 +2564,23 @@ test("the FERRET quick and coverage aggregates compose exactly the applicable ta
   const e2e = (await realFerretProject("ferret-cli-e2e")).project;
 
   assert.deepEqual(composedTargets(owner.targets["test:quick"], "ferret-cli"), [
-    "lint",
     "typecheck",
+    "lint",
     "test:unit",
     "test:coverage",
+    "test:behaviour:coverage",
   ]);
   assert.deepEqual(composedTargets(owner.targets["test:coverage"], "ferret-cli"), [
     "test:coverage:unit",
     "test:coverage:integration",
-    "test:coverage:behaviour",
   ]);
   assert.deepEqual(composedTargets(e2e.targets["test:quick"], "ferret-cli-e2e"), [
-    "lint",
     "typecheck",
+    "lint",
     "test:coverage",
+    "test:behaviour:coverage",
   ]);
-  assert.deepEqual(composedTargets(e2e.targets["test:coverage"], "ferret-cli-e2e"), [
-    "test:coverage:e2e",
-    "test:coverage:behaviour",
-  ]);
+  assert.deepEqual(composedTargets(e2e.targets["test:coverage"], "ferret-cli-e2e"), ["test:coverage:e2e"]);
   for (const project of [owner, e2e]) {
     assert.equal(project.targets["test:quick"].options.parallel, false);
     assert.equal(project.targets["test:coverage"].options.parallel, false);

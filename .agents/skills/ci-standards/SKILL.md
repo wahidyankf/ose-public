@@ -13,7 +13,7 @@ Use the [BDD standard](../../../repo-governance/development/behaviour-driven-dev
 ## Project-Role Target Contract
 
 - Every behaviour owner has real `test:unit`, `test:coverage:unit`,
-  `test:coverage:behaviour`, and `test:quick` targets.
+  `test:behaviour:coverage`, and `test:quick` targets.
 - `test:unit` collects native line coverage and hard-fails below 99%; dedicated E2E projects do not
   own Unit and never waive their source owner's threshold.
 - Add `test:integration` plus `test:coverage:integration` only for an owned real local-resource
@@ -34,8 +34,9 @@ resources/processes plus a review-accepted loopback socket it owns, never an ext
 public browser, HTTP, or process boundary with synthetic isolated data.
 
 Runtime `test:*` targets execute tests. Static `test:coverage:*` targets never execute or depend on
-runtime tests. Pre-commit runs staged deterministic checks only. Pre-push runs affected quick
-targets with `--parallel=1`; PR/main may use explicitly bounded shard parallelism. Neither runs
+runtime tests. Pre-commit runs only staged-file formatting. Pre-push runs only the leak scan over the
+pushed range. The PR workflow's language jobs run affected quick targets with explicitly bounded
+parallelism. None of these runs
 Integration/E2E runtime. Development/review runs impacted higher-layer scenarios manually;
 scheduled or manually dispatched full-quality CI runs all static validators, complete Integration,
 then complete unfiltered E2E.

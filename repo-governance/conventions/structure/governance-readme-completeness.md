@@ -24,8 +24,7 @@ directory listing with its `README.md` rendered beneath it.
 `./rhino md readme-index validate`, at the release pinned in `rhino.lock`, reads
 `policies.markdown.readme-index.trees` in `repo-config.yml`. Each entry names a tree by `path` and may
 add `require-direct-children`, `annotations`, and `exclusions`. It exits `0` clean, `1` on findings,
-and `2` on an unusable declaration. The gate `md-readme-index` runs it over every declared tree at
-pre-commit and on the `pull-request` surface, because a directory added or removed outside the staged
+and `2` on an unusable declaration. The gate `md-readme-index` runs it over every declared tree on the `pull-request` surface, because a directory added or removed outside the changed
 paths can break an index.
 
 | Finding kind                 | Raised when                                           | Armed for a tree when                   |

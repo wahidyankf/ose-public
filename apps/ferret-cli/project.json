@@ -136,18 +136,22 @@
         "{workspaceRoot}/specs/apps/ferret/cli/behaviours/**/*.feature"
       ]
     },
-    "test:coverage:behaviour": {
+    "test:behaviour:coverage": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config apps/ferret-cli/behaviour-coverage.json --adapter behaviour"
+        "command": "./rhino behaviour coverage validate",
+        "cwd": "{workspaceRoot}"
       },
       "cache": true,
       "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/ferret-cli/behaviour-coverage.json",
-        "{projectRoot}/tests/**/*.py",
-        "{projectRoot}/pyproject.toml",
-        "{workspaceRoot}/specs/apps/ferret/cli/behaviours/**/*.feature"
+        "{workspaceRoot}/repo-config.yml",
+        "{workspaceRoot}/rhino.lock",
+        "{workspaceRoot}/specs/**/*",
+        "{workspaceRoot}/apps/ayokoding-www/content/**/*.feature",
+        "{workspaceRoot}/apps/*/tests/**/*",
+        "{workspaceRoot}/apps/*-e2e/steps/**/*",
+        "{workspaceRoot}/apps/*-e2e/src/**/*",
+        "{workspaceRoot}/libs/*/tests/**/*"
       ]
     },
     "test:coverage": {
@@ -160,10 +164,6 @@
           },
           {
             "command": "npm exec -- nx run ferret-cli:test:coverage:integration",
-            "forwardAllArgs": false
-          },
-          {
-            "command": "npm exec -- nx run ferret-cli:test:coverage:behaviour",
             "forwardAllArgs": false
           }
         ],
@@ -184,11 +184,11 @@
       "options": {
         "commands": [
           {
-            "command": "npm exec -- nx run ferret-cli:lint",
+            "command": "npm exec -- nx run ferret-cli:typecheck",
             "forwardAllArgs": false
           },
           {
-            "command": "npm exec -- nx run ferret-cli:typecheck",
+            "command": "npm exec -- nx run ferret-cli:lint",
             "forwardAllArgs": false
           },
           {
@@ -197,6 +197,10 @@
           },
           {
             "command": "npm exec -- nx run ferret-cli:test:coverage",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ferret-cli:test:behaviour:coverage",
             "forwardAllArgs": false
           }
         ],
@@ -216,7 +220,15 @@
         "{projectRoot}/uv.lock",
         "{projectRoot}/.python-version",
         "{workspaceRoot}/.claude/hooks/ferret-capture.sh",
-        "{workspaceRoot}/.opencode/plugins/ferret.ts"
+        "{workspaceRoot}/.opencode/plugins/ferret.ts",
+        "{workspaceRoot}/repo-config.yml",
+        "{workspaceRoot}/rhino.lock",
+        "{workspaceRoot}/specs/**/*",
+        "{workspaceRoot}/apps/ayokoding-www/content/**/*.feature",
+        "{workspaceRoot}/apps/*/tests/**/*",
+        "{workspaceRoot}/apps/*-e2e/steps/**/*",
+        "{workspaceRoot}/apps/*-e2e/src/**/*",
+        "{workspaceRoot}/libs/*/tests/**/*"
       ]
     }
   },

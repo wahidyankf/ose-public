@@ -56,5 +56,5 @@ fixture in `tests/conftest.py`), so no child that inherits its environment can t
 
 This project owns no feature files. It is the public-process adapter for the corpus in
 [`specs/apps/ferret/cli/behaviours/`](../../specs/apps/ferret/cli/README.md); the static `test:coverage:e2e` and
-`test:coverage:behaviour` targets check its mapping without running a test, and `test:quick` never runs a runtime
+`test:behaviour:coverage` targets check its mapping without running a test, and `test:quick` never runs a runtime
 E2E test. It owns no Unit or Integration target.

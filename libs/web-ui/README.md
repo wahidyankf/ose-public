@@ -82,6 +82,6 @@ All components follow the patterns in [Component Patterns Convention](../../repo
 
 The canonical corpus is `specs/libs/web-ui/behaviours/`. `test:unit` runs component adapters in
 process, while `test:e2e` drives Chromium against Storybook as the library's genuine public browser
-boundary. Matching `test:coverage:unit`, `test:coverage:e2e`, `test:coverage:behaviour`, and
+boundary. Matching `test:coverage:unit`, `test:coverage:e2e`, `test:behaviour:coverage`, and
 aggregate `test:coverage` validate both adapters statically. Integration is omitted because the
 library owns no non-networked local-resource boundary.

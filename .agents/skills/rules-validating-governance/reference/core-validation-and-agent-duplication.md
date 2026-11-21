@@ -3,8 +3,8 @@
 ## Step 1: Core Repository Validation
 
 **Deterministic-gate annotation**: file naming, frontmatter shape (No-Last-Updated convention),
-and emoji codepoints are enforced by the deterministic `./rhino md`/`convention` gates at
-pre-commit and markdown CI — not in the `repo-governance audit` preflight envelope. Do not
+and emoji codepoints are enforced by the deterministic `./rhino md`/`convention` gates on the
+pull-request surface — not in the `repo-governance audit` preflight envelope. Do not
 AI-re-derive them; re-evaluate only linking correctness and semantic convention compliance not
 caught mechanically.
 

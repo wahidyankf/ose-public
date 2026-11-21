@@ -24,7 +24,7 @@ jobs:
     name: Build and publish the tagged artifact
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           # The tag object itself, not just the commit it points at, because the annotated-tag check
           # below reads its type. A shallow checkout of a tag ref does not guarantee the object.
@@ -45,13 +45,9 @@ jobs:
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-python
 
-      # nx is invoked directly, not through the local HIPPO consumer: a runner is one job on a fresh
-      # single-tenant VM, so there is no concurrent local compute to admit against, and the consumer's
-      # local policy file is gitignored, so invoking it here would be an untested path. The governance
-      # rule is explicit — "Ordinary hosted PR CI retains runner-native controls" in
-      # repo-governance/development/practice/resource-aware-development/consumer-integrity-state-and-evidence.md.
+      # nx runs under the local HIPPO consumer, as every other workflow's nx calls do (OP-7).
       - name: Install locked Python dependencies
-        run: npx nx run ferret-cli:install
+        run: ./hippo run --class transactional --resource-tier standard --disk-path . -- npx nx run ferret-cli:install
 
       # The tag is the release identity, so it must agree with the version the artifact reports.
       # Nothing else compares them: `pyproject.toml` and `ferret.__version__` are separate literals
@@ -91,7 +87,7 @@ jobs:
             exit 1
           fi
           git merge-base --is-ancestor "$GITHUB_SHA" refs/remotes/origin/main
-          npx nx run ferret-cli:build
+          ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npx nx run ferret-cli:build
 
       # The build declares itself byte-reproducible: fixed entry timestamp, mode, order, and no
       # compression. A published digest that a rebuild cannot reproduce is not verifiable after the
@@ -101,7 +97,7 @@ jobs:
           set -euo pipefail
           FIRST=$(sha256sum apps/ferret-cli/dist/ferret.pyz | cut -d' ' -f1)
           rm -f apps/ferret-cli/dist/ferret.pyz
-          npx nx run ferret-cli:build --skip-nx-cache
+          ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npx nx run ferret-cli:build --skip-nx-cache
           SECOND=$(sha256sum apps/ferret-cli/dist/ferret.pyz | cut -d' ' -f1)
           if [ "$FIRST" != "$SECOND" ]; then
             echo "Rebuild digest $SECOND does not match $FIRST; the artifact is not reproducible" >&2

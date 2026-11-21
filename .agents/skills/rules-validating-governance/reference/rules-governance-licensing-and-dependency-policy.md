@@ -28,7 +28,7 @@
 3. **Gherkin Journey Coherence** (markdown fences — see the
    [Acceptance Criteria Convention](../../../../repo-governance/development/infra/acceptance-criteria/gherkin-format-and-step-keyword-cardinality.md)):
    scope is ` ```gherkin ` fences in `repo-governance/`, `docs/`, `.agents/skills/`, and active
-   plans (`plans/done/` exempt). Project-local `test:coverage:behaviour` owns static corpus,
+   plans (`plans/done/` exempt). Project-local `test:behaviour:coverage` owns static corpus,
    adapter, exemption, and journey-shape checks for tracked `.feature` files. Require an explicit
    `When` and `Then`; repeated primary keywords are valid when they form one continuous journey.
    Flag a missing action/outcome or unrelated independently meaningful actions hidden in one

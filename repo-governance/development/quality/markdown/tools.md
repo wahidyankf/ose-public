@@ -36,6 +36,6 @@ when_to_use: "Use when checking which config or script controls markdown formatt
 
 **When it runs**:
 
-- Pre-commit hook and PR quality gate (the `markdownlint` registry gate blocks on violations)
+- PR quality gate (the `markdownlint` registry gate blocks on violations); pre-commit only formats staged files
 - coding agent hook (PostToolUse)
 - Manual: `npm run lint:md`

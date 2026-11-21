@@ -29,7 +29,7 @@
 - `*-to-pr` mode: a declared delivery unit whose PR never merged: **HIGH**
 - Direct mode: a declared delivery unit whose direct-push checkpoint never landed: **HIGH**
 - `*-to-pr` mode: PR missing: **CRITICAL**
-- `*-to-pr` mode: exact-current-head/base `Quality gate` not green: **CRITICAL**
+- `*-to-pr` mode: exact-current-head/base `quality-gate` not green: **CRITICAL**
 - `*-to-pr` mode: current-head leak-review pass verdict missing: **CRITICAL**
 - `*-to-pr` mode: no semantic-review evidence when none was requested: **not a finding**
 - `*-to-pr` mode: semantic-review step without a direct user request: **HIGH**

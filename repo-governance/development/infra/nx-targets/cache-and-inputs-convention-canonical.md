@@ -45,5 +45,5 @@ spec changes (triggering `codegen`), `test:unit` and `test:quick` must re-run ev
 source files are unchanged. Without these paths in `inputs`, Nx incorrectly serves cached results.
 
 **Static behaviour coverage**: every owner and dedicated E2E project declares its corpus and
-binding/support sources as inputs of `test:coverage:behaviour`. The target is mandatory in
+binding/support sources as inputs of `test:behaviour:coverage`. The target is mandatory in
 `test:quick`, never executes tests, and admits no deferred step gaps or `@wip` scenarios.

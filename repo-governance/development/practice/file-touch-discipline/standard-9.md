@@ -23,7 +23,7 @@ Rhino provides the generators; nothing runs `generate` for you:
 | `./rhino harness adapters validate` | Byte-parity guard against the emitter output, across every harness |
 
 Neither command has an npm script wrapper. The `harness-adapters` registry gate runs `validate` on
-the pre-commit and pull-request surfaces, so a stale adapter fails the commit and the pull request
+the pull-request surface, so a stale adapter fails the pull request
 that carry it; no hook or gate runs `generate`. The obligations follow from that:
 
 1. **Put the mirrors on your ledger.** Generated is not unaccounted-for. Editing

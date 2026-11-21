@@ -71,7 +71,7 @@ Complete reference for Nx workspace configuration files, options, and settings.
     "test:coverage:e2e": {
       "cache": true
     },
-    "test:coverage:behaviour": {
+    "test:behaviour:coverage": {
       "cache": true
     },
     "test:integration": {
@@ -192,7 +192,7 @@ Default configuration for targets across all projects.
     "test:coverage:e2e": {
       "cache": true
     },
-    "test:coverage:behaviour": {
+    "test:behaviour:coverage": {
       "cache": true
     },
     "test:integration": {
@@ -367,16 +367,17 @@ Per-project:
         "command": "node scripts/behaviour-coverage.mjs --config libs/ts-utils/behaviour-coverage.json --adapter unit"
       }
     },
-    "test:coverage:behaviour": {
+    "test:behaviour:coverage": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config libs/ts-utils/behaviour-coverage.json --adapter behaviour"
+        "command": "./rhino behaviour coverage validate",
+        "cwd": "{workspaceRoot}"
       }
     },
     "test:coverage": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["npx nx run ts-utils:test:coverage:unit", "npx nx run ts-utils:test:coverage:behaviour"],
+        "commands": ["npx nx run ts-utils:test:coverage:unit"],
         "parallel": false
       }
     },

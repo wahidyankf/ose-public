@@ -13,27 +13,28 @@ when_to_use: "Use when debugging a commit-msg or pre-push hook."
 
 1. Pre-commit hook completes successfully
 2. Commit-msg hook triggers (`./rhino gate run --surface commit-msg --message-file "$1"`)
-3. The only declared `commit-msg` gate, `public-safety-commit-message`, screens the message
-4. Commit proceeds if the screen is clean
+3. The only declared `commit-msg` gate, `commit-message`, runs Commitlint on the message
+4. Commit proceeds if the lint passes
 
 **What It Validates**:
 
-- The message contains none of the public-safety shapes this public repository must never publish
-- It does **not** check [Conventional Commits](https://www.conventionalcommits.org/) format. Review
-  checks that, and Commitlint can check it on demand — see
-  [Commit Message Convention](../../workflow/commit-messages.md) for complete rules
+- The message follows the [Conventional Commits](https://www.conventionalcommits.org/) format that
+  `commitlint.config.js` sets. See [Commit Message Convention](../../workflow/commit-messages.md) for complete rules.
+- It does **not** screen the message for public-safety shapes. The message-safety screen runs at the pull-request
+  surface, and the pre-push leak scan covers the messages of the pushed commits.
 
 **What Happens on Failure**:
 
 - Commit is blocked
-- The screen names a detector and line, never the matched value
-- Remove the flagged value from the message and try again
+- Commitlint names the rule that failed
+- Amend the message to follow the format and try again
 
 **Example**:
 
 ```text
-[public-safety] finding maintainer-path <commit-text-1>:1
-[public-safety] commit: blocked, 1 finding(s); publication must not proceed
+✖   subject may not be empty [subject-empty]
+✖   type may not be empty [type-empty]
+✖   found 2 problems, 0 warnings
 ```
 
 ## Pre-push Hook
@@ -43,41 +44,33 @@ when_to_use: "Use when debugging a commit-msg or pre-push hook."
 **Execution Order**:
 
 1. You run `git push`
-2. Pre-push hook triggers (`.husky/pre-push` — a shim line invoking
-   `./rhino gate run --surface pre-push`, which runs the public-safety screen and then
-   `./rhino gate run --surface pre-push`)
-3. `gate run --surface=pre-push` orchestrates every registry-declared `pre-push`-surface gate in
-   declaration order, failing fast. The gate set is registry-driven and changes as `repo-config.yml`
-   changes — it is **not** a hand-maintained fixed command list. The affected-project quick gate
-   owns Unit runtime and every applicable static `test:coverage:*` validator; other registry
-   entries add always-run and path-gated checks. Discover the live inventory rather than trusting
-   prose here:
+2. Pre-push hook triggers (`.husky/pre-push`, a shim that runs
+   `./rhino gate run --surface pre-push --push-updates-stdin` under the `./hippo` guard)
+3. `gate run --surface pre-push` orchestrates every registry-declared `pre-push` gate in declaration order,
+   failing fast. The gate set is registry-driven and changes as `repo-config.yml` changes. It is **not** a
+   hand-maintained command list. Discover the live inventory rather than trusting prose here:
 
    ```bash
    ./rhino gate list
    ```
 
-   See [Git Hook Lifecycle](../../workflow/git-hook-lifecycle.md) for the shared discovery/conformance
-   workflow (`gate list`, `gate validate`) across all three Husky surfaces.
+   See [Git Hook Lifecycle](../../workflow/git-hook-lifecycle.md) for the shared discovery and conformance workflow
+   (`gate list`, `gate validate`) across all three Husky surfaces.
 
 4. Push proceeds if every declared gate passes.
 
-**What It Validates**: whatever gates `repo-config.yml` currently declares on the `pre-push`
-surface. Consult the live `gate list` output above for the current set and
-their exact commands rather than this prose, which will go stale the next time the registry
-changes.
+**What It Validates**: the leak scan over the pushed commits, their additions, names, and messages. Tests, lint,
+and document checks do not run here; the pull-request gate runs them.
 
 **What Happens on Failure**:
 
 - Push is blocked
-- Error message shows which gate failed
-- Fix the issue and try again
+- The error names the gate that failed
+- Fix the finding and try again
 
 **Benefits**:
 
-- Prevents broken code from reaching remote repository
-- Affected-project-scoped gates only run checks on affected projects (faster than checking
-  everything)
-- Registry-declared gates keep local pre-push and CI's PR gate in sync — see
+- Stops a leak before history leaves the machine
+- Keeps the hook fast, because the heavier checks run once in the pull-request gate
+- Registry-declared gates keep local pre-push and CI's PR gate in sync. See
   [Git Hook Lifecycle §CI relationship](../../workflow/git-hook-lifecycle.md#ci-relationship)
-- Nx caching means repeated checks on unchanged code are near-instant

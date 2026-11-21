@@ -41,8 +41,8 @@ update Gherkin, bind a failing Unit test and every applicable higher-layer adapt
 appropriate Nx runtime target fails, and implement the production change. Finish without
 placeholder, ambiguous, unused, or unimplemented steps. Unit proof is mandatory for every active
 scenario, has no exemption, and its runtime target must enforce at least 99% line coverage over the
-production denominator it owns. Exclusions may assign a real higher-layer boundary to another
-runtime slice; they must never hide retained production behaviour from all numeric coverage.
+production denominator it owns. Exclusions are allowed only for a named category: generated output,
+declarative configuration, vendored code, or non-production code. Unreachable code moves behind a port.
 
 Refactors and implementation-only changes preserve Gherkin and begin from a green characterization
 baseline. The [TDD convention](workflow/test-driven-development.md) governs their Red–Green–Refactor

@@ -32,7 +32,7 @@ This is an intentional compatibility difference from the BeaverNest command-shap
 whose `test:coverage:*` targets execute tests and whose quick target is not cached: OSE adopts its
 command structure, but retains static-only coverage targets and cache-correct quick inputs.
 
-Pre-commit runs staged deterministic checks only, and pre-push runs only its declared gates; neither
+Pre-commit runs staged formatting only, and pre-push runs only the leak scan; neither
 runs quick. The PR workflow's language jobs run affected quick targets with explicitly bounded
 project parallelism while preserving each project's ordered quick composition. No hook or PR job
 may reach Integration or E2E runtime. Developers select

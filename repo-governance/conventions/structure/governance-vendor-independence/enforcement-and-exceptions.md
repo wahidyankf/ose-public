@@ -13,9 +13,8 @@ Enforcement is automated via `./rhino governance vendor validate`, which reads
 
 ### Gate wiring
 
-The `governance-vendor` gate runs the validator on the pre-commit and pull-request surfaces, so a
-forbidden term blocks the commit that introduces it and the pull request's quality gate. No manual
-invocation is needed on commits.
+The `governance-vendor` gate runs the validator on the pull-request surface, so a forbidden term fails
+the pull request that introduces it. No manual invocation is needed.
 
 ### Running the check manually
 

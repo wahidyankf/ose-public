@@ -137,18 +137,22 @@
         "{workspaceRoot}/specs/apps/ayokoding/web/behaviours/**/*.feature"
       ]
     },
-    "test:coverage:behaviour": {
+    "test:behaviour:coverage": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config apps/ayokoding-web/behaviour-coverage.json --adapter behaviour"
+        "command": "./rhino behaviour coverage validate",
+        "cwd": "{workspaceRoot}"
       },
       "cache": true,
       "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/ayokoding-web/behaviour-coverage.json",
-        "{projectRoot}/tests/**/*.go",
-        "{projectRoot}/go.mod",
-        "{workspaceRoot}/specs/apps/ayokoding/web/behaviours/**/*.feature"
+        "{workspaceRoot}/repo-config.yml",
+        "{workspaceRoot}/rhino.lock",
+        "{workspaceRoot}/specs/**/*",
+        "{workspaceRoot}/apps/ayokoding-www/content/**/*.feature",
+        "{workspaceRoot}/apps/*/tests/**/*",
+        "{workspaceRoot}/apps/*-e2e/steps/**/*",
+        "{workspaceRoot}/apps/*-e2e/src/**/*",
+        "{workspaceRoot}/libs/*/tests/**/*"
       ]
     },
     "test:coverage": {
@@ -165,10 +169,6 @@
           },
           {
             "command": "npm exec -- nx run ayokoding-web:test:coverage:e2e",
-            "forwardAllArgs": false
-          },
-          {
-            "command": "npm exec -- nx run ayokoding-web:test:coverage:behaviour",
             "forwardAllArgs": false
           }
         ],
@@ -197,16 +197,29 @@
         }
       ]
     },
+    "test:e2e": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "AYOKODING_BIN=\"$PWD/dist/ayokoding-web\" AYOKODING_BDD_ADAPTER=e2e go test -count=1 ./tests/bdd",
+        "cwd": "apps/ayokoding-web"
+      },
+      "cache": false,
+      "dependsOn": [
+        {
+          "target": "build"
+        }
+      ]
+    },
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
         "commands": [
           {
-            "command": "npm exec -- nx run ayokoding-web:lint",
+            "command": "npm exec -- nx run ayokoding-web:typecheck",
             "forwardAllArgs": false
           },
           {
-            "command": "npm exec -- nx run ayokoding-web:typecheck",
+            "command": "npm exec -- nx run ayokoding-web:lint",
             "forwardAllArgs": false
           },
           {
@@ -219,6 +232,10 @@
           },
           {
             "command": "npm exec -- nx run ayokoding-web:test:coverage",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ayokoding-web:test:behaviour:coverage",
             "forwardAllArgs": false
           }
         ],
@@ -237,7 +254,15 @@
         "{workspaceRoot}/scripts/container-runtime-check",
         "{workspaceRoot}/specs/apps/ayokoding/web/behaviours/**/*.feature",
         "{projectRoot}/assets/js/**/*",
-        "{projectRoot}/vitest.config.ts"
+        "{projectRoot}/vitest.config.ts",
+        "{workspaceRoot}/repo-config.yml",
+        "{workspaceRoot}/rhino.lock",
+        "{workspaceRoot}/specs/**/*",
+        "{workspaceRoot}/apps/ayokoding-www/content/**/*.feature",
+        "{workspaceRoot}/apps/*/tests/**/*",
+        "{workspaceRoot}/apps/*-e2e/steps/**/*",
+        "{workspaceRoot}/apps/*-e2e/src/**/*",
+        "{workspaceRoot}/libs/*/tests/**/*"
       ]
     }
   },

@@ -43,25 +43,23 @@ graph LR
     classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
-**Pre-commit registry gates (declaration order, fail fast):**
+**Pre-commit registry gate (the staged formatter only):**
 
 ```mermaid
 graph LR
     accTitle: CI/CD Pipeline Overview 2
-    accDescr: Pre-commit Hook leads to Public Safety; Public Safety leads to Format Staged; Format Staged leads to Declared Checks.
+    accDescr: Pre-commit Hook leads to Format Staged; Format Staged leads to Restaged Index.
     PRE_COMMIT[Pre-commit Hook]
-    SAFETY[Public Safety]
     FORMAT[Format Staged]
-    CHECKS[Declared Checks]
+    INDEX[Restaged Index]
 
-    PRE_COMMIT --> SAFETY
-    SAFETY --> FORMAT
-    FORMAT --> CHECKS
+    PRE_COMMIT --> FORMAT
+    FORMAT --> INDEX
 
     classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef brown fill:#CA9161,stroke:#000000,color:#000000
     class PRE_COMMIT teal
-    class SAFETY,FORMAT,CHECKS brown
+    class FORMAT,INDEX brown
     classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
@@ -102,23 +100,22 @@ owns every gate's command and order; list them with `./rhino gate list`. See
 
 **Location**: `.husky/pre-commit` (`./rhino gate run --surface pre-commit`)
 
-**Execution Order:** declared gates in registry order, stopping at the first failure:
+**Execution Order:** the one declared `pre-commit` gate:
 
-1. **Public-safety tree screen**: blocks outbound-unsafe staged content
-2. **Formatting** (the `format-staged` mutation gate):
+1. **Formatting** (the `format-staged` mutation gate):
    - Formats staged files by extension (Prettier and each language's formatter)
    - Applies the formatted bytes to the index
-3. **Deterministic checks**: repository configuration, environment policy, Markdown lint and
-   validators (including the whole-tree README-index, internal-link, and word-budget scans), the
-   emoji convention, and `shellcheck`/`hadolint`/`actionlint` over staged paths
 
-**Impact**: Ensures committed files are formatted and pass the declared file checks
+Every other check, including the Markdown lint, the file-type linters, the configuration and environment checks, and
+the public-safety tree screen, runs on the pull-request surface, so the commit stays fast.
+
+**Impact**: Ensures committed files are formatted
 
 ### Commit-msg Hook
 
 **Location**: `.husky/commit-msg` (`./rhino gate run --surface commit-msg --message-file "$1"`)
 
-**Validation**: the declared `commit-msg` gates — today the public-safety commit-message screen
+**Validation**: the declared `commit-msg` gate, `commit-message`, which runs Commitlint on the message
 
 **Format**: `<type>(<scope>): <description>` per the
 [Commit Message Convention](../../../repo-governance/development/workflow/commit-messages.md)
@@ -129,8 +126,8 @@ owns every gate's command and order; list them with `./rhino gate list`. See
 
 **Location**: `.husky/pre-push` (`./rhino gate run --surface pre-push --push-updates-stdin`)
 
-**Execution Order:** the declared `pre-push` gates — today the public-safety tree screen and
-environment-policy validation. Pre-push runs no `test:quick` and no Markdown lint.
+**Execution Order:** the declared `pre-push` gate — today the public-safety range scan over the pushed commits.
+Pre-push runs no `test:quick`, no Markdown lint, and no tree or environment check.
 
 **Impact**: Blocks a push that fails a declared gate; tests run in the PR quality gate
 
@@ -150,7 +147,7 @@ environment-policy validation. Pre-push runs no `test:quick` and no Markdown lin
    formatters over the changed paths and fails on any difference.
 3. One job per detected language (TypeScript, .NET, Flutter, Go, Python) runs affected
    `typecheck`, `lint`, and `test:quick` (plus `compat:min-version` where declared).
-4. The stable `Quality gate` join fails if any of those jobs failed.
+4. The stable `quality-gate` join fails if any of those jobs failed.
 
 **Purpose**: Full quality gate on every PR. The registry is the check-set source of truth for the
 `pull-request` surface; `gate validate` checks its composition. The workflow has no push trigger:
@@ -158,7 +155,7 @@ protected `main` requires an up-to-date branch, so the PR run tests the tree tha
 
 **Note**: The standalone `markdown-validate.yml` workflow has been deleted. Per-file Markdown
 validators (markdownlint, mermaid, heading hierarchy, naming, front matter) run as declared
-`pre-commit` and `pull-request` gates; this workflow's Repository policy job runs the
+`pull-request` gates; this workflow's Repository policy job runs the
 `pull-request` surface through `./rhino gate run`. The repo-wide
 `md-internal-link`, `md-readme-index`, and `word-budget` checks are declared on the `pull-request` surface only (see `./rhino gate list`).
 
@@ -177,7 +174,7 @@ full run).
 
 **PR gate**: when `ayokoding-www` or `ayokoding-cli` is affected, `pr-quality-gate.yml` plans
 the shards (one shard for 8 or fewer affected courses, else four) and calls the reusable
-workflow with selection `since` against the PR base. The `Quality gate` join includes the
+workflow with selection `since` against the PR base. The `quality-gate` join includes the
 examples jobs.
 
 **Monthly full run**: cron `17 3 1 * *` (03:17 UTC on day 1 of each month), selection `all`
@@ -232,7 +229,7 @@ when no product deployment workflow owns them.
 
 **Steps:**
 
-1. Run each project's static `test:coverage:behaviour` validator across the OrganicLever app projects (`organiclever-be`, `organiclever-app-web`, `organiclever-be-e2e`, and the app-web E2E projects)
+1. Run each project's static `test:behaviour:coverage` validator across the OrganicLever app projects (`organiclever-be`, `organiclever-app-web`, `organiclever-be-e2e`, and the app-web E2E projects)
 2. Run `fe-lint` for `organiclever-app-web`
 3. Run backend and frontend Integration suites only for their isolated non-network local-resource boundaries
 4. Start the full Podman Compose stack, including PostgreSQL, for E2E proof through public boundaries
@@ -338,10 +335,8 @@ runs are no-ops, avoiding both the Storybook build and the Vercel deployment.
    ```
 
    - Pre-commit hook runs:
-     - Screens staged content for public safety
      - Formats staged files (`format-staged`)
-     - Runs the declared file checks: configuration, Markdown, the emoji convention, and tool linters
-   - Commit-msg hook runs the public-safety screen on the message (format is checked by review)
+   - Commit-msg hook runs Commitlint on the message (`commit-message`)
    - Commit created
 
 4. **Push to Remote** — target follows the declared Delivery Mode:
@@ -355,13 +350,12 @@ runs are no-ops, avoiding both the Storybook build and the Vercel deployment.
    ```
 
    - Pre-push hook runs (on any push target):
-     - Screens the push for public safety (tree and outgoing commits)
-     - Validates the environment policy
-     - Runs no tests and no Markdown lint
+     - Screens the outgoing commits for public safety (the leak scan)
+     - Runs no tests, no Markdown lint, and no environment check
 
 5. **Open a Pull Request** — the default path (`worktree-to-pr`); skip only under a declared direct-push mode:
    - GitHub Actions run the full quality gate on every PR event
-   - The exact current head and base must pass the required `Quality gate`
+   - The exact current head and base must pass the required `quality-gate`
    - A focused agent pass checks the current head for secrets, protected environment values, and
      machine-specific paths
    - Applicable UI/API surface gates run before merge
@@ -438,12 +432,13 @@ graph TB
 
 **Blocking Gates** (Must pass to proceed; the registry owns each surface, see `./rhino gate list`):
 
-- Public-safety screens (pre-commit, commit-msg, pre-push, PR)
-- Markdown linting and validators (pre-commit, PR)
-- Environment policy validation (pre-commit, pre-push, PR)
+- Public-safety screens (pre-push range scan, PR tree scan)
+- Commit-message format lint (commit-msg, PR)
+- Markdown linting and validators (PR)
+- Environment policy validation (PR)
 - Format verification (PR)
 - Affected `typecheck`, `lint`, and `test:quick` (PR language jobs)
 
 Link-target validation (`md-internal-link`), README-index validation (`md-readme-index`), and governance word
-budgets (`word-budget`) scan the whole tree at pre-commit and on the pull-request surface. Link anchors are not
+budgets (`word-budget`) scan the whole tree on the pull-request surface. Link anchors are not
 validated by any gate.

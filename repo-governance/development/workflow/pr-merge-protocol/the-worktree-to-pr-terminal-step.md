@@ -12,7 +12,7 @@ the AI's work on a plan branch does not end at "all commits pushed." The termina
 is:
 
 1. Confirm the **done-definition** is met:
-   - The `Quality gate` check is green for the exact current PR head and base.
+   - The `quality-gate` check is green for the exact current PR head and base.
    - Every push passed the push leak review, and the delivery harness holds a `pass` verdict from a
      fresh-context `leak-reviewer` for that exact head.
    - Every review conversation is resolved or explicitly dismissed by the user.

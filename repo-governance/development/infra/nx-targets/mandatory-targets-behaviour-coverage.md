@@ -1,19 +1,20 @@
 ---
-description: "Contract for test:coverage:behaviour and the per-adapter static coverage validators"
+description: "Contract for test:behaviour:coverage and the per-adapter static coverage validators"
 when_to_use: "Use when adding or debugging static Gherkin coverage validation."
 ---
 
 # Mandatory Static Behaviour Coverage
 
-Every behaviour owner and dedicated E2E project exposes `test:coverage:behaviour`. It recursively
-discovers the canonical corpus and statically rejects empty/malformed features, missing explicit
-When/Then steps, undefined or ambiguous steps, unused bindings, incomplete applicable adapters,
-missing Unit proof, forbidden `@wip`/positive selection tags, and invalid exemptions.
+Every behaviour owner and dedicated E2E project exposes `test:behaviour:coverage`, which runs RHINO's shared
+static check, `./rhino behaviour coverage validate`. The check runs no test. It recursively discovers the
+canonical corpus and statically rejects empty/malformed features, missing explicit When/Then steps, undefined
+or ambiguous steps, unused bindings, incomplete applicable adapters, missing Unit proof, forbidden
+`@wip`/positive selection tags, and invalid exemptions.
 
-Layer-specific `test:coverage:<layer>` targets prove exactly-one implementation or a valid
-higher-layer exemption for every expanded scenario. Coverage targets never execute tests and never
-depend on runtime targets. Every applicable validator runs through `test:quick`, directly or via
-`test:coverage`.
+Layer-specific `test:coverage:<layer>` targets, which `scripts/behaviour-coverage.mjs` checks, prove
+exactly-one implementation or a valid higher-layer exemption for every expanded scenario. Coverage targets
+never execute tests and never depend on runtime targets. Every applicable validator runs through `test:quick`:
+the layer-specific ones through `test:coverage`, and `test:behaviour:coverage` directly.
 
 **Python (pytest-bdd).** A Python project binds Gherkin with pytest-bdd step definitions in `.py` files: `@given`,
 `@when`, `@then`, or `@step` taking a plain string, `parsers.parse`, `parsers.cfparse`, or `parsers.re`. The static

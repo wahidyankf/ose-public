@@ -37,7 +37,7 @@ Automated linting and formatting ensure code quality and consistency. ESLint cat
 
 Understanding the tool integration workflow helps optimize your development setup.
 
-**Pre-commit hook runs all three tools in sequence:**
+**The three tools run in this sequence. Formatting happens at commit; lint and type checks run in the pull-request gate:**
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
@@ -379,11 +379,10 @@ gates. The PR quality gate's TypeScript job runs them for affected projects toge
 # Stage files
 git add src/donation-service.ts
 
-# Commit triggers the pre-commit gates:
-# 1. The public-safety screen checks the staged tree
-# 2. format-staged formats the staged TypeScript with Prettier and re-stages it
-# 3. The remaining declared checks run
-# 4. The commit proceeds if every gate passes
+# Commit triggers the local hooks:
+# 1. format-staged formats the staged TypeScript with Prettier and re-stages it
+# 2. The commit-msg hook checks the message with Commitlint
+# 3. The commit proceeds if both pass
 git commit -m "feat: add donation validation"
 ```
 

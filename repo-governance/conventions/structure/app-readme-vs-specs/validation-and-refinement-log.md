@@ -7,7 +7,7 @@ when_to_use: Use when checking how this convention is enforced, or reviewing the
 
 ## Validation
 
-`rules-checker` and `specs-checker` enforce this convention by review. No declared gate or pinned RHINO command checks the structural rows below; `test:coverage:behaviour` checks only the Gherkin corpus, and `specs-checker` judges the rest per the [Specs Quality Gate](../../../workflows/quality/specs-quality-gate.md).
+`rules-checker` and `specs-checker` enforce this convention by review. No declared gate or pinned RHINO command checks the structural rows below; `test:behaviour:coverage` checks only the Gherkin corpus, and `specs-checker` judges the rest per the [Specs Quality Gate](../../../workflows/quality/specs-quality-gate.md).
 
 ### Structural checks (specs-checker, review-owned)
 

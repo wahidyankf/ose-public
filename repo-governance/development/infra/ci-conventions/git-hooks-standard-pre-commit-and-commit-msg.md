@@ -5,38 +5,36 @@ when_to_use: Use when debugging the pre-commit hook or commit format.
 
 # Git Hooks Standard — Pre-Commit and Commit-msg
 
-All developer machines run three Husky hooks. Hook logic is implemented via `Rhino` subcommands
-to keep the raw hook files thin and testable.
+All developer machines run three Husky hooks. Each hook is a thin adapter that calls
+`./rhino gate run --surface <surface>`, and the gates live once, in the `gates` section of `repo-config.yml`.
+Each local hook holds only the work its surface allows, and every other check runs at the pull-request surface.
 
 ## pre-commit
 
-The pre-commit hook delegates entirely to `./rhino gate run --surface pre-commit`, which runs the
-public-safety screen and then `./rhino gate run --surface pre-commit`.
-`repo-config.yml`'s `extensions.Rhino.gates` is the live inventory, including ordering, scope, blocking behaviour, mutations, and restaging. Query
-that registry instead of maintaining a second list here:
+The pre-commit hook delegates entirely to `./rhino gate run --surface pre-commit`, which runs the declared
+`pre-commit` entries. Today that is one entry, `format-staged`, which formats the staged files and restages them.
+Query the registry for the live inventory instead of keeping a second list here:
 
 ```bash
 rtk ./rhino gate list
 ```
 
-Use `rtk ./rhino gate validate` to check that the hook and registry
-remain conformant. Language formatter and file-selection details belong to the corresponding
-registry entries and project targets, not this overview.
+Use `rtk ./rhino gate validate` to check that the hook and registry remain conformant. Language formatter and
+file-selection details belong to the `format-staged` entry and project targets, not this overview.
 
-Pre-commit may run only deterministic staged-file checks. It must not invoke `test:unit`,
-`test:integration`, `test:e2e`, `test:quick`, or any other runtime test path.
+Pre-commit holds only staged-file formatting, because that work rewrites files and restages them. It runs no check,
+test, or scan: no Markdown lint, no validator, no environment check, and no `test:*` target. Those run in the
+pull-request gate.
 
 ## commit-msg
 
-The commit-msg hook runs `./rhino gate run --surface commit-msg --message-file "$1"`. Its only
-declared gate, `public-safety-commit-message`, screens the message for public-safety shapes. No hook
-or CI step checks the [Conventional Commits](https://www.conventionalcommits.org/) format below;
-review does, and Commitlint (`commitlint.config.js`) can check a message on demand.
+The commit-msg hook runs `./rhino gate run --surface commit-msg --message-file "$1"`. Its only declared gate,
+`commit-message`, runs Commitlint with `commitlint.config.js` on the message, so a message that breaks the format
+below stops the commit. The pull-request gate runs the same lint over each commit in the range. The message-safety
+screen runs at the pull-request surface and over the pushed range at pre-push.
 
 **Required format**: `<type>(<scope>): <description>`
 
-Valid types: `build`, `chore`, `ci`, `docs`, `feat`, `fix`, `perf`, `refactor`, `revert`,
-`style`, `test`.
+Valid types: `build`, `chore`, `ci`, `docs`, `feat`, `fix`, `perf`, `refactor`, `revert`, `style`, `test`.
 
-The scope is optional but recommended. The description must use imperative mood and must not end
-with a period.
+The scope is optional but recommended. The description must use imperative mood and must not end with a period.

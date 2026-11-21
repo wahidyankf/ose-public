@@ -27,11 +27,11 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-podman
       - name: Generate OpenAPI contract types
-        run: npx nx run ${{ inputs.be-project }}:codegen
+        run: ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npx nx run ${{ inputs.be-project }}:codegen
       - name: Log in to GHCR with an ephemeral auth file
         env:
           REGISTRY_ACTOR: ${{ github.actor }}

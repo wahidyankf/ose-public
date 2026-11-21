@@ -27,7 +27,7 @@ jobs:
       has-python: ${{ steps.detect.outputs.has-python }}
       has-ayokoding-examples: ${{ steps.detect.outputs.has-ayokoding-examples }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
@@ -48,13 +48,13 @@ jobs:
           # must still run. set -e keeps the step failing, so every other language behaves as before.
           trap 'echo "has-python=true" >> "$GITHUB_OUTPUT"' ERR
 
-          affected=$(npx nx show projects --affected)
+          affected=$(./hippo run --class ephemeral --resource-tier light --disk-path . -- npx nx show projects --affected)
           for project in $affected; do
             case "$project" in
               ayokoding-www) echo "has-ayokoding-examples=true" >> "$GITHUB_OUTPUT" ;;
               ayokoding-cli) echo "has-ayokoding-examples=true" >> "$GITHUB_OUTPUT" ;;
             esac
-            tags=$(npx nx show project "$project" --json | jq -r '.tags[]?')
+            tags=$(./hippo run --class ephemeral --resource-tier light --disk-path . -- npx nx show project "$project" --json | jq -r '.tags[]?')
             for tag in $tags; do
               case "$tag" in
                 lang:ts) echo "has-ts=true" >> "$GITHUB_OUTPUT" ;;
@@ -70,13 +70,13 @@ jobs:
     name: Repository policy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-dotnet
       - uses: ./.github/actions/setup-rust
-      - uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
         with:
           channel: stable
           flutter-version-file: .fvmrc
@@ -109,7 +109,7 @@ jobs:
     if: needs.detect.outputs.has-ts == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
@@ -125,7 +125,7 @@ jobs:
     if: needs.detect.outputs.has-dotnet-projects == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
@@ -147,11 +147,11 @@ jobs:
     if: needs.detect.outputs.has-dart == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
-      - uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
         with:
           channel: stable
           flutter-version-file: .fvmrc
@@ -172,7 +172,7 @@ jobs:
     if: needs.detect.outputs.has-go == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
@@ -192,7 +192,7 @@ jobs:
     if: ${{ !cancelled() && (needs.detect.result != 'success' || needs.detect.outputs.has-python == 'true') }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
@@ -209,6 +209,86 @@ jobs:
           --exclude='tag:lang:ts,tag:lang:fsharp,tag:lang:rust,tag:lang:dart,tag:lang:go'
           --parallel=1
 
+  typescript-integration:
+    name: TypeScript integration
+    needs: detect
+    if: needs.detect.outputs.has-ts == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/setup-node
+      - run: >-
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
+          npx nx affected -t test:integration
+          --exclude='tag:lang:python,tag:lang:fsharp,tag:lang:rust,tag:lang:dart,tag:lang:go'
+          --parallel=2
+
+  dotnet-integration:
+    name: .NET integration
+    needs: detect
+    if: needs.detect.outputs.has-dotnet-projects == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/setup-dotnet
+      - run: >-
+          ./hippo run --class transactional --resource-tier standard --disk-path . --
+          npx nx affected -t install
+          --exclude='tag:lang:python,tag:lang:ts,tag:lang:dart,tag:lang:go'
+          --parallel=1
+      - run: >-
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
+          npx nx affected -t test:integration
+          --exclude='tag:lang:python,tag:lang:ts,tag:lang:dart,tag:lang:go'
+          --parallel=1
+
+  go-integration:
+    name: Go integration
+    needs: detect
+    if: needs.detect.outputs.has-go == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/setup-go
+      - run: >-
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
+          npx nx affected -t test:integration
+          --exclude='tag:lang:python,tag:lang:ts,tag:lang:fsharp,tag:lang:rust,tag:lang:dart'
+          --parallel=1
+
+  python-integration:
+    name: Python integration
+    needs: detect
+    # Fail closed, as the Python quality gate is: run when Python is affected, and also whenever detect did not
+    # succeed. The expression form is required: a plain `!` would be a YAML tag.
+    if: ${{ !cancelled() && (needs.detect.result != 'success' || needs.detect.outputs.has-python == 'true') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/setup-python
+      - name: Install locked Python dependencies
+        run: >-
+          ./hippo run --class transactional --resource-tier standard --disk-path . --
+          npx nx affected -t install
+          --exclude='tag:lang:ts,tag:lang:fsharp,tag:lang:rust,tag:lang:dart,tag:lang:go'
+          --parallel=1
+      - run: >-
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
+          npx nx affected -t test:integration
+          --exclude='tag:lang:ts,tag:lang:fsharp,tag:lang:rust,tag:lang:dart,tag:lang:go'
+          --parallel=1
+
   examples-plan:
     name: Plan AyoKoding examples check
     needs: detect
@@ -218,7 +298,7 @@ jobs:
       shards: ${{ steps.plan.outputs.shards }}
       shard-total: ${{ steps.plan.outputs.shard-total }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
@@ -254,8 +334,22 @@ jobs:
       shard-total: ${{ needs.examples-plan.outputs.shard-total }}
 
   quality-gate:
-    name: Quality gate
-    needs: [repository-policy, typescript, dotnet, flutter, go, python, examples-plan, examples]
+    name: quality-gate
+    needs:
+      [
+        repository-policy,
+        typescript,
+        typescript-integration,
+        dotnet,
+        dotnet-integration,
+        flutter,
+        go,
+        go-integration,
+        python,
+        python-integration,
+        examples-plan,
+        examples,
+      ]
     if: always()
     runs-on: ubuntu-latest
     steps:

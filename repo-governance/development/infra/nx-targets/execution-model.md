@@ -22,9 +22,9 @@ course examples, not a project test layer.
 ```mermaid
 flowchart TD
     accTitle: Quality Gates (PR enforcement)
-    accDescr: Developer pushes code leads to Pre-push hook; Pre-push hook leads to declared gates for public safety and env; declared gates for public safety and env leads to All pass?; and 6 more links.
+    accDescr: Developer pushes code leads to Pre-push hook; Pre-push hook leads to declared gates for the leak scan; declared gates for the leak scan leads to All pass?; and 6 more links.
     A[Developer pushes<br/>code] --> B[Pre-push hook]
-    B --> E["declared gates<br/>(public safety,<br/>env)"]
+    B --> E["declared gates<br/>(leak scan)"]
     E --> F{All pass?}
     F -- No --> G[Push blocked]
     F -- Yes --> H[Push succeeds]

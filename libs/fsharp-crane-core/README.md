@@ -10,7 +10,7 @@ ReportManager, SkiplistManager, and PDF extraction cache against isolated real f
 state. The two routing scenarios carry exact Integration exemptions because collaborator selection
 is observable through injected recording ports, not independently through a local resource.
 
-`test:coverage:unit`, `test:coverage:integration`, `test:coverage:behaviour`, and aggregate
+`test:coverage:unit`, `test:coverage:integration`, `test:behaviour:coverage`, and aggregate
 `test:coverage` validate the corpus and bindings statically. E2E is omitted because this library
 exposes no public browser/runtime boundary; Crane CLI owns the public process adapter.
 

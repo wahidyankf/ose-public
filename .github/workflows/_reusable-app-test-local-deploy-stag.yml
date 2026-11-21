@@ -46,34 +46,34 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - uses: ./.github/actions/setup-node
       - name: Validate every app-group adapter without running tests
         run: |
-          npx nx run ${{ inputs.be-project }}:test:coverage
-          npx nx run ${{ inputs.web-project }}:test:coverage
-          npx nx run ${{ inputs.be-project }}-e2e:test:coverage
-          npx nx run ${{ inputs.web-project }}-e2e:test:coverage
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run ${{ inputs.be-project }}:test:coverage
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run ${{ inputs.web-project }}:test:coverage
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run ${{ inputs.be-project }}-e2e:test:coverage
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run ${{ inputs.web-project }}-e2e:test:coverage
 
   quick:
     name: Quick gate (Unit + static coverage)
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-dotnet
-      - run: npx nx run ${{ inputs.be-project }}:test:quick
-      - run: npx nx run ${{ inputs.web-project }}:test:quick
+      - run: ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run ${{ inputs.be-project }}:test:quick
+      - run: ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run ${{ inputs.web-project }}:test:quick
 
   fe-lint:
     name: FE lint
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - uses: ./.github/actions/setup-node
-      - run: npx nx run ${{ inputs.web-project }}:lint
+      - run: ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run ${{ inputs.web-project }}:lint
 
   be-integration:
     name: BE integration tests
@@ -83,12 +83,12 @@ jobs:
     environment: ${{ inputs.environment }}
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-podman
 
       - name: Run integration tests
-        run: npx nx run ${{ inputs.be-project }}:test:integration
+        run: ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run ${{ inputs.be-project }}:test:integration
 
       - name: Teardown integration
         if: always()
@@ -102,15 +102,15 @@ jobs:
     environment: ${{ inputs.environment }}
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-podman
 
       - name: Generate contract types
         run: |
-          npx nx run ${{ inputs.contracts-project }}:bundle
-          npx nx run ${{ inputs.be-project }}:codegen
-          npx nx run ${{ inputs.web-project }}:codegen
+          ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npx nx run ${{ inputs.contracts-project }}:bundle
+          ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npx nx run ${{ inputs.be-project }}:codegen
+          ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npx nx run ${{ inputs.web-project }}:codegen
 
       # --wait-timeout 360 is the same six-minute budget as the health loops below.
       - name: Start full stack (backend + frontend)
@@ -149,26 +149,26 @@ jobs:
       - uses: ./.github/actions/setup-playwright
 
       - name: Run BE E2E tests
-        run: npx nx run ${{ inputs.be-project }}-e2e:test:e2e
+        run: ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run ${{ inputs.be-project }}-e2e:test:e2e
         env:
           API_BASE_URL: http://localhost:${{ inputs.be-port }}
 
       - name: Upload BE E2E report
         if: failure()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: playwright-report-${{ inputs.be-project }}
           path: apps/${{ inputs.be-project }}-e2e/playwright-report/
           retention-days: 1
 
       - name: Run FE E2E tests
-        run: npx nx run ${{ inputs.web-project }}-e2e:test:e2e
+        run: ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run ${{ inputs.web-project }}-e2e:test:e2e
         env:
           WEB_BASE_URL: http://localhost:${{ inputs.web-port }}
 
       - name: Upload FE E2E report
         if: failure()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: playwright-report-${{ inputs.web-project }}
           path: apps/${{ inputs.web-project }}-e2e/playwright-report/
@@ -183,7 +183,7 @@ jobs:
     needs: [specs-coverage, quick, fe-lint, be-integration, e2e]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
       # Force-push the staging web branch: Vercel listens to it and builds the

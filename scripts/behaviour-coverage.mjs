@@ -795,6 +795,8 @@ const PYTEST_COV_THRESHOLD = /--cov-fail-under(?:=|\s+)(\d+(?:\.\d+)?)/iu;
 // hollow when every command it runs is a placeholder form; a reporting `echo` after real work is not.
 const PYTHON_PLACEHOLDER_COMMAND = /^(?:echo|printf|true|:|exit\s+0)(?=[\s;&|]|$)/u;
 const UV_LOCKED_SYNC = /\buv\s+sync\b[^"&;|]*--locked\b/u;
+// The behaviour owner's target is the shared static check that RHINO runs, not a per-project script.
+const BEHAVIOUR_COVERAGE_COMMAND = "./rhino behaviour coverage validate";
 
 function unitLineCoverageThreshold(target) {
   const surface = commandSurface(target);
@@ -901,8 +903,11 @@ export async function validateProjectTargetContract(projectFile, configuredProje
       errors.push(`${projectFile}: configured ${adapterLabel(adapter)} adapter requires test:coverage:${adapter}.`);
     }
   }
-  if (targets["test:coverage:behaviour"] === undefined) {
-    errors.push(`${projectFile}: behaviour owner requires test:coverage:behaviour.`);
+  const behaviourCoverage = targets["test:behaviour:coverage"];
+  if (behaviourCoverage === undefined) {
+    errors.push(`${projectFile}: behaviour owner requires test:behaviour:coverage.`);
+  } else if (JSON.stringify(targetCommands(behaviourCoverage)) !== JSON.stringify([BEHAVIOUR_COVERAGE_COMMAND])) {
+    errors.push(`${projectFile}: test:behaviour:coverage must run ${BEHAVIOUR_COVERAGE_COMMAND}.`);
   }
   if (targets["test:coverage"] === undefined) {
     errors.push(`${projectFile}: behaviour owner requires aggregate test:coverage.`);

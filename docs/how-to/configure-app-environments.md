@@ -191,7 +191,7 @@ remain agent-readable and agent-editable.
 This is a named-file rule, not a blanket deny on every `.env*` file — only `.env.prod` and
 `.env.stag` are denied. It is also independent of commit policy: commit policy stays deny-all for
 every real `.env*` file (everything except `.env.example`), enforced by
-`the public-safety tree check` in the pre-commit path, regardless of which tier files an
+`the public-safety tree check` on the pull-request surface and the pre-push range screen, regardless of which tier files an
 agent is allowed to read.
 
 ## Related

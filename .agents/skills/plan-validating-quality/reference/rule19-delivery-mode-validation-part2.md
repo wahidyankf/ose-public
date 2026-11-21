@@ -14,7 +14,7 @@ cross-references elsewhere cite them as "rule 19 item 8"/"item 9").
    worktree rule. An invocation branch cannot bypass this restriction.
 
 **Finding severity**: invalid non-empty value: **HIGH**. `*-to-pr` mode missing exact-current-head/base
-`Quality gate` verification or current-head leak-review pass before merge: **HIGH**. A broad
+`quality-gate` verification or current-head leak-review pass before merge: **HIGH**. A broad
 semantic-review step without a direct user
 request: **HIGH**. Merge step tagged with anything other than `[AI]`,
 `[HUMAN]`, `[AI+HUMAN]`: **HIGH** (a `[HUMAN]` merge step is always valid, never itself a finding).

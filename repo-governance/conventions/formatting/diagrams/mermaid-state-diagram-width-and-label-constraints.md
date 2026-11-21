@@ -35,7 +35,7 @@ Guide apply (see above). Direction flip does not apply to state diagrams (they h
 directive); use Diagram Splitting or Sequential Chaining when width is exceeded.
 
 **Automated check**: Same gate and location as flowcharts — the `md-mermaid` registry gate
-runs at pre-commit (staged `.md` files) and on the pull-request surface in `pr-quality-gate.yml`.
+runs on the pull-request surface in `pr-quality-gate.yml`, not in a local hook.
 On state diagrams it checks `accTitle`/`accDescr`, the colour palette, and labels declared as
 `state "…" as id` against the 20-grapheme limit. It does not measure width, `id : name` display
 names, or transition labels, so check those by hand.

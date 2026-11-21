@@ -53,7 +53,7 @@ and OCR integrations remain at the edge.
 
 The canonical corpus is `specs/apps/crane/cli/behaviours/`. `test:unit` runs in-process adapters
 with injected boundary doubles, and `test:e2e` exercises the built CLI through its public process
-boundary. Matching `test:coverage:unit`, `test:coverage:e2e`, `test:coverage:behaviour`, and
+boundary. Matching `test:coverage:unit`, `test:coverage:e2e`, `test:behaviour:coverage`, and
 aggregate `test:coverage` validate closure statically. Integration is omitted because the CLI owns
 the public process adapter while fsharp-crane-core owns and tests the non-networked local-resource
 boundary separately.

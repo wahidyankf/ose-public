@@ -18,19 +18,19 @@ when_to_use: "Use when Prettier, commitlint, or a hook misbehaves."
 
 ## Commit-msg Hook Blocks a Commit
 
-**Symptom**: Commit-msg hook fails but the message follows Conventional Commits
+**Symptom**: Commit-msg hook fails but the message looks like Conventional Commits
 
-**Cause**: The hook runs only the `public-safety-commit-message` gate, not Commitlint, so a failure
-means the screen found a public-safety shape in the message.
+**Cause**: The hook runs the `commit-message` gate, which runs Commitlint. A failure means the message breaks the
+format, and Commitlint names the rule (for example `[type-empty]`).
 
 **Solutions**:
 
-1. Read the detector and line the screen reports
-2. Remove the flagged value from the message and commit again
+1. Read the rule Commitlint reports
+2. Amend the message to the format below and commit again
 
 ## Commitlint Rejects a Message You Checked
 
-**Symptom**: An on-demand Commitlint run exits 1 (no hook runs Commitlint)
+**Symptom**: The commit-msg hook, or an on-demand Commitlint run, exits 1
 
 **Solutions**:
 

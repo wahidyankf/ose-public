@@ -39,6 +39,6 @@ The expected behaviour is described in
 [the OrganicLever backend Gherkin specs](../../specs/apps/organiclever/be/behaviours/README.md).
 
 This dedicated E2E project owns no independent corpus. Its `test:e2e` adapter observes the backend
-through public HTTP and messaging boundaries; `test:coverage:e2e`, `test:coverage:behaviour`, and
+through public HTTP and messaging boundaries; `test:coverage:e2e`, `test:behaviour:coverage`, and
 aggregate `test:coverage` validate it statically. Unit and Integration are omitted because their
 in-process and local-resource boundaries belong to `organiclever-be`.

@@ -32,6 +32,6 @@ environment. The scenarios live in
 [the OrganicLever public-site Gherkin specs](../../specs/apps/organiclever/www/behaviours/frontend/README.md).
 
 This dedicated E2E project owns no independent corpus. Its `test:e2e` adapter observes the owner
-site's public browser boundary; `test:coverage:e2e`, `test:coverage:behaviour`, and aggregate
+site's public browser boundary; `test:coverage:e2e`, `test:behaviour:coverage`, and aggregate
 `test:coverage` validate it statically. Unit and Integration are omitted because their in-process
 and local-resource boundaries belong to the owner application.

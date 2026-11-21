@@ -37,19 +37,19 @@ Agent: PR #42 has a failing lint check, but the rest passed.
 ## FAIL: Incorrect agent behaviour -- carrying a bypass forward
 
 ```
-User: [earlier] Merge PR #42 anyway despite test:coverage:behaviour.
+User: [earlier] Merge PR #42 anyway despite test:behaviour:coverage.
 Agent: [later, different PR] Reusing that bypass to merge PR #43.
 ```
 
 ## PASS: User explicitly bypasses a gate
 
 ```
-Agent: PR #42 has all gates passing except test:coverage:behaviour, which
+Agent: PR #42 has all gates passing except test:behaviour:coverage, which
        failed because the new endpoint's Gherkin scenario is still
        being drafted in a follow-up task.
 
 User: Merge it anyway, I will add the Gherkin scenario in the next commit.
 
 Agent: Understood. Merging PR #42 with your explicit approval to
-       bypass the test:coverage:behaviour gate for this instance.
+       bypass the test:behaviour:coverage gate for this instance.
 ```

@@ -5,7 +5,7 @@ when_to_use: "Use when configuring, debugging, or bypassing a code-quality git h
 
 # Code Quality Convention
 
-This convention documents the automated code-quality toolchain -- Prettier, Husky, and the Rhino gate registry -- and the git hooks it runs, plus the Commitlint configuration kept for on-demand commit-message checks. No hook or CI step runs Commitlint.
+This convention documents the automated code-quality toolchain -- Prettier, Husky, and the Rhino gate registry -- and the git hooks it runs, plus the Commitlint configuration that the commit-msg hook and the pull-request gate run on each message.
 
 ## Documents
 

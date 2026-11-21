@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/wahidyankf/rhino/v0.16.7/schemas/repo-config/v2.schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/wahidyankf/rhino/v0.19.0/schemas/repo-config/v2.schema.json
 # Repository-owned policy for the checksum-pinned Rhino candidate.
 #
 # The grouped document contains no legacy compatibility section. Each retained
@@ -1068,6 +1068,51 @@ policies:
         - glob: "**/*.exs"
         - glob: "**/*.ex"
         - glob: "**/*.clj"
+  behaviour:
+    corpus:
+      - specs/apps
+      - specs/libs
+    fixtures:
+      - specs/fixtures
+      # Course sample code (feature files taught as examples), not specifications.
+      - apps/ayokoding-www/content
+    levels:
+      unit:
+        - apps/ayokoding-cli/tests/bdd/**/*_test.go
+        - apps/ayokoding-web/tests/bdd/**/*_test.go
+        - apps/*/tests/unit/**/*.ts
+        - apps/*/tests/unit/**/*.tsx
+        - apps/*/tests/unit/**/*.fs
+        - apps/ferret-cli/tests/unit/**/*.py
+        - libs/*/tests/unit/**/*.ts
+        - libs/*/tests/unit/**/*.fs
+      integration:
+        - apps/ayokoding-cli/tests/bdd/**/*_test.go
+        - apps/ayokoding-web/tests/bdd-integration/**/*_test.go
+        - apps/*/tests/integration/**/*.ts
+        - apps/*/tests/integration/**/*.fs
+        - apps/ferret-cli/tests/integration/**/*.py
+        - libs/*/tests/integration/**/*.ts
+        - libs/*/tests/integration/**/*.fs
+      e2e:
+        - apps/ayokoding-cli/tests/bdd/**/*_test.go
+        - apps/ayokoding-web/tests/bdd/**/*_test.go
+        - apps/*-e2e/tests/e2e/**/*.ts
+        - apps/*-e2e/steps/**/*.ts
+        - apps/*-e2e/src/**/*.ts
+        - apps/ferret-cli-e2e/tests/**/*.py
+        - apps/crane-cli/tests/e2e/**/*.fs
+        - libs/*/tests/e2e/**/*.ts
+    # The test files of a runner that executes whole feature files (godog, playwright-bdd,
+    # vitest-cucumber, pytest-bdd, TickSpec), so a `<feature>: *` reference covers the file (B05).
+    whole-file:
+      - apps/ayokoding-cli/tests/bdd/**/*_test.go
+      - apps/ayokoding-web/tests/bdd/**/*_test.go
+      - apps/ayokoding-web/tests/bdd-integration/**/*_test.go
+      - apps/*-e2e/tests/e2e/**/*.ts
+      - apps/*-e2e/steps/**/*.ts
+      - apps/*-e2e/src/**/*.ts
+      - apps/ferret-cli-e2e/tests/**/*.py
 
 environment:
   examples:
@@ -1163,6 +1208,17 @@ gates:
   composition:
     pull-request:
       relation: at-least
+  wiring:
+    hooks:
+      directory: .husky
+    ci:
+      directory: .github/workflows
+    # C6 placement: each local hook runs only the entries its list names. Every other entry runs at the
+    # pull-request surface alone, so the hooks stay thin.
+    local-surfaces:
+      pre-commit: [format-staged]
+      commit-msg: [commit-message]
+      pre-push: [public-safety-range]
   entries:
     - id: public-safety-tree
       type: check
@@ -1171,9 +1227,8 @@ gates:
         args:
           - literal: scripts/public-safety/check.sh
       run-on:
-        pre-commit: {}
-        pre-push: {}
-        pull-request: {}
+        pull-request:
+          reason: "C6: no local surface lists this check, so it runs at pull-request only."
     - id: public-safety-commit-message
       type: check
       inputs:
@@ -1185,6 +1240,25 @@ gates:
           - input: message.text
             expand: single
       run-on:
+        pull-request:
+          reason: "C6: no local surface lists this check, so it runs at pull-request only."
+          bind:
+            message:
+              source: explicit-range
+              range: explicit
+    - id: commit-message
+      type: check
+      inputs:
+        message:
+          kind: commit-message
+      command:
+        executable: bash
+        args:
+          - literal: scripts/check-commit-message.sh
+        environment:
+          RHINO_GATE_MESSAGE:
+            input: message.text
+      run-on:
         commit-msg:
           bind:
             message:
@@ -1194,6 +1268,29 @@ gates:
             message:
               source: explicit-range
               range: explicit
+    # The pull-request message input is the whole range's text in one blob, so it cannot
+    # show where one commit ends. This entry lints each commit of the range on its own.
+    - id: commit-range-message
+      type: check
+      inputs:
+        range:
+          kind: commit-range
+      command:
+        executable: bash
+        args:
+          - literal: scripts/check-commit-range.sh
+        environment:
+          COMMIT_RANGE_BASE:
+            input: range.base
+          COMMIT_RANGE_HEAD:
+            input: range.head
+      run-on:
+        pull-request:
+          bind:
+            range:
+              source: explicit-range
+              range: explicit
+          reason: "C6: no local surface lists this check, so it runs at pull-request only."
     # The history screen: every commit a push publishes, and every commit in a pull
     # request's base..head range, contributes its own additions, names, and message
     # (repo-governance/workflows/quality/pr-leak-review/003-enforcement.md).
@@ -1229,9 +1326,8 @@ gates:
         args:
           - literal: scripts/check-remote-dispatch-refusal.sh
       run-on:
-        pre-commit: {}
-        pre-push: {}
-        pull-request: {}
+        pull-request:
+          reason: "C6: no local surface lists this check, so it runs at pull-request only."
     - id: format-staged
       type: mutation
       inputs:
@@ -1263,8 +1359,8 @@ gates:
           - literal: repo-config
           - literal: validate
       run-on:
-        pre-commit: {}
-        pull-request: {}
+        pull-request:
+          reason: "C6: no local surface lists this check, so it runs at pull-request only."
     - id: harness-adapters
       type: check
       command:
@@ -1273,8 +1369,8 @@ gates:
           - literal: -c
           - literal: "./rhino harness adapters validate && bash .commandcode/hooks/policy-hooks.test.sh && exec bash .muse/hooks/run-policy-hook.test.sh"
       run-on:
-        pre-commit: {}
-        pull-request: {}
+        pull-request:
+          reason: "C6: no local surface lists this check, so it runs at pull-request only."
     - id: agent-hooks-worktree-create
       type: check
       command:
@@ -1282,8 +1378,8 @@ gates:
         args:
           - literal: .claude/hooks/worktree-create.test.sh
       run-on:
-        pre-commit: {}
-        pull-request: {}
+        pull-request:
+          reason: "C6: no local surface lists this check, so it runs at pull-request only."
     - id: governance-vendor
       type: check
       command:
@@ -1293,8 +1389,8 @@ gates:
           - literal: vendor
           - literal: validate
       run-on:
-        pre-commit: {}
-        pull-request: {}
+        pull-request:
+          reason: "C6: no local surface lists this check, so it runs at pull-request only."
     - id: governance-quality-gates
       type: check
       command:
@@ -1304,8 +1400,8 @@ gates:
           - literal: quality-gates
           - literal: validate
       run-on:
-        pre-commit: {}
-        pull-request: {}
+        pull-request:
+          reason: "C6: no local surface lists this check, so it runs at pull-request only."
     - id: env-validate
       type: check
       command:
@@ -1314,9 +1410,8 @@ gates:
           - literal: env
           - literal: validate
       run-on:
-        pre-commit: {}
-        pre-push: {}
-        pull-request: {}
+        pull-request:
+          reason: "C6: no local surface lists this check, so it runs at pull-request only."
     - id: markdownlint
       type: check
       command:
@@ -1326,8 +1421,8 @@ gates:
           - literal: markdownlint-cli2
           - literal: "**/*.md"
       run-on:
-        pre-commit: {}
-        pull-request: {}
+        pull-request:
+          reason: "C6: no local surface lists this check, so it runs at pull-request only."
     - id: md-mermaid
       type: check
       inputs:
@@ -1339,11 +1434,8 @@ gates:
           - input: staged.paths
             expand: repeat
       run-on:
-        pre-commit:
-          bind:
-            staged:
-              source: git-index
         pull-request:
+          reason: "C6: no local surface lists this check, so it runs at pull-request only."
           bind:
             staged:
               source: explicit-range
@@ -1360,7 +1452,9 @@ gates:
           - literal: validate
       run-on:
         pull-request:
-          reason: "Pre-commit stays narrowed to staged paths; the pull-request surface checks the whole repository."
+          reason: "The pull-request surface checks the whole repository; the local hooks hold no diagram check (C6)."
+    # Whole-tree: a README index can break from a directory added or removed outside the staged paths. The full
+    # scan is fast (~0.1 s), and the pull-request gate runs it.
     - id: md-readme-index
       type: check
       command:
@@ -1369,11 +1463,11 @@ gates:
           - literal: md
           - literal: readme-index
           - literal: validate
-      # Whole-tree on both surfaces: a README index can break from a directory added or removed
-      # outside the staged paths, and the full scan is fast (~0.1 s), so pre-commit catches it first.
       run-on:
-        pre-commit: {}
-        pull-request: {}
+        pull-request:
+          reason: "C6: no local surface lists this check, so it runs at pull-request only."
+    # Whole-tree: a rename or deletion breaks links in files it never touches. The full scan is fast (~2 s), and the
+    # pull-request gate runs it.
     - id: md-internal-link
       type: check
       command:
@@ -1382,11 +1476,11 @@ gates:
           - literal: md
           - literal: internal-link
           - literal: validate
-      # Whole-tree on both surfaces: a rename or deletion breaks links in files it never touches, and
-      # the full scan is fast (~2 s), so pre-commit catches it before a pull request exists.
       run-on:
-        pre-commit: {}
-        pull-request: {}
+        pull-request:
+          reason: "C6: no local surface lists this check, so it runs at pull-request only."
+    # Whole-tree: a surface's glob or thresholds can change without the measured file being staged. The full scan is
+    # fast (~2 s), and the pull-request gate runs it.
     - id: word-budget
       type: check
       command:
@@ -1395,11 +1489,9 @@ gates:
           - literal: governance
           - literal: word-budget
           - literal: validate
-      # Whole-tree on both surfaces: a surface's glob or thresholds can change without the measured
-      # file being staged, and the full scan is fast (~2 s), so pre-commit checks every declared surface.
       run-on:
-        pre-commit: {}
-        pull-request: {}
+        pull-request:
+          reason: "C6: no local surface lists this check, so it runs at pull-request only."
     - id: shellcheck
       type: check
       inputs:
@@ -1411,11 +1503,8 @@ gates:
           - input: staged.paths
             expand: repeat
       run-on:
-        pre-commit:
-          bind:
-            staged:
-              source: git-index
         pull-request:
+          reason: "C6: no local surface lists this check, so it runs at pull-request only."
           bind:
             staged:
               source: explicit-range
@@ -1431,11 +1520,8 @@ gates:
           - input: staged.paths
             expand: repeat
       run-on:
-        pre-commit:
-          bind:
-            staged:
-              source: git-index
         pull-request:
+          reason: "C6: no local surface lists this check, so it runs at pull-request only."
           bind:
             staged:
               source: explicit-range
@@ -1451,11 +1537,8 @@ gates:
           - input: staged.paths
             expand: repeat
       run-on:
-        pre-commit:
-          bind:
-            staged:
-              source: git-index
         pull-request:
+          reason: "C6: no local surface lists this check, so it runs at pull-request only."
           bind:
             staged:
               source: explicit-range
@@ -1469,8 +1552,8 @@ gates:
           - literal: heading-hierarchy
           - literal: validate
       run-on:
-        pre-commit: {}
-        pull-request: {}
+        pull-request:
+          reason: "C6: no local surface lists this check, so it runs at pull-request only."
     - id: md-naming
       type: check
       command:
@@ -1480,8 +1563,8 @@ gates:
           - literal: naming
           - literal: validate
       run-on:
-        pre-commit: {}
-        pull-request: {}
+        pull-request:
+          reason: "C6: no local surface lists this check, so it runs at pull-request only."
     - id: md-frontmatter
       type: check
       command:
@@ -1491,8 +1574,8 @@ gates:
           - literal: frontmatter
           - literal: validate
       run-on:
-        pre-commit: {}
-        pull-request: {}
+        pull-request:
+          reason: "C6: no local surface lists this check, so it runs at pull-request only."
     - id: convention-emoji
       type: check
       command:
@@ -1502,8 +1585,8 @@ gates:
           - literal: emoji
           - literal: validate
       run-on:
-        pre-commit: {}
-        pull-request: {}
+        pull-request:
+          reason: "C6: no local surface lists this check, so it runs at pull-request only."
 
 extensions:
   # Owner: repo-governance/development/quality/stacks/repository-adapter.md

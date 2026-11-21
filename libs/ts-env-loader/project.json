@@ -85,6 +85,10 @@
           {
             "command": "npm exec -- nx run ts-env-loader:test:coverage",
             "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ts-env-loader:test:behaviour:coverage",
+            "forwardAllArgs": false
           }
         ],
         "parallel": false,
@@ -102,7 +106,15 @@
         "{workspaceRoot}/libs/ts-env-loader/tests/integration/**/*.{ts,tsx,fs}",
         "{workspaceRoot}/libs/ts-env-loader/vitest.integration.config.ts",
         "{workspaceRoot}/libs/ts-env-loader/tests/e2e/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/libs/ts-env-loader/vitest.e2e.config.ts"
+        "{workspaceRoot}/libs/ts-env-loader/vitest.e2e.config.ts",
+        "{workspaceRoot}/repo-config.yml",
+        "{workspaceRoot}/rhino.lock",
+        "{workspaceRoot}/specs/**/*",
+        "{workspaceRoot}/apps/ayokoding-www/content/**/*.feature",
+        "{workspaceRoot}/apps/*/tests/**/*",
+        "{workspaceRoot}/apps/*-e2e/steps/**/*",
+        "{workspaceRoot}/apps/*-e2e/src/**/*",
+        "{workspaceRoot}/libs/*/tests/**/*"
       ]
     },
     "deps:audit": {
@@ -131,23 +143,22 @@
         "{workspaceRoot}/libs/ts-env-loader/vitest.e2e.config.ts"
       ]
     },
-    "test:coverage:behaviour": {
+    "test:behaviour:coverage": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config libs/ts-env-loader/behaviour-coverage.json --adapter behaviour"
+        "command": "./rhino behaviour coverage validate",
+        "cwd": "{workspaceRoot}"
       },
       "cache": true,
       "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/libs/ts-env-loader/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/libs/ts-env-loader/behaviours/**/*.feature",
-        "{workspaceRoot}/libs/ts-env-loader/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/libs/ts-env-loader/tests/integration/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/libs/ts-env-loader/tests/e2e/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/libs/ts-env-loader/vitest.config.ts",
-        "{workspaceRoot}/libs/ts-env-loader/vitest.integration.config.ts",
-        "{workspaceRoot}/libs/ts-env-loader/vitest.e2e.config.ts"
+        "{workspaceRoot}/repo-config.yml",
+        "{workspaceRoot}/rhino.lock",
+        "{workspaceRoot}/specs/**/*",
+        "{workspaceRoot}/apps/ayokoding-www/content/**/*.feature",
+        "{workspaceRoot}/apps/*/tests/**/*",
+        "{workspaceRoot}/apps/*-e2e/steps/**/*",
+        "{workspaceRoot}/apps/*-e2e/src/**/*",
+        "{workspaceRoot}/libs/*/tests/**/*"
       ]
     },
     "test:coverage:integration": {
@@ -194,10 +205,6 @@
           },
           {
             "command": "npm exec -- nx run ts-env-loader:test:coverage:e2e",
-            "forwardAllArgs": false
-          },
-          {
-            "command": "npm exec -- nx run ts-env-loader:test:coverage:behaviour",
             "forwardAllArgs": false
           }
         ],

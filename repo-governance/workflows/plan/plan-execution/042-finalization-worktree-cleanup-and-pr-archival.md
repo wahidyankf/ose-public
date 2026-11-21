@@ -71,7 +71,7 @@ inside the delivering PR itself, followed by exact-current-head/base PR CI, befo
    chore(plans): move [plan-identifier] to done
    ```
 
-8. **Verify the replacement `Quality gate` run** is green for the archival commit's exact PR head
+8. **Verify the replacement `quality-gate` run** is green for the archival commit's exact PR head
    and current base. Confirm conversations are resolved, applicable finite surface gates pass, the
    secrets check is clean, and the archival commit is present. Semantic-review evidence is required
    only when the user explicitly requested that workflow for this PR.

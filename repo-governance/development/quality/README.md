@@ -23,6 +23,7 @@ level systems, content preservation, quality gate standards.
 - [Markdown Quality Standards](./markdown.md) — Automated markdown linting and formatting standards using Prettier and markdownlint-cli2. Use when checking markdown linting/formatting config, fixing a violation, or troubleshooting a gate.
 - [Stack Standards](./stacks/README.md) — The adopted language, framework, and tooling standards and the repository adapter that records their decisions. Use when writing or reviewing code in a stack this repository builds with.
 - [Testing Standards](./testing/README.md) — Language-neutral testing standards shared by every stack. Use when judging whether coverage measures meaningful behaviour.
+- [Quality Checks](./checks/README.md) — The test and gate contract: surface placement, test levels and targets, the behaviour corpus, and the coverage floor. Use when deciding which gate, test level, or coverage floor a change must meet.
 - [Type and Boundary Safety](./code/type-and-boundary-safety.md) — The strongest practical checker, rare type escapes, and outside input validated on arrival. Use when code parses outside input or weakens a type.
 - [Shell Scripts](./code/shell-scripts.md) — One declared interpreter in strict mode, the executable bit, comments, and parsed JSON. Use when writing or reviewing a shell script.
 - [Cross-Language Lint Strictness](./cross-language-lint-strictness.md) — Uniform warning-and-above lint threshold across every language and artifact type. Use when adding, changing, or auditing a lint gate.

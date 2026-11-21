@@ -20,7 +20,7 @@ They update, in the same commit or PR:
 
 ## FAIL: Code without specs
 
-A developer adds the endpoint but does not add Gherkin scenarios or update the OpenAPI contract. `test:coverage:behaviour` fails. `codegen` produces stale types. The change is incomplete.
+A developer adds the endpoint but does not add Gherkin scenarios or update the OpenAPI contract. `test:behaviour:coverage` fails. `codegen` produces stale types. The change is incomplete.
 
 ## FAIL: Code and specs without tests
 

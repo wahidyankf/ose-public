@@ -315,9 +315,9 @@ satisfy these additional requirements:
 - [ ] `build` — production build; must include `dependsOn: ["codegen"]`
 - [ ] `test:unit` — in-process Unit tests with OS-facing dependencies replaced; collects native
       line coverage and hard-fails below 99%
-- [ ] `test:coverage:*` plus `test:coverage` — static-only Gherkin/test mapping validation; never
+- [ ] `test:behaviour:coverage` — static-only Gherkin/test mapping validation; never
       executes or depends on a runtime test target
-- [ ] `test:quick` — typecheck, lint, mandatory Unit runtime, and applicable static coverage;
+- [ ] `test:quick` — typecheck, lint, mandatory Unit runtime, and `test:behaviour:coverage`;
       never Integration or E2E runtime
 - [ ] `test:integration` — only when the app owns a genuine deterministic local-resource boundary;
       no external network reach

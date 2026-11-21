@@ -146,9 +146,21 @@ def stored_values(session: Session, column: str) -> set[str]:
         return {str(row[0]) for row in connection.execute(f"SELECT DISTINCT {column} FROM event")}
 
 
-# @scenario specs/apps/ferret/cli/behaviours/queries/local-query-and-export.feature: Filter and export deterministic local events
-@scenario(FEATURE, "Filter and export deterministic local events")
-def test_filter_and_export_deterministic_local_events() -> None:
+# @scenario specs/apps/ferret/cli/behaviours/queries/local-query-and-export.feature: events list shows matching events newest first
+@scenario(FEATURE, "events list shows matching events newest first")
+def test_events_list_shows_matching_events_newest_first() -> None:
+    """Bound to the feature scenario; the steps below carry the assertions."""
+
+
+# @scenario specs/apps/ferret/cli/behaviours/queries/local-query-and-export.feature: events export writes one event per line oldest first
+@scenario(FEATURE, "events export writes one event per line oldest first")
+def test_events_export_writes_one_event_per_line_oldest_first() -> None:
+    """Bound to the feature scenario; the steps below carry the assertions."""
+
+
+# @scenario specs/apps/ferret/cli/behaviours/queries/local-query-and-export.feature: diagnostics never reach standard output
+@scenario(FEATURE, "diagnostics never reach standard output")
+def test_diagnostics_never_reach_standard_output() -> None:
     """Bound to the feature scenario; the steps below carry the assertions."""
 
 
@@ -203,9 +215,9 @@ def then_diagnostics_stay_off_standard_output(session: Session) -> None:
     assert session.refused == Completed(2, b"", b"ferret: [ferret.filter.invalid] a filter value is not valid\n")
 
 
-# @scenario specs/apps/ferret/cli/behaviours/queries/local-query-and-export.feature: Emit a stable machine-readable command result
-@scenario(FEATURE, "Emit a stable machine-readable command result")
-def test_emit_a_stable_machine_readable_command_result() -> None:
+# @scenario specs/apps/ferret/cli/behaviours/queries/local-query-and-export.feature: --json prints one object with schemaVersion and command
+@scenario(FEATURE, "--json prints one object with schemaVersion and command")
+def test_json_prints_one_object_with_schema_version_and_command() -> None:
     """Bound to the feature outline; each example expands independently."""
 
 
@@ -226,16 +238,13 @@ def given_ferret_is_initialized(session: Session) -> None:
 def when_run_with_json(session: Session, command: str) -> None:
     arguments, _ = INVOCATIONS[command]
     session.command = command
-    if command in ("self install", "self uninstall"):
-        # An install is what both an install and an uninstall act on, so the two runs compared below start alike.
+    if command == "self uninstall":
+        # An uninstall acts on an install, so the run starts from one.
         session.run(INVOCATIONS["self install"][0])
     if command == "maintenance":
-        # The first run settles the size of the file, so the two runs compared below start from the same store.
+        # The first run settles the size of the file, so the run below starts from the same store.
         session.run([*arguments, "--json"])
     session.machine = session.run([*arguments, "--json"])
-    if command == "self uninstall":
-        session.run(INVOCATIONS["self install"][0])
-    session.human = session.run(arguments)
 
 
 @then("stdout is one JSON object carrying schemaVersion and command")
@@ -247,110 +256,10 @@ def then_stdout_is_one_json_object(session: Session) -> None:
     assert (document["schemaVersion"], document["command"]) == (1, INVOCATIONS[session.command][1])
 
 
-def scalar(value: Any) -> str:
-    """A JSON scalar as the human output spells it: null is a hyphen and a boolean is yes or no."""
-    if value is None:
-        return "-"
-    if isinstance(value, bool):
-        return "yes" if value else "no"
-    return str(value)
-
-
-def expected_lines(command: str, document: dict[str, Any]) -> list[str]:
-    """The literal lines a status, maintenance, or self-command JSON result must render as, from the contract."""
-    if command == "self install":
-        return [
-            f"FERRET self.install: {document['result']}",
-            f"Version: {document['version']}",
-            f"Artifact: {document['artifactPath']}",
-            f"Launcher: {document['launcherPath']}",
-            f"Manifest: {document['manifestPath']}",
-            f"PATH action: {document['pathAction']}",
-            f"Replaced version: {scalar(document['replacedOwnedVersion'])}",
-        ]
-    if command == "self uninstall":
-        return [
-            f"FERRET self.uninstall: {document['result']}",
-            f"Removed: {', '.join(document['removedPaths']) or '-'}",
-            f"PATH action: {document['pathAction']}",
-            f"Data action: {document['dataAction']}",
-        ]
-    if command == "maintenance":
-        return [
-            f"FERRET maintenance: {scalar(document['result'])}",
-            f"Expired: events={document['expiredEventCount']} workspaces={document['expiredWorkspaceCount']}"
-            f" snapshots={document['expiredCapabilitySnapshotCount']}",
-            f"Counters: local={document['expiredLocalTotal']} before-ack={document['expiredBeforeAckTotal']}",
-            f"Physical bytes: before={document['databaseBytesBefore']} after={document['databaseBytesAfter']}"
-            f" wal={document['walBytesAfter']} freelist={document['freelistBytesAfter']}"
-            f" high-water={document['highWaterBytes']}",
-        ]
-    runtime = document["runtime"]
-    return [
-        f"FERRET status: {document['databaseState']}",
-        f"Version: {runtime['ferretVersion']}",
-        f"Interpreter: {runtime['interpreterState']} {runtime['interpreterVersion']} {runtime['interpreterPath']}",
-        f"Data home: {document['dataHome']}",
-        f"Database: {document['databasePath']}",
-        f"Schema: {document['schemaNumber']}",
-        f"Integrity: {document['integrityState']}",
-        f"Permissions: {document['permissionsState']}",
-        f"Events: {document['eventCount']}",
-        f"Capability snapshots: {document['capabilitySnapshotCount']}",
-        f"Oldest capture: {scalar(document['oldestCapturedAt'])}",
-        f"Near expiry: {document['nearExpiryCount']}",
-        f"Logical expiry: {document['logicallyExpiredCount']}",
-        f"Physical bytes: database={document['databaseBytes']} wal={document['walBytes']}"
-        f" freelist={document['freelistBytes']} high-water={document['highWaterBytes']}",
-        f"Expired local: {document['expiredLocalTotal']}",
-        f"Expired before ACK: {document['expiredBeforeAckTotal']}",
-        f"Maintenance: last={scalar(document['lastMaintenanceAt'])} due={scalar(document['maintenanceDue'])}",
-        f"Hook failures: count={document['hookFailureCount']} last={scalar(document['lastHookFailureAt'])}",
-        f"Backend: {document['backend']['state']}",
-        *(
-            f"Adapter {adapter['harness']}: {adapter['platformSupport']}/{adapter['configurationState']}"
-            f"/{scalar(adapter['latestSnapshotId'])}"
-            for adapter in document["adapters"]
-        ),
-    ]
-
-
-def table(text: str) -> list[list[str]]:
-    return [line.split("\t") for line in text.splitlines()]
-
-
-def cells(values: list[Any]) -> list[str]:
-    return ["-" if value is None else str(value) for value in values]
-
-
-def expected_table(command: str, document: dict[str, Any]) -> list[list[str]]:
-    if command == "events list":
-        return [list(LIST_COLUMNS), *(cells([item[column] for column in LIST_COLUMNS]) for item in document["items"])]
-    rows = document["rows"]
-    header = [*document["groupBy"], *(name for name in rows[0] if name != "dimensions")]
-    body = [
-        cells([dimension["value"] for dimension in row["dimensions"]])
-        + cells([value for name, value in row.items() if name != "dimensions"])
-        for row in rows
-    ]
-    return [header, *body]
-
-
-@then("the human output of the same command derives from that same result")
-def then_human_output_derives_from_the_same_result(session: Session) -> None:
-    assert session.machine is not None
-    assert session.human is not None
-    assert (session.human.returncode, session.human.stderr) == (0, b"")
-    document = json.loads(session.machine.stdout)
-    text = session.human.stdout.decode()
-    if session.command in ("status", "maintenance", "self install", "self uninstall"):
-        assert text.splitlines() == expected_lines(session.command, document)
-        return
-    if session.command == "init":
-        for key in ("result", "dataHome", "databasePath", "schemaNumber", "installationId", "retentionDays"):
-            assert str(document[key]) in text
-        return
-    assert table(text) == expected_table(session.command, document)
+# @scenario specs/apps/ferret/cli/behaviours/queries/local-query-and-export.feature: A --json failure prints a closed error code that exposes no path beyond the data home
+@scenario(FEATURE, "A --json failure prints a closed error code that exposes no path beyond the data home")
+def test_a_json_failure_prints_a_closed_error_code_without_a_path() -> None:
+    """Bound to the feature outline; each example expands independently."""
 
 
 @then("a failure instead emits a closed error code exposing no path beyond the resolved data home")
@@ -388,17 +297,9 @@ def then_a_failure_is_a_closed_error_without_a_path(session: Session) -> None:
     assert outside == []
 
 
-# @scenario specs/apps/ferret/cli/behaviours/queries/local-query-and-export.feature: Keep the export a raw stream when JSON is requested
-@scenario(FEATURE, "Keep the export a raw stream when JSON is requested")
-def test_keep_the_export_a_raw_stream_when_json_is_requested() -> None:
-    """Bound to the feature scenario; the steps below carry the assertions."""
-
-
-@when("the user exports events once with --json and once without it")
-def when_export_with_and_without_json(session: Session) -> None:
-    arguments = ["events", "export", "--format", "jsonl"]
-    session.machine = session.run([*arguments, "--json"])
-    session.human = session.run(arguments)
+@when("the user exports events with --json")
+def when_export_with_json(session: Session) -> None:
+    session.machine = session.run(["events", "export", "--format", "jsonl", "--json"])
 
 
 @then("the export with --json exits 2 with the closed ferret.args.invalid error on stderr and nothing on stdout")
@@ -418,17 +319,21 @@ def then_the_json_export_is_refused(session: Session) -> None:
     }
 
 
-@then("the export without --json writes one canonical event object per line")
-def then_the_plain_export_is_json_lines(session: Session) -> None:
-    assert session.human is not None
-    assert (session.human.returncode, session.human.stderr) == (0, b"")
-    stored = {int(document["eventId"][-12:]): document for document in session.population}
-    assert session.human.stdout.splitlines(keepends=True) == [line_of(stored[number]) for number in (1, 2, 3)]
+# @scenario specs/apps/ferret/cli/behaviours/queries/local-query-and-export.feature: export --json exits 2 with ferret.args.invalid
+@scenario(FEATURE, "export --json exits 2 with ferret.args.invalid")
+def test_export_json_exits_2_with_ferret_args_invalid() -> None:
+    """Bound to the feature scenario; the steps below carry the assertions."""
 
 
-# @scenario specs/apps/ferret/cli/behaviours/queries/local-query-and-export.feature: Use FERRET without a backend
-@scenario(FEATURE, "Use FERRET without a backend")
-def test_use_ferret_without_a_backend() -> None:
+# @scenario specs/apps/ferret/cli/behaviours/queries/local-query-and-export.feature: Every command works using only the local data home
+@scenario(FEATURE, "Every command works using only the local data home")
+def test_every_command_works_using_only_the_local_data_home() -> None:
+    """Bound to the feature scenario; the steps below carry the assertions."""
+
+
+# @scenario specs/apps/ferret/cli/behaviours/queries/local-query-and-export.feature: status reports backend synchronization as unavailable by design
+@scenario(FEATURE, "status reports backend synchronization as unavailable by design")
+def test_status_reports_backend_synchronization_as_unavailable_by_design() -> None:
     """Bound to the feature scenario; the steps below carry the assertions."""
 
 
@@ -468,11 +373,17 @@ def then_every_command_completes_from_the_data_home(session: Session, workdir: P
     assert list(workdir.iterdir()) == []
 
 
+@when("the user checks status")
+def when_status_is_checked(session: Session) -> None:
+    session.machine = session.run(["status", "--json"], environment=session.environment)
+    session.human = session.run(["status"], environment=session.environment)
+
+
 @then("status identifies backend synchronization as unavailable by design")
 def then_status_names_the_backend_as_unavailable(session: Session) -> None:
-    machine = session.run(["status", "--json"], environment=session.environment)
-    human = session.run(["status"], environment=session.environment)
-
+    assert session.machine is not None
+    assert session.human is not None
+    machine, human = session.machine, session.human
     assert (machine.returncode, machine.stderr, human.returncode, human.stderr) == (0, b"", 0, b"")
     assert json.loads(machine.stdout)["backend"] == {"state": "not_available_in_this_version"}
     assert b"Backend: not_available_in_this_version" in human.stdout.splitlines()

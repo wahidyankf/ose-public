@@ -23,9 +23,8 @@ specs/libs/fsharp-crane-core/
 `fsharp-crane-core:test:unit` exercises pure routing through TickSpec bindings under
 `libs/fsharp-crane-core/tests/unit/`. `fsharp-crane-core:test:integration` exercises the library's
 real ReportManager, SkiplistManager, and PDF-cache local-resource boundary under
-`libs/fsharp-crane-core/tests/integration/`. Static `test:coverage:unit`,
-`test:coverage:integration`, and aggregate `test:coverage` validate corpus/binding closure without
-running tests. `test:behaviour:coverage` runs RHINO's shared static check. The routing scenarios are
+`libs/fsharp-crane-core/tests/integration/`. `test:behaviour:coverage` runs RHINO's shared static
+check and validates corpus/binding closure without running tests. The routing scenarios are
 Integration-exempt with
 named Unit alternative proof because injected collaborator-call selection is an in-process concern.
 E2E is omitted because the library exposes no public browser/runtime boundary; public process

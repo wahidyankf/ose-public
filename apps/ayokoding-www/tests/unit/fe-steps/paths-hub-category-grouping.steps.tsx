@@ -83,6 +83,27 @@ vi.mock("@trpc/server", () => ({
 
 // eslint-disable-next-line import/first
 import ContentPage from "@/app/[locale]/(content)/[...slug]/page";
+import { loadManifests } from "@/features/course-paths/shell/manifest-repository";
+import { manifestFixture } from "../features/course-paths/manifest-fixture";
+
+// The immediately-effective backend track as the e2e fixture publishes it (one core phase, three
+// courses), trimmed to the one course whose metadata the card needs. The "Who it is for" line is
+// the manifest's authored description.
+const backendTrack = manifestFixture({
+  pathId: "careers/immediately-effective/backend-track",
+  arc: "immediately-effective",
+  title: "Backend Track (Immediately-Effective)",
+  description: "Who it is for: developers who already write code and want a backend role.",
+  courses: ["backend-essentials"],
+});
+
+const backendEssentialsMeta = {
+  title: "Backend Essentials",
+  slug: "learn/courses/backend-essentials",
+  locale: "en",
+  estimatedHours: 13,
+  status: "published",
+};
 
 const feature = await loadFeature(
   path.resolve(
@@ -92,6 +113,7 @@ const feature = await loadFeature(
 );
 
 describeFeature(feature, ({ Scenario }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/paths-hub-category-grouping.feature: The paths hub groups paths by category, not a flat grid
   Scenario("The paths hub groups paths by category, not a flat grid", ({ Given, When, Then, And }) => {
     let jsx: React.ReactElement;
 
@@ -120,6 +142,91 @@ describeFeature(feature, ({ Scenario }) => {
       expect(skillsSection).not.toBeNull();
       expect(careersSection?.querySelector("a[href*='example-subject']")).toBeNull();
       expect(skillsSection?.querySelector("a[href*='interview-ready']")).toBeNull();
+    });
+  });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/paths-hub-category-grouping.feature: A path card shows who the path is for, its size, its estimated time, its progress in words, and a View path link
+  Scenario(
+    "A path card shows who the path is for, its size, its estimated time, its progress in words, and a View path link",
+    ({ Given, When, Then, And }) => {
+      let jsx: React.ReactElement;
+
+      Given("the immediately-effective backend track is published with its description and one core phase", () => {
+        vi.mocked(loadManifests).mockResolvedValue([backendTrack]);
+        contentMap.set("en:learn/courses/backend-essentials", backendEssentialsMeta);
+      });
+
+      When("a reader opens the paths hub at /en/learn/paths", async () => {
+        jsx = await ContentPage({
+          params: Promise.resolve({ locale: "en", slug: ["learn", "paths"] }),
+        });
+        cleanup();
+        render(jsx);
+      });
+
+      Then("the backend track card shows its description as who the path is for", () => {
+        expect(screen.getByText(backendTrack.description)).toBeTruthy();
+      });
+
+      And("the card states its size in core phases and its estimated time", () => {
+        expect(screen.getByText(/1 core phase · 0 optional · About 13 h/)).toBeTruthy();
+      });
+
+      And("the card states its progress in words", () => {
+        expect(screen.getByText(/0 of 1 core courses done/)).toBeTruthy();
+      });
+
+      And('the card ends with a "View path" link to that path', () => {
+        const card = screen.getByRole("link", { name: backendTrack.title }).closest("li");
+        expect(
+          card?.querySelector("a[href='/en/learn/paths/careers/immediately-effective/backend-track']"),
+        ).not.toBeNull();
+        expect(screen.getAllByRole("link", { name: /View path/ }).length).toBeGreaterThan(0);
+      });
+    },
+  );
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/paths-hub-category-grouping.feature: A paths hub offers a link to browse the course library
+  Scenario("A paths hub offers a link to browse the course library", ({ When, Then }) => {
+    let jsx: React.ReactElement;
+
+    When("a reader opens the paths hub at /en/learn/paths", async () => {
+      vi.mocked(loadManifests).mockResolvedValue([backendTrack]);
+      jsx = await ContentPage({
+        params: Promise.resolve({ locale: "en", slug: ["learn", "paths"] }),
+      });
+      cleanup();
+      render(jsx);
+    });
+
+    Then('the hub ends with a link that reads "Browse the full course library" and opens the course library', () => {
+      expect(screen.getByRole("link", { name: /Browse the full course library/ }).getAttribute("href")).toBe(
+        "/en/browse",
+      );
+    });
+  });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/paths-hub-category-grouping.feature: Path cards read singular for one core phase
+  Scenario("Path cards read singular for one core phase", ({ Given, When, Then }) => {
+    let jsx: React.ReactElement;
+
+    Given("the immediately-effective backend track is published with one core phase", () => {
+      vi.mocked(loadManifests).mockResolvedValue([backendTrack]);
+      contentMap.set("en:learn/courses/backend-essentials", backendEssentialsMeta);
+    });
+
+    When("a reader opens the paths hub at /en/learn/paths", async () => {
+      jsx = await ContentPage({
+        params: Promise.resolve({ locale: "en", slug: ["learn", "paths"] }),
+      });
+      cleanup();
+      render(jsx);
+    });
+
+    Then('the backend track card reads "1 core phase" and never "1 core phases"', () => {
+      const card = screen.getByRole("link", { name: backendTrack.title }).closest("li");
+      expect(card?.textContent).toContain("1 core phase ·");
+      expect(card?.textContent).not.toContain("1 core phases");
     });
   });
 });

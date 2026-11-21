@@ -5,7 +5,7 @@ Scenarios for the OSE Application backend database domain.
 ## Feature Files
 
 - **[migrations.feature](./migrations.feature)** — Database schema migration verification
-  (1 scenario)
+  (4 scenarios)
 
 ## Related
 

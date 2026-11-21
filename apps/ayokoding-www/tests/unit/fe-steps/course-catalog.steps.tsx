@@ -91,6 +91,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-catalog.feature: Every course appears once under its category
   Scenario("Every course appears once under its category", ({ When, Then, And }) => {
     When("a reader opens the courses page", () => renderCatalog());
     Then("the page shows one section heading per category that has courses", () => {
@@ -109,6 +110,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-catalog.feature: A course card shows the facts needed to choose
   Scenario("A course card shows the facts needed to choose", ({ When, Then, And }) => {
     When("a reader opens the courses page", () => renderCatalog());
     Then('the card for "SQL Essentials" shows its one-line description', () => {
@@ -125,6 +127,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-catalog.feature: An outline course card says it is an outline
   Scenario("An outline course card says it is an outline", ({ Given, When, Then, And }) => {
     Given("a course is marked as an outline", () => {
       expect(groups.flatMap((g) => g.entries).find((e) => e.courseId === "outline-course")?.isOutline).toBe(true);
@@ -140,6 +143,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-catalog.feature: A card links only to the course landing page
   Scenario("A card links only to the course landing page", ({ When, Then, And }) => {
     When("a reader opens the courses page", () => renderCatalog());
     Then("each card holds exactly one link", () => {
@@ -158,6 +162,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-catalog.feature: A jump link moves to its category section
   Scenario("A jump link moves to its category section", ({ When, Then }) => {
     When('a reader activates the "Data and databases" jump link', () => {
       renderCatalog();
@@ -169,6 +174,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-catalog.feature: The catalog fits a phone screen
   Scenario("The catalog fits a phone screen", ({ Given, When, Then, And }) => {
     Given("a viewport 375 pixels wide", () => {
       expect(375).toBe(375);

@@ -1,15 +1,11 @@
 package glue
 
 import (
-	"fmt"
-	"net"
 	"net/http"
 	"os"
 	"path/filepath"
 	"runtime"
 	"strings"
-
-	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/web"
 )
 
 func (w *World) StepRewriteStartsWithoutPortOverride() error {
@@ -164,84 +160,6 @@ func (w *World) StepStartupFailsDiagnosticNamingAyokodingWebPort() error {
 func (w *World) StepRewriteListenerStartsFallbackPort() error {
 	if w.listenerStarted {
 		return fail("a fallback listener started despite invalid config")
-	}
-	return nil
-}
-
-func (w *World) StepExistingSiteRewriteDevelopmentServerRunning() error {
-	if err := w.startExternal(3101); err != nil {
-		return err
-	}
-	return w.startExternal(3102)
-}
-
-func (w *World) StepRewriteBrowserAcceptanceSuiteStarts() error {
-	if w.adapter == "unit" {
-		// Resolve the isolated test port through production config, not a flag.
-		var cfg web.Config
-		if err := withScenarioEnv(map[string]string{"AYOKODING_WEB_PORT": itoa(web.TestPort)}, func() error {
-			var resolveErr error
-			cfg, resolveErr = web.ResolveConfig(nil)
-			return resolveErr
-		}); err != nil {
-			return err
-		}
-		if cfg.Port != web.TestPort {
-			return fail("resolved port = %d, want TestPort %d", cfg.Port, web.TestPort)
-		}
-		w.cfg = cfg
-		w.resolvedPort = cfg.Port
-		w.listenerStarted = true
-		w.handler = web.NewServer(cfg, seedFixtureDeps()).Handler()
-		return nil
-	}
-	// The integration suite binary already owns 3191; the scenario
-	// reuses it instead of binding a second listener.
-	w.resolvedPort = 3191
-	w.listenerStarted = true
-	w.baseURL = SuiteBaseURL
-	return nil
-}
-
-func (w *World) StepStartsOwnPhoenixServerPort3191() error {
-	// The corpus names the pre-Go stack; the Go contract is that the
-	// acceptance suite owns an isolated test server on 3191. The landing
-	// unit rewords this step per tech-docs/005.
-	if w.adapter == "unit" {
-		if w.resolvedPort != web.TestPort || !w.listenerStarted {
-			return fail("test server did not resolve port %d", web.TestPort)
-		}
-		// Bind a REAL listener on the resolved TestPort and serve one
-		// request through the app handler. A second bind while the port is
-		// taken fails here, so a conflicting listener cannot go undetected.
-		address := fmt.Sprintf("127.0.0.1:%d", w.resolvedPort)
-		listener, err := net.Listen("tcp", address)
-		if err != nil {
-			return fail("cannot bind TestPort %d: %v", w.resolvedPort, err)
-		}
-		server := &http.Server{Handler: w.handler}
-		go func() { _ = server.Serve(listener) }()
-		url := fmt.Sprintf("http://%s/en", address)
-		response, err := http.Get(url) //nolint:gosec,noctx
-		_ = server.Close()
-		if err != nil {
-			return fail("GET %s through real listener failed: %v", url, err)
-		}
-		defer func() { _ = response.Body.Close() }()
-		if response.StatusCode != http.StatusOK {
-			return fail("GET %s status = %d, want 200", url, response.StatusCode)
-		}
-		return nil
-	}
-	if w.baseURL == "" {
-		return fail("test server on 3191 is down")
-	}
-	return w.get("/en")
-}
-
-func (w *World) StepLeavesBothDevelopmentServersRunningAfterSuiteFin() error {
-	if !w.externalUp(3101) || !w.externalUp(3102) {
-		return fail("development servers did not survive the suite")
 	}
 	return nil
 }

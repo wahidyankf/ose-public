@@ -134,6 +134,6 @@ direction, see the [OSE application overview](../../specs/apps/ose/overview.md).
 
 The canonical corpus is `specs/apps/ose/be/behaviours/`. `test:unit` uses injected boundary
 doubles; `test:integration` exercises owned non-networked local resources; and the dedicated
-`ose-be-e2e:test:e2e` target owns public HTTP/messaging proof. Matching `test:coverage:*` targets
-validate all applicable adapters statically. Owner-local E2E runtime is omitted because the
+`ose-be-e2e:test:e2e` target owns public HTTP/messaging proof. `test:behaviour:coverage` validates
+all applicable adapters statically. Owner-local E2E runtime is omitted because the
 dedicated project owns that boundary.

@@ -71,21 +71,6 @@
       "dependsOn": ["ferret-cli:build"],
       "cache": false
     },
-    "test:coverage:e2e": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config apps/ferret-cli-e2e/behaviour-coverage.json --adapter e2e"
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/ferret-cli-e2e/behaviour-coverage.json",
-        "{workspaceRoot}/apps/ferret-cli/tests/unit/**/*.py",
-        "{projectRoot}/tests/**/*.py",
-        "{projectRoot}/pyproject.toml",
-        "{workspaceRoot}/specs/apps/ferret/cli/behaviours/**/*.feature"
-      ]
-    },
     "test:behaviour:coverage": {
       "executor": "nx:run-commands",
       "options": {
@@ -104,28 +89,6 @@
         "{workspaceRoot}/libs/*/tests/**/*"
       ]
     },
-    "test:coverage": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          {
-            "command": "npm exec -- nx run ferret-cli-e2e:test:coverage:e2e",
-            "forwardAllArgs": false
-          }
-        ],
-        "parallel": false,
-        "forwardAllArgs": false
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/ferret-cli-e2e/behaviour-coverage.json",
-        "{workspaceRoot}/apps/ferret-cli/tests/unit/**/*.py",
-        "{projectRoot}/tests/**/*.py",
-        "{projectRoot}/pyproject.toml",
-        "{workspaceRoot}/specs/apps/ferret/cli/behaviours/**/*.feature"
-      ]
-    },
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
@@ -139,10 +102,6 @@
             "forwardAllArgs": false
           },
           {
-            "command": "npm exec -- nx run ferret-cli-e2e:test:coverage",
-            "forwardAllArgs": false
-          },
-          {
             "command": "npm exec -- nx run ferret-cli-e2e:test:behaviour:coverage",
             "forwardAllArgs": false
           }
@@ -153,8 +112,6 @@
       "cache": true,
       "inputs": [
         "default",
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/ferret-cli-e2e/behaviour-coverage.json",
         "{workspaceRoot}/apps/ferret-cli/tests/unit/**/*.py",
         "{projectRoot}/tests/**/*.py",
         "{projectRoot}/pyproject.toml",

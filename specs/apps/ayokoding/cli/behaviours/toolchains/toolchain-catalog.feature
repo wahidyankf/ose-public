@@ -28,6 +28,39 @@ Feature: The toolchain catalog is pinned
     When one byte of its Dockerfile changes
     Then its image tag changes
 
+  # Behaviour: AYC-012
+  Scenario: Building a derived toolchain prints one id and tag per built image
+    Given the container command is replaced by a fake that logs its calls
+    When I build the derived toolchain "typescript"
+    Then each line names an image id and its tag
+
+  # Behaviour: AYC-063
+  Scenario: A failed derived image build reports ayokoding.examples.env-build-failed
+    Given the container build fails
+    When I build the derived toolchain "typescript"
+    Then it exits with status 2
+    And standard error names error code "ayokoding.examples.env-build-failed"
+
+  # Behaviour: AYC-059
+  Scenario Outline: A catalog that breaks one rule stops the CLI with that rule's error code
+    Given a catalog file with the defect "<defect>"
+    When I list the toolchains
+    Then it exits with status 2
+    And standard error names error code "<code>"
+
+    Examples:
+      | defect                | code                                    |
+      | unknown-key           | ayokoding.catalog.unknown-key           |
+      | duplicate-key         | ayokoding.catalog.duplicate-key         |
+      | invalid-type          | ayokoding.catalog.invalid-type          |
+      | missing-schema        | ayokoding.catalog.missing-schema        |
+      | invalid-schema        | ayokoding.catalog.invalid-schema        |
+      | missing-id            | ayokoding.catalog.missing-id            |
+      | duplicate-toolchain   | ayokoding.catalog.duplicate-toolchain   |
+      | invalid-kind          | ayokoding.catalog.invalid-kind          |
+      | invalid-service       | ayokoding.catalog.invalid-service       |
+      | invalid-ready-timeout | ayokoding.catalog.invalid-ready-timeout |
+
   # Behaviour: AYC-073
   Scenario Outline: A locally built toolchain image runs without a registry pull
     Given <setup>

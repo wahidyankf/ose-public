@@ -41,13 +41,13 @@ export async function stopBackend() {
   }
 }
 
-export async function startBackend() {
+export async function startBackend(environmentOverrides: Record<string, string> = {}) {
   await stopBackend();
   output = "";
 
   backend = spawn("dotnet", ["run", "--project", projectFile, "--no-build", "--configuration", "Release"], {
     cwd: process.cwd(),
-    env: { ...process.env, OSE_BE_PORT: "8302" },
+    env: { ...process.env, OSE_BE_PORT: "8302", ...environmentOverrides },
     stdio: "pipe",
   });
   backend.stdout.on("data", (chunk: Buffer) => (output += chunk.toString()));

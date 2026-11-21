@@ -65,6 +65,7 @@ describe("shared ai-benchmark artifact presence", () => {
   });
 });
 
+// @scenario specs/libs/ayokoding-data/behaviours/validation/dataset-validation.feature: The site decodes the same dataset values the library publishes
 describe("evaluated exports equal the shared JSON", () => {
   it("carries the same models in the same order", () => {
     const json = mustReadJson(dataPath) as { dataset: typeof dataset };

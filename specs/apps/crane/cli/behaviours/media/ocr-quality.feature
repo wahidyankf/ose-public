@@ -25,3 +25,11 @@ Feature: OCR quality assessment
     Given a Markdown fixture with no OCR page tags
     When I run "crane ocr quality" on the fixture
     Then the JSON output is an empty array
+
+  # Behaviour: CRN-016
+  # Exemption(e2e): the CLI has no network, remote service, or credential boundary; its process boundary over local files is bound at integration; alternative-proof: crane-cli:test:integration / Crane process-boundary scenarios
+  @e2e-exempt
+  Scenario: OCR extraction lists each OCR-tagged section of a PDF
+    Given a PDF fixture with one OCR-tagged section
+    When I run "crane ocr extract" on the PDF fixture
+    Then the JSON output names 1 OCR section

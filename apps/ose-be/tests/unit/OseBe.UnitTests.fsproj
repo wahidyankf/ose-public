@@ -16,8 +16,6 @@
     <Compile Include="TestCollections.fs" />
     <Compile Include="Steps/BddState.fs" />
     <Compile Include="Steps/HealthSteps.fs" />
-    <Compile Include="Steps/ContextReadinessSteps.fs" />
-    <Compile Include="Steps/EnvTierSteps.fs" />
     <Compile Include="Steps/NatsConfigSteps.fs" />
     <Compile Include="Steps/DbMigrationSteps.fs" />
     <Compile Include="Steps/LiveMessagingSteps.fs" />

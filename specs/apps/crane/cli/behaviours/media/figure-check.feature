@@ -27,3 +27,11 @@ Feature: Figure coverage check
     And a Markdown with no Mermaid block or placeholder for Figure 3
     When I run "crane figure check" on the pair
     Then a finding with criticality "HIGH" is returned
+
+  # Behaviour: CRN-012
+  # Exemption(e2e): the CLI has no network, remote service, or credential boundary; its process boundary over local files is bound at integration; alternative-proof: crane-cli:test:integration / Crane process-boundary scenarios
+  @e2e-exempt
+  Scenario: Figure detection lists each figure the PDF refers to
+    Given a PDF fixture referencing "Figure 4"
+    When I run "crane figure detect" on the PDF fixture
+    Then the JSON output lists the figure "4"

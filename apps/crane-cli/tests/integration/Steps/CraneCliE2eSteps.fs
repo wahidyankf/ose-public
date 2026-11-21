@@ -104,6 +104,8 @@ type CraneCliE2eSteps() =
     let mutable stderrText = ""
     let mutable currentScope = "pdf-to-md"
     let mutable lastReportPath = ""
+    let mutable finalizedReportPath = ""
+    let mutable cacheDirPath = ""
 
     do Directory.CreateDirectory(workDir) |> ignore
 
@@ -480,6 +482,88 @@ type CraneCliE2eSteps() =
         use document = json ()
         Assert.Equal(1, document.RootElement.GetArrayLength())
         Assert.Equal(expected, (document.RootElement.EnumerateArray() |> Seq.head).GetProperty("ColCount").GetInt32())
+
+    [<When>]
+    member _.``I run "crane nesting infer" on the PDF fixture``() = run [ "nesting"; "--infer"; pdfPath ]
+
+    [<Then>]
+    member _.``the JSON output lists "([^"]*)" at nesting level (\d+)``(text: string, level: int) =
+        let found =
+            (json ()).RootElement.EnumerateArray()
+            |> Seq.tryFind (fun item -> item.GetProperty("Text").GetString() = text)
+
+        match found with
+        | Some item -> Assert.Equal(level, item.GetProperty("Level").GetInt32())
+        | None -> Assert.Fail(sprintf "no nesting item named %s in %s" text stdoutText)
+
+    [<When>]
+    member _.``I run "crane figure detect" on the PDF fixture``() = run [ "figure"; "--detect"; pdfPath ]
+
+    [<Then>]
+    member _.``the JSON output lists the figure "([^"]*)"``(number: string) =
+        let numbers =
+            (json ()).RootElement.EnumerateArray()
+            |> Seq.map (fun figure -> figure.GetProperty("Number").GetString())
+            |> Seq.toList
+
+        Assert.Contains(number, numbers)
+
+    [<Given>]
+    member _.``a PDF fixture with one OCR-tagged section``() =
+        writePdfText "<!-- OCR: Scanned page text is readable enough -->"
+
+    [<When>]
+    member _.``I run "crane ocr extract" on the PDF fixture``() = run [ "ocr"; "--extract"; pdfPath ]
+
+    [<Then>]
+    member _.``the JSON output names (\d+) OCR sections?``(count: int) =
+        Assert.Equal(count, (json ()).RootElement.GetArrayLength())
+
+    [<Given>]
+    member _.``an audit report in progress for scope "([^"]*)"``(scope: string) =
+        let reportDir = Path.Combine(workDir, "local-tmp", "pdf-to-md")
+        Directory.CreateDirectory(reportDir) |> ignore
+        finalizedReportPath <- Path.Combine(reportDir, sprintf "%s__abc123__2026-09-05--12-30__audit.md" scope)
+        File.WriteAllText(finalizedReportPath, sprintf "# Audit Report\n\nScope: %s\nStatus: IN_PROGRESS\n" scope)
+
+    [<When>]
+    member _.``I run "crane report finalize" with status "([^"]*)"``(status: string) =
+        run [ "report"; "--finalize"; finalizedReportPath; status ]
+
+    [<Then>]
+    member _.``the report file says "([^"]*)"``(text: string) =
+        Assert.Contains(text, File.ReadAllText finalizedReportPath)
+
+    [<Then>]
+    member _.``the JSON output names the status "([^"]*)" and the report path``(status: string) =
+        let document = json ()
+        Assert.Equal(status, document.RootElement.GetProperty("status").GetString())
+        Assert.NotEmpty(document.RootElement.GetProperty("path").GetString())
+
+    [<Given>]
+    member _.``a skip list for "([^"]*)" holding (\d+) entries``(md: string, count: int) =
+        if File.Exists(skiplistPath) then
+            File.Delete(skiplistPath)
+
+        for index in 1..count do
+            run [ "skiplist"; "--add"; md; "text-completeness"; sprintf "entry %d" index ]
+
+    [<When>]
+    member _.``I run "crane skiplist list ([^"]*)"``(md: string) = run [ "skiplist"; "--list"; md ]
+
+    [<Then>]
+    member _.``the JSON output lists (\d+) entries``(count: int) =
+        Assert.Equal(count, (json ()).RootElement.GetArrayLength())
+
+    [<When>]
+    member _.``I run "crane check-all" twice with the same cache directory``() =
+        cacheDirPath <- Path.Combine(workDir, "cache-" + Guid.NewGuid().ToString("N"))
+        run [ "check-all"; "--cache-dir"; cacheDirPath; pdfPath; mdPath ]
+        run [ "check-all"; "--cache-dir"; cacheDirPath; pdfPath; mdPath ]
+
+    [<Then>]
+    member _.``the cache directory holds (\d+) extraction entry``(count: int) =
+        Assert.Equal(count, Directory.GetFiles(cacheDirPath, "*.json", SearchOption.AllDirectories).Length)
 
     [<Then>]
     member _.``the JSON output is valid``() = use _document = json () in ()

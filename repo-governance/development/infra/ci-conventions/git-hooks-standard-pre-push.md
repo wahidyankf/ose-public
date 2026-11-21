@@ -16,7 +16,7 @@ environment validation, and no tests: no `test:quick`, `test:integration`, or `t
 Those run in the pull-request gate. Affected `typecheck`, `lint`, and `test:quick` run in the PR workflow's language
 jobs; Integration and E2E runtimes remain manual-impacted and scheduled-full. A failed gate blocks the push.
 
-Every applicable static `test:coverage:*` validator runs through `test:quick`. A coverage validator never executes
+The static `test:behaviour:coverage` check runs through `test:quick`. It never executes
 tests.
 
 Warm only the exact affected quick targets when cache warming is needed. A prior result is evidence only for its exact

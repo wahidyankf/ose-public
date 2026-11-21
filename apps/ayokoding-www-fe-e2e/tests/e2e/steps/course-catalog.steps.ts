@@ -3,6 +3,13 @@ import { expect } from "@playwright/test";
 
 const { Given, When, Then } = createBdd();
 
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-catalog.feature: Every course appears once under its category
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-catalog.feature: A course card shows the facts needed to choose
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-catalog.feature: An outline course card says it is an outline
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-catalog.feature: A card links only to the course landing page
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-catalog.feature: A jump link moves to its category section
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-catalog.feature: The catalog fits a phone screen
+
 // Plan ayokoding-learn-revamp-03 — course catalog (frontend/course-paths/course-catalog.feature).
 
 Given(

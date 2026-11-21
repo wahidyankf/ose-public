@@ -44,7 +44,7 @@ import { t } from "../../../../ayokoding-www/src/features/i18n/core/translations
 const { Given, When, Then } = createBdd();
 
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Models with no consensus tier are listed in their own closed disclosure
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Every roster model belongs to exactly one tier group
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Every roster model appears in exactly one tier section
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The substitute finder offers three harnesses with Command Code Pro chosen first
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Choosing a frontier model lists its Command Code Pro substitutes with a price comparison
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A frontier model above every model of the chosen harness shows the nearest options

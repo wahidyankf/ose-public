@@ -67,8 +67,9 @@ function renderCourse(headerData: CourseHeaderData | undefined) {
   );
 }
 
-describeFeature(feature, ({ Scenario }) => {
-  Scenario("The header summarizes the course", ({ Given, When, Then, And }) => {
+describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-landing-header.feature: The header shows description, format, time, and category
+  Scenario("The header shows description, format, time, and category", ({ Given, When, Then, And }) => {
     Given("a course with a description, a format, an estimated time, a category, and prerequisites", () => {
       expect(header.description).toBeTruthy();
     });
@@ -81,36 +82,31 @@ describeFeature(feature, ({ Scenario }) => {
       expect(screen.getByText("About 8 h")).toBeTruthy();
       expect(screen.getByText("Data and databases")).toBeTruthy();
     });
-    And("the header lists the prerequisites as links", () => {
-      expect(screen.getByRole("link", { name: "Just Enough Python" })).toBeTruthy();
+  });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-landing-header.feature: The header lists the paths that use the course
+  Scenario("The header lists the paths that use the course", ({ Given, When, Then }) => {
+    Given("a course with a description, a format, an estimated time, a category, and prerequisites", () => {
+      expect(header.description).toBeTruthy();
     });
-    And("the header lists the paths that use the course as links", () => {
+    When("a reader opens the course landing page", () => renderCourse(header));
+    Then("the header lists the paths that use the course as links", () => {
       expect(screen.getByRole("link", { name: "X Path" })).toBeTruthy();
     });
   });
 
-  Scenario("Start opens the learning overview", ({ Given, When, Then }) => {
-    Given("a course has a learning overview page", () => {
-      expect(header.startSlug).toContain("learning/overview");
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-landing-header.feature: Start course opens the best first page
+  ScenarioOutline("Start course opens the best first page", ({ Given, When, Then, And }, variables) => {
+    // The Start target of each example course is the page the examples name; the header must link to it.
+    let startSlug = "";
+    Given("the course <course> is open on its landing page", () => {
+      startSlug = String(variables["best first page"]).replace(/^\/en\//, "");
+      expect(startSlug).toBeTruthy();
     });
-    When('a reader activates "Start course" on the course landing page', () => renderCourse(header));
-    Then("the learning overview page of that course opens", () => {
+    When('a reader activates "Start course" on the course landing page', () => renderCourse({ ...header, startSlug }));
+    Then("the page <best first page> opens", () => {
       expect(screen.getByRole("link", { name: "Start course" }).getAttribute("href")).toBe(
-        "/en/learn/courses/sql-essentials/learning/overview",
-      );
-    });
-  });
-
-  Scenario("Start falls back to the first learning page", ({ Given, When, Then, And }) => {
-    Given("a course has a learning folder without an overview page", () => {
-      expect(true).toBe(true);
-    });
-    When('a reader activates "Start course" on the course landing page', () =>
-      renderCourse({ ...header, startSlug: "learn/courses/x/learning/capstone/start" }),
-    );
-    Then("the first learning page in reading order opens", () => {
-      expect(screen.getByRole("link", { name: "Start course" }).getAttribute("href")).toBe(
-        "/en/learn/courses/x/learning/capstone/start",
+        String(variables["best first page"]),
       );
     });
     And("that page is not inside a folder that has no index page", () => {
@@ -118,21 +114,8 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
-  Scenario("Start falls back to the course overview", ({ Given, When, Then }) => {
-    Given("a course has no learning folder but has a top-level overview page", () => {
-      expect(true).toBe(true);
-    });
-    When('a reader activates "Start course" on the course landing page', () =>
-      renderCourse({ ...header, startSlug: "learn/courses/x/overview" }),
-    );
-    Then("the course's overview page opens", () => {
-      expect(screen.getByRole("link", { name: "Start course" }).getAttribute("href")).toBe(
-        "/en/learn/courses/x/overview",
-      );
-    });
-  });
-
-  Scenario("The page list stays below the header", ({ When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-landing-header.feature: The course contents list follows the header
+  Scenario("The course contents list follows the header", ({ When, Then }) => {
     When("a reader opens the course landing page", () => renderCourse(header));
     Then('the "Course contents" heading and the list of course pages appear after the header', () => {
       const heading = screen.getByRole("heading", { name: "Course contents" });
@@ -140,7 +123,12 @@ describeFeature(feature, ({ Scenario }) => {
       expect(headerEl.compareDocumentPosition(heading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
       expect(screen.getByText("Contents list here.")).toBeTruthy();
     });
-    And("the page has exactly one prerequisites list", () => {
+  });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-landing-header.feature: A course page shows its prerequisites list and its paths list at most once
+  Scenario("A course page shows its prerequisites list and its paths list at most once", ({ When, Then, And }) => {
+    When("a reader opens the course landing page", () => renderCourse(header));
+    Then("the page has exactly one prerequisites list", () => {
       expect(screen.getAllByRole("navigation", { name: "Prerequisites" })).toHaveLength(1);
     });
     And('the page has at most one "This course is part of" list', () => {
@@ -148,6 +136,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-landing-header.feature: An outline course header says it is an outline
   Scenario("An outline course header says it is an outline", ({ Given, When, Then, And }) => {
     Given("a course is marked as an outline", () => {
       expect(true).toBe(true);
@@ -161,6 +150,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-landing-header.feature: Pages inside a course have no header
   Scenario("Pages inside a course have no header", ({ When, Then }) => {
     When("a reader opens a learning page inside a course", () => renderCourse(undefined));
     Then("no course header is shown", () => {

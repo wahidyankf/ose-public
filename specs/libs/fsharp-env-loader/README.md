@@ -21,8 +21,8 @@ specs/libs/fsharp-env-loader/
 
 ## Status
 
-`test:unit` is the real `dotnet test` runtime and enforces the 99% Unit line minimum. Aggregate
-`test:coverage` and its layer targets validate Gherkin bindings statically without running tests
+`test:unit` is the real `dotnet test` runtime and enforces the 99% Unit line minimum. The static
+`test:behaviour:coverage` target validates Gherkin bindings without running tests
 (see `libs/fsharp-env-loader/project.json`). Every scenario in
 [behaviours/env-tier/env-tier.feature](./behaviours/env-tier/env-tier.feature) and every scenario in
 [behaviours/port-resolver/port-resolver.feature](./behaviours/port-resolver/port-resolver.feature) is

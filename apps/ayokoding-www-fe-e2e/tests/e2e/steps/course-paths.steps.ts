@@ -4,6 +4,19 @@ import { buildTrpcUrl, extractTrpcData } from "./backend-helpers";
 
 const { Given, When, Then } = createBdd();
 
+// Scenario bindings for category-landing-arc-chooser, breadcrumb, canonical-fallback, landing-hero,
+// omitted-course, invalid-path-fallback, and path-assumes (first scenario): their steps live here.
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/category-landing-arc-chooser.feature: The careers category landing groups path cards by arc
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/breadcrumb.feature: The breadcrumb reflects the active path
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/breadcrumb.feature: A legacy fundamentally-strong URL redirects to the canonical course URL
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/canonical-fallback.feature: A course without path context renders its body and content-tree breadcrumb
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/canonical-fallback.feature: A course opened without path context renders the generic sidebar unchanged
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/landing-hero.feature: The landing hero shows a card for each published path
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/landing-hero.feature: The landing hero links to compare all paths
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/omitted-course.feature: A course omitted from a path shows no path nav for that path
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/invalid-path-fallback.feature: An invalid path context falls back to the canonical view
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-assumes.feature: A path names its assumed courses before the syllabus
+
 // ---------------------------------------------------------------------------
 // course-paths plan (ayokoding-learning-path-03-navigation-ui), Phase 3 — e2e step definitions.
 //
@@ -212,6 +225,7 @@ Then("the immediately-effective section shows exactly two path cards", async ({ 
 // Cycle 3.1b-ii — skills category landing fixed-arc statement (skills-fixed-arc-statement.feature)
 // ---------------------------------------------------------------------------
 
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/skills-fixed-arc-statement.feature: The skills category landing states its fixed arc once, with no chooser
 Given("a fixture skills manifest set is loaded", async ({ page }) => {
   const manifests = await loadPublishedManifests(page);
   // Three since plan ayokoding-learn-revamp-04, Phase 4 added the marked
@@ -283,6 +297,7 @@ Then("neither card is a placeholder or an empty grid cell", async ({ page }) => 
 // Cycle 3.1c-ii — arc landing, single-role state (arc-landing-one-role.feature)
 // ---------------------------------------------------------------------------
 
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-position-numbers.feature: The arc card preview numbers its courses by their path position
 Given("a fixture arc manifest lists exactly one role", async ({ page }) => {
   const manifests = await loadPublishedManifests(page);
   expect(manifests.filter((manifest) => manifest.pathId.startsWith("careers/interview-ready/"))).toEqual([
@@ -329,6 +344,7 @@ Then("the layout does not reserve or render a visibly empty second card", async 
 // Cycle 3.1d — skills path landing body content (skills-path-landing-body.feature)
 // ---------------------------------------------------------------------------
 
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/skills-path-landing-body.feature: A skills path's authored runway-justification content renders on its own landing
 Given(
   "two fixture skills paths whose landing bodies declare different runway-justification paragraphs for their differing first boundaries",
   async ({ page }) => {
@@ -422,22 +438,13 @@ When("the course page renders", async ({ page }) => {
   await page.waitForLoadState("networkidle");
 });
 
-Then("the course body renders in full with the content-tree breadcrumb and its prerequisite list", async ({ page }) => {
+Then("the course body renders in full with the content-tree breadcrumb", async ({ page }) => {
   await expect(page.getByRole("navigation", { name: "Breadcrumb" })).toBeVisible();
   const article = page.getByRole("article");
   await expect(article.getByRole("heading", { level: 1, name: "Backend Essentials", exact: true })).toBeVisible();
   await expect(article.getByRole("link", { name: "Learning", exact: true })).toHaveAttribute(
     "href",
     "/en/learn/courses/backend-essentials/learning",
-  );
-  const prerequisites = page.getByRole("navigation", { name: "Prerequisites" });
-  await expect(prerequisites.getByRole("link", { name: "SQL Essentials", exact: true })).toHaveAttribute(
-    "href",
-    "/en/learn/courses/sql-essentials",
-  );
-  await expect(prerequisites.getByRole("link", { name: "Just Enough Python", exact: true })).toHaveAttribute(
-    "href",
-    "/en/learn/courses/just-enough-python",
   );
 });
 
@@ -556,6 +563,7 @@ Then("both links preserve the path context query parameter", async ({ page }) =>
   }
 });
 
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-order-nav.feature: The path rail shows the whole ordered arc beside a course at desktop width
 Given("a reader opens a course in path context on a desktop-width viewport", async ({ page }) => {
   await page.goto("/en/learn/courses/backend-essentials?path=careers/immediately-effective/backend-track");
 });
@@ -677,6 +685,7 @@ Then("the primary navigation links still close the drawer as before", async ({ p
 });
 
 // paths-hub-category-grouping.feature.
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/paths-hub-category-grouping.feature: The paths hub groups paths by category, not a flat grid
 Given("a fixture manifest set covers both a careers-shaped and a skills-shaped fixture", async ({ page }) => {
   const manifests = await loadPublishedManifests(page);
   expect(manifests.some((manifest) => manifest.pathId?.startsWith("careers/"))).toBe(true);
@@ -728,6 +737,7 @@ Then(
   },
 );
 
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/prerequisite-display.feature: A course page surfaces its declared prerequisites
 Given("a course declares prerequisites in its canonical metadata", async ({ page }) => {
   const response = await page.request.get("/en/learn/courses/backend-essentials");
   await expect(response).toBeOK();
@@ -788,6 +798,7 @@ Then("no path card from either category is rendered outside its category's secti
 });
 
 // path-position-numbers.feature, scenario 1 — no catalogue number in course titles.
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-position-numbers.feature: A course page in path context shows no catalogue number in course titles
 Given("a reader opens a course in path context", async ({ page }) => {
   await page.goto("/en/learn/courses/backend-essentials?path=careers/immediately-effective/backend-track");
   await page.waitForLoadState("networkidle");
@@ -828,6 +839,7 @@ Then("the only course order number on the page is the course's position in the a
 // ---------------------------------------------------------------------------
 
 // S1 — syllabus rows on the backend-track fixture path's landing page.
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-position-numbers.feature: The path syllabus numbers each course by its position in the path
 Given("a learning path lists its courses in manifest order", async ({ page }) => {
   const manifest = (await loadPublishedManifests(page)).find(
     (candidate) => candidate.pathId === "careers/immediately-effective/backend-track",
@@ -958,6 +970,7 @@ Then("no preview item shows a second number inside the course title", async ({ p
 // the ol overflows (3 rows ≈ 137px > 87px) and the helper centres row 3 inside it.
 const RAIL_SCROLL_VIEWPORT = { width: 1280, height: 320 };
 
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-order-nav.feature: The path rail scrolls the current course into view without moving the page
 Given("a reader opens a course whose rail row starts below the visible part of the sidebar", async ({ page }) => {
   await page.setViewportSize(RAIL_SCROLL_VIEWPORT);
   await page.goto("/en/learn/courses/sql-essentials?path=careers/immediately-effective/backend-track");
@@ -1016,6 +1029,7 @@ Then("the page itself stays scrolled to the top", async ({ page }) => {
 // is e2e-exempt — bound only in ayokoding-www unit steps.
 // ---------------------------------------------------------------------------
 
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-phases.feature: A path landing groups its courses under titled phases
 Given("a fixture path manifest declares a core phase and an extension phase", async ({ page }) => {
   await loadGeneralistTrack(page);
 });

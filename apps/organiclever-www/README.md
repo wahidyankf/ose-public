@@ -59,6 +59,6 @@ when a change needs browser-level verification.
 
 The canonical corpus is `specs/apps/organiclever/www/behaviours/`. This project owns the Unit
 adapter through `test:unit`; `organiclever-www-fe-e2e:test:e2e` owns the applicable public browser
-runtime. Matching `test:coverage:*` targets validate both adapters statically. Integration and
+runtime. `test:behaviour:coverage` validates both adapters statically. Integration and
 owner-local E2E runtime are omitted because the site has no backend or other non-networked
 local-resource boundary and the dedicated project owns browser execution.

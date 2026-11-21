@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 )
@@ -18,7 +19,83 @@ var (
 	syncNamedFindingStep = regexp.MustCompile(`^the sync finding "([^"]+)" names "([^"]+)"$`)
 	runWithUnitStep      = regexp.MustCompile(`^I run the course by name with the unit "([^"]+)"$`)
 	onlyUnitStep         = regexp.MustCompile(`^only the unit "([^"]+)" is run$`)
+	catalogDefectStep    = regexp.MustCompile(`^a catalog file with the defect "([^"]+)"$`)
 )
+
+// catalogDefects names one edit of the pinned test catalog per closed catalog
+// rule, so each scenario row breaks exactly that rule.
+var catalogDefects = map[string]func(string) string{
+	"unknown-key": func(s string) string { return s + "bogus: 1\n" },
+	"duplicate-key": func(s string) string {
+		return s + "schema: ayokoding.toolchains/v1\n"
+	},
+	"invalid-type": func(s string) string {
+		return strings.Replace(s, "    kind: language\n", "    kind: language\n    platform: windows\n", 1)
+	},
+	"missing-schema": func(s string) string {
+		return strings.Replace(s, "schema: ayokoding.toolchains/v1\n", "", 1)
+	},
+	"invalid-schema": func(s string) string {
+		return strings.Replace(s, "ayokoding.toolchains/v1", "ayokoding.toolchains/v9", 1)
+	},
+	"missing-id": func(s string) string {
+		return strings.Replace(s, "  - id: python\n", "  - id: \"\"\n", 1)
+	},
+	"duplicate-toolchain": func(s string) string {
+		return strings.Replace(s, "  - id: postgres\n", "  - id: python\n", 1)
+	},
+	"invalid-kind": func(s string) string {
+		return strings.Replace(s, "    kind: language\n", "    kind: compiler\n", 1)
+	},
+	"invalid-service": func(s string) string {
+		return strings.Replace(s, "    ready: [pg_isready, -h, 127.0.0.1, -U, postgres]\n", "", 1)
+	},
+	"invalid-ready-timeout": func(s string) string {
+		return strings.Replace(s, "readyTimeout: 60s", "readyTimeout: 999s", 1)
+	},
+}
+
+// givenCatalogDefect writes the pinned test catalog with one rule broken and
+// points the scenario at the written file.
+func (w *world) givenCatalogDefect(defect string) error {
+	edit, ok := catalogDefects[defect]
+	if !ok {
+		return fmt.Errorf("%w: no catalog defect %q", errStepFailed, defect)
+	}
+	raw, err := os.ReadFile(pinnedCatalog())
+	if err != nil {
+		return fmt.Errorf("%w: read pinned catalog: %w", errStepFailed, err)
+	}
+	root, err := w.tempRoot()
+	if err != nil {
+		return err
+	}
+	path := filepath.Join(root, "catalog-"+defect+".yaml")
+	if err := os.WriteFile(path, []byte(edit(string(raw))), 0o600); err != nil {
+		return fmt.Errorf("%w: write catalog defect: %w", errStepFailed, err)
+	}
+	w.catalog = path
+	return nil
+}
+
+// requireIDAndTagLines asserts every standard output line names one image id
+// and one tag.
+func (w *world) requireIDAndTagLines() error {
+	if w.result.Status != 0 {
+		return fmt.Errorf("%w: status=%d, want 0 (stderr=%q)", errStepFailed, w.result.Status, w.result.Stderr)
+	}
+	lines := strings.Split(strings.TrimSpace(w.result.Stdout), "\n")
+	if len(lines) == 0 || lines[0] == "" {
+		return fmt.Errorf("%w: no build lines (stdout=%q)", errStepFailed, w.result.Stdout)
+	}
+	for _, line := range lines {
+		fields := strings.Fields(line)
+		if len(fields) != 2 || !strings.Contains(fields[1], ":") {
+			return fmt.Errorf("%w: line %q names no id and tag", errStepFailed, line)
+		}
+	}
+	return nil
+}
 
 // greenPythonUnits are the other units of the green-python fixture course.
 var greenPythonUnits = []string{"ex-02-range", "ex-03-env", "ex-04-immutable"}
@@ -61,6 +138,11 @@ func (w *world) givenAdds(text string) (bool, error) {
 		return true, requireFixture(w.catalog)
 	case `a unit whose program records its environment`:
 		return true, w.useRunCourse("green-python", "learning/code/ex-03-env")
+	case `the container build fails`:
+		return true, w.useFakeContainerCLI(map[string]string{"FAKECONTAINER_BUILD_FAIL": "1"})
+	}
+	if match := catalogDefectStep.FindStringSubmatch(text); match != nil {
+		return true, w.givenCatalogDefect(match[1])
 	}
 	return false, nil
 }
@@ -91,6 +173,8 @@ func (w *world) whenAdds(text string) (bool, error) {
 		return true, w.run([]string{"examples", "run", "--since", "HEAD", "--content", w.content})
 	case `I run the course by name with a single run`:
 		return true, w.runRunCourse("--single-run")
+	case `I build the derived toolchain "typescript"`:
+		return true, w.run([]string{"toolchains", "build", "typescript"})
 	}
 	return false, nil
 }
@@ -128,6 +212,8 @@ func (w *world) thenAdds(text string) (bool, error) {
 		return true, w.requireFirstComparisonOnly()
 	case `the fake container CLI logs a started container`:
 		return true, w.requireFakeStarted()
+	case `each line names an image id and its tag`:
+		return true, w.requireIDAndTagLines()
 	}
 	return false, nil
 }

@@ -38,3 +38,42 @@ Feature: Content Retrieval
     Given the content repository contains no page with slug "nonexistent"
     When the content service retrieves the page by slug "nonexistent"
     Then the response is null
+
+  # Behaviour: OSW-002
+  Scenario: The About page renders at /about with its title and content
+    Given the content repository contains a page with slug "about"
+    When a visitor opens the About page
+    Then the page heading is the title of the About page
+    And the page shows the headings of the About page
+
+  # Behaviour: OSW-003
+  Scenario: The Updates page lists the published updates newest first
+    Given the content repository contains multiple update posts
+    When a visitor opens the Updates page
+    Then the update titles are listed newest first
+
+  # Behaviour: OSW-005
+  Scenario: Opening an unknown update URL returns 404
+    When a visitor opens the update page for the slug "no-such-update"
+    Then the response status is 404
+
+  # Exemption(e2e): the e2e home starts one server that reads OSE_WEB_SHOW_DRAFTS once at process start and starts it with the variable false, so no public request reaches the true setting; alternative-proof: ose-www:test:unit / Setting OSE_WEB_SHOW_DRAFTS to true includes draft pages in listings
+  @e2e-exempt
+  # Behaviour: OSW-026
+  Scenario: Setting OSE_WEB_SHOW_DRAFTS to true includes draft pages in listings
+    Given the content repository contains a draft page
+    And the OSE_WEB_SHOW_DRAFTS environment variable is "true"
+    When the content service lists all updates
+    Then the draft page is included in the results
+
+  # Behaviour: OSW-024
+  Scenario: Content is read from the directory named by OSE_WEB_CONTENT_DIR
+    Given the OSE_WEB_CONTENT_DIR environment variable names the content directory
+    When the content service lists all updates
+    Then every listed update is read from that directory
+
+  # Behaviour: OSW-025
+  Scenario: Search reads the index at the path named by OSE_WEB_SEARCH_DATA_PATH
+    Given the OSE_WEB_SEARCH_DATA_PATH environment variable names a search index file
+    When a search query "synthetic" is executed
+    Then the results contain the page indexed in that file

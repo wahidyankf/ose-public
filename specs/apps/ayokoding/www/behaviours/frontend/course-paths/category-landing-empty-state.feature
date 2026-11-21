@@ -4,6 +4,7 @@ Feature: Category landing empty state
   I want an explicit, stated empty message instead of a blank content area
   So that I never mistake "nothing published yet" for a broken page
 
+  # Behaviour: AYW-151
   # Exemption(integration): the empty-catalogue state is an injected manifest-repository input with no separate local resource boundary; alternative-proof: ayokoding-www:test:unit / A category landing with no populated manifest renders an explicit empty state
   @integration-exempt
   # Exemption(e2e): the deployed public boundary exposes only its configured manifest catalogue and cannot select an alternate zero-manifest catalogue per request; alternative-proof: ayokoding-www:test:unit / A category landing with no populated manifest renders an explicit empty state

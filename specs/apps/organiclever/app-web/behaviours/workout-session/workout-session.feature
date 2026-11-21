@@ -45,3 +45,9 @@ Feature: Workout Session
     Given no workout has been finished
     When the user opens the workout finish page
     Then the Home screen is visible
+
+  # Behaviour: OAW-007
+  Scenario: Finishing a workout shows the workout summary
+    Given the user has finished a workout with one logged set
+    When the user saves and finishes the workout
+    Then the workout summary is shown

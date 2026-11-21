@@ -15,7 +15,7 @@ No hook or gate validates a specs tree's layout. Per-project BDD coverage runs t
 - `.github/workflows/pr-quality-gate.yml` — the language jobs run affected `test:quick`, which includes
   each owner's `test:behaviour:coverage`
 - `_reusable-www-test-local-deploy.yml` and `_reusable-app-test-local-deploy-stag.yml` — the
-  `specs-coverage` job runs the static `test:coverage` targets and remains in deployment prerequisites,
+  `specs-coverage` job runs the static `test:behaviour:coverage` target and remains in deployment prerequisites,
   called by the www and app cron deploys
 
 The retired Rhino testing-contract, keyword-cardinality, and structural-validation commands are not

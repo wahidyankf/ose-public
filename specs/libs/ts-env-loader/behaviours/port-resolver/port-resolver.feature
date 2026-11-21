@@ -9,6 +9,7 @@ Feature: Runtime listener port resolution
   # Behaviour: TEL-007
   # Behaviour: TEL-011
   # Behaviour: TEL-013
+  # Behaviour: OSW-027
   Scenario Outline: A port resolves from the highest source that supplies one
     Given the app declares the prefixed variable "OSE_WWW_PORT" with fallback 3100
     And the environment sets "OSE_WWW_PORT" to "<envValue>"

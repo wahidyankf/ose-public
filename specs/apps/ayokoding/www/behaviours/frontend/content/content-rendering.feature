@@ -129,3 +129,14 @@ Feature: Content Rendering
     When its prose renders at a 375px viewport
     Then the inline code chips break within themselves instead of widening the page
     And the fenced code blocks stay confined to the article with an internal horizontal scroll
+
+  # Exemption(integration): the fallback is the error boundary of a route inside the running Next.js app, and the integration project does not start that app, so no route can throw into it there; alternative-proof: ayokoding-www:test:unit / A rendering failure shows "Something went wrong" with a Try again button
+  @integration-exempt
+  # Exemption(e2e): no published page or e2e fixture makes the renderer throw, so the public site offers no failing route to select; alternative-proof: ayokoding-www:test:unit / A rendering failure shows "Something went wrong" with a Try again button
+  @e2e-exempt
+  # Behaviour: AYW-027
+  Scenario: A rendering failure shows "Something went wrong" with a Try again button
+    Given a content page fails while rendering
+    Then the reader sees "Something went wrong" with a Try again button
+    When the reader selects Try again
+    Then the page is rendered again

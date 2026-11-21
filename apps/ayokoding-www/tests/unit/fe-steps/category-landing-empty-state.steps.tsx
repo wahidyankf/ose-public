@@ -26,6 +26,7 @@ const feature = await loadFeature(
 );
 
 describeFeature(feature, ({ Scenario }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/category-landing-empty-state.feature: A category landing with no populated manifest renders an explicit empty state
   Scenario(
     "A category landing with no populated manifest renders an explicit empty state",
     ({ Given, When, Then, And }) => {

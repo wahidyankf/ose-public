@@ -102,3 +102,13 @@ Feature: Shared tool dataset validation
     Given the ayokoding-data library source tree
     When each country's effective-rate band is read
     Then the mid band is at least the low band and the high band is at least the mid band
+
+  # Exemption(integration): the library has no process, network, or database boundary; the site's decode is an in-process read of checked-in JSON; alternative-proof: ayokoding-www:test:unit / carries the same models in the same order
+  @integration-exempt
+  # Exemption(e2e): the library and the site's decode cross no process or network boundary; the JSON is read in-process from checked-in files; alternative-proof: ayokoding-www:test:unit / carries the same models in the same order
+  @e2e-exempt
+  # Behaviour: ADA-015
+  Scenario: The site decodes the same dataset values the library publishes
+    Given the neutral dataset files the library publishes
+    When the site reads its benchmark and cost-of-living data from those files
+    Then the models, countries, cities, and rates it shows equal the library's values

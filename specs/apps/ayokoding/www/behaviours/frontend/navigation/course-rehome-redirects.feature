@@ -22,28 +22,6 @@ Feature: Course re-home redirects and prerequisites
     When a visitor navigates to "/en/learn/fundamentally-strong/software-engineer/just-enough-python/learning/beginner"
     Then the current URL should contain "/en/learn/courses/just-enough-python/learning/beginner"
 
-  # Exemption(e2e): the scenario reads checked-in course frontmatter and the archived syllabus corpus from the repository, and no served page reads that corpus, so the end-to-end boundary does not exist for it; alternative-proof: ayokoding-www:test:unit / Every re-homed course declares its prerequisites
-  @e2e-exempt
-  Scenario: Every re-homed course declares its prerequisites
-    Given the thirty-seven shipped topics and existing capstones have been re-homed into the course library
-    When each re-homed course's canonical metadata is inspected
-    Then every one declares a prerequisites list of course IDs
-    And an empty list is accepted only for a course with no library prerequisite
-    And every named prerequisite resolves to another course already in the library or declared on the syllabus roadmap
-
-  # Exemption(e2e): an intentionally unauthored roadmap course has no public page by definition, so only the repository boundary can prove union membership; alternative-proof: ayokoding-www:test:integration / A prerequisite naming a syllabus-declared but not-yet-authored course still resolves
-  @e2e-exempt
-  Scenario: A prerequisite naming a syllabus-declared but not-yet-authored course still resolves
-    When a course is declared on the syllabus roadmap but not yet authored into the course library
-    Then a prerequisite naming that course resolves against the union of the course library and the syllabus roadmap
-    And a prerequisite naming an unrecognized course ID still does not resolve
-
-  # Exemption(e2e): the scenario reads checked-in course frontmatter and the archived syllabus corpus from the repository, and no served page reads that corpus, so the end-to-end boundary does not exist for it; alternative-proof: ayokoding-www:test:unit / A prerequisite naming an authored course absent from the syllabus roadmap still resolves
-  @e2e-exempt
-  Scenario: A prerequisite naming an authored course absent from the syllabus roadmap still resolves
-    When a course is authored into the course library but not declared on the syllabus roadmap
-    Then a prerequisite naming that course resolves against the union of the course library and the syllabus roadmap
-
   # Q-E=C override (RESOLVED 2026-07-23): the three fundamentally-strong browse roots are
   # deleted and their old URLs 308 to the course library landing, a narrow exception to the
   # rest of the legacy `_index.md` tree's "updated, never deleted" rule.

@@ -5,6 +5,7 @@
 // @scenario specs/apps/organiclever/app-web/behaviours/workout-session/workout-session.feature: Discarding the workout ends it
 // @scenario specs/apps/organiclever/app-web/behaviours/workout-session/workout-session.feature: Keep going closes the confirmation sheet and the workout continues
 // @scenario specs/apps/organiclever/app-web/behaviours/workout-session/workout-session.feature: Opening /app/workout/finish without a finished workout returns to /app/home
+// @scenario specs/apps/organiclever/app-web/behaviours/workout-session/workout-session.feature: Finishing a workout shows the workout summary
 
 import { createBdd } from "playwright-bdd";
 import { expect, type Page } from "@playwright/test";
@@ -136,4 +137,22 @@ Given("no workout has been finished", async ({ page }) => {
 When("the user opens the workout finish page", async ({ page }) => {
   await page.goto(appPath("workout/finish"));
   await page.waitForLoadState("domcontentloaded");
+});
+
+Given("the user has finished a workout with one logged set", async ({ page }) => {
+  await openRoutineWorkout(page);
+  await page.getByText("Set 1", { exact: true }).first().click();
+  await expect(page.getByText("Resting…")).toBeVisible();
+  await page.getByRole("button", { name: "Skip" }).click();
+});
+
+When("the user saves and finishes the workout", async ({ page }) => {
+  await page.getByRole("button", { name: "End" }).click();
+  await page.getByRole("button", { name: "Save & finish" }).click();
+});
+
+Then("the workout summary is shown", async ({ page }) => {
+  await expect(page).toHaveURL(/\/app\/workout\/finish$/);
+  await expect(page.getByText("Nice work.")).toBeVisible();
+  await expect(page.getByText("Workout complete")).toBeVisible();
 });

@@ -122,5 +122,5 @@ unit-test targets.
 The canonical corpus is `specs/apps/organiclever/be/behaviours/`. `test:unit` uses injected
 boundary doubles; `test:integration` exercises owned non-networked local resources; and the
 dedicated `organiclever-be-e2e:test:e2e` target owns public HTTP/messaging proof. Matching
-`test:coverage:*` targets validate all applicable adapters statically. Owner-local E2E runtime is
+`test:behaviour:coverage` validates all applicable adapters statically. Owner-local E2E runtime is
 omitted because the dedicated project owns that boundary.

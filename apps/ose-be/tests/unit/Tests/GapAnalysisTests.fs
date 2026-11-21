@@ -14,6 +14,7 @@ let ``gap-analysis reports ready to compare regulatory and policy documents`` ()
     Assert.Equal(ContextReadiness.Ready, readiness.State)
     Assert.Contains("compare", readiness.Capability)
 
+// @scenario specs/apps/ose/be/behaviours/gap-analysis/gap-analysis.feature: GET /api/v1/gap-analysis/status reports the context ready
 [<Fact>]
 let ``gap-analysis status endpoint reports the context readiness`` () =
     let client = buildClient routes

@@ -18,8 +18,8 @@ is a bug.
 
 ## Canonical Governance and Validation Targets
 
-Behaviour coverage is project-local: every owner and dedicated E2E project exposes the applicable
-static `test:coverage:*` targets instead of calling a central registry.
+Behaviour coverage is project-local: every owner and dedicated E2E project exposes the static
+`test:behaviour:coverage` target instead of calling a central registry.
 
 | Target               | Subject              | Operation                                               |
 | -------------------- | -------------------- | ------------------------------------------------------- |

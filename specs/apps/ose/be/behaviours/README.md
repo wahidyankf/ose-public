@@ -15,10 +15,8 @@ Backend (HTTP-semantic) Gherkin scenarios for `ose-be`. Consumed by xUnit + Tick
 | [messaging/nats-config.feature](./messaging/nats-config.feature)                 | messaging         |
 | [messaging/live/nats-connect.feature](./messaging/live/nats-connect.feature)     | messaging         |
 | [messaging/live/jetstream-demo.feature](./messaging/live/jetstream-demo.feature) | messaging         |
-| [config/env-tier-loading.feature](./config/env-tier-loading.feature)             | config            |
 
 - [ai-orchestration](./ai-orchestration/README.md) — ose-be Gherkin Domain
-- [config](./config/README.md) — ose-be Gherkin Domain
 - [db](./db/README.md) — ose-be Gherkin Domain
 - [gap-analysis](./gap-analysis/README.md) — ose-be Gherkin Domain
 - [health](./health/README.md) — ose-be Gherkin Domain

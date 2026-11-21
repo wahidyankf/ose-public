@@ -31,7 +31,7 @@ environment. Do not put credentials or access tokens in this README or any track
 
 ```bash
 npm exec nx -- run organiclever-be-e2e:test:quick
-npm exec nx -- run organiclever-be-e2e:test:coverage
+npm exec nx -- run organiclever-be-e2e:test:behaviour:coverage
 npm exec nx -- run organiclever-be-e2e:test:e2e
 ```
 
@@ -39,6 +39,5 @@ The expected behaviour is described in
 [the OrganicLever backend Gherkin specs](../../specs/apps/organiclever/be/behaviours/README.md).
 
 This dedicated E2E project owns no independent corpus. Its `test:e2e` adapter observes the backend
-through public HTTP and messaging boundaries; `test:coverage:e2e`, `test:behaviour:coverage`, and
-aggregate `test:coverage` validate it statically. Unit and Integration are omitted because their
+through public HTTP and messaging boundaries; `test:behaviour:coverage` validates it statically. Unit and Integration are omitted because their
 in-process and local-resource boundaries belong to `organiclever-be`.

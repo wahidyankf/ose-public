@@ -173,29 +173,6 @@ Then("no rewrite listener starts on a fallback port", async ({ page }) => {
   expect(stateFor(page).spawnedUrl).toBeUndefined();
 });
 
-Given("the existing site and the rewrite development server are running", async ({ page }) => {
-  await ensureOldOrigin(page);
-  if (!(await portAnswers(3102))) {
-    trackOwned(page, await startExternalStub(3102));
-  }
-});
-
-When("the rewrite browser acceptance suite starts", async ({ page }) => {
-  await gotoPage(page, "/en");
-  expect(statusOf(page)).toBe(200);
-});
-
-Then("it starts its own Go server on port 3191", async ({ page }) => {
-  expect(page.url()).toContain("3191");
-  await gotoPage(page, "/en");
-  expect(statusOf(page)).toBe(200);
-});
-
-Then("it leaves both development servers running after the suite finishes", async () => {
-  expect(await portAnswers(3101)).toBe(true);
-  expect(await portAnswers(3102)).toBe(true);
-});
-
 Given("the shared Markdown and manifests have recorded byte hashes", async ({ page }) => {
   stateFor(page).hashes = hashSources();
   expect(Object.keys(stateFor(page).hashes ?? {}).length).toBeGreaterThan(0);

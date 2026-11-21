@@ -10,7 +10,7 @@ Feature: AI model benchmark tool
   # ── Consensus tiers ─────────────────────────────────────────────────────────
 
   # Behaviour: AYW-053
-  # Exemption(integration): consensus assignment is pure in-process logic with no local-resource boundary; alternative-proof: ayokoding-www:test:unit / The consensus tier is the tier the model holds on the most benchmarks
+  # Exemption(integration): consensus assignment reads only in-memory benchmark data, so no database, file system, process, or network boundary exists here; alternative-proof: ayokoding-www:test:unit / The consensus tier is the tier the model holds on the most benchmarks
   @integration-exempt
   # Exemption(e2e): the served build has no input seam that accepts a fixture model, so the end-to-end level cannot supply this input; alternative-proof: ayokoding-www:test:unit / The consensus tier is the tier the model holds on the most benchmarks
   @e2e-exempt
@@ -31,7 +31,7 @@ Feature: AI model benchmark tool
       | ultra    | planning      | unranked | unranked     | ultra     | 1        | 2          |
 
   # Behaviour: AYW-053
-  # Exemption(integration): the minimum-coverage rule is pure in-process logic with no local-resource boundary; alternative-proof: ayokoding-www:test:unit / A model tiered on fewer than two benchmarks has insufficient data
+  # Exemption(integration): the minimum-coverage rule reads only in-memory benchmark data, so no database, file system, process, or network boundary exists here; alternative-proof: ayokoding-www:test:unit / A model tiered on fewer than two benchmarks has insufficient data
   @integration-exempt
   # Exemption(e2e): the served build has no input seam that accepts a fixture model, so the end-to-end level cannot supply this input; alternative-proof: ayokoding-www:test:unit / A model tiered on fewer than two benchmarks has insufficient data
   @e2e-exempt
@@ -42,7 +42,7 @@ Feature: AI model benchmark tool
     And that model has no consensus count
 
   # Behaviour: AYW-053
-  # Exemption(integration): consensus assignment is pure in-process logic with no local-resource boundary; alternative-proof: ayokoding-www:test:unit / A model whose benchmarks split below half has no consensus tier
+  # Exemption(integration): consensus assignment reads only in-memory benchmark data, so no database, file system, process, or network boundary exists here; alternative-proof: ayokoding-www:test:unit / A model whose benchmarks split below half has no consensus tier
   @integration-exempt
   # Exemption(e2e): the served build has no input seam that accepts a fixture model, so the end-to-end level cannot supply this input; alternative-proof: ayokoding-www:test:unit / A model whose benchmarks split below half has no consensus tier
   @e2e-exempt
@@ -67,7 +67,7 @@ Feature: AI model benchmark tool
     And the insufficient-data disclosure does not list them
 
   # Behaviour: AYW-053
-  # Exemption(integration): consensus ordering is pure in-process logic with no local-resource boundary; alternative-proof: ayokoding-www:test:unit / Models in one consensus section are ordered by consensus strength
+  # Exemption(integration): consensus ordering reads only in-memory benchmark data, so no database, file system, process, or network boundary exists here; alternative-proof: ayokoding-www:test:unit / Models in one consensus section are ordered by consensus strength
   @integration-exempt
   # Exemption(e2e): the served build has no input seam that accepts a fixture model, so the end-to-end level cannot supply this input; alternative-proof: ayokoding-www:test:unit / Models in one consensus section are ordered by consensus strength
   @e2e-exempt
@@ -79,7 +79,7 @@ Feature: AI model benchmark tool
   # ── Tiers ─────────────────────────────────────────────────────────────────────
 
   # Behaviour: AYW-053
-  Scenario: Every roster model belongs to exactly one tier group
+  Scenario: Every roster model appears in exactly one tier section
     Given the full roster is loaded
     When the tier groups are computed
     Then each model appears in exactly one of "ultra", "planning", "execution", "fast", or "insufficient"
@@ -87,7 +87,7 @@ Feature: AI model benchmark tool
   # ── Price ─────────────────────────────────────────────────────────────────────
 
   # Behaviour: AYW-053
-  # Exemption(integration): the blended price is pure in-process arithmetic with no local-resource boundary; alternative-proof: ayokoding-www:test:unit / The blended price weights input three to one against output
+  # Exemption(integration): the blended price reads only in-memory benchmark data, so no database, file system, process, or network boundary exists here; alternative-proof: ayokoding-www:test:unit / The blended price weights input three to one against output
   @integration-exempt
   # Exemption(e2e): the served build has no input seam that accepts a fixture model, so the end-to-end level cannot supply this input; alternative-proof: ayokoding-www:test:unit / The blended price weights input three to one against output
   @e2e-exempt
@@ -99,7 +99,7 @@ Feature: AI model benchmark tool
   # ── Substitute finder ─────────────────────────────────────────────────────────
 
   # Behaviour: AYW-054
-  # Exemption(integration): substitute selection is pure in-process logic with no local-resource boundary; alternative-proof: ayokoding-www:test:unit / Substitutes are models of the chosen harness in the same or a higher tier
+  # Exemption(integration): substitute selection reads only in-memory benchmark data, so no database, file system, process, or network boundary exists here; alternative-proof: ayokoding-www:test:unit / Substitutes are models of the chosen harness in the same or a higher tier
   @integration-exempt
   # Exemption(e2e): the served build has no input seam that accepts a fixture model, so the end-to-end level cannot supply this input; alternative-proof: ayokoding-www:test:unit / Substitutes are models of the chosen harness in the same or a higher tier
   @e2e-exempt
@@ -394,7 +394,7 @@ Feature: AI model benchmark tool
     And the score basis control shows "Consensus tiers"
 
   # Behaviour: AYW-055
-  # Exemption(integration): per-benchmark ranking is pure in-process logic with no local-resource boundary; alternative-proof: ayokoding-www:test:unit / Naming a benchmark ranks models by its raw score
+  # Exemption(integration): per-benchmark ranking reads only in-memory benchmark data, so no database, file system, process, or network boundary exists here; alternative-proof: ayokoding-www:test:unit / Naming a benchmark ranks models by its raw score
   @integration-exempt
   # Exemption(e2e): the served build has no input seam that accepts a fixture model, so the end-to-end level cannot supply this input; alternative-proof: ayokoding-www:test:unit / Naming a benchmark ranks models by its raw score
   @e2e-exempt
@@ -405,7 +405,7 @@ Feature: AI model benchmark tool
     And each shown score equals that model's DeepSWE figure with no normalization
 
   # Behaviour: AYW-055
-  # Exemption(integration): figure selection is pure in-process logic with no local-resource boundary; alternative-proof: ayokoding-www:test:unit / Only the pinned version counts in a per-benchmark view
+  # Exemption(integration): figure selection reads only in-memory benchmark data, so no database, file system, process, or network boundary exists here; alternative-proof: ayokoding-www:test:unit / Only the pinned version counts in a per-benchmark view
   @integration-exempt
   # Exemption(e2e): the served build has no input seam that accepts a fixture model, so the end-to-end level cannot supply this input; alternative-proof: ayokoding-www:test:unit / Only the pinned version counts in a per-benchmark view
   @e2e-exempt
@@ -454,7 +454,7 @@ Feature: AI model benchmark tool
   # ── Per-benchmark tiers ───────────────────────────────────────────────────
 
   # Behaviour: AYW-055
-  # Exemption(integration): per-benchmark tier assignment is pure in-process logic with no local-resource boundary; alternative-proof: ayokoding-www:test:unit / A model is placed in the highest per-benchmark tier whose anchor it meets on that benchmark
+  # Exemption(integration): per-benchmark tier assignment reads only in-memory benchmark data, so no database, file system, process, or network boundary exists here; alternative-proof: ayokoding-www:test:unit / A model is placed in the highest per-benchmark tier whose anchor it meets on that benchmark
   @integration-exempt
   # Exemption(e2e): the served build has no input seam that accepts a fixture model, so the end-to-end level cannot supply this input; alternative-proof: ayokoding-www:test:unit / A model is placed in the highest per-benchmark tier whose anchor it meets on that benchmark
   @e2e-exempt

@@ -110,21 +110,24 @@ function isKeyboardOperable(el: Element): boolean {
   return (el.tagName === "A" && el.hasAttribute("href")) || el.tagName === "BUTTON";
 }
 
+async function renderPathCourse() {
+  const jsx = await renderCoursePathPage({
+    locale: "en",
+    slug: ["learn", "courses", "just-enough-python"],
+    search: { path: fixtureManifest.pathId },
+  });
+  cleanup();
+  render(jsx);
+}
+
 const feature = await loadFeature(
   path.resolve(process.cwd(), "../../specs/apps/ayokoding/www/behaviours/frontend/course-paths/accessibility.feature"),
 );
 
 describeFeature(feature, ({ Scenario }) => {
-  Scenario("The navigation feature meets accessibility requirements", ({ Given, When, Then, And }) => {
-    Given("a reader uses a keyboard and a screen reader on a course in path context", async () => {
-      const jsx = await renderCoursePathPage({
-        locale: "en",
-        slug: ["learn", "courses", "just-enough-python"],
-        search: { path: fixtureManifest.pathId },
-      });
-      cleanup();
-      render(jsx);
-    });
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/accessibility.feature: Path navigation surfaces are labelled landmarks
+  Scenario("Path navigation surfaces are labelled landmarks", ({ Given, When, Then }) => {
+    Given("a reader uses a keyboard and a screen reader on a course in path context", renderPathCourse);
 
     When("they navigate the path rail, banner, breadcrumb, prerequisite list, and prev/next", () => {
       const breadcrumbLink = within(screen.getByRole("navigation", { name: "Breadcrumb" })).getAllByRole("link")[0];
@@ -132,7 +135,24 @@ describeFeature(feature, ({ Scenario }) => {
       expect(document.activeElement).toBe(breadcrumbLink);
     });
 
-    Then("each is a labelled landmark reachable and operable by keyboard with visible focus", () => {
+    Then("each is a labelled landmark", () => {
+      expect(screen.getByRole("navigation", { name: "Breadcrumb" })).toBeTruthy();
+      expect(screen.getByRole("navigation", { name: "Prerequisites" })).toBeTruthy();
+      expect(screen.getByRole("navigation", { name: "Page navigation" })).toBeTruthy();
+    });
+  });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/accessibility.feature: Path navigation works by keyboard with visible focus
+  Scenario("Path navigation works by keyboard with visible focus", ({ Given, When, Then }) => {
+    Given("a reader uses a keyboard and a screen reader on a course in path context", renderPathCourse);
+
+    When("they navigate the path rail, banner, breadcrumb, prerequisite list, and prev/next", () => {
+      const breadcrumbLink = within(screen.getByRole("navigation", { name: "Breadcrumb" })).getAllByRole("link")[0];
+      breadcrumbLink?.focus();
+      expect(document.activeElement).toBe(breadcrumbLink);
+    });
+
+    Then("each is reachable and operable by keyboard with visible focus", () => {
       const breadcrumb = screen.getByRole("navigation", { name: "Breadcrumb" });
       expect(isKeyboardOperable(within(breadcrumb).getAllByRole("link")[0] as Element)).toBe(true);
 
@@ -142,8 +162,13 @@ describeFeature(feature, ({ Scenario }) => {
       const pageNav = screen.getByRole("navigation", { name: "Page navigation" });
       expect(isKeyboardOperable(within(pageNav).getAllByRole("link")[0] as Element)).toBe(true);
     });
+  });
 
-    And("the document language attribute matches the active locale", () => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/accessibility.feature: The page language matches the locale
+  Scenario("The page language matches the locale", ({ Given, Then }) => {
+    Given("a reader uses a keyboard and a screen reader on a course in path context", renderPathCourse);
+
+    Then("the document language attribute matches the active locale", () => {
       expect(htmlLang("en")).toBe("en");
     });
   });

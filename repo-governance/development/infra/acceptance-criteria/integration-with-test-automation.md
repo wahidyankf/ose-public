@@ -85,7 +85,7 @@ temporary file or embedded database; public process or HTTP proof belongs to E2E
 ## Adding a Language
 
 Only wire an adapter this repository actually builds. Adding a new binding syntax also means
-teaching the owner-local static `test:coverage:*` validators to recognise it; otherwise scenarios
+teaching the owner-local static `test:behaviour:coverage` check to recognise it; otherwise scenarios
 correctly read as uncovered. Run the
 [Gherkin implementation review](../../../workflows/quality/gherkin-implementation-review.md) after a
 material feature, adapter, exemption, or coverage-mechanism change.

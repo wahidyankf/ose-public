@@ -22,6 +22,25 @@ import { Toggle } from "./components/toggle/toggle";
 import { CodeBlock } from "./primitives/code-block/code-block";
 import { CopyButton } from "./primitives/code-block/copy-button";
 import { ResizablePanel } from "./primitives/resizable-panel/resizable-panel";
+import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from "./primitives/command/command";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "./primitives/dropdown-menu/dropdown-menu";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./primitives/tabs/tabs";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./primitives/tooltip/tooltip";
+import { ScrollArea } from "./primitives/scroll-area/scroll-area";
+import { Separator } from "./primitives/separator/separator";
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "./primitives/table/table";
+import { HighlightText } from "./components/highlight-text/highlight-text";
+import ScrollToTop from "./components/scroll-to-top/scroll-to-top";
+import { SearchComponent } from "./components/search-component/search-component";
+import ThemeToggle from "./components/theme-toggle/theme-toggle";
 
 const tabs = [
   { id: "home", label: "Home", icon: "home" },
@@ -35,6 +54,36 @@ function query(): URLSearchParams {
 
 function EventProbe({ value }: { value: string }) {
   return <output data-testid="event-probe">{value}</output>;
+}
+
+function DropdownOptions() {
+  const [showHidden, setShowHidden] = React.useState(false);
+  const [size, setSize] = React.useState("small");
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger data-testid="menu-trigger">View</DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuCheckboxItem checked={showHidden} onCheckedChange={setShowHidden}>
+          Show hidden
+        </DropdownMenuCheckboxItem>
+        <DropdownMenuRadioGroup value={size} onValueChange={setSize}>
+          <DropdownMenuRadioItem value="small">Small</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="large">Large</DropdownMenuRadioItem>
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+function SearchHarness() {
+  const [term, setTerm] = React.useState("");
+  const updateURL = (next: string) => {
+    const url = new URL(window.location.href);
+    if (next) url.searchParams.set("q", next);
+    else url.searchParams.delete("q");
+    window.history.replaceState(null, "", url.toString());
+  };
+  return <SearchComponent searchTerm={term} setSearchTerm={setTerm} updateURL={updateURL} placeholder="Search posts" />;
 }
 
 function BddHarness() {
@@ -370,11 +419,128 @@ function BddHarness() {
         maxPct={35}
         viewportPx={1000}
         handleAriaLabel={parameters.get("handleLabel") ?? undefined}
+        keyboardStep={Number(parameters.get("keyboardStep") ?? "10")}
       >
         <div>Panel content</div>
       </ResizablePanel>
     );
   }
+
+  if (caseName === "command") {
+    return (
+      <div>
+        <Command>
+          <CommandInput placeholder="Type a command..." />
+          <CommandList>
+            <CommandEmpty>No matching commands</CommandEmpty>
+            {["Home", "Settings", "Sign out"].map((item) => (
+              <CommandItem key={item} value={item} onSelect={() => setEvent(item)}>
+                {item}
+              </CommandItem>
+            ))}
+          </CommandList>
+        </Command>
+        <EventProbe value={event} />
+      </div>
+    );
+  }
+
+  if (caseName === "dropdown-menu") {
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger data-testid="menu-trigger">Account</DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem>Profile</DropdownMenuItem>
+          <DropdownMenuItem>Billing</DropdownMenuItem>
+          <DropdownMenuItem>Log out</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
+  }
+
+  if (caseName === "dropdown-options") return <DropdownOptions />;
+
+  if (caseName === "tabs") {
+    return (
+      <Tabs defaultValue="overview">
+        <TabsList>
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="details">Details</TabsTrigger>
+        </TabsList>
+        <TabsContent value="overview">Overview panel</TabsContent>
+        <TabsContent value="details">Details panel</TabsContent>
+      </Tabs>
+    );
+  }
+
+  if (caseName === "tooltip") {
+    return (
+      <TooltipProvider delayDuration={0}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button type="button">Save</button>
+          </TooltipTrigger>
+          <TooltipContent>Save draft</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
+  }
+
+  if (caseName === "scroll-area") {
+    return (
+      <ScrollArea className="h-[100px] w-64">
+        <div style={{ height: "400px" }}>Long content</div>
+      </ScrollArea>
+    );
+  }
+
+  if (caseName === "separator") {
+    const orientation = parameters.get("orientation") === "vertical" ? "vertical" : "horizontal";
+    return (
+      <div style={{ height: "40px", width: "120px" }}>
+        <Separator orientation={orientation} decorative={parameters.get("decorative") !== "false"} />
+      </div>
+    );
+  }
+
+  if (caseName === "table") {
+    return (
+      <Table>
+        <TableCaption>Invoices</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Invoice</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow>
+            <TableCell>INV-001</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    );
+  }
+
+  if (caseName === "highlight") {
+    return (
+      <p>
+        <HighlightText text={parameters.get("text") ?? ""} searchTerm={parameters.get("term") ?? ""} />
+      </p>
+    );
+  }
+
+  if (caseName === "scroll-to-top") {
+    return (
+      <>
+        <div style={{ height: "3000px" }}>Long page</div>
+        <ScrollToTop />
+      </>
+    );
+  }
+
+  if (caseName === "search") return <SearchHarness />;
+
+  if (caseName === "theme-toggle") return <ThemeToggle />;
 
   throw new Error(`Unknown BDD harness case: ${caseName}`);
 }

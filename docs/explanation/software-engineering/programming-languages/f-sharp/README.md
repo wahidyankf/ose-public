@@ -281,7 +281,7 @@ graph LR
 - SHOULD use FSharpLint for additional style enforcement
 - MUST set `<TreatWarningsAsErrors>true</TreatWarningsAsErrors>` in `.fsproj`
 - MUST enable exhaustive pattern match warnings (enabled by default — never suppress)
-- MUST achieve >=99% line coverage measured with Coverlet and enforced during `test:unit`; static `test:coverage:*` targets never execute tests
+- MUST achieve >=99% line coverage measured with Coverlet and enforced during `test:unit`; the static `test:behaviour:coverage` target never executes tests
 
 **Testing Automation (REQUIRED)**:
 

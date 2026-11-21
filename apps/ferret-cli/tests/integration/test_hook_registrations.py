@@ -1,100 +1,56 @@
-"""The repository's hook configuration registers exactly the FERRET events the mappers support, and nothing else."""
+"""FERRET capture is registered globally; the repository's own harness configuration holds no FERRET hook.
+
+The repository once registered the shared wrapper in each harness's project configuration. Commit 1bfebba47
+moved FERRET to the user's global harness configuration ("Keep FERRET global and enforce repository policy
+through local adapters") and left the repository's hook files for repository policy only. These checks hold
+that line: no project configuration may start capturing again behind the user's back, the wrapper the global
+registrations call must still exist, and the OpenCode plugin, which is the one repository-local adapter, must
+still forward every event its mapper supports.
+"""
 
 import json
-import re
 from pathlib import Path
 from typing import Any
 
 import pytest
 
-from support.hook_payloads import CLAUDE_CODE, CODEX, OPENCODE, REGISTRATIONS
-from support.wrapper import REPOSITORY
+from support.hook_payloads import OPENCODE, REGISTRATIONS
+from support.wrapper import REPOSITORY, WRAPPER
 
-CLAUDE_HOOKS = {
-    "session.started": "SessionStart",
-    "session.ended": "SessionEnd",
-    "agent.started": "SubagentStart",
-    "agent.ended": "SubagentStop",
-    "tool.started": "PreToolUse",
-    "skill.invoked": "PreToolUse",
-    "tool.completed": "PostToolUse",
-    "tool.failed": "PostToolUseFailure",
-}
-CODEX_HOOKS = {event: hook for event, hook in CLAUDE_HOOKS.items() if event not in ("tool.failed", "skill.invoked")}
-# Only Claude Code's skill registration is narrowed to one tool, so it does not run for every tool call.
-MATCHERS = {"skill.invoked": "Skill"}
-CLAUDE_COMMAND = '"$CLAUDE_PROJECT_DIR"/.claude/hooks/ferret-capture.sh claude_code {event}'
-CODEX_COMMAND = '"$(git rev-parse --show-toplevel)"/.claude/hooks/ferret-capture.sh codex {event}'
+PROJECT_HOOK_FILES = [
+    REPOSITORY / ".claude" / "settings.json",
+    REPOSITORY / ".codex" / "hooks.json",
+    REPOSITORY / ".commandcode" / "settings.json",
+]
 PLUGIN = REPOSITORY / ".opencode" / "plugins" / "ferret.ts"
-# The shortest budget any harness gives a hook: Codex ends a session hook after between one and three seconds.
-SESSION_END_TIMEOUT_SECONDS = 2
 
 
-def registered(path: Path) -> dict[str, list[dict[str, Any]]]:
-    """Every FERRET command hook in a harness configuration file, by the harness hook name that runs it.
+def commands_in(node: Any) -> list[str]:
+    """Every ``command`` string anywhere in a harness configuration document."""
+    if isinstance(node, dict):
+        found = [value for key, value in node.items() if key == "command" and isinstance(value, str)]
+        return found + [command for value in node.values() for command in commands_in(value)]
+    if isinstance(node, list):
+        return [command for value in node for command in commands_in(value)]
+    return []
 
-    Each hook comes with the ``matcher`` of the entry that holds it, ``None`` when that entry has none.
-    """
-    hooks: dict[str, list[dict[str, Any]]] = json.loads(path.read_text())["hooks"]
-    return {
-        name: [
-            {**hook, "matcher": entry.get("matcher")}
-            for entry in entries
-            for hook in entry["hooks"]
-            if "ferret-capture" in hook["command"]
-        ]
-        for name, entries in hooks.items()
-    }
+
+@pytest.mark.parametrize("path", PROJECT_HOOK_FILES, ids=lambda path: path.parent.name)
+def test_no_project_harness_configuration_registers_the_capture_wrapper(path: Path) -> None:
+    assert path.is_file(), f"the repository hook configuration is missing at {path}"
+    commands = commands_in(json.loads(path.read_text()))
+
+    assert commands, f"{path} registers no hook at all, so this check would pass on an empty file"
+    assert [command for command in commands if "ferret-capture" in command] == []
+
+
+def test_the_capture_wrapper_the_global_registrations_call_still_exists() -> None:
+    assert WRAPPER.is_file()
+    assert WRAPPER.stat().st_mode & 0o111, f"{WRAPPER} is not executable"
 
 
 def events_of(harness: str) -> set[str]:
     return {event for owner, event, _ in REGISTRATIONS if owner == harness}
-
-
-@pytest.mark.parametrize(
-    ("path", "harness", "hooks", "template"),
-    [
-        (REPOSITORY / ".claude" / "settings.json", CLAUDE_CODE, CLAUDE_HOOKS, CLAUDE_COMMAND),
-        (REPOSITORY / ".codex" / "hooks.json", CODEX, CODEX_HOOKS, CODEX_COMMAND),
-    ],
-    ids=[CLAUDE_CODE, CODEX],
-)
-def test_each_shell_harness_registers_the_wrapper_once_for_every_event_it_can_report(
-    path: Path, harness: str, hooks: dict[str, str], template: str
-) -> None:
-    assert set(hooks) == events_of(harness)
-    found = registered(path)
-
-    for event, hook in hooks.items():
-        matching = [entry for entry in found[hook] if entry["command"] == template.format(event=event)]
-        assert [entry["matcher"] for entry in matching] == [MATCHERS.get(event)], f"{harness} {event}"
-
-
-@pytest.mark.parametrize(
-    ("path", "hooks"),
-    [(REPOSITORY / ".claude" / "settings.json", CLAUDE_HOOKS), (REPOSITORY / ".codex" / "hooks.json", CODEX_HOOKS)],
-    ids=[CLAUDE_CODE, CODEX],
-)
-def test_no_other_hook_runs_the_wrapper(path: Path, hooks: dict[str, str]) -> None:
-    assert {name for name, commands in registered(path).items() if commands} == set(hooks.values())
-
-
-def test_codex_gives_the_session_end_hook_the_budget_the_wrapper_needs() -> None:
-    (entry,) = registered(REPOSITORY / ".codex" / "hooks.json")["SessionEnd"]
-
-    assert entry["timeout"] >= SESSION_END_TIMEOUT_SECONDS
-
-
-def test_every_registered_command_names_a_harness_and_an_event_the_mapper_knows() -> None:
-    commands = [
-        entry["command"]
-        for path in (REPOSITORY / ".claude" / "settings.json", REPOSITORY / ".codex" / "hooks.json")
-        for entries in registered(path).values()
-        for entry in entries
-    ]
-    pairs = {tuple(re.findall(r"ferret-capture\.sh (\w+) ([\w.]+)$", command)[0]) for command in commands}
-
-    assert pairs == {(harness, event) for harness, event, _ in REGISTRATIONS if harness in (CLAUDE_CODE, CODEX)}
 
 
 def test_the_opencode_plugin_forwards_each_event_the_mappers_support_for_it() -> None:

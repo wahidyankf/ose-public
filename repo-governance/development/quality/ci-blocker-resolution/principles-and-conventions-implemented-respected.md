@@ -22,7 +22,7 @@ This practice respects the following core principles:
 This practice implements/respects the following conventions:
 
 - **[Code Quality Convention](.././code.md)**: The quality gates (including `test:quick`, which
-  owns Unit runtime plus every applicable static `test:coverage:*` validator) are the CI boundary
+  owns Unit runtime plus the static `test:behaviour:coverage` check) are the CI boundary
   this convention protects. Bypassing those gates with `--no-verify` or test skipping is the
   specific action this convention forbids.
 

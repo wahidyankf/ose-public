@@ -95,48 +95,6 @@
         }
       ]
     },
-    "test:coverage:unit": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config apps/ayokoding-web/behaviour-coverage.json --adapter unit"
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/ayokoding-web/behaviour-coverage.json",
-        "{projectRoot}/tests/**/*.go",
-        "{projectRoot}/go.mod",
-        "{workspaceRoot}/specs/apps/ayokoding/web/behaviours/**/*.feature"
-      ]
-    },
-    "test:coverage:integration": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config apps/ayokoding-web/behaviour-coverage.json --adapter integration"
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/ayokoding-web/behaviour-coverage.json",
-        "{projectRoot}/tests/**/*.go",
-        "{projectRoot}/go.mod",
-        "{workspaceRoot}/specs/apps/ayokoding/web/behaviours/**/*.feature"
-      ]
-    },
-    "test:coverage:e2e": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config apps/ayokoding-web/behaviour-coverage.json --adapter e2e"
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/ayokoding-web/behaviour-coverage.json",
-        "{projectRoot}/tests/**/*.go",
-        "{projectRoot}/go.mod",
-        "{workspaceRoot}/specs/apps/ayokoding/web/behaviours/**/*.feature"
-      ]
-    },
     "test:behaviour:coverage": {
       "executor": "nx:run-commands",
       "options": {
@@ -153,35 +111,6 @@
         "{workspaceRoot}/apps/*-e2e/steps/**/*",
         "{workspaceRoot}/apps/*-e2e/src/**/*",
         "{workspaceRoot}/libs/*/tests/**/*"
-      ]
-    },
-    "test:coverage": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          {
-            "command": "npm exec -- nx run ayokoding-web:test:coverage:unit",
-            "forwardAllArgs": false
-          },
-          {
-            "command": "npm exec -- nx run ayokoding-web:test:coverage:integration",
-            "forwardAllArgs": false
-          },
-          {
-            "command": "npm exec -- nx run ayokoding-web:test:coverage:e2e",
-            "forwardAllArgs": false
-          }
-        ],
-        "parallel": false,
-        "forwardAllArgs": false
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/ayokoding-web/behaviour-coverage.json",
-        "{projectRoot}/tests/**/*.go",
-        "{projectRoot}/go.mod",
-        "{workspaceRoot}/specs/apps/ayokoding/web/behaviours/**/*.feature"
       ]
     },
     "test:integration": {
@@ -231,10 +160,6 @@
             "forwardAllArgs": false
           },
           {
-            "command": "npm exec -- nx run ayokoding-web:test:coverage",
-            "forwardAllArgs": false
-          },
-          {
             "command": "npm exec -- nx run ayokoding-web:test:behaviour:coverage",
             "forwardAllArgs": false
           }
@@ -245,8 +170,6 @@
       "cache": true,
       "inputs": [
         "default",
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/ayokoding-web/behaviour-coverage.json",
         "{projectRoot}/**/*.go",
         "{projectRoot}/scripts/**/*",
         "{projectRoot}/go.mod",

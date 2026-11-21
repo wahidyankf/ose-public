@@ -25,8 +25,9 @@ vi.mock("next/navigation", () => ({
   useSearchParams: () => new URLSearchParams(),
   useRouter: () => ({ push: vi.fn() }),
 }));
+const { setTheme } = vi.hoisted(() => ({ setTheme: vi.fn() }));
 vi.mock("next-themes", () => ({
-  useTheme: () => ({ theme: "light", setTheme: vi.fn() }),
+  useTheme: () => ({ theme: "light", setTheme }),
 }));
 
 import "./helpers/test-setup";
@@ -34,6 +35,7 @@ import { CoursePageContent } from "@/features/course-paths/shell/course-page-con
 import { ResizableSidebar } from "@/features/navigation/shell/resizable-sidebar";
 import { Header } from "@/features/app-shell/shell/header";
 import { MobileNavOpenProvider } from "@/features/app-shell/shell/mobile-nav-open-provider";
+import { ThemeToggle } from "@/features/app-shell/shell/theme-toggle";
 
 const feature = await loadFeature(
   path.resolve(process.cwd(), "../../specs/apps/ayokoding/www/behaviours/frontend/app-shell/responsive.feature"),
@@ -66,7 +68,7 @@ function renderContentLayout() {
   );
 }
 
-describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
+describeFeature(feature, ({ Scenario, ScenarioOutline, Background, AfterEachScenario }) => {
   AfterEachScenario(cleanup);
 
   Background(({ Given }) => {
@@ -188,4 +190,29 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
       expect(nav.querySelector('a[href="/en/tools"]')?.textContent).toBe("Tools");
     });
   });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/responsive.feature: The theme toggle switches between light, dark, and system themes
+  ScenarioOutline(
+    "The theme toggle switches between light, dark, and system themes",
+    ({ Given, When, Then }, variables) => {
+      const theme = String(variables.theme);
+      const menuLabel = theme.charAt(0).toUpperCase() + theme.slice(1);
+
+      Given("a visitor is on a content page", () => {
+        setTheme.mockClear();
+        render(<ThemeToggle />);
+      });
+
+      When('the visitor chooses the "<theme>" theme from the theme toggle', () => {
+        // Radix opens the dropdown from the trigger's Enter key, then the item's click runs its setTheme.
+        fireEvent.keyDown(screen.getByRole("button", { name: "Toggle theme" }), { key: "Enter" });
+        fireEvent.click(screen.getByRole("menuitem", { name: menuLabel }));
+      });
+
+      Then('the page is set to the "<theme>" theme', () => {
+        expect(setTheme).toHaveBeenCalledTimes(1);
+        expect(setTheme).toHaveBeenCalledWith(theme);
+      });
+    },
+  );
 });

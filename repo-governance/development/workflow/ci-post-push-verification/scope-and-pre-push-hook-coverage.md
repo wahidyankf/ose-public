@@ -28,7 +28,7 @@ This convention does not apply to pushes that exclusively touch:
 
 The pre-push hook runs only the registry-declared `pre-push` gate, the leak scan over the pushed range, and runs
 no `test:quick`; quick owns Unit runtime and
-every applicable static `test:coverage:*` validator, and runs in the PR workflow's language jobs.
+the static `test:behaviour:coverage` check, and runs in the PR workflow's language jobs.
 
 ## What the Pre-Push Hook Covers vs. What This Convention Covers
 

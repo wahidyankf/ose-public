@@ -63,10 +63,6 @@
             "forwardAllArgs": false
           },
           {
-            "command": "npm exec -- nx run web-ui-token:test:coverage",
-            "forwardAllArgs": false
-          },
-          {
             "command": "npm exec -- nx run web-ui-token:test:behaviour:coverage",
             "forwardAllArgs": false
           }
@@ -77,8 +73,6 @@
       "cache": true,
       "inputs": [
         "default",
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/libs/web-ui-token/behaviour-coverage.json",
         "{workspaceRoot}/package-lock.json",
         "{workspaceRoot}/specs/libs/web-ui-token/behaviours/**/*.feature",
         "{workspaceRoot}/libs/web-ui-token/tests/unit/**/*.{ts,tsx,fs}",
@@ -100,21 +94,6 @@
       },
       "cache": false
     },
-    "test:coverage:unit": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config libs/web-ui-token/behaviour-coverage.json --adapter unit"
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/libs/web-ui-token/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/libs/web-ui-token/behaviours/**/*.feature",
-        "{workspaceRoot}/libs/web-ui-token/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/libs/web-ui-token/vitest.config.ts"
-      ]
-    },
     "test:behaviour:coverage": {
       "executor": "nx:run-commands",
       "options": {
@@ -131,28 +110,6 @@
         "{workspaceRoot}/apps/*-e2e/steps/**/*",
         "{workspaceRoot}/apps/*-e2e/src/**/*",
         "{workspaceRoot}/libs/*/tests/**/*"
-      ]
-    },
-    "test:coverage": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          {
-            "command": "npm exec -- nx run web-ui-token:test:coverage:unit",
-            "forwardAllArgs": false
-          }
-        ],
-        "parallel": false,
-        "forwardAllArgs": false
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/libs/web-ui-token/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/libs/web-ui-token/behaviours/**/*.feature",
-        "{workspaceRoot}/libs/web-ui-token/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/libs/web-ui-token/vitest.config.ts"
       ]
     }
   },

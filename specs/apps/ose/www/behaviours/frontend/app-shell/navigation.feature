@@ -36,3 +36,16 @@ Feature: Navigation
   Scenario: Footer links to AyoKoding on its canonical host
     When the footer component is rendered
     Then the footer contains an external link to "AyoKoding" on the canonical host "www.ayokoding.com"
+
+  # Behaviour: OSW-018
+  Scenario: Visitor opens the search dialog, types a query, and opens a result
+    When the visitor opens the search dialog
+    And the visitor types the query "Synthetic"
+    And the visitor opens the first search result
+    Then the visitor lands on the page at "/about/"
+
+  # Behaviour: OSW-016
+  Scenario: Mobile menu opens from the hamburger button and lists the navigation links
+    Given the viewport width is less than 640 pixels
+    When the visitor opens the navigation menu from the hamburger button
+    Then the navigation menu lists the links "Updates", "About", "Documentation", and "GitHub"

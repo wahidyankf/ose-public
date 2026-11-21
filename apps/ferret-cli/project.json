@@ -108,34 +108,6 @@
       },
       "cache": false
     },
-    "test:coverage:unit": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config apps/ferret-cli/behaviour-coverage.json --adapter unit"
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/ferret-cli/behaviour-coverage.json",
-        "{projectRoot}/tests/**/*.py",
-        "{projectRoot}/pyproject.toml",
-        "{workspaceRoot}/specs/apps/ferret/cli/behaviours/**/*.feature"
-      ]
-    },
-    "test:coverage:integration": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config apps/ferret-cli/behaviour-coverage.json --adapter integration"
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/ferret-cli/behaviour-coverage.json",
-        "{projectRoot}/tests/**/*.py",
-        "{projectRoot}/pyproject.toml",
-        "{workspaceRoot}/specs/apps/ferret/cli/behaviours/**/*.feature"
-      ]
-    },
     "test:behaviour:coverage": {
       "executor": "nx:run-commands",
       "options": {
@@ -152,31 +124,6 @@
         "{workspaceRoot}/apps/*-e2e/steps/**/*",
         "{workspaceRoot}/apps/*-e2e/src/**/*",
         "{workspaceRoot}/libs/*/tests/**/*"
-      ]
-    },
-    "test:coverage": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          {
-            "command": "npm exec -- nx run ferret-cli:test:coverage:unit",
-            "forwardAllArgs": false
-          },
-          {
-            "command": "npm exec -- nx run ferret-cli:test:coverage:integration",
-            "forwardAllArgs": false
-          }
-        ],
-        "parallel": false,
-        "forwardAllArgs": false
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/ferret-cli/behaviour-coverage.json",
-        "{projectRoot}/tests/**/*.py",
-        "{projectRoot}/pyproject.toml",
-        "{workspaceRoot}/specs/apps/ferret/cli/behaviours/**/*.feature"
       ]
     },
     "test:quick": {
@@ -196,10 +143,6 @@
             "forwardAllArgs": false
           },
           {
-            "command": "npm exec -- nx run ferret-cli:test:coverage",
-            "forwardAllArgs": false
-          },
-          {
             "command": "npm exec -- nx run ferret-cli:test:behaviour:coverage",
             "forwardAllArgs": false
           }
@@ -210,8 +153,6 @@
       "cache": true,
       "inputs": [
         "default",
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/ferret-cli/behaviour-coverage.json",
         "{projectRoot}/tests/**/*.py",
         "{projectRoot}/pyproject.toml",
         "{workspaceRoot}/specs/apps/ferret/cli/behaviours/**/*.feature",

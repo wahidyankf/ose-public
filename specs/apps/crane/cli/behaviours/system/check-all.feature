@@ -29,3 +29,11 @@ Feature: Check-all aggregator
     When I run the unknown command "crane no-such-command"
     Then standard output contains "USAGE"
     And the exit code is 1
+
+  # Behaviour: CRN-023
+  # Exemption(e2e): the CLI has no network, remote service, or credential boundary; its process boundary over local files is bound at integration; alternative-proof: crane-cli:test:integration / Crane process-boundary scenarios
+  @e2e-exempt
+  Scenario: Check-all reuses the PDF text cached by an earlier run
+    Given a PDF fixture and an MD that matches across all dimensions
+    When I run "crane check-all" twice with the same cache directory
+    Then the cache directory holds 1 extraction entry

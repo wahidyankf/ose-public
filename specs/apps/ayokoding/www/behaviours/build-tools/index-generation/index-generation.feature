@@ -65,3 +65,14 @@ Feature: Index file generation
     Given a "learn/courses" section in locale "en" with two course sections
     When the index generator runs in generate mode
     Then each course _index.md still lists its own children
+
+  # Exemption(integration): the only error path is an operating-system refusal to write a file, and the integration project has no seam that makes the host filesystem refuse a write without changing permissions the test run may not own; alternative-proof: ayokoding-www:test:unit / A section whose index cannot be written is listed as an error and the other sections still generate
+  @integration-exempt
+  # Exemption(e2e): the build-time script writes repository files and is not part of the served site, so no end-to-end boundary exists for it; alternative-proof: ayokoding-www:test:unit / A section whose index cannot be written is listed as an error and the other sections still generate
+  @e2e-exempt
+  # Behaviour: AYW-080
+  Scenario: A section whose index cannot be written is listed as an error and the other sections still generate
+    Given two sections "tools" and "react" in locale "en" with one child page each, and the write to the tools index is refused
+    When the index generator runs in generate mode
+    Then the tools index is listed as an error with the reason it was refused
+    And the react index still lists its child page

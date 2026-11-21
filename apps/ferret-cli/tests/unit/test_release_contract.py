@@ -92,16 +92,21 @@ def test_the_release_workflow_fires_on_a_tag_and_never_on_a_branch() -> None:
     assert not any(line.strip().startswith("branches:") for line in lines)
 
 
-def test_the_release_workflow_runs_nx_the_way_the_repository_runs_it_in_ci() -> None:
-    """HIPPO is the *local* compute admission boundary; a runner is one job on a fresh single-tenant VM.
+HIPPO_NX = re.compile(
+    r"^\s*(?:run:\s*)?\./hippo run --class (?:ephemeral|transactional) --resource-tier \S+ --disk-path \. -- "
+    r"npx nx run ferret-cli:\S+"
+)
 
-    Every other workflow in `.github/workflows/` calls `npx nx` directly, and `hippo.local.json` is
-    gitignored, so a bare `./hippo` on a runner is an untested path. This workflow only fires on a tag, so
-    an untested path here fails first at the release itself.
+
+def test_the_release_workflow_runs_every_nx_target_under_the_hippo_consumer() -> None:
+    """Repository task OP-7: every nx call a workflow makes is admitted through the local HIPPO consumer.
+
+    The release workflow once called `npx nx` bare because a runner is one job on a fresh VM. The repository
+    now wraps scheduled and release nx calls the way its other workflows do, so a bare `nx run ferret-cli:`
+    here would be compute that skips admission, and it would only be noticed at the release itself.
     """
-    lines = effective_lines()
-    hippo = [line for line in lines if "./hippo" in line]
-    nx = [line for line in lines if "nx run ferret-cli:" in line]
+    nx = [line for line in effective_lines() if "nx run ferret-cli:" in line]
+    bare = [line for line in nx if not HIPPO_NX.match(line)]
 
-    assert hippo == [], "the release workflow wraps a command in the local HIPPO consumer"
     assert nx, "the release workflow never invokes an nx target"
+    assert bare == [], "the release workflow runs an nx target outside the HIPPO consumer"

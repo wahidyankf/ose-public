@@ -134,4 +134,25 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline }) => {
       expect(renderedDocument.props.lang).toBe(String(variables.language_code));
     });
   });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/static-delivery.feature: Pages are served with security headers, including frame denial and a content security policy
+  Scenario(
+    "Pages are served with security headers, including frame denial and a content security policy",
+    ({ Given, Then, And }) => {
+      let pageHeaders: Map<string, string>;
+      Given("a visitor requests any page of the site", async () => {
+        // The headers apply to every route through the one "/(.*)" rule next.config.ts declares.
+        const { default: nextConfig } = await import("../../../next.config");
+        const rules = await nextConfig.headers!();
+        const everyPage = rules.filter((rule) => rule.source === "/(.*)");
+        pageHeaders = new Map(everyPage.flatMap((rule) => rule.headers.map((header) => [header.key, header.value])));
+      });
+      Then("the response refuses to be framed by other sites", () => {
+        expect(pageHeaders.get("X-Frame-Options")).toBe("DENY");
+      });
+      And("the response declares a content security policy", () => {
+        expect(pageHeaders.get("Content-Security-Policy")).toContain("default-src 'self'");
+      });
+    },
+  );
 });

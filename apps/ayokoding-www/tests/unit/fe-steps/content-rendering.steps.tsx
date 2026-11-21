@@ -6,6 +6,7 @@ import { expect, vi } from "vitest";
 import "./helpers/test-setup";
 import { MARKDOWN_PROSE_CLASS, MarkdownRenderer } from "@/features/content/shell/markdown-renderer";
 import { MermaidDiagram } from "@/features/content/shell/mermaid";
+import ContentError from "../../../src/app/[locale]/(content)/error";
 
 const feature = await loadFeature(
   path.resolve(process.cwd(), "../../specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature"),
@@ -523,6 +524,30 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
       const pre = document.querySelector("pre");
       expect(pre).toBeTruthy();
       expect(container?.contains(pre!)).toBe(true);
+    });
+  });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: A rendering failure shows "Something went wrong" with a Try again button
+  Scenario('A rendering failure shows "Something went wrong" with a Try again button', ({ Given, Then, When }) => {
+    let reset: ReturnType<typeof vi.fn>;
+
+    Given("a content page fails while rendering", () => {
+      reset = vi.fn();
+      // Next.js shows this route error boundary in place of a page whose render threw.
+      render(<ContentError error={new Error("render failed")} reset={reset} />);
+    });
+
+    Then('the reader sees "Something went wrong" with a Try again button', () => {
+      expect(screen.getByRole("heading", { name: "Something went wrong" })).toBeTruthy();
+      expect(screen.getByRole("button", { name: "Try again" })).toBeTruthy();
+    });
+
+    When("the reader selects Try again", () => {
+      fireEvent.click(screen.getByRole("button", { name: "Try again" }));
+    });
+
+    Then("the page is rendered again", () => {
+      expect(reset).toHaveBeenCalledTimes(1);
     });
   });
 });

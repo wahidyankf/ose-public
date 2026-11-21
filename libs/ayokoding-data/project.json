@@ -56,10 +56,6 @@
             "forwardAllArgs": false
           },
           {
-            "command": "npm exec -- nx run ayokoding-data:test:coverage",
-            "forwardAllArgs": false
-          },
-          {
             "command": "npm exec -- nx run ayokoding-data:test:behaviour:coverage",
             "forwardAllArgs": false
           }
@@ -70,8 +66,6 @@
       "cache": true,
       "inputs": [
         "default",
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/libs/ayokoding-data/behaviour-coverage.json",
         "{workspaceRoot}/package-lock.json",
         "{workspaceRoot}/specs/libs/ayokoding-data/behaviours/**/*.feature",
         "{workspaceRoot}/libs/ayokoding-data/data/**/*.{json,md}",
@@ -87,21 +81,6 @@
         "{workspaceRoot}/apps/*-e2e/steps/**/*",
         "{workspaceRoot}/apps/*-e2e/src/**/*",
         "{workspaceRoot}/libs/*/tests/**/*"
-      ]
-    },
-    "test:coverage:unit": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config libs/ayokoding-data/behaviour-coverage.json --adapter unit"
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/libs/ayokoding-data/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/libs/ayokoding-data/behaviours/**/*.feature",
-        "{workspaceRoot}/libs/ayokoding-data/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/libs/ayokoding-data/vitest.config.ts"
       ]
     },
     "test:behaviour:coverage": {
@@ -120,28 +99,6 @@
         "{workspaceRoot}/apps/*-e2e/steps/**/*",
         "{workspaceRoot}/apps/*-e2e/src/**/*",
         "{workspaceRoot}/libs/*/tests/**/*"
-      ]
-    },
-    "test:coverage": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          {
-            "command": "npm exec -- nx run ayokoding-data:test:coverage:unit",
-            "forwardAllArgs": false
-          }
-        ],
-        "parallel": false,
-        "forwardAllArgs": false
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/libs/ayokoding-data/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/libs/ayokoding-data/behaviours/**/*.feature",
-        "{workspaceRoot}/libs/ayokoding-data/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/libs/ayokoding-data/vitest.config.ts"
       ]
     }
   },

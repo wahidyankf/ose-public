@@ -3,6 +3,7 @@
 // @scenario specs/apps/ayokoding/www/behaviours/backend/content/content-api.feature: Get non-existent page by slug returns 404
 // @scenario specs/apps/ayokoding/www/behaviours/backend/content/content-api.feature: Child pages are ordered by weight ascending through <surface>
 // @scenario specs/apps/ayokoding/www/behaviours/backend/content/content-api.feature: Page content includes rendered HTML with code blocks preserved
+// @scenario specs/apps/ayokoding/www/behaviours/backend/content/content-api.feature: The course-path route data is returned for a locale
 import { expect } from "@playwright/test";
 import { createBdd } from "playwright-bdd";
 import { buildTrpcUrl, extractTrpcData, state } from "./helpers";
@@ -97,4 +98,28 @@ Then("the child pages should be ordered by weight ascending", async () => {
 
 Then('the response "html" field should contain a rendered code element', async () => {
   expect((state.pageResult as { html: string }).html).toContain("<code");
+});
+
+// AYW-069: the course-path route data is read over the same tRPC HTTP route the pages call on the served site.
+When("the client calls coursePaths.getRouteData with locale {string}", async ({ request }, locale: string) => {
+  const response = await request.get(buildTrpcUrl("coursePaths.getRouteData", locale));
+  expect(response.ok()).toBeTruthy();
+  state.routeDataResult = extractTrpcData(await response.json());
+});
+
+Then("the response should list each library course with its English page link", async () => {
+  const routeData = state.routeDataResult as {
+    libraryCourseIds: string[];
+    courseLinks: Record<string, { slug: string }>;
+  };
+  expect(routeData.libraryCourseIds.length).toBeGreaterThan(0);
+  for (const courseId of routeData.libraryCourseIds) {
+    expect(routeData.courseLinks[courseId], `${courseId} has no English page link`).toMatchObject({
+      slug: `learn/courses/${courseId}`,
+    });
+  }
+});
+
+Then("the response should include the course path manifests", async () => {
+  expect(Array.isArray((state.routeDataResult as { manifests: unknown }).manifests)).toBe(true);
 });

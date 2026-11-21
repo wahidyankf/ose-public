@@ -8,6 +8,7 @@ import * as primitives from "../../../src/primitives/index";
  * `tests/unit/index.test.ts` for the top-level barrel.
  */
 describe("web-ui primitives package exports", () => {
+  // @scenario specs/libs/web-ui/behaviours/primitives/primitives-entry.feature: Consumers import the base Badge, Button, Card, Dialog, and Sheet plus CodeBlock, CopyButton, and ResizablePanel from the primitives entry
   it("exports every primitive", () => {
     expect(primitives.Badge).toBeDefined();
     expect(primitives.Button).toBeDefined();

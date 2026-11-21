@@ -53,12 +53,12 @@ jobs:
       - uses: ./.github/actions/setup-node
       - name: Validate app and E2E behaviour coverage without running tests
         run: |
-          ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run ${{ inputs.app-name }}:test:coverage
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run ${{ inputs.app-name }}:test:behaviour:coverage
           be_project="${{ inputs.app-name }}-be-e2e"
           if ./hippo run --class ephemeral --resource-tier light --disk-path . -- npx nx show project "$be_project" --json > /dev/null 2>&1; then
-            ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run "${be_project}:test:coverage"
+            ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run "${be_project}:test:behaviour:coverage"
           fi
-          ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run ${{ inputs.app-name }}-fe-e2e:test:coverage
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run ${{ inputs.app-name }}-fe-e2e:test:behaviour:coverage
 
   integration:
     name: Integration tests

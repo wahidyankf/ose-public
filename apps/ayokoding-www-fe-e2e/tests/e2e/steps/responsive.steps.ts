@@ -2,6 +2,7 @@
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/responsive.feature: Laptop viewport shows sidebar and content but hides table of contents
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/responsive.feature: Mobile viewport shows hamburger menu and hides sidebar
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/responsive.feature: Mobile hamburger menu opens the sidebar drawer
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/responsive.feature: The theme toggle switches between light, dark, and system themes
 import { createBdd } from "playwright-bdd";
 import { expect } from "@playwright/test";
 
@@ -70,4 +71,16 @@ Then("the sidebar navigation links should be visible inside the drawer", async (
   const navigation = drawer.getByRole("navigation", { name: /mobile navigation/i });
   await expect(navigation).toBeVisible();
   expect(await navigation.getByRole("link").count()).toBeGreaterThan(0);
+});
+
+// AYW-051: the toggle is the header dropdown; next-themes writes the chosen theme as a class on <html>.
+When("the visitor chooses the {string} theme from the theme toggle", async ({ page }, theme: string) => {
+  await page.getByRole("button", { name: "Toggle theme" }).click();
+  await page.getByRole("menuitem", { name: theme.charAt(0).toUpperCase() + theme.slice(1) }).click();
+});
+
+// The browser runs with its default light colour scheme, so the system choice shows the light class.
+Then("the page is set to the {string} theme", async ({ page }, theme: string) => {
+  const appliedClass = theme === "system" ? "light" : theme;
+  await expect(page.locator("html")).toHaveClass(new RegExp(`\\b${appliedClass}\\b`));
 });

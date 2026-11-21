@@ -20,8 +20,8 @@ specs/libs/ts-env-loader/
 
 ## Status
 
-`test:unit` is the real Vitest runtime and enforces the 99% Unit line minimum. Aggregate
-`test:coverage` and its layer targets validate Gherkin bindings statically without running tests
+`test:unit` is the real Vitest runtime and enforces the 99% Unit line minimum. The static
+`test:behaviour:coverage` target validates Gherkin bindings without running tests
 (see `libs/ts-env-loader/project.json`). Every scenario in
 [behaviours/env-loader/env-loader.feature](./behaviours/env-loader/env-loader.feature) is exercised
 by `libs/ts-env-loader/src/env-loader.unit.test.ts`, and every scenario in

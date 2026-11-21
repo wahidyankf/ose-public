@@ -1121,7 +1121,6 @@ policies:
       - apps/*-e2e/tests/e2e/**/*.ts
       - apps/*-e2e/steps/**/*.ts
       - apps/*-e2e/src/**/*.ts
-      - apps/ferret-cli-e2e/tests/**/*.py
       # PROVISIONAL (Q13): each glob below stays only if a failing run proves the runner fails on an undefined step.
       - apps/*/tests/unit/**/*.ts
       - apps/*/tests/unit/**/*.tsx
@@ -1130,11 +1129,6 @@ policies:
       - libs/*/tests/unit/**/*.tsx
       - libs/*/tests/integration/**/*.ts
       - libs/*/tests/e2e/**/*.ts
-      - apps/*/tests/unit/**/*.fs
-      - libs/*/tests/unit/**/*.fs
-      - libs/*/tests/integration/**/*.fs
-      - apps/ferret-cli/tests/unit/**/*.py
-      - apps/ferret-cli/tests/integration/**/*.py
 
 environment:
   examples:

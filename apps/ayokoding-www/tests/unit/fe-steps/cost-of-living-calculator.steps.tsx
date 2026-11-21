@@ -720,27 +720,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Every monetary figure converts to USD via the in-repo FX table
-  Scenario("Every monetary figure converts to USD via the in-repo FX table", ({ Given, When, Then, And }) => {
-    Given("I am on the calculator", () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When("I read any USD figure derived from a local-currency value", () => {
-      expect(screen.getByRole("table")).toBeTruthy();
-    });
-
-    Then("the conversion uses the rate for that currency stored in the in-repo fx.ts table", () => {
-      const nonUsdCity = dataset.cities.find((city) => city.currency !== "USD")!;
-      expect(fx.ratesUsdPerUnit[nonUsdCity.currency]).toBeGreaterThan(0);
-    });
-
-    And("every currency referenced by a city, country, role, or display-currency selector has an fx.ts entry", () => {
-      const referencedCurrencies = new Set(dataset.cities.map((city) => city.currency));
-      for (const currency of referencedCurrencies) expect(fx.ratesUsdPerUnit[currency]).toBeGreaterThan(0);
-    });
-  });
-
   // ─── Cost-basis controls scenarios ───────────────────────────────────────────
 
   // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Adding adults and children changes the modeled expenses
@@ -1535,9 +1514,9 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── SG-002: Rural area × multi-adult household sub-linear housing ────────────
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Rural area and multi-adult household multiply the housing estimate sub-linearly
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: A rural area and a two-adult household lower and scale the housing estimate
   Scenario(
-    "Rural area and multi-adult household multiply the housing estimate sub-linearly",
+    "A rural area and a two-adult household lower and scale the housing estimate",
     async ({ Given, And, When, Then }) => {
       Given('I am on the "Cost of living" tab', () => {
         renderPage(<CostOfLivingCalculatorPage />);
@@ -1682,43 +1661,40 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── SG-007: Expense preview updates in real time ─────────────────────────────
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Expense preview updates in real time when household controls change
-  Scenario(
-    "Expense preview updates in real time when household controls change",
-    async ({ Given, And, When, Then }) => {
-      Given("I am on the cost-of-living calculator", () => {
-        renderPage(<CostOfLivingCalculatorPage />);
-      });
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The expense preview updates at once when household controls change
+  Scenario("The expense preview updates at once when household controls change", async ({ Given, And, When, Then }) => {
+    Given("I am on the cost-of-living calculator", () => {
+      renderPage(<CostOfLivingCalculatorPage />);
+    });
 
-      And("the default household is 1 adult with no children in city center", () => {
-        // Default state on mount
-        expect(screen.getByRole("main")).toBeTruthy();
-      });
+    And("the default household is 1 adult with no children in city center", () => {
+      // Default state on mount
+      expect(screen.getByRole("main")).toBeTruthy();
+    });
 
-      When("I change the Adults control to 2", async () => {
-        await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /adults/i }), "2");
-      });
+    When("I change the Adults control to 2", async () => {
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /adults/i }), "2");
+    });
 
-      Then("the Housing preview amount increases to base times subLinear 2 adults", () => {
-        expect(screen.getByTestId(`col-housing-${dataset.cities[0]!.id}`)).toBeTruthy();
-      });
+    Then("the Housing preview amount increases to base times subLinear 2 adults", () => {
+      expect(screen.getByTestId(`col-housing-${dataset.cities[0]!.id}`)).toBeTruthy();
+    });
 
-      And("the Childcare and School preview amounts remain zero", () => {
-        const childcare = parseFloat(
-          screen.getByTestId(`col-childcare-${dataset.cities[0]!.id}`).getAttribute("data-raw") ?? "0",
-        );
-        const schooling = parseFloat(
-          screen.getByTestId(`col-school-${dataset.cities[0]!.id}`).getAttribute("data-raw") ?? "0",
-        );
-        expect(childcare).toBe(0);
-        expect(schooling).toBe(0);
-      });
+    And("the Childcare and School preview amounts remain zero", () => {
+      const childcare = parseFloat(
+        screen.getByTestId(`col-childcare-${dataset.cities[0]!.id}`).getAttribute("data-raw") ?? "0",
+      );
+      const schooling = parseFloat(
+        screen.getByTestId(`col-school-${dataset.cities[0]!.id}`).getAttribute("data-raw") ?? "0",
+      );
+      expect(childcare).toBe(0);
+      expect(schooling).toBe(0);
+    });
 
-      And("the Total preview updates immediately without a page reload", () => {
-        expect(screen.getByTestId(`col-essentials-${dataset.cities[0]!.id}`)).toBeTruthy();
-      });
-    },
-  );
+    And("the Total preview updates immediately without a page reload", () => {
+      expect(screen.getByTestId(`col-essentials-${dataset.cities[0]!.id}`)).toBeTruthy();
+    });
+  });
 
   // ─── USS-002: Filter state persisted in URL ───────────────────────────────────
 

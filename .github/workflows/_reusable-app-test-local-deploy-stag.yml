@@ -50,10 +50,10 @@ jobs:
       - uses: ./.github/actions/setup-node
       - name: Validate every app-group adapter without running tests
         run: |
-          ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run ${{ inputs.be-project }}:test:coverage
-          ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run ${{ inputs.web-project }}:test:coverage
-          ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run ${{ inputs.be-project }}-e2e:test:coverage
-          ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run ${{ inputs.web-project }}-e2e:test:coverage
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run ${{ inputs.be-project }}:test:behaviour:coverage
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run ${{ inputs.web-project }}:test:behaviour:coverage
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run ${{ inputs.be-project }}-e2e:test:behaviour:coverage
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run ${{ inputs.web-project }}-e2e:test:behaviour:coverage
 
   quick:
     name: Quick gate (Unit + static coverage)

@@ -10,8 +10,7 @@ This project consumes `specs/apps/ayokoding/web/behaviours/` and owns no
 independent corpus. `test:e2e` builds the Go server, generates the
 canonical-corpus specs with `bddgen`, and runs the whole runtime suite
 (generated specs plus the focused ordinary specs in `tests/e2e/*.spec.ts`).
-`test:coverage:e2e`, `test:behaviour:coverage`, and aggregate `test:coverage`
-validate the bindings statically. Unit and Integration targets are omitted:
+`test:behaviour:coverage` validates the bindings statically. Unit and Integration targets are omitted:
 those layers belong to the `ayokoding-web` Go module, and a dedicated E2E
 project owns neither in-process decision logic nor a non-networked
 local-resource boundary.

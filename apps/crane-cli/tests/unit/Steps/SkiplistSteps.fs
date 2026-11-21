@@ -125,3 +125,33 @@ let ``the JSON output contains match true`` () =
 let ``the JSON output contains match false`` () =
     let doc = System.Text.Json.JsonDocument.Parse(LastOutput)
     Assert.False(doc.RootElement.GetProperty("match").GetBoolean())
+
+// ---- BDD list steps (CRN-021) ----
+
+[<Given>]
+let ``a skip list for "([^"]*)" holding (\d+) entries`` (mdBasename: string) (count: int) =
+    currentMdBasename <- mdBasename
+    resetStore ()
+
+    [ 1..count ]
+    |> List.iter (fun index ->
+        addWith (dependencies ()) mdBasename "text-completeness" $"entry {index}"
+        |> ignore)
+
+[<When>]
+let ``I run "crane skiplist list ([^"]*)"`` (mdBasename: string) =
+    currentMdBasename <- mdBasename
+
+    RunWithWriter(fun w ->
+        match listWith (dependencies ()) mdBasename with
+        | Ok entries ->
+            w.WriteLine(serializeJson entries)
+            0
+        | Error msg ->
+            eprintfn "Error: %s" msg
+            1)
+
+[<Then>]
+let ``the JSON output lists (\d+) entries`` (count: int) =
+    let doc = System.Text.Json.JsonDocument.Parse(LastOutput)
+    Assert.Equal(count, doc.RootElement.GetArrayLength())

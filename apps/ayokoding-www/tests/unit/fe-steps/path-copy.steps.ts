@@ -35,6 +35,7 @@ function listPathCopyPages(): string[] {
 }
 
 describeFeature(pathCopyFeature, ({ Scenario }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-copy.feature: Career path pages contain no internal planning vocabulary
   Scenario("Career path pages contain no internal planning vocabulary", ({ Given, When, Then }) => {
     let pages: string[];
     let offenders: { file: string; patterns: string[] }[];
@@ -59,24 +60,28 @@ describeFeature(pathCopyFeature, ({ Scenario }) => {
     });
   });
 
-  Scenario("The AI Engineer path says who it is for", ({ Given, When, Then }) => {
-    let pageDescription: string | undefined;
-    let manifestDescription: string | undefined;
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-copy.feature: The AI Engineer path page and card say the path is for developers who already code
+  Scenario(
+    "The AI Engineer path page and card say the path is for developers who already code",
+    ({ Given, When, Then }) => {
+      let pageDescription: string | undefined;
+      let manifestDescription: string | undefined;
 
-    Given("the AI Engineer path manifest and its path page", () => {
-      expect(fs.existsSync(AI_PAGE_PATH)).toBe(true);
-      expect(fs.existsSync(AI_MANIFEST_PATH)).toBe(true);
-    });
+      Given("the AI Engineer path page and its card", () => {
+        expect(fs.existsSync(AI_PAGE_PATH)).toBe(true);
+        expect(fs.existsSync(AI_MANIFEST_PATH)).toBe(true);
+      });
 
-    When("their descriptions are read", () => {
-      pageDescription = (matter(fs.readFileSync(AI_PAGE_PATH, "utf8")).data as { description?: string }).description;
-      manifestDescription = (JSON.parse(fs.readFileSync(AI_MANIFEST_PATH, "utf8")) as { description?: string })
-        .description;
-    });
+      When("their descriptions are read", () => {
+        pageDescription = (matter(fs.readFileSync(AI_PAGE_PATH, "utf8")).data as { description?: string }).description;
+        manifestDescription = (JSON.parse(fs.readFileSync(AI_MANIFEST_PATH, "utf8")) as { description?: string })
+          .description;
+      });
 
-    Then("both descriptions say the path is for developers who already code", () => {
-      expect(pageDescription?.toLowerCase()).toContain("for developers who already code");
-      expect(manifestDescription?.toLowerCase()).toContain("for developers who already code");
-    });
-  });
+      Then("both descriptions say the path is for developers who already code", () => {
+        expect(pageDescription?.toLowerCase()).toContain("for developers who already code");
+        expect(manifestDescription?.toLowerCase()).toContain("for developers who already code");
+      });
+    },
+  );
 });

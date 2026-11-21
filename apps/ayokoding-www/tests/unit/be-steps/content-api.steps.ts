@@ -1,10 +1,26 @@
 import path from "path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
-import { expect } from "vitest";
+import { expect, vi } from "vitest";
 import { testCaller } from "./helpers/test-caller";
 import { draftFixture } from "./helpers/test-service";
 import { TRPCError } from "@trpc/server";
 import type { TreeNode } from "@/features/content/core/types";
+
+// The course-path procedure reads the real course directory; the unit tier feeds it one fixture course instead.
+const { courseRouteData } = vi.hoisted(() => ({
+  courseRouteData: {
+    contentMap: new Map([
+      ["en:learn/courses/just-enough-go", { title: "Just Enough Go", slug: "learn/courses/just-enough-go" }],
+    ]),
+    manifests: [] as unknown[],
+    prerequisitesByCourse: {} as Record<string, readonly string[]>,
+    libraryCourseIds: ["just-enough-go"],
+    outlineCourseIds: [] as string[],
+  },
+}));
+vi.mock("@/features/course-paths/shell/route-path-data", () => ({
+  loadRoutePathData: async () => courseRouteData,
+}));
 
 const feature = await loadFeature(
   path.resolve(process.cwd(), "../../specs/apps/ayokoding/www/behaviours/backend/content/content-api.feature"),
@@ -213,6 +229,25 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, Background }) => {
 
     Then('the response "html" field should contain a rendered code element', () => {
       expect(result.html).toContain("<code");
+    });
+  });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/backend/content/content-api.feature: The course-path route data is returned for a locale
+  Scenario("The course-path route data is returned for a locale", ({ When, Then, And }) => {
+    let routeData: Awaited<ReturnType<typeof testCaller.coursePaths.getRouteData>>;
+    When('the client calls coursePaths.getRouteData with locale "en"', async () => {
+      routeData = await testCaller.coursePaths.getRouteData("en");
+    });
+
+    Then("the response should list each library course with its English page link", () => {
+      expect(routeData.libraryCourseIds).toEqual(["just-enough-go"]);
+      expect(routeData.courseLinks).toEqual({
+        "just-enough-go": { title: "Just Enough Go", slug: "learn/courses/just-enough-go" },
+      });
+    });
+
+    And("the response should include the course path manifests", () => {
+      expect(routeData.manifests).toBeInstanceOf(Array);
     });
   });
 });

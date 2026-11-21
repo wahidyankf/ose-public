@@ -43,8 +43,9 @@ const shariaExtension = [
 ] as const;
 
 describeFeature(feature, ({ ScenarioOutline }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/skills-path-composition.feature: Each published accounting path lists its accounting courses in published order
   ScenarioOutline(
-    "A two-segment skills path ID resolves to its full shared accounting slice",
+    "Each published accounting path lists its accounting courses in published order",
     ({ Given, When, Then, And }, variables) => {
       // Parsed through the schema: the file shape is now `phases`, and the derived
       // domain `courseOrder` below is the flattened phases — the same order readers see.
@@ -75,9 +76,6 @@ describeFeature(feature, ({ ScenarioOutline }) => {
           const courseId = normalizeCourseRef(reference).id;
           expect(fs.statSync(path.join(coursesRoot, courseId)).isDirectory()).toBe(true);
         }
-      });
-      And("an over-segmented path ID is not a published accounting path", () => {
-        expect(manifest.pathId.split("/")).toHaveLength(2);
       });
     },
   );

@@ -42,3 +42,16 @@ Feature: APP_ENV tier env-file loading
       | .env            |
       | .env.production |
       | .env.local      |
+
+  # Exemption(e2e): a deployed site runs on its host's own port and no deployed environment starts the dev server, so no served boundary lets a reader or operator set AYOKODING_WWW_PORT; alternative-proof: ayokoding-www:test:integration / The dev server listens on AYOKODING_WWW_PORT and defaults to port 3101
+  @e2e-exempt
+  # Behaviour: AYW-075
+  Scenario Outline: The dev server listens on AYOKODING_WWW_PORT and defaults to port 3101
+    Given AYOKODING_WWW_PORT is "<value>"
+    When the dev server starts
+    Then the dev server listens on port <port>
+
+    Examples:
+      | value | port |
+      | 4123  | 4123 |
+      | unset | 3101 |

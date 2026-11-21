@@ -36,6 +36,7 @@ const feature = await loadFeature(
 
 describeFeature(feature, ({ Scenario }) => {
   // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/breadcrumb.feature: The breadcrumb reflects the active path
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/breadcrumb.feature: The breadcrumb reflects the active path
   Scenario("The breadcrumb reflects the active path", ({ Given, When, Then, And }) => {
     Given("a reader is on a course with an active path context", () => {
       expect(pathContext.pathId).toBe("skills/python-fundamentals");
@@ -73,6 +74,7 @@ describeFeature(feature, ({ Scenario }) => {
     );
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/breadcrumb.feature: A legacy fundamentally-strong URL redirects to the canonical course URL
   // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/breadcrumb.feature: A legacy fundamentally-strong URL redirects to the canonical course URL
   Scenario("A legacy fundamentally-strong URL redirects to the canonical course URL", ({ Given, When, Then, And }) => {
     let rule: (typeof courseRehomeRedirects)[number] | undefined;

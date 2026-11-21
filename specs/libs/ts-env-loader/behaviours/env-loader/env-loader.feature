@@ -11,6 +11,7 @@ Feature: APP_ENV tier env-file loading
   # Behaviour: TEL-003
   # Behaviour: TEL-005
   # Behaviour: TEL-009
+  # Behaviour: OSW-029
   Scenario: Loads the selected tier's file
     Given only ".env.stag" exists in the app directory
     When the loader runs with APP_ENV set to "stag"

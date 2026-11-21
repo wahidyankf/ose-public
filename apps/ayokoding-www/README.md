@@ -65,7 +65,7 @@ npm exec -- nx run ayokoding-www:typecheck
 npm exec -- nx run ayokoding-www:lint
 npm exec -- nx run ayokoding-www:test:unit
 npm exec -- nx run ayokoding-www:test:integration
-npm exec -- nx run ayokoding-www:test:coverage
+npm exec -- nx run ayokoding-www:test:behaviour:coverage
 npm exec -- nx run ayokoding-www:test:quick
 npm exec -- nx run ayokoding-www:examples:check
 ```
@@ -73,8 +73,8 @@ npm exec -- nx run ayokoding-www:examples:check
 The canonical corpus is `specs/apps/ayokoding/www/behaviours/`. This owner runs mandatory Unit
 proof through `test:unit` and real isolated build-tool/local-resource proof through
 `test:integration`; Integration runs manually or in the scheduled delivery workflow, never inside
-`test:quick` or a Git hook. The static `test:coverage:*` targets validate Unit, Integration, and E2E
-bindings without running tests. Dedicated `ayokoding-www-fe-e2e` and `ayokoding-www-be-e2e`
+`test:quick` or a Git hook. The static `test:behaviour:coverage` target validates Unit, Integration,
+and E2E bindings without running tests. Dedicated `ayokoding-www-fe-e2e` and `ayokoding-www-be-e2e`
 projects own the public browser/HTTP runtime, so only the owner-level `test:e2e` target is omitted.
 See [the AyoKoding specs](../../specs/apps/ayokoding/README.md).
 

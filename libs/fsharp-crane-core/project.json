@@ -75,10 +75,6 @@
             "forwardAllArgs": false
           },
           {
-            "command": "npm exec -- nx run fsharp-crane-core:test:coverage",
-            "forwardAllArgs": false
-          },
-          {
             "command": "npm exec -- nx run fsharp-crane-core:test:behaviour:coverage",
             "forwardAllArgs": false
           }
@@ -89,8 +85,6 @@
       "cache": true,
       "inputs": [
         "default",
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/libs/fsharp-crane-core/behaviour-coverage.json",
         "{workspaceRoot}/package-lock.json",
         "{workspaceRoot}/specs/libs/fsharp-crane-core/behaviours/**/*.feature",
         "{workspaceRoot}/libs/fsharp-crane-core/tests/unit/**/*.{ts,tsx,fs}",
@@ -114,38 +108,6 @@
       },
       "cache": false
     },
-    "test:coverage:unit": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config libs/fsharp-crane-core/behaviour-coverage.json --adapter unit"
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/libs/fsharp-crane-core/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/libs/fsharp-crane-core/behaviours/**/*.feature",
-        "{workspaceRoot}/libs/fsharp-crane-core/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/libs/fsharp-crane-core/tests/unit/fsharp-crane-core-unit-tests.fsproj"
-      ]
-    },
-    "test:coverage:integration": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config libs/fsharp-crane-core/behaviour-coverage.json --adapter integration"
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/libs/fsharp-crane-core/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/libs/fsharp-crane-core/behaviours/**/*.feature",
-        "{workspaceRoot}/libs/fsharp-crane-core/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/libs/fsharp-crane-core/tests/unit/fsharp-crane-core-unit-tests.fsproj",
-        "{workspaceRoot}/libs/fsharp-crane-core/tests/integration/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/libs/fsharp-crane-core/tests/integration/fsharp-crane-core-integration-tests.fsproj"
-      ]
-    },
     "test:behaviour:coverage": {
       "executor": "nx:run-commands",
       "options": {
@@ -162,34 +124,6 @@
         "{workspaceRoot}/apps/*-e2e/steps/**/*",
         "{workspaceRoot}/apps/*-e2e/src/**/*",
         "{workspaceRoot}/libs/*/tests/**/*"
-      ]
-    },
-    "test:coverage": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          {
-            "command": "npm exec -- nx run fsharp-crane-core:test:coverage:unit",
-            "forwardAllArgs": false
-          },
-          {
-            "command": "npm exec -- nx run fsharp-crane-core:test:coverage:integration",
-            "forwardAllArgs": false
-          }
-        ],
-        "parallel": false,
-        "forwardAllArgs": false
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/libs/fsharp-crane-core/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/libs/fsharp-crane-core/behaviours/**/*.feature",
-        "{workspaceRoot}/libs/fsharp-crane-core/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/libs/fsharp-crane-core/tests/unit/fsharp-crane-core-unit-tests.fsproj",
-        "{workspaceRoot}/libs/fsharp-crane-core/tests/integration/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/libs/fsharp-crane-core/tests/integration/fsharp-crane-core-integration-tests.fsproj"
       ]
     }
   },

@@ -27,3 +27,11 @@ Feature: Content nesting accuracy check
     And a Markdown with the second level at depth three instead of two
     When I run "crane nesting check" on the pair
     Then a finding with criticality "MEDIUM" is returned
+
+  # Behaviour: CRN-008
+  # Exemption(e2e): the CLI has no network, remote service, or credential boundary; its process boundary over local files is bound at integration; alternative-proof: crane-cli:test:integration / Crane process-boundary scenarios
+  @e2e-exempt
+  Scenario: Nesting inference lists each list item with its nesting level
+    Given a PDF fixture where nested items appear under a parent
+    When I run "crane nesting infer" on the PDF fixture
+    Then the JSON output lists "child" at nesting level 2

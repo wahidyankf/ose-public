@@ -384,7 +384,7 @@ target. If it is slow, the scan is reading many outgoing commits: run `./rhino g
 which gate is slow, and push fewer commits at once.
 
 The slow half of the local quality loop is the PR quality gate's Nx targets: `test:quick` (which itself
-composes types/lint, `test:unit`, and every applicable static `test:coverage:*` per project) and
+composes types/lint, `test:unit`, and the static `test:behaviour:coverage` per project) and
 `compat:min-version`. On a cold cache this takes a while. Warm them before opening the pull request:
 
 ```bash

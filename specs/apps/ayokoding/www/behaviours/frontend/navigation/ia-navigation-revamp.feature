@@ -90,3 +90,15 @@ Feature: IA navigation revamp
     Then the canonical alternate is "/en/learn/legacy/software-engineering"
     And the language alternates include en and x-default
     And the canonical link and the language alternates are on the canonical host "www.ayokoding.com"
+
+  # Behaviour: AYW-047
+  Scenario: robots.txt allows crawling and names the sitemap
+    When a search engine requests the robots.txt file
+    Then every page of the site is open to crawling
+    And the robots.txt file names the sitemap
+
+  # Behaviour: AYW-048
+  Scenario: A missing page shows Page Not Found with a Go Home link
+    When a visitor opens a page that does not exist
+    Then the reader sees a "Page Not Found" heading
+    And the page offers a Go Home link to the English home page

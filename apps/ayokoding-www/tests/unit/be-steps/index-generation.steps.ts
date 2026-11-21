@@ -236,4 +236,38 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(content).toContain("- [Overview](/en/learn/courses/sql-essentials/overview)");
     });
   });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/build-tools/index-generation/index-generation.feature: A section whose index cannot be written is listed as an error and the other sections still generate
+  Scenario(
+    "A section whose index cannot be written is listed as an error and the other sections still generate",
+    ({ Given, When, Then, And }) => {
+      Given(
+        'two sections "tools" and "react" in locale "en" with one child page each, and the write to the tools index is refused',
+        () => {
+          port.add("en/tools/_index.md", "Tools", 10, makeIndex("Tools", 10));
+          port.add("en/tools/alpha.md", "Alpha", 10, makePage("Alpha", 10));
+          port.add("en/react/_index.md", "React", 20, makeIndex("React", 20));
+          port.add("en/react/beta.md", "Beta", 10, makePage("Beta", 10));
+          const writeAllowed = port.writeText;
+          port.writeText = async (filePath, content) => {
+            if (filePath === `${CONTENT_ROOT}/en/tools/_index.md`) throw new Error("EACCES: permission denied");
+            return writeAllowed(filePath, content);
+          };
+        },
+      );
+
+      When("the index generator runs in generate mode", async () => {
+        result = await processAllIndexFiles(CONTENT_ROOT, "generate", port);
+      });
+
+      Then("the tools index is listed as an error with the reason it was refused", () => {
+        expect(result.errors).toEqual([`${CONTENT_ROOT}/en/tools/_index.md: EACCES: permission denied`]);
+      });
+
+      And("the react index still lists its child page", () => {
+        const content = port.files.get(`${CONTENT_ROOT}/en/react/_index.md`) ?? "";
+        expect(content).toContain("- [Beta](/en/react/beta)");
+      });
+    },
+  );
 });

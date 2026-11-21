@@ -26,6 +26,6 @@ This practice implements/respects the following conventions:
 - **[Behaviour-Driven Development](../../behaviour-driven-development.md)**: Every changed scenario updates its mandatory Unit proof and every boundary-applicable Integration/E2E adapter or independently valid exemption.
 
 - **[Code Quality Convention](.././code.md)**: Quality gates (typecheck, lint, and `test:quick`,
-  including Unit runtime and every applicable static `test:coverage:*` validator) catch many forms
+  including Unit runtime and the static `test:behaviour:coverage` check) catch many forms
   of incompleteness automatically. This convention defines the complete set of artifacts that
   constitute a "done" change.

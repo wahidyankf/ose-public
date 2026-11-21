@@ -32,3 +32,14 @@ let ``real environment adapter loads configured OpenRouter values`` () =
         Assert.Equal("sk-integration", config.ApiKey)
         Assert.Equal("openrouter/integration", config.Model)
         Assert.Equal("https://example.invalid/v1", config.BaseUrl))
+
+// @scenario specs/apps/ose/be/behaviours/ai-orchestration/ai-orchestration.feature: OpenRouter settings fall back to their defaults when unset
+[<Fact>]
+let ``real environment adapter falls back to the documented defaults when unset`` () =
+    withOpenRouterEnv (fun () ->
+        let config = loadConfig ()
+
+        Assert.Equal("", config.ApiKey)
+        Assert.Equal("openrouter/auto", config.Model)
+        Assert.Equal("https://openrouter.ai/api/v1", config.BaseUrl)
+        Assert.False(isConfigured config))

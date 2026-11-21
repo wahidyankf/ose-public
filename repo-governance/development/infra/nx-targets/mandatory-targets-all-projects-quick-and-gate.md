@@ -10,7 +10,7 @@ An owner project's sequential `test:quick` runs:
 1. `typecheck` when applicable;
 2. `lint`;
 3. `test:unit`; and
-4. every applicable static `test:coverage:*` validator, directly or through `test:coverage`.
+4. `test:behaviour:coverage`, the shared static corpus check.
 
 Composite testing targets use `nx:run-commands` with object-form commands, an explicit
 `"forwardAllArgs": false` on every command and on the options object, and `"parallel": false`.
@@ -24,13 +24,13 @@ process, generated-code, or static-data boundary and named Integration or E2E ru
 exercises it. Keep exclusions to named files or narrow functions; broad path globs, mixed core-logic
 exclusions, and boundary code without higher-layer proof fail the gate.
 
-A dedicated E2E project's quick target omits Unit runtime and runs its applicable static validators.
-Every coverage target must stay deterministic and must not execute or depend on `test:unit`,
+A dedicated E2E project's quick target omits Unit runtime and runs its static check.
+`test:behaviour:coverage` must stay deterministic and must not execute or depend on `test:unit`,
 `test:integration`, or `test:e2e`. Runtime Unit may produce and enforce native code-coverage data as
-part of its own invocation; static coverage validators neither produce nor consume runtime proof.
+part of its own invocation; the static check neither produces nor consumes runtime proof.
 This is an intentional compatibility difference from the BeaverNest command-shape reference,
-whose `test:coverage:*` targets execute tests and whose quick target is not cached: OSE adopts its
-command structure, but retains static-only coverage targets and cache-correct quick inputs.
+whose coverage targets execute tests and whose quick target is not cached: OSE adopts its
+command structure, but retains a static-only behaviour check and cache-correct quick inputs.
 
 Pre-commit runs staged formatting only, and pre-push runs only the leak scan; neither
 runs quick. The PR workflow's language jobs run affected quick targets with explicitly bounded

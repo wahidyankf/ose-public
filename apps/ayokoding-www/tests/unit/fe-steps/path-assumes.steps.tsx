@@ -27,6 +27,7 @@ const courseTitles = {
 const feature = await loadFeature(path.join(behavioursRoot, "path-assumes.feature"));
 
 describeFeature(feature, ({ Scenario }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-assumes.feature: A path names its assumed courses before the syllabus
   Scenario("A path names its assumed courses before the syllabus", ({ Given, When, Then, And }) => {
     let manifest: PathManifest;
 
@@ -71,6 +72,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-assumes.feature: A path that assumes nothing shows no Before you start note
   Scenario("A path that assumes nothing shows no Before you start note", ({ Given, When, Then }) => {
     let manifest: PathManifest;
 

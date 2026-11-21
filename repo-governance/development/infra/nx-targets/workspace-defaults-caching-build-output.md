@@ -29,18 +29,6 @@ when_to_use: Use when deciding whether a target should be cached, or where a pro
     "test:unit": {
       "cache": true
     },
-    "test:coverage": {
-      "cache": true
-    },
-    "test:coverage:unit": {
-      "cache": true
-    },
-    "test:coverage:integration": {
-      "cache": true
-    },
-    "test:coverage:e2e": {
-      "cache": true
-    },
     "test:behaviour:coverage": {
       "cache": true
     },
@@ -56,24 +44,23 @@ when_to_use: Use when deciding whether a target should be cached, or where a pro
 
 ### Caching Rules
 
-| Target             | Cached      | Notes                                                                                                    |
-| ------------------ | ----------- | -------------------------------------------------------------------------------------------------------- |
-| `build`            | Yes         | Declare `outputs` in `project.json` for cache restoration                                                |
-| `typecheck`        | Yes         | Pure analysis; safe to cache against source changes                                                      |
-| `lint`             | Yes         | Pure static analysis; safe to cache                                                                      |
-| `test:quick`       | Yes         | Cache hit skips redundant local and PR runs                                                              |
-| `test:unit`        | Yes         | Deterministic; safe to cache against source changes                                                      |
-| `test:coverage`    | Yes         | Aggregate of applicable static coverage validators                                                       |
-| `test:coverage:*`  | Yes         | Deterministic static test/corpus coverage; never executes runtime tests                                  |
-| `test:integration` | Conditional | Cache only when every real local resource is deterministic, isolated, and represented by declared inputs |
-| `dev`              | No          | Long-running process                                                                                     |
-| `start`            | No          | Long-running process                                                                                     |
-| `run`              | No          | Side-effectful execution                                                                                 |
-| `test:e2e`         | No          | Requires a live public boundary; manual impacted and scheduled full only                                 |
-| `test:e2e:ui`      | No          | Interactive process                                                                                      |
-| `test:e2e:report`  | No          | Reads filesystem state at invocation time                                                                |
-| `install`          | No          | Must always run to ensure dep state                                                                      |
-| `clean`            | No          | Destructive operation                                                                                    |
+| Target                    | Cached      | Notes                                                                                                    |
+| ------------------------- | ----------- | -------------------------------------------------------------------------------------------------------- |
+| `build`                   | Yes         | Declare `outputs` in `project.json` for cache restoration                                                |
+| `typecheck`               | Yes         | Pure analysis; safe to cache against source changes                                                      |
+| `lint`                    | Yes         | Pure static analysis; safe to cache                                                                      |
+| `test:quick`              | Yes         | Cache hit skips redundant local and PR runs                                                              |
+| `test:unit`               | Yes         | Deterministic; safe to cache against source changes                                                      |
+| `test:behaviour:coverage` | Yes         | Deterministic static corpus check; never executes runtime tests                                          |
+| `test:integration`        | Conditional | Cache only when every real local resource is deterministic, isolated, and represented by declared inputs |
+| `dev`                     | No          | Long-running process                                                                                     |
+| `start`                   | No          | Long-running process                                                                                     |
+| `run`                     | No          | Side-effectful execution                                                                                 |
+| `test:e2e`                | No          | Requires a live public boundary; manual impacted and scheduled full only                                 |
+| `test:e2e:ui`             | No          | Interactive process                                                                                      |
+| `test:e2e:report`         | No          | Reads filesystem state at invocation time                                                                |
+| `install`                 | No          | Must always run to ensure dep state                                                                      |
+| `clean`                   | No          | Destructive operation                                                                                    |
 
 ## Build Output Conventions
 

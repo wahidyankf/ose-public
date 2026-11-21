@@ -38,10 +38,6 @@
             "forwardAllArgs": false
           },
           {
-            "command": "npm exec -- nx run ayokoding-www-be-e2e:test:coverage",
-            "forwardAllArgs": false
-          },
-          {
             "command": "npm exec -- nx run ayokoding-www-be-e2e:test:behaviour:coverage",
             "forwardAllArgs": false
           }
@@ -52,8 +48,6 @@
       "cache": true,
       "inputs": [
         "default",
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/ayokoding-www-be-e2e/behaviour-coverage.json",
         "{workspaceRoot}/package-lock.json",
         "{workspaceRoot}/specs/apps/ayokoding/www/behaviours/backend/**/*.feature",
         "{workspaceRoot}/specs/apps/ayokoding/www/behaviours/frontend/navigation/learn-three-bucket.feature",
@@ -109,24 +103,6 @@
         "cwd": "apps/ayokoding-www-be-e2e"
       }
     },
-    "test:coverage:e2e": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config apps/ayokoding-www-be-e2e/behaviour-coverage.json --adapter e2e"
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/ayokoding-www-be-e2e/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/apps/ayokoding/www/behaviours/backend/**/*.feature",
-        "{workspaceRoot}/specs/apps/ayokoding/www/behaviours/frontend/navigation/learn-three-bucket.feature",
-        "{workspaceRoot}/apps/ayokoding-www/tests/unit/be-steps/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/ayokoding-www/vitest.config.ts",
-        "{workspaceRoot}/apps/ayokoding-www-be-e2e/tests/e2e/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/ayokoding-www-be-e2e/playwright.config.ts"
-      ]
-    },
     "test:behaviour:coverage": {
       "executor": "nx:run-commands",
       "options": {
@@ -143,32 +119,6 @@
         "{workspaceRoot}/apps/*-e2e/steps/**/*",
         "{workspaceRoot}/apps/*-e2e/src/**/*",
         "{workspaceRoot}/libs/*/tests/**/*"
-      ]
-    },
-    "test:coverage": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          {
-            "command": "npm exec -- nx run ayokoding-www-be-e2e:test:coverage:e2e",
-            "forwardAllArgs": false
-          }
-        ],
-        "parallel": false,
-        "forwardAllArgs": false
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/ayokoding-www-be-e2e/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/apps/ayokoding/www/behaviours/backend/**/*.feature",
-        "{workspaceRoot}/specs/apps/ayokoding/www/behaviours/frontend/navigation/learn-three-bucket.feature",
-        "{workspaceRoot}/apps/ayokoding-www/tests/unit/be-steps/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/ayokoding-www/tests/unit/fe-steps/learn-three-bucket.steps.tsx",
-        "{workspaceRoot}/apps/ayokoding-www/vitest.config.ts",
-        "{workspaceRoot}/apps/ayokoding-www-be-e2e/tests/e2e/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/ayokoding-www-be-e2e/playwright.config.ts"
       ]
     }
   },

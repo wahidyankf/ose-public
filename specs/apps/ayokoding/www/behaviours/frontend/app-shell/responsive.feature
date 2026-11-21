@@ -34,3 +34,15 @@ Feature: Responsive Layout
     When the visitor taps the hamburger menu button
     Then a sidebar drawer should slide into view
     And the sidebar navigation links should be visible inside the drawer
+
+  # Behaviour: AYW-051
+  Scenario Outline: The theme toggle switches between light, dark, and system themes
+    Given a visitor is on a content page
+    When the visitor chooses the "<theme>" theme from the theme toggle
+    Then the page is set to the "<theme>" theme
+
+    Examples:
+      | theme  |
+      | light  |
+      | dark   |
+      | system |

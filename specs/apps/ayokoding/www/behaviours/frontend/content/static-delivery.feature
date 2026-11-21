@@ -36,3 +36,9 @@ Feature: Statically delivered content pages
       | locale | language_code |
       | en     | en            |
       | id     | id            |
+
+  # Behaviour: AYW-030
+  Scenario: Pages are served with security headers, including frame denial and a content security policy
+    Given a visitor requests any page of the site
+    Then the response refuses to be framed by other sites
+    And the response declares a content security policy

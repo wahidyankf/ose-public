@@ -7,7 +7,40 @@ import { createBdd } from "playwright-bdd";
 // @scenario specs/apps/ose/www/behaviours/frontend/app-shell/navigation.feature: Previous and next navigation between updates
 // @scenario specs/apps/ose/www/behaviours/frontend/app-shell/navigation.feature: Footer links to AyoKoding on its canonical host
 
+// @scenario specs/apps/ose/www/behaviours/frontend/app-shell/navigation.feature: Visitor opens the search dialog, types a query, and opens a result
+// @scenario specs/apps/ose/www/behaviours/frontend/app-shell/navigation.feature: Mobile menu opens from the hamburger button and lists the navigation links
+
 const { When, Then } = createBdd();
+
+When("the visitor opens the search dialog", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Search" }).first().click();
+  await expect(page.getByPlaceholder("Search pages...")).toBeVisible();
+});
+
+When("the visitor types the query {string}", async ({ page }, query: string) => {
+  await page.getByPlaceholder("Search pages...").fill(query);
+  await expect(page.getByRole("option", { name: /Enterprise Compliance Fixture/ })).toBeVisible();
+});
+
+When("the visitor opens the first search result", async ({ page }) => {
+  await page.getByRole("option").first().click();
+});
+
+Then("the visitor lands on the page at {string}", async ({ page }, path: string) => {
+  await expect(page).toHaveURL((url) => url.pathname === path);
+});
+
+When("the visitor opens the navigation menu from the hamburger button", async ({ page }) => {
+  await page.getByRole("button", { name: "Open navigation menu" }).click();
+});
+
+Then('the navigation menu lists the links "Updates", "About", "Documentation", and "GitHub"', async ({ page }) => {
+  const menu = page.getByRole("navigation", { name: "Mobile navigation" });
+  for (const label of ["Updates", "About", "Documentation", "GitHub"]) {
+    await expect(menu.getByRole("link", { name: label })).toBeVisible();
+  }
+});
 
 Then("breadcrumb text should wrap naturally without horizontal truncation", async ({ page }) => {
   const breadcrumb = page.getByRole("navigation", { name: "Breadcrumb" });
@@ -19,6 +52,7 @@ Then("breadcrumb text should wrap naturally without horizontal truncation", asyn
     expect(style.whiteSpace).not.toBe("nowrap");
     expect(style.textOverflow).not.toBe("ellipsis");
   }
+  await expect(breadcrumb.locator("ol")).toHaveCSS("flex-wrap", "wrap");
 });
 
 When("the header component is rendered", async ({ page }) => {
@@ -82,12 +116,6 @@ Then("all breadcrumb segments should be clickable links", async ({ page }) => {
   const breadcrumb = page.getByRole("navigation", { name: /breadcrumb/i });
   const links = breadcrumb.getByRole("link");
   await expect(links.first()).toBeAttached();
-});
-
-Then("breadcrumb text should wrap naturally without horizontal truncation", async ({ page }) => {
-  const breadcrumb = page.getByRole("navigation", { name: /breadcrumb/i });
-  const ol = breadcrumb.locator("ol");
-  await expect(ol).toHaveCSS("flex-wrap", "wrap");
 });
 
 When("an update detail page is rendered with adjacent updates", async ({ page }) => {

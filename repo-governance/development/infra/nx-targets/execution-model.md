@@ -13,9 +13,9 @@ checkpoints. Discover each live gate set with `./rhino gate list`. A successful 
 evidence for the exact repository, head, and applicable base it reports; it does not prove a later
 head.
 
-For behaviour owners, `test:quick` composes typecheck where applicable, lint, Unit runtime, and all
-applicable static `test:coverage:*` validators. Dedicated E2E projects omit Unit runtime. Coverage
-validators never execute tests; runtime code coverage belongs to its corresponding runtime target.
+For behaviour owners, `test:quick` composes typecheck where applicable, lint, Unit runtime, and
+`test:behaviour:coverage`. Dedicated E2E projects omit Unit runtime. The static check never executes
+tests; runtime code coverage belongs to its corresponding runtime target.
 The PR gate also runs `ayokoding-www:examples:check`, a content validation target that executes
 course examples, not a project test layer.
 
@@ -49,14 +49,14 @@ flowchart TD
 
 Deeper tests run outside the push and PR cycle — on a schedule or triggered explicitly.
 
-Developers run impacted Integration/E2E scenarios manually. Scheduled workflows run full static
-coverage, then complete Integration, then complete unfiltered E2E outside the push/PR path.
+Developers run impacted Integration/E2E scenarios manually. Scheduled workflows run the static
+behaviour check, then complete Integration, then complete unfiltered E2E outside the push/PR path.
 
 ```mermaid
 flowchart TD
     accTitle: Scheduled and On-Demand Testing
-    accDescr: Scheduled/manual quality CI leads to all applicable test:coverage:*; all applicable test:coverage:* leads to complete test:integration; complete test:integration leads to complete unfiltered test:e2e; On demand / CI matrix leads to test:unit; and 2 more links.
-    H2["Scheduled/manual<br/>quality CI"] --> C2["all applicable<br/>test:coverage:*"]
+    accDescr: Scheduled/manual quality CI leads to test:behaviour:coverage; test:behaviour:coverage leads to complete test:integration; complete test:integration leads to complete unfiltered test:e2e; On demand / CI matrix leads to test:unit; and 2 more links.
+    H2["Scheduled/manual<br/>quality CI"] --> C2["test:behaviour:coverage"]
     C2 --> I2["complete<br/>test:integration"]
     I2 --> E2["complete unfiltered<br/>test:e2e"]
 

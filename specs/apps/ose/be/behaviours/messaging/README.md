@@ -2,9 +2,9 @@
 
 Scenarios for the OSE Application backend NATS/JetStream messaging infrastructure. The owner
 project's static coverage discovers this directory and `live/` recursively. Every scenario has
-in-process Unit proof through injected messaging ports. Scenarios whose public boundary requires a
-real NATS/JetStream broker are additionally implemented by `ose-be-e2e`; Integration is exempt only
-where its zero-network boundary cannot express the scenario.
+in-process Unit proof, either through injected messaging ports or through the startup configuration
+checks. Scenarios whose public boundary requires a real NATS/JetStream broker are bound by
+`ose-be-e2e`, whose reference also covers the Integration level.
 
 ## Feature Files
 

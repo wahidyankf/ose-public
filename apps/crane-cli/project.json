@@ -92,10 +92,6 @@
             "forwardAllArgs": false
           },
           {
-            "command": "npm exec -- nx run crane-cli:test:coverage",
-            "forwardAllArgs": false
-          },
-          {
             "command": "npm exec -- nx run crane-cli:test:behaviour:coverage",
             "forwardAllArgs": false
           }
@@ -106,8 +102,6 @@
       "cache": true,
       "inputs": [
         "default",
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/crane-cli/behaviour-coverage.json",
         "{workspaceRoot}/package-lock.json",
         "{workspaceRoot}/specs/apps/crane/cli/behaviours/**/*.feature",
         "{workspaceRoot}/apps/crane-cli/tests/unit/**/*.{ts,tsx,fs}",
@@ -131,40 +125,6 @@
       },
       "cache": false
     },
-    "test:coverage:unit": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config apps/crane-cli/behaviour-coverage.json --adapter unit"
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/crane-cli/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/apps/crane/cli/behaviours/**/*.feature",
-        "{workspaceRoot}/apps/crane-cli/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/crane-cli/tests/unit/crane-cli-unit-tests.fsproj",
-        "{workspaceRoot}/apps/crane-cli/tests/integration/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/crane-cli/tests/integration/crane-cli-integration-tests.fsproj"
-      ]
-    },
-    "test:coverage:integration": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config apps/crane-cli/behaviour-coverage.json --adapter integration"
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/crane-cli/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/apps/crane/cli/behaviours/**/*.feature",
-        "{workspaceRoot}/apps/crane-cli/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/crane-cli/tests/unit/crane-cli-unit-tests.fsproj",
-        "{workspaceRoot}/apps/crane-cli/tests/integration/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/crane-cli/tests/integration/crane-cli-integration-tests.fsproj"
-      ]
-    },
     "test:behaviour:coverage": {
       "executor": "nx:run-commands",
       "options": {
@@ -181,34 +141,6 @@
         "{workspaceRoot}/apps/*-e2e/steps/**/*",
         "{workspaceRoot}/apps/*-e2e/src/**/*",
         "{workspaceRoot}/libs/*/tests/**/*"
-      ]
-    },
-    "test:coverage": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          {
-            "command": "npm exec -- nx run crane-cli:test:coverage:unit",
-            "forwardAllArgs": false
-          },
-          {
-            "command": "npm exec -- nx run crane-cli:test:coverage:integration",
-            "forwardAllArgs": false
-          }
-        ],
-        "parallel": false,
-        "forwardAllArgs": false
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/crane-cli/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/apps/crane/cli/behaviours/**/*.feature",
-        "{workspaceRoot}/apps/crane-cli/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/crane-cli/tests/unit/crane-cli-unit-tests.fsproj",
-        "{workspaceRoot}/apps/crane-cli/tests/integration/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/crane-cli/tests/integration/crane-cli-integration-tests.fsproj"
       ]
     }
   },

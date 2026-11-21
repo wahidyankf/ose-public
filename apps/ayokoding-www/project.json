@@ -144,10 +144,6 @@
             "forwardAllArgs": false
           },
           {
-            "command": "npm exec -- nx run ayokoding-www:test:coverage",
-            "forwardAllArgs": false
-          },
-          {
             "command": "npm exec -- nx run ayokoding-www:test:behaviour:coverage",
             "forwardAllArgs": false
           }
@@ -158,8 +154,6 @@
       "cache": true,
       "inputs": [
         "default",
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/ayokoding-www/behaviour-coverage.json",
         "{workspaceRoot}/package-lock.json",
         "{workspaceRoot}/libs/ayokoding-data/data/**/*.json",
         "{workspaceRoot}/libs/ayokoding-data/test-vectors/**/*.json",
@@ -186,55 +180,6 @@
         "command": "npm audit"
       },
       "cache": false
-    },
-    "test:coverage:unit": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config apps/ayokoding-www/behaviour-coverage.json --adapter unit"
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/ayokoding-www/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/apps/ayokoding/www/behaviours/**/*.feature",
-        "{workspaceRoot}/apps/ayokoding-www/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/ayokoding-www/vitest.config.ts",
-        "{workspaceRoot}/apps/ayokoding-www-fe-e2e/tests/e2e/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/ayokoding-www-fe-e2e/playwright.config.ts"
-      ]
-    },
-    "test:coverage:integration": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config apps/ayokoding-www/behaviour-coverage.json --adapter integration"
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/ayokoding-www/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/apps/ayokoding/www/behaviours/**/*.feature",
-        "{workspaceRoot}/apps/ayokoding-www/tests/integration/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/ayokoding-www/vitest.integration.config.ts"
-      ]
-    },
-    "test:coverage:e2e": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config apps/ayokoding-www/behaviour-coverage.json --adapter e2e"
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/ayokoding-www/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/apps/ayokoding/www/behaviours/**/*.feature",
-        "{workspaceRoot}/apps/ayokoding-www/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/ayokoding-www/vitest.config.ts",
-        "{workspaceRoot}/apps/ayokoding-www-fe-e2e/tests/e2e/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/ayokoding-www-fe-e2e/playwright.config.ts"
-      ]
     },
     "test:behaviour:coverage": {
       "executor": "nx:run-commands",
@@ -271,40 +216,6 @@
           "command": "apps/ayokoding-cli/dist/ayokoding-cli examples check --all --shard \"${AYOKODING_SHARD:-1/1}\""
         }
       }
-    },
-    "test:coverage": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          {
-            "command": "npm exec -- nx run ayokoding-www:test:coverage:unit",
-            "forwardAllArgs": false
-          },
-          {
-            "command": "npm exec -- nx run ayokoding-www:test:coverage:integration",
-            "forwardAllArgs": false
-          },
-          {
-            "command": "npm exec -- nx run ayokoding-www:test:coverage:e2e",
-            "forwardAllArgs": false
-          }
-        ],
-        "parallel": false,
-        "forwardAllArgs": false
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/ayokoding-www/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/apps/ayokoding/www/behaviours/**/*.feature",
-        "{workspaceRoot}/apps/ayokoding-www/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/ayokoding-www/vitest.config.ts",
-        "{workspaceRoot}/apps/ayokoding-www/tests/integration/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/ayokoding-www/vitest.integration.config.ts",
-        "{workspaceRoot}/apps/ayokoding-www-fe-e2e/tests/e2e/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/ayokoding-www-fe-e2e/playwright.config.ts"
-      ]
     }
   },
   "namedInputs": {

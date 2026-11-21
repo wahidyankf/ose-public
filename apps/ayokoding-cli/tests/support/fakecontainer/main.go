@@ -7,7 +7,8 @@
 // FAKECONTAINER_LOG when set. "info" prints rootless engine JSON, or rootful
 // JSON with FAKECONTAINER_ROOTFUL=1; FAKECONTAINER_DAEMON_DOWN=1 makes "info"
 // and "version" fail, FAKECONTAINER_PULL_FAIL=1 makes "pull" fail, and
-// FAKECONTAINER_NEVER_READY=1 makes "exec" fail. "build" succeeds. "run"
+// FAKECONTAINER_NEVER_READY=1 makes "exec" fail. "build" succeeds, or fails
+// with exit 1 when FAKECONTAINER_BUILD_FAIL=1. "run"
 // parses --name, logs "started <name>", sleeps FAKECONTAINER_SLEEP seconds,
 // logs "exited <name> code=<n>", and exits FAKECONTAINER_RUN_EXIT (default 0).
 // "ps" prints FAKECONTAINER_PS verbatim, "network ls" prints
@@ -147,6 +148,9 @@ func run(args []string) int {
 		}
 		return 0
 	case "build":
+		if getenv("FAKECONTAINER_BUILD_FAIL") == "1" {
+			return fail("build failed")
+		}
 		return 0
 	case "run":
 		return runContainer(args[1:])

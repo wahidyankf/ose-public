@@ -11,7 +11,7 @@ when_to_use: Use when justifying why the target-naming and echo-placeholder rule
 
 - **[Automation Over Manual](../../../principles/software-engineering/automation-over-manual.md)**: Targets integrate with Nx affected computation, caching, and the PR merge gate. Consistent naming allows workspace-level automation (`nx affected -t test:quick`) to work across all project types without special cases.
 
-- **[Simplicity Over Complexity](../../../principles/general/simplicity-over-complexity.md)**: Projects omit inapplicable targets instead of publishing no-op contracts. `test:coverage` composes applicable static validators, and `test:quick` remains the one closed fast gate.
+- **[Simplicity Over Complexity](../../../principles/general/simplicity-over-complexity.md)**: Projects omit inapplicable targets instead of publishing no-op contracts. `test:behaviour:coverage` is the one static corpus check, and `test:quick` remains the one closed fast gate.
 
 ## Conventions Implemented/Respected
 

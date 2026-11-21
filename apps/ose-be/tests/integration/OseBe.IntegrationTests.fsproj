@@ -9,7 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Steps/EnvTierSteps.fs" />
     <Compile Include="Steps/NatsConfigSteps.fs" />
     <Compile Include="Tests/EnvTierIntegrationTests.fs" />
     <Compile Include="Tests/NatsConfigIntegrationTests.fs" />

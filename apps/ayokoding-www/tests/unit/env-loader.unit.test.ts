@@ -3,6 +3,7 @@ import { describeFeature, loadFeature } from "@amiceli/vitest-cucumber";
 import { expect } from "vitest";
 import { type EnvRecord, type TierEnvPort } from "@open-sharia-enterprise/ts-env-loader";
 import { loadAyokodingEnvironment } from "../../src/environment-bootstrap";
+import { resolvePort } from "../../../../libs/ts-env-loader/src/port-resolver";
 
 const feature = await loadFeature(
   path.resolve(process.cwd(), "../../specs/apps/ayokoding/www/behaviours/build-tools/env-loader/env-loader.feature"),
@@ -125,4 +126,25 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
       expect((thrown as Error).message).toContain(".env.stag");
     });
   });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/build-tools/env-loader/env-loader.feature: The dev server listens on AYOKODING_WWW_PORT and defaults to port 3101
+  ScenarioOutline(
+    "The dev server listens on AYOKODING_WWW_PORT and defaults to port 3101",
+    ({ Given, When, Then }, examples) => {
+      const value = String(examples["value"] ?? "");
+      let env: EnvRecord = {};
+      let listenPort = Number.NaN;
+
+      Given('AYOKODING_WWW_PORT is "<value>"', () => {
+        env = value === "unset" ? {} : { AYOKODING_WWW_PORT: value };
+      });
+      When("the dev server starts", () => {
+        // The same resolver the dev wrapper calls: the prefixed variable, then the compiled-in default.
+        listenPort = resolvePort({ envVar: "AYOKODING_WWW_PORT", fallback: 3101, env });
+      });
+      Then("the dev server listens on port <port>", () => {
+        expect(listenPort).toBe(Number(examples["port"]));
+      });
+    },
+  );
 });

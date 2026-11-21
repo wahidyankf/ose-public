@@ -39,10 +39,6 @@
             "forwardAllArgs": false
           },
           {
-            "command": "npm exec -- nx run organiclever-be-e2e:test:coverage",
-            "forwardAllArgs": false
-          },
-          {
             "command": "npm exec -- nx run organiclever-be-e2e:test:behaviour:coverage",
             "forwardAllArgs": false
           }
@@ -53,8 +49,6 @@
       "cache": true,
       "inputs": [
         "default",
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/organiclever-be-e2e/behaviour-coverage.json",
         "{workspaceRoot}/package-lock.json",
         "{workspaceRoot}/specs/apps/organiclever/be/behaviours/**/*.feature",
         "{workspaceRoot}/apps/organiclever-be/tests/unit/**/*.{ts,tsx,fs}",
@@ -105,23 +99,6 @@
       },
       "cache": false
     },
-    "test:coverage:e2e": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config apps/organiclever-be-e2e/behaviour-coverage.json --adapter e2e"
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/organiclever-be-e2e/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/apps/organiclever/be/behaviours/**/*.feature",
-        "{workspaceRoot}/apps/organiclever-be/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/organiclever-be/tests/unit/OrganicleverBe.UnitTests.fsproj",
-        "{workspaceRoot}/apps/organiclever-be-e2e/steps/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/organiclever-be-e2e/playwright.config.ts"
-      ]
-    },
     "test:behaviour:coverage": {
       "executor": "nx:run-commands",
       "options": {
@@ -138,30 +115,6 @@
         "{workspaceRoot}/apps/*-e2e/steps/**/*",
         "{workspaceRoot}/apps/*-e2e/src/**/*",
         "{workspaceRoot}/libs/*/tests/**/*"
-      ]
-    },
-    "test:coverage": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          {
-            "command": "npm exec -- nx run organiclever-be-e2e:test:coverage:e2e",
-            "forwardAllArgs": false
-          }
-        ],
-        "parallel": false,
-        "forwardAllArgs": false
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/organiclever-be-e2e/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/apps/organiclever/be/behaviours/**/*.feature",
-        "{workspaceRoot}/apps/organiclever-be/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/organiclever-be/tests/unit/OrganicleverBe.UnitTests.fsproj",
-        "{workspaceRoot}/apps/organiclever-be-e2e/steps/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/organiclever-be-e2e/playwright.config.ts"
       ]
     }
   },

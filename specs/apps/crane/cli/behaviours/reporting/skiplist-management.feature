@@ -36,3 +36,11 @@ Feature: False positive skip list
     When I run "crane skiplist check nist-sp-800-53 text-completeness 'never added entry'"
     Then the JSON output contains match false
     And the exit code is 1
+
+  # Behaviour: CRN-021
+  # Exemption(e2e): the CLI has no network, remote service, or credential boundary; its process boundary over local files is bound at integration; alternative-proof: crane-cli:test:integration / Crane process-boundary scenarios
+  @e2e-exempt
+  Scenario: Listing the skip list prints every entry for a document
+    Given a skip list for "nist-sp-800-53" holding 2 entries
+    When I run "crane skiplist list nist-sp-800-53"
+    Then the JSON output lists 2 entries

@@ -1,5 +1,5 @@
 ---
-description: "Contract for test:behaviour:coverage and the per-adapter static coverage validators"
+description: "Contract for test:behaviour:coverage, the shared static behaviour corpus check"
 when_to_use: "Use when adding or debugging static Gherkin coverage validation."
 ---
 
@@ -11,10 +11,10 @@ canonical corpus and statically rejects empty/malformed features, missing explic
 or ambiguous steps, unused bindings, incomplete applicable adapters, missing Unit proof, forbidden
 `@wip`/positive selection tags, and invalid exemptions.
 
-Layer-specific `test:coverage:<layer>` targets, which `scripts/behaviour-coverage.mjs` checks, prove
-exactly-one implementation or a valid higher-layer exemption for every expanded scenario. Coverage targets
-never execute tests and never depend on runtime targets. Every applicable validator runs through `test:quick`:
-the layer-specific ones through `test:coverage`, and `test:behaviour:coverage` directly.
+The check replaces the retired per-layer `test:coverage:<layer>` targets and their repo-local script. A
+scenario needs a `@scenario` reference at its unit level, and at its integration and e2e levels unless it
+carries a valid exemption with a stated reason. The check never depends on runtime targets.
+`test:behaviour:coverage` runs through `test:quick` directly.
 
 **Python (pytest-bdd).** A Python project binds Gherkin with pytest-bdd step definitions in `.py` files: `@given`,
 `@when`, `@then`, or `@step` taking a plain string, `parsers.parse`, `parsers.cfparse`, or `parsers.re`. The static
@@ -26,11 +26,6 @@ declares `lang:python` ([tag convention](./tag-convention-four-dimension-scheme.
 validator also enforces the [Python target sets](./mandatory-targets-cli-e2e.md): a `lang:python` project declares
 `install` (running `uv sync --locked`), `lint`, and `typecheck`, a CLI owner also `build` and `run`; no target is a
 placeholder command; and a dedicated E2E project owns no Unit or Integration target.
-
-**Pending corpus.** A project whose corpus has not received its first feature declares `"pending": true` in its
-`behaviour-coverage.json`. The marker is a state, not an exemption: it holds only while the corpus has no feature and no
-step is registered, and the validator rejects it once a feature exists, so it removes no scenario from coverage. The
-target contract and the adapter drivers are still checked.
 
 Static coverage cannot prove that a binding invokes production code or observes independent
 evidence. Material changes also require the

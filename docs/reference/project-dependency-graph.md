@@ -156,10 +156,10 @@ graph TD
 
 ### CLI Tools
 
-| Project       | Dependencies      | Spec Inputs                                   |
-| ------------- | ----------------- | --------------------------------------------- |
-| crane-cli     | fsharp-crane-core | crane-cli/\* (test:integration)               |
-| ayokoding-cli | (none)            | ayokoding/cli/\*\* (test:unit, test:coverage) |
+| Project       | Dependencies      | Spec Inputs                                             |
+| ------------- | ----------------- | ------------------------------------------------------- |
+| crane-cli     | fsharp-crane-core | crane-cli/\* (test:integration)                         |
+| ayokoding-cli | (none)            | ayokoding/cli/\*\* (test:unit, test:behaviour:coverage) |
 
 ### Libraries
 

@@ -63,7 +63,7 @@ The canonical corpus is [`behaviours/`](./behaviours/README.md). Its `.feature` 
 - **Integration** (`organiclever-be:test:integration`) — real isolated local resources without
   network access
 - **E2E** (`organiclever-be-e2e:test:e2e`) — the real service through its public HTTP boundary
-- **Static coverage** (`test:coverage:*`) — exact Gherkin binding/exemption validation that runs no
+- **Static coverage** (`test:behaviour:coverage`) — exact Gherkin binding/exemption validation that runs no
   tests and is mandatory in `test:quick`
 
 ## Related

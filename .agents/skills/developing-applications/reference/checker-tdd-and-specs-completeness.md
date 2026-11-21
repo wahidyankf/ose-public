@@ -43,8 +43,8 @@ Reference: [Feature Change Completeness Convention §Two Paths](../../../../repo
   (new/changed/removed endpoint, command, procedure, component, user-facing behaviour) needs a
   matching `.feature` add/update under `specs/apps/**`/`specs/libs/**`. HIGH if absent; MEDIUM if
   the spec exists but is stale (doesn't reflect the new behaviour).
-- **Static coverage wired and green**: every applicable `test:coverage:*` validator is static-only
-  and runs through `test:quick`; `test:behaviour:coverage` proves corpus/binding shape. HIGH if a
+- **Static coverage wired and green**: `test:behaviour:coverage` is static-only and runs through
+  `test:quick`; it proves corpus/binding shape. HIGH if a
   behaviour change breaks or bypasses it.
 - **Semantic implementation**: material feature, adapter, exemption, or compliance changes require
   the row-by-row Gherkin implementation review. HIGH for a placeholder/no-op binding or missing row.

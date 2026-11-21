@@ -9,5 +9,5 @@ import base from "./playwright.config";
 export default defineConfig({
   ...base,
   testDir: "tests/e2e",
-  testMatch: ["browser-progress.spec.ts", "htmx-fragments.spec.ts"],
+  testMatch: ["browser-progress.spec.ts", "htmx-fragments.spec.ts", "playwright-owned-server.spec.ts"],
 });

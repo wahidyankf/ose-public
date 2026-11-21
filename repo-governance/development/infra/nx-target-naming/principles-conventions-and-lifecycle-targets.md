@@ -30,12 +30,11 @@ unit tests uses `test:unit`, not `test-unit`, not `unit`, not `unit_tests`).
 | ------------------------- | -------------------------------------------------------------------------------- |
 | `{verb}`                  | `build`, `lint`, `typecheck`, `dev`, `start`, `run`                              |
 | `{verb}:{qualifier}`      | `test:quick`, `test:unit`, `test:integration`, `test:e2e`, `test:e2e:ui`         |
-| `test:coverage:{scope}`   | `test:coverage:unit`, `test:coverage:integration`, `test:coverage:e2e`           |
 | `test:behaviour:coverage` | `test:behaviour:coverage` (RHINO's shared static behaviour check, one per owner) |
 
-`test:coverage` aggregates the applicable per-layer static coverage targets. `test:behaviour:coverage` stays
-outside it. These targets are project-local testing lifecycle checks, never central governance aliases and never
-runtime tests.
+`test:behaviour:coverage` is the only static coverage target. It replaces the retired per-layer
+`test:coverage:{scope}` targets and their aggregate `test:coverage`. It is a project-local testing
+lifecycle check, never a central governance alias and never a runtime test.
 
 **Rules**:
 

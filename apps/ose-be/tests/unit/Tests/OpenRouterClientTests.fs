@@ -62,3 +62,13 @@ let ``complete returns an error without calling the network when no API key is c
     match result with
     | Error message -> Assert.Contains("not configured", message)
     | Ok _ -> Assert.Fail("expected Error when no API key is configured")
+
+// @scenario specs/apps/ose/be/behaviours/ai-orchestration/ai-orchestration.feature: OpenRouter settings fall back to their defaults when unset
+[<Fact>]
+let ``OpenRouter settings fall back to their defaults when unset`` () =
+    let config = loadConfigWith (readEnvironment Map.empty)
+
+    Assert.Equal("", config.ApiKey)
+    Assert.Equal("openrouter/auto", config.Model)
+    Assert.Equal("https://openrouter.ai/api/v1", config.BaseUrl)
+    Assert.False(isConfigured config)

@@ -49,18 +49,18 @@ variables, including optional Next.js host and port overrides.
 
 Run these from the repository root.
 
-| Command                                                                                                                          | Purpose                                                                                   |
-| -------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| `./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-app-web:dev`              | Generate migrations and start Next.js on port 3202.                                       |
-| `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-app-web:build`      | Generate migrations, regenerate contract types, and create a production build.            |
-| `./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-app-web:start`            | Serve an existing production build on port 3202.                                          |
-| `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-app-web:codegen`    | Regenerate TypeScript types from the bundled OrganicLever OpenAPI contract.               |
-| `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-app-web:typecheck`  | Check TypeScript types.                                                                   |
-| `./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-app-web:lint`           | Run Oxlint accessibility checks and ESLint.                                               |
-| `./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-app-web:test:unit`      | Run unit tests.                                                                           |
-| `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-app-web:test:quick` | Run the local quality gate: type checks, lint, unit tests, coverage, and spec validation. |
-| `./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-app-web:test:coverage`  | Validate all applicable static behaviour coverage adapters.                               |
-| `./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-app-web:storybook`        | Start Storybook on port 6006.                                                             |
+| Command                                                                                                                                   | Purpose                                                                                   |
+| ----------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-app-web:dev`                       | Generate migrations and start Next.js on port 3202.                                       |
+| `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-app-web:build`               | Generate migrations, regenerate contract types, and create a production build.            |
+| `./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-app-web:start`                     | Serve an existing production build on port 3202.                                          |
+| `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-app-web:codegen`             | Regenerate TypeScript types from the bundled OrganicLever OpenAPI contract.               |
+| `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-app-web:typecheck`           | Check TypeScript types.                                                                   |
+| `./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-app-web:lint`                    | Run Oxlint accessibility checks and ESLint.                                               |
+| `./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-app-web:test:unit`               | Run unit tests.                                                                           |
+| `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-app-web:test:quick`          | Run the local quality gate: type checks, lint, unit tests, coverage, and spec validation. |
+| `./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-app-web:test:behaviour:coverage` | Run the shared static behaviour corpus check.                                             |
+| `./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-app-web:storybook`                 | Start Storybook on port 6006.                                                             |
 
 `build`, `typecheck`, and `codegen` consume the `organiclever-contracts`
 project's bundled OpenAPI document. Nx builds that dependency when needed.
@@ -110,6 +110,6 @@ infrastructure composition.
 
 The canonical corpus is `specs/apps/organiclever/app-web/behaviours/`. This project owns the Unit
 adapter through `test:unit`; the dedicated `organiclever-app-web-e2e` project owns the public
-browser runtime. Matching `test:coverage:*` targets validate both adapters statically. Integration
+browser runtime. `test:behaviour:coverage` validates both adapters statically. Integration
 and owner-local E2E runtime are omitted because the client owns no non-networked local-resource
 boundary and the dedicated project owns browser execution.

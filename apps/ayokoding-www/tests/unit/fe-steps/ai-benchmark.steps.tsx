@@ -325,8 +325,8 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
 
   // ── Tiers ────────────────────────────────────────────────────────────────────
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Every roster model belongs to exactly one tier group
-  Scenario("Every roster model belongs to exactly one tier group", ({ Given, When, Then }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Every roster model appears in exactly one tier section
+  Scenario("Every roster model appears in exactly one tier section", ({ Given, When, Then }) => {
     let groups: ReturnType<typeof computeTierGroups>;
     Given("the full roster is loaded", () => {
       expect(full.models.length).toBeGreaterThan(0);

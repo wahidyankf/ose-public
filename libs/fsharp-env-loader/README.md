@@ -38,6 +38,5 @@ search directories — see `tech-docs.md`'s "The APP_ENV loader contract" in the
 
 The canonical corpus is `specs/libs/fsharp-env-loader/behaviours/`. `test:unit` proves decisions
 with injected environment/filesystem doubles, while `test:integration` exercises isolated real
-local resources. Matching `test:coverage:unit`, `test:coverage:integration`,
-`test:behaviour:coverage`, and aggregate `test:coverage` validate both adapters statically. E2E is
-omitted because the library exposes no public browser, HTTP, or process boundary.
+local resources. `test:behaviour:coverage` validates both adapters statically. E2E is omitted because
+the library exposes no public browser, HTTP, or process boundary.

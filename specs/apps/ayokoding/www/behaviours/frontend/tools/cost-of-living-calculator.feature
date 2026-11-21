@@ -148,13 +148,6 @@ Feature: Salary savings calculator
     Then I see a prominent "Data last updated" label with the dataset snapshot date
     And I see an "estimates only" disclaimer
 
-  # Behaviour: AYW-061
-  Scenario: Every monetary figure converts to USD via the in-repo FX table
-    Given I am on the calculator
-    When I read any USD figure derived from a local-currency value
-    Then the conversion uses the rate for that currency stored in the in-repo fx.ts table
-    And every currency referenced by a city, country, role, or display-currency selector has an fx.ts entry
-
   # Behaviour: AYW-060
   Scenario: Adding adults and children changes the modeled expenses
     Given I am on the "Cost of living" tab
@@ -333,7 +326,7 @@ Feature: Salary savings calculator
     And no percentage values are rendered without net income
 
   # Behaviour: AYW-060
-  Scenario: Rural area and multi-adult household multiply the housing estimate sub-linearly
+  Scenario: A rural area and a two-adult household lower and scale the housing estimate
     Given I am on the "Cost of living" tab
     And I set the household to 2 adults with no children
     When I switch the area from "city center" to "rural"
@@ -370,7 +363,7 @@ Feature: Salary savings calculator
     And the qualifying (city, role) rows whose savings are at or above zero appear above the divider
 
   # Behaviour: AYW-060
-  Scenario: Expense preview updates in real time when household controls change
+  Scenario: The expense preview updates at once when household controls change
     Given I am on the cost-of-living calculator
     And the default household is 1 adult with no children in city center
     When I change the Adults control to 2

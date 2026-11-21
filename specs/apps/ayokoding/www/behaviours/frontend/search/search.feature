@@ -50,3 +50,15 @@ Feature: Search
     Given the search dialog is open
     When the visitor types a query naming the AI Model Benchmark tool
     Then a result linking to the AI Model Benchmark tool page is shown
+
+  # Behaviour: AYW-019
+  Scenario: Ctrl+K opens the search dialog on non-Mac platforms
+    When a visitor presses Ctrl+K on the page
+    Then the search dialog should open
+    And the search input should have focus
+
+  # Behaviour: AYW-022
+  Scenario: A query with no match shows a no-results message
+    Given the search dialog is open
+    When the visitor types a query that matches no page
+    Then the search dialog should show a no-results message

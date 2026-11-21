@@ -1,10 +1,10 @@
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import path, { resolve } from "node:path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
-import matter from "gray-matter";
 import { expect } from "vitest";
 import { REHOMED_COURSE_SLUGS } from "@/redirects/course-rehome";
 import { integrationCaller } from "../be-steps/helpers/integration-caller";
+import { contentFileFor, redirectResponseFor, type RedirectResponse } from "../be-steps/helpers/next-config-delivery";
 
 const feature = await loadFeature(
   path.resolve(
@@ -14,10 +14,6 @@ const feature = await loadFeature(
 );
 
 const coursesDir = resolve(process.cwd(), "content/en/learn/courses");
-const syllabusDir = resolve(
-  process.cwd(),
-  "../../plans/done/2026-07-24__ayokoding-learning-path-02-schema-and-prerequisite-dag/syllabus/courses",
-);
 
 function authoredCourseIds(): string[] {
   return readdirSync(coursesDir, { withFileTypes: true })
@@ -26,137 +22,109 @@ function authoredCourseIds(): string[] {
     .sort();
 }
 
-function plannedCourseIds(): string[] {
-  return readdirSync(syllabusDir, { withFileTypes: true })
-    .filter((entry) => entry.isFile() && entry.name.endsWith(".md") && entry.name !== "README.md")
-    .map((entry) => entry.name.slice(0, -3))
-    .sort();
-}
+const LEGACY_COURSE_URL = "/en/learn/fundamentally-strong/software-engineer/just-enough-python";
+const CANONICAL_COURSE_URL = "/en/learn/courses/just-enough-python";
 
-function prerequisites(courseId: string): unknown {
-  return matter(readFileSync(resolve(coursesDir, courseId, "_index.md"), "utf8")).data.prerequisites;
-}
+describeFeature(feature, ({ Scenario, ScenarioOutline, Background }) => {
+  Background(({ Given }) => {
+    Given("the app is running", async () => {
+      await expect(integrationCaller.meta.health()).resolves.toEqual({ status: "ok" });
+      expect(existsSync(coursesDir)).toBe(true);
+    });
+  });
 
-function knownCourseIds(): Set<string> {
-  return new Set([...authoredCourseIds(), ...plannedCourseIds()]);
-}
-
-describeFeature(
-  feature,
-  ({ Scenario, Background }) => {
-    Background(({ Given }) => {
-      Given("the app is running", async () => {
-        await expect(integrationCaller.meta.health()).resolves.toEqual({ status: "ok" });
-        expect(existsSync(coursesDir)).toBe(true);
-        expect(existsSync(syllabusDir)).toBe(true);
-      });
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/course-rehome-redirects.feature: A legacy fundamentally-strong URL redirects to the canonical course URL
+  Scenario("A legacy fundamentally-strong URL redirects to the canonical course URL", ({ When, Then }) => {
+    let response: RedirectResponse | null = null;
+    When('a visitor navigates to "/en/learn/fundamentally-strong/software-engineer/just-enough-python"', async () => {
+      response = await redirectResponseFor(LEGACY_COURSE_URL);
     });
 
-    // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/course-rehome-redirects.feature: Every re-homed course declares its prerequisites
-    Scenario("Every re-homed course declares its prerequisites", ({ Given, When, Then, And }) => {
-      let metadata = new Map<string, unknown>();
+    Then('the current URL should contain "/en/learn/courses/just-enough-python"', () => {
+      expect(response?.location).toBe(CANONICAL_COURSE_URL);
+      expect(contentFileFor(response?.location ?? "")).not.toBeNull();
+    });
+  });
 
-      Given("the thirty-seven shipped topics and existing capstones have been re-homed into the course library", () => {
-        const authored = new Set(authoredCourseIds());
-        expect(REHOMED_COURSE_SLUGS.filter((courseId) => !authored.has(courseId))).toEqual([]);
-      });
-
-      When("each re-homed course's canonical metadata is inspected", () => {
-        metadata = new Map(REHOMED_COURSE_SLUGS.map((courseId) => [courseId, prerequisites(courseId)]));
-        expect(metadata.size).toBe(REHOMED_COURSE_SLUGS.length);
-      });
-
-      Then("every one declares a prerequisites list of course IDs", () => {
-        const invalid = [...metadata].filter(
-          ([, value]) => !Array.isArray(value) || value.some((courseId) => typeof courseId !== "string"),
-        );
-        expect(invalid).toEqual([]);
-      });
-
-      And("an empty list is accepted only for a course with no library prerequisite", () => {
-        const emptyLists = [...metadata].filter(([, value]) => Array.isArray(value) && value.length === 0);
-        expect(emptyLists.length).toBeGreaterThan(0);
-        expect(emptyLists.every(([, value]) => (value as string[]).length === 0)).toBe(true);
-      });
-
-      And(
-        "every named prerequisite resolves to another course already in the library or declared on the syllabus roadmap",
-        () => {
-          const known = knownCourseIds();
-          const unresolved = [...metadata].flatMap(([courseId, value]) =>
-            (value as string[])
-              .filter((dependency) => !known.has(dependency))
-              .map((dependency) => `${courseId} -> ${dependency}`),
-          );
-          const selfReferences = [...metadata].filter(([courseId, value]) => (value as string[]).includes(courseId));
-          expect(unresolved).toEqual([]);
-          expect(selfReferences).toEqual([]);
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/course-rehome-redirects.feature: A legacy fundamentally-strong deep sub-page URL redirects to its canonical course sub-page
+  Scenario(
+    "A legacy fundamentally-strong deep sub-page URL redirects to its canonical course sub-page",
+    ({ When, Then }) => {
+      let response: RedirectResponse | null = null;
+      When(
+        'a visitor navigates to "/en/learn/fundamentally-strong/software-engineer/just-enough-python/learning/beginner"',
+        async () => {
+          response = await redirectResponseFor(`${LEGACY_COURSE_URL}/learning/beginner`);
         },
       );
-    });
 
-    // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/course-rehome-redirects.feature: A prerequisite naming a syllabus-declared but not-yet-authored course still resolves
-    Scenario(
-      "A prerequisite naming a syllabus-declared but not-yet-authored course still resolves",
-      ({ When, Then, And }) => {
-        let candidate = "";
-        When("a course is declared on the syllabus roadmap but not yet authored into the course library", () => {
-          const authored = new Set(authoredCourseIds());
-          candidate = plannedCourseIds().find((courseId) => !authored.has(courseId)) ?? "";
-          expect(candidate, "scenario is obsolete when the complete roadmap has been authored").not.toBe("");
-        });
+      Then('the current URL should contain "/en/learn/courses/just-enough-python/learning/beginner"', () => {
+        expect(response?.location).toBe(`${CANONICAL_COURSE_URL}/learning/beginner`);
+        expect(contentFileFor(response?.location ?? "")).not.toBeNull();
+      });
+    },
+  );
 
-        Then(
-          "a prerequisite naming that course resolves against the union of the course library and the syllabus roadmap",
-          () => {
-            expect(knownCourseIds().has(candidate)).toBe(true);
-          },
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/course-rehome-redirects.feature: The retired fundamentally-strong browse roots permanently redirect to the course library
+  ScenarioOutline(
+    "The retired fundamentally-strong browse roots permanently redirect to the course library",
+    ({ When, Then, And }, variables) => {
+      let response: RedirectResponse | null = null;
+      When('a raw HTTP GET is made to "<legacy_url>" with redirects disabled', async () => {
+        const legacyUrl = String(variables.legacy_url);
+        expect(contentFileFor(legacyUrl)).toBeNull();
+        response = await redirectResponseFor(legacyUrl);
+      });
+
+      Then("the response status should be 308", () => {
+        expect(response?.status).toBe(308);
+      });
+
+      And('the response Location header should equal "/en/learn/courses"', () => {
+        expect(response?.location).toBe("/en/learn/courses");
+      });
+    },
+  );
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/course-rehome-redirects.feature: The course library the retired browse roots redirect to resolves every re-homed course
+  Scenario(
+    "The course library the retired browse roots redirect to resolves every re-homed course",
+    ({ When, Then }) => {
+      let catalogueEntries: string[] = [];
+      When('a visitor navigates to "/en/learn/courses"', () => {
+        catalogueEntries = authoredCourseIds();
+        expect(catalogueEntries.length).toBeGreaterThanOrEqual(REHOMED_COURSE_SLUGS.length);
+      });
+
+      Then("every course catalog entry should resolve to live content, not a drained or missing location", () => {
+        const missingIndexes = catalogueEntries.filter(
+          (courseId) => !existsSync(resolve(coursesDir, courseId, "_index.md")),
         );
+        expect(missingIndexes).toEqual([]);
+      });
+    },
+  );
 
-        And("a prerequisite naming an unrecognized course ID still does not resolve", () => {
-          expect(knownCourseIds().has("not-a-real-course-id-xyz")).toBe(false);
-        });
-      },
-    );
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/course-rehome-redirects.feature: A course reached via its legacy course URL resolves to the single canonical course body
+  Scenario(
+    "A course reached via its legacy course URL resolves to the single canonical course body",
+    ({ When, Then }) => {
+      let response: RedirectResponse | null = null;
+      When('a visitor navigates to "/en/learn/fundamentally-strong/software-engineer/just-enough-python"', async () => {
+        response = await redirectResponseFor(LEGACY_COURSE_URL);
+      });
 
-    // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/course-rehome-redirects.feature: A prerequisite naming an authored course absent from the syllabus roadmap still resolves
-    Scenario(
-      "A prerequisite naming an authored course absent from the syllabus roadmap still resolves",
-      ({ When, Then }) => {
-        let candidate = "";
-        When("a course is authored into the course library but not declared on the syllabus roadmap", () => {
-          const planned = new Set(plannedCourseIds());
-          candidate = authoredCourseIds().find((courseId) => !planned.has(courseId)) ?? "";
-          expect(candidate, "scenario is obsolete when every authored course is roadmap-declared").not.toBe("");
-        });
-
-        Then(
-          "a prerequisite naming that course resolves against the union of the course library and the syllabus roadmap",
-          () => {
-            expect(knownCourseIds().has(candidate)).toBe(true);
-          },
-        );
-      },
-    );
-
-    // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/course-rehome-redirects.feature: The course library the retired browse roots redirect to resolves every re-homed course
-    Scenario(
-      "The course library the retired browse roots redirect to resolves every re-homed course",
-      ({ When, Then }) => {
-        let catalogueEntries: string[] = [];
-        When('a visitor navigates to "/en/learn/courses"', () => {
-          catalogueEntries = authoredCourseIds();
-          expect(catalogueEntries.length).toBeGreaterThanOrEqual(REHOMED_COURSE_SLUGS.length);
-        });
-
-        Then("every course catalog entry should resolve to live content, not a drained or missing location", () => {
-          const missingIndexes = catalogueEntries.filter(
-            (courseId) => !existsSync(resolve(coursesDir, courseId, "_index.md")),
-          );
-          expect(missingIndexes).toEqual([]);
-        });
-      },
-    );
-  },
-  { excludeTags: ["integration-exempt"] },
-);
+      Then(
+        'the resolved page title should equal the canonical course page title at "/en/learn/courses/just-enough-python"',
+        () => {
+          // The legacy URL holds no content of its own, so the visitor lands on the canonical page and its title.
+          expect(contentFileFor(LEGACY_COURSE_URL)).toBeNull();
+          expect(response?.location).toBe(CANONICAL_COURSE_URL);
+          const canonicalFile = contentFileFor(CANONICAL_COURSE_URL);
+          expect(canonicalFile).not.toBeNull();
+          expect(readFileSync(canonicalFile ?? "", "utf8")).toMatch(/^title: "Just Enough Python"$/mu);
+        },
+      );
+    },
+  );
+});

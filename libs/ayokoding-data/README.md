@@ -35,6 +35,6 @@ green: a value mismatch returns to extraction, never to an edited expectation.
 
 ## Behaviour coverage
 
-`behaviour-coverage.json` declares the planned `specs/libs/ayokoding-data`
-corpus as `pending` until the three-entry specification corpus lands; the
-unit adapter over `tests/unit` is already enforced.
+`test:behaviour:coverage` runs the shared check `./rhino behaviour coverage validate` over the
+`specs/libs/ayokoding-data/behaviours/` corpus. The unit adapter over `tests/unit` is enforced by
+`test:unit`.

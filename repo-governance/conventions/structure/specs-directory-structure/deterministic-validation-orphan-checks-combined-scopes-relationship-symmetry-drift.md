@@ -7,9 +7,9 @@ when_to_use: Read this when debugging static behaviour coverage or wiring a proj
 
 ## Exact-one scenario binding
 
-Every owner and dedicated E2E project declares a recursive canonical corpus and its adapter sources
-in a project-local `behaviour-coverage.json`. The project's static `test:behaviour:coverage` check enforces
-both directions:
+Every owner and dedicated E2E project owns a recursive canonical corpus and its adapter sources,
+declared in the shared `policies.behaviour` section of `repo-config.yml`. The project's static
+`test:behaviour:coverage` check enforces both directions:
 
 - **Forward**: every expanded Gherkin scenario has exactly one matching implementation for each
   applicable layer, or a valid higher-layer exemption.

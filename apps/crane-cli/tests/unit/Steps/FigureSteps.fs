@@ -1,6 +1,7 @@
 module CraneCli.Tests.Unit.Steps.FigureSteps
 
 open TickSpec
+open Xunit
 open CraneCore.Logic.FigureChecker
 open CraneCli.Tests.Unit.Steps.BddState
 
@@ -36,3 +37,25 @@ let ``I run "crane figure check" on the pair`` () =
         opts.DefaultIgnoreCondition <- System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
         w.WriteLine(System.Text.Json.JsonSerializer.Serialize(findings, opts))
         if findings.IsEmpty then 0 else 1)
+
+[<When>]
+let ``I run "crane figure detect" on the PDF fixture`` () =
+    RunWithWriter(fun w ->
+        let figures = detectFigures pdfText
+        let opts = System.Text.Json.JsonSerializerOptions()
+        opts.DefaultIgnoreCondition <- System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+        w.WriteLine(System.Text.Json.JsonSerializer.Serialize(figures, opts))
+        0)
+
+// ---- BDD Then steps ----
+
+[<Then>]
+let ``the JSON output lists the figure "([^"]*)"`` (number: string) =
+    let doc = System.Text.Json.JsonDocument.Parse(LastOutput)
+
+    let numbers =
+        doc.RootElement.EnumerateArray()
+        |> Seq.map (fun figure -> figure.GetProperty("Number").GetString())
+        |> Seq.toList
+
+    Assert.Contains(number, numbers)

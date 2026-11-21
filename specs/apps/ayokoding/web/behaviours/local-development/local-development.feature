@@ -37,12 +37,6 @@ Feature: Independent local development
     Then startup fails with a diagnostic naming AYOKODING_WEB_PORT
     And no rewrite listener starts on a fallback port
 
-  Scenario: Playwright owns an isolated local rewrite server
-    Given the existing site and the rewrite development server are running
-    When the rewrite browser acceptance suite starts
-    Then it starts its own Go server on port 3191
-    And it leaves both development servers running after the suite finishes
-
   Scenario: Browsing course pages leaves the content files unchanged
     Given the shared Markdown and manifests have recorded byte hashes
     When a developer starts the rewrite and browses its course pages

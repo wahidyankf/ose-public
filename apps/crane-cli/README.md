@@ -53,6 +53,5 @@ and OCR integrations remain at the edge.
 
 The canonical corpus is `specs/apps/crane/cli/behaviours/`. `test:unit` runs in-process adapters
 with injected boundary doubles, and `test:integration` runs the built CLI through its public process
-boundary over local files only. Matching `test:coverage:unit`, `test:coverage:integration`,
-`test:behaviour:coverage`, and aggregate `test:coverage` validate closure statically. No end-to-end
+boundary over local files only. `test:behaviour:coverage` validates closure statically. No end-to-end
 target exists because the CLI has no network, remote service, or credential boundary of its own.

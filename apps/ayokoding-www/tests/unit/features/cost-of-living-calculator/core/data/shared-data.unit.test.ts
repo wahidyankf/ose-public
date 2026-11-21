@@ -60,6 +60,7 @@ describe("shared cost-of-living artifact presence", () => {
   });
 });
 
+// @scenario specs/libs/ayokoding-data/behaviours/validation/dataset-validation.feature: The site decodes the same dataset values the library publishes
 describe("evaluated exports equal the shared JSON", () => {
   it("carries the same countries and cities in the same order", () => {
     const json = mustReadJson(livingPath) as { snapshotDate: string; countries: unknown; cities: unknown };

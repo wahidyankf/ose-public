@@ -15,6 +15,8 @@ import { metadata as layoutMetadata } from "@/app/[locale]/layout";
 import sitemap from "@/app/sitemap";
 import { GET as getFeed } from "@/app/feed.xml/route";
 import { generateMetadata } from "@/app/[locale]/(content)/[...slug]/page";
+import robots from "../../../src/app/robots";
+import ContentNotFound from "../../../src/app/[locale]/(content)/not-found";
 
 // Mocks required by Footer (no trpc/navigation needed — Footer is a server component)
 // next/link is already mocked in test-setup.ts
@@ -468,4 +470,35 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
       });
     },
   );
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: robots.txt allows crawling and names the sitemap
+  Scenario("robots.txt allows crawling and names the sitemap", ({ When, Then, And }) => {
+    let rules: ReturnType<typeof robots>;
+    When("a search engine requests the robots.txt file", () => {
+      rules = robots();
+    });
+
+    Then("every page of the site is open to crawling", () => {
+      expect(rules.rules).toEqual([{ userAgent: "*", allow: "/" }]);
+    });
+
+    And("the robots.txt file names the sitemap", () => {
+      expect(rules.sitemap).toBe("https://www.ayokoding.com/sitemap.xml");
+    });
+  });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: A missing page shows Page Not Found with a Go Home link
+  Scenario("A missing page shows Page Not Found with a Go Home link", ({ When, Then, And }) => {
+    When("a visitor opens a page that does not exist", () => {
+      render(<ContentNotFound />);
+    });
+
+    Then('the reader sees a "Page Not Found" heading', () => {
+      expect(screen.getByRole("heading", { name: "Page Not Found" })).toBeTruthy();
+    });
+
+    And("the page offers a Go Home link to the English home page", () => {
+      expect(screen.getByRole("link", { name: "Go Home" }).getAttribute("href")).toBe("/en");
+    });
+  });
 });

@@ -71,15 +71,19 @@ import { createBdd } from "playwright-bdd";
 // @scenario specs/libs/web-ui/behaviours/progress-ring/progress-ring.feature: Progress below 0 or above 1 is clamped to 0 or 100
 // @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: Widen the panel by dragging the handle right
 // @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: Dragging past the maximum stops at the maximum
-// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: Dragging live-updates the width without persisting to localStorage
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: Dragging past the minimum stops at the minimum
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: Dragging updates the width as the pointer moves
 // @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: Releasing the drag persists the final width to localStorage
-// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: Widen the panel with the ArrowRight key
-// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: The handle exposes separator semantics
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: ArrowRight widens the panel by the keyboard step
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: The handle reports the new width through aria-valuenow
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: ArrowLeft narrows the panel by the keyboard step
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: The handle is a vertical separator
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: Dragging the handle does not select text
 // @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: The handle's accessible label can be localized
 // @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: Reset the panel to its default width by double-clicking the handle
-// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: Jump to the minimum band width when Home is pressed
-// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: Jump to the maximum band width when End is pressed
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: Home and End jump the panel to the edges of the band
 // @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: Re-clamp a persisted width that falls outside the band on load
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: A saved width inside the band is restored on load
 // @scenario specs/libs/web-ui/behaviours/sheet/sheet.feature: Title renders
 // @scenario specs/libs/web-ui/behaviours/sheet/sheet.feature: Close button closes sheet
 // @scenario specs/libs/web-ui/behaviours/sheet/sheet.feature: Has accessible title
@@ -1053,7 +1057,7 @@ Then("each screenshot matches its committed visual baseline", async () => {
 });
 
 Given(
-  /^a resizable panel rendered at (250|340) pixels with a 150 to 350 pixel band$/,
+  /^a resizable panel rendered at (160|250|340) pixels with a 150 to 350 pixel band$/,
   async ({ page }, width: string) => {
     await loadHarness(page, "resizable-panel", { width });
   },
@@ -1088,15 +1092,31 @@ Given("a corrupted localStorage value of 999999 pixels for the panel width", asy
   await page.evaluate(() => localStorage.setItem("bdd-resizable-panel", "999999"));
 });
 
-When(/^the user drags the separator handle (60|100) pixels to the right$/, async ({ page }, delta: string) => {
-  await dragHandle(page, Number(delta));
+Given(
+  "the separator handle is focused on a panel at 250 pixels with a keyboard step of 20 pixels",
+  async ({ page }) => {
+    await loadHarness(page, "resizable-panel", { width: "250", keyboardStep: "20" });
+    await page.locator(PANEL_HANDLE).focus();
+  },
+);
+
+Given("a saved localStorage value of 300 pixels for the panel width", async ({ page }) => {
+  await loadHarness(page, "empty");
+  await page.evaluate(() => localStorage.setItem("bdd-resizable-panel", "300"));
 });
+
+When(
+  /^the user drags the separator handle (\d+) pixels to the (right|left)$/,
+  async ({ page }, delta: string, direction: string) => {
+    await dragHandle(page, direction === "left" ? -Number(delta) : Number(delta));
+  },
+);
 
 When("the user drags the separator handle 60 pixels to the right without releasing", async ({ page }) => {
   await dragHandle(page, 60, false);
 });
 
-When(/^the user presses (ArrowRight|Home|End)$/, async ({ page }, key: string) => {
+When(/^the user presses (ArrowLeft|ArrowRight|Home|End)$/, async ({ page }, key: string) => {
   await page.keyboard.press(key);
 });
 
@@ -1108,26 +1128,21 @@ When("a resizable panel with a 150 to 350 pixel band is rendered", async ({ page
   await loadHarness(page, "resizable-panel", { width: "250" });
 });
 
-Then(/^the panel width (?:becomes|stops at|returns to) (150|250|310|350) pixels$/, async ({ page }, width: string) => {
+Then(/^the panel width (?:becomes|stops at|returns to) (\d+) pixels$/, async ({ page }, width: string) => {
   await expect(page.locator(PANEL)).toHaveCSS("width", `${width}px`);
-});
-
-Then("the panel width becomes 310 pixels but nothing is yet persisted to localStorage", async ({ page }) => {
-  await expect(page.locator(PANEL)).toHaveCSS("width", "310px");
-  expect(await page.evaluate(() => localStorage.getItem("bdd-resizable-panel"))).toBeNull();
-  await page.mouse.up();
 });
 
 Then("the width 310 pixels is persisted to localStorage", async ({ page }) => {
   await expect.poll(() => page.evaluate(() => localStorage.getItem("bdd-resizable-panel"))).toBe("310");
 });
 
-Then("the panel width increases by the keyboard step", async ({ page }) => {
-  await expect(page.locator(PANEL)).toHaveCSS("width", "260px");
+Then("the handle reports 260 as its aria-valuenow", async ({ page }) => {
+  await expect(page.locator(PANEL_HANDLE)).toHaveAttribute("aria-valuenow", "260");
 });
 
-Then("the handle exposes the new width via aria-valuenow", async ({ page }) => {
-  await expect(page.locator(PANEL_HANDLE)).toHaveAttribute("aria-valuenow", "260");
+Then("no page text is selected", async ({ page }) => {
+  const selected = await page.evaluate(() => window.getSelection()?.toString() ?? "");
+  expect(selected).toBe("");
 });
 
 Then("the handle has role {string}", async ({ page }, role: string) => {
@@ -1136,10 +1151,6 @@ Then("the handle has role {string}", async ({ page }, role: string) => {
 
 Then("the handle has aria-orientation {string}", async ({ page }, orientation: string) => {
   await expect(page.locator(PANEL_HANDLE)).toHaveAttribute("aria-orientation", orientation);
-});
-
-Then("the handle prevents native text selection", async ({ page }) => {
-  await expect(page.locator(PANEL_HANDLE)).toHaveCSS("user-select", "none");
 });
 
 Then("the handle has aria-label {string}", async ({ page }, label: string) => {

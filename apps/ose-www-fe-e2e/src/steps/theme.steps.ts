@@ -3,8 +3,13 @@ import { createBdd } from "playwright-bdd";
 
 // @scenario specs/apps/ose/www/behaviours/frontend/app-shell/theme.feature: Default theme is light mode
 // @scenario specs/apps/ose/www/behaviours/frontend/app-shell/theme.feature: Theme toggle switches between modes
+// @scenario specs/apps/ose/www/behaviours/frontend/app-shell/theme.feature: The chosen theme is kept when the visitor reloads the page
 
 const { Given, When, Then } = createBdd();
+
+When("the visitor reloads the page", async ({ page }) => {
+  await page.reload();
+});
 
 When("the site loads without a stored theme preference", async ({ page }) => {
   await page.goto("/");

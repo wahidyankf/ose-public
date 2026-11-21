@@ -104,8 +104,7 @@ The Nx targets for this project live in `project.json`:
   with `-race`
 - `test:integration`, `test:e2e` — outside the PR gate, twice daily
   and on demand
-- `test:coverage:{unit,integration,e2e}`, `test:behaviour:coverage`, `test:coverage`,
-  `test:quick`
+- `test:behaviour:coverage`, `test:quick`
 - `deps:audit`, `compat:min-version`
 
 No target is omitted: the project ships every standard target. There is

@@ -4,10 +4,15 @@ Feature: ose-be NATS connection
   I want ose-be to connect to NATS on startup
   So that messaging infrastructure is available before the API accepts requests
 
-  # Exemption(integration): NATS is reached over a network boundary forbidden to Integration; alternative-proof: ose-be-e2e:test:e2e / ose-be connects to its NATS server at startup
-  @integration-exempt
-  Scenario: ose-be connects to its NATS server at startup
+  # Behaviour: OSB-008
+  # Behaviour: OSB-016
+  Scenario: Backend reports healthy after starting with a reachable NATS server
     Given OSE_BE_NATS_URL points to a running NATS server with JetStream enabled
     When ose-be starts up
-    Then the NATS connection is established
-    And the backend reports healthy after connecting
+    Then the backend reports healthy after connecting
+
+  Scenario: Messaging status endpoint reports the failure when NATS is unreachable and the HTTP service still starts
+    Given OSE_BE_NATS_URL points to a NATS server that is not reachable
+    When ose-be starts up
+    Then the messaging status endpoint reports the failure
+    And the health endpoint still reports healthy

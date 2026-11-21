@@ -23,7 +23,7 @@ To open the last report, use
 
 ```bash
 npm exec nx -- run organiclever-www-fe-e2e:test:quick
-npm exec nx -- run organiclever-www-fe-e2e:test:coverage
+npm exec nx -- run organiclever-www-fe-e2e:test:behaviour:coverage
 npm exec nx -- run organiclever-www-fe-e2e:test:e2e
 ```
 
@@ -32,6 +32,5 @@ environment. The scenarios live in
 [the OrganicLever public-site Gherkin specs](../../specs/apps/organiclever/www/behaviours/frontend/README.md).
 
 This dedicated E2E project owns no independent corpus. Its `test:e2e` adapter observes the owner
-site's public browser boundary; `test:coverage:e2e`, `test:behaviour:coverage`, and aggregate
-`test:coverage` validate it statically. Unit and Integration are omitted because their in-process
+site's public browser boundary; `test:behaviour:coverage` validates it statically. Unit and Integration are omitted because their in-process
 and local-resource boundaries belong to the owner application.

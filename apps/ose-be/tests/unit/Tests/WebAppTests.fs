@@ -13,3 +13,13 @@ let ``an unmatched path falls through to 404`` () =
     let client = buildClient webApp
     let resp = client.GetAsync("/totally-unmatched-path").Result
     Assert.Equal(HttpStatusCode.NotFound, resp.StatusCode)
+
+// @scenario specs/apps/ose/be/behaviours/db/migrations.feature: Unknown route returns 404 Not Found
+[<Fact>]
+let ``an unknown api route returns 404 Not Found`` () =
+    let client = buildClient webApp
+    let resp = client.GetAsync("/api/v1/unknown-route").Result
+    let body = resp.Content.ReadAsStringAsync().Result
+
+    Assert.Equal(HttpStatusCode.NotFound, resp.StatusCode)
+    Assert.Contains("Not Found", body)

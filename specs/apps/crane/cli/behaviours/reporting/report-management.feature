@@ -29,3 +29,12 @@ Feature: Audit report initialization
     Given a chain file for "pdf-to-md" created 60 seconds ago with UUID "abc123"
     When I run "crane report init" with scope "pdf-to-md"
     Then the report filename contains only the new 6-hex UUID (no "abc123")
+
+  # Behaviour: CRN-018
+  # Exemption(e2e): the CLI has no network, remote service, or credential boundary; its process boundary over local files is bound at integration; alternative-proof: crane-cli:test:integration / Crane process-boundary scenarios
+  @e2e-exempt
+  Scenario: Finalizing a report records its status in the report
+    Given an audit report in progress for scope "pdf-to-md"
+    When I run "crane report finalize" with status "PASSED"
+    Then the report file says "Status: PASSED"
+    And the JSON output names the status "PASSED" and the report path

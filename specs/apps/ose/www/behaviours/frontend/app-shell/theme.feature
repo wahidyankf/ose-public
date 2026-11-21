@@ -16,3 +16,10 @@ Feature: Theme
     Given the site is in light mode
     When the user clicks the theme toggle and selects dark mode
     Then the site switches to dark mode
+
+  # Behaviour: OSW-017
+  Scenario: The chosen theme is kept when the visitor reloads the page
+    Given the site is in light mode
+    When the user clicks the theme toggle and selects dark mode
+    And the visitor reloads the page
+    Then the site switches to dark mode

@@ -13,8 +13,6 @@ Feature: Path-order navigation
     And next crosses from the last core course into the first extension course, keeping the path context
 
   # Behaviour: AYW-135
-  # Exemption(integration): no integration boundary of its own: the rail is rendered from the in-process path manifest and course titles the component receives, and no file system, process, database, or network boundary is crossed; alternative-proof: ayokoding-www-fe-e2e:test:e2e / The path rail shows the whole ordered arc beside a course at desktop width
-  @integration-exempt
   Scenario: The path rail shows the whole ordered arc beside a course at desktop width
     Given a reader opens a course in path context on a desktop-width viewport
     When the page renders
@@ -36,8 +34,6 @@ Feature: Path-order navigation
     Then focus moves into the drawer and returns to the control when the drawer is dismissed
 
   # Behaviour: AYW-136
-  # Exemption(integration): no integration boundary of its own: the rail scroll is computed in the rendering process from mocked layout geometry, and no file system, process, database, or network boundary is crossed; alternative-proof: ayokoding-www-fe-e2e:test:e2e / The path rail scrolls the current course into view without moving the page
-  @integration-exempt
   Scenario: The path rail scrolls the current course into view without moving the page
     Given a reader opens a course whose rail row starts below the visible part of the sidebar
     When the page renders

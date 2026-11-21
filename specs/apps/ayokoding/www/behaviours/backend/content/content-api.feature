@@ -50,3 +50,9 @@ Feature: Content API
     Given a published page exists at slug "en/learn/courses/just-enough-go/learning/beginner" with a fenced code block
     When the client calls content.getBySlug with slug "en/learn/courses/just-enough-go/learning/beginner"
     Then the response "html" field should contain a rendered code element
+
+  # Behaviour: AYW-069
+  Scenario: The course-path route data is returned for a locale
+    When the client calls coursePaths.getRouteData with locale "en"
+    Then the response should list each library course with its English page link
+    And the response should include the course path manifests

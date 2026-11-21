@@ -85,6 +85,12 @@ let private buildScenarioData () : seq<obj[]> =
 // @scenario specs/apps/crane/cli/behaviours/pdf/pdf-commands.feature: crane pdf extract writes the requested page range to standard output
 // @scenario specs/apps/crane/cli/behaviours/pdf/pdf-commands.feature: A missing or unreadable PDF prints "Error:" on standard error and exits 1
 // @scenario specs/apps/crane/cli/behaviours/system/check-all.feature: An unknown command prints usage and exits 1
+// @scenario specs/apps/crane/cli/behaviours/content/nesting-check.feature: Nesting inference lists each list item with its nesting level
+// @scenario specs/apps/crane/cli/behaviours/media/figure-check.feature: Figure detection lists each figure the PDF refers to
+// @scenario specs/apps/crane/cli/behaviours/media/ocr-quality.feature: OCR extraction lists each OCR-tagged section of a PDF
+// @scenario specs/apps/crane/cli/behaviours/reporting/report-management.feature: Finalizing a report records its status in the report
+// @scenario specs/apps/crane/cli/behaviours/reporting/skiplist-management.feature: Listing the skip list prints every entry for a document
+// @scenario specs/apps/crane/cli/behaviours/system/check-all.feature: Check-all reuses the PDF text cached by an earlier run
 type CraneCliUnitSuite() =
     static member Scenarios() : seq<obj[]> =
         buildScenarioData () |> Seq.toList :> seq<_>

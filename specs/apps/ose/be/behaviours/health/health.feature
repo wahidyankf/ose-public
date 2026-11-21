@@ -3,8 +3,7 @@ Feature: BE health endpoint
   I want the BE to advertise liveness
   So that orchestrators can route traffic only to healthy instances
 
-  # Exemption(integration): HTTP is a network boundary forbidden to Integration and the in-process route is already Unit proof; alternative-proof: ose-be-e2e:test:e2e / Health endpoint returns 200
-  @integration-exempt
+  # Behaviour: OSB-001
   Scenario: Health endpoint returns 200
     Given the ose-be service is running
     When I send GET /api/v1/health

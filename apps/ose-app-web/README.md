@@ -80,8 +80,8 @@ Run these from the repository root.
 ## BDD and Testing
 
 The canonical corpus is `specs/apps/ose/app-web/behaviours/`. This project owns the Unit adapter
-through `test:unit`; `ose-app-web-e2e:test:e2e` owns the public browser runtime. Matching
-`test:coverage:*` targets validate both adapters statically. Integration and owner-local E2E
+through `test:unit`; `ose-app-web-e2e:test:e2e` owns the public browser runtime. `test:behaviour:coverage` validates both
+adapters statically. Integration and owner-local E2E
 runtime are omitted because the client owns no non-networked local-resource boundary and the
 dedicated project owns browser execution.
 

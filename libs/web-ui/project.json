@@ -44,10 +44,6 @@
             "forwardAllArgs": false
           },
           {
-            "command": "npm exec -- nx run web-ui:test:coverage",
-            "forwardAllArgs": false
-          },
-          {
             "command": "npm exec -- nx run web-ui:test:behaviour:coverage",
             "forwardAllArgs": false
           }
@@ -58,8 +54,6 @@
       "cache": true,
       "inputs": [
         "default",
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/libs/web-ui/behaviour-coverage.json",
         "{workspaceRoot}/package-lock.json",
         "{workspaceRoot}/specs/libs/web-ui/behaviours/**/*.feature",
         "{workspaceRoot}/libs/web-ui/tests/unit/**/*.{ts,tsx,fs}",
@@ -108,40 +102,6 @@
       "cache": true,
       "outputs": ["{projectRoot}/tests/e2e/test-results"]
     },
-    "test:coverage:unit": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config libs/web-ui/behaviour-coverage.json --adapter unit"
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/libs/web-ui/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/libs/web-ui/behaviours/**/*.feature",
-        "{workspaceRoot}/libs/web-ui/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/libs/web-ui/vitest.config.ts",
-        "{workspaceRoot}/libs/web-ui/tests/e2e/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/libs/web-ui/tests/e2e/playwright.config.ts"
-      ]
-    },
-    "test:coverage:e2e": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config libs/web-ui/behaviour-coverage.json --adapter e2e"
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/libs/web-ui/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/libs/web-ui/behaviours/**/*.feature",
-        "{workspaceRoot}/libs/web-ui/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/libs/web-ui/vitest.config.ts",
-        "{workspaceRoot}/libs/web-ui/tests/e2e/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/libs/web-ui/tests/e2e/playwright.config.ts"
-      ]
-    },
     "test:behaviour:coverage": {
       "executor": "nx:run-commands",
       "options": {
@@ -158,34 +118,6 @@
         "{workspaceRoot}/apps/*-e2e/steps/**/*",
         "{workspaceRoot}/apps/*-e2e/src/**/*",
         "{workspaceRoot}/libs/*/tests/**/*"
-      ]
-    },
-    "test:coverage": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          {
-            "command": "npm exec -- nx run web-ui:test:coverage:unit",
-            "forwardAllArgs": false
-          },
-          {
-            "command": "npm exec -- nx run web-ui:test:coverage:e2e",
-            "forwardAllArgs": false
-          }
-        ],
-        "parallel": false,
-        "forwardAllArgs": false
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/libs/web-ui/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/libs/web-ui/behaviours/**/*.feature",
-        "{workspaceRoot}/libs/web-ui/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/libs/web-ui/vitest.config.ts",
-        "{workspaceRoot}/libs/web-ui/tests/e2e/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/libs/web-ui/tests/e2e/playwright.config.ts"
       ]
     }
   },

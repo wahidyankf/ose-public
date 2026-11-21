@@ -6,8 +6,7 @@ Dedicated Playwright adapter for AyoKoding's public browser boundary.
 
 This project consumes `specs/apps/ayokoding/www/behaviours/` and the shared resizable-panel
 behaviour; it owns no independent corpus. `test:e2e` runs the browser adapter, while
-`test:coverage:e2e`, `test:behaviour:coverage`, and aggregate `test:coverage` validate it
-statically. Unit and Integration targets are omitted because those layers belong to the owner
+`test:behaviour:coverage` validates it statically. Unit and Integration targets are omitted because those layers belong to the owner
 application and a dedicated E2E project owns neither in-process decision logic nor a non-networked
 local-resource boundary.
 

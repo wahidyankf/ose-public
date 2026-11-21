@@ -15,7 +15,7 @@ Determine which projects are affected:
 
 ```bash
 # See which projects are affected by your changes (test:quick internally chains
-# types/lint -> test:unit -> every applicable static test:coverage:*; see Nx Target Standards)
+# types/lint -> test:unit -> test:behaviour:coverage; see Nx Target Standards)
 npx nx affected -t test:quick --dry-run
 ```
 

@@ -15,7 +15,7 @@ import type { AppSettings } from "@/contexts/settings/application";
 import type { Routine } from "@/contexts/routine/application";
 import type { JournalRuntime } from "@/contexts/journal/application";
 import type { Actor } from "xstate";
-import { cleanup, render } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import FinishPage from "@/app/app/workout/finish/page";
 
 // The finish page is a React route; its router and runtime context are stood in here.
@@ -33,10 +33,6 @@ vi.mock("@/contexts/app-shell/presentation/app-runtime-context", () => ({
     completedSession: finishPageDouble.completedSession,
     setCompletedSession: vi.fn(),
   }),
-}));
-
-vi.mock("@/contexts/workout-session/presentation", () => ({
-  FinishScreen: () => null,
 }));
 
 // ---------------------------------------------------------------------------
@@ -240,6 +236,31 @@ describeFeature(feature, ({ Scenario }) => {
 
     Then("the Home screen is visible", () => {
       expect(finishPageDouble.replace).toHaveBeenCalledWith("/app/home");
+      cleanup();
+    });
+  });
+
+  // @scenario specs/apps/organiclever/app-web/behaviours/workout-session/workout-session.feature: Finishing a workout shows the workout summary
+  Scenario("Finishing a workout shows the workout summary", ({ Given, When, Then }) => {
+    Given("the user has finished a workout with one logged set", () => {
+      finishPageDouble.completedSession = {
+        durationSecs: 1800,
+        exercises: [{ name: "Push-up", sets: 1 }],
+        routineName: null,
+      };
+      finishPageDouble.replace.mockReset();
+    });
+
+    When("the user saves and finishes the workout", () => {
+      render(<FinishPage />);
+    });
+
+    Then("the workout summary is shown", () => {
+      expect(screen.getByText("Nice work.")).toBeTruthy();
+      expect(screen.getByText("Workout complete")).toBeTruthy();
+      expect(screen.getByText("Quick workout")).toBeTruthy();
+      expect(screen.getByText("Exercise breakdown")).toBeTruthy();
+      expect(finishPageDouble.replace).not.toHaveBeenCalled();
       cleanup();
     });
   });

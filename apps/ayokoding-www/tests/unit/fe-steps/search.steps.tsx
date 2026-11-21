@@ -202,4 +202,39 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
       expect(result.closest("[cmdk-item]")?.getAttribute("data-value")).toContain("tools/ai-benchmark");
     });
   });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/search/search.feature: Ctrl+K opens the search dialog on non-Mac platforms
+  Scenario("Ctrl+K opens the search dialog on non-Mac platforms", ({ When, Then, And }) => {
+    When("a visitor presses Ctrl+K on the page", () => {
+      render(<SearchHarness />);
+      fireEvent.keyDown(document, { key: "k", ctrlKey: true });
+    });
+
+    Then("the search dialog should open", () => {
+      expect(screen.getByTestId("search-open").textContent).toBe("true");
+      expect(screen.getByRole("dialog")).toBeTruthy();
+    });
+
+    And("the search input should have focus", async () => {
+      await waitFor(() => expect(document.activeElement).toBe(screen.getByPlaceholderText("Search...")));
+    });
+  });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/search/search.feature: A query with no match shows a no-results message
+  Scenario("A query with no match shows a no-results message", ({ Given, When, Then }) => {
+    let input: HTMLElement;
+    Given("the search dialog is open", () => {
+      searchQuery.mockResolvedValue([]);
+      input = renderOpenSearch();
+    });
+
+    When("the visitor types a query that matches no page", () => {
+      fireEvent.change(input, { target: { value: "zzqxv" } });
+    });
+
+    Then("the search dialog should show a no-results message", async () => {
+      await waitFor(() => expect(searchQuery).toHaveBeenCalledWith({ query: "zzqxv", locale: "en", limit: 10 }));
+      expect(await screen.findByText("No results found")).toBeTruthy();
+    });
+  });
 });

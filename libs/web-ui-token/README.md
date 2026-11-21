@@ -84,7 +84,6 @@ The warm OKLCH tokens are intentionally opt-in.
 ## BDD and Testing
 
 The canonical corpus is `specs/libs/web-ui-token/behaviours/`. `test:unit` runs the in-process token
-adapter, and `test:coverage:unit`, `test:behaviour:coverage`, plus aggregate `test:coverage`
-validate the corpus and bindings statically. Integration and E2E are omitted because this package
+adapter, and `test:behaviour:coverage` validates the corpus and bindings statically. Integration and E2E are omitted because this package
 owns neither a real local-resource boundary nor a public browser/runtime boundary; consuming apps
 and `web-ui` prove those compositions.

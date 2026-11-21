@@ -24,6 +24,11 @@ produces findings that contradict each other.
 5. **Cleanup.** Are the task-owned artifacts gone, and is their absence proven rather than assumed?
 6. **Knowledge capture.** Is every `learnings.md` entry resolved to a durable owner or discarded with a reason?
 
+When a step asks for past proof that can no longer be produced, judge the recorded observation of current behaviour that
+replaces it, per
+[Current Behaviour Over Past Proof](../../development/quality/evidence-capture/current-behaviour-over-past-proof.md). A
+missing past record is not a finding by itself.
+
 ## Exit
 
 One terminal verdict is recorded. Archival proceeds only on a verdict that permits it.

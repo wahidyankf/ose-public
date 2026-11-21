@@ -13,5 +13,6 @@ when_to_use: "Read this index to find the right Evidence Capture Convention chil
 - [API Wire Evidence Conventions](./curl-api-evidence-conventions.md) — How to capture and format HTTP curl or non-HTTP native-client evidence. Use when recording API wire proof.
 - [Locale Testing Evidence Requirements](./locale-testing-evidence-requirements.md) — The evidence bar for locale/i18n testing across supported languages. Use when verifying a locale-sensitive feature and capturing its evidence.
 - [What plan-execution-checker Validates](./what-plan-execution-checker-validates.md) — What the plan-execution-checker agent inspects in captured evidence. Use when you need to know what evidence the plan-execution-checker gate inspects.
+- [Current Behaviour Over Past Proof](./current-behaviour-over-past-proof.md) — Recording a current observation when past proof can no longer be produced. Use when a check asks for a past run, baseline, or record that nobody kept.
 - [Examples](./examples.md) — Worked examples of correctly captured evidence. Use when you need a concrete example of properly captured evidence.
 - [Related Documentation](./related-documentation.md) — Cross-references to related verification and plan conventions. Use when you need a related convention on verification or plan structure.

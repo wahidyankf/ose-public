@@ -1,3 +1,12 @@
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/learn-three-bucket.feature: The Learn section offers only Paths, Courses, and Legacy
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/learn-three-bucket.feature: A relocated legacy domain URL redirects to its legacy address
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/learn-three-bucket.feature: A relocated legacy domain URL redirects to its legacy address in one hop
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/learn-three-bucket.feature: A stale /c-bookmarked legacy domain URL redirects to its legacy address in two hops
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/learn-three-bucket.feature: A historical learn-reorg source chains through to its legacy address
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/learn-three-bucket.feature: The legacy redirect does not rewrite a canonical courses URL
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/learn-three-bucket.feature: The legacy redirect does not rewrite a canonical paths URL
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/learn-three-bucket.feature: The legacy redirect does not interfere with a re-homed fundamentally-strong course URL
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/learn-three-bucket.feature: A deep legacy path keeps its sub-taxonomy verbatim
 import fs from "node:fs";
 import path from "node:path";
 import { createBdd } from "playwright-bdd";

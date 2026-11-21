@@ -7,6 +7,7 @@ Feature: Bilingual accessible shell
   Background:
     Given the app is running
 
+  # Behaviour: AYB-014
   Scenario Outline: The page shell uses the route's language
     When a reader opens the "<locale>" home page
     Then the document language is "<locale>"
@@ -17,12 +18,14 @@ Feature: Bilingual accessible shell
       | en     |
       | id     |
 
+  # Behaviour: AYB-040
   Scenario: The locale switch preserves an available translated destination
     Given a reader is on a page with a translation in the other supported locale
     When the reader switches locale
     Then the translated page opens in the other locale
     And the active locale control matches the destination
 
+  # Behaviour: AYB-038
   Scenario: Keyboard readers can skip the repeated navigation
     When a keyboard reader activates the skip-to-content link
     Then focus moves to the main content
@@ -39,18 +42,21 @@ Feature: Bilingual accessible shell
       | 768   |
       | 1280  |
 
+  # Behaviour: AYB-039
   Scenario: Mobile navigation restores focus after dismissal
     Given a reader has opened the mobile navigation panel
     When the reader dismisses the panel with Escape
     Then the panel closes
     And focus returns to its opener
 
+  # Behaviour: AYB-041
   Scenario: A selected theme survives a reload
     Given a reader has chosen the dark theme
     When the reader reloads the page
     Then the page uses the dark theme
     And theme text and controls remain accessible
 
+  # Behaviour: AYB-042
   Scenario: A resized sidebar retains its width within supported bounds
     Given a reader has resized the desktop sidebar within the supported bounds
     When the reader opens another content page

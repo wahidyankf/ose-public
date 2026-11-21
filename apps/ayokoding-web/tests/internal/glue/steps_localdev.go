@@ -12,10 +12,6 @@ import (
 	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/web"
 )
 
-func (w *World) StepExistingLearningSiteRunningPort3101() error {
-	return w.startExternal(3101)
-}
-
 func (w *World) StepRewriteStartsWithoutPortOverride() error {
 	w.env = map[string]string{}
 	return w.launch()
@@ -38,16 +34,6 @@ func (w *World) StepRewriteServesBilingualEntryPagesPort3102() error {
 		return err
 	}
 	return w.mustContain(`lang="id"`)
-}
-
-func (w *World) StepExistingSiteStillAnswersRequestsPort3101() error {
-	if !w.externalUp(3101) {
-		return fail("existing site on 3101 is down")
-	}
-	if w.adapter == "unit" {
-		return nil
-	}
-	return w.callRemote("http://127.0.0.1:3101", http.MethodGet, "/en")
 }
 
 func (w *World) StepAyokodingWebPortSetAvailableValidPort() error {
@@ -322,41 +308,6 @@ func (w *World) StepMarkdownManifestByteHashesRemainUnchanged() error {
 		}
 	}
 	return nil
-}
-
-func (w *World) StepRewriteDoesRunContentIndexGeneratorImplicitly() error {
-	for _, request := range w.requests {
-		if request.method != http.MethodGet {
-			return fail("request %s %s looks like an implicit generator", request.method, request.target)
-		}
-	}
-	return nil
-}
-
-func (w *World) StepOtherLearningContentPlansUnfinished() error {
-	return nil
-}
-
-func (w *World) StepCurrentSharedCorpusHasValidCommittedState() error {
-	return nil
-}
-
-func (w *World) StepRewriteLoadsCommittedCorpus() error {
-	return w.launch()
-}
-
-func (w *World) StepServesAvailableContentManifestsFromState() error {
-	if err := w.get("/en/learn/courses/go-basics/learning/hello-world"); err != nil {
-		return err
-	}
-	if err := w.mustStatus(http.StatusOK); err != nil {
-		return err
-	}
-	return w.get("/en/learn/paths/backend-id")
-}
-
-func (w *World) StepDoesWaitAnotherPlanFinish() error {
-	return w.mustStatus(http.StatusOK)
 }
 
 // itoa renders a port without importing strconv in every step file.

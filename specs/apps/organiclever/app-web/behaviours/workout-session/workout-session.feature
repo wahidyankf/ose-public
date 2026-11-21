@@ -4,32 +4,44 @@ Feature: Workout Session
   I want to start, log sets, and complete a workout session
   So that my exercise activity is recorded in the journal
 
-  Scenario: Opening a blank workout starts the session
+  # Behaviour: OAW-006
+  Scenario: Starting a blank workout lets the user begin logging sets
     Given the app shell has no selected routine
     When the user opens a blank workout
-    Then the workout is in active exercising state
+    Then the user can log sets
 
+  # Behaviour: OAW-026
   Scenario: Log a set triggers rest timer
     Given an active workout with one exercise with rest
     When the user logs a set
     Then the rest timer is visible
 
-  Scenario: Skip rest returns to exercising
+  # Behaviour: OAW-026
+  Scenario: Skipping rest hides the rest timer
     Given the rest timer is active
     When the user skips rest
-    Then the workout returns to exercising state
+    Then the rest timer is hidden
 
+  # Behaviour: OAW-026
   Scenario: End workout shows confirmation sheet
     Given an active workout
     When the user ends the workout
     Then the confirmation sheet is shown
 
-  Scenario: Discard workout returns to idle
+  # Behaviour: OAW-026
+  Scenario: Discarding the workout ends it
     Given the user has opened the confirmation sheet
     When the user discards the workout
-    Then the workout is in idle state
+    Then no workout is in progress
 
-  Scenario: Keep going continues exercising
+  # Behaviour: OAW-026
+  Scenario: Keep going closes the confirmation sheet and the workout continues
     Given the user has opened the confirmation sheet
     When the user keeps going
-    Then the workout returns to exercising state
+    Then the workout continues
+
+  # Behaviour: OAW-007
+  Scenario: Opening /app/workout/finish without a finished workout returns to /app/home
+    Given no workout has been finished
+    When the user opens the workout finish page
+    Then the Home screen is visible

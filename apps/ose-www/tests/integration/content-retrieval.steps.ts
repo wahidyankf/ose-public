@@ -42,7 +42,7 @@ describeFeature(feature, ({ Background, Scenario }) => {
     });
   });
 
-  Scenario("List all update posts sorted by date", ({ Given, When, Then, And }) => {
+  Scenario("Updates are listed newest first", ({ Given, When, Then }) => {
     const service = realContentService();
     let results: ContentMeta[] = [];
 
@@ -61,7 +61,19 @@ describeFeature(feature, ({ Background, Scenario }) => {
         "Phase 4 Fixture",
       ]);
     });
-    And("each update contains title, date, summary, and tags", () => {
+  });
+
+  Scenario("Each update shows title, date, summary, and tags", ({ Given, When, Then }) => {
+    const service = realContentService();
+    let results: ContentMeta[] = [];
+
+    Given("the content repository contains multiple update posts", async () => {
+      expect((await service.listUpdates()).length).toBe(5);
+    });
+    When("the content service lists all updates", async () => {
+      results = await service.listUpdates();
+    });
+    Then("each update contains title, date, summary, and tags", () => {
       for (const update of results) {
         expect(update.title).not.toBe("");
         expect(update.date).toBeInstanceOf(Date);

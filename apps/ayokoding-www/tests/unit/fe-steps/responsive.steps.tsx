@@ -75,6 +75,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/responsive.feature: Desktop viewport shows sidebar, content, and table of contents
   Scenario("Desktop viewport shows sidebar, content, and table of contents", ({ Given, When, Then, And }) => {
     Given('the viewport is set to "desktop" (1280x800)', () => {
       Object.defineProperties(window, {
@@ -102,6 +103,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/responsive.feature: Laptop viewport shows sidebar and content but hides table of contents
   Scenario("Laptop viewport shows sidebar and content but hides table of contents", ({ Given, When, Then, And }) => {
     Given('the viewport is set to "laptop" (1024x768)', () => {
       Object.defineProperties(window, {
@@ -130,6 +132,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/responsive.feature: Mobile viewport shows hamburger menu and hides sidebar
   Scenario("Mobile viewport shows hamburger menu and hides sidebar", ({ Given, When, Then, And }) => {
     Given('the viewport is set to "mobile" (375x667)', () => {
       Object.defineProperties(window, {
@@ -156,6 +159,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/responsive.feature: Mobile hamburger menu opens the sidebar drawer
   Scenario("Mobile hamburger menu opens the sidebar drawer", ({ Given, When, Then, And }) => {
     Given('the viewport is set to "mobile" (375x667)', () => {
       Object.defineProperty(window, "innerWidth", { configurable: true, value: 375 });

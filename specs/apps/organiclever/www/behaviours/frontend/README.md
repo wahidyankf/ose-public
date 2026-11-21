@@ -11,10 +11,8 @@ greenfield-simple marketing surface carried over from the former
 specs/apps/organiclever/www/behaviours/frontend/
 ├── home/                  # Marketing landing page (hero, features, principles)
 │   └── home.feature
-├── accessibility/         # WCAG AA compliance for the marketing surface
-│   └── accessibility.feature
-└── env-loader/            # APP_ENV tier env-file loader (build-time tooling)
-    └── env-loader.feature
+└── accessibility/         # WCAG AA compliance for the marketing surface
+    └── accessibility.feature
 ```
 
 ## Conventions
@@ -38,5 +36,4 @@ specs/apps/organiclever/www/behaviours/frontend/
 - **Parent**: [behaviour specs](../../README.md)
 
 - [accessibility — organiclever-www Gherkin Domain](./accessibility/README.md) — WCAG accessibility compliance scenarios for the marketing site
-- [env-loader — organiclever-www Gherkin Domain](./env-loader/README.md) — Scenarios for the Next.js APP_ENV tier env-file loader
 - [home — organiclever-www Gherkin Domain](./home/README.md) — Marketing landing page scenarios (hero, features, principles)

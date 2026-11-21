@@ -1,3 +1,12 @@
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: Marking a page complete is saved in this browser only
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: A completed page can be un-checked
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: Progress is shared by every path that contains the course
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: The site still works when browser storage is blocked
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: Unreadable saved progress is ignored and replaced
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: Resetting progress clears it after confirmation
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: Cancelling a reset keeps progress
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: Progress appears without the page layout shifting
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: Progress updates in another open tab
 import { createBdd } from "playwright-bdd";
 import { expect, type Browser, type Page } from "@playwright/test";
 import { buildTrpcUrl, extractTrpcData } from "./backend-helpers";

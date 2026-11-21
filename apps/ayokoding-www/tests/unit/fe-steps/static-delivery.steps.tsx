@@ -46,6 +46,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/static-delivery.feature: A content page is prerendered at build time
   Scenario("A content page is prerendered at build time", ({ Given, When, Then, And }) => {
     let inspection: ReturnType<typeof inspectPrerenderManifest>;
     let manifest: PrerenderManifestLike;
@@ -72,6 +73,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/static-delivery.feature: A repeat request to a content page remains cacheable
   Scenario("A repeat request to a content page remains cacheable", ({ Given, When, Then }) => {
     let lessonUrl: string;
     let repeatResponseHeaders: Record<string, string>;
@@ -90,6 +92,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/static-delivery.feature: Runtime tRPC endpoints retain their filesystem assets
   Scenario("Runtime tRPC endpoints retain their filesystem assets", ({ Given, When, Then }) => {
     let endpointResponses: unknown[];
     Given("the ayokoding-www standalone package is running", async () => {
@@ -113,6 +116,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/static-delivery.feature: The document language reflects the localized page locale
   ScenarioOutline("The document language reflects the localized page locale", ({ Given, When, Then }, variables) => {
     let locale: "en" | "id";
     let renderedDocument: ReactElement<{ lang: string }>;

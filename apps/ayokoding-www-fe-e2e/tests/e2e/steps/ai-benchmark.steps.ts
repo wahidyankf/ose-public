@@ -43,6 +43,58 @@ import { t } from "../../../../ayokoding-www/src/features/i18n/core/translations
 
 const { Given, When, Then } = createBdd();
 
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Models with no consensus tier are listed in their own closed disclosure
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Every roster model belongs to exactly one tier group
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The substitute finder offers three harnesses with Command Code Pro chosen first
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Choosing a frontier model lists its Command Code Pro substitutes with a price comparison
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A frontier model above every model of the chosen harness shows the nearest options
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Changing the finder's harness lists that harness's models
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The chosen substitute target is kept in the URL
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The chosen substitute harness is kept in the URL
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: An unrecognized substitute harness falls back to Command Code Pro
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The English page renders its localized heading
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The Indonesian page renders its localized heading
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The last-updated date is shown before the substitute finder
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The page states that only independent results are scored
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Each consensus tier section states the consensus rule
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Every rated model row shows its bar, consensus count, and API price in text
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Bar length is proportional to the agreeing count
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The tier is carried in text, not by colour alone
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A limited-access model is labelled
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Models with insufficient data are listed in a collapsed section
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The data table is present without any interaction
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The table lists every model's scores, tier, and prices
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Every benchmark score names and links its operator
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Cost per task is shown where an independent operator publishes it
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The page explains how the score is calculated
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The methodology states the consensus rule
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The page lists every operator with its checked date and terms
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: No raw translation key leaks on either locale
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The page with no query parameters shows the whole roster
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A harness parameter narrows the tier map and the table
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Every listed harness is a known harness parameter value
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A tier parameter narrows the tier map and the table
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Harness and tier parameters intersect
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: An unrecognized filter value falls back to the unfiltered view
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A duplicated query parameter resolves to its first value
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Resetting a filter to "All" removes it from the URL
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A filter combination matching no model renders an explicit empty state
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The score basis defaults to the consensus tiers
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Models without a score on the chosen benchmark are listed as unranked
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: An unrecognized benchmark falls back to the consensus tiers
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The chosen benchmark is kept in the URL
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Resetting the score basis to Consensus tiers removes it from the URL
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The methodology explains the per-benchmark view
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Per-benchmark tier sections name their benchmark anchor and floor
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A tier parameter in a per-benchmark view narrows to that benchmark's tier
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The methodology lists every benchmark's tier anchors
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Tier colours meet contrast in both themes
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The document never scrolls horizontally
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Every interactive target meets the minimum target size
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Tier map label text never exceeds the page's body text size
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The substitute finder is visible above the fold on a phone
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The page behaves identically in both locales
+
 // AI benchmark public-boundary step bindings. Expected values are computed from the same dataset
 // and core functions the page uses; everything asserted is read from the live, rendered page.
 

@@ -30,6 +30,7 @@ let ``messaging status endpoint reports pending before the demo runs`` () =
     let body = resp.Content.ReadAsStringAsync().Result
     Assert.Contains("pending", body)
 
+// @scenario specs/apps/organiclever/be/behaviours/messaging/live/jetstream-demo.feature: Messaging status endpoint reports the startup demo message delivered and acked
 [<Fact>]
 let ``messaging status endpoint reflects a recorded outcome`` () =
     let status = newShared ()

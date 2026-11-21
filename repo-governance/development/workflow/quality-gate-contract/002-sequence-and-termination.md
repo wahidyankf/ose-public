@@ -13,34 +13,51 @@ when_to_use: >-
 One cycle is one full audit followed by one repair. Every arrow back to an earlier step is bounded by the cycle counter
 `k`.
 
-```text
-freeze subject (commit + scope)
-        |
-        v
-entry tooling run ---- red ----> root-cause pre-step (<= 3 attempts, outside the cycle budget)
-        |                              |                     |
-      green                          green               still red --> BLOCKED (tooling)
-        |<-----------------------------+
-        v
-k = 1
-        |
-        v
-full audit by <family>-checker  ----- no blocking row ----> PASS or PASS_WITH_FINDINGS
-        |
-   blocking rows
-        v
-freeze ledger L_k ---> <family>-propagation (run by <family>-fixer)
-        |                   repairs only L_k rows, verifies each row
-        v
-blocking count did not fall since the previous audit? ---- yes ---> FAIL (no progress)
-        |
-        no
-        v
-k = max-cycles? --- no ---> k = k + 1, back to the full audit
-        |
-       yes
-        v
-exit tooling run + per-row verification ---> PASS / PASS_WITH_FINDINGS (all rows closed) or FAIL
+```mermaid
+flowchart TD
+    accTitle: Quality gate cycle
+    accDescr {
+        A run freezes the subject and passes the entry check before its first audit.
+        Each blocking row goes to a propagation step that repairs only the frozen ledger rows.
+        The cycle counter k bounds every return to the audit, and the exit check ends the run.
+        The blocking count must fall between audits, or the run fails for lack of progress.
+    }
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef fail fill:#DE8F05,stroke:#000000,color:#000000
+    freeze["Freeze subject<br/>commit and scope"]
+    entry["Entry tooling run"]
+    root["Root-cause pre-step<br/>up to 3 attempts<br/>outside cycle budget"]
+    k1["k = 1"]
+    audit["Full audit by<br/>&lt;family&gt;-checker"]
+    pass["PASS or<br/>PASS_WITH_FINDINGS"]
+    ledger["Freeze ledger L_k"]
+    prop["&lt;family&gt;-propagation<br/>repairs L_k rows<br/>verifies each row"]
+    progress{"Blocking count<br/>did not fall?"}
+    stop1["FAIL<br/>no progress"]
+    cap{"k = max-cycles?"}
+    next["k = k + 1"]
+    exit["Exit tooling run<br/>per-row verification"]
+    done["PASS /<br/>PASS_WITH_FINDINGS<br/>all rows closed"]
+    stop2["FAIL"]
+    blocked["BLOCKED (tooling)"]
+    freeze --> entry
+    entry -->|green| k1
+    entry -->|red| root
+    root -->|green| k1
+    root -->|still red| blocked
+    k1 --> audit
+    audit -->|no blocking row| pass
+    audit -->|blocking rows| ledger
+    ledger --> prop
+    prop --> progress
+    progress -->|yes| stop1
+    progress -->|no| cap
+    cap -->|no| next
+    next --> audit
+    cap -->|yes| exit
+    exit -->|all rows closed| done
+    exit -->|otherwise| stop2
+    class stop1,stop2,blocked fail
 ```
 
 1. **Freeze the subject.** Record the commit and the exact scope. A subject changed during the run by anything other

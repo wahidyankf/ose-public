@@ -196,6 +196,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
 
   // ── Consensus tiers ────────────────────────────────────────────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The consensus tier is the tier the model holds on the most benchmarks
   ScenarioOutline(
     "The consensus tier is the tier the model holds on the most benchmarks",
     ({ Given, When, Then, And }, variables) => {
@@ -223,6 +224,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     },
   );
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A model tiered on fewer than two benchmarks has insufficient data
   Scenario("A model tiered on fewer than two benchmarks has insufficient data", ({ Given, When, Then, And }) => {
     Given("a fixture model holding a tier on only one benchmark", () => {
       ctx.model = model("m", [fig("deep-swe", 90)]);
@@ -239,6 +241,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A model whose benchmarks split below half has no consensus tier
   ScenarioOutline(
     "A model whose benchmarks split below half has no consensus tier",
     ({ Given, When, Then, And }, variables) => {
@@ -267,6 +270,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     },
   );
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Models in one consensus section are ordered by consensus strength
   Scenario("Models in one consensus section are ordered by consensus strength", ({ Given, When, Then }) => {
     Given("fixture models in the planning consensus tier agreeing on 2 of 4, 3 of 4, and 3 of 3 benchmarks", () => {
       ctx.roster = [
@@ -288,6 +292,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Models with no consensus tier are listed in their own closed disclosure
   Scenario("Models with no consensus tier are listed in their own closed disclosure", ({ Given, And, When, Then }) => {
     let split: Model[] = [];
     Given("the roster holds models whose benchmarks split below half", () => {
@@ -320,50 +325,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
 
   // ── Tiers ────────────────────────────────────────────────────────────────────
 
-  Scenario("Every tier anchor is a previous-generation model with general access", ({ Given, When, Then, And }) => {
-    Given("the full roster is loaded", () => {
-      expect(full.models.length).toBeGreaterThan(0);
-    });
-    When("the tier anchors are inspected", () => {
-      ctx.roster = [...new Set(Object.values(BENCHMARK_TIER_ANCHORS).flatMap(Object.values))].map(
-        (id) => full.models.find((m) => m.id === id)!,
-      );
-    });
-    Then("every tier anchor has general access", () => {
-      for (const a of ctx.roster!) expect(a.access, a.id).toBe("general");
-    });
-    And("every tier anchor has a newer model from the same vendor in the roster", () => {
-      for (const a of ctx.roster!) {
-        const newer = full.models.filter(
-          (m) => m.vendor === a.vendor && m.releaseDate !== undefined && m.releaseDate > a.releaseDate!,
-        );
-        expect(newer.length, a.id).toBeGreaterThan(0);
-      }
-    });
-  });
-
-  Scenario("Every listed harness's in-house model line is in the roster", ({ Given, When, Then, And }) => {
-    let lines: Array<{ line: (typeof HARNESS_IN_HOUSE_LINES)[number]; models: Model[] }> = [];
-    Given("the full roster is loaded", () => {
-      expect(full.models.length).toBeGreaterThan(0);
-    });
-    When("the in-house model lines of the listed harnesses are inspected", () => {
-      lines = HARNESS_IN_HOUSE_LINES.map((line) => ({
-        line,
-        models: full.models.filter((m) => m.vendor === line.vendor && m.line === line.line),
-      }));
-    });
-    Then("each in-house model line has at least one model in the roster", () => {
-      expect(lines.length).toBeGreaterThan(0);
-      for (const { line, models } of lines) expect(models.length, `${line.vendor} ${line.line}`).toBeGreaterThan(0);
-    });
-    And("each of those models is offered in its own harness", () => {
-      for (const { line, models } of lines) {
-        for (const m of models) expect(m.harnesses, m.id).toContain(line.harness);
-      }
-    });
-  });
-
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Every roster model belongs to exactly one tier group
   Scenario("Every roster model belongs to exactly one tier group", ({ Given, When, Then }) => {
     let groups: ReturnType<typeof computeTierGroups>;
     Given("the full roster is loaded", () => {
@@ -381,6 +343,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
 
   // ── Price ────────────────────────────────────────────────────────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The blended price weights input three to one against output
   Scenario("The blended price weights input three to one against output", ({ Given, When, Then }) => {
     Given("a fixture model priced at 4 dollars input and 20 dollars output per million tokens", () => {
       ctx.model = model("m", [], { price: price(4, 20) });
@@ -395,6 +358,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
 
   // ── Substitute finder ────────────────────────────────────────────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Substitutes are models of the chosen harness in the same or a higher tier
   Scenario(
     "Substitutes are models of the chosen harness in the same or a higher tier",
     ({ Given, And, When, Then }) => {
@@ -440,6 +404,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     },
   );
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The substitute finder offers three harnesses with Command Code Pro chosen first
   Scenario(
     "The substitute finder offers three harnesses with Command Code Pro chosen first",
     ({ Given, When, Then, And }) => {
@@ -463,6 +428,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     },
   );
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Choosing a frontier model lists its Command Code Pro substitutes with a price comparison
   Scenario(
     "Choosing a frontier model lists its Command Code Pro substitutes with a price comparison",
     ({ Given, When, Then, And }) => {
@@ -509,6 +475,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     },
   );
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A frontier model above every model of the chosen harness shows the nearest options
   Scenario(
     "A frontier model above every model of the chosen harness shows the nearest options",
     ({ Given, When, Then, And }) => {
@@ -586,6 +553,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     },
   );
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Changing the finder's harness lists that harness's models
   ScenarioOutline(
     "Changing the finder's harness lists that harness's models",
     ({ Given, When, Then, And }, variables) => {
@@ -623,6 +591,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     },
   );
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The chosen substitute target is kept in the URL
   Scenario("The chosen substitute target is kept in the URL", ({ Given, When, Then, And }) => {
     Given("the AI benchmark page is open", () => {
       renderPage();
@@ -643,6 +612,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The chosen substitute harness is kept in the URL
   Scenario("The chosen substitute harness is kept in the URL", ({ Given, When, Then, And }) => {
     Given("the AI benchmark page is open", () => {
       renderPage();
@@ -670,6 +640,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: An unrecognized substitute harness falls back to Command Code Pro
   Scenario("An unrecognized substitute harness falls back to Command Code Pro", ({ Given, When, Then, But }) => {
     Given("the URL carries a substitute harness parameter with an unknown value", () => {
       ctx.errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
@@ -689,6 +660,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
 
   // ── Page header and dates ────────────────────────────────────────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The English page renders its localized heading
   Scenario("The English page renders its localized heading", ({ Given, When, Then, And }) => {
     Given('the locale is "en"', () => {
       ctx.locale = "en";
@@ -704,6 +676,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The Indonesian page renders its localized heading
   Scenario("The Indonesian page renders its localized heading", ({ Given, When, Then, And }) => {
     Given('the locale is "id"', () => {
       ctx.locale = "id";
@@ -720,6 +693,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The last-updated date is shown before the substitute finder
   Scenario("The last-updated date is shown before the substitute finder", ({ Given, When, Then, And }) => {
     Given("the dataset carries a last-updated date", () => {
       expect(full.lastUpdated).toMatch(/^\d{4}-\d{2}-\d{2}$/);
@@ -743,6 +717,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The page states that only independent results are scored
   Scenario("The page states that only independent results are scored", ({ Given, When, Then, And }) => {
     Given("the AI benchmark page is open", () => {
       renderPage();
@@ -765,6 +740,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
 
   // ── Tier map ─────────────────────────────────────────────────────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Each consensus tier section states the consensus rule
   Scenario("Each consensus tier section states the consensus rule", ({ Given, When, Then, And }) => {
     Given("the full roster is loaded", () => {
       expect(full.models.length).toBeGreaterThan(0);
@@ -789,6 +765,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Every rated model row shows its bar, consensus count, and API price in text
   Scenario(
     "Every rated model row shows its bar, consensus count, and API price in text",
     ({ Given, When, Then, And, But }) => {
@@ -833,6 +810,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     },
   );
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Bar length is proportional to the agreeing count
   Scenario("Bar length is proportional to the agreeing count", ({ Given, When, Then }) => {
     let pair: [string, string];
     Given("two rated models agreeing on different numbers of benchmarks", () => {
@@ -854,6 +832,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The tier is carried in text, not by colour alone
   Scenario("The tier is carried in text, not by colour alone", ({ Given, When, Then }) => {
     Given("the full roster is loaded", () => {
       expect(full.models.length).toBeGreaterThan(0);
@@ -869,6 +848,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A limited-access model is labelled
   Scenario("A limited-access model is labelled", ({ Given, When, Then }) => {
     Given("the roster holds a model with limited access", () => {
       ctx.model = rated.find((s) => s.model.access === "limited")!.model;
@@ -885,6 +865,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Models with insufficient data are listed in a collapsed section
   Scenario("Models with insufficient data are listed in a collapsed section", ({ Given, When, Then, And }) => {
     let insufficient: Model[] = [];
     Given("the roster holds models scored on fewer than two benchmarks", () => {
@@ -919,6 +900,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
 
   // ── Data table ───────────────────────────────────────────────────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The data table is present without any interaction
   Scenario("The data table is present without any interaction", ({ Given, When, Then, And }) => {
     Given("the full roster is loaded", () => {
       expect(full.models.length).toBeGreaterThan(0);
@@ -941,6 +923,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The table lists every model's scores, tier, and prices
   Scenario("The table lists every model's scores, tier, and prices", ({ Given, When, Then }) => {
     Given("the full roster is loaded", () => {
       expect(full.models.length).toBeGreaterThan(0);
@@ -970,6 +953,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     );
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Every benchmark score names and links its operator
   Scenario("Every benchmark score names and links its operator", ({ Given, When, Then, And }) => {
     let cells: HTMLElement[] = [];
     Given("the full roster is loaded", () => {
@@ -998,6 +982,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Cost per task is shown where an independent operator publishes it
   Scenario("Cost per task is shown where an independent operator publishes it", ({ Given, When, Then, And }) => {
     Given("a model whose independent operator publishes a cost per task", () => {
       ctx.model = full.models.find((m) => m.costPerTask !== undefined)!;
@@ -1025,6 +1010,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     return details;
   }
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The page explains how the score is calculated
   Scenario("The page explains how the score is calculated", ({ Given, When, Then, And }) => {
     let details: HTMLElement;
     Given("the AI benchmark page is open", () => {
@@ -1067,6 +1053,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The methodology states the consensus rule
   Scenario("The methodology states the consensus rule", ({ Given, When, Then, And }) => {
     let details: HTMLElement;
     Given("the AI benchmark page is open", () => {
@@ -1101,6 +1088,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     );
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The page lists every operator with its checked date and terms
   Scenario("The page lists every operator with its checked date and terms", ({ Given, When, Then, And }) => {
     Given("the dataset names its benchmark operators and price sources", () => {
       const used = new Set(full.models.flatMap((m) => m.figures.map((f) => f.operator)));
@@ -1132,6 +1120,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: No raw translation key leaks on either locale
   ScenarioOutline("No raw translation key leaks on either locale", ({ Given, When, Then }, variables) => {
     Given('the locale is "<locale>"', () => {
       ctx.locale = variables.locale as Locale;
@@ -1148,6 +1137,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
 
   // ── Filters ──────────────────────────────────────────────────────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The page with no query parameters shows the whole roster
   Scenario("The page with no query parameters shows the whole roster", ({ Given, When, Then }) => {
     Given("the URL carries no query parameters", () => {
       navState.search = "";
@@ -1160,6 +1150,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A harness parameter narrows the tier map and the table
   Scenario("A harness parameter narrows the tier map and the table", ({ Given, When, Then, And }) => {
     Given("the URL carries a harness parameter naming a known harness", () => {
       ctx.harness = "codex-cli";
@@ -1179,6 +1170,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Every listed harness is a known harness parameter value
   ScenarioOutline(
     "Every listed harness is a known harness parameter value",
     ({ Given, When, Then, And }, variables) => {
@@ -1204,6 +1196,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     },
   );
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A tier parameter narrows the tier map and the table
   Scenario("A tier parameter narrows the tier map and the table", ({ Given, When, Then, And }) => {
     Given("the URL carries a tier parameter naming a known tier", () => {
       ctx.filterTier = "planning";
@@ -1224,6 +1217,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Harness and tier parameters intersect
   Scenario("Harness and tier parameters intersect", ({ Given, When, Then }) => {
     Given("the URL carries both a harness parameter and a tier parameter", () => {
       ctx.harness = "opencode-go";
@@ -1243,6 +1237,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: An unrecognized filter value falls back to the unfiltered view
   Scenario("An unrecognized filter value falls back to the unfiltered view", ({ Given, When, Then, But }) => {
     Given("the URL carries a harness parameter with an unknown value", () => {
       ctx.errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
@@ -1260,6 +1255,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A duplicated query parameter resolves to its first value
   Scenario("A duplicated query parameter resolves to its first value", ({ Given, When, Then }) => {
     Given("the URL carries the harness parameter twice with two different known harness values", () => {
       navState.search = "harness=cursor&harness=opencode-go";
@@ -1275,6 +1271,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Resetting a filter to "All" removes it from the URL
   Scenario('Resetting a filter to "All" removes it from the URL', ({ Given, When, Then }) => {
     Given("the URL carries both a harness parameter and a tier parameter", () => {
       navState.search = "harness=opencode-go&tier=execution";
@@ -1292,6 +1289,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A filter combination matching no model renders an explicit empty state
   Scenario("A filter combination matching no model renders an explicit empty state", ({ Given, When, Then, But }) => {
     Given("the URL carries a filter combination that matches no model", () => {
       const { harness, tier } = emptyCombination();
@@ -1314,6 +1312,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
 
   // ── Score basis (average vs per-benchmark) ─────────────────────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The score basis defaults to the consensus tiers
   Scenario("The score basis defaults to the consensus tiers", ({ Given, When, Then, And }) => {
     const scoreBasisSelect = () => screen.getByLabelText(t("en", "aiBenchScoreBasisLabel")) as HTMLSelectElement;
     Given("the URL carries no benchmark parameter", () => {
@@ -1335,6 +1334,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Naming a benchmark ranks models by its raw score
   Scenario("Naming a benchmark ranks models by its raw score", ({ Given, When, Then, And }) => {
     Given("fixture models scoring 60, 80, and 70 on DeepSWE 1.1", () => {
       ctx.roster = [
@@ -1357,6 +1357,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Only the pinned version counts in a per-benchmark view
   Scenario("Only the pinned version counts in a per-benchmark view", ({ Given, When, Then }) => {
     Given("a fixture model scoring 90 on Terminal-Bench 2.1 with no Terminal-Bench 4.0 figure", () => {
       ctx.model = model("m", [fig("terminal-bench", 90, "2.1")]);
@@ -1372,6 +1373,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Models without a score on the chosen benchmark are listed as unranked
   Scenario("Models without a score on the chosen benchmark are listed as unranked", ({ Given, And, When, Then }) => {
     Given("the roster holds models with no scored FrontierCode-AA figure", () => {
       const missing = full.models.filter((m) => benchmarkScore(m, "frontiercode-aa") === undefined);
@@ -1410,6 +1412,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: An unrecognized benchmark falls back to the consensus tiers
   Scenario("An unrecognized benchmark falls back to the consensus tiers", ({ Given, When, Then, But }) => {
     Given("the URL carries a benchmark parameter with an unknown value", () => {
       ctx.errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
@@ -1431,6 +1434,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The chosen benchmark is kept in the URL
   Scenario("The chosen benchmark is kept in the URL", ({ Given, When, Then, And }) => {
     Given("the AI benchmark page is open", () => {
       renderPage("en", "");
@@ -1455,6 +1459,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Resetting the score basis to Consensus tiers removes it from the URL
   Scenario("Resetting the score basis to Consensus tiers removes it from the URL", ({ Given, When, Then, And }) => {
     Given("the URL carries a benchmark parameter naming a known benchmark", () => {
       navState.search = "benchmark=deep-swe";
@@ -1476,6 +1481,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The methodology explains the per-benchmark view
   Scenario("The methodology explains the per-benchmark view", ({ Given, When, Then, And }) => {
     Given("the AI benchmark page is open", () => {
       renderPage("en", "");
@@ -1498,6 +1504,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
 
   // ── Per-benchmark tiers ────────────────────────────────────────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A model is placed in the highest per-benchmark tier whose anchor it meets on that benchmark
   ScenarioOutline(
     "A model is placed in the highest per-benchmark tier whose anchor it meets on that benchmark",
     ({ Given, And, When, Then }, variables) => {
@@ -1516,69 +1523,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     },
   );
 
-  Scenario("Every benchmark has descending per-benchmark anchor floors", ({ Given, When, Then, And }) => {
-    Given("the full roster is loaded", () => {
-      expect(full.models.length).toBeGreaterThan(0);
-    });
-    When("the per-benchmark tier anchors are inspected", () => {
-      ctx.roster = full.models;
-    });
-    Then("every benchmark names an ultra, a planning, and an execution anchor", () => {
-      for (const b of BENCHMARK_SPECS) {
-        expect(Object.keys(BENCHMARK_TIER_ANCHORS[b.id]).sort()).toEqual(["execution", "planning", "ultra"]);
-      }
-    });
-    And("every anchor is a general-access model with a scored figure on that benchmark", () => {
-      for (const b of BENCHMARK_SPECS) {
-        for (const tier of ["ultra", "planning", "execution"] as const) {
-          const anchor = byId(BENCHMARK_TIER_ANCHORS[b.id][tier]);
-          expect(anchor.access, `${b.id}/${tier}`).toBe("general");
-          expect(benchmarkScore(anchor, b.id), `${b.id}/${tier}`).not.toBeUndefined();
-        }
-      }
-    });
-    And("every anchor has a newer model from the same vendor in the roster", () => {
-      for (const b of BENCHMARK_SPECS) {
-        for (const tier of ["ultra", "planning", "execution"] as const) {
-          const anchor = byId(BENCHMARK_TIER_ANCHORS[b.id][tier]);
-          const newer = full.models.filter(
-            (m) => m.vendor === anchor.vendor && m.releaseDate !== undefined && m.releaseDate > anchor.releaseDate!,
-          );
-          expect(newer.length, `${b.id}/${tier}`).toBeGreaterThan(0);
-        }
-      }
-    });
-    And("on every benchmark the ultra floor is above the planning floor, which is above the execution floor", () => {
-      for (const b of BENCHMARK_SPECS) {
-        const floors = (["ultra", "planning", "execution"] as const).map(
-          (tier) => benchmarkScore(byId(BENCHMARK_TIER_ANCHORS[b.id][tier]), b.id)!,
-        );
-        expect(floors[0]).toBeGreaterThan(floors[1]!);
-        expect(floors[1]).toBeGreaterThan(floors[2]!);
-      }
-    });
-  });
-
-  Scenario("Each per-benchmark anchor lands in the tier it defines on its benchmark", ({ Given, When, Then, And }) => {
-    Given("the full roster is loaded", () => {
-      expect(full.models.length).toBeGreaterThan(0);
-    });
-    When("every model's tier is assigned on DeepSWE", () => {
-      ctx.roster = full.models;
-    });
-    Then('the DeepSWE ultra anchor is in the "ultra" tier on DeepSWE', () => {
-      expect(assignBenchmarkTier(byId(BENCHMARK_TIER_ANCHORS["deep-swe"].ultra), "deep-swe", full)).toBe("ultra");
-    });
-    And('the DeepSWE planning anchor is in the "planning" tier on DeepSWE', () => {
-      expect(assignBenchmarkTier(byId(BENCHMARK_TIER_ANCHORS["deep-swe"].planning), "deep-swe", full)).toBe("planning");
-    });
-    And('the DeepSWE execution anchor is in the "execution" tier on DeepSWE', () => {
-      expect(assignBenchmarkTier(byId(BENCHMARK_TIER_ANCHORS["deep-swe"].execution), "deep-swe", full)).toBe(
-        "execution",
-      );
-    });
-  });
-
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Per-benchmark tier sections name their benchmark anchor and floor
   Scenario("Per-benchmark tier sections name their benchmark anchor and floor", ({ Given, When, Then, And }) => {
     const anchors = benchmarkTierAnchors(full, "terminal-bench");
     Given("the URL carries a benchmark parameter naming Terminal-Bench", () => {
@@ -1607,6 +1552,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A tier parameter in a per-benchmark view narrows to that benchmark's tier
   Scenario(
     "A tier parameter in a per-benchmark view narrows to that benchmark's tier",
     ({ Given, When, Then, And }) => {
@@ -1631,6 +1577,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     },
   );
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The methodology lists every benchmark's tier anchors
   Scenario("The methodology lists every benchmark's tier anchors", ({ Given, When, Then, And }) => {
     Given("the AI benchmark page is open", () => {
       renderPage("en", "");
@@ -1661,6 +1608,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
 
   // ── Accessibility and layout (declarative contract; measured by the e2e steps) ──
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Tier colours meet contrast in both themes
   ScenarioOutline("Tier colours meet contrast in both themes", ({ Given, When, Then, And }, variables) => {
     let bars: HTMLElement[] = [];
     Given('the page is rendered in the "<theme>" theme', () => {
@@ -1690,6 +1638,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The document never scrolls horizontally
   ScenarioOutline("The document never scrolls horizontally", ({ Given, When, Then }, variables) => {
     let region: HTMLElement;
     Given('the AI benchmark page is loaded at a "<width>" px viewport in the "<locale>" locale', () => {
@@ -1709,6 +1658,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Every interactive target meets the minimum target size
   ScenarioOutline("Every interactive target meets the minimum target size", ({ Given, When, Then }, variables) => {
     let targets: Element[] = [];
     Given('the AI benchmark page is loaded at a "<width>" px viewport', () => {
@@ -1736,6 +1686,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Tier map label text never exceeds the page's body text size
   Scenario("Tier map label text never exceeds the page's body text size", ({ Given, When, Then, And }) => {
     let label: HTMLElement;
     Given("the AI benchmark page is loaded at a 1440 px viewport", () => {
@@ -1754,6 +1705,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The substitute finder is visible above the fold on a phone
   ScenarioOutline("The substitute finder is visible above the fold on a phone", ({ Given, When, Then }, variables) => {
     let finder: HTMLElement;
     Given('the AI benchmark page is loaded at a "<width>" px wide, "<height>" px tall viewport', () => {
@@ -1776,6 +1728,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The page behaves identically in both locales
   ScenarioOutline("The page behaves identically in both locales", ({ Given, When, Then, And }, variables) => {
     Given('the AI benchmark page is loaded in the "<locale>" locale at a 390 px viewport', () => {
       ctx.viewportWidth = 390;

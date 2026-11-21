@@ -55,62 +55,61 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
-  Scenario("Generate replaces only the inner text between a marker pair", ({ When, Then }) => {
-    When("the benchmark reference generator runs in generate mode", () => {
-      try {
-        output = substituteMarkers(doc, tables);
-      } catch (e) {
-        caughtError = e;
-      }
-    });
+  // @scenario specs/apps/ayokoding/www/behaviours/build-tools/benchmark-reference-generation/benchmark-reference-generation.feature: Generating the benchmark reference refreshes its generated tables and leaves the rest of the page as written
+  Scenario(
+    "Generating the benchmark reference refreshes its generated tables and leaves the rest of the page as written",
+    ({ When, Then, And }) => {
+      When("the benchmark reference generator runs in generate mode", () => {
+        try {
+          output = substituteMarkers(doc, tables);
+        } catch (e) {
+          caughtError = e;
+        }
+      });
 
-    Then("the stale inner text should be replaced by the generated block", () => {
-      expect(caughtError).toBeUndefined();
-      expect(output).toContain("opencode-go/x");
-      expect(output).not.toContain("STALE old roster content");
-    });
-  });
+      Then("the stale inner text should be replaced by the generated block", () => {
+        expect(caughtError).toBeUndefined();
+        expect(output).toContain("opencode-go/x");
+        expect(output).not.toContain("STALE old roster content");
+      });
 
-  Scenario("Bytes outside the markers are preserved byte-for-byte", ({ When, Then, And }) => {
-    When("the benchmark reference generator runs in generate mode", () => {
-      try {
-        output = substituteMarkers(doc, tables);
-      } catch (e) {
-        caughtError = e;
-      }
-    });
+      And("the lead-in and trailing prose should be unchanged", () => {
+        expect(output.startsWith("Lead-in prose that must survive generation.")).toBe(true);
+        expect(output).toContain("Trailing prose that must also survive.");
+      });
 
-    Then("the lead-in and trailing prose should be unchanged", () => {
-      expect(output.startsWith("Lead-in prose that must survive generation.")).toBe(true);
-      expect(output).toContain("Trailing prose that must also survive.");
-    });
+      And("the BEGIN and END marker tags should remain in place", () => {
+        expect(output).toContain("<!-- BEGIN GENERATED: roster -->");
+        expect(output).toContain("<!-- END GENERATED: roster -->");
+      });
+    },
+  );
 
-    And("the BEGIN and END marker tags should remain in place", () => {
-      expect(output).toContain("<!-- BEGIN GENERATED: roster -->");
-      expect(output).toContain("<!-- END GENERATED: roster -->");
-    });
-  });
+  // @scenario specs/apps/ayokoding/www/behaviours/build-tools/benchmark-reference-generation/benchmark-reference-generation.feature: Generating from a page whose generated block is never closed fails with an error naming the block
+  Scenario(
+    "Generating from a page whose generated block is never closed fails with an error naming the block",
+    ({ Given, When, Then }) => {
+      Given("a reference document whose roster block has a BEGIN marker but no END marker", () => {
+        doc = ["<!-- BEGIN GENERATED: roster -->", "this pair is never closed", "more trailing content", ""].join("\n");
+        tables = { roster: ROSTER_TABLE };
+      });
 
-  Scenario("A missing END marker throws under the marker-first guard", ({ Given, When, Then }) => {
-    Given("a reference document whose roster block has a BEGIN marker but no END marker", () => {
-      doc = ["<!-- BEGIN GENERATED: roster -->", "this pair is never closed", "more trailing content", ""].join("\n");
-      tables = { roster: ROSTER_TABLE };
-    });
+      When("the benchmark reference generator runs in generate mode", () => {
+        try {
+          output = substituteMarkers(doc, tables);
+        } catch (e) {
+          caughtError = e;
+        }
+      });
 
-    When("the benchmark reference generator runs in generate mode", () => {
-      try {
-        output = substituteMarkers(doc, tables);
-      } catch (e) {
-        caughtError = e;
-      }
-    });
+      Then("it should throw an error naming the unclosed roster marker", () => {
+        expect(caughtError).toBeInstanceOf(Error);
+        expect(String((caughtError as Error)?.message ?? caughtError)).toMatch(/roster/);
+      });
+    },
+  );
 
-    Then("it should throw an error naming the unclosed roster marker", () => {
-      expect(caughtError).toBeInstanceOf(Error);
-      expect(String((caughtError as Error)?.message ?? caughtError)).toMatch(/roster/);
-    });
-  });
-
+  // @scenario specs/apps/ayokoding/www/behaviours/build-tools/benchmark-reference-generation/benchmark-reference-generation.feature: Generate mode is idempotent
   Scenario("Generate mode is idempotent", ({ When, Then }) => {
     When("the benchmark reference generator runs twice in generate mode", () => {
       firstRunOutput = substituteMarkers(doc, tables);
@@ -124,6 +123,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/build-tools/benchmark-reference-generation/benchmark-reference-generation.feature: Validate mode exits non-zero on drift
   Scenario("Validate mode exits non-zero on drift", ({ When, Then }) => {
     When("the benchmark reference generator runs in validate mode", () => {
       validateDrifted = validateWouldExitNonZero(doc, tables);

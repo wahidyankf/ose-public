@@ -9,7 +9,8 @@ const feature = await loadFeature(
   path.resolve(__dirname, "../../../../../../specs/libs/web-ui/behaviours/stat-card/stat-card.feature"),
 );
 
-describeFeature(feature, ({ Scenario }) => {
+describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
+  // @scenario specs/libs/web-ui/behaviours/stat-card/stat-card.feature: Renders label and value
   Scenario("Renders label and value", ({ When, Then, And }) => {
     let renderedText = "";
 
@@ -32,37 +33,25 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
-  Scenario("Renders InfoTip when info is provided", ({ When, Then }) => {
-    let infoTip: HTMLElement;
+  // @scenario specs/libs/web-ui/behaviours/stat-card/stat-card.feature: A stat card shows an info tip only when it has info
+  ScenarioOutline("A stat card shows an info tip only when it has info", ({ When, Then }, examples) => {
+    const withInfo = String(examples["info"] ?? "").startsWith("and info");
+    let infoTipFound = false;
 
-    When(
-      'I render a StatCard with label "Steps" value "12500" unit "steps" hue "teal" icon "trend" and info "Daily step count"',
-      () => {
-        cleanup();
-        render(<StatCard label="Steps" value="12500" unit="steps" hue="teal" icon="trend" info="Daily step count" />);
-        infoTip = screen.getByRole("button", { name: "Steps" });
-      },
-    );
-
-    Then("an InfoTip trigger should be visible", () => {
-      expect(infoTip.getAttribute("aria-label")).toBe("Steps");
+    When('I render a StatCard with label "Steps" value "12500" unit "steps" hue "teal" icon "trend" <info>', () => {
+      cleanup();
+      render(
+        withInfo ? (
+          <StatCard label="Steps" value="12500" unit="steps" hue="teal" icon="trend" info="Daily step count" />
+        ) : (
+          <StatCard label="Steps" value="12500" unit="steps" hue="teal" icon="trend" />
+        ),
+      );
+      infoTipFound = screen.queryByRole("button", { name: "Steps" }) !== null;
     });
-  });
 
-  Scenario("Does not render InfoTip when info is absent", ({ When, Then }) => {
-    let infoTip: HTMLElement | null;
-
-    When(
-      'I render a StatCard with label "Steps" value "12500" unit "steps" hue "teal" icon "trend" without info',
-      () => {
-        cleanup();
-        render(<StatCard label="Steps" value="12500" unit="steps" hue="teal" icon="trend" />);
-        infoTip = screen.queryByRole("button", { name: "Steps" });
-      },
-    );
-
-    Then("no InfoTip trigger should be present", () => {
-      expect(infoTip).toBeNull();
+    Then("the InfoTip trigger should be <presence>", () => {
+      expect(infoTipFound).toBe(examples["presence"] === "visible");
     });
   });
 });

@@ -42,6 +42,7 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/organiclever/app-web/behaviours/settings/settings-screen.feature: Settings screen loads user profile
   Scenario("Settings screen loads user profile", ({ When, Then }) => {
     When("the settings screen is loaded", () => renderSettings());
     Then("the user name input is visible", () => {
@@ -50,6 +51,7 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/organiclever/app-web/behaviours/settings/settings-screen.feature: Change rest setting
   Scenario("Change rest setting", ({ Given, When, Then }) => {
     Given("the settings screen is loaded", () => renderSettings());
     When("the user selects 30s rest", async () => {
@@ -62,6 +64,7 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/organiclever/app-web/behaviours/settings/settings-screen.feature: Saved toast appears after save
   Scenario("Saved toast appears after save", ({ Given, When, Then }) => {
     Given("the settings screen is loaded", () => renderSettings());
     When("the user saves settings", async () => {
@@ -70,6 +73,21 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
     });
     Then("the saved toast appears", async () => {
       expect(await screen.findByTestId("saved-toast")).toHaveTextContent("Saved");
+    });
+  });
+
+  // @scenario specs/apps/organiclever/app-web/behaviours/settings/settings-screen.feature: Saving a changed name in Settings shows the new name in the profile header
+  Scenario("Saving a changed name in Settings shows the new name in the profile header", ({ Given, When, Then }) => {
+    Given("the settings screen is loaded", () => renderSettings());
+    When('the user changes the name to "Sam" and leaves the name field', async () => {
+      const input = screen.getByLabelText("Your name");
+      fireEvent.change(input, { target: { value: "Sam" } });
+      fireEvent.blur(input);
+      await waitFor(() => expect(settingsHarness.update).toHaveBeenCalledWith({ name: "Sam" }));
+      rendered.rerender(<SettingsScreen runtime={runtime} darkMode={false} onToggleDarkMode={vi.fn()} />);
+    });
+    Then('the profile header shows "Sam"', () => {
+      expect(screen.getByText("Sam")).toBeVisible();
     });
   });
 });

@@ -269,6 +269,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: Marking a page complete is saved in this browser only
   Scenario("Marking a page complete is saved in this browser only", ({ Given, When, Then, And }) => {
     Given("a reader has no saved progress", () => {
       noSavedProgress();
@@ -299,6 +300,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: A completed page can be un-checked
   Scenario("A completed page can be un-checked", ({ Given, When, Then, And }) => {
     Given("a reader has marked a learning page as complete", () => {
       noSavedProgress();
@@ -329,6 +331,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
   // below reads the shared key, or re-reads it on a `storage` event.
   // -------------------------------------------------------------------------
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: Progress is shared by every path that contains the course
   Scenario("Progress is shared by every path that contains the course", ({ Given, When, Then, And }) => {
     let secondPath: PathManifest;
 
@@ -361,6 +364,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: Unreadable saved progress is ignored and replaced
   Scenario("Unreadable saved progress is ignored and replaced", ({ Given, When, Then, And }) => {
     Given("the saved progress record cannot be read as valid progress", () => {
       window.localStorage.setItem(PROGRESS_STORAGE_KEY, "not json");
@@ -398,6 +402,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: Progress updates in another open tab
   Scenario("Progress updates in another open tab", ({ Given, When, Then }) => {
     let container: HTMLElement;
     let firstHeadline: HTMLElement;
@@ -436,6 +441,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: Resetting progress clears it after confirmation
   Scenario("Resetting progress clears it after confirmation", ({ Given, When, Then, And }) => {
     Given("a reader has saved progress", () => {
       saveProgress();
@@ -467,6 +473,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: Cancelling a reset keeps progress
   Scenario("Cancelling a reset keeps progress", ({ Given, When, Then, And }) => {
     let savedRecord = "";
 
@@ -509,7 +516,8 @@ describeFeature(feature, ({ Scenario, Background }) => {
   // the E2E binding's proof (tech-docs/006 E2E Techniques, S8).
   // -------------------------------------------------------------------------
 
-  Scenario("Progress appears without moving the page", ({ Given, When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: Progress appears without the page layout shifting
+  Scenario("Progress appears without the page layout shifting", ({ Given, When, Then, And }) => {
     /** The order the feature names the screens in, which is the order they are walked here. */
     const S8_SCREENS = ["a path page", "a learning page", "a course landing page", "the Learn home"] as const;
 
@@ -582,6 +590,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: The site still works when browser storage is blocked
   Scenario("The site still works when browser storage is blocked", ({ Given, When, Then, And }) => {
     Given("the browser refuses to read or write site storage", () => {
       noSavedProgress();

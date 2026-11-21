@@ -29,8 +29,9 @@ describeFeature(
       });
     });
 
+    // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: The sitemap lists every content page by its public URL on www.ayokoding.com
     Scenario(
-      "Sitemap lists every content URL bare, with no distinct content namespace",
+      "The sitemap lists every content page by its public URL on www.ayokoding.com",
       ({ Given, When, Then, And, But }) => {
         let indexedCount = 0;
         let sitemapUrls: string[] = [];
@@ -61,6 +62,7 @@ describeFeature(
       },
     );
 
+    // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: RSS feed item links use bare content URLs
     Scenario("RSS feed item links use bare content URLs", ({ Given, When, Then, And }) => {
       let englishItemCount = 0;
       let feedXml = "";

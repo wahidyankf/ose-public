@@ -1,6 +1,6 @@
 // Package bdd runs the web-contract corpus through the unit and e2e
-// drivers. The integration driver owns tests/bdd-integration, which binds
-// every step except the @integration-exempt browser scenarios.
+// drivers. The integration driver owns tests/bdd-integration, which runs the
+// corpus except browser-progress (bound by name in the Playwright home).
 package bdd
 
 import (
@@ -12,6 +12,21 @@ import (
 
 	"github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/internal/glue"
 )
+
+// Behaviour corpus bindings (contract C13). The unit run has no exemption at
+// all, so every feature of the corpus is referenced whole; the suite runs
+// Options.Strict, and an undefined step fails it.
+//
+// @scenario specs/apps/ayokoding/web/behaviours/content/content-rendering.feature: *
+// @scenario specs/apps/ayokoding/web/behaviours/courses/course-catalog-and-paths.feature: *
+// @scenario specs/apps/ayokoding/web/behaviours/discovery/discovery-documents.feature: *
+// @scenario specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature: *
+// @scenario specs/apps/ayokoding/web/behaviours/local-development/local-development.feature: *
+// @scenario specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation.feature: *
+// @scenario specs/apps/ayokoding/web/behaviours/search/search.feature: *
+// @scenario specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature: *
+// @scenario specs/apps/ayokoding/web/behaviours/tools/ai-benchmark.feature: *
+// @scenario specs/apps/ayokoding/web/behaviours/tools/cost-of-living-calculator.feature: *
 
 // TestContract runs the web-contract corpus through the driver the
 // AYOKODING_BDD_ADAPTER environment names.

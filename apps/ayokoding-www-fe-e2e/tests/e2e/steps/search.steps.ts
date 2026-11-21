@@ -1,3 +1,9 @@
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/search/search.feature: Cmd+K keyboard shortcut opens the search dialog
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/search/search.feature: Typing a query shows matching results that update as the query changes
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/search/search.feature: Clicking a search result navigates to that page
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/search/search.feature: Escape key closes the search dialog
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/search/search.feature: Search results show title, section path, and excerpt
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/search/search.feature: Global search surfaces the Tools pages
 import { createBdd } from "playwright-bdd";
 import { expect, type Locator } from "@playwright/test";
 

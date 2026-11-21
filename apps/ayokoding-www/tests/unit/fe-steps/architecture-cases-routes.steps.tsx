@@ -81,6 +81,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     expect(response?.title).toBe(heading);
   }
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/architecture-cases-routes.feature: In FP case route is reachable
   Scenario("In FP case route is reachable", ({ When, Then, And }) => {
     When(
       'a visitor navigates to "/en/learn/software-engineering/software-architecture/by-example/cases/in-fp"',
@@ -96,6 +97,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/architecture-cases-routes.feature: In OOP case route is reachable
   Scenario("In OOP case route is reachable", ({ When, Then, And }) => {
     When(
       'a visitor navigates to "/en/learn/software-engineering/software-architecture/by-example/cases/in-oop"',
@@ -111,6 +113,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/architecture-cases-routes.feature: In Procedural case route is reachable
   Scenario("In Procedural case route is reachable", ({ When, Then, And }) => {
     When(
       'a visitor navigates to "/en/learn/software-engineering/software-architecture/by-example/cases/in-procedural"',

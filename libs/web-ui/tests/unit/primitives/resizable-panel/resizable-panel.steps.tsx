@@ -6,6 +6,17 @@ import { expect } from "vitest";
 
 import { ResizablePanel } from "../../../../src/primitives/resizable-panel/resizable-panel";
 
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: Widen the panel by dragging the handle right
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: Dragging past the maximum stops at the maximum
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: Dragging live-updates the width without persisting to localStorage
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: Releasing the drag persists the final width to localStorage
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: Widen the panel with the ArrowRight key
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: The handle exposes separator semantics
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: The handle's accessible label can be localized
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: Reset the panel to its default width by double-clicking the handle
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: Jump to the minimum band width when Home is pressed
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: Jump to the maximum band width when End is pressed
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: Re-clamp a persisted width that falls outside the band on load
 const feature = await loadFeature(
   path.resolve(__dirname, "../../../../../../specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature"),
 );

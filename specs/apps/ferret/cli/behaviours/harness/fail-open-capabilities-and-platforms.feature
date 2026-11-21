@@ -3,6 +3,8 @@ Feature: Fail open and report harness capabilities honestly
   I want FERRET to say what it can and cannot observe about each one
   So that a gap in what a harness exposes is shown as unknown rather than as zero usage
 
+  # Behaviour: FRT-047
+  # Behaviour: FRT-058
   Scenario Outline: Keep a harness fail-open after a local failure
     Given a harness invokes the FERRET adapter
     And FERRET is <condition>
@@ -17,6 +19,8 @@ Feature: Fail open and report harness capabilities honestly
       | unable to open SQLite                             |
       | blocked by a concurrent writer beyond the timeout |
 
+  # Behaviour: FRT-011
+  # Behaviour: FRT-057
   Scenario: Count skill invocations the harness could not name as unknown, not as zero usage
     Given a harness recorded skill invocations, some of which it could not name
     When the user requests usage grouped by skill for that harness
@@ -25,6 +29,7 @@ Feature: Fail open and report harness capabilities honestly
     And no skill the harness never invoked is reported with a zero count
     And the result states that unknown subject visibility is not zero usage
 
+  # Behaviour: FRT-017
   Scenario: Remove FERRET without changing harness behaviour
     Given supported harness adapters are configured to call FERRET
     When the user runs self uninstall
@@ -32,6 +37,8 @@ Feature: Fail open and report harness capabilities honestly
     And the repository contains no newly generated telemetry data
     And the existing user database remains recoverable or removable by an explicit user action
 
+  # Behaviour: FRT-016
+  # Behaviour: FRT-031
   Scenario Outline: Install privately for the current user
     Given a supported environment with no FERRET artifact installed where <situation>
     When the user runs self install --target user
@@ -44,6 +51,9 @@ Feature: Fail open and report harness capabilities honestly
       | the user bin directory is already on PATH  | none               |
       | the user bin directory is absent from PATH | add_home_local_bin |
 
+  # Behaviour: FRT-036
+  # Behaviour: FRT-042
+  # Behaviour: FRT-054
   Scenario Outline: Run on a host whose default interpreter is older than FERRET requires
     Given the artifact is started by <interpreter>
     When the user runs any FERRET command
@@ -56,6 +66,7 @@ Feature: Fail open and report harness capabilities honestly
       | an older interpreter while a supported one is reachable | restarts itself on the supported interpreter       |
       | an older interpreter with no supported one reachable    | exits 2 naming the version it requires             |
 
+  # Behaviour: FRT-058
   Scenario Outline: Keep one POSIX adapter fail-open at the wrapper boundary
     Given the <harness> hook runs the shared POSIX wrapper
     When <condition>
@@ -72,6 +83,7 @@ Feature: Fail open and report harness capabilities honestly
       | codex       | the ferret executable is missing                       |
       | claude_code | the child process hangs past the deadline              |
 
+  # Behaviour: FRT-058
   Scenario Outline: Keep the OpenCode plugin fail-open at its process boundary
     Given OpenCode runs the FERRET plugin for a lifecycle hook
     When <condition>

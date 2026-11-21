@@ -1,3 +1,7 @@
+// @scenario specs/apps/organiclever/app-web/behaviours/stats/history-screen.feature: History shows entries in reverse order
+// @scenario specs/apps/organiclever/app-web/behaviours/stats/history-screen.feature: Empty history shows empty state
+// @scenario specs/apps/organiclever/app-web/behaviours/stats/history-screen.feature: Session card expands on click
+
 /**
  * Step definitions for the History Screen feature.
  *

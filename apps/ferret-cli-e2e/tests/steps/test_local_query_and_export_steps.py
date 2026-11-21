@@ -146,6 +146,7 @@ def stored_values(session: Session, column: str) -> set[str]:
         return {str(row[0]) for row in connection.execute(f"SELECT DISTINCT {column} FROM event")}
 
 
+# @scenario specs/apps/ferret/cli/behaviours/queries/local-query-and-export.feature: Filter and export deterministic local events
 @scenario(FEATURE, "Filter and export deterministic local events")
 def test_filter_and_export_deterministic_local_events() -> None:
     """Bound to the feature scenario; the steps below carry the assertions."""
@@ -202,6 +203,7 @@ def then_diagnostics_stay_off_standard_output(session: Session) -> None:
     assert session.refused == Completed(2, b"", b"ferret: [ferret.filter.invalid] a filter value is not valid\n")
 
 
+# @scenario specs/apps/ferret/cli/behaviours/queries/local-query-and-export.feature: Emit a stable machine-readable command result
 @scenario(FEATURE, "Emit a stable machine-readable command result")
 def test_emit_a_stable_machine_readable_command_result() -> None:
     """Bound to the feature outline; each example expands independently."""
@@ -386,6 +388,7 @@ def then_a_failure_is_a_closed_error_without_a_path(session: Session) -> None:
     assert outside == []
 
 
+# @scenario specs/apps/ferret/cli/behaviours/queries/local-query-and-export.feature: Keep the export a raw stream when JSON is requested
 @scenario(FEATURE, "Keep the export a raw stream when JSON is requested")
 def test_keep_the_export_a_raw_stream_when_json_is_requested() -> None:
     """Bound to the feature scenario; the steps below carry the assertions."""
@@ -423,6 +426,7 @@ def then_the_plain_export_is_json_lines(session: Session) -> None:
     assert session.human.stdout.splitlines(keepends=True) == [line_of(stored[number]) for number in (1, 2, 3)]
 
 
+# @scenario specs/apps/ferret/cli/behaviours/queries/local-query-and-export.feature: Use FERRET without a backend
 @scenario(FEATURE, "Use FERRET without a backend")
 def test_use_ferret_without_a_backend() -> None:
     """Bound to the feature scenario; the steps below carry the assertions."""

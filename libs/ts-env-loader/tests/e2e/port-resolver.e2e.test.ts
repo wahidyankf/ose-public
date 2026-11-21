@@ -81,57 +81,31 @@ function expectRangeFailure(state: ProcessContext, source: string): void {
 }
 
 describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
-  Scenario("The CLI flag outranks every other source", ({ Given, And, When, Then }) => {
-    const state = context();
+  // @scenario specs/libs/ts-env-loader/behaviours/port-resolver/port-resolver.feature: A port resolves from the highest source that supplies one
+  ScenarioOutline(
+    "A port resolves from the highest source that supplies one",
+    ({ Given, And, When, Then }, examples) => {
+      const state = context();
+      const flagValue = String(examples["flagValue"] ?? "");
+      const envValue = String(examples["envValue"] ?? "");
+      const expected = Number(examples["expected"]);
 
-    Given('the app declares the prefixed variable "OSE_WWW_PORT" with fallback 3100', () => {
-      declaresStandardApp(state);
-    });
-    And('the environment sets "OSE_WWW_PORT" to "4000"', () => {
-      state.environment = { OSE_WWW_PORT: "4000" };
-    });
-    When('the port resolves with a "--port" flag of "5000"', async () => {
-      state.result = await runWrapper(state, "5000");
-    });
-    Then("the resolved port is 5000", () => {
-      expectSuccessfulPort(state, 5000);
-    });
-  });
+      Given('the app declares the prefixed variable "OSE_WWW_PORT" with fallback 3100', () => {
+        declaresStandardApp(state);
+      });
+      And('the environment sets "OSE_WWW_PORT" to {string}', () => {
+        state.environment = { OSE_WWW_PORT: envValue };
+      });
+      When('the port resolves with a "--port" flag of {string}', async () => {
+        state.result = await runWrapper(state, flagValue);
+      });
+      Then("the resolved port is {any}", () => {
+        expectSuccessfulPort(state, expected);
+      });
+    },
+  );
 
-  Scenario("The prefixed variable outranks the fallback", ({ Given, And, When, Then }) => {
-    const state = context();
-
-    Given('the app declares the prefixed variable "OSE_WWW_PORT" with fallback 3100', () => {
-      declaresStandardApp(state);
-    });
-    And('the environment sets "OSE_WWW_PORT" to "4000"', () => {
-      state.environment = { OSE_WWW_PORT: "4000" };
-    });
-    When('the port resolves with no "--port" flag', async () => {
-      state.result = await runWrapper(state);
-    });
-    Then("the resolved port is 4000", () => {
-      expectSuccessfulPort(state, 4000);
-    });
-  });
-
-  Scenario("The fallback applies when nothing else supplies a port", ({ Given, And, When, Then }) => {
-    const state = context();
-
-    Given('the app declares the prefixed variable "OSE_WWW_PORT" with fallback 3100', () => {
-      declaresStandardApp(state);
-    });
-    And('the environment does not set "OSE_WWW_PORT"', () => {
-      state.environment = {};
-    });
-    When('the port resolves with no "--port" flag', async () => {
-      state.result = await runWrapper(state);
-    });
-    Then("the resolved port is 3100", () => {
-      expectSuccessfulPort(state, 3100);
-    });
-  });
-
+  // @scenario specs/libs/ts-env-loader/behaviours/port-resolver/port-resolver.feature: A bare PORT variable never moves the listener
   Scenario("A bare PORT variable never moves the listener", ({ Given, And, When, Then }) => {
     const state = context();
 
@@ -152,6 +126,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     });
   });
 
+  // @scenario specs/libs/ts-env-loader/behaviours/port-resolver/port-resolver.feature: A blank value at a tier falls through to the next tier
   ScenarioOutline("A blank value at a tier falls through to the next tier", ({ Given, And, When, Then }, examples) => {
     const state = context();
     const flagValue = String(examples["flagValue"] ?? "");
@@ -172,44 +147,31 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     });
   });
 
+  // @scenario specs/libs/ts-env-loader/behaviours/port-resolver/port-resolver.feature: A malformed port is rejected with an error naming its source and the valid range
   ScenarioOutline(
-    "A present but malformed port fails loudly instead of falling through",
+    "A malformed port is rejected with an error naming its source and the valid range",
     ({ Given, And, When, Then }, examples) => {
       const state = context();
+      const source = String(examples["source"] ?? "");
       const flagValue = String(examples["flagValue"] ?? "");
+      const envValue = String(examples["envValue"] ?? "");
 
       Given('the app declares the prefixed variable "OSE_WWW_PORT" with fallback 3100', () => {
         declaresStandardApp(state);
       });
-      And('the environment does not set "OSE_WWW_PORT"', () => {
-        state.environment = {};
+      And('the environment sets "OSE_WWW_PORT" to {string}', () => {
+        state.environment = { OSE_WWW_PORT: envValue };
       });
       When('the port resolves with a "--port" flag of {string}', async () => {
         state.result = await runWrapper(state, flagValue);
       });
-      Then('resolution throws, naming "--port" and the valid range', () => {
-        expectRangeFailure(state, "--port");
+      Then("resolution throws, naming {string} and the valid range", () => {
+        expectRangeFailure(state, source);
       });
     },
   );
 
-  Scenario("A malformed prefixed variable names that variable in the error", ({ Given, And, When, Then }) => {
-    const state = context();
-
-    Given('the app declares the prefixed variable "OSE_WWW_PORT" with fallback 3100', () => {
-      declaresStandardApp(state);
-    });
-    And('the environment sets "OSE_WWW_PORT" to "not-a-port"', () => {
-      state.environment = { OSE_WWW_PORT: "not-a-port" };
-    });
-    When('the port resolves with no "--port" flag', async () => {
-      state.result = await runWrapper(state);
-    });
-    Then('resolution throws, naming "OSE_WWW_PORT" and the valid range', () => {
-      expectRangeFailure(state, "OSE_WWW_PORT");
-    });
-  });
-
+  // @scenario specs/libs/ts-env-loader/behaviours/port-resolver/port-resolver.feature: An out-of-range compiled-in fallback is caught at startup
   Scenario("An out-of-range compiled-in fallback is caught at startup", ({ Given, And, When, Then }) => {
     const state = context();
 
@@ -227,4 +189,25 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
       expectRangeFailure(state, "OSE_WWW_PORT");
     });
   });
+
+  // @scenario specs/libs/ts-env-loader/behaviours/port-resolver/port-resolver.feature: A whitespace-only flag or variable is blank and falls through to the next tier
+  Scenario(
+    "A whitespace-only flag or variable is blank and falls through to the next tier",
+    ({ Given, And, When, Then }) => {
+      const state = context();
+
+      Given('the app declares the prefixed variable "OSE_WWW_PORT" with fallback 3100', () => {
+        declaresStandardApp(state);
+      });
+      And('the environment sets "OSE_WWW_PORT" to "   "', () => {
+        state.environment = { OSE_WWW_PORT: "   " };
+      });
+      When('the port resolves with a "--port" flag of "   "', async () => {
+        state.result = await runWrapper(state, "   ");
+      });
+      Then("the resolved port is 3100", () => {
+        expectSuccessfulPort(state, 3100);
+      });
+    },
+  );
 });

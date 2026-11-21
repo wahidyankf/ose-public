@@ -31,6 +31,7 @@ function getWrapper(container: HTMLElement): HTMLElement {
 // The @visual scenario is exercised by the Playwright Storybook baselines, not by this unit-level
 // step binder, so it is excluded here.
 describeFeature(feature, ({ Scenario }) => {
+  // @scenario specs/libs/web-ui/behaviours/code-block/code-block.feature: The code block renders its highlighted children and a copy button
   Scenario("The code block renders its highlighted children and a copy button", ({ Given, When, Then, And }) => {
     let childPresent = false;
     let copyButtonPresent = false;
@@ -68,6 +69,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
+  // @scenario specs/libs/web-ui/behaviours/code-block/code-block.feature: Copying from the code block yields the verbatim multi-line source
   Scenario("Copying from the code block yields the verbatim multi-line source", ({ Given, When, Then }) => {
     let writeText: ReturnType<typeof vi.fn>;
     const code = [
@@ -106,41 +108,8 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
-  Scenario("The code block establishes its own positioning context", ({ Given, When, Then }) => {
-    let dataSlot: string | null = null;
-    let className = "";
-
-    Given("a CodeBlock is rendered", () => {
-      cleanup();
-      stubClipboard();
-      const { container } = render(
-        <CodeBlock code="x">
-          <pre>x</pre>
-        </CodeBlock>,
-      );
-      expect(getWrapper(container).getAttribute("data-slot")).toBe("code-block");
-    });
-
-    When("its wrapper is inspected", () => {
-      cleanup();
-      stubClipboard();
-      const { container } = render(
-        <CodeBlock code="x">
-          <pre>x</pre>
-        </CodeBlock>,
-      );
-      const wrapper = getWrapper(container);
-      dataSlot = wrapper.getAttribute("data-slot");
-      className = wrapper.className;
-    });
-
-    Then('the wrapper is a relatively-positioned element carrying data-slot "code-block"', () => {
-      expect(dataSlot).toBe("code-block");
-      expect(className).toContain("relative");
-    });
-  });
-
-  Scenario("The copy button stays pinned outside the code's horizontal-scroll region", ({ Given, When, Then }) => {
+  // @scenario specs/libs/web-ui/behaviours/code-block/code-block.feature: The copy button sits at the block corner, outside the scrolling code
+  Scenario("The copy button sits at the block corner, outside the scrolling code", ({ Given, When, Then }) => {
     let buttonParentIsWrapper = false;
     let buttonInsidePre = true;
 
@@ -179,6 +148,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
+  // @scenario specs/libs/web-ui/behaviours/code-block/code-block.feature: The copy button is discoverable at rest and reveals fully on hover or focus
   Scenario(
     "The copy button is discoverable at rest and reveals fully on hover or focus",
     ({ Given, When, Then, And }) => {
@@ -223,43 +193,43 @@ describeFeature(feature, ({ Scenario }) => {
     },
   );
 
-  Scenario(
-    "The code block reserves scroll-margin so its copy button clears a sticky header",
-    ({ Given, When, Then }) => {
-      let className = "";
+  // @scenario specs/libs/web-ui/behaviours/code-block/code-block.feature: Jumping to a code block leaves it clear of a sticky header
+  Scenario("Jumping to a code block leaves it clear of a sticky header", ({ Given, When, Then }) => {
+    let className = "";
 
-      Given("a CodeBlock is rendered", () => {
-        cleanup();
-        stubClipboard();
-        const { container } = render(
-          <CodeBlock code="x">
-            <pre>x</pre>
-          </CodeBlock>,
-        );
-        expect(getWrapper(container).getAttribute("data-slot")).toBe("code-block");
-      });
+    Given("a CodeBlock is rendered", () => {
+      cleanup();
+      stubClipboard();
+      const { container } = render(
+        <CodeBlock code="x">
+          <pre>x</pre>
+        </CodeBlock>,
+      );
+      expect(getWrapper(container).getAttribute("data-slot")).toBe("code-block");
+    });
 
-      When("the wrapper is inspected", () => {
-        cleanup();
-        stubClipboard();
-        const { container } = render(
-          <CodeBlock code="x">
-            <pre>x</pre>
-          </CodeBlock>,
-        );
-        className = getWrapper(container).className;
-      });
+    When("the wrapper is inspected", () => {
+      cleanup();
+      stubClipboard();
+      const { container } = render(
+        <CodeBlock code="x">
+          <pre>x</pre>
+        </CodeBlock>,
+      );
+      className = getWrapper(container).className;
+    });
 
-      Then("the wrapper reserves top scroll-margin", () => {
-        // `scroll-mt-16` (4rem) keeps the top-right copy button clear of a sticky site header when a
-        // block is scrolled/anchored to the viewport top (UWT-002).
-        expect(className).toContain("scroll-mt-16");
-      });
-    },
-  );
+    Then("the block lands clear of a sticky header when it is jumped to", () => {
+      // Unit proof: jsdom performs no layout, so the landing offset is asserted through the
+      // `scroll-mt-16` (4rem) utility that reserves the sticky-header clearance. The end-to-end
+      // scenario measures where the block really lands.
+      expect(className).toContain("scroll-mt-16");
+    });
+  });
 
   // The Playwright Storybook suite performs the pixel comparison. This Unit scenario confirms
   // that the resting and copied stories captured by that suite still exist.
+  // @scenario specs/libs/web-ui/behaviours/code-block/code-block.feature: The code block renders correctly in light and dark themes
   Scenario("The code block renders correctly in light and dark themes", ({ Given, When, Then }) => {
     Given("the CodeBlock stories are loaded in Storybook", () => {
       expect(codeBlockStories.title).toBe("Primitives/CodeBlock");

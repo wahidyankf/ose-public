@@ -2,6 +2,12 @@ import { expect } from "@playwright/test";
 import { createBdd } from "playwright-bdd";
 import { buildTrpcUrl, extractTrpcData, state } from "./helpers";
 
+// @scenario specs/apps/ose/www/behaviours/backend/content/content-retrieval.feature: Retrieve a page by slug
+// @scenario specs/apps/ose/www/behaviours/backend/content/content-retrieval.feature: Updates are listed newest first
+// @scenario specs/apps/ose/www/behaviours/backend/content/content-retrieval.feature: Each update shows title, date, summary, and tags
+// @scenario specs/apps/ose/www/behaviours/backend/content/content-retrieval.feature: Draft pages are excluded from listings
+// @scenario specs/apps/ose/www/behaviours/backend/content/content-retrieval.feature: Non-existent slug returns null
+
 const { When, Then } = createBdd();
 
 When("the content service retrieves the page by slug {string}", async ({ request }, slug: string) => {

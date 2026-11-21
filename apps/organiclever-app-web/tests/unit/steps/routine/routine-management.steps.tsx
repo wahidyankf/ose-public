@@ -38,6 +38,7 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
     render(<EditRoutineScreen routine={routine} runtime={runtime} onSave={onSave} onBack={onBack} />);
   }
 
+  // @scenario specs/apps/organiclever/app-web/behaviours/routine/routine-management.feature: Create a new routine
   Scenario("Create a new routine", ({ Given, When, And, Then }) => {
     Given("the edit routine screen is open for a new routine", () => renderEditor(null));
     When("the user enters a routine name", () => {
@@ -52,6 +53,7 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/organiclever/app-web/behaviours/routine/routine-management.feature: Add an exercise to a routine
   Scenario("Add an exercise to a routine", ({ Given, When, Then }) => {
     Given("the edit routine screen is open", () => renderEditor(null));
     When("the user adds an exercise", () => {
@@ -63,6 +65,7 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/organiclever/app-web/behaviours/routine/routine-management.feature: Delete a routine
   Scenario("Delete a routine", ({ Given, When, Then }) => {
     Given("the edit routine screen is open for an existing routine", () => renderEditor(existingRoutine));
     When("the user confirms deleting the routine", () => {

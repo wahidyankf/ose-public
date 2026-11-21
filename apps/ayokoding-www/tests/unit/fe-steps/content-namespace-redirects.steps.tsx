@@ -46,7 +46,8 @@ describeFeature(feature, ({ Scenario, Background }) => {
     expect(result.location).not.toContain("/c/");
   }
 
-  Scenario("Old English learn URL permanently redirects to the /c namespace", ({ When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/content-namespace-redirects.feature: A /c/-namespaced English learn URL permanently redirects to its bare URL
+  Scenario("A /c/-namespaced English learn URL permanently redirects to its bare URL", ({ When, Then, And }) => {
     When('a raw HTTP GET is made to "/en/c/learn/software-engineering" with redirects disabled', () => {
       visit("/en/c/learn/software-engineering");
     });
@@ -58,7 +59,8 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
-  Scenario("Old Indonesian belajar URL permanently redirects to the /c namespace", ({ When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/content-namespace-redirects.feature: A /c/-namespaced Indonesian belajar URL permanently redirects to its bare URL
+  Scenario("A /c/-namespaced Indonesian belajar URL permanently redirects to its bare URL", ({ When, Then, And }) => {
     When('a raw HTTP GET is made to "/id/c/belajar/ikhtisar" with redirects disabled', () => {
       visit("/id/c/belajar/ikhtisar");
     });
@@ -70,18 +72,21 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/content-namespace-redirects.feature: About page keeps its top-level URL and is not redirected
   Scenario("About page keeps its top-level URL and is not redirected", ({ When, Then, And }) => {
     When('a visitor navigates to "/en/about-ayokoding"', () => visit("/en/about-ayokoding"));
     Then("the page should load successfully", () => expect(result.status).toBe(200));
     And('the current URL should not contain "/c/"', () => assertTopLevel("/en/about-ayokoding"));
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/content-namespace-redirects.feature: Indonesian terms page keeps its top-level URL and is not redirected
   Scenario("Indonesian terms page keeps its top-level URL and is not redirected", ({ When, Then, And }) => {
     When('a visitor navigates to "/id/syarat-dan-ketentuan"', () => visit("/id/syarat-dan-ketentuan"));
     Then("the page should load successfully", () => expect(result.status).toBe(200));
     And('the current URL should not contain "/c/"', () => assertTopLevel("/id/syarat-dan-ketentuan"));
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/content-namespace-redirects.feature: Tools index keeps its top-level URL and is not redirected
   Scenario("Tools index keeps its top-level URL and is not redirected", ({ When, Then, And }) => {
     When('a visitor navigates to "/en/tools"', () => visit("/en/tools"));
     Then("the page should load successfully", () => expect(result.status).toBe(200));

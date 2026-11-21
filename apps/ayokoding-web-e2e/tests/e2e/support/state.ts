@@ -38,6 +38,9 @@ export type ScenarioState = {
   spawnedPort?: number;
   diagnostic?: string;
   hashes?: Record<string, string>;
+  learnPage?: string;
+  corpusEnv?: Record<string, string>;
+  fragments?: { target: string; status: number; body: string }[];
   exchanges: RecordedExchange[];
   owned: OwnedServer[];
 };

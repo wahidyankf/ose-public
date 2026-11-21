@@ -16,6 +16,9 @@ const { Given, When, Then } = createBdd();
 
 const PHONE_VIEWPORT = { width: 375, height: 812 };
 
+// The arc landing outline's Examples set the role count; its When reads it back from the page.
+const armRoleCounts = new WeakMap<Page, number>();
+
 interface PublishedManifest {
   pathId: string;
   arc: string;
@@ -293,7 +296,8 @@ Given("a fixture arc manifest lists exactly one role", async ({ page }) => {
 });
 
 When("a reader opens that arc's landing page", async ({ page }) => {
-  await page.goto("/en/learn/paths/careers/interview-ready");
+  const arc = armRoleCounts.get(page) === 2 ? "immediately-effective" : "interview-ready";
+  await page.goto(`/en/learn/paths/careers/${arc}`);
   await page.waitForLoadState("networkidle");
 });
 
@@ -1259,3 +1263,125 @@ Then("a course without status outline shows no badge", async ({ page }) => {
   const row = generalistRail(page).locator("li", { hasText: "Software Engineering Practices" });
   await expect(row.getByText("Outline", { exact: true })).toHaveCount(0);
 });
+
+// ---------------------------------------------------------------------------
+// Scenario bindings for arc-landing-one-role.feature (outline, 1 and 2 roles),
+// outline-course-status.feature, and path-order-nav.feature.
+// ---------------------------------------------------------------------------
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/arc-landing-one-role.feature: An arc landing renders one full card per role
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/outline-course-status.feature: The path syllabus marks an outline course with an Outline badge
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/outline-course-status.feature: The path rail marks an outline course with an Outline badge
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-order-nav.feature: Prev and next follow the active path's order
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-order-nav.feature: The path readout opens the course drawer on a phone
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-order-nav.feature: Focus moves into the path drawer and returns to its control on dismissal
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-order-nav.feature: Choosing a course in the path drawer closes it
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-order-nav.feature: The path readout states the course position as course k of N on a phone
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-roadmap.feature: Each core phase is a milestone with its outcome and progress
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-roadmap.feature: A skills path waiting for its restructure shows one flat list with progress
+
+Given("a fixture arc manifest lists {int} role\\(s)", async ({ page }, roles: number) => {
+  const arc = roles === 1 ? "interview-ready" : "immediately-effective";
+  const manifests = await loadPublishedManifests(page);
+  expect(manifests.filter((manifest) => manifest.pathId.startsWith(`careers/${arc}/`))).toHaveLength(roles);
+  armRoleCounts.set(page, roles);
+});
+
+Then("each role card renders in full with its own preview or course counts", async ({ page }) => {
+  if (armRoleCounts.get(page) !== 2) {
+    const nav = page.getByRole("navigation", { name: "interview-ready paths" });
+    const card = nav.getByRole("link", { name: "Backend Track (Interview-Ready)", exact: true });
+    await expect(card.locator("xpath=ancestor::li[1]").getByText("Starts with Phase 1 · Fixture core:")).toBeVisible();
+    await expect(card.locator("xpath=ancestor::li[1]").locator("ol > li")).toHaveCount(2);
+    return;
+  }
+  const nav = page.getByRole("navigation", { name: "immediately-effective paths" });
+  await expect(nav.locator(":scope > ul > li")).toHaveCount(2);
+  const backend = nav
+    .getByRole("link", { name: "Backend Track (Immediately-Effective)", exact: true })
+    .locator("xpath=ancestor::li[1]");
+  const frontend = nav
+    .getByRole("link", { name: "Frontend Track (Immediately-Effective)", exact: true })
+    .locator("xpath=ancestor::li[1]");
+  await expect(backend).toContainText(/\d+ of 3 core courses done/);
+  await expect(frontend).toContainText(/\d+ of 2 core courses done/);
+});
+
+Then("no role card is a placeholder or an empty grid cell", async ({ page }) => {
+  const roles = armRoleCounts.get(page) === 2 ? 2 : 1;
+  const nav = page.getByRole("navigation", {
+    name: roles === 2 ? "immediately-effective paths" : "interview-ready paths",
+  });
+  await expect(nav.locator(":scope > ul > li")).toHaveCount(roles);
+  if (roles === 2) {
+    await expect(nav.getByRole("link", { name: /View path/ })).toHaveCount(2);
+  }
+});
+
+When("a reader opens a course in that path", async ({ page }) => {
+  await page.goto(`/en/learn/courses/software-engineering-practices?path=${GENERALIST_TRACK_PATH}`);
+  await page.waitForLoadState("networkidle");
+});
+
+Then("a course without status outline shows no badge in the syllabus", async ({ page }) => {
+  await page.goto(GENERALIST_LANDING_URL);
+  await page.waitForLoadState("networkidle");
+  await openOptionalExtensions(page);
+  const row = generalistSyllabus(page).locator("ol > li", { hasText: "Software Engineering Practices" });
+  await expect(row.getByText("Outline", { exact: true })).toHaveCount(0);
+});
+
+Then("the outline course shows a text badge reading {string} in the path rail", async ({ page }, badge: string) => {
+  const row = generalistRail(page).locator("li", { hasText: "Capstone · Secure Service" });
+  await expect(row.getByText(badge, { exact: true })).toBeVisible();
+});
+
+Then("a course without status outline shows no badge in the path rail", async ({ page }) => {
+  const row = generalistRail(page).locator("li", { hasText: "Software Engineering Practices" });
+  await expect(row.getByText("Outline", { exact: true })).toHaveCount(0);
+});
+
+Then(
+  "next crosses from the last core course into the first extension course, keeping the path context",
+  async ({ page }) => {
+    await page.goto(`/en/learn/courses/software-engineering-practices?path=${GENERALIST_TRACK_PATH}`);
+    await page.waitForLoadState("networkidle");
+    const { core, extension } = await loadGeneralistTrack(page);
+    expect(core.courses.at(-1)).toBe("software-engineering-practices");
+    expect(extension.courses[0]).toBe("capstone-secure-service");
+    const navigation = page.getByRole("navigation", { name: "Page navigation" });
+    await expect(navigation.getByRole("link", { name: /Capstone.*Secure Service/i })).toHaveAttribute(
+      "href",
+      `/en/learn/courses/capstone-secure-service?path=${GENERALIST_TRACK_PATH}`,
+    );
+  },
+);
+
+Then("the drawer closes", async ({ page }) => {
+  await expect(page.locator("#mobile-nav-drawer")).toBeHidden();
+});
+
+Given("a reader on a phone opens a course in path context", async ({ page }) => {
+  await page.setViewportSize(PHONE_VIEWPORT);
+  await page.goto("/en/learn/courses/backend-essentials?path=careers/immediately-effective/backend-track");
+  await page.waitForLoadState("networkidle");
+});
+
+Then("the path readout reads {string}", async ({ page }, text: string) => {
+  await expect(page.getByText(new RegExp(text, "i")).first()).toBeVisible();
+});
+
+Then('"You cannot yet" is shown only for a phase that declares what the reader cannot yet do', async ({ page }) => {
+  const manifests = await loadPublishedManifests(page);
+  const manifest = manifests.find((candidate) => candidate.pathId === GENERALIST_TRACK_PATH);
+  const declared = (manifest?.phases ?? []).filter((phase) => phase.kind === "core" && phase.outcome?.cannotYet).length;
+  await expect(page.getByText("You cannot yet", { exact: true })).toHaveCount(declared);
+});
+
+Then(
+  'no phase heading, outcome line, "Before you start" note, or "Optional extensions" heading appears',
+  async ({ page }) => {
+    await expect(page.getByText("Optional extensions", { exact: false })).toHaveCount(0);
+    await expect(page.getByText("Before you start", { exact: false })).toHaveCount(0);
+    await expect(page.getByText("After this phase you can", { exact: false })).toHaveCount(0);
+  },
+);

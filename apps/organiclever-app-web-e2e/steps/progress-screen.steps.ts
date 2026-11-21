@@ -1,3 +1,7 @@
+// @scenario specs/apps/organiclever/app-web/behaviours/stats/progress-screen.feature: Progress screen shows workout module by default
+// @scenario specs/apps/organiclever/app-web/behaviours/stats/progress-screen.feature: Switch to reading module
+// @scenario specs/apps/organiclever/app-web/behaviours/stats/progress-screen.feature: Tapping an exercise card shows its progress chart
+
 /**
  * Step definitions for the Progress Screen feature.
  *
@@ -58,6 +62,6 @@ When("the user taps an exercise card", async ({ page }) => {
   await page.getByRole("button", { name: "Squat progress" }).click();
 });
 
-Then("the SVG chart is visible", async ({ page }) => {
+Then("the progress chart is visible", async ({ page }) => {
   await expect(page.getByLabel("Weight progression chart for Squat")).toBeVisible({ timeout: 10000 });
 });

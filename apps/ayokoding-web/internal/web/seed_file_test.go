@@ -106,6 +106,18 @@ func TestSeedFileDepsHonorsShowDrafts(t *testing.T) {
 	}
 }
 
+// TestSeedFixtureDepsHonorsShowDraftsWithoutSourceRoot pins the draft setting
+// for the canned corpus: AYOKODING_WEB_SHOW_DRAFTS applies even when no source
+// root is configured (contract AYB-007).
+func TestSeedFixtureDepsHonorsShowDraftsWithoutSourceRoot(t *testing.T) {
+	unsetSeedEnv(t)
+	t.Setenv("AYOKODING_WEB_SHOW_DRAFTS", "true")
+	deps := web.SeedFixtureDeps("parity")
+	if _, ok := deps.Content.Find("en", "go-basics", "draft-note"); !ok {
+		t.Fatal("canned draft must resolve with AYOKODING_WEB_SHOW_DRAFTS=true and no source root")
+	}
+}
+
 func TestSeedFileDepsFallsBackToCannedOnUnreadableRoot(t *testing.T) {
 	t.Setenv("AYOKODING_WEB_CONTENT_DIR", filepath.Join(t.TempDir(), "no-such-root"))
 	t.Setenv("AYOKODING_WEB_MANIFESTS_DIR", "")

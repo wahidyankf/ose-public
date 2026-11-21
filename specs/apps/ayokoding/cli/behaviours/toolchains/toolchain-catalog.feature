@@ -3,34 +3,38 @@ Feature: The toolchain catalog is pinned
   I want every image pinned by digest and every derived image tagged by its recipe
   So that a run uses exactly the toolchain it was tested with
 
-  # Exemption(e2e): catalog decoding and tag computation read local files and need no container; alternative-proof: ayokoding-cli:test:integration / An image without a digest stops the CLI
-  @e2e-exempt
+  # Behaviour: AYC-037
+  # Behaviour: AYC-058
   Scenario: An image without a digest stops the CLI
     Given a catalog entry whose image has a tag but no digest
     When I list the toolchains
     Then it exits with status 2
     And standard error names error code "ayokoding.catalog.unpinned-image"
 
-  # Exemption(e2e): catalog decoding and tag computation read local files and need no container; alternative-proof: ayokoding-cli:test:integration / The toolchain list names each id, kind, and version
-  @e2e-exempt
+  # Behaviour: AYC-011
   Scenario: The toolchain list names each id, kind, and version
     Given the embedded catalog
     When I list the toolchains
     Then each line shows an id, a kind, a version, and a digest-pinned image
 
-  # Exemption(e2e): catalog decoding and tag computation read local files and need no container; alternative-proof: ayokoding-cli:test:integration / A derived image tag changes when its recipe changes
-  @e2e-exempt
+  # Behaviour: AYC-030
+  Scenario: A catalog file named by --catalog replaces the embedded catalog
+    Given a catalog file that lists the toolchains python and postgres
+    When I list the toolchains
+    Then the list names only the toolchains python and postgres
+
   Scenario: A derived image tag changes when its recipe changes
     Given a derived toolchain recipe
     When one byte of its Dockerfile changes
     Then its image tag changes
 
-  Scenario: A derived image is built and run from the same Podman store
-    Given a derived toolchain recipe in the selected Podman store
-    When I build and run the derived image
-    Then the image built is the image run without a registry pull or push
+  # Behaviour: AYC-073
+  Scenario Outline: A locally built toolchain image runs without a registry pull
+    Given <setup>
+    When <action>
+    Then <outcome>
 
-  Scenario: An environment image runs from the same Podman store
-    Given an environment image in the selected Podman store
-    When I run the environment image
-    Then the local image is used without a registry pull
+    Examples:
+      | setup                                                  | action                              | outcome                                                              |
+      | a derived toolchain recipe in the selected Podman store | I build and run the derived image   | the image built is the image run without a registry pull or push     |
+      | an environment image in the selected Podman store       | I run the environment image         | the local image is used without a registry pull                      |

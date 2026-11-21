@@ -321,16 +321,19 @@ DDD is **not tied to any technology**:
 
 DDD typically uses layered architecture to separate concerns:
 
-```
-┌─────────────────────────────────────────┐
-│  Presentation Layer (UI, API, CLI)     │  ← User interaction
-├─────────────────────────────────────────┤
-│  Application Layer (Use Cases)         │  ← Orchestration
-├─────────────────────────────────────────┤
-│  Domain Layer (Business Logic)         │  ← Core domain model
-├─────────────────────────────────────────┤
-│  Infrastructure Layer (DB, External)   │  ← Technical details
-└─────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    accTitle: Layers of a DDD architecture
+    accDescr {
+        Four layers stack from the presentation layer at the top to the infrastructure layer at the bottom.
+        Inner layers do not depend on outer layers, so the stack is not a chain of calls.
+    }
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
+    pres["Presentation Layer<br/>UI, API, CLI<br/>User interaction"]
+    app["Application Layer<br/>Use Cases<br/>Orchestration"]
+    dom["Domain Layer<br/>Business Logic<br/>Core domain model"]
+    infra["Infrastructure Layer<br/>DB, External<br/>Technical details"]
+    pres ~~~ app ~~~ dom ~~~ infra
 ```
 
 **Dependency Rule**: Inner layers don't depend on outer layers (Domain doesn't know about Infrastructure).

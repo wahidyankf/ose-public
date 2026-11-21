@@ -9,6 +9,7 @@ open CraneCore.Domain.PdfMetadata
 open CraneCore.Adapters.Out.PdfAdapter
 
 [<Fact>]
+// @scenario specs/libs/fsharp-crane-core/behaviours/adapters/adapters.feature: Extracted pages join with line breaks
 let ``joining extracted pages preserves line and indentation structure`` () =
     let pages = [ "- parent\n  - child"; "| A | B |\n|---|---|" ]
 
@@ -48,6 +49,7 @@ let private withTempPdf (f: string -> string -> unit) =
             Directory.Delete(tmpDir, true)
 
 [<Fact>]
+// @scenario specs/libs/fsharp-crane-core/behaviours/cache/cache.feature: The extraction cache proxies metadata to the PDF port
 let ``wrap returns IPdfPort that proxies metadata`` () =
     let inner = FakePdfPort("some text", 5, 1024L) :> IPdfPort
     let cacheDir = Path.GetTempPath()
@@ -61,6 +63,7 @@ let ``defaultCacheDir returns a non-empty string`` () =
     Assert.NotEmpty(dir)
 
 [<Fact>]
+// @scenario specs/libs/fsharp-crane-core/behaviours/cache/cache.feature: XDG_CACHE_HOME sets the extraction cache directory
 let ``defaultCacheDir uses XDG_CACHE_HOME when set`` () =
     let prev = Environment.GetEnvironmentVariable("XDG_CACHE_HOME")
 

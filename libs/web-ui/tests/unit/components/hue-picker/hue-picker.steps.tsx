@@ -3,13 +3,14 @@ import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
 import { render, screen, fireEvent, cleanup } from "@testing-library/react";
 import { vi, expect } from "vitest";
 
-import { HuePicker } from "../../../../src/components/hue-picker/hue-picker";
+import { HuePicker, HUES } from "../../../../src/components/hue-picker/hue-picker";
 
 const feature = await loadFeature(
   path.resolve(__dirname, "../../../../../../specs/libs/web-ui/behaviours/hue-picker/hue-picker.feature"),
 );
 
 describeFeature(feature, ({ Scenario }) => {
+  // @scenario specs/libs/web-ui/behaviours/hue-picker/hue-picker.feature: Renders 6 swatches
   Scenario("Renders 6 swatches", ({ When, Then }) => {
     let swatches: HTMLElement[];
 
@@ -24,6 +25,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
+  // @scenario specs/libs/web-ui/behaviours/hue-picker/hue-picker.feature: Click calls onChange
   Scenario("Click calls onChange", ({ Given, When, Then }) => {
     const onChangeMock = vi.fn();
 
@@ -44,6 +46,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
+  // @scenario specs/libs/web-ui/behaviours/hue-picker/hue-picker.feature: aria-pressed reflects selection
   Scenario("aria-pressed reflects selection", ({ When, Then, And }) => {
     let teal: HTMLElement;
     let sage: HTMLElement;
@@ -61,6 +64,19 @@ describeFeature(feature, ({ Scenario }) => {
 
     And('the "sage" swatch should have aria-pressed "false"', () => {
       expect(sage.getAttribute("aria-pressed")).toBe("false");
+    });
+  });
+
+  // @scenario specs/libs/web-ui/behaviours/hue-picker/hue-picker.feature: HUES lists the six hues terracotta, honey, sage, teal, sky, plum in that order
+  Scenario("HUES lists the six hues terracotta, honey, sage, teal, sky, plum in that order", ({ When, Then }) => {
+    let hues: readonly string[] = [];
+
+    When("I read the HUES list", () => {
+      hues = HUES;
+    });
+
+    Then('the list should be "terracotta, honey, sage, teal, sky, plum"', () => {
+      expect([...hues].join(", ")).toBe("terracotta, honey, sage, teal, sky, plum");
     });
   });
 });

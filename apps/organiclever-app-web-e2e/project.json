@@ -71,6 +71,15 @@
         "{workspaceRoot}/libs/*/tests/**/*"
       ]
     },
+    "test:integration": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "if grep -rn -E --include='*.ts' --exclude-dir=node_modules --exclude-dir=.features-gen --exclude-dir=test-results --exclude-dir=playwright-report '\\$?test\\.skip\\([^,)]*\\)' .; then echo 'ERROR: unconditional test.skip() found in test files above - use test.skip(condition, reason) for legitimate environment guards, or remove'; exit 1; fi && npx bddgen && env -u WEB_BASE_URL PLAYWRIGHT_GREP_INVERT=@local-fullstack npx playwright test",
+        "cwd": "{projectRoot}"
+      },
+      "cache": false,
+      "dependsOn": ["organiclever-app-web:build"]
+    },
     "test:e2e": {
       "executor": "nx:run-commands",
       "options": {

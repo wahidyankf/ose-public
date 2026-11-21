@@ -145,6 +145,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── Cost of Living tab scenarios ───────────────────────────────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Cost-of-living breakdown lists category expenses per city
   Scenario("Cost-of-living breakdown lists category expenses per city", ({ Given, When, Then, And }) => {
     Given('I am on "/en/tools/cost-of-living-calculator"', () => {
       navState.locale = "en";
@@ -202,6 +203,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Region narrows the country filter and country narrows the city filter
   Scenario(
     "Region narrows the country filter and country narrows the city filter",
     async ({ Given, When, Then, And }) => {
@@ -251,6 +253,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     },
   );
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Country and city are always shown together on every tab
   Scenario("Country and city are always shown together on every tab", ({ Given, When, Then }) => {
     Given('I am on "/en/tools/cost-of-living-calculator"', () => {
       navState.locale = "en";
@@ -270,6 +273,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Clicking a city name opens its single-city cost-of-living detail
   Scenario("Clicking a city name opens its single-city cost-of-living detail", async ({ Given, When, Then, And }) => {
     const firstCity = dataset.cities[0]!;
 
@@ -304,6 +308,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     );
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Clicking a country opens Cost-of-living filtered to that country
   Scenario("Clicking a country opens Cost-of-living filtered to that country", async ({ Given, When, Then, And }) => {
     const firstCountry = dataset.countries[0]!;
     const firstCountryCities = dataset.cities.filter((c) => c.countryId === firstCountry.id);
@@ -338,6 +343,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: A city link takes precedence over a country link when both params are present
   Scenario("A city link takes precedence over a country link when both params are present", ({ Given, When, Then }) => {
     const firstCity = dataset.cities[0]!;
 
@@ -354,6 +360,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Healthcare funding scheme is always shown
   Scenario("Healthcare funding scheme is always shown", async ({ Given, When, Then, And }) => {
     Given('I am on "/en/tools/cost-of-living-calculator"', () => {
       navState.locale = "en";
@@ -378,6 +385,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The OOP abbreviation is explained on screen
   Scenario("The OOP abbreviation is explained on screen", ({ Given, When, Then, And }) => {
     Given('I am on a tab that shows the "Healthcare (OOP)" column', () => {
       expect(navState.params.get("tab")).toBeNull();
@@ -421,6 +429,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Relocation reserve is shown separately from sunk costs
   Scenario("Relocation reserve is shown separately from sunk costs", ({ Given, When, Then, And }) => {
     Given('I am on the "Cost of living" tab', () => {
       expect(navState.params.get("tab")).toBeNull();
@@ -446,6 +455,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── Savings tab scenarios ───────────────────────────────────────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings tab converts gross salary to net before subtracting expenses
   Scenario(
     "Savings tab converts gross salary to net before subtracting expenses",
     async ({ Given, When, Then, And }) => {
@@ -485,6 +495,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     },
   );
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Gross salary entered monthly shows the derived annual figure
   Scenario("Gross salary entered monthly shows the derived annual figure", async ({ Given, When, Then, And }) => {
     Given('I am on the "Savings" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -510,6 +521,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Non-salary comp is shown as informational context only
   Scenario("Non-salary comp is shown as informational context only", async ({ Given, When, Then, But }) => {
     Given('I am on the "Savings" tab with a gross salary entered', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -536,6 +548,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Total compensation is shown for negotiation context
   Scenario("Total compensation is shown for negotiation context", async ({ Given, When, Then, And }) => {
     Given('I am on the "Savings" tab with a gross salary entered', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -565,6 +578,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     );
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Sub-national tax lowers net only in federal countries
   Scenario("Sub-national tax lowers net only in federal countries", async ({ Given, When, Then, But }) => {
     Given('I am on the "Savings" tab with a gross salary entered', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -594,6 +608,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Net take-home is lower than the entered gross
   Scenario("Net take-home is lower than the entered gross", async ({ Given, When, Then }) => {
     Given('I am on the "Savings" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -616,6 +631,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Essentials above net show a deficit
   Scenario("Essentials above net show a deficit", async ({ Given, When, Then }) => {
     Given('I am on the "Savings" tab for a high-cost city', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -637,6 +653,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── i18n scenario ───────────────────────────────────────────────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Indonesian locale is fully translated
   Scenario("Indonesian locale is fully translated", ({ Given, When, Then }) => {
     Given('I am on "/id/tools/cost-of-living-calculator"', () => {
       navState.locale = "id";
@@ -662,6 +679,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── Data integrity ───────────────────────────────────────────────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: No Israeli cities are listed
   Scenario("No Israeli cities are listed", ({ Given, When, Then }) => {
     Given("I am on the calculator in either locale", () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -679,6 +697,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Data snapshot date is clearly shown
   Scenario("Data snapshot date is clearly shown", ({ Given, When, Then, And }) => {
     Given("I am on the calculator", () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -701,6 +720,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Every monetary figure converts to USD via the in-repo FX table
   Scenario("Every monetary figure converts to USD via the in-repo FX table", ({ Given, When, Then, And }) => {
     Given("I am on the calculator", () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -723,6 +743,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── Cost-basis controls scenarios ───────────────────────────────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Adding adults and children changes the modeled expenses
   Scenario("Adding adults and children changes the modeled expenses", async ({ Given, When, Then, And }) => {
     Given('I am on the "Cost of living" tab', () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -750,6 +771,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Pre-school children incur childcare, not schooling
   Scenario("Pre-school children incur childcare, not schooling", async ({ Given, When, Then, But }) => {
     Given('I am on the "Cost of living" tab', () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -774,6 +796,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: School type toggle is shown but disabled without school-age children
   Scenario("School type toggle is shown but disabled without school-age children", ({ Given, When, Then, And }) => {
     Given('I am on "/en/tools/cost-of-living-calculator"', () => {
       navState.locale = "en";
@@ -795,6 +818,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Private school raises expenses more than public
   Scenario("Private school raises expenses more than public", async ({ Given, And, When, Then }) => {
     Given('I am on "/en/tools/cost-of-living-calculator"', () => {
       navState.locale = "en";
@@ -816,6 +840,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Rural area lowers housing versus city center
   Scenario("Rural area lowers housing versus city center", async ({ Given, When, Then, And }) => {
     Given('I am on the "Cost of living" tab', () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -836,6 +861,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── Minimum Role tab scenarios ──────────────────────────────────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Minimum role for a savings target ranks on essential savings and is reordered
   Scenario(
     "Minimum role for a savings target ranks on essential savings and is reordered",
     async ({ Given, And, When, Then }) => {
@@ -882,6 +908,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   );
 
   // INCLUDE-ALL rule — every qualifying (city, role) within the filter is its own row.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Every qualifying city and role within the filter is included
   Scenario("Every qualifying city and role within the filter is included", async ({ Given, And, When, Then }) => {
     Given('I am on the "Minimum role" tab with a baseline set', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -927,6 +954,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Roles are labelled as software-engineering roles
   Scenario("Roles are labelled as software-engineering roles", async ({ Given, When, Then }) => {
     Given('I am on the "Minimum role" tab with a baseline set', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -948,6 +976,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Each role shows its per-country salary distribution
   Scenario("Each role shows its per-country salary distribution", async ({ Given, When, Then, And }) => {
     Given('I am on the "Minimum role" tab with a baseline set', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -974,6 +1003,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: A city row shows its country alongside the city name
   Scenario("A city row shows its country alongside the city name", async ({ Given, When, Then }) => {
     Given('I am on the "Minimum role" tab with a baseline set', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -994,6 +1024,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Geographic filter scopes the candidate cities
   Scenario("Geographic filter scopes the candidate cities", async ({ Given, When, Then }) => {
     Given('I am on the "Minimum role" tab with a baseline set', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -1019,6 +1050,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Non-salary comp does not determine the minimum-role ranking
   Scenario("Non-salary comp does not determine the minimum-role ranking", async ({ Given, When, Then, And }) => {
     let comparison: Array<{ savings: number; nonSalary: number }> = [];
 
@@ -1055,6 +1087,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Lifestyle does not determine the minimum-role ranking
   Scenario("Lifestyle does not determine the minimum-role ranking", async ({ Given, When, Then }) => {
     let essentialOrder: string[] = [];
     let afterLifestyleOrder: string[] = [];
@@ -1105,6 +1138,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Minimum role from a reference city and role
   Scenario("Minimum role from a reference city and role", async ({ Given, And, When, Then }) => {
     Given('I am on the "Minimum role" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -1132,6 +1166,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Minimum role from my own salary
   Scenario("Minimum role from my own salary", async ({ Given, And, When, Then }) => {
     Given('I am on the "Minimum role" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -1162,6 +1197,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: My-salary baseline accepts the gross in local currency or USD
   Scenario("My-salary baseline accepts the gross in local currency or USD", async ({ Given, And, When, Then }) => {
     let localBaseline = Number.NaN;
     let usdBaseline = Number.NaN;
@@ -1213,6 +1249,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings tab honours the active geographic filter
   Scenario("Savings tab honours the active geographic filter", async ({ Given, And, When, Then }) => {
     Given('I am on "/en/tools/cost-of-living-calculator"', () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -1239,6 +1276,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Min-role baseline source and inputs are serialized in the URL
   Scenario("Min-role baseline source and inputs are serialized in the URL", async ({ Given, When, And, Then }) => {
     Given('I am on the "Minimum role" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -1264,6 +1302,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings gross salary is serialized in the URL
   Scenario("Savings gross salary is serialized in the URL", async ({ Given, When, Then }) => {
     let replaceHistory: ReturnType<typeof vi.spyOn>;
 
@@ -1291,6 +1330,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings shown in USD, local, and display currency
   Scenario("Savings shown in USD, local, and display currency", async ({ Given, When, Then }) => {
     Given('I am on the "Minimum role" tab with a baseline set', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -1315,6 +1355,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     );
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Every money column on the Minimum-role tab is dual currency
   Scenario("Every money column on the Minimum-role tab is dual currency", async ({ Given, When, Then, And }) => {
     Given('I am on the "Minimum role" tab with a baseline set and a display currency chosen', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -1348,6 +1389,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Household composition recalculates minimum-role candidates
   Scenario("Household composition recalculates minimum-role candidates", async ({ Given, When, Then, And }) => {
     Given(
       'I am on the "Minimum role" tab and the "SWE I" role qualifies for the "single" household basis',
@@ -1378,6 +1420,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: No role can reach the bar
   Scenario("No role can reach the bar", async ({ Given, When, Then, And }) => {
     Given('I am on the "Minimum role" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -1400,6 +1443,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Cost-basis controls affect role candidates
   Scenario("Cost-basis controls affect role candidates", async ({ Given, When, Then }) => {
     Given('I am on the "Minimum role" tab with a baseline set', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -1419,6 +1463,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Low-confidence cells are flagged on the minimum-role tab
   Scenario("Low-confidence cells are flagged on the minimum-role tab", async ({ Given, When, Then }) => {
     Given('I am on the "Minimum role" tab with a baseline set', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -1440,6 +1485,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: No Israeli city appears among role candidates
   Scenario("No Israeli city appears among role candidates", async ({ Given, When, Then }) => {
     Given('I am on the "Minimum role" tab with a baseline set', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -1464,6 +1510,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── SG-001: Zero/empty salary guidance ───────────────────────────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Zero or empty salary shows guidance instead of derived savings
   Scenario("Zero or empty salary shows guidance instead of derived savings", async ({ Given, When, Then, And }) => {
     Given('I am on the "Savings" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -1488,6 +1535,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── SG-002: Rural area × multi-adult household sub-linear housing ────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Rural area and multi-adult household multiply the housing estimate sub-linearly
   Scenario(
     "Rural area and multi-adult household multiply the housing estimate sub-linearly",
     async ({ Given, And, When, Then }) => {
@@ -1516,6 +1564,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── SG-003: City filter dropdown opens detail view ───────────────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Selecting a city from the City filter opens its detail view
   Scenario("Selecting a city from the City filter opens its detail view", async ({ Given, When, Then, And }) => {
     const firstCity = dataset.cities[0]!;
 
@@ -1540,6 +1589,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── SG-004: Income-band boundary handling ────────────────────────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Income exactly at the low-to-mid threshold uses the mid band
   Scenario("Income exactly at the low-to-mid threshold uses the mid band", async ({ Given, When, Then }) => {
     Given('I am on the "Savings" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -1561,6 +1611,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── SG-005: Mobile city cards show country name ──────────────────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Mobile city cards show the country name alongside the city
   Scenario("Mobile city cards show the country name alongside the city", async ({ Given, When, Then }) => {
     Given('I am viewing the "Cost of living" tab on a viewport narrower than 768 px', () => {
       // jsdom has no real viewport; responsive rendering verified at e2e level
@@ -1582,6 +1633,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── SG-006: Zero savings target marks lowest role as minimum ─────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Zero savings target marks the lowest role as the minimum
   Scenario("Zero savings target marks the lowest role as the minimum", async ({ Given, And, When, Then }) => {
     Given('I am on the "Minimum role" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -1630,6 +1682,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── SG-007: Expense preview updates in real time ─────────────────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Expense preview updates in real time when household controls change
   Scenario(
     "Expense preview updates in real time when household controls change",
     async ({ Given, And, When, Then }) => {
@@ -1670,6 +1723,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   // ─── USS-002: Filter state persisted in URL ───────────────────────────────────
 
   // Reconciled 2026-06-21: scenario title updated to match the feature file (all 9 controls serialized)
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Selecting filters updates the URL with all active query parameters
   Scenario("Selecting filters updates the URL with all active query parameters", async ({ Given, When, Then, And }) => {
     Given("a user is on the cost-of-living calculator page", () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -1695,6 +1749,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── USS-005: Descriptive page title ─────────────────────────────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Page title includes tool name on load
   Scenario("Page title includes tool name on load", ({ Given, When, Then }) => {
     let metadataTitle: string | undefined;
     Given("a user navigates to the cost-of-living calculator", () => {
@@ -1714,6 +1769,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── SG-001: Negative salary input is clamped to zero ────────────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Negative salary input is clamped to zero
   Scenario("Negative salary input is clamped to zero", async ({ Given, When, Then, And }) => {
     Given('I am on the "Savings" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -1738,6 +1794,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── SG-002: Decimal salary computes annual gross correctly ──────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Decimal monthly salary produces correct annual gross
   Scenario("Decimal monthly salary produces correct annual gross", async ({ Given, When, Then, And }) => {
     Given('I am on the "Savings" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -1765,6 +1822,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── SG-003: Very large salary does not produce NaN or Infinity ──────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Very large salary produces valid savings figures
   Scenario("Very large salary produces valid savings figures", async ({ Given, When, Then, And }) => {
     Given('I am on the "Savings" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -1791,6 +1849,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   // ─── SG-004: Selecting only a country updates the URL ────────────────────────
 
   // Reconciled 2026-06-21: scenario title updated; default tab is omitted from the URL.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Selecting only a country updates the URL country parameter
   Scenario("Selecting only a country updates the URL country parameter", async ({ Given, When, Then, And }) => {
     let pushHistory: ReturnType<typeof vi.spyOn>;
     let replaceHistory: ReturnType<typeof vi.spyOn>;
@@ -1829,6 +1888,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── SG-005: School type toggle becomes enabled when school-age children >= 1 ────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: School type toggle becomes enabled when school-age children is set to one or more
   Scenario(
     "School type toggle becomes enabled when school-age children is set to one or more",
     async ({ Given, And, When, Then }) => {
@@ -1869,6 +1929,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── SG-006: Housing scales sub-linearly (1.25x) for 2-adult household ───────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Housing preview scales sub-linearly for 2-adult household
   Scenario("Housing preview scales sub-linearly for 2-adult household", async ({ Given, And, When, Then }) => {
     const before: Record<string, number> = {};
     const firstCityId = dataset.cities[0]!.id;
@@ -1914,6 +1975,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── USS-001: Savings tab empty-state when no salary entered ─────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings tab shows empty-state guidance when no salary entered
   Scenario("Savings tab shows empty-state guidance when no salary entered", async ({ Given, When, And, Then }) => {
     Given("a user has opened the Cost of Living Calculator", () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -1940,6 +2002,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings tab shows results after salary is entered
   Scenario("Savings tab shows results after salary is entered", async ({ Given, When, Then, And }) => {
     Given("a user is on the Savings tab with the empty-state message displayed", async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -1964,6 +2027,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── USS-002: Minimum Role tab empty-state when no target entered ─────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Minimum Role tab shows empty-state when no target amount entered
   Scenario("Minimum Role tab shows empty-state when no target amount entered", async ({ Given, When, And, Then }) => {
     Given("a user has opened the Cost of Living Calculator", () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -1994,6 +2058,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── USS-003: Area toggle confirms data update ────────────────────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Area toggle shows selected state and confirms data update
   Scenario("Area toggle shows selected state and confirms data update", async ({ Given, And, When, Then }) => {
     let centerHousing = 0;
 
@@ -2023,6 +2088,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── USS-004: Tab sub-labels are visually/aria distinct ──────────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Tab sub-labels are visually separated from tab names
   Scenario("Tab sub-labels are visually separated from tab names", ({ Given, When, Then, And }) => {
     Given("a user views the Cost of Living Calculator tab bar", () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -2053,6 +2119,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── USS-005: Tools index renders localized text ──────────────────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Tools index page renders all text in the active locale
   Scenario("Tools index page renders all text in the active locale", ({ Given, When, Then, And }) => {
     Given("a user navigates to /en/tools", async () => {
       const jsx = await ToolsIndexPage({ params: Promise.resolve({ locale: "en" as const }) });
@@ -2077,6 +2144,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Tools index page renders in Indonesian on /id/tools
   Scenario("Tools index page renders in Indonesian on /id/tools", ({ Given, When, Then, And }) => {
     Given("a user navigates to /id/tools", async () => {
       const jsx = await ToolsIndexPage({ params: Promise.resolve({ locale: "id" as const }) });
@@ -2101,6 +2169,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── SG-D-001: Dual-currency display in cost-of-living and savings tables ─────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Cost-of-living table shows local currency and USD for each expense cell
   Scenario("Cost-of-living table shows local currency and USD for each expense cell", ({ Given, When, Then, And }) => {
     Given("the user is on the Cost of living tab at desktop width", () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -2121,6 +2190,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings table shows local currency and USD for net and savings columns
   Scenario("Savings table shows local currency and USD for net and savings columns", async ({ Given, When, Then }) => {
     Given("the user is on the Savings tab with a gross salary entered", async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -2146,6 +2216,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── SG-D-003: Page heading matches tool identity ─────────────────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: H1 matches the tool's official name in each locale
   ScenarioOutline("H1 matches the tool's official name in each locale", ({ Given, When, Then, And }, variables) => {
     Given('the user opens "/<locale>/tools/cost-of-living-calculator"', () => {
       navState.locale = String(variables.locale);
@@ -2171,6 +2242,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── SG-D-004: id locale uses Indonesian city/country names ──────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Id locale cost-of-living table uses Indonesian translations
   Scenario("Id locale cost-of-living table uses Indonesian translations", ({ Given, When, Then, And }) => {
     Given('the user is on "/id/tools/cost-of-living-calculator" at desktop width', () => {
       navState.locale = "id";
@@ -2190,6 +2262,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Id locale minimum-role table uses Indonesian city names
   Scenario("Id locale minimum-role table uses Indonesian city names", async ({ Given, And, When, Then }) => {
     Given('the user is on "/id/tools/cost-of-living-calculator" at desktop width', () => {
       navState.locale = "id";
@@ -2212,6 +2285,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── prd.md: Design-system controls, locale URL redirect, mobile nav ──────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Gross-salary input uses the design-system Input primitive
   Scenario("Gross-salary input uses the design-system Input primitive", async ({ Given, When, Then, And }) => {
     Given('the user is on the "Savings" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -2236,6 +2310,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Baseline selector is a segmented control
   Scenario("Baseline selector is a segmented control", async ({ Given, When, Then }) => {
     Given('the user is on the "Minimum role" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -2254,6 +2329,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Tab labels are clean single phrases
   Scenario("Tab labels are clean single phrases", ({ Given, When, Then }) => {
     Given("the user views the tab bar at any breakpoint", () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -2269,6 +2345,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Each tab has a visible description associated with its trigger
   Scenario("Each tab has a visible description associated with its trigger", ({ Given, When, Then, And }) => {
     Given("the user views the calculator tab bar", () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -2306,6 +2383,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Uppercase locale URL redirects to canonical lowercase
   Scenario("Uppercase locale URL redirects to canonical lowercase", ({ Given, When, Then }) => {
     let requestedPath = "";
     let redirectDestination: string | null = null;
@@ -2323,6 +2401,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Mobile nav drawer shows localized site navigation
   Scenario("Mobile nav drawer shows localized site navigation", ({ Given, When, Then, And }) => {
     let drawerLinks: Array<{ href: string; label: string }> = [];
     Given('the user opens the mobile nav drawer at 375px on the "/id/" locale', () => {
@@ -2357,6 +2436,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   // Unit-level URL-state proofs complement the browser-history assertions in the E2E adapter.
 
   // URL-001 — Out-of-range numeric param is reset to default on load
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: An out-of-range numeric param is reset to its default on load
   Scenario("An out-of-range numeric param is reset to its default on load", ({ Given, When, Then, And }) => {
     Given('a deep link with query string "adults=4"', () => {
       navState.params = new URLSearchParams("adults=4");
@@ -2379,6 +2459,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // URL-002 — Full country name is dropped (only ISO id is valid)
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: A full-country-name param is dropped on load
   Scenario("A full-country-name param is dropped on load", ({ Given, When, Then, And }) => {
     Given('a deep link with query string "country=Indonesia"', () => {
       navState.params = new URLSearchParams("country=Indonesia");
@@ -2401,6 +2482,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // URL-003 — Selecting a city backfills country and region
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Selecting a city under no prior filter backfills country and region
   Scenario("Selecting a city under no prior filter backfills country and region", ({ Given, When, Then, And }) => {
     Given("I am on the calculator with no query string", () => {
       navState.params = new URLSearchParams();
@@ -2426,6 +2508,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // URL-004 — Selecting a broader region clears incompatible narrower filters
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Selecting a broader region clears an incompatible country and city
   Scenario("Selecting a broader region clears an incompatible country and city", ({ Given, When, Then, But }) => {
     Given('I am on the calculator with query string "city=singapore"', () => {
       navState.params = new URLSearchParams("city=singapore");
@@ -2451,6 +2534,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // URL-005 — Contradictory region+city deep link resolves with narrower filter winning
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: A contradictory region-and-city deep link resolves with the narrower filter winning
   Scenario(
     "A contradictory region-and-city deep link resolves with the narrower filter winning",
     ({ Given, When, Then, And }) => {
@@ -2477,6 +2561,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   );
 
   // URL-006 — City-detail back link preserves an explicitly chosen parent geo scope
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The city-detail back link preserves the parent geo scope
   Scenario("The city-detail back link preserves the parent geo scope", ({ Given, When, Then, But }) => {
     let backHref = "";
 
@@ -2505,6 +2590,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // URL-007 — Tab change is written to the URL
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Changing the tab writes the tab to the URL
   Scenario("Changing the tab writes the tab to the URL", ({ Given, When, Then, And }) => {
     Given("I am on the calculator with no query string", () => {
       navState.params = new URLSearchParams();
@@ -2530,6 +2616,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // URL-008 — Cost-basis control change is written to the URL
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Changing a cost-basis control writes it to the URL
   Scenario("Changing a cost-basis control writes it to the URL", ({ Given, When, Then, And }) => {
     Given("I am on the calculator with no query string", () => {
       navState.params = new URLSearchParams();
@@ -2552,6 +2639,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // URL-009 — Breadcrumb offers Home and Tools escape links
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The breadcrumb offers an escape to the Tools index and Home
   Scenario("The breadcrumb offers an escape to the Tools index and Home", ({ Given, When, Then, And }) => {
     Given('I am on the calculator with query string "city=singapore"', () => {
       navState.params = new URLSearchParams("city=singapore");
@@ -2584,6 +2672,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // AC-2 (DWT-B-003/DWT-B-004) — Breadcrumb uses the shared primitive with chevron separators
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The breadcrumb separates crumbs with chevrons, not a literal slash
   Scenario("The breadcrumb separates crumbs with chevrons, not a literal slash", ({ Given, When, Then, And }) => {
     let breadcrumbNav: HTMLElement | null = null;
 
@@ -2610,6 +2699,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // AC-3 (UWT-013) — Final breadcrumb crumb equals the page H1 in each locale
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The final breadcrumb crumb matches the page title in each locale
   ScenarioOutline(
     "The final breadcrumb crumb matches the page title in each locale",
     ({ Given, When, Then, And }, variables) => {
@@ -2638,6 +2728,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   );
 
   // URL-010 — Region selection writes region to the URL
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Selecting a region writes the region to the URL
   Scenario("Selecting a region writes the region to the URL", ({ Given, When, Then, And }) => {
     Given("I am on the calculator with no query string", () => {
       navState.params = new URLSearchParams();
@@ -2663,6 +2754,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // URL-011 — City deep link restores city and backfills country and region
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: A city deep link restores the city and backfills country and region
   Scenario("A city deep link restores the city and backfills country and region", ({ Given, When, Then, And }) => {
     Given('a deep link with query string "city=singapore"', () => {
       navState.params = new URLSearchParams("city=singapore");
@@ -2685,6 +2777,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // URL-012 — Unknown city param is dropped on load
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: An unknown city param is dropped on load
   Scenario("An unknown city param is dropped on load", ({ Given, When, Then, And }) => {
     Given('a deep link with query string "city=atlantis"', () => {
       navState.params = new URLSearchParams("city=atlantis");
@@ -2707,6 +2800,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // URL-013 — Canonicalization uses replace so Back button skips the dirty URL
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Canonicalization does not add a browser history entry
   Scenario("Canonicalization does not add a browser history entry", ({ Given, When, Then }) => {
     Given('a deep link with query string "city=atlantis"', () => {
       navState.params = new URLSearchParams("city=atlantis");
@@ -2724,6 +2818,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // AC-4 (UWT-016/DWT-005) — Geo-filter selects meet the 44px minimum touch target
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Geo-filter selects meet the minimum touch-target height on mobile
   Scenario("Geo-filter selects meet the minimum touch-target height on mobile", ({ Given, When, Then }) => {
     Given("I am on the calculator at a 375px-wide viewport", () => {
       // jsdom has no layout engine, so the rendered pixel height is verified at the
@@ -2754,6 +2849,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // AC-5 (UWT-008) — Calculator page does not overflow horizontally at 320px
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The calculator page has no horizontal overflow at 320px
   Scenario("The calculator page has no horizontal overflow at 320px", ({ Given, When, Then }) => {
     Given("I am on the calculator at a 320px-wide viewport", () => {
       // Horizontal scrollWidth is a layout measurement, verified at e2e level
@@ -2778,6 +2874,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // EWT-R01 (regression of UWT-008) — id-locale tab labels must not widen the page at 320px
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The calculator page has no horizontal overflow at 320px in the id locale
   Scenario("The calculator page has no horizontal overflow at 320px in the id locale", ({ Given, When, Then }) => {
     Given("I am on the id-locale calculator at a 320px-wide viewport", () => {
       // Horizontal scrollWidth is a layout measurement, verified at e2e level
@@ -2801,6 +2898,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // AC-8 (UWT-004) — Savings gross-salary field surfaces the active currency separately
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The Savings gross-salary field shows the active currency as a separate indicator
   Scenario(
     "The Savings gross-salary field shows the active currency as a separate indicator",
     async ({ Given, When, Then, And }) => {
@@ -2825,6 +2923,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   );
 
   // UWT-019 — the fixed USD indicator carries a short explanation of why USD is used
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The Savings currency indicator explains why USD is used for every city
   Scenario("The Savings currency indicator explains why USD is used for every city", async ({ Given, When, Then }) => {
     Given('I am on the "Savings" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -2842,6 +2941,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // AC-9 (UWT-006) — Minimum-role empty-state for a BLANK target only (numeric zero → ladder)
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: A blank savings target shows empty-state guidance instead of the role ladder
   Scenario(
     "A blank savings target shows empty-state guidance instead of the role ladder",
     async ({ Given, When, Then, But }) => {
@@ -2875,6 +2975,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   );
 
   // AC-10 (UWT-007) — Region selector lists exactly the nine intended regions
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The region selector lists exactly the nine intended regions
   Scenario("The region selector lists exactly the nine intended regions", ({ Given, When, Then }) => {
     let regionSelect: HTMLElement;
 
@@ -2903,6 +3004,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // AC-11 (UWT-014) — A country change that auto-changes the region surfaces an advisory
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Selecting a country that changes the region shows a visible advisory
   Scenario("Selecting a country that changes the region shows a visible advisory", async ({ Given, When, Then }) => {
     Given("I am on the calculator with no region selected", () => {
       navState.params = new URLSearchParams();
@@ -2923,6 +3025,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // AC-12 (UWT-015) — A city-only deep link returns to the bare calculator
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: A city-only deep link back link omits the auto-derived region and country
   Scenario("A city-only deep link back link omits the auto-derived region and country", ({ Given, When, Then }) => {
     let backLink: HTMLElement;
 
@@ -2948,6 +3051,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   // ── Phase 7: spec coverage sweep ─────────────────────────────────────────────
 
   // SG-U (country-narrows-city) — selecting country alone (no region) narrows city dropdown
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Selecting a country without a region still narrows the city dropdown
   Scenario("Selecting a country without a region still narrows the city dropdown", async ({ Given, When, Then }) => {
     Given("I am on the calculator with no region or country selected", () => {
       navState.params = new URLSearchParams();
@@ -2974,6 +3078,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // SG-U (area radiogroup) — the area segmented control renders with role="radiogroup"
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The area control is rendered as a radiogroup
   Scenario("The area control is rendered as a radiogroup", ({ Given, When, Then, And }) => {
     Given("I am on the cost-of-living calculator", () => {
       navState.params = new URLSearchParams();
@@ -3003,6 +3108,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // SG-U (baseline SegmentedControl) — baseline selector is a radiogroup that shows/hides sub-forms
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The baseline selector shows the savings-target sub-form when savings target is selected
   Scenario(
     "The baseline selector shows the savings-target sub-form when savings target is selected",
     async ({ Given, When, Then, And }) => {
@@ -3041,6 +3147,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   );
 
   // Regression — filter changes must not scroll the page to the top.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Changing a filter preserves the scroll position
   Scenario("Changing a filter preserves the scroll position", async ({ Given, When, Then }) => {
     let scrollTo: ReturnType<typeof vi.spyOn>;
 
@@ -3066,6 +3173,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // Regression — typing the salary echoes instantly but debounces the URL write.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Typing the gross salary echoes instantly but commits to the URL only after typing settles
   Scenario(
     "Typing the gross salary echoes instantly but commits to the URL only after typing settles",
     async ({ Given, When, Then, And }) => {
@@ -3092,6 +3200,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // Foreigner public-school eligibility: where public schooling isn't open to foreign residents,
   // the calculator charges the private figure and flags the cell.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Public schooling not open to foreigners is charged at the private rate
   Scenario("Public schooling not open to foreigners is charged at the private rate", async ({ Given, When, Then }) => {
     const sg = dataset.cities.find((c) => c.id === "singapore")!;
 
@@ -3113,6 +3222,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Public schooling open to foreigners keeps the public cost
   Scenario("Public schooling open to foreigners keeps the public cost", async ({ Given, When, Then }) => {
     const berlin = dataset.cities.find((c) => c.id === "berlin")!;
 
@@ -3135,6 +3245,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   // ── Phase 8: UX-hardening fold-in bindings (SG-001..003, USS-001..004, protected) ──
 
   // Cluster 1 / SG-001 — only the active tab description is visible.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Only the active tab description is visible
   Scenario("Only the active tab description is visible", ({ Given, When, Then, And }) => {
     Given('the cost-of-living calculator is open with the "Cost of living" tab active', () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -3161,6 +3272,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Active tab description follows the active tab
   Scenario("Active tab description follows the active tab", async ({ Given, When, Then }) => {
     Given('the cost-of-living calculator is open with the "Cost of living" tab active', () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -3179,6 +3291,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // Cluster 2 — touch targets on tab triggers + segmented radios.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Interactive controls meet the 44px touch target
   Scenario("Interactive controls meet the 44px touch target", ({ Given, When, Then, And }) => {
     Given("the calculator at 375px", () => {
       // jsdom has no layout engine; the unit tier asserts the 44px styling contract
@@ -3208,6 +3321,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // USS-003 — Area toggle exposes its pressed state via ARIA (radiogroup → aria-checked).
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Area toggle exposes its pressed state
   Scenario("Area toggle exposes its pressed state", ({ Given, When, Then, And }) => {
     Given('"City center" is the active area', () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -3233,6 +3347,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // USS-004 — disabled school-type buttons announce the prerequisite.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Disabled school-type buttons announce the prerequisite
   Scenario("Disabled school-type buttons announce the prerequisite", ({ Given, When, Then, And }) => {
     Given('"School-age children" is 0', () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -3261,6 +3376,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Sortable savings column exposes aria-sort
   Scenario("Sortable savings column exposes aria-sort", async ({ Given, When, Then }) => {
     Given("the Savings tab table is shown", async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -3286,6 +3402,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // Cluster 3 — foreigner public-school flag present in BOTH table and city-detail.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Foreigner-school flag is clear, styled, and present in both views
   Scenario("Foreigner-school flag is clear, styled, and present in both views", async ({ Given, And, When, Then }) => {
     const sg = dataset.cities.find((c) => c.id === "singapore")!;
 
@@ -3331,6 +3448,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // Cluster 4 — jargon glosses across the cost-of-living + min-role headers.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Jargon table headers carry an accessible explanation
   Scenario("Jargon table headers carry an accessible explanation", async ({ Given, When, Then, And }) => {
     Given("the calculator is open", () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -3385,6 +3503,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // Protected behaviour — OOP abbr title localized (id != literal English "out-of-pocket").
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The OOP abbreviation title is localized per locale
   Scenario("The OOP abbreviation title is localized per locale", ({ Given, When, Then, And }) => {
     Given("the calculator is open", () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -3404,6 +3523,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // Protected behaviour — region option display names localized; serialized key stays English.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Region option display names are localized but the serialized key stays English
   Scenario(
     "Region option display names are localized but the serialized key stays English",
     ({ Given, When, Then, And }) => {
@@ -3440,6 +3560,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     },
   );
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Healthcare scheme badges use consistent casing
   Scenario("Healthcare scheme badges use consistent casing", ({ Given, When, Then }) => {
     Given("the calculator is open", () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -3462,6 +3583,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // Cluster 5 / USS-001 — Savings empty-state + auto-focus.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings tab guides the user to enter a salary
   Scenario("Savings tab guides the user to enter a salary", async ({ Given, When, Then, And }) => {
     Given("the Savings tab is activated with no salary entered", () => {
       // Activate the Savings tab via deep link so the tab content mounts (triggering the
@@ -3494,6 +3616,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // The single-city essentials preview is removed from the min-role tab (the tab now lists every
   // qualifying city, so a one-city example is redundant there).
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Minimum-role tab does not render the single-city essentials preview
   Scenario("Minimum-role tab does not render the single-city essentials preview", async ({ Given, When, Then }) => {
     Given("the Minimum-role tab is activated", async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -3511,6 +3634,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // UWT-007 — at-field currency indicator on the Savings gross input.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings salary input shows its currency at the field
   Scenario("Savings salary input shows its currency at the field", async ({ Given, When, Then }) => {
     Given("the Savings tab is shown", async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -3528,6 +3652,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // Cluster 6 / SG-002 — all selects share the design-system chrome (appearance-none + chevron).
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: All selects share the design-system chrome
   Scenario("All selects share the design-system chrome", async ({ Given, When, Then, And }) => {
     Given("the calculator at 1280px", async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -3560,6 +3685,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // SG-003 — Baseline-source segmented control keeps the 44px rhythm via flex-wrap.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Baseline-source control keeps the 44px rhythm at mobile
   Scenario("Baseline-source control keeps the 44px rhythm at mobile", async ({ Given, When, Then }) => {
     Given("the Minimum-role tab at 320px and 375px", async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -3583,6 +3709,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // DWT-007 — salary-currency toggle bottom-aligns with the gross input (items-end field row).
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Salary-currency toggle bottom-aligns with its sibling input
   Scenario("Salary-currency toggle bottom-aligns with its sibling input", async ({ Given, When, Then }) => {
     Given('the Minimum-role "My salary" baseline at 1280px', async () => {
       renderPage(<CostOfLivingCalculatorPage />);

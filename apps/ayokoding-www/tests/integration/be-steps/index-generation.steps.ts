@@ -40,6 +40,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/build-tools/index-generation/index-generation.feature: Section _index.md lists direct children sorted by weight
   Scenario("Section _index.md lists direct children sorted by weight", ({ Given, When, Then }) => {
     Given('a section "tools" with children weighted 300, 100, and 200', async () => {
       await writeIndexFile(tmpDir, "en/_index.md", makeIndex("English", 1));
@@ -62,6 +63,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/build-tools/index-generation/index-generation.feature: Nested sections render with indentation
   Scenario("Nested sections render with indentation", ({ Given, When, Then }) => {
     Given('a section "tools" containing a child section "react" with leaf page "overview"', async () => {
       await writeIndexFile(tmpDir, "en/_index.md", makeIndex("English", 1));
@@ -81,6 +83,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/build-tools/index-generation/index-generation.feature: Existing frontmatter is preserved during generation
   Scenario("Existing frontmatter is preserved during generation", ({ Given, When, Then }) => {
     Given('a _index.md with frontmatter title "My Tools" and weight 500', async () => {
       await writeIndexFile(tmpDir, "en/_index.md", makeIndex("English", 1));
@@ -99,6 +102,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/build-tools/index-generation/index-generation.feature: Validate mode detects stale _index.md
   Scenario("Validate mode detects stale _index.md", ({ Given, When, Then }) => {
     let result: Awaited<ReturnType<typeof processAllIndexFiles>>;
 
@@ -118,6 +122,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/build-tools/index-generation/index-generation.feature: Generate mode is idempotent
   Scenario("Generate mode is idempotent", ({ Given, When, Then }) => {
     let result: Awaited<ReturnType<typeof processAllIndexFiles>>;
 
@@ -137,6 +142,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/build-tools/index-generation/index-generation.feature: Missing frontmatter fields are added
   Scenario("Missing frontmatter fields are added", ({ Given, When, Then, And }) => {
     Given("a _index.md without date or draft fields", async () => {
       await writeIndexFile(tmpDir, "en/_index.md", makeIndex("English", 1));
@@ -160,7 +166,8 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
-  Scenario("The course catalog section keeps a frontmatter-only index", ({ Given, When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/build-tools/index-generation/index-generation.feature: The course catalog index holds only its frontmatter
+  Scenario("The course catalog index holds only its frontmatter", ({ Given, When, Then }) => {
     Given('a "learn/courses" section in locale "en" with two course sections', async () => {
       await writeIndexFile(tmpDir, "en/learn/courses/_index.md", makeIndex("Courses", 102));
       await writeIndexFile(tmpDir, "en/learn/courses/sql-essentials/_index.md", makeIndex("SQL Essentials", 200));
@@ -178,8 +185,23 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(content.split("\n").filter((l) => l.startsWith("- ["))).toEqual([]);
       expect(content.split("---").slice(2).join("---").trim()).toBe("");
     });
+  });
 
-    And("each course _index.md still lists its own children", async () => {
+  // @scenario specs/apps/ayokoding/www/behaviours/build-tools/index-generation/index-generation.feature: Each course index lists its own pages
+  Scenario("Each course index lists its own pages", ({ Given, When, Then }) => {
+    Given('a "learn/courses" section in locale "en" with two course sections', async () => {
+      await writeIndexFile(tmpDir, "en/learn/courses/_index.md", makeIndex("Courses", 102));
+      await writeIndexFile(tmpDir, "en/learn/courses/sql-essentials/_index.md", makeIndex("SQL Essentials", 200));
+      await writeIndexFile(tmpDir, "en/learn/courses/sql-essentials/overview.md", makePage("Overview", 10));
+      await writeIndexFile(tmpDir, "en/learn/courses/git-course/_index.md", makeIndex("Git Course", 100));
+      await writeIndexFile(tmpDir, "en/learn/courses/git-course/overview.md", makePage("Overview", 10));
+    });
+
+    When("the index generator runs in generate mode", async () => {
+      await processAllIndexFiles(tmpDir, "generate");
+    });
+
+    Then("each course _index.md still lists its own children", async () => {
       const content = await fs.readFile(path.join(tmpDir, "en/learn/courses/sql-essentials/_index.md"), "utf-8");
       expect(content).toContain("- [Overview](/en/learn/courses/sql-essentials/overview)");
     });

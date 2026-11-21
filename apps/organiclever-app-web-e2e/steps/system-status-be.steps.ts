@@ -1,3 +1,6 @@
+// @scenario specs/apps/organiclever/app-web/behaviours/health/system-status-be.feature: BE status page shows Not Configured when env unset
+// @scenario specs/apps/organiclever/app-web/behaviours/health/system-status-be.feature: Backend health-check page is excluded from search indexes
+
 import { createBdd } from "playwright-bdd";
 import { expect } from "@playwright/test";
 

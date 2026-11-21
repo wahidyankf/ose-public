@@ -75,6 +75,20 @@
       "dependsOn": [],
       "outputs": ["{projectRoot}/coverage"]
     },
+    "test:integration": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/tests/integration/**/*",
+        "{projectRoot}/src/app/system/**/*",
+        "{projectRoot}/vitest.integration.config.ts"
+      ],
+      "options": {
+        "command": "npx vitest run --config vitest.integration.config.ts",
+        "cwd": "apps/organiclever-app-web"
+      },
+      "dependsOn": []
+    },
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {

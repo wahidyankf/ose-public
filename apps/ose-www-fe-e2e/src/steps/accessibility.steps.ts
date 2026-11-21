@@ -2,6 +2,12 @@ import { expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { createBdd } from "playwright-bdd";
 
+// @scenario specs/apps/ose/www/behaviours/frontend/app-shell/accessibility.feature: Home page has no accessibility violations
+// @scenario specs/apps/ose/www/behaviours/frontend/app-shell/accessibility.feature: Headings follow a proper hierarchy
+// @scenario specs/apps/ose/www/behaviours/frontend/app-shell/accessibility.feature: All interactive elements are keyboard accessible
+// @scenario specs/apps/ose/www/behaviours/frontend/app-shell/accessibility.feature: Text color contrast meets WCAG AA standard
+// @scenario specs/apps/ose/www/behaviours/frontend/app-shell/accessibility.feature: Focus indicators are visible on interactive elements
+
 const { When, Then } = createBdd();
 
 When("a visitor opens the home page", async ({ page }) => {

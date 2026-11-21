@@ -7,22 +7,33 @@ Feature: Path roadmap
   Background:
     Given the app is running
 
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Each core phase is a milestone with its outcome and progress
-  @integration-exempt
+  # Behaviour: AYW-122
   Scenario: Each core phase is a milestone with its outcome and progress
     When a reader opens a path page
     Then each core phase shows its number, title, and "After this phase you can" outcome when the path defines one
-    And each core phase shows "x of y done" for its courses
+    And "You cannot yet" is shown only for a phase that declares what the reader cannot yet do
 
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Course cards show order, time, format, and status in words
+  # Exemption(integration): no integration boundary of its own: the roadmap renders from in-process manifest and progress values, and no file system, process, database, or network boundary is crossed; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Each phase shows how many of its courses are done
   @integration-exempt
-  Scenario: Course cards show order, time, format, and status in words
+  Scenario: Each phase shows how many of its courses are done
+    When a reader opens a path page
+    Then each core phase shows "x of y done" for its courses
+
+  # Exemption(integration): no integration boundary of its own: the roadmap renders from in-process manifest and progress values, and no file system, process, database, or network boundary is crossed; alternative-proof: ayokoding-www-fe-e2e:test:e2e / A course card shows its position, title, time, and format
+  @integration-exempt
+  Scenario: A course card shows its position, title, time, and format
     When a reader opens a path page
     Then each course card shows its position number, title, estimated time, and format
-    And each course card shows "Done", "In progress", or "Not started" as text
-    And an outline course card shows an "Outline" badge
 
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / A new reader sees one Start button
+  # Behaviour: AYW-124
+  # Exemption(integration): no integration boundary of its own: the roadmap renders from in-process manifest and progress values, and no file system, process, database, or network boundary is crossed; alternative-proof: ayokoding-www-fe-e2e:test:e2e / A course card shows Done, In progress, or Not started as text
+  @integration-exempt
+  Scenario: A course card shows Done, In progress, or Not started as text
+    When a reader opens a path page
+    Then each course card shows "Done", "In progress", or "Not started" as text
+
+  # Behaviour: AYW-125
+  # Exemption(integration): no integration boundary of its own: the roadmap renders from in-process manifest and progress values, and no file system, process, database, or network boundary is crossed; alternative-proof: ayokoding-www-fe-e2e:test:e2e / A new reader sees one Start button
   @integration-exempt
   Scenario: A new reader sees one Start button
     Given a reader has no saved progress
@@ -30,7 +41,8 @@ Feature: Path roadmap
     Then exactly one primary button reads "Start:" followed by the first course's title
     And it links to that course's landing page in path context
 
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / A returning reader sees Continue with the next course
+  # Behaviour: AYW-125
+  # Exemption(integration): no integration boundary of its own: the roadmap renders from in-process manifest and progress values, and no file system, process, database, or network boundary is crossed; alternative-proof: ayokoding-www-fe-e2e:test:e2e / A returning reader sees Continue with the next course
   @integration-exempt
   Scenario: A returning reader sees Continue with the next course
     Given a reader completed some learning pages of the path's second course
@@ -38,15 +50,18 @@ Feature: Path roadmap
     Then the primary button reads "Continue:" followed by the second course's title
     And it links to the first learning page of that course the reader has not completed
 
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Optional extensions are separate and closed by default
+  # Behaviour: AYW-123
+  # Exemption(integration): no integration boundary of its own: the roadmap renders from in-process manifest and progress values, and no file system, process, database, or network boundary is crossed; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Optional extensions are separate and closed by default
   @integration-exempt
   Scenario: Optional extensions are separate and closed by default
     When a reader opens a path that has extension phases
     Then an "Optional extensions" heading follows the last core phase
+    And every extension phase is listed under that heading
     And each extension phase is a closed section that shows its title and "x of y done"
     And opening an extension phase shows its course cards
 
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / The path headline counts core courses only
+  # Behaviour: AYW-126
+  # Exemption(integration): no integration boundary of its own: the roadmap renders from in-process manifest and progress values, and no file system, process, database, or network boundary is crossed; alternative-proof: ayokoding-www-fe-e2e:test:e2e / The path headline counts core courses only
   @integration-exempt
   Scenario: The path headline counts core courses only
     Given a reader completed every learning page of one extension course and nothing else
@@ -54,7 +69,8 @@ Feature: Path roadmap
     Then the headline reads "0 of N core courses done"
     And that extension phase shows "1 of M done"
 
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Finishing the core path shows completion
+  # Behaviour: AYW-125
+  # Exemption(integration): no integration boundary of its own: the roadmap renders from in-process manifest and progress values, and no file system, process, database, or network boundary is crossed; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Finishing the core path shows completion
   @integration-exempt
   Scenario: Finishing the core path shows completion
     Given a reader completed every core course of a path
@@ -62,10 +78,9 @@ Feature: Path roadmap
     Then the headline says the core path is complete
     And no "Start" or "Continue" button is shown
 
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / A skills path waiting for its restructure shows one flat list with progress
-  @integration-exempt
+  # Behaviour: AYW-127
   Scenario: A skills path waiting for its restructure shows one flat list with progress
     Given a skills path is marked as pending restructure
     When a reader opens that path page
     Then its courses appear in one list in today's order with status in words
-    And no phase heading, outcome line, or "Optional extensions" heading appears
+    And no phase heading, outcome line, "Before you start" note, or "Optional extensions" heading appears

@@ -1,3 +1,9 @@
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/content/code-block-copy.feature: A non-mermaid code block renders a copy button
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/content/code-block-copy.feature: A mermaid block renders no copy button
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/content/code-block-copy.feature: The copy button is labelled in Indonesian on the Indonesian site
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/content/code-block-copy.feature: Clicking copy places the verbatim annotated source on the clipboard
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/content/code-block-copy.feature: The copy button confirms success to the visitor
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/content/code-block-copy.feature: The copy button is reachable on a touch viewport without hovering
 import { createBdd } from "playwright-bdd";
 import { expect, test, type Page } from "@playwright/test";
 

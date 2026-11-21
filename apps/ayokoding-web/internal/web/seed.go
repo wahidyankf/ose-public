@@ -47,8 +47,12 @@ func SeedFixtureDeps(fixture string) Deps {
 	if empty {
 		pages = nil
 	}
+	canned := content.NewFakeStore(pages)
+	// The draft setting applies to the canned corpus too, not only to a
+	// file-backed root, so AYOKODING_WEB_SHOW_DRAFTS=true always shows drafts.
+	canned.ShowDrafts(showDraftsEnabled())
 	deps := Deps{
-		Content: content.NewFakeStore(pages),
+		Content: canned,
 		Paths: coursepaths.NewFakeStore(
 			[]coursepaths.LearningPath{
 				{ID: "backend-id", Title: "Backend", Category: "careers", Phases: []coursepaths.Phase{

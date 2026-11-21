@@ -113,6 +113,9 @@ func (w *world) run(args []string) error {
 
 // given establishes scenario context: stamps, environment, fixtures, faults.
 func (w *world) given(text string) error {
+	if handled, err := w.givenAdds(text); handled {
+		return err
+	}
 	switch text {
 	case `a build stamped with version "v0.0.0-test" and an all-zero commit`:
 		w.version = "v0.0.0-test"
@@ -511,6 +514,9 @@ func (w *world) restoreHostEnv() {
 
 // when performs the scenario action.
 func (w *world) when(text string) error {
+	if handled, err := w.whenAdds(text); handled {
+		return err
+	}
 	switch text {
 	case `I ask ayokoding-cli for help`:
 		return w.run([]string{"--help"})
@@ -677,6 +683,9 @@ func (w *world) thenContract(text string) error {
 
 // then asserts the scenario outcome.
 func (w *world) then(text string) error {
+	if handled, err := w.thenAdds(text); handled {
+		return err
+	}
 	switch text {
 	case `it exits with status 0`:
 		return w.requireStatus(0)

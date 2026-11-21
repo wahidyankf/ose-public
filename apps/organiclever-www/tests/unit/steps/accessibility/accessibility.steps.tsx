@@ -28,6 +28,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/organiclever/www/behaviours/frontend/accessibility/accessibility.feature: Pages have proper heading hierarchy
   Scenario("Pages have proper heading hierarchy", ({ When, Then, And }) => {
     When("I navigate to any page", () => {
       renderedContainer = render(<HomeContent />).container;
@@ -51,6 +52,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/organiclever/www/behaviours/frontend/accessibility/accessibility.feature: Keyboard navigation works throughout the app
   Scenario("Keyboard navigation works throughout the app", ({ When, Then, And }) => {
     When("I navigate to the landing page", () => {
       renderedContainer = render(<HomeContent />).container;
@@ -79,6 +81,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/organiclever/www/behaviours/frontend/accessibility/accessibility.feature: Color contrast meets WCAG AA requirements
   Scenario("Color contrast meets WCAG AA requirements", ({ When, Then, And }) => {
     When("I navigate to any page", () => {
       renderedContainer = render(<HomeContent />).container;
@@ -97,7 +100,8 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
-  Scenario("ARIA attributes are properly used", ({ When, Then, And }) => {
+  // @scenario specs/apps/organiclever/www/behaviours/frontend/accessibility/accessibility.feature: Images have text alternatives
+  Scenario("Images have text alternatives", ({ When, Then }) => {
     When("I navigate to any page", () => {
       render(<HomeContent />);
     });
@@ -108,8 +112,15 @@ describeFeature(feature, ({ Scenario, Background }) => {
         expect(img.getAttribute("alt")).not.toBeNull();
       });
     });
+  });
 
-    And("navigation landmarks should be properly labeled", () => {
+  // @scenario specs/apps/organiclever/www/behaviours/frontend/accessibility/accessibility.feature: Navigation landmarks are labeled
+  Scenario("Navigation landmarks are labeled", ({ When, Then }) => {
+    When("I navigate to any page", () => {
+      render(<HomeContent />);
+    });
+
+    Then("navigation landmarks should be properly labeled", () => {
       expect(screen.getByRole("navigation", { name: "Primary navigation" })).toBeInTheDocument();
     });
   });

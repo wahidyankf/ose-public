@@ -23,6 +23,7 @@ describeFeature(
       });
     });
 
+    // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/static-delivery.feature: A content page is prerendered at build time
     Scenario("A content page is prerendered at build time", ({ Given, When, Then, And }) => {
       let manifest: PrerenderManifestLike;
       let inspection: ReturnType<typeof inspectPrerenderManifest>;
@@ -43,6 +44,7 @@ describeFeature(
       });
     });
 
+    // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/static-delivery.feature: Runtime tRPC endpoints retain their filesystem assets
     Scenario("Runtime tRPC endpoints retain their filesystem assets", ({ Given, When, Then }) => {
       let results: unknown[];
       Given("the ayokoding-www standalone package is running", async () => {

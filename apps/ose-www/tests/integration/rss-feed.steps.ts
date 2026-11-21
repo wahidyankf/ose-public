@@ -27,7 +27,7 @@ describeFeature(feature, ({ Background, Scenario }) => {
     });
   });
 
-  Scenario("RSS feed contains valid structure", ({ Given, When, Then, And }) => {
+  Scenario("Feed channel is titled OSE Platform Updates and links to the site", ({ Given, When, Then, And }) => {
     let updates: ContentMeta[] = [];
     let feed = "";
 
@@ -44,11 +44,37 @@ describeFeature(feature, ({ Background, Scenario }) => {
     And("the feed has a channel link to the site URL", () => {
       expect(feed).toContain(`<link>${siteUrl}/updates/</link>`);
     });
-    And("the feed contains item elements for each update", () => {
+  });
+
+  Scenario("Feed lists an item for every update", ({ Given, When, Then }) => {
+    let updates: ContentMeta[] = [];
+    let feed = "";
+
+    Given("the content repository contains update posts", async () => {
+      updates = await realContentService().listUpdates();
+      expect(updates).toHaveLength(5);
+    });
+    When("the RSS feed is generated", async () => {
+      feed = await buildFeedResponse(updates).text();
+    });
+    Then("the feed contains item elements for each update", () => {
       expect(feed.match(/<item>/gu)).toHaveLength(updates.length);
       expect(feed.match(/<\/item>/gu)).toHaveLength(updates.length);
     });
-    And('every feed link is on the canonical host "www.oseplatform.com"', () => {
+  });
+
+  Scenario("Every feed link is on the canonical host", ({ Given, When, Then }) => {
+    let updates: ContentMeta[] = [];
+    let feed = "";
+
+    Given("the content repository contains update posts", async () => {
+      updates = await realContentService().listUpdates();
+      expect(updates).toHaveLength(5);
+    });
+    When("the RSS feed is generated", async () => {
+      feed = await buildFeedResponse(updates).text();
+    });
+    Then('every feed link is on the canonical host "www.oseplatform.com"', () => {
       // The channel link, the self link, and each item's link and guid.
       const feedUrls = [...feed.matchAll(/<(?:link|guid)>([^<]+)<\/(?:link|guid)>|<atom:link href="([^"]+)"/gu)].map(
         (match) => match[1] ?? match[2]!,

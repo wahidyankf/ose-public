@@ -1,4 +1,4 @@
-// Gherkin (underpins): "An open group stays open when course path context loads on the courses page".
+// Gherkin (underpins): "A group the reader opened stays open while the page finishes loading".
 import { act, cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, expect, it, vi } from "vitest";

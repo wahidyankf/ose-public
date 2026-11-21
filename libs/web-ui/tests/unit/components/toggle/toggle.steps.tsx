@@ -1,6 +1,7 @@
 import path from "path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
 import { render, screen, fireEvent, cleanup } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { vi, expect } from "vitest";
 
 import { Toggle } from "../../../../src/components/toggle/toggle";
@@ -9,35 +10,23 @@ const feature = await loadFeature(
   path.resolve(__dirname, "../../../../../../specs/libs/web-ui/behaviours/toggle/toggle.feature"),
 );
 
-describeFeature(feature, ({ Scenario }) => {
-  Scenario("Renders in off state", ({ When, Then }) => {
+describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
+  // @scenario specs/libs/web-ui/behaviours/toggle/toggle.feature: A toggle reports its on or off state
+  ScenarioOutline("A toggle reports its on or off state", ({ When, Then }, examples) => {
     let toggle: HTMLElement;
 
-    When("I render a Toggle with value false", () => {
+    When("I render a Toggle with value <value>", () => {
       cleanup();
-      render(<Toggle value={false} onChange={vi.fn()} />);
+      render(<Toggle value={examples["value"] === "true"} onChange={vi.fn()} />);
       toggle = screen.getByRole("switch");
     });
 
-    Then('the toggle switch should have aria-checked "false"', () => {
-      expect(toggle.getAttribute("aria-checked")).toBe("false");
+    Then('the toggle switch should have aria-checked "<checked>"', () => {
+      expect(toggle.getAttribute("aria-checked")).toBe(String(examples["checked"]));
     });
   });
 
-  Scenario("Renders in on state", ({ When, Then }) => {
-    let toggle: HTMLElement;
-
-    When("I render a Toggle with value true", () => {
-      cleanup();
-      render(<Toggle value={true} onChange={vi.fn()} />);
-      toggle = screen.getByRole("switch");
-    });
-
-    Then('the toggle switch should have aria-checked "true"', () => {
-      expect(toggle.getAttribute("aria-checked")).toBe("true");
-    });
-  });
-
+  // @scenario specs/libs/web-ui/behaviours/toggle/toggle.feature: Click triggers onChange
   Scenario("Click triggers onChange", ({ Given, When, Then }) => {
     const onChangeMock = vi.fn();
 
@@ -58,6 +47,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
+  // @scenario specs/libs/web-ui/behaviours/toggle/toggle.feature: Disabled toggle does not trigger onChange
   Scenario("Disabled toggle does not trigger onChange", ({ Given, When, Then }) => {
     const onChangeMock = vi.fn();
 
@@ -78,6 +68,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
+  // @scenario specs/libs/web-ui/behaviours/toggle/toggle.feature: Renders with label
   Scenario("Renders with label", ({ When, Then }) => {
     let label: HTMLElement;
 
@@ -89,6 +80,29 @@ describeFeature(feature, ({ Scenario }) => {
 
     Then('the label "Enable notifications" should be visible', () => {
       expect(label.textContent).toBe("Enable notifications");
+    });
+  });
+
+  // @scenario specs/libs/web-ui/behaviours/toggle/toggle.feature: A toggle is operable with the Space key
+  Scenario("A toggle is operable with the Space key", ({ Given, When, Then }) => {
+    let onChangeMock: ReturnType<typeof vi.fn>;
+
+    Given("I render a Toggle with value false", () => {
+      cleanup();
+      onChangeMock = vi.fn();
+    });
+
+    // The DOM is cleaned between steps, so the toggle is rendered, focused, and pressed in this step.
+    When("the user presses Space on the toggle", async () => {
+      cleanup();
+      render(<Toggle value={false} onChange={onChangeMock} />);
+      const user = userEvent.setup();
+      screen.getByRole("switch").focus();
+      await user.keyboard(" ");
+    });
+
+    Then("onChange should be called with true", () => {
+      expect(onChangeMock).toHaveBeenCalledWith(true);
     });
   });
 });

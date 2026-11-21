@@ -14,6 +14,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ose/www/behaviours/backend/health/health.feature: Health endpoint returns ok status
   Scenario("Health endpoint returns ok status", ({ When, Then }) => {
     let result: { status: string };
 

@@ -14,6 +14,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/backend/health/health-check.feature: meta.health returns status ok
   Scenario("meta.health returns status ok", ({ When, Then }) => {
     let result: { status: string };
 
@@ -26,6 +27,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/backend/health/health-check.feature: meta.languages returns the list of available locales
   Scenario("meta.languages returns the list of available locales", ({ When, Then, And }) => {
     let result: { code: string; label: string }[];
 

@@ -6,8 +6,7 @@ Feature: Health Check
   Background:
     Given the API is running
 
-  # Exemption(integration): the status contract has no local resource boundary and is observable only through the public HTTP response; alternative-proof: ose-www-be-e2e:test:e2e / Health endpoint returns ok status
-  @integration-exempt
+  # Behaviour: OSW-012
   Scenario: Health endpoint returns ok status
     When the health endpoint is called
     Then the response contains status "ok"

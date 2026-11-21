@@ -8,6 +8,10 @@ import { stateFor } from "../support/state";
 
 const { Given, When, Then } = createBdd();
 
+// Behaviour corpus binding (contract C13). The Playwright home runs the whole
+// search feature; no scenario here is exempt.
+// @scenario specs/apps/ayokoding/web/behaviours/search/search.feature: *
+
 When("a reader presses the platform's search shortcut", async ({ page }) => {
   await gotoPage(page, "/en");
   await page.keyboard.press("ControlOrMeta+k");
@@ -135,4 +139,14 @@ Then("focus returns to the control that opened it", async ({ page }) => {
   expect(stateFor(page).searchOpen).toBe(false);
   expect(stateFor(page).focus).toBe("search-opener");
   expect(bodyOf(page)).toContain("data-search-dialog");
+});
+
+When("a reader opens the search page for the matching term in one locale", async ({ page }) => {
+  await fetchText(page, "/en/search?q=hello");
+});
+
+Then("the search page lists the matching results for that locale only", async ({ page }) => {
+  expect(statusOf(page)).toBe(200);
+  expect(bodyOf(page)).toContain("/en/learn/courses/go-basics/learning/hello-world");
+  expect(bodyOf(page)).not.toContain("/id/");
 });

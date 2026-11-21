@@ -1,3 +1,9 @@
+// @scenario specs/apps/organiclever/app-web/behaviours/routing/app-routes.feature: Visiting /app permanent-redirects to /app/home
+// @scenario specs/apps/organiclever/app-web/behaviours/routing/app-routes.feature: Visiting / redirects to /app/home
+// @scenario specs/apps/organiclever/app-web/behaviours/routing/app-routes.feature: Each tab is reachable by URL
+// @scenario specs/apps/organiclever/app-web/behaviours/routing/app-routes.feature: Back from Progress returns to Home
+// @scenario specs/apps/organiclever/app-web/behaviours/routing/app-routes.feature: Unknown segment under /app returns 404
+
 /**
  * Step definitions for the URL-routed shell.
  *

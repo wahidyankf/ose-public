@@ -4,6 +4,8 @@ import { expect } from "@playwright/test";
 import { bodyOf, fetchText, gotoPage, headerOf, statusOf } from "../support/http";
 
 const { Given, When, Then } = createBdd();
+// Behaviour corpus binding (contract C13). The Playwright home runs the whole feature; no scenario is exempt.
+// @scenario specs/apps/ayokoding/web/behaviours/discovery/discovery-documents.feature: *
 
 When("a reader requests a published content page", async ({ page }) => {
   await gotoPage(page, "/en/learn/courses/go-basics/learning/hello-world");

@@ -1,3 +1,6 @@
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/content/static-delivery.feature: A repeat request to a content page remains cacheable
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/content/static-delivery.feature: Runtime tRPC endpoints retain their filesystem assets
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/content/static-delivery.feature: The document language reflects the localized page locale
 import { expect } from "@playwright/test";
 import { createBdd } from "playwright-bdd";
 import { getResilient } from "../support/resilient-request";

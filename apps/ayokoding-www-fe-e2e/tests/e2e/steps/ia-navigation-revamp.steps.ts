@@ -1,3 +1,15 @@
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: English content resolves at its bare URL
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: The browse index lists all content sections
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: Header shows primary nav links on desktop
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: Mobile navigation mirrors the header links
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: Footer shows grouped navigation with localized labels
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: Landing homepage renders hero, sections, and tools teaser in English
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: Landing homepage renders hero, sections, and tools teaser in Indonesian
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: Breadcrumb segments link to their bare content URLs
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: Sidebar, breadcrumb, previous and next, and search links go straight to their page with no redirect
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: The sitemap lists every content page by its public URL on www.ayokoding.com
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: RSS feed item links use bare content URLs
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: A content page declares its own URL as canonical, with language alternates on www.ayokoding.com
 import { createBdd } from "playwright-bdd";
 import { expect, type Locator } from "@playwright/test";
 import { getResilient } from "../support/resilient-request";
@@ -39,7 +51,7 @@ Then("each ancestor crumb links to its bare content URL", async ({ page }) => {
 });
 
 // ---------------------------------------------------------------------------
-// Scenario: Internal content links emit bare URLs directly without relying on redirects (DD-48)
+// Scenario: Sidebar, breadcrumb, previous and next, and search links go straight to their page with no redirect (DD-48)
 // ---------------------------------------------------------------------------
 
 Given("the sidebar tree, breadcrumb, prev-next, and search results render content links", async ({ page }) => {
@@ -102,7 +114,7 @@ Then("no internal content link resolves through a 308 redirect", async () => {
 });
 
 // ---------------------------------------------------------------------------
-// Scenario: Sitemap lists every content URL bare, with no distinct content namespace (DD-48)
+// Scenario: The sitemap lists every content page by its public URL on www.ayokoding.com (DD-48)
 // ---------------------------------------------------------------------------
 
 // The sitemap is read through the request context, not rendered, so a browser's XML viewer
@@ -191,7 +203,7 @@ Then("every feed link is on the canonical host {string}", async ({}, host: strin
 });
 
 // ---------------------------------------------------------------------------
-// Scenario: Canonical link for moved content points to its bare URL (DD-48)
+// Scenario: A content page declares its own URL as canonical, with language alternates on www.ayokoding.com (DD-48)
 // ---------------------------------------------------------------------------
 
 let contentPageUrl = "";

@@ -53,6 +53,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/resizable-sidebar.feature: Persist the chosen width across a reload
   Scenario("Persist the chosen width across a reload", ({ Given, When, Then }) => {
     Given("the reader has resized the docs sidebar to 320 pixels on a desktop viewport", () => {
       // Mirrors useResizableWidth's commitWidth persistence: an integer-px string
@@ -79,7 +80,8 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
-  Scenario("Hide the resizable rail below the md breakpoint", ({ Given, When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/resizable-sidebar.feature: On a phone the sidebar rail is replaced by the navigation drawer
+  Scenario("On a phone the sidebar rail is replaced by the navigation drawer", ({ Given, When, Then, And }) => {
     Given("the docs page is open at a 375 pixel viewport", () => {
       Object.defineProperty(window, "innerWidth", { configurable: true, value: 375 });
       expect(window.innerWidth).toBe(375);
@@ -108,6 +110,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/resizable-sidebar.feature: Scroll the sidebar horizontally when a label overflows
   Scenario("Scroll the sidebar horizontally when a label overflows", ({ Given, When, Then, And }) => {
     const longLabel = "A very long navigation label that overflows a narrow one hundred fifty pixel sidebar";
     let container: HTMLElement;
@@ -139,6 +142,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/resizable-sidebar.feature: Overflowing nav labels signal that more content is scrollable
   Scenario("Overflowing nav labels signal that more content is scrollable", ({ Given, When, Then, And }) => {
     const longLabel = "A very long navigation label that overflows a narrow docs sidebar rail";
     let container: HTMLElement;
@@ -196,6 +200,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/resizable-sidebar.feature: Scroll the sidebar vertically when the nav tree is taller than the viewport
   Scenario(
     "Scroll the sidebar vertically when the nav tree is taller than the viewport",
     ({ Given, When, Then, And }) => {
@@ -249,6 +254,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     },
   );
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/resizable-sidebar.feature: Apply a preset width to the mobile nav drawer
   Scenario("Apply a preset width to the mobile nav drawer", ({ Given, When, Then }) => {
     Given("the mobile nav drawer is open at a 375 pixel viewport", () => {
       // jsdom does not evaluate @media rules, so the 375px viewport itself is not
@@ -272,6 +278,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/resizable-sidebar.feature: The resize handle's accessible label is localized
   Scenario("The resize handle's accessible label is localized", ({ Given, When, Then }) => {
     Given('the docs page is open in the "id" locale', () => {
       expect(t("id", "resizableSidebarHandleLabel")).not.toBe(t("en", "resizableSidebarHandleLabel"));
@@ -293,6 +300,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/resizable-sidebar.feature: An invalid persisted preset width falls back to the mobile drawer's default
   Scenario("An invalid persisted preset width falls back to the mobile drawer's default", ({ Given, When, Then }) => {
     Given("the mobile nav drawer has a corrupted persisted preset width", () => {
       localStorage.clear();
@@ -311,6 +319,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/resizable-sidebar.feature: The drawer's width-preset control shows a visible caption
   Scenario("The drawer's width-preset control shows a visible caption", ({ Given, When, Then }) => {
     Given("the mobile nav drawer is open at a 375 pixel viewport", () => {
       localStorage.clear();

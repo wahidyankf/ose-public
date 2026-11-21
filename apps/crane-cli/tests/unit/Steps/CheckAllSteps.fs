@@ -56,3 +56,12 @@ let ``I run "crane check-all" on the pair`` () =
         | Error msg ->
             eprintfn "Error: %s" msg
             1)
+
+[<Then>]
+let ``every finding names its category`` () =
+    let doc = System.Text.Json.JsonDocument.Parse(LastOutput)
+    let findings = doc.RootElement.EnumerateArray() |> Seq.toList
+    Assert.NotEmpty(findings)
+
+    for finding in findings do
+        Assert.False(System.String.IsNullOrWhiteSpace(finding.GetProperty("category").GetString()))

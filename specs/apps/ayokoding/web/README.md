@@ -45,8 +45,8 @@ fields follow the shared corpus already merged into `main`; they are not frozen 
 | E2E         | Playwright with `playwright-bdd`, exercising the owned Go server on port 3191 with real browser and HTTP requests                        |
 
 Unit proof is mandatory for every scenario. Browser-only state scenarios use the TypeScript unit
-adapter rather than a second Go model of browser storage. Integration exemptions name their
-alternative proof in the feature file. godog and Playwright consume this one canonical corpus;
+adapter rather than a second Go model of browser storage. The corpus carries no exemptions:
+browser-only scenarios bind through the Playwright home. godog and Playwright consume this one canonical corpus;
 their test adapters do not create separate feature copies. Consumer acceptance suites configure
 zero retries and do not use retry tags.
 

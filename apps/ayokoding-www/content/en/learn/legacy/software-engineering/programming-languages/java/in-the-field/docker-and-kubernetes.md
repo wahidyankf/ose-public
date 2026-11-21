@@ -262,35 +262,44 @@ Docker packages applications and dependencies into immutable images that run as 
 
 **Virtual Machine architecture**:
 
+```mermaid
+flowchart TD
+    accTitle: Virtual machine layer stack
+    accDescr {
+        Each layer runs on the layer below it.
+        The application runs on a guest OS, which runs on a hypervisor, which runs on the host OS.
+    }
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
+    vmApp["Application"]
+    vmGuest["Guest OS<br/>(Linux)"]
+    vmHyp["Hypervisor<br/>(VMware/KVM)"]
+    vmHost["Host OS"]
+    vmApp --> vmGuest --> vmHyp --> vmHost
 ```
-┌─────────────────────────────────────┐
-│         Application                 │
-├─────────────────────────────────────┤
-│         Guest OS (Linux)            │
-├─────────────────────────────────────┤
-│         Hypervisor (VMware/KVM)     │
-├─────────────────────────────────────┤
-│         Host OS                     │
-└─────────────────────────────────────┘
-Boot time: 30-60 seconds
-Memory overhead: 500MB-1GB per VM
-Disk usage: 2-10GB per VM
-```
+
+- Boot time: 30-60 seconds
+- Memory overhead: 500MB-1GB per VM
+- Disk usage: 2-10GB per VM
 
 **Container architecture**:
 
+```mermaid
+flowchart TD
+    accTitle: Container layer stack
+    accDescr {
+        Each layer runs on the layer below it.
+        The application runs in a container runtime, which runs on the Linux host OS and kernel.
+    }
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
+    cApp["Application"]
+    cRuntime["Container Runtime<br/>(Docker)"]
+    cHost["Host OS<br/>(Linux kernel)"]
+    cApp --> cRuntime --> cHost
 ```
-┌─────────────────────────────────────┐
-│         Application                 │
-├─────────────────────────────────────┤
-│         Container Runtime (Docker)  │
-├─────────────────────────────────────┤
-│         Host OS (Linux kernel)      │
-└─────────────────────────────────────┘
-Start time: 1-5 seconds
-Memory overhead: <10MB per container
-Disk usage: 50-500MB per image (layers shared)
-```
+
+- Start time: 1-5 seconds
+- Memory overhead: under 10MB per container
+- Disk usage: 50-500MB per image (layers shared)
 
 **Key differences**:
 
@@ -722,23 +731,26 @@ Kubernetes (K8s) is an orchestration platform that manages containerized workloa
 
 **Architecture**:
 
-```
-┌─────────────────────────────────────────┐
-│         Control Plane                   │
-│  ┌──────────────┐  ┌─────────────────┐  │
-│  │ API Server   │  │ Scheduler       │  │
-│  └──────────────┘  └─────────────────┘  │
-│  ┌──────────────┐  ┌─────────────────┐  │
-│  │ etcd         │  │ Controller Mgr  │  │
-│  └──────────────┘  └─────────────────┘  │
-└─────────────────────────────────────────┘
-          │
-          ├─────────────┬────────────┐
-          │             │            │
-    ┌─────────┐   ┌─────────┐  ┌─────────┐
-    │ Node 1  │   │ Node 2  │  │ Node 3  │
-    │  Pods   │   │  Pods   │  │  Pods   │
-    └─────────┘   └─────────┘  └─────────┘
+```mermaid
+flowchart TD
+    accTitle: Kubernetes architecture
+    accDescr {
+        The control plane holds the API server, scheduler, etcd, and controller manager.
+        The control plane manages three nodes, and each node runs pods.
+    }
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
+    subgraph cp["Control Plane"]
+        api["API Server"]
+        sched["Scheduler"]
+        etcd["etcd"]
+        ctrl["Controller Mgr"]
+    end
+    n1["Node 1<br/>Pods"]
+    n2["Node 2<br/>Pods"]
+    n3["Node 3<br/>Pods"]
+    cp --> n1
+    cp --> n2
+    cp --> n3
 ```
 
 ### Core Concepts

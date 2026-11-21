@@ -1,3 +1,9 @@
+// @scenario specs/apps/organiclever/www/behaviours/frontend/accessibility/accessibility.feature: Pages have proper heading hierarchy
+// @scenario specs/apps/organiclever/www/behaviours/frontend/accessibility/accessibility.feature: Keyboard navigation works throughout the app
+// @scenario specs/apps/organiclever/www/behaviours/frontend/accessibility/accessibility.feature: Color contrast meets WCAG AA requirements
+// @scenario specs/apps/organiclever/www/behaviours/frontend/accessibility/accessibility.feature: Images have text alternatives
+// @scenario specs/apps/organiclever/www/behaviours/frontend/accessibility/accessibility.feature: Navigation landmarks are labeled
+
 /**
  * Step definitions for the Accessibility Compliance feature.
  *

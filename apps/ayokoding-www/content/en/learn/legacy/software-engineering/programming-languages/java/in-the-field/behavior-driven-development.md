@@ -1091,30 +1091,41 @@ Scenario: Process donation
 
 **Example Session**:
 
-```
-┌────────────────────────────────────────────┐
-│  User Story (BLUE)                         │
-│  As a donor, I want to make a donation     │
-│  so that I can support charitable causes   │
-└────────────────────────────────────────────┘
-
-┌────────────────────────────────────────────┐
-│  Rule (YELLOW)                             │
-│  Donations must be positive amounts        │
-└────────────────────────────────────────────┘
-   │
-   ├─> Example (GREEN): Donation of 1,000 USD is valid
-   ├─> Example (GREEN): Donation of -100 USD is rejected
-   └─> Example (GREEN): Donation of 0 USD is rejected
-
-┌────────────────────────────────────────────┐
-│  Rule (YELLOW)                             │
-│  Donations over $10,000 need approval      │
-└────────────────────────────────────────────┘
-   │
-   ├─> Example (GREEN): Donation of 5,000 USD is auto-approved
-   ├─> Example (GREEN): Donation of 15,000 USD needs approval
-   └─> Question (RED): What happens if approval is denied?
+```mermaid
+flowchart TD
+    accTitle: Example mapping session for a donation feature
+    accDescr {
+        A user story card, in blue, says a donor wants to make a donation to support charitable causes.
+        Each rule card, in yellow, states a business rule. Green example cards sit under each rule.
+        The first rule says donations must be positive amounts, with three examples.
+        The second rule says donations over 10,000 USD need approval.
+        Its examples show auto-approval at 5,000 USD and a need for approval at 15,000 USD.
+        A red question card asks what happens if approval is denied.
+    }
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef rule fill:#DE8F05,stroke:#000000,color:#000000
+    classDef example fill:#029E73,stroke:#000000,color:#000000
+    classDef question fill:#CC78BC,stroke:#000000,color:#000000
+    story["User Story<br/>As a donor, I want<br/>to make a donation<br/>to support<br/>charitable causes"]
+    rule1["Rule<br/>Donations must be<br/>positive amounts"]
+    ex1["Example<br/>Donation of<br/>1,000 USD is valid"]
+    ex2["Example<br/>Donation of -100 USD<br/>is rejected"]
+    ex3["Example<br/>Donation of 0 USD<br/>is rejected"]
+    rule2["Rule<br/>Donations over<br/>$10,000<br/>need approval"]
+    ex4["Example<br/>Donation of<br/>5,000 USD<br/>is auto-approved"]
+    ex5["Example<br/>Donation of<br/>15,000 USD<br/>needs approval"]
+    q1["Question<br/>What happens if<br/>approval is denied?"]
+    story --> rule1
+    rule1 --> ex1
+    rule1 --> ex2
+    rule1 --> ex3
+    ex3 ~~~ rule2
+    rule2 --> ex4
+    rule2 --> ex5
+    rule2 --> q1
+    class rule1,rule2 rule
+    class ex1,ex2,ex3,ex4,ex5 example
+    class q1 question
 ```
 
 **Example Mapping produces actionable scenarios** and identifies gaps in requirements.

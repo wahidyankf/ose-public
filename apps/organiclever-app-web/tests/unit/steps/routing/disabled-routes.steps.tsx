@@ -10,9 +10,10 @@ const feature = await loadFeature(
   ),
 );
 
-describeFeature(feature, ({ ScenarioOutline, Scenario }) => {
+describeFeature(feature, ({ ScenarioOutline }) => {
   let result: AppRouteResult;
 
+  // @scenario specs/apps/organiclever/app-web/behaviours/routing/disabled-routes.feature: Disabled routes return 404
   ScenarioOutline("Disabled routes return 404", ({ Given, When, Then }, examples) => {
     const method = String(examples["method"] ?? "");
     const routePath = String(examples["path"] ?? "");
@@ -23,17 +24,5 @@ describeFeature(feature, ({ ScenarioOutline, Scenario }) => {
       result = resolveAppRoute(method, routePath);
     });
     Then("the response status is 404", () => expect(result.status).toBe(404));
-  });
-
-  Scenario("Old /app URL permanent-redirects to /app/home", ({ Given, When, Then }) => {
-    Given("the application is running in local-first mode", () => {
-      expect(resolveAppRoute("GET", "/app/home").status).toBe(200);
-    });
-    When('a visitor requests GET "/app"', () => {
-      result = resolveAppRoute("GET", "/app");
-    });
-    Then('the response is a 308 redirect to "/app/home"', () => {
-      expect(result).toMatchObject({ status: 308, location: "/app/home" });
-    });
   });
 });

@@ -71,6 +71,13 @@
         "{workspaceRoot}/libs/*/tests/**/*"
       ]
     },
+    "test:integration": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "env -u API_BASE_URL apps/ose-be/scripts/run-e2e.sh"
+      },
+      "cache": false
+    },
     "test:e2e": {
       "executor": "nx:run-commands",
       "options": {

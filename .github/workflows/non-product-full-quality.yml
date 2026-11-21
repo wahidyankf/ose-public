@@ -56,12 +56,12 @@ jobs:
       - name: Install locked Python dependencies
         run: >-
           ./hippo run --class transactional --resource-tier standard --disk-path . -- npx nx run-many -t install
-          --projects=ferret-cli
+          --projects=ferret-cli,ferret-cli-e2e
           --parallel=1
       - name: Run every applicable non-product Integration target
         run: >-
           ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run-many -t test:integration
-          --projects=fsharp-crane-core,fsharp-env-loader,ts-env-loader,ferret-cli,ayokoding-cli
+          --projects=fsharp-crane-core,fsharp-env-loader,ts-env-loader,ferret-cli,ferret-cli-e2e,ayokoding-cli
           --parallel=1
 
   e2e:
@@ -85,5 +85,5 @@ jobs:
       - name: Run every applicable non-product E2E target
         run: >-
           ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run-many -t test:e2e
-          --projects=crane-cli,ts-env-loader,web-ui,ferret-cli-e2e,ayokoding-cli
+          --projects=crane-cli,ts-env-loader,web-ui,ferret-cli-e2e,ayokoding-cli,ayokoding-web,ayokoding-web-e2e
           --parallel=1

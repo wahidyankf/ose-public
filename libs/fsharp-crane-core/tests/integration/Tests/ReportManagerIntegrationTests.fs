@@ -5,6 +5,7 @@ open Xunit
 open CraneCore.Logic.ReportManager
 
 [<Fact>]
+// @scenario specs/libs/fsharp-crane-core/behaviours/reports/reports.feature: Report stamps use UTC+7
 let ``utc7Timestamp returns a timestamp string`` () =
     let result = utc7Timestamp ()
     Assert.Matches(@"^\d{4}-\d{2}-\d{2}--\d{2}-\d{2}$", result)
@@ -98,6 +99,7 @@ let ``getOrExtendChain starts fresh chain when chain file timestamp is too old``
             File.Delete(chainFile)
 
 [<Fact>]
+// @scenario specs/libs/fsharp-crane-core/behaviours/reports/reports.feature: A report that cannot be written or finalized returns an Error
 let ``initReport surfaces an exception instead of crashing when the report path cannot be written`` () =
     // A scope containing path separators drives the report path into nested
     // directories that local-tmp/pdf-to-md/ alone never creates, so

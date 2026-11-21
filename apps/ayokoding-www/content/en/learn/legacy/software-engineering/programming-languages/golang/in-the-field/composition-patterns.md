@@ -440,10 +440,27 @@ func main() {
 
 **Middleware chain visualization**:
 
-```
-Request → LoggingMiddleware (start) → AuthMiddleware (check) → finalHandler (logic)
-                                                                        ↓
-Response ← LoggingMiddleware (end) ← AuthMiddleware (done) ← finalHandler (response)
+```mermaid
+sequenceDiagram
+    accTitle: Middleware request and response chain
+    accDescr {
+        A request enters LoggingMiddleware, which starts logging.
+        LoggingMiddleware passes the request to AuthMiddleware, which checks it.
+        AuthMiddleware passes the request to finalHandler, which runs the handler logic.
+        The response returns through AuthMiddleware, which finishes its work.
+        The response then returns through LoggingMiddleware, which ends logging.
+    }
+    participant C as Request
+    participant L as LoggingMiddleware
+    participant A as AuthMiddleware
+    participant H as finalHandler
+    C->>L: request
+    L->>A: logging started
+    A->>H: check passed
+    Note over H: handler logic
+    H-->>A: response
+    A-->>L: auth done
+    L-->>C: logging ended
 ```
 
 **Reusable middleware library pattern**:

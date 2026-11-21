@@ -1,15 +1,18 @@
+// @scenario specs/apps/organiclever/be/behaviours/health/health-check.feature: Anonymous health check reports ok without component details
+// @scenario specs/apps/organiclever/be/behaviours/health/health-check.feature: GET /api/v1/health reports the service as ok
+
 import { expect } from "@playwright/test";
 import { createBdd } from "playwright-bdd";
 import { setResponse, getResponse } from "../utils/response-store";
 
 const { When, Then } = createBdd();
 
-When(/^an operations engineer sends GET \/health$/, async ({ request }) => {
+When(/^an operations engineer sends GET \/api\/v1\/health$/, async ({ request }) => {
   setResponse(await request.get("/api/v1/health"));
 });
 
 When(/^an unauthenticated engineer sends GET \/health$/, async ({ request }) => {
-  setResponse(await request.get("/api/v1/health"));
+  setResponse(await request.get("/health"));
 });
 
 // oxlint-disable-next-line no-empty-pattern

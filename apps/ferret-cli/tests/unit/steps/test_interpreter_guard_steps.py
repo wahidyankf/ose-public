@@ -63,6 +63,7 @@ def start(monkeypatch: pytest.MonkeyPatch) -> Start:
     return Start(environment={"PATH": "/usr/bin"})
 
 
+# @scenario specs/apps/ferret/cli/behaviours/harness/fail-open-capabilities-and-platforms.feature: Run on a host whose default interpreter is older than FERRET requires
 @scenario(FEATURE, "Run on a host whose default interpreter is older than FERRET requires")
 def test_run_on_a_host_whose_default_interpreter_is_older_than_ferret_requires() -> None:
     """Bound to the feature outline; each example expands independently."""

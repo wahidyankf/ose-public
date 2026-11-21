@@ -22,6 +22,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/learn-reorg-redirects.feature: platform-web redirects to platforms/web under its legacy bucket address
   Scenario("platform-web redirects to platforms/web under its legacy bucket address", ({ When, Then }) => {
     When('a visitor navigates to "/en/learn/software-engineering/platform-web"', () => {
       expect(redirectsLoaded).toBe(true);

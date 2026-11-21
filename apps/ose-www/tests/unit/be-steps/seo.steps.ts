@@ -21,6 +21,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ose/www/behaviours/backend/seo/seo.feature: Sitemap contains all public pages
   Scenario("Sitemap contains all public pages", ({ Given, When, Then, And }) => {
     let sitemap: ReturnType<typeof buildSitemapEntries>;
     let updates: ContentMeta[];
@@ -89,6 +90,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ose/www/behaviours/backend/seo/seo.feature: Robots.txt allows all crawlers
   Scenario("Robots.txt allows all crawlers", ({ When, Then, And }) => {
     let robots: ReturnType<typeof buildRobots>;
 

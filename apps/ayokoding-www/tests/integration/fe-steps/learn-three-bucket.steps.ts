@@ -24,7 +24,8 @@ describeFeature(
       });
     });
 
-    Scenario("The learn section exposes exactly three structural buckets", ({ When, Then, And }) => {
+    // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/learn-three-bucket.feature: The Learn section offers only Paths, Courses, and Legacy
+    Scenario("The Learn section offers only Paths, Courses, and Legacy", ({ When, Then, And }) => {
       When("the content tree under the en learn section is inspected", async () => {
         const entries = await readdir(path.resolve(process.cwd(), "content/en/learn"), { withFileTypes: true });
         buckets = structuralBuckets(

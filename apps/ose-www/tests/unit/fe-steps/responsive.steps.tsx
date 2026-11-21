@@ -81,6 +81,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ose/www/behaviours/frontend/app-shell/responsive.feature: Mobile viewport shows hamburger navigation
   Scenario("Mobile viewport shows hamburger navigation", ({ Given, When, Then, And }) => {
     Given("the viewport width is less than 640 pixels", () => {
       Object.defineProperty(window, "innerWidth", { configurable: true, value: 375 });
@@ -105,6 +106,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ose/www/behaviours/frontend/app-shell/responsive.feature: Desktop viewport shows full navigation
   Scenario("Desktop viewport shows full navigation", ({ Given, When, Then, And }) => {
     Given("the viewport width is greater than 1024 pixels", () => {
       Object.defineProperty(window, "innerWidth", { configurable: true, value: 1280 });

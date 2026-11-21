@@ -1,3 +1,7 @@
+// @scenario specs/apps/organiclever/app-web/behaviours/routine/routine-management.feature: Create a new routine
+// @scenario specs/apps/organiclever/app-web/behaviours/routine/routine-management.feature: Add an exercise to a routine
+// @scenario specs/apps/organiclever/app-web/behaviours/routine/routine-management.feature: Delete a routine
+
 import { createBdd } from "playwright-bdd";
 import { expect, type Page } from "@playwright/test";
 import { appPath } from "./_app-shell";

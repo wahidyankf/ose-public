@@ -43,6 +43,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
     cleanupTmpDirs();
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/build-tools/env-loader/env-loader.feature: ayokoding-www bootstrap loads staging configuration
   Scenario("ayokoding-www bootstrap loads staging configuration", ({ Given, When, Then }) => {
     let appDir = "";
     let env: EnvRecord = {};
@@ -68,6 +69,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/build-tools/env-loader/env-loader.feature: ayokoding-www process env wins over the local tier file
   Scenario("ayokoding-www process env wins over the local tier file", ({ Given, When, Then, And }) => {
     let appDir = "";
     let env: EnvRecord = {};
@@ -91,6 +93,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/build-tools/env-loader/env-loader.feature: ayokoding-www tolerates a missing tier file
   Scenario("ayokoding-www tolerates a missing tier file", ({ Given, When, Then, And }) => {
     let appDir = "";
     let env: EnvRecord = {};
@@ -119,6 +122,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/build-tools/env-loader/env-loader.feature: ayokoding-www fails loudly on a stray auto-loaded env file
   ScenarioOutline("ayokoding-www fails loudly on a stray auto-loaded env file", ({ Given, When, Then }, examples) => {
     const file = String(examples["file"] ?? "");
     let appDir = "";

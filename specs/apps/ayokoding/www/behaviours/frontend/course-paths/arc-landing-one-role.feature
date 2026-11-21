@@ -1,14 +1,17 @@
-Feature: Arc landing with one role
+Feature: Arc landing with one or two roles
 
-  As a reader opening a career arc that offers a single role
-  I want that role's card to render full detail
-  So that I never see a sparse stub or an empty placeholder card next to it
+  As a reader opening a career arc
+  I want every role card to render fully, with its own facts
+  So that I never see a sparse stub, an empty placeholder card, or one shared value for two roles
 
-  # Bound Phase 3, Cycle 3.1c-ii — unit (arc-landing.test.tsx) and e2e (course-paths.steps.ts).
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / An arc landing with one path renders a full card, not a sparse stub
-  @integration-exempt
-  Scenario: An arc landing with one path renders a full card, not a sparse stub
-    Given a fixture arc manifest lists exactly one role
+  # Behaviour: AYW-114
+  Scenario Outline: An arc landing renders one full card per role
+    Given a fixture arc manifest lists <roles> role(s)
     When a reader opens that arc's landing page
-    Then the single role card renders with a preview that names the first phase and lists its courses
-    And the layout does not reserve or render a visibly empty second card
+    Then each role card renders in full with its own preview or course counts
+    And no role card is a placeholder or an empty grid cell
+
+    Examples:
+      | roles |
+      | 1     |
+      | 2     |

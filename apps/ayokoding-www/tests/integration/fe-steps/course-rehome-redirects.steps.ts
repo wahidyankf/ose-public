@@ -52,6 +52,7 @@ describeFeature(
       });
     });
 
+    // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/course-rehome-redirects.feature: Every re-homed course declares its prerequisites
     Scenario("Every re-homed course declares its prerequisites", ({ Given, When, Then, And }) => {
       let metadata = new Map<string, unknown>();
 
@@ -94,6 +95,7 @@ describeFeature(
       );
     });
 
+    // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/course-rehome-redirects.feature: A prerequisite naming a syllabus-declared but not-yet-authored course still resolves
     Scenario(
       "A prerequisite naming a syllabus-declared but not-yet-authored course still resolves",
       ({ When, Then, And }) => {
@@ -117,6 +119,7 @@ describeFeature(
       },
     );
 
+    // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/course-rehome-redirects.feature: A prerequisite naming an authored course absent from the syllabus roadmap still resolves
     Scenario(
       "A prerequisite naming an authored course absent from the syllabus roadmap still resolves",
       ({ When, Then }) => {
@@ -136,6 +139,7 @@ describeFeature(
       },
     );
 
+    // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/course-rehome-redirects.feature: The course library the retired browse roots redirect to resolves every re-homed course
     Scenario(
       "The course library the retired browse roots redirect to resolves every re-homed course",
       ({ When, Then }) => {

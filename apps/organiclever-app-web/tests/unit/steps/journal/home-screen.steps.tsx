@@ -43,6 +43,7 @@ function renderHome(entries: ReadonlyArray<JournalEntry>) {
 describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
   AfterEachScenario(() => cleanup());
 
+  // @scenario specs/apps/organiclever/app-web/behaviours/journal/home-screen.feature: Home screen shows entry list
   Scenario("Home screen shows entry list", ({ When, Then }) => {
     When("the home screen is loaded with entries", async () => {
       renderHome([reading]);
@@ -54,6 +55,7 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/organiclever/app-web/behaviours/journal/home-screen.feature: Filter entries by kind
   Scenario("Filter entries by kind", ({ Given, When, Then }) => {
     Given("the home screen is loaded with workout and reading entries", async () => {
       renderHome([workout, reading]);
@@ -69,7 +71,8 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
     });
   });
 
-  Scenario("Open entry detail sheet", ({ Given, When, Then, And }) => {
+  // @scenario specs/apps/organiclever/app-web/behaviours/journal/home-screen.feature: Tapping an entry opens its detail sheet
+  Scenario("Tapping an entry opens its detail sheet", ({ Given, When, Then }) => {
     Given("the home screen shows an entry", async () => {
       renderHome([reading]);
       await screen.findByText("Atomic Habits");
@@ -81,11 +84,22 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
       expect(screen.getByRole("button", { name: "Close" })).toBeVisible();
       expect(screen.getAllByText("Atomic Habits").length).toBeGreaterThan(1);
     });
-    And("the user closes the sheet", () => {
+  });
+
+  // @scenario specs/apps/organiclever/app-web/behaviours/journal/home-screen.feature: Closing the detail sheet returns to the entry list
+  Scenario("Closing the detail sheet returns to the entry list", ({ Given, When, Then }) => {
+    Given("the entry detail sheet is open", async () => {
+      renderHome([reading]);
+      await screen.findByText("Atomic Habits");
+      fireEvent.click(screen.getByText("Atomic Habits"));
+      await screen.findByRole("button", { name: "Close" });
+    });
+    When("the user closes the sheet", () => {
       fireEvent.click(screen.getByRole("button", { name: "Close" }));
     });
-    And("the entry detail sheet is closed", () => {
+    Then("the entry list is visible", () => {
       expect(screen.queryByRole("button", { name: "Close" })).not.toBeInTheDocument();
+      expect(screen.getByText("Recent entries")).toBeVisible();
     });
   });
 });

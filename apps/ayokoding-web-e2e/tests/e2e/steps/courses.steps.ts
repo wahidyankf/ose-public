@@ -5,6 +5,8 @@ import { bodyOf, gotoPage, statusOf } from "../support/http";
 import { stateFor } from "../support/state";
 
 const { Given, When, Then } = createBdd();
+// Behaviour corpus binding (contract C13). The Playwright home runs the whole feature; no scenario is exempt.
+// @scenario specs/apps/ayokoding/web/behaviours/courses/course-catalog-and-paths.feature: *
 
 When("a learner opens the course catalog", async ({ page }) => {
   await gotoPage(page, "/en/learn/courses");

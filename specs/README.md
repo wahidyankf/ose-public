@@ -23,7 +23,6 @@ Each row links to the specification index first, then to the implementation it d
 | Shared web UI        | [Library specs](./libs/web-ui/README.md)                                                               | [web-ui](../libs/web-ui/README.md)                                                                                                                        |
 | Shared design tokens | [Library specs](./libs/web-ui-token/README.md)                                                         | [web-ui-token](../libs/web-ui-token/README.md)                                                                                                            |
 | Shared F# Crane core | [Library specs](./libs/fsharp-crane-core/README.md)                                                    | [fsharp-crane-core source](../libs/fsharp-crane-core/)                                                                                                    |
-| ExBdd                | [Planned library specs](./libs/ex-bdd/README.md)                                                       | BeaverNest import is planned; no local implementation yet                                                                                                 |
 
 ## Read a specification from the outside in
 

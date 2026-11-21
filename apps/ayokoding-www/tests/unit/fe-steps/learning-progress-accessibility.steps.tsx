@@ -208,6 +208,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/learning-progress-accessibility.feature: Status is shown in words, not only colour
   Scenario("Status is shown in words, not only colour", ({ Given, When, Then, And }) => {
     let container: HTMLElement;
 
@@ -256,6 +257,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/learning-progress-accessibility.feature: Progress controls work with the keyboard and announce changes
   Scenario("Progress controls work with the keyboard and announce changes", ({ Given, When, Then, And }) => {
     Given("a reader on a learning page uses only the keyboard", () => {
       noSavedProgress();
@@ -297,6 +299,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/learning-progress-accessibility.feature: Reduced motion turns off progress animations
   Scenario("Reduced motion turns off progress animations", ({ Given, When, Then }) => {
     let container: HTMLElement;
 
@@ -330,6 +333,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/learning-progress-accessibility.feature: Progress screens fit a phone screen
   Scenario("Progress screens fit a phone screen", ({ Given, When, Then, And }) => {
     let opened: ScreenAudit[];
 
@@ -369,6 +373,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/learning-progress-accessibility.feature: Progress screens pass automated accessibility checks
   Scenario("Progress screens pass automated accessibility checks", ({ Given, When, Then }) => {
     let opened: ScreenAudit[];
 

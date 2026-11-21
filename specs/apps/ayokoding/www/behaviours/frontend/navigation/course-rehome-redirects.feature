@@ -10,8 +10,7 @@ Feature: Course re-home redirects and prerequisites
   Background:
     Given the app is running
 
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / A legacy fundamentally-strong URL redirects to the canonical course URL
-  @integration-exempt
+  # Behaviour: AYW-034
   Scenario: A legacy fundamentally-strong URL redirects to the canonical course URL
     When a visitor navigates to "/en/learn/fundamentally-strong/software-engineer/just-enough-python"
     Then the current URL should contain "/en/learn/courses/just-enough-python"
@@ -19,13 +18,11 @@ Feature: Course re-home redirects and prerequisites
   # Maintainer decision (2026-07-23): the per-course redirect broadened from an exact-source rule
   # to a /:path* wildcard so deep course sub-pages (learning/*, drilling/*) 308 to their canonical
   # sub-page instead of 404ing after the move — this scenario proves that deep-path coverage.
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / A legacy fundamentally-strong deep sub-page URL redirects to its canonical course sub-page
-  @integration-exempt
   Scenario: A legacy fundamentally-strong deep sub-page URL redirects to its canonical course sub-page
     When a visitor navigates to "/en/learn/fundamentally-strong/software-engineer/just-enough-python/learning/beginner"
     Then the current URL should contain "/en/learn/courses/just-enough-python/learning/beginner"
 
-  # Exemption(e2e): this scenario validates checked-in course frontmatter and the archived syllabus corpus, which the public UI does not expose exhaustively; alternative-proof: ayokoding-www:test:integration / Every re-homed course declares its prerequisites
+  # Exemption(e2e): the scenario reads checked-in course frontmatter and the archived syllabus corpus from the repository, and no served page reads that corpus, so the end-to-end boundary does not exist for it; alternative-proof: ayokoding-www:test:unit / Every re-homed course declares its prerequisites
   @e2e-exempt
   Scenario: Every re-homed course declares its prerequisites
     Given the thirty-seven shipped topics and existing capstones have been re-homed into the course library
@@ -41,7 +38,7 @@ Feature: Course re-home redirects and prerequisites
     Then a prerequisite naming that course resolves against the union of the course library and the syllabus roadmap
     And a prerequisite naming an unrecognized course ID still does not resolve
 
-  # Exemption(e2e): roadmap absence is repository metadata that is not observable through the public site; alternative-proof: ayokoding-www:test:integration / A prerequisite naming an authored course absent from the syllabus roadmap still resolves
+  # Exemption(e2e): the scenario reads checked-in course frontmatter and the archived syllabus corpus from the repository, and no served page reads that corpus, so the end-to-end boundary does not exist for it; alternative-proof: ayokoding-www:test:unit / A prerequisite naming an authored course absent from the syllabus roadmap still resolves
   @e2e-exempt
   Scenario: A prerequisite naming an authored course absent from the syllabus roadmap still resolves
     When a course is authored into the course library but not declared on the syllabus roadmap
@@ -50,8 +47,7 @@ Feature: Course re-home redirects and prerequisites
   # Q-E=C override (RESOLVED 2026-07-23): the three fundamentally-strong browse roots are
   # deleted and their old URLs 308 to the course library landing, a narrow exception to the
   # rest of the legacy `_index.md` tree's "updated, never deleted" rule.
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / The retired fundamentally-strong browse roots permanently redirect to the course library
-  @integration-exempt
+  # Behaviour: AYW-035
   Scenario Outline: The retired fundamentally-strong browse roots permanently redirect to the course library
     When a raw HTTP GET is made to "<legacy_url>" with redirects disabled
     Then the response status should be 308
@@ -63,12 +59,11 @@ Feature: Course re-home redirects and prerequisites
       | /en/learn/fundamentally-strong/software-engineer            |
       | /en/learn/fundamentally-strong/software-engineer/overview   |
 
+  # Behaviour: AYW-085
   Scenario: The course library the retired browse roots redirect to resolves every re-homed course
     When a visitor navigates to "/en/learn/courses"
     Then every course catalog entry should resolve to live content, not a drained or missing location
 
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / A course reached via its legacy course URL resolves to the single canonical course body
-  @integration-exempt
   Scenario: A course reached via its legacy course URL resolves to the single canonical course body
     When a visitor navigates to "/en/learn/fundamentally-strong/software-engineer/just-enough-python"
     Then the resolved page title should equal the canonical course page title at "/en/learn/courses/just-enough-python"

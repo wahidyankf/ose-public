@@ -387,21 +387,30 @@ end
 
 **Behavior**:
 
-```
-Before crash:
-  Supervisor
-  ├── PaymentProcessor (running)
-  └── DonationProcessor (running)
-
-PaymentProcessor crashes:
-  Supervisor
-  ├── PaymentProcessor (restarting...)
-  └── DonationProcessor (still running)
-
-After restart:
-  Supervisor
-  ├── PaymentProcessor (new instance)
-  └── DonationProcessor (same instance)
+```mermaid
+flowchart LR
+    accTitle: Payment crash under one_for_one
+    accDescr {
+        Three snapshots in order.
+        Before the crash, the supervisor runs the payment and donation processors.
+        When the payment processor crashes, it restarts, and the donation processor keeps running.
+        After the restart, the payment processor is a new instance and the donation processor is the same instance.
+    }
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
+    subgraph pre["Before crash"]
+        p1["Supervisor"] --> p2["PaymentProcessor<br/>running"]
+        p1 --> p3["DonationProcessor<br/>running"]
+    end
+    subgraph failed["Payment crashes"]
+        f1["Supervisor"] --> f2["PaymentProcessor<br/>restarting..."]
+        f1 --> f3["DonationProcessor<br/>still running"]
+    end
+    subgraph post["After restart"]
+        q1["Supervisor"] --> q2["PaymentProcessor<br/>new instance"]
+        q1 --> q3["DonationProcessor<br/>same instance"]
+    end
+    pre -->|crash| failed
+    failed -->|restart| post
 ```
 
 Payment crash doesn't affect donations. Perfect for independent workers.
@@ -438,34 +447,50 @@ end
 
 **Behavior**:
 
+**Scenario 1: DonationProcessor crashes**
+
+```mermaid
+flowchart LR
+    accTitle: DonationProcessor crash under rest_for_one
+    accDescr {
+        The donation processor crashes, and the notification service restarts with it.
+        Both restart because the notification service depends on the processor.
+    }
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
+    subgraph pre["Before"]
+        p1["Supervisor"] --> p2["DonationProcessor<br/>running"]
+        p1 --> p3["NotificationService<br/>running"]
+    end
+    subgraph failed["After crash"]
+        f1["Supervisor"] --> f2["DonationProcessor<br/>restarting..."]
+        f1 --> f3["NotificationService<br/>restarting..."]
+    end
+    res["Both restarted:<br/>notification depends<br/>on the processor"]
+    pre -->|crash| failed
+    failed --> res
 ```
-Scenario 1: DonationProcessor crashes
-Before:
-  Supervisor
-  ├── DonationProcessor (running)
-  └── NotificationService (running)
 
-After crash:
-  Supervisor
-  ├── DonationProcessor (restarting...)
-  └── NotificationService (restarting...)
+**Scenario 2: NotificationService crashes**
 
-Result:
-  Both restarted (NotificationService depends on Processor)
-
-Scenario 2: NotificationService crashes
-Before:
-  Supervisor
-  ├── DonationProcessor (running)
-  └── NotificationService (running)
-
-After crash:
-  Supervisor
-  ├── DonationProcessor (still running)
-  └── NotificationService (restarting...)
-
-Result:
-  Only NotificationService restarted (no dependents)
+```mermaid
+flowchart LR
+    accTitle: NotificationService crash under rest_for_one
+    accDescr {
+        The notification service crashes, and only the service restarts.
+        Nothing depends on it, so the donation processor keeps running.
+    }
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
+    subgraph pre["Before"]
+        p1["Supervisor"] --> p2["DonationProcessor<br/>running"]
+        p1 --> p3["NotificationService<br/>running"]
+    end
+    subgraph failed["After crash"]
+        f1["Supervisor"] --> f2["DonationProcessor<br/>still running"]
+        f1 --> f3["NotificationService<br/>restarting..."]
+    end
+    res["Only the service<br/>restarted<br/>(no dependents)"]
+    pre -->|crash| failed
+    failed --> res
 ```
 
 Order matters! Processor crash affects notification (dependency). Notification crash doesn't affect processor.
@@ -502,21 +527,29 @@ end
 
 **Behavior**:
 
-```
-Before crash:
-  Supervisor
-  ├── ConnectionManager (running)
-  └── QueryExecutor (running)
-
-Either process crashes:
-  Supervisor
-  ├── ConnectionManager (restarting...)
-  └── QueryExecutor (restarting...)
-
-After restart:
-  Supervisor
-  ├── ConnectionManager (new instance)
-  └── QueryExecutor (new instance)
+```mermaid
+flowchart LR
+    accTitle: Any crash under one_for_all
+    accDescr {
+        Three snapshots in order.
+        Either process crashes, and the supervisor restarts both processes.
+        After the restart, both processes are new instances, because any crash restarts everything.
+    }
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
+    subgraph pre["Before crash"]
+        p1["Supervisor"] --> p2["ConnectionManager<br/>running"]
+        p1 --> p3["QueryExecutor<br/>running"]
+    end
+    subgraph failed["Either crashes"]
+        f1["Supervisor"] --> f2["ConnectionManager<br/>restarting..."]
+        f1 --> f3["QueryExecutor<br/>restarting..."]
+    end
+    subgraph post["After restart"]
+        q1["Supervisor"] --> q2["ConnectionManager<br/>new instance"]
+        q1 --> q3["QueryExecutor<br/>new instance"]
+    end
+    pre -->|crash| failed
+    failed -->|restart| post
 ```
 
 Any crash restarts everything. Ensures consistent shared state.
@@ -603,17 +636,36 @@ end
 
 **Supervision tree**:
 
-```
-FinancialApp.Supervisor (rest_for_one)
-├── DatabasePool
-├── PaymentSupervisor (one_for_one)
-│   ├── PaymentProcessor
-│   └── PaymentTaskSupervisor
-├── DonationSupervisor (rest_for_one)
-│   ├── DonationProcessor
-│   └── DonationWorker
-└── NotificationSupervisor (one_for_one)
-    └── NotificationService
+```mermaid
+flowchart TD
+    accTitle: FinancialApp supervision tree
+    accDescr {
+        The top supervisor, FinancialApp.Supervisor, uses rest_for_one and has four children.
+        DatabasePool has no children.
+        PaymentSupervisor, using one_for_one, supervises PaymentProcessor and PaymentTaskSupervisor.
+        DonationSupervisor, using rest_for_one, supervises DonationProcessor and DonationWorker.
+        NotificationSupervisor, using one_for_one, supervises NotificationService.
+    }
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
+    top["FinancialApp.<br/>Supervisor<br/>(rest_for_one)"]
+    db["DatabasePool"]
+    pay["PaymentSupervisor<br/>(one_for_one)"]
+    payProc["PaymentProcessor"]
+    payTask["PaymentTask<br/>Supervisor"]
+    don["DonationSupervisor<br/>(rest_for_one)"]
+    donProc["DonationProcessor"]
+    donWorker["DonationWorker"]
+    notif["Notification<br/>Supervisor<br/>(one_for_one)"]
+    notifSvc["NotificationService"]
+    top --> db
+    top --> pay
+    top --> don
+    top --> notif
+    pay --> payProc
+    pay --> payTask
+    don --> donProc
+    don --> donWorker
+    notif --> notifSvc
 ```
 
 **Failure scenarios**:

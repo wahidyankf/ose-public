@@ -1,13 +1,16 @@
+// @scenario specs/apps/organiclever/app-web/behaviours/app-shell/navigation.feature: Tapping a tab opens its screen and marks the tab active
+// @scenario specs/apps/organiclever/app-web/behaviours/app-shell/navigation.feature: URL persists across page refresh on each tab
+
 /**
- * Step definitions for the App Shell Navigation feature.
+ * Step definitions for the App Shell Navigation and Entry Loggers features.
  *
  * Covers: specs/apps/organiclever/app-web/behaviours/app-shell/navigation.feature
+ * Covers: specs/apps/organiclever/app-web/behaviours/app-shell/entry-loggers.feature (the sheet close steps)
  *
  * Selector notes:
  * - The app lives at /app (AppRoot mounts there). Root / redirects to /app/home
  *   (the marketing landing now lives in the separate organiclever-www site).
  * - TabBar buttons are plain <button> elements with text labels — no data-testid, no <a> links.
- * - FAB button carries aria-label="Log entry".
  * - AddEntrySheet is a fixed overlay rendered when the FAB is pressed.
  */
 import { createBdd } from "playwright-bdd";
@@ -16,70 +19,16 @@ import { appPath } from "./_app-shell";
 
 const { Given, When, Then } = createBdd();
 
-Given("the app is freshly loaded", async ({ page }) => {
-  await page.goto(appPath("home"));
-  await page.waitForLoadState("domcontentloaded");
-});
-
 Given("the app shell is visible", async ({ page }) => {
   await page.goto(appPath("home"));
   await page.waitForLoadState("domcontentloaded");
 });
 
-Then("the Home tab is active", async ({ page }) => {
-  // Home screen shows "Good morning" heading — reliable DOM anchor
-  await expect(page.getByText("Good morning").or(page.getByText("Last 7 days")).first()).toBeVisible({
-    timeout: 10000,
-  });
-});
-
-When("the user taps the History tab", async ({ page }) => {
-  // Tab is a <a href="/app/history"> with aria-current — match by role=link.
-  const link = page.getByRole("link", { name: "History" }).first();
+When(/^the user taps the "([^"]+)" tab$/, async ({ page }, tab: string) => {
+  // Tab is a <a href="/app/<tab>"> with aria-current — match by role=link.
+  const link = page.getByRole("link", { name: tab }).first();
   await expect(link).toBeVisible();
   await link.click();
-});
-
-Then("the History tab is active", async ({ page }) => {
-  // History screen renders an <h1>History</h1> unconditionally
-  await expect(page.getByRole("heading", { name: "History" })).toBeVisible({ timeout: 10000 });
-});
-
-When("the user taps the Progress tab", async ({ page }) => {
-  const link = page.getByRole("link", { name: "Progress" }).first();
-  await expect(link).toBeVisible();
-  await link.click();
-});
-
-Then("the Progress tab is active", async ({ page }) => {
-  // Progress screen renders "Analytics" heading text
-  await expect(page.getByText("Analytics").or(page.getByText("Patterns & progress over time")).first()).toBeVisible({
-    timeout: 10000,
-  });
-});
-
-When("the user taps the Settings tab", async ({ page }) => {
-  const link = page.getByRole("link", { name: "Settings" }).first();
-  await expect(link).toBeVisible();
-  await link.click();
-});
-
-Then("the Settings tab is active", async ({ page }) => {
-  // Settings screen has data-testid="settings-screen" on the root div — use testid only
-  // to avoid strict mode violations from the SideNav "Settings" button
-  await expect(page.locator("[data-testid='settings-screen']")).toBeVisible({ timeout: 10000 });
-});
-
-When("the user taps the FAB button", async ({ page }) => {
-  // FAB carries aria-label="Log entry"
-  const fab = page.getByRole("button", { name: "Log entry" });
-  await expect(fab).toBeVisible();
-  await fab.click();
-});
-
-Then("the Add Entry sheet is open", async ({ page }) => {
-  const sheetText = page.getByText("Log an entry");
-  await expect(sheetText).toBeVisible({ timeout: 10000 });
 });
 
 When("the user closes the Add Entry sheet", async ({ page }) => {

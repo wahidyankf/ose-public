@@ -3,11 +3,11 @@ Feature: Capture strict metadata
   I want FERRET to store lifecycle metadata only
   So that no prompt, response, tool argument, transcript path, or environment value is ever kept
 
-  Scenario: Capture a valid lifecycle event
+  # Behaviour: FRT-003
+  Scenario: A valid lifecycle event is captured and appears in events list
     Given FERRET is initialized with an empty local database
     When an adapter submits one schema-version-1.0 tool-completed event
-    Then the CLI stores one event with its canonical hash and opaque identifiers
-    And the stored record holds only the opaque workspace and session identifiers it was given
+    Then events list shows that one event with its opaque workspace and session identifiers
     And the direct capture command reports success
 
   Scenario Outline: Refuse a raw value in place of an opaque identifier
@@ -21,20 +21,33 @@ Feature: Capture strict metadata
       | workspaceId | workspace path        |
       | sessionId   | harness session value |
 
-  Scenario: Project raw hook JSON without retaining content
-    Given a raw harness payload carrying prompt text, tool arguments, and environment values
+  # Behaviour: FRT-004
+  Scenario: ferret capture refuses input over 16 KiB
+    Given FERRET is initialized with an empty local database
+    When an adapter submits an event of 16 KiB plus one byte
+    Then capture rejects the complete event without storing a partial row
+    And the diagnostic names no field and echoes no part of the input
+
+  # Behaviour: FRT-005
+  Scenario Outline: A raw harness payload yields only allowlisted metadata and no diagnostic echoes its content
+    Given a raw <harness> <event> payload for the <tool> tool carrying <content>
     When capture-hook maps it through that harness's allowlist mapper
-    Then only allowlisted metadata reaches the canonical envelope
-    And the raw bytes stay in memory and are never spooled, logged, or written to SQLite
+    Then one <event> event naming <tool> is stored with only allowlisted metadata
+    And no part of the <content> reaches the store
     And any diagnostic about the payload names no value taken from it
 
-  Scenario: Record a tool completion whose result is a large image
-    Given a raw Codex view_image completion whose result is a 1 MiB base64 image
-    When capture-hook maps it through that harness's allowlist mapper
-    Then one tool-completed event naming view_image is stored
-    And no part of the image or of the other content reaches the store
-    And any diagnostic about the payload names no value taken from it
+    Examples:
+      | harness     | event          | tool       | content                                             |
+      | claude_code | tool.completed | Read       | prompt text, tool arguments, and environment values |
+      | codex       | tool.completed | view_image | a 1 MiB base64 image                                |
 
+  # Behaviour: FRT-059
+  Scenario: A payload over 64 MiB is refused and the hook still exits 0
+    Given an initialized store and a raw harness payload larger than 64 MiB
+    When capture-hook maps it through that harness's allowlist mapper
+    Then it stores no event and writes nothing to either stream and exits 0
+
+  # Behaviour: FRT-055
   Scenario Outline: Reject a forbidden capture field
     Given FERRET is initialized with an empty local database
     When an adapter submits an otherwise valid event containing <field>
@@ -49,12 +62,16 @@ Feature: Capture strict metadata
       | transcript_path |
       | environment     |
 
+  # Behaviour: FRT-046
+  # Behaviour: FRT-055
   Scenario: Reject an unknown capture field
     Given FERRET is initialized with an empty local database
     When an adapter submits an otherwise valid event with a property the schema does not define
     Then capture rejects the complete event without storing a partial row
     And the diagnostic names no field and echoes neither the unknown property name nor its value
 
+  # Behaviour: FRT-006
+  # Behaviour: FRT-056
   Scenario Outline: Capture only the lifecycle fact a Command Code hook reports
     Given an initialized store and a Command Code <hook> payload carrying private content
     When capture-hook receives the registered <event> event

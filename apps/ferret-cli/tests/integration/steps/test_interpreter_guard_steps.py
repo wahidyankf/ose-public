@@ -86,6 +86,7 @@ def reachable_supported_interpreter(start: Start) -> None:
     shim.chmod(0o755)
 
 
+# @scenario specs/apps/ferret/cli/behaviours/harness/fail-open-capabilities-and-platforms.feature: Run on a host whose default interpreter is older than FERRET requires
 @scenario(FEATURE, "Run on a host whose default interpreter is older than FERRET requires")
 def test_run_on_a_host_whose_default_interpreter_is_older_than_ferret_requires() -> None:
     """Bound to the feature outline; each example expands independently."""

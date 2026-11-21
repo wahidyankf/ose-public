@@ -22,6 +22,7 @@ let ``checkFigures returns empty when figure covered by Mermaid`` () =
     Assert.Empty(result)
 
 [<Fact>]
+// @scenario specs/libs/fsharp-crane-core/behaviours/checks/checks.feature: A figure with no Mermaid, placeholder, or label is a HIGH finding
 let ``checkFigures returns HIGH finding when figure not covered`` () =
     let pdfText = "This document contains Figure 1"
     let mdText = "Some completely unrelated text with no figures"

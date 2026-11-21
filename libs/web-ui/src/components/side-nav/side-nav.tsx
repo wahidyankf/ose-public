@@ -34,6 +34,7 @@ export function SideNav({ brand, tabs, current, onChange }: SideNavProps) {
         <button
           key={tab.id}
           type="button"
+          aria-current={current === tab.id ? "page" : undefined}
           onClick={() => onChange(tab.id)}
           className={cn(
             "flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm",

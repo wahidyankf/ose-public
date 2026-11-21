@@ -33,6 +33,25 @@ func (w *World) StepReaderSearchesMatchingTermOneLocale() error {
 	return w.get("/htmx/search?q=hello")
 }
 
+// StepReaderOpensSearchPageMatchingTerm requests the search page route itself,
+// without the dialog, for the matching term.
+func (w *World) StepReaderOpensSearchPageMatchingTerm() error {
+	w.searchQuery = "hello"
+	return w.get("/en/search?q=hello")
+}
+
+// StepSearchPageListsMatchingResultsForLocale checks the page lists the
+// matching lesson under the English locale and no Indonesian link.
+func (w *World) StepSearchPageListsMatchingResultsForLocale() error {
+	if err := w.mustStatus(http.StatusOK); err != nil {
+		return err
+	}
+	if err := w.mustContain("/en/learn/courses/go-basics/learning/hello-world"); err != nil {
+		return err
+	}
+	return w.mustNotContain("/id/")
+}
+
 func (w *World) StepResultsLinkOnlyLocaleSPublishedContent() error {
 	if err := w.mustStatus(http.StatusOK); err != nil {
 		return err

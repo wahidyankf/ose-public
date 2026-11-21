@@ -1,3 +1,7 @@
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/responsive.feature: Desktop viewport shows sidebar, content, and table of contents
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/responsive.feature: Laptop viewport shows sidebar and content but hides table of contents
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/responsive.feature: Mobile viewport shows hamburger menu and hides sidebar
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/responsive.feature: Mobile hamburger menu opens the sidebar drawer
 import { createBdd } from "playwright-bdd";
 import { expect } from "@playwright/test";
 

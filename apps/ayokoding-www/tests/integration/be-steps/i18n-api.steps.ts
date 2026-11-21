@@ -8,56 +8,46 @@ const feature = await loadFeature(
   path.resolve(process.cwd(), "../../specs/apps/ayokoding/www/behaviours/backend/i18n/i18n-api.feature"),
 );
 
-describeFeature(feature, ({ Scenario, Background }) => {
+// Phrases that the integration content fixtures hold in each language.
+const PHRASE_BY_LANGUAGE: Readonly<Record<string, string>> = {
+  English: "Examples 1–26 establish Go's daily toolchain",
+  Indonesian: "Selamat datang di pusat pembelajaran AyoKoding",
+};
+
+/** The Examples cell carries the locale prefix; the client call takes the slug without it. */
+function bareSlug(locale: string, slugWithLocale: string): string {
+  return slugWithLocale.slice(locale.length + 1);
+}
+
+describeFeature(feature, ({ Scenario, ScenarioOutline, Background }) => {
   Background(({ Given }) => {
     Given("the API is running", async () => {
       await expect(integrationCaller.meta.health()).resolves.toEqual({ status: "ok" });
     });
   });
 
-  Scenario('English content is served when locale is "en"', ({ Given, When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/backend/i18n/i18n-api.feature: Content is served in the requested locale
+  ScenarioOutline("Content is served in the requested locale", ({ Given, When, Then, And }, examples) => {
+    const locale = String(examples["locale"]);
+    const slug = String(examples["slug"]);
+    const language = String(examples["language"]);
     let result: Awaited<ReturnType<typeof integrationCaller.content.getBySlug>>;
-    Given('a page exists at slug "en/learn/courses/just-enough-go/learning/beginner" under locale "en"', async () => {
+
+    Given('a page exists at slug "<slug>" under locale "<locale>"', async () => {
       await expect(
-        integrationCaller.content.getBySlug({
-          locale: "en",
-          slug: "learn/courses/just-enough-go/learning/beginner",
-        }),
-      ).resolves.toMatchObject({ locale: "en" });
+        integrationCaller.content.getBySlug({ locale, slug: bareSlug(locale, slug) }),
+      ).resolves.toMatchObject({ locale });
     });
-    When(
-      'the client calls content.getBySlug with slug "en/learn/courses/just-enough-go/learning/beginner"',
-      async () => {
-        result = await integrationCaller.content.getBySlug({
-          locale: "en",
-          slug: "learn/courses/just-enough-go/learning/beginner",
-        });
-      },
-    );
-    Then('the response "frontmatter" should indicate locale "en"', () => expect(result.locale).toBe("en"));
-    And('the response "html" should contain English-language content', () =>
-      expect(result.html).toContain("Examples 1–26 establish Go's daily toolchain"),
+    When('the client calls content.getBySlug with slug "<slug>"', async () => {
+      result = await integrationCaller.content.getBySlug({ locale, slug: bareSlug(locale, slug) });
+    });
+    Then('the response "frontmatter" should indicate locale "<locale>"', () => expect(result.locale).toBe(locale));
+    And('the response "html" should contain <language>-language content', () =>
+      expect(result.html).toContain(PHRASE_BY_LANGUAGE[language]),
     );
   });
 
-  Scenario('Indonesian content is served when locale is "id"', ({ Given, When, Then, And }) => {
-    let result: Awaited<ReturnType<typeof integrationCaller.content.getBySlug>>;
-    Given('a page exists at slug "id/belajar/ikhtisar" under locale "id"', async () => {
-      await expect(
-        integrationCaller.content.getBySlug({ locale: "id", slug: "belajar/ikhtisar" }),
-      ).resolves.toMatchObject({
-        locale: "id",
-      });
-    });
-    When('the client calls content.getBySlug with slug "id/belajar/ikhtisar"', async () => {
-      result = await integrationCaller.content.getBySlug({ locale: "id", slug: "belajar/ikhtisar" });
-    });
-    Then('the response "frontmatter" should indicate locale "id"', () => expect(result.locale).toBe("id"));
-    And('the response "html" should contain Indonesian-language content', () =>
-      expect(result.html).toContain("Selamat datang di pusat pembelajaran AyoKoding"),
-    );
-  });
-
+  // @scenario specs/apps/ayokoding/www/behaviours/backend/i18n/i18n-api.feature: Requesting a slug prefixed with an invalid locale is rejected
   Scenario("Requesting a slug prefixed with an invalid locale is rejected", ({ When, Then }) => {
     let error: unknown;
     When(

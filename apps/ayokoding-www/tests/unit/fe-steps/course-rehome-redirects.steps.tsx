@@ -221,6 +221,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/course-rehome-redirects.feature: A legacy fundamentally-strong URL redirects to the canonical course URL
   Scenario("A legacy fundamentally-strong URL redirects to the canonical course URL", ({ When, Then }) => {
     let resolvedUrl: string | null = null;
     When('a visitor navigates to "/en/learn/fundamentally-strong/software-engineer/just-enough-python"', () => {
@@ -232,6 +233,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/course-rehome-redirects.feature: A legacy fundamentally-strong deep sub-page URL redirects to its canonical course sub-page
   Scenario(
     "A legacy fundamentally-strong deep sub-page URL redirects to its canonical course sub-page",
     ({ When, Then }) => {
@@ -251,6 +253,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, Background }) => {
     },
   );
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/course-rehome-redirects.feature: Every re-homed course declares its prerequisites
   Scenario("Every re-homed course declares its prerequisites", ({ Given, When, Then, And }) => {
     Given("the thirty-seven shipped topics and existing capstones have been re-homed into the course library", () => {
       // >= not ===: ayokoding-learning-path-04-course-authoring adds courses on top of this
@@ -318,6 +321,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, Background }) => {
     );
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/course-rehome-redirects.feature: A prerequisite naming a syllabus-declared but not-yet-authored course still resolves
   Scenario(
     "A prerequisite naming a syllabus-declared but not-yet-authored course still resolves",
     ({ When, Then, And }) => {
@@ -341,6 +345,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, Background }) => {
     },
   );
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/course-rehome-redirects.feature: A prerequisite naming an authored course absent from the syllabus roadmap still resolves
   Scenario(
     "A prerequisite naming an authored course absent from the syllabus roadmap still resolves",
     ({ When, Then }) => {
@@ -360,6 +365,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, Background }) => {
     },
   );
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/course-rehome-redirects.feature: The retired fundamentally-strong browse roots permanently redirect to the course library
   ScenarioOutline(
     "The retired fundamentally-strong browse roots permanently redirect to the course library",
     ({ When, Then, And }, variables) => {
@@ -382,6 +388,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, Background }) => {
     },
   );
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/course-rehome-redirects.feature: The course library the retired browse roots redirect to resolves every re-homed course
   Scenario(
     "The course library the retired browse roots redirect to resolves every re-homed course",
     ({ When, Then }) => {
@@ -398,6 +405,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, Background }) => {
     },
   );
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/course-rehome-redirects.feature: A course reached via its legacy course URL resolves to the single canonical course body
   Scenario(
     "A course reached via its legacy course URL resolves to the single canonical course body",
     ({ When, Then }) => {

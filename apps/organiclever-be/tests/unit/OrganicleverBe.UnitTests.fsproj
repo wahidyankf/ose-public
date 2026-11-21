@@ -16,7 +16,6 @@
     <Compile Include="Steps/BddState.fs" />
     <Compile Include="Steps/HealthSteps.fs" />
     <Compile Include="Steps/JournalSteps.fs" />
-    <Compile Include="Steps/EnvTierSteps.fs" />
     <Compile Include="Steps/MessagingSteps.fs" />
     <Compile Include="Steps/DbMigrationSteps.fs" />
     <Compile Include="Steps/LiveMessagingSteps.fs" />

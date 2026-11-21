@@ -3,6 +3,10 @@ Feature: Query and export local telemetry deterministically
   I want to filter and export the events stored on this machine in a stable order
   So that people and scripts read the same reproducible result and diagnostics never corrupt it
 
+  # Behaviour: FRT-009
+  # Behaviour: FRT-010
+  # Behaviour: FRT-027
+  # Behaviour: FRT-040
   Scenario: Filter and export deterministic local events
     Given the database contains events from two workspaces and two harnesses
     When the user filters by UTC interval, harness, workspace, event type, and outcome
@@ -10,6 +14,8 @@ Feature: Query and export local telemetry deterministically
     And the JSON Lines export holds one canonical event object per line, oldest first by timestamp and then event ID
     And diagnostics do not contaminate standard output
 
+  # Behaviour: FRT-021
+  # Behaviour: FRT-022
   Scenario Outline: Emit a stable machine-readable command result
     Given FERRET is initialized
     When the user runs <command> with --json
@@ -28,12 +34,16 @@ Feature: Query and export local telemetry deterministically
       | self install   |
       | self uninstall |
 
+  # Behaviour: FRT-029
+  # Behaviour: FRT-030
+  # Behaviour: FRT-045
   Scenario: Keep the export a raw stream when JSON is requested
     Given FERRET is initialized
     When the user exports events once with --json and once without it
     Then the export with --json exits 2 with the closed ferret.args.invalid error on stderr and nothing on stdout
     And the export without --json writes one canonical event object per line
 
+  # Behaviour: FRT-008
   Scenario: Use FERRET without a backend
     Given no backend URL, token, or process exists
     When the user captures, lists, exports, summarizes, and maintains local events

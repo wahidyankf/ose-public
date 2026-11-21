@@ -62,6 +62,15 @@
         "{workspaceRoot}/libs/*/tests/**/*"
       ]
     },
+    "test:integration": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "if grep -rn -E --include='*.ts' --exclude-dir=node_modules --exclude-dir=.features-gen --exclude-dir=test-results --exclude-dir=playwright-report '\\\\$?test\\\\.skip\\\\([^,)]*\\\\)' .; then echo 'ERROR: unconditional test.skip() found in test files above - use test.skip(condition, reason) for legitimate environment guards, or remove'; exit 1; fi && npx bddgen && npx playwright test && npx playwright test --config=playwright.focused.config.ts",
+        "cwd": "apps/ayokoding-web-e2e"
+      },
+      "cache": false,
+      "dependsOn": [{ "target": "build", "projects": "ayokoding-web" }]
+    },
     "test:e2e": {
       "executor": "nx:run-commands",
       "options": {

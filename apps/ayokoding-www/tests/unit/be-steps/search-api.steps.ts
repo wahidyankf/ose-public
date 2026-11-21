@@ -8,65 +8,62 @@ const feature = await loadFeature(
   path.resolve(process.cwd(), "../../specs/apps/ayokoding/www/behaviours/backend/search/search-api.feature"),
 );
 
-describeFeature(feature, ({ Scenario, Background }) => {
+// Each indexed-page cell names the query that finds it and the fact that must hold for that query.
+const INDEXED_PAGES: Readonly<Record<string, { query: string; holds: (results: SearchResult[]) => void }>> = {
+  'a page titled "Beginner Examples"': {
+    query: "goroutines",
+    holds: (results) =>
+      expect(results).toEqual(expect.arrayContaining([expect.objectContaining({ title: "Beginner Examples" })])),
+  },
+  'content about "programming"': {
+    query: "programming",
+    holds: (results) => expect(results.length).toBeGreaterThan(0),
+  },
+};
+
+function fieldOf(result: SearchResult, field: string): unknown {
+  return (result as unknown as Record<string, unknown>)[field];
+}
+
+describeFeature(feature, ({ Scenario, ScenarioOutline, Background }) => {
   Background(({ Given }) => {
     Given("the API is running", async () => {
       await expect(testCaller.meta.health()).resolves.toEqual({ status: "ok" });
     });
   });
 
-  Scenario("Search returns matching results with title, slug, and excerpt", ({ Given, When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/backend/search/search-api.feature: Search results carry the <field> field
+  ScenarioOutline("Search results carry the <field> field", ({ Given, When, Then, And }, examples) => {
+    const indexed = String(examples["indexed"]);
+    const query = String(examples["query"]);
+    const field = String(examples["field"]);
+    const expected = String(examples["expected"]);
     let results: SearchResult[];
 
-    Given('published pages indexed under locale "en" include a page titled "Beginner Examples"', async () => {
-      await expect(testCaller.search.query({ query: "goroutines", locale: "en" })).resolves.toEqual(
-        expect.arrayContaining([expect.objectContaining({ title: "Beginner Examples" })]),
-      );
+    Given('published pages indexed under locale "en" include <indexed>', async () => {
+      const entry = INDEXED_PAGES[indexed];
+      expect(entry, `unknown indexed cell: ${indexed}`).toBeDefined();
+      entry!.holds(await testCaller.search.query({ query: entry!.query, locale: "en" }));
     });
 
-    When('the client calls search.query with locale "en" and query "goroutines"', async () => {
-      results = await testCaller.search.query({ query: "goroutines", locale: "en" });
+    When('the client calls search.query with locale "en" and query "<query>"', async () => {
+      results = await testCaller.search.query({ query, locale: "en" });
     });
 
     Then("the response should contain at least one result", () => {
       expect(results.length).toBeGreaterThan(0);
     });
 
-    And('each result should include a "title" field', () => {
-      const first = results[0]!;
-      expect(first).toHaveProperty("title");
-    });
-
-    And('each result should include a "slug" field', () => {
-      const first = results[0]!;
-      expect(first).toHaveProperty("slug");
-    });
-
-    And('each result should include an "excerpt" field', () => {
-      const first = results[0]!;
-      expect(first).toHaveProperty("excerpt");
-    });
-  });
-
-  Scenario("Search results include locale information", ({ Given, When, Then }) => {
-    let results: SearchResult[];
-
-    Given('published pages indexed under locale "en" include content about "programming"', async () => {
-      expect((await testCaller.search.query({ query: "programming", locale: "en" })).length).toBeGreaterThan(0);
-    });
-
-    When('the client calls search.query with locale "en" and query "programming"', async () => {
-      results = await testCaller.search.query({ query: "programming", locale: "en" });
-    });
-
-    Then('each result should include a "locale" field matching "en"', () => {
+    And('each result should carry its "<field>" field as "<expected>"', () => {
       for (const result of results) {
-        expect(result).toHaveProperty("locale");
-        expect(result.locale).toBe("en");
+        expect(result).toHaveProperty(field);
+        if (expected === "non-empty") expect(String(fieldOf(result, field))).not.toBe("");
+        else expect(fieldOf(result, field)).toBe(expected);
       }
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/backend/search/search-api.feature: Search is scoped to the requested locale
   Scenario("Search is scoped to the requested locale", ({ Given, When, Then, And }) => {
     let results: SearchResult[];
 
@@ -89,6 +86,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/backend/search/search-api.feature: Empty query returns an error
   Scenario("Empty query returns an error", ({ When, Then }) => {
     let error: unknown = null;
 

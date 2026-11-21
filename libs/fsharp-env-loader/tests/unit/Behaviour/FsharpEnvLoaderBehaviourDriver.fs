@@ -1,8 +1,8 @@
 /// TickSpec step definitions and scenario runner binding both of
 /// `fsharp-env-loader`'s Gherkin feature files —
 /// `specs/libs/fsharp-env-loader/behaviours/env-tier/env-tier.feature` and
-/// `specs/libs/fsharp-env-loader/behaviours/port-resolver/port-resolver.feature`
-/// — to `FsharpEnvLoader.EnvTier` and `FsharpEnvLoader.PortResolver`. This is
+/// `specs/libs/fsharp-env-loader/behaviours/port-resolver/port-resolver.feature` —
+/// to `FsharpEnvLoader.EnvTier` and `FsharpEnvLoader.PortResolver`. This is
 /// the Unit behaviour driver for `fsharp-env-loader`.
 ///
 /// One instance-mutable-field step class is consumed by a
@@ -46,7 +46,7 @@ type FsharpEnvLoaderBehaviourSteps() =
         { GetEnvironmentVariable = readEnvironment
           SetEnvironmentVariable = fun key value -> environment[key] <- value
           FileExists = files.ContainsKey
-          ReadLines = fun path -> files[path]
+          ReadLines = fun path -> files[path] :> seq<string>
           CombinePath = fun directory fileName -> $"{directory}/{fileName}" }
 
     let setFile (directory: string) (fileName: string) (lines: string list) : unit =
@@ -57,15 +57,15 @@ type FsharpEnvLoaderBehaviourSteps() =
     let mutable declaredFallback = 0
     let mutable envMap: Map<string, string> = Map.empty
     let mutable resolveOutcome: Result<int, string> option = None
+    let mutable listenOutcome: string option = None
+
+    let readMappedEnvironment (key: string) : string =
+        match envMap.TryFind key with
+        | Some value -> value
+        | None -> null
 
     let runResolve (argv: string list) : Result<int, string> =
-        let readEnvironment =
-            fun (key: string) ->
-                match envMap.TryFind key with
-                | Some v -> v
-                | None -> null
-
-        PortResolver.resolvePort (List.toArray argv) readEnvironment declaredVar declaredFallback
+        PortResolver.resolvePort (List.toArray argv) readMappedEnvironment declaredVar declaredFallback
 
     // --- env-tier.feature ---------------------------------------------------
 
@@ -131,6 +131,9 @@ type FsharpEnvLoaderBehaviourSteps() =
         environment[key] <- value
 
     [<Given>]
+    member _.``the process environment does not have "([^"]+)" set``(key: string) = environment.Remove(key) |> ignore
+
+    [<Given>]
     member _.``APP_ENV is unset``() = environment.Remove("APP_ENV") |> ignore
 
     [<Given>]
@@ -170,6 +173,9 @@ type FsharpEnvLoaderBehaviourSteps() =
         Assert.Equal(expected, readEnvironment key)
 
     [<Then>]
+    member _.``the process environment has no "([^"]+)" value``(key: string) = Assert.Null(readEnvironment key)
+
+    [<Then>]
     member _.``loading completes without raising``() =
         match loadOutcome with
         | Some(Ok()) -> ()
@@ -197,6 +203,14 @@ type FsharpEnvLoaderBehaviourSteps() =
     [<When>]
     member _.``the port resolves with no "([^"]+)" flag``(_flagName: string) = resolveOutcome <- Some(runResolve [])
 
+    [<When>]
+    member _.``the port resolves with the argument "([^"]*)"``(argument: string) =
+        resolveOutcome <- Some(runResolve [ argument ])
+
+    [<When>]
+    member _.``the listen URL is shaped for port (\d+)``(port: int) =
+        listenOutcome <- Some(PortResolver.listenUrl readMappedEnvironment port)
+
     [<Then>]
     member _.``the resolved port is (\d+)``(expected: int) =
         match resolveOutcome with
@@ -205,7 +219,7 @@ type FsharpEnvLoaderBehaviourSteps() =
         | None -> Assert.Fail("no resolution has been attempted")
 
     [<Then>]
-    member _.``resolution throws, naming "([^"]+)" and the valid range``(sourceName: string) =
+    member _.``resolution is rejected, naming "([^"]+)" and the valid range``(sourceName: string) =
         match resolveOutcome with
         | Some(Error msg) ->
             Assert.Contains(sourceName, msg)
@@ -213,6 +227,12 @@ type FsharpEnvLoaderBehaviourSteps() =
         | Some(Ok actual) ->
             Assert.Fail(sprintf "expected an error naming \"%s\" but resolution returned Ok %d" sourceName actual)
         | None -> Assert.Fail("no resolution has been attempted")
+
+    [<Then>]
+    member _.``the listen URL is "([^"]+)"``(expected: string) =
+        match listenOutcome with
+        | Some actual -> Assert.Equal(expected, actual)
+        | None -> Assert.Fail("no listen URL has been shaped")
 
     // --- cleanup --------------------------------------------------------------
 
@@ -227,6 +247,7 @@ type FsharpEnvLoaderBehaviourSteps() =
         declaredFallback <- 0
         envMap <- Map.empty
         resolveOutcome <- None
+        listenOutcome <- None
 
 /// Reads the Gherkin feature files TickSpec's `CopyGherkinSpecs` build target
 /// copies into this test binary's own output directory, and runs every
@@ -254,6 +275,27 @@ module private FeatureRunner =
             feature.Scenarios |> Seq.map (fun scenario -> [| scenario :> obj |])
         | None -> Seq.empty
 
+// @scenario specs/libs/fsharp-env-loader/behaviours/env-tier/env-tier.feature: APP_ENV unset or empty defaults to the "local" tier
+// @scenario specs/libs/fsharp-env-loader/behaviours/env-tier/env-tier.feature: APP_ENV set to a tier name resolves to that tier
+// @scenario specs/libs/fsharp-env-loader/behaviours/env-tier/env-tier.feature: Only the file matching APP_ENV is read
+// @scenario specs/libs/fsharp-env-loader/behaviours/env-tier/env-tier.feature: The first search directory that holds the tier file wins
+// @scenario specs/libs/fsharp-env-loader/behaviours/env-tier/env-tier.feature: Missing or empty tier input is never an error
+// @scenario specs/libs/fsharp-env-loader/behaviours/env-tier/env-tier.feature: A value containing "=" keeps only the substring after the first "="
+// @scenario specs/libs/fsharp-env-loader/behaviours/env-tier/env-tier.feature: CRLF-terminated lines parse the same as LF-terminated lines
+// @scenario specs/libs/fsharp-env-loader/behaviours/env-tier/env-tier.feature: Blank lines and full-line "#" comments are skipped
+// @scenario specs/libs/fsharp-env-loader/behaviours/env-tier/env-tier.feature: A line with no "=" is skipped without throwing
+// @scenario specs/libs/fsharp-env-loader/behaviours/env-tier/env-tier.feature: Surrounding whitespace is trimmed from both key and value
+// @scenario specs/libs/fsharp-env-loader/behaviours/env-tier/env-tier.feature: The process environment wins over a tier file value
+// @scenario specs/libs/fsharp-env-loader/behaviours/env-tier/env-tier.feature: Referencing the library never loads a tier file
+// @scenario specs/libs/fsharp-env-loader/behaviours/port-resolver/port-resolver.feature: A port resolves from the highest source that supplies one
+// @scenario specs/libs/fsharp-env-loader/behaviours/port-resolver/port-resolver.feature: A bare PORT variable never moves the listener
+// @scenario specs/libs/fsharp-env-loader/behaviours/port-resolver/port-resolver.feature: A blank value at a tier falls through to the next tier
+// @scenario specs/libs/fsharp-env-loader/behaviours/port-resolver/port-resolver.feature: A present but malformed port is rejected with an error naming its source and the valid range
+// @scenario specs/libs/fsharp-env-loader/behaviours/port-resolver/port-resolver.feature: An out-of-range fallback is rejected with an error naming the variable and the valid range
+// @scenario specs/libs/fsharp-env-loader/behaviours/port-resolver/port-resolver.feature: The joined form --port=4000 is accepted like --port 4000
+// @scenario specs/libs/fsharp-env-loader/behaviours/port-resolver/port-resolver.feature: A trailing bare --port with no value falls through to the variable
+// @scenario specs/libs/fsharp-env-loader/behaviours/port-resolver/port-resolver.feature: A whitespace-only flag or variable is blank and falls through to the next tier
+// @scenario specs/libs/fsharp-env-loader/behaviours/port-resolver/port-resolver.feature: The listen URL binds loopback on a developer machine and wildcard inside a container
 type EnvTierFeatureTests() =
     static member Scenarios() : seq<obj[]> =
         FeatureRunner.scenarios "env-tier.feature" |> Seq.toList :> seq<_>

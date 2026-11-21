@@ -37,6 +37,7 @@ def session(tmp_path: Path) -> Session:
     return Session(machine=make_machine(tmp_path), now=datetime.now(UTC))
 
 
+# @scenario specs/apps/ferret/cli/behaviours/analytics/usage-and-outcomes.feature: Summarize outcomes with incomplete visibility
 @scenario(FEATURE, "Summarize outcomes with incomplete visibility")
 def test_summarize_outcomes_with_incomplete_visibility() -> None:
     """Bound to the feature scenario; the steps below carry the assertions."""

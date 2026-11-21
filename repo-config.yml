@@ -1085,8 +1085,16 @@ policies:
         - apps/*/tests/unit/**/*.fs
         - apps/ferret-cli/tests/unit/**/*.py
         - libs/*/tests/unit/**/*.ts
+        - libs/*/tests/unit/**/*.tsx
         - libs/*/tests/unit/**/*.fs
       integration:
+        # The end-to-end homes run on the executing machine against a local server or binary, so by C12 and
+        # Q14 their suites are also integration-level tests (the e2e level is the same suite against a
+        # deployed environment). One reference line in a home file covers both levels.
+        - apps/*-e2e/tests/e2e/**/*.ts
+        - apps/*-e2e/steps/**/*.ts
+        - apps/*-e2e/src/**/*.ts
+        - apps/ferret-cli-e2e/tests/**/*.py
         - apps/ayokoding-cli/tests/bdd/**/*_test.go
         - apps/ayokoding-web/tests/bdd-integration/**/*_test.go
         - apps/*/tests/integration/**/*.ts
@@ -1094,6 +1102,8 @@ policies:
         - apps/ferret-cli/tests/integration/**/*.py
         - libs/*/tests/integration/**/*.ts
         - libs/*/tests/integration/**/*.fs
+        # web-ui runs its Playwright suite against a local Storybook and Chromium on the machine.
+        - libs/*/tests/e2e/**/*.ts
       e2e:
         - apps/ayokoding-cli/tests/bdd/**/*_test.go
         - apps/ayokoding-web/tests/bdd/**/*_test.go
@@ -1101,7 +1111,6 @@ policies:
         - apps/*-e2e/steps/**/*.ts
         - apps/*-e2e/src/**/*.ts
         - apps/ferret-cli-e2e/tests/**/*.py
-        - apps/crane-cli/tests/e2e/**/*.fs
         - libs/*/tests/e2e/**/*.ts
     # The test files of a runner that executes whole feature files (godog, playwright-bdd,
     # vitest-cucumber, pytest-bdd, TickSpec), so a `<feature>: *` reference covers the file (B05).
@@ -1113,6 +1122,19 @@ policies:
       - apps/*-e2e/steps/**/*.ts
       - apps/*-e2e/src/**/*.ts
       - apps/ferret-cli-e2e/tests/**/*.py
+      # PROVISIONAL (Q13): each glob below stays only if a failing run proves the runner fails on an undefined step.
+      - apps/*/tests/unit/**/*.ts
+      - apps/*/tests/unit/**/*.tsx
+      - apps/*/tests/integration/**/*.ts
+      - libs/*/tests/unit/**/*.ts
+      - libs/*/tests/unit/**/*.tsx
+      - libs/*/tests/integration/**/*.ts
+      - libs/*/tests/e2e/**/*.ts
+      - apps/*/tests/unit/**/*.fs
+      - libs/*/tests/unit/**/*.fs
+      - libs/*/tests/integration/**/*.fs
+      - apps/ferret-cli/tests/unit/**/*.py
+      - apps/ferret-cli/tests/integration/**/*.py
 
 environment:
   examples:

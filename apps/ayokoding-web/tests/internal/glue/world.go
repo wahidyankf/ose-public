@@ -65,6 +65,9 @@ type World struct {
 	// local-dev journey state.
 	flagPort string
 	hashes   map[string]string
+	// learn-entry page and htmx fragment replies of the current scenario.
+	learnPage string
+	fragments []fragmentReply
 }
 
 // NewWorld builds the per-scenario state for the named adapter.

@@ -53,11 +53,13 @@ def when_captured(session: Session, event: str) -> None:
     )
 
 
+# @scenario specs/apps/ferret/cli/behaviours/privacy/metadata-envelope.feature: Capture only the lifecycle fact a Command Code hook reports
 @scenario(FEATURE, "Capture only the lifecycle fact a Command Code hook reports")
 def test_capture_the_reported_commandcode_fact() -> None:
     """Each example captures only its observed lifecycle fact."""
 
 
+# @scenario specs/apps/ferret/cli/behaviours/privacy/metadata-envelope.feature: Refuse unsupported or unusable Command Code hook input silently
 @scenario(FEATURE, "Refuse unsupported or unusable Command Code hook input silently")
 def test_refuse_unusable_commandcode_input() -> None:
     """Each example refuses input without disturbing the harness."""

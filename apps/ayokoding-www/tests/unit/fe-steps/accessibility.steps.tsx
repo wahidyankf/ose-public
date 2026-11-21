@@ -35,6 +35,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/accessibility.feature: Keyboard navigation moves through all interactive elements
   Scenario("Keyboard navigation moves through all interactive elements", ({ When, Then, And }) => {
     When("a visitor opens a content page", () => {
       render(
@@ -64,6 +65,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/accessibility.feature: Buttons and interactive elements have ARIA labels
   Scenario("Buttons and interactive elements have ARIA labels", ({ When, Then, And }) => {
     When(
       "a visitor opens a content page with interactive controls such as the hamburger menu and search button",
@@ -88,6 +90,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/accessibility.feature: Skip to content link is present
   Scenario("Skip to content link is present", ({ When, Then, And }) => {
     When("a visitor opens any page on the site", () => {
       render(
@@ -116,6 +119,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/accessibility.feature: Text color contrast meets WCAG AA standard
   Scenario("Text color contrast meets WCAG AA standard", ({ When, Then, And }) => {
     When("a visitor opens any page on the site", () => {
       render(
@@ -135,6 +139,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/accessibility.feature: Focus indicators are visible on interactive elements
   Scenario("Focus indicators are visible on interactive elements", ({ When, Then, And }) => {
     When("a visitor navigates to an interactive element using the keyboard", () => {
       render(<SkipLink locale="en" />);

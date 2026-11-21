@@ -6,9 +6,9 @@
       "bindings": ["tests/unit"],
       "driver": "tests/unit/crane-cli-unit-tests.fsproj"
     },
-    "e2e": {
-      "bindings": ["tests/e2e"],
-      "driver": "tests/e2e/crane-cli-e2e-tests.fsproj"
+    "integration": {
+      "bindings": ["tests/integration"],
+      "driver": "tests/integration/crane-cli-integration-tests.fsproj"
     }
   }
 }

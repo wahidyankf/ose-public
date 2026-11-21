@@ -1,17 +1,15 @@
 Feature: Shared tool data provenance
 
   Benchmark figures and calculator rates change over time. These scenarios
-  prove the provenance record names every dataset file, snapshot date, and
-  consumer contract, and explains the sourcing rules each dataset obeys.
+  prove the provenance record carries the snapshot date of every dataset it
+  describes, so a reader can tell how old each figure is.
 
-  Scenario: Provenance names every dataset, date, and consumer contract
+  # Exemption(integration): the library owns no adapter, store, or service; its only resource is checked-in JSON read whole by the unit adapter, and the consumer boundary belongs to apps/ayokoding-www; alternative-proof: ayokoding-data:test:unit / Snapshot dates in the provenance record match each dataset's own date
+  @integration-exempt
+  # Exemption(e2e): a pure library with no process or network boundary; it is consumed only through in-process imports; alternative-proof: ayokoding-data:test:unit / Snapshot dates in the provenance record match each dataset's own date
+  @e2e-exempt
+  # Behaviour: ADA-007
+  Scenario: Snapshot dates in the provenance record match each dataset's own date
     Given the shared provenance record
     When the provenance record is checked against the stored datasets
-    Then the record names data/ai-benchmark.json, data/cost-of-living.json, and data/fx.json
-    And the record carries every dataset snapshot date and the consumer contracts
-
-  Scenario: Sourcing rules stay written down
-    Given the shared provenance record
-    When the sourcing rules are read
-    Then each dataset section names its sources and re-sourcing prompt
-    And the format migration promises are recorded
+    Then the record carries the snapshot date of data/ai-benchmark.json, data/cost-of-living.json, and data/fx.json

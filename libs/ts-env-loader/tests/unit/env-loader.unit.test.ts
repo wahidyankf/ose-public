@@ -4,12 +4,14 @@
  * Covers: specs/libs/ts-env-loader/behaviours/env-loader/env-loader.feature
  *
  * Each scenario drives `loadTierEnv()` through an in-memory file port and an isolated `env`
- * object. No setup, subject, or assertion touches the process environment or filesystem.
+ * object. No setup, subject, or assertion touches the process environment or filesystem, except
+ * the two scenarios that prove the default options (the working directory and `process.env`); those
+ * restore every value they change before they return.
  */
 import path from "path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
-import { describe, expect, it } from "vitest";
-import { loadTierEnv, resolveTier, type EnvRecord, type TierEnvPort } from "../../src/index";
+import { describe, expect, it, vi, type MockInstance } from "vitest";
+import { loadTierEnv, resolveTier, tierEnvFilePath, type EnvRecord, type TierEnvPort } from "../../src/index";
 
 const feature = await loadFeature(
   path.resolve(__dirname, "../../../../specs/libs/ts-env-loader/behaviours/env-loader/env-loader.feature"),
@@ -75,6 +77,7 @@ function capture(action: () => void): unknown {
 }
 
 describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
+  // @scenario specs/libs/ts-env-loader/behaviours/env-loader/env-loader.feature: Loads the selected tier's file
   Scenario("Loads the selected tier's file", ({ Given, When, Then }) => {
     let files: Record<string, string> = {};
     let env: EnvRecord = {};
@@ -94,6 +97,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     });
   });
 
+  // @scenario specs/libs/ts-env-loader/behaviours/env-loader/env-loader.feature: Process env always wins over the tier file
   Scenario("Process env always wins over the tier file", ({ Given, When, Then, And }) => {
     let files: Record<string, string> = {};
     let env: EnvRecord = {};
@@ -116,6 +120,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     });
   });
 
+  // @scenario specs/libs/ts-env-loader/behaviours/env-loader/env-loader.feature: Tolerates a missing tier file
   Scenario("Tolerates a missing tier file", ({ Given, When, Then, And }) => {
     let files: Record<string, string> = {};
     let env: EnvRecord = {};
@@ -144,6 +149,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     });
   });
 
+  // @scenario specs/libs/ts-env-loader/behaviours/env-loader/env-loader.feature: Fails loudly on a stray auto-loaded env file
   ScenarioOutline("Fails loudly on a stray auto-loaded env file", ({ Given, When, Then }, examples) => {
     const file = String(examples["file"] ?? "");
     let files: Record<string, string> = {};
@@ -166,6 +172,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     });
   });
 
+  // @scenario specs/libs/ts-env-loader/behaviours/env-loader/env-loader.feature: Tolerates a stray file at the local tier
   Scenario("Tolerates a stray file at the local tier", ({ Given, When, Then }) => {
     let files: Record<string, string> = {};
     let thrown: unknown;
@@ -182,11 +189,107 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
       expect(thrown).toBeUndefined();
     });
   });
+
+  // @scenario specs/libs/ts-env-loader/behaviours/env-loader/env-loader.feature: The tier is local when APP_ENV is unset or empty
+  Scenario("The tier is local when APP_ENV is unset or empty", ({ Given, When, Then }) => {
+    let files: Record<string, string> = {};
+    let unset: EnvRecord = {};
+    let empty: EnvRecord = {};
+
+    Given('the app directory has a ".env.local" file setting "LOCAL_TIER_VAR" to "local-value"', () => {
+      files = localTierFile("LOCAL_TIER_VAR=local-value\n");
+    });
+
+    When("the loader runs with APP_ENV unset or empty", () => {
+      unset = {};
+      empty = { APP_ENV: "" };
+      invoke(unset, files);
+      invoke(empty, files);
+    });
+
+    Then('the ".env.local" file is applied in both cases', () => {
+      expect(unset["LOCAL_TIER_VAR"]).toBe("local-value");
+      expect(empty["LOCAL_TIER_VAR"]).toBe("local-value");
+    });
+  });
+
+  // @scenario specs/libs/ts-env-loader/behaviours/env-loader/env-loader.feature: The tier file path is the tier's dotenv file inside the app directory
+  Scenario("The tier file path is the tier's dotenv file inside the app directory", ({ Given, When, Then }) => {
+    let computed = "";
+
+    Given("the app directory is the virtual app directory", () => {
+      expect(appDir.length).toBeGreaterThan(0);
+    });
+
+    When('the tier file path is built for tier "stag"', () => {
+      computed = tierEnvFilePath("stag", appDir);
+    });
+
+    Then('the path is the ".env.stag" file inside the app directory', () => {
+      expect(computed).toBe(path.join(appDir, ".env.stag"));
+    });
+  });
+
+  // @scenario specs/libs/ts-env-loader/behaviours/env-loader/env-loader.feature: With no options the loader reads the working directory and process.env
+  Scenario("With no options the loader reads the working directory and process.env", ({ Given, When, Then }) => {
+    // Only the file port is injected here: the working directory and process.env are the defaults under test.
+    const variable = "CWD_TIER_VAR";
+    let files: Record<string, string> = {};
+    let cwdSpy: MockInstance | undefined;
+
+    Given('the working directory has a ".env.stag" file setting "CWD_TIER_VAR" to "from-cwd"', () => {
+      files = tierFile("CWD_TIER_VAR=from-cwd\n");
+    });
+
+    When('the loader runs with no options and APP_ENV set to "stag"', () => {
+      delete process.env[variable];
+      process.env["APP_ENV"] = "stag";
+      cwdSpy = vi.spyOn(process, "cwd").mockReturnValue(appDir);
+      loadTierEnv({ port: memoryPort(files) });
+    });
+
+    Then('the process environment has "CWD_TIER_VAR" set to "from-cwd"', () => {
+      try {
+        expect(process.env[variable]).toBe("from-cwd");
+      } finally {
+        cwdSpy?.mockRestore();
+        delete process.env[variable];
+        delete process.env["APP_ENV"];
+      }
+    });
+  });
+
+  // @scenario specs/libs/ts-env-loader/behaviours/env-loader/env-loader.feature: Importing the package never loads a tier file
+  Scenario("Importing the package never loads a tier file", ({ Given, When, Then }) => {
+    const variable = "IMPORT_PROBE_VAR";
+    let cwdSpy: MockInstance | undefined;
+
+    Given('the working directory has a ".env.stag" file setting "IMPORT_PROBE_VAR" to "from-file"', () => {
+      // The virtual directory holds no real file; the integration binding proves the file-backed case.
+      delete process.env[variable];
+    });
+
+    When('the package is imported with APP_ENV set to "stag"', async () => {
+      process.env["APP_ENV"] = "stag";
+      cwdSpy = vi.spyOn(process, "cwd").mockReturnValue(appDir);
+      vi.resetModules();
+      await import("../../src/index");
+    });
+
+    Then('the process environment has no "IMPORT_PROBE_VAR" value', () => {
+      try {
+        expect(process.env[variable]).toBeUndefined();
+      } finally {
+        cwdSpy?.mockRestore();
+        delete process.env[variable];
+        delete process.env["APP_ENV"];
+      }
+    });
+  });
 });
 
-// Rule 1 of the loader contract (APP_ENV unset defaults to "local") is exercised directly against
-// the pure `resolveTier` function rather than through a Gherkin scenario — every scenario above
-// always supplies a concrete APP_ENV, so this is the sole place the default branch executes.
+// Rule 1 of the loader contract (APP_ENV unset defaults to "local") is also exercised directly against
+// the pure `resolveTier` function; the scenario above drives the same default through `loadTierEnv`.
 describe("resolveTier", () => {
   it("defaults to local when APP_ENV is unset", () => {
     expect(resolveTier({})).toBe("local");

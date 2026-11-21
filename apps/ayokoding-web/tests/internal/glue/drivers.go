@@ -2,6 +2,7 @@ package glue
 
 import (
 	"fmt"
+	"io/fs"
 	"os/exec"
 	"path/filepath"
 	"runtime"
@@ -75,6 +76,27 @@ func BuildBinary(t *testing.T) (string, error) {
 
 // Corpus holds the canonical web behaviours, four levels above the suites.
 var Corpus = []string{filepath.Join("..", "..", "..", "..", "specs", "apps", "ayokoding", "web", "behaviours")}
+
+// IntegrationCorpus lists the feature files the Go integration driver binds.
+// browser-progress runs only through the Playwright home, which binds it by
+// name (contract C13), so the Go driver leaves that one feature out.
+func IntegrationCorpus() ([]string, error) {
+	var paths []string
+	err := filepath.WalkDir(Corpus[0], func(path string, entry fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if entry.IsDir() || filepath.Ext(path) != ".feature" {
+			return nil
+		}
+		if filepath.Base(path) == "browser-progress.feature" {
+			return nil
+		}
+		paths = append(paths, path)
+		return nil
+	})
+	return paths, err
+}
 
 // Success is the godog status reported when every scenario passes.
 const Success = 0

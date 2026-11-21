@@ -49,6 +49,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/lesson-navigation.feature: The context bar shows where the reader is in a path
   Scenario("The context bar shows where the reader is in a path", ({ When, Then, And }) => {
     When("a reader opens a learning page of a course in path context", () => {
       openLessonPage({ pagePath: "learning/beginner" });
@@ -76,6 +77,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/lesson-navigation.feature: The context bar works without a path
   Scenario("The context bar works without a path", ({ When, Then, And }) => {
     When("a reader opens a learning page with no path context and no remembered path for that course", () => {
       noSavedProgress();
@@ -97,6 +99,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/lesson-navigation.feature: Mark complete and continue opens the next learning page
   Scenario("Mark complete and continue opens the next learning page", ({ Given, When, Then, And }) => {
     let activated = { href: "", text: "" };
 
@@ -119,6 +122,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/lesson-navigation.feature: The last page of a course leads to the next course in the path
   Scenario("The last page of a course leads to the next course in the path", ({ Given, When, Then, And }) => {
     let activated = { href: "", text: "" };
 
@@ -140,6 +144,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/lesson-navigation.feature: The last page of the path leads back to the path page
   Scenario("The last page of the path leads back to the path page", ({ Given, When, Then }) => {
     let activated = { href: "", text: "" };
 
@@ -157,6 +162,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/lesson-navigation.feature: Without a path, the last page leads back to the course landing page
   Scenario("Without a path, the last page leads back to the course landing page", ({ Given, When, Then }) => {
     let activated = { href: "", text: "" };
 
@@ -175,6 +181,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/lesson-navigation.feature: Previous goes back one page, then to the course landing page
   Scenario("Previous goes back one page, then to the course landing page", ({ Given, When, Then }) => {
     Given("a reader is on the first learning page of a course", () => {
       openLessonPage({ pagePath: "learning/overview" });
@@ -201,6 +208,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/lesson-navigation.feature: The path context is remembered inside the same course
   Scenario("The path context is remembered inside the same course", ({ Given, When, Then, And }) => {
     Given("a reader opened a course's learning page in path context", () => {
       noSavedProgress();
@@ -225,6 +233,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/lesson-navigation.feature: Opening or scrolling a page never marks it complete
   Scenario("Opening or scrolling a page never marks it complete", ({ Given, When, Then }) => {
     Given("a reader has no saved progress", () => {
       noSavedProgress();

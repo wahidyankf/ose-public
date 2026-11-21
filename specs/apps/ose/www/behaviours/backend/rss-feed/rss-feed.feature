@@ -6,13 +6,22 @@ Feature: RSS Feed
   Background:
     Given the API is running
 
-  Scenario: RSS feed contains valid structure
+  # Behaviour: OSW-006
+  Scenario: Feed channel is titled OSE Platform Updates and links to the site
     Given the content repository contains update posts
     When the RSS feed is generated
     Then the feed has a channel with title "OSE Platform Updates"
     And the feed has a channel link to the site URL
-    And the feed contains item elements for each update
-    And every feed link is on the canonical host "www.oseplatform.com"
+
+  Scenario: Feed lists an item for every update
+    Given the content repository contains update posts
+    When the RSS feed is generated
+    Then the feed contains item elements for each update
+
+  Scenario: Every feed link is on the canonical host
+    Given the content repository contains update posts
+    When the RSS feed is generated
+    Then every feed link is on the canonical host "www.oseplatform.com"
 
   Scenario: RSS feed entries contain required fields
     Given the content repository contains an update post with title "Phase 0 End" and date "2026-02-08"

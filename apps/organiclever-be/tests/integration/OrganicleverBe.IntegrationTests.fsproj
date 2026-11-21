@@ -10,7 +10,6 @@
 
   <ItemGroup>
     <Compile Include="TestCollections.fs" />
-    <Compile Include="Steps/EnvTierSteps.fs" />
     <Compile Include="Steps/NatsConfigSteps.fs" />
     <Compile Include="Tests/EnvTierLoaderIntegrationTests.fs" />
     <Compile Include="Tests/NatsConfigIntegrationTests.fs" />

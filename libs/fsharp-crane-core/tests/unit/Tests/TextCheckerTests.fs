@@ -11,6 +11,7 @@ let ``checkText returns empty list when all chunks present in MD`` () =
     Assert.Empty(result)
 
 [<Fact>]
+// @scenario specs/libs/fsharp-crane-core/behaviours/checks/checks.feature: A text chunk missing from the Markdown is reported
 let ``checkText returns finding for missing chunk`` () =
     let chunks = [ "Missing section here" ]
     let mdText = "completely different content with no overlap"

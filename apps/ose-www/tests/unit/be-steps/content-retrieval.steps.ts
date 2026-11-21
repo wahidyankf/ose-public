@@ -21,6 +21,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ose/www/behaviours/backend/content/content-retrieval.feature: Retrieve a page by slug
   Scenario("Retrieve a page by slug", ({ Given, When, Then, And }) => {
     let result: Awaited<ReturnType<typeof testContentService.getBySlug>>;
 
@@ -48,7 +49,8 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
-  Scenario("List all update posts sorted by date", ({ Given, When, Then, And }) => {
+  // @scenario specs/apps/ose/www/behaviours/backend/content/content-retrieval.feature: Updates are listed newest first
+  Scenario("Updates are listed newest first", ({ Given, When, Then }) => {
     let results: ContentMeta[];
 
     Given("the content repository contains multiple update posts", async () => {
@@ -68,8 +70,22 @@ describeFeature(feature, ({ Scenario, Background }) => {
         expect(current).toBeGreaterThanOrEqual(next);
       }
     });
+  });
 
-    And("each update contains title, date, summary, and tags", () => {
+  // @scenario specs/apps/ose/www/behaviours/backend/content/content-retrieval.feature: Each update shows title, date, summary, and tags
+  Scenario("Each update shows title, date, summary, and tags", ({ Given, When, Then }) => {
+    let results: ContentMeta[];
+
+    Given("the content repository contains multiple update posts", async () => {
+      expect((await testContentService.listUpdates()).length).toBeGreaterThan(1);
+    });
+
+    When("the content service lists all updates", async () => {
+      const caller = createCaller({ contentService: testContentService } as TRPCContext);
+      results = await caller.content.listUpdates();
+    });
+
+    Then("each update contains title, date, summary, and tags", () => {
       for (const update of results) {
         expect(update.title).toBeTruthy();
         expect(update.date).toBeInstanceOf(Date);
@@ -79,6 +95,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ose/www/behaviours/backend/content/content-retrieval.feature: Draft pages are excluded from listings
   Scenario("Draft pages are excluded from listings", ({ Given, When, Then, And }) => {
     let results: ContentMeta[];
     let service: ContentService;
@@ -102,6 +119,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ose/www/behaviours/backend/content/content-retrieval.feature: Non-existent slug returns null
   Scenario("Non-existent slug returns null", ({ Given, When, Then }) => {
     let result: Awaited<ReturnType<typeof testContentService.getBySlug>>;
 

@@ -1,3 +1,14 @@
+// @scenario specs/apps/organiclever/app-web/behaviours/settings/language.feature: Selecting Bahasa shows the app in Indonesian
+// @scenario specs/apps/organiclever/app-web/behaviours/settings/language.feature: Selecting English shows the app in English
+
+// @scenario specs/apps/organiclever/app-web/behaviours/settings/dark-mode.feature: Toggle dark mode on
+// @scenario specs/apps/organiclever/app-web/behaviours/settings/dark-mode.feature: Toggle dark mode off
+
+// @scenario specs/apps/organiclever/app-web/behaviours/settings/settings-screen.feature: Settings screen loads user profile
+// @scenario specs/apps/organiclever/app-web/behaviours/settings/settings-screen.feature: Change rest setting
+// @scenario specs/apps/organiclever/app-web/behaviours/settings/settings-screen.feature: Saved toast appears after save
+// @scenario specs/apps/organiclever/app-web/behaviours/settings/settings-screen.feature: Saving a changed name in Settings shows the new name in the profile header
+
 import { createBdd } from "playwright-bdd";
 import { expect, type Page } from "@playwright/test";
 import { appPath } from "./_app-shell";
@@ -52,6 +63,16 @@ When("the user saves settings", async ({ page }) => {
 
 Then("the saved toast appears", async ({ page }) => {
   await expect(page.getByTestId("saved-toast")).toHaveText("Saved");
+});
+
+When("the user changes the name to {string} and leaves the name field", async ({ page }, name: string) => {
+  const input = page.getByLabel("Your name");
+  await input.fill(name);
+  await input.blur();
+});
+
+Then("the profile header shows {string}", async ({ page }, name: string) => {
+  await expect(page.getByTestId("settings-screen").getByText(name, { exact: true })).toBeVisible();
 });
 
 Given("the settings screen shows dark mode is off", async ({ page }) => {

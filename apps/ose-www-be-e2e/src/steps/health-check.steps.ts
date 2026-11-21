@@ -2,6 +2,8 @@ import { expect } from "@playwright/test";
 import { createBdd } from "playwright-bdd";
 import { buildTrpcUrl, extractTrpcData, state } from "./helpers";
 
+// @scenario specs/apps/ose/www/behaviours/backend/health/health.feature: Health endpoint returns ok status
+
 const { When, Then } = createBdd();
 
 When("the health endpoint is called", async ({ request }) => {

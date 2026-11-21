@@ -7,23 +7,18 @@ Feature: Search
   Background:
     Given the app is running
 
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Cmd+K keyboard shortcut opens the search dialog
-  @integration-exempt
+  # Behaviour: AYW-018
   Scenario: Cmd+K keyboard shortcut opens the search dialog
     When a visitor presses Cmd+K on the page
     Then the search dialog should open
     And the search input should have focus
 
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Typing in the search input shows debounced results
-  @integration-exempt
-  Scenario: Typing in the search input shows debounced results
+  Scenario: Typing a query shows matching results that update as the query changes
     Given the search dialog is open
     When the visitor types a query into the search input
     Then search results should appear after a debounce delay
     And results should update when the visitor changes the query
 
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Clicking a search result navigates to that page
-  @integration-exempt
   Scenario: Clicking a search result navigates to that page
     Given the search dialog is open
     And the visitor has typed a query that returns at least one result
@@ -31,16 +26,13 @@ Feature: Search
     Then the search dialog should close
     And the visitor should be navigated to the page for that result
 
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Escape key closes the search dialog
-  @integration-exempt
   Scenario: Escape key closes the search dialog
     Given the search dialog is open
     When the visitor presses Escape
     Then the search dialog should close
     And focus should return to the page behind the dialog
 
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Search results show title, section path, and excerpt
-  @integration-exempt
+  # Behaviour: AYW-020
   Scenario: Search results show title, section path, and excerpt
     Given the search dialog is open
     When the visitor types a query that returns results
@@ -53,8 +45,7 @@ Feature: Search
   # Tools section (`/tools/ai-benchmark`, `/tools/cost-of-living-calculator`); a first-time visitor
   # searching "AI Model Benchmark" got zero results. Fixed via `staticSearchDocs()`
   # (`content/core/static-search-docs.ts`), merged into the index alongside the markdown docs.
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Global search surfaces the Tools pages
-  @integration-exempt
+  # Behaviour: AYW-021
   Scenario: Global search surfaces the Tools pages
     Given the search dialog is open
     When the visitor types a query naming the AI Model Benchmark tool

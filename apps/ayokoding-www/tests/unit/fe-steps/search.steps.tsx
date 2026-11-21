@@ -67,6 +67,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/search/search.feature: Cmd+K keyboard shortcut opens the search dialog
   Scenario("Cmd+K keyboard shortcut opens the search dialog", ({ When, Then, And }) => {
     When("a visitor presses Cmd+K on the page", () => {
       render(<SearchHarness />);
@@ -83,7 +84,8 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
-  Scenario("Typing in the search input shows debounced results", ({ Given, When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/search/search.feature: Typing a query shows matching results that update as the query changes
+  Scenario("Typing a query shows matching results that update as the query changes", ({ Given, When, Then, And }) => {
     let input: HTMLElement;
     Given("the search dialog is open", () => {
       searchQuery.mockResolvedValue([programmingResult]);
@@ -107,6 +109,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/search/search.feature: Clicking a search result navigates to that page
   Scenario("Clicking a search result navigates to that page", ({ Given, When, Then, And }) => {
     let input: HTMLElement;
     Given("the search dialog is open", () => {
@@ -131,6 +134,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/search/search.feature: Escape key closes the search dialog
   Scenario("Escape key closes the search dialog", ({ Given, When, Then, And }) => {
     let trigger: HTMLElement;
     Given("the search dialog is open", async () => {
@@ -154,6 +158,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/search/search.feature: Search results show title, section path, and excerpt
   Scenario("Search results show title, section path, and excerpt", ({ Given, When, Then, And }) => {
     let input: HTMLElement;
     Given("the search dialog is open", () => {
@@ -178,6 +183,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/search/search.feature: Global search surfaces the Tools pages
   Scenario("Global search surfaces the Tools pages", ({ Given, When, Then }) => {
     let input: HTMLElement;
     Given("the search dialog is open", () => {

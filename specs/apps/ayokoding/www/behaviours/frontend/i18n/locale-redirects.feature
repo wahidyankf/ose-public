@@ -7,15 +7,14 @@ Feature: Canonical locale entry redirects
   Background:
     Given the app is running
 
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / The root URL enters the default locale
-  @integration-exempt
+  # Behaviour: AYW-001
   Scenario: The root URL enters the default locale
     Given a visitor requests the root URL
     When locale redirects are applied
     Then the visitor reaches the default locale at "/en"
+    And the English version of the home page should be displayed
 
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Uppercase locale URLs redirect to lowercase canonical URLs
-  @integration-exempt
+  # Behaviour: AYW-002
   Scenario Outline: Uppercase locale URLs redirect to lowercase canonical URLs
     Given a visitor requests the uppercase locale URL "<source_url>"
     When locale redirects are applied

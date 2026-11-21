@@ -31,7 +31,8 @@ function renderCard() {
 }
 
 describeFeature(feature, ({ Scenario }) => {
-  Scenario("Renders card with header, title, description, content, and footer", ({ When, Then, And }) => {
+  // @scenario specs/libs/web-ui/behaviours/card/card.feature: A card shows its title, description, content, and footer
+  Scenario("A card shows its title, description, content, and footer", ({ When, Then }) => {
     let title: HTMLElement;
     let description: HTMLElement;
     let content: HTMLElement;
@@ -49,23 +50,19 @@ describeFeature(feature, ({ Scenario }) => {
       },
     );
 
-    Then('the card title "Card Title" should have data-slot "card-title"', () => {
-      expect(title.getAttribute("data-slot")).toBe("card-title");
-    });
-
-    And('the card description "Card description text" should have data-slot "card-description"', () => {
-      expect(description.getAttribute("data-slot")).toBe("card-description");
-    });
-
-    And('the card content "Card content here" should have data-slot "card-content"', () => {
-      expect(content.getAttribute("data-slot")).toBe("card-content");
-    });
-
-    And('the card footer "Card footer here" should have data-slot "card-footer"', () => {
-      expect(footer.getAttribute("data-slot")).toBe("card-footer");
+    Then("the card shows its title, description, content, and footer in that order", () => {
+      const following = Node.DOCUMENT_POSITION_FOLLOWING;
+      expect(title.textContent).toBe("Card Title");
+      expect(description.textContent).toBe("Card description text");
+      expect(content.textContent).toBe("Card content here");
+      expect(footer.textContent).toBe("Card footer here");
+      expect(title.compareDocumentPosition(description) & following).toBeTruthy();
+      expect(description.compareDocumentPosition(content) & following).toBeTruthy();
+      expect(content.compareDocumentPosition(footer) & following).toBeTruthy();
     });
   });
 
+  // @scenario specs/libs/web-ui/behaviours/card/card.feature: Has no accessibility violations
   Scenario("Has no accessibility violations", ({ When, Then }) => {
     let container: HTMLElement;
 

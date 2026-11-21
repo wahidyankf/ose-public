@@ -7,16 +7,15 @@ Feature: Statically delivered content pages
   Background:
     Given the app is running
 
-  # Exemption(e2e): a browser or HTTP response cannot expose the internal build manifest that records prerendered routes; alternative-proof: ayokoding-www:test:integration / A content page is prerendered at build time
+  # Exemption(e2e): the scenario counts routes in the build output manifest, a file the served site does not expose, so no end-to-end boundary exists for that count; the served pages are checked by the cacheable-response scenario; alternative-proof: ayokoding-www:test:integration / A content page is prerendered at build time
   @e2e-exempt
+  # Behaviour: AYW-028
   Scenario: A content page is prerendered at build time
     Given the ayokoding-www site is built and deployed
     When the build output manifest is inspected
     Then the prerendered route count is at least two thousand
     And the inspected content route is present in the static route manifest
 
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / A repeat request to a content page remains cacheable
-  @integration-exempt
   Scenario: A repeat request to a content page remains cacheable
     Given a visitor has already requested a course lesson URL
     When the same URL is requested again
@@ -27,8 +26,7 @@ Feature: Statically delivered content pages
     When navigation search and course-path data are requested through tRPC
     Then every runtime data endpoint responds successfully
 
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / The document language reflects the localized page locale
-  @integration-exempt
+  # Behaviour: AYW-029
   Scenario Outline: The document language reflects the localized page locale
     Given a visitor opens a localized page in the "<locale>" locale
     When the localized page renders

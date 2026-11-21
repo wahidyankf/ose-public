@@ -81,12 +81,20 @@ State A + event X → State B OR State C (non-deterministic)
 
 **Example (Authentication):**
 
-```
-Authenticated (parent state)
-├── Active (sub-state)
-│   ├── Viewing
-│   └── Editing
-└── Idle (sub-state)
+```mermaid
+stateDiagram-v2
+    accTitle: Hierarchical state nesting
+    accDescr {
+        Authenticated is a parent state that contains two sub-states, Active and Idle.
+        Active contains two further states, Viewing and Editing.
+    }
+    state "Authenticated<br/>(parent state)" as Authenticated {
+        state "Active<br/>(sub-state)" as Active {
+            Viewing
+            Editing
+        }
+        state "Idle<br/>(sub-state)" as Idle
+    }
 ```
 
 ## 🧩 FSM Components in Detail

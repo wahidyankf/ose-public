@@ -78,6 +78,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ose/www/behaviours/frontend/app-shell/navigation.feature: Header contains navigation links
   Scenario("Header contains navigation links", ({ When, Then, And }) => {
     When("the header component is rendered", () => {
       render(<Header />);
@@ -108,7 +109,8 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
-  Scenario("Breadcrumb shows ancestor hierarchy without current page", ({ When, Then, And }) => {
+  // @scenario specs/apps/ose/www/behaviours/frontend/app-shell/navigation.feature: Breadcrumb lists the ancestors without the current page
+  Scenario("Breadcrumb lists the ancestors without the current page", ({ When, Then, And }) => {
     When("the about page is rendered with breadcrumbs", () => {
       render(<Breadcrumb segments={[{ label: "About", href: "/about/" }]} />);
     });
@@ -132,8 +134,15 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
       const spans = nav.querySelectorAll("span:not(:has(*))");
       expect(spans.length).toBe(0);
     });
+  });
 
-    And("breadcrumb text should wrap naturally without horizontal truncation", () => {
+  // @scenario specs/apps/ose/www/behaviours/frontend/app-shell/navigation.feature: Breadcrumb text wraps without horizontal truncation
+  Scenario("Breadcrumb text wraps without horizontal truncation", ({ When, Then }) => {
+    When("the about page is rendered with breadcrumbs", () => {
+      render(<Breadcrumb segments={[{ label: "About", href: "/about/" }]} />);
+    });
+
+    Then("breadcrumb text should wrap naturally without horizontal truncation", () => {
       const nav = screen.getByLabelText("Breadcrumb");
       const ol = nav.querySelector("ol");
       expect(ol?.className).toContain("flex-wrap");
@@ -144,6 +153,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ose/www/behaviours/frontend/app-shell/navigation.feature: Previous and next navigation between updates
   Scenario("Previous and next navigation between updates", ({ When, Then, And }) => {
     When("an update detail page is rendered with adjacent updates", () => {
       render(
@@ -165,6 +175,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ose/www/behaviours/frontend/app-shell/navigation.feature: Footer links to AyoKoding on its canonical host
   Scenario("Footer links to AyoKoding on its canonical host", ({ When, Then }) => {
     When("the footer component is rendered", () => {
       render(<Footer />);

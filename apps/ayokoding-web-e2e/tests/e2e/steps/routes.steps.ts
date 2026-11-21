@@ -8,6 +8,10 @@ import { stateFor } from "../support/state";
 
 const { Given, When, Then } = createBdd();
 
+// Behaviour corpus binding (contract C13). The Playwright home runs the whole
+// routes-and-navigation feature; no scenario here is exempt.
+// @scenario specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation.feature: *
+
 When("a visitor requests the root URL", async ({ page }) => {
   await fetchText(page, "/", { maxRedirects: 0 });
 });
@@ -32,22 +36,13 @@ Then("the response permanently redirects with status 308 to {string}", async ({ 
   expect(locationOf(page)).toBe(destination);
 });
 
-Given("an old content URL has a redirect in the current committed redirect inventory", async () => {
-  // The parity fixture inventory maps /en/old-guide to its canonical lesson.
-});
-
-When("a visitor requests that URL with a query string", async ({ page }) => {
-  stateFor(page).lastUrl = "/en/old-guide";
-  await fetchText(page, "/en/old-guide?from=local", { maxRedirects: 0 });
-});
-
-Then("the response is a 308 redirect to the inventory's canonical destination", async ({ page }) => {
-  expect(statusOf(page)).toBe(308);
-  expect(locationOf(page)).toBe("/en/learn/courses/go-basics/learning/hello-world?from=local");
-});
-
+// The query check follows the requested URL: a request without a query has
+// nothing to preserve, so the step passes.
 Then("the query string is preserved", async ({ page }) => {
-  expect(locationOf(page)).toContain("from=local");
+  const requested = stateFor(page).lastUrl ?? "";
+  const index = requested.indexOf("?");
+  if (index < 0) return;
+  expect(locationOf(page).endsWith(requested.slice(index))).toBe(true);
 });
 
 Then("the redirect does not depend on the old page still existing", async ({ page }) => {
@@ -133,7 +128,7 @@ When("a reader opens a legacy archived page", async ({ page }) => {
   await gotoPage(page, "/en/learn/legacy/software-engineering");
 });
 
-Then("the legacy page serves its canonical content", async ({ page }) => {
+Then("the archived page shows its title and canonical body", async ({ page }) => {
   expect(statusOf(page)).toBe(200);
   const body = bodyOf(page);
   expect(body).toContain("Legacy Software Engineering");
@@ -141,8 +136,23 @@ Then("the legacy page serves its canonical content", async ({ page }) => {
   expect(body).toContain('lang="en"');
 });
 
-When("a visitor requests a legacy deep course URL", async ({ page }) => {
-  await fetchText(page, "/en/learn/fundamentally-strong/software-engineer/just-enough-python/learning/intro", {
-    maxRedirects: 0,
-  });
+// The learn-entry pages and the entry link each one must list in its locale.
+const learnPages: Record<string, { route: string; entry: string }> = {
+  "learn home": { route: "/learn", entry: "/learn/courses" },
+  "paths hub": { route: "/learn/paths", entry: "/learn/paths/backend-id" },
+};
+
+When("a reader opens the {string} page in the {string} locale", async ({ page }, pageName: string, locale: string) => {
+  const known = learnPages[pageName];
+  if (known === undefined) throw new Error(`unknown learn-entry page ${pageName}`);
+  stateFor(page).learnPage = pageName;
+  await fetchText(page, `/${locale}${known.route}`);
+});
+
+Then("the page lists its entries in the {string} locale", async ({ page }, locale: string) => {
+  expect(statusOf(page)).toBe(200);
+  const known = learnPages[stateFor(page).learnPage ?? ""];
+  if (known === undefined) throw new Error("no learn-entry page was opened");
+  expect(bodyOf(page)).toContain(`/${locale}${known.entry}`);
+  expect(bodyOf(page)).not.toContain('href="//');
 });

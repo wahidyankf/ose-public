@@ -1,7 +1,25 @@
 import { expect } from "@playwright/test";
 import { createBdd } from "playwright-bdd";
 
+// @scenario specs/apps/ose/www/behaviours/frontend/app-shell/navigation.feature: Header contains navigation links
+// @scenario specs/apps/ose/www/behaviours/frontend/app-shell/navigation.feature: Breadcrumb lists the ancestors without the current page
+// @scenario specs/apps/ose/www/behaviours/frontend/app-shell/navigation.feature: Breadcrumb text wraps without horizontal truncation
+// @scenario specs/apps/ose/www/behaviours/frontend/app-shell/navigation.feature: Previous and next navigation between updates
+// @scenario specs/apps/ose/www/behaviours/frontend/app-shell/navigation.feature: Footer links to AyoKoding on its canonical host
+
 const { When, Then } = createBdd();
+
+Then("breadcrumb text should wrap naturally without horizontal truncation", async ({ page }) => {
+  const breadcrumb = page.getByRole("navigation", { name: "Breadcrumb" });
+  await expect(breadcrumb).toBeVisible();
+  const styles = await breadcrumb.evaluate((nav) =>
+    [nav, ...Array.from(nav.querySelectorAll("*"))].map((el) => getComputedStyle(el)),
+  );
+  for (const style of styles) {
+    expect(style.whiteSpace).not.toBe("nowrap");
+    expect(style.textOverflow).not.toBe("ellipsis");
+  }
+});
 
 When("the header component is rendered", async ({ page }) => {
   await page.goto("/");

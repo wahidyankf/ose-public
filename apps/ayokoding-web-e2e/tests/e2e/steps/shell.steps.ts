@@ -9,6 +9,8 @@ import { storedValue, THEME_KEY } from "../support/storage";
 import { stateFor } from "../support/state";
 
 const { Given, When, Then } = createBdd();
+// Behaviour corpus binding (contract C13). The Playwright home runs the whole feature; no scenario is exempt.
+// @scenario specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature: *
 
 When("a reader opens the {string} home page", async ({ page }, locale: string) => {
   stateFor(page).locale = locale;

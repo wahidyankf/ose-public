@@ -2,6 +2,10 @@ import { expect } from "@playwright/test";
 import { createBdd } from "playwright-bdd";
 import { buildTrpcUrl, extractTrpcData, state } from "./helpers";
 
+// @scenario specs/apps/ose/www/behaviours/backend/search/search.feature: Search returns matching results
+// @scenario specs/apps/ose/www/behaviours/backend/search/search.feature: Search with no matches returns empty results
+// @scenario specs/apps/ose/www/behaviours/backend/search/search.feature: Search results respect the limit parameter
+
 const { When, Then } = createBdd();
 
 When("a search query {string} is executed", async ({ request }, query: string) => {

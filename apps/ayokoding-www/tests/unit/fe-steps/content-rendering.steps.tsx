@@ -71,7 +71,8 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
-  Scenario("Markdown prose renders with proper formatting classes", ({ When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: Body text, headings, and paragraphs are visually distinct and evenly spaced
+  Scenario("Body text, headings, and paragraphs are visually distinct and evenly spaced", ({ When, Then, And }) => {
     When("a visitor opens a content page with prose body text", () => {
       render(<MarkdownRenderer html={sampleHtml} locale="en" />);
     });
@@ -100,7 +101,8 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
-  Scenario("Code blocks render with syntax highlighting via Shiki", ({ When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: Code blocks show highlighted tokens, a language label, and a monospace font
+  Scenario("Code blocks show highlighted tokens, a language label, and a monospace font", ({ When, Then, And }) => {
     When("a visitor opens a content page containing a fenced code block", () => {
       render(<MarkdownRenderer html={codeHtml} locale="en" />);
     });
@@ -118,7 +120,8 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
-  Scenario("Callout shortcode renders as an Alert admonition", ({ When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: A callout renders as a labelled box with its icon and text
+  Scenario("A callout renders as a labelled box with its icon and text", ({ When, Then, And }) => {
     When("a visitor opens a content page containing a callout shortcode", () => {
       render(<MarkdownRenderer html={calloutHtml} locale="en" />);
     });
@@ -138,6 +141,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: Tabs shortcode renders as tabbed panels
   Scenario("Tabs shortcode renders as tabbed panels", ({ When, Then, And }) => {
     When("a visitor opens a content page containing a tabs shortcode", () => {
       render(<MarkdownRenderer html={tabsHtml} locale="en" />);
@@ -161,6 +165,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: YouTube shortcode renders as a responsive iframe embed
   Scenario("YouTube shortcode renders as a responsive iframe embed", ({ When, Then, And }) => {
     When("a visitor opens a content page containing a YouTube shortcode", () => {
       render(<MarkdownRenderer html={youtubeHtml} locale="en" />);
@@ -181,6 +186,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: Steps shortcode renders as a numbered step list
   Scenario("Steps shortcode renders as a numbered step list", ({ When, Then, And }) => {
     When("a visitor opens a content page containing a steps shortcode", () => {
       render(<MarkdownRenderer html={stepsHtml} locale="en" />);
@@ -202,7 +208,8 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
-  Scenario("Inline math expression renders via KaTeX", ({ When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: Inline math renders as formatted notation, not raw LaTeX
+  Scenario("Inline math renders as formatted notation, not raw LaTeX", ({ When, Then, And }) => {
     When("a visitor opens a content page containing an inline math expression delimited by $...$", () => {
       render(
         <MarkdownRenderer
@@ -221,7 +228,8 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
-  Scenario("Block math expression renders via KaTeX", ({ When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: Block math renders as a centred display, not raw LaTeX
+  Scenario("Block math renders as a centred display, not raw LaTeX", ({ When, Then, And }) => {
     When("a visitor opens a content page containing a block math expression delimited by $$...$$", () => {
       render(
         <MarkdownRenderer
@@ -241,6 +249,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: Mermaid diagram renders as an SVG
   Scenario("Mermaid diagram renders as an SVG", ({ When, Then, And }) => {
     When("a visitor opens a content page containing a Mermaid code block", () => {
       render(
@@ -267,6 +276,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: Mermaid source stays keyboard reachable while its diagram is pending
   Scenario("Mermaid source stays keyboard reachable while its diagram is pending", ({ Given, And, When, Then }) => {
     let rendering: ReturnType<typeof controlMermaidRendering>;
     let user: ReturnType<typeof userEvent.setup>;
@@ -300,6 +310,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: Mermaid source stays keyboard reachable when its diagram fails to render
   Scenario("Mermaid source stays keyboard reachable when its diagram fails to render", ({ Given, When, And, Then }) => {
     let rendering: ReturnType<typeof controlMermaidRendering>;
     let user: ReturnType<typeof userEvent.setup>;
@@ -342,6 +353,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: The Mermaid source leaves keyboard focus order once the diagram renders
   Scenario("The Mermaid source leaves keyboard focus order once the diagram renders", ({ When, And, Then }) => {
     let rendering: ReturnType<typeof controlMermaidRendering>;
     let user: ReturnType<typeof userEvent.setup>;
@@ -373,6 +385,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: The focused Mermaid source has a visible indicator in light and dark themes
   Scenario(
     "The focused Mermaid source has a visible indicator in light and dark themes",
     ({ Given, And, When, Then }) => {
@@ -409,7 +422,8 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     },
   );
 
-  Scenario("Raw HTML details disclosure renders correctly", ({ When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: A details disclosure reveals its answer when opened
+  Scenario("A details disclosure reveals its answer when opened", ({ When, Then, And }) => {
     When("a visitor opens a content page containing a raw HTML details disclosure", () => {
       render(
         <MarkdownRenderer html="<details><summary>Answer</summary><p>Authored answer</p></details>" locale="en" />,
@@ -428,6 +442,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: Section headings render as headings, not as links
   Scenario("Section headings render as headings, not as links", ({ When, Then, And }) => {
     When("a visitor opens a content page with section headings", () => {
       render(<MarkdownRenderer html={sectionHeadingHtml} locale="en" />);
@@ -451,6 +466,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: Inline code renders without literal backticks
   Scenario("Inline code renders without literal backticks", ({ When, Then, And }) => {
     When("a visitor opens a content page containing inline code", () => {
       render(<MarkdownRenderer html={inlineCodeHtml} locale="en" />);
@@ -480,6 +496,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
   // tokens: inline chips may break anywhere inside themselves and fenced blocks scroll internally
   // instead of widening the article.
   let longTokenHtml = "";
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: Course content never scrolls the document horizontally at 375
   Scenario("Course content never scrolls the document horizontally at 375", ({ Given, When, Then, And }) => {
     Given("a content page containing a long inline code token on a phone-wide article", () => {
       longTokenHtml =

@@ -619,20 +619,24 @@ end
 
 Phoenix follows this structure:
 
-```
-Browser
-   ↓
-Endpoint (HTTP)
-   ↓
-Router (URL matching)
-   ↓
-Pipeline (plugs)
-   ↓
-Controller (business logic)
-   ↓
-View (rendering)
-   ↓
-Template (HTML)
+```mermaid
+flowchart TD
+    accTitle: Phoenix request layers
+    accDescr {
+        A request passes through each layer in order.
+        The browser sends it to the endpoint, which hands it to the router.
+        The router sends it to a pipeline, then to a controller, then to a view.
+        The view renders the template as HTML.
+    }
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
+    browser["Browser"]
+    endpoint["Endpoint<br/>(HTTP)"]
+    router["Router<br/>(URL matching)"]
+    pipeline["Pipeline<br/>(plugs)"]
+    controller["Controller<br/>(business logic)"]
+    view["View<br/>(rendering)"]
+    template["Template<br/>(HTML)"]
+    browser --> endpoint --> router --> pipeline --> controller --> view --> template
 ```
 
 We'll explore this in detail in later tutorials.

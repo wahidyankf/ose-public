@@ -70,6 +70,14 @@
         "{workspaceRoot}/libs/*/tests/**/*"
       ]
     },
+    "test:integration": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "if grep -rn -E --include='*.ts' --exclude-dir=node_modules --exclude-dir=.features-gen --exclude-dir=test-results --exclude-dir=playwright-report '\\$?test\\.skip\\([^,)]*\\)' .; then echo 'ERROR: unconditional test.skip() found in test files above - use test.skip(condition, reason) for legitimate environment guards, or remove'; exit 1; fi && AYOKODING_WEB_MANIFESTS_DIR=\"$PWD/fixtures/manifests\" AYOKODING_WEB_SHOW_DRAFTS=true npm exec -- nx run ayokoding-www:build && npx bddgen && env -u BASE_URL npx playwright test",
+        "cwd": "apps/ayokoding-www-fe-e2e"
+      },
+      "cache": false
+    },
     "test:e2e": {
       "executor": "nx:run-commands",
       "inputs": ["default", "{workspaceRoot}/specs/apps/ayokoding/www/behaviours/frontend/**/*.feature"],

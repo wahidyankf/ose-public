@@ -1,6 +1,9 @@
 import { expect } from "@playwright/test";
 import { createBdd } from "playwright-bdd";
 
+// @scenario specs/apps/ose/www/behaviours/frontend/app-shell/theme.feature: Default theme is light mode
+// @scenario specs/apps/ose/www/behaviours/frontend/app-shell/theme.feature: Theme toggle switches between modes
+
 const { Given, When, Then } = createBdd();
 
 When("the site loads without a stored theme preference", async ({ page }) => {

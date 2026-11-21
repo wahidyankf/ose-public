@@ -59,7 +59,8 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
-  Scenario("Home page passes axe-core accessibility scan", ({ When, Then }) => {
+  // @scenario specs/apps/ose/www/behaviours/frontend/app-shell/accessibility.feature: Home page has no accessibility violations
+  Scenario("Home page has no accessibility violations", ({ When, Then }) => {
     When("a visitor opens the home page", () => {
       renderedContainer = render(
         <>
@@ -77,6 +78,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ose/www/behaviours/frontend/app-shell/accessibility.feature: Headings follow a proper hierarchy
   Scenario("Headings follow a proper hierarchy", ({ When, Then }) => {
     When("a visitor opens the home page", () => {
       render(<Hero />);
@@ -94,6 +96,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ose/www/behaviours/frontend/app-shell/accessibility.feature: All interactive elements are keyboard accessible
   Scenario("All interactive elements are keyboard accessible", ({ When, And, Then }) => {
     When("a visitor opens the home page", () => {
       render(<Header />);
@@ -118,6 +121,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ose/www/behaviours/frontend/app-shell/accessibility.feature: Text color contrast meets WCAG AA standard
   Scenario("Text color contrast meets WCAG AA standard", ({ When, Then, And }) => {
     When("a visitor opens any page on the site", () => {
       renderedContainer = render(<Hero />).container;
@@ -134,6 +138,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ose/www/behaviours/frontend/app-shell/accessibility.feature: Focus indicators are visible on interactive elements
   Scenario("Focus indicators are visible on interactive elements", ({ When, Then, And }) => {
     When("a visitor navigates to an interactive element using the keyboard", async () => {
       render(<Header />);

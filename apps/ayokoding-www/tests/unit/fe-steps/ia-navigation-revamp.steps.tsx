@@ -92,6 +92,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: English content resolves at its bare URL
   Scenario("English content resolves at its bare URL", ({ When, Then, And }) => {
     let requestedUrl = "";
     When('a visitor navigates to "/en/learn/legacy/software-engineering"', () => {
@@ -116,6 +117,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: The browse index lists all content sections
   Scenario("The browse index lists all content sections", ({ When, Then, And }) => {
     When('a visitor navigates to "/en/browse"', () => {
       render(<BrowseIndex locale="en" sections={[learnSection, rantsSection]} />);
@@ -146,6 +148,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: Header shows primary nav links on desktop
   Scenario("Header shows primary nav links on desktop", ({ Given, When, Then, And }) => {
     let links: { label: string; href: string }[] = [];
     Given("the viewport is set to desktop width", () => {
@@ -166,6 +169,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: Mobile navigation mirrors the header links
   Scenario("Mobile navigation mirrors the header links", ({ Given, When, Then, And }) => {
     let links: { label: string; href: string }[] = [];
     Given("the viewport is set to mobile width", () => {
@@ -190,6 +194,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: Footer shows grouped navigation with localized labels
   Scenario("Footer shows grouped navigation with localized labels", ({ When, Then, And }) => {
     When('a visitor navigates to "/id"', () => {
       render(<Footer locale="id" />);
@@ -232,6 +237,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: Landing homepage renders hero, sections, and tools teaser in English
   Scenario("Landing homepage renders hero, sections, and tools teaser in English", ({ When, Then, And }) => {
     When('a visitor navigates to "/en"', () => {
       // Clean up any previous renders to isolate this scenario.
@@ -268,6 +274,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: Landing homepage renders hero, sections, and tools teaser in Indonesian
   Scenario("Landing homepage renders hero, sections, and tools teaser in Indonesian", ({ When, Then, And }) => {
     When('a visitor navigates to "/id"', () => {
       // Clean up any previous renders to isolate this scenario.
@@ -301,6 +308,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: Breadcrumb segments link to their bare content URLs
   Scenario("Breadcrumb segments link to their bare content URLs", ({ Given, When, Then }) => {
     const contentSegments = [
       { label: "Learn", slug: "learn" },
@@ -330,8 +338,9 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: Sidebar, breadcrumb, previous and next, and search links go straight to their page with no redirect
   Scenario(
-    "Internal content links emit bare URLs directly without relying on redirects",
+    "Sidebar, breadcrumb, previous and next, and search links go straight to their page with no redirect",
     ({ Given, When, Then, And }) => {
       const sourceSlugs = ["learn/software-engineering", "rants", "belajar"] as const;
       let hrefs: string[] = [];
@@ -358,8 +367,9 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     },
   );
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: The sitemap lists every content page by its public URL on www.ayokoding.com
   Scenario(
-    "Sitemap lists every content URL bare, with no distinct content namespace",
+    "The sitemap lists every content page by its public URL on www.ayokoding.com",
     ({ Given, When, Then, And, But }) => {
       let sitemapUrls: string[] = [];
       Given("the sitemap is generated from the content index", () => {
@@ -391,6 +401,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     },
   );
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: RSS feed item links use bare content URLs
   Scenario("RSS feed item links use bare content URLs", ({ Given, When, Then, And }) => {
     let feedXml = "";
     Given("the feed is generated from the content index", () => {
@@ -418,39 +429,43 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
-  Scenario("Canonical link for moved content points to its bare URL", ({ Given, When, Then, And }) => {
-    let pageMetadata: Awaited<ReturnType<typeof generateMetadata>>;
-    Given('the content page at "/en/learn/legacy/software-engineering"', () => {
-      getBySlug.mockResolvedValue({ title: "Software Engineering", description: "Legacy overview" });
-    });
-
-    When("its metadata is generated", async () => {
-      pageMetadata = await generateMetadata({
-        params: Promise.resolve({ locale: "en", slug: ["learn", "legacy", "software-engineering"] }),
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: A content page declares its own URL as canonical, with language alternates on www.ayokoding.com
+  Scenario(
+    "A content page declares its own URL as canonical, with language alternates on www.ayokoding.com",
+    ({ Given, When, Then, And }) => {
+      let pageMetadata: Awaited<ReturnType<typeof generateMetadata>>;
+      Given('the content page at "/en/learn/legacy/software-engineering"', () => {
+        getBySlug.mockResolvedValue({ title: "Software Engineering", description: "Legacy overview" });
       });
-    });
 
-    Then('the canonical alternate is "/en/learn/legacy/software-engineering"', () => {
-      expect(pageMetadata.alternates?.canonical).toBe("/en/learn/legacy/software-engineering");
-    });
-
-    And("the language alternates include en and x-default", () => {
-      expect(pageMetadata.alternates?.languages).toEqual({
-        en: "/en/learn/legacy/software-engineering",
-        "x-default": "/en/learn/legacy/software-engineering",
+      When("its metadata is generated", async () => {
+        pageMetadata = await generateMetadata({
+          params: Promise.resolve({ locale: "en", slug: ["learn", "legacy", "software-engineering"] }),
+        });
       });
-    });
 
-    And('the canonical link and the language alternates are on the canonical host "www.ayokoding.com"', () => {
-      // Next resolves each relative alternate against the root layout's `metadataBase` when it renders
-      // the `<link>` tags, so that base decides the host every rendered canonical and hreflang carries.
-      const base = layoutMetadata.metadataBase;
-      expect(base).toBeInstanceOf(URL);
-      const { canonical, languages = {} } = pageMetadata.alternates ?? {};
-      const rendered = [canonical, ...Object.values(languages)].map((href) => new URL(String(href), base!));
-      expect(rendered).toHaveLength(3);
-      expect(rendered.map(({ host }) => host)).toEqual(rendered.map(() => "www.ayokoding.com"));
-      expect(rendered[0]?.href).toBe("https://www.ayokoding.com/en/learn/legacy/software-engineering");
-    });
-  });
+      Then('the canonical alternate is "/en/learn/legacy/software-engineering"', () => {
+        expect(pageMetadata.alternates?.canonical).toBe("/en/learn/legacy/software-engineering");
+      });
+
+      And("the language alternates include en and x-default", () => {
+        expect(pageMetadata.alternates?.languages).toEqual({
+          en: "/en/learn/legacy/software-engineering",
+          "x-default": "/en/learn/legacy/software-engineering",
+        });
+      });
+
+      And('the canonical link and the language alternates are on the canonical host "www.ayokoding.com"', () => {
+        // Next resolves each relative alternate against the root layout's `metadataBase` when it renders
+        // the `<link>` tags, so that base decides the host every rendered canonical and hreflang carries.
+        const base = layoutMetadata.metadataBase;
+        expect(base).toBeInstanceOf(URL);
+        const { canonical, languages = {} } = pageMetadata.alternates ?? {};
+        const rendered = [canonical, ...Object.values(languages)].map((href) => new URL(String(href), base!));
+        expect(rendered).toHaveLength(3);
+        expect(rendered.map(({ host }) => host)).toEqual(rendered.map(() => "www.ayokoding.com"));
+        expect(rendered[0]?.href).toBe("https://www.ayokoding.com/en/learn/legacy/software-engineering");
+      });
+    },
+  );
 });

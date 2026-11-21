@@ -3,32 +3,25 @@ Feature: Runtime listener port resolution
   I want one precedence rule for the listener port across every app in the repository
   So that the same flag and the same prefixed variable move the port in local development and in a container alike
 
-  # Exemption(integration): the pure resolver owns no local resource boundary for Integration to exercise; alternative-proof: ts-env-loader:test:unit / The CLI flag outranks every other source
-  @integration-exempt
-  Scenario: The CLI flag outranks every other source
+  # Behaviour: OAW-030
+  # Behaviour: OWW-012
+  # Behaviour: OSA-003
+  # Behaviour: TEL-007
+  # Behaviour: TEL-011
+  # Behaviour: TEL-013
+  Scenario Outline: A port resolves from the highest source that supplies one
     Given the app declares the prefixed variable "OSE_WWW_PORT" with fallback 3100
-    And the environment sets "OSE_WWW_PORT" to "4000"
-    When the port resolves with a "--port" flag of "5000"
-    Then the resolved port is 5000
+    And the environment sets "OSE_WWW_PORT" to "<envValue>"
+    When the port resolves with a "--port" flag of "<flagValue>"
+    Then the resolved port is <expected>
 
-  # Exemption(integration): the pure resolver owns no local resource boundary for Integration to exercise; alternative-proof: ts-env-loader:test:unit / The prefixed variable outranks the fallback
-  @integration-exempt
-  Scenario: The prefixed variable outranks the fallback
-    Given the app declares the prefixed variable "OSE_WWW_PORT" with fallback 3100
-    And the environment sets "OSE_WWW_PORT" to "4000"
-    When the port resolves with no "--port" flag
-    Then the resolved port is 4000
+    Examples:
+      | flagValue | envValue | expected |
+      | 5000      | 4000     | 5000     |
+      |           | 4000     | 4000     |
+      |           |          | 3100     |
 
-  # Exemption(integration): the pure resolver owns no local resource boundary for Integration to exercise; alternative-proof: ts-env-loader:test:unit / The fallback applies when nothing else supplies a port
-  @integration-exempt
-  Scenario: The fallback applies when nothing else supplies a port
-    Given the app declares the prefixed variable "OSE_WWW_PORT" with fallback 3100
-    And the environment does not set "OSE_WWW_PORT"
-    When the port resolves with no "--port" flag
-    Then the resolved port is 3100
-
-  # Exemption(integration): the pure resolver owns no local resource boundary for Integration to exercise; alternative-proof: ts-env-loader:test:unit / A bare PORT variable never moves the listener
-  @integration-exempt
+  # Behaviour: TEL-012
   Scenario: A bare PORT variable never moves the listener
     Given the app declares the prefixed variable "OSE_WWW_PORT" with fallback 3100
     And the environment sets "PORT" to "4000"
@@ -36,8 +29,6 @@ Feature: Runtime listener port resolution
     When the port resolves with no "--port" flag
     Then the resolved port is 3100
 
-  # Exemption(integration): the pure resolver owns no local resource boundary for Integration to exercise; alternative-proof: ts-env-loader:test:unit / A blank value at a tier falls through to the next tier
-  @integration-exempt
   Scenario Outline: A blank value at a tier falls through to the next tier
     Given the app declares the prefixed variable "OSE_WWW_PORT" with fallback 3100
     And the environment sets "OSE_WWW_PORT" to "<envValue>"
@@ -50,39 +41,37 @@ Feature: Runtime listener port resolution
       |           |          | 3100     |
       | 5000      |          | 5000     |
 
-  # Exemption(integration): the pure resolver owns no local resource boundary for Integration to exercise; alternative-proof: ts-env-loader:test:unit / A present but malformed port fails loudly instead of falling through
-  @integration-exempt
-  Scenario Outline: A present but malformed port fails loudly instead of falling through
+  # Behaviour: TEL-016
+  Scenario Outline: A malformed port is rejected with an error naming its source and the valid range
     Given the app declares the prefixed variable "OSE_WWW_PORT" with fallback 3100
-    And the environment does not set "OSE_WWW_PORT"
+    And the environment sets "OSE_WWW_PORT" to "<envValue>"
     When the port resolves with a "--port" flag of "<flagValue>"
-    Then resolution throws, naming "--port" and the valid range
+    Then resolution throws, naming "<source>" and the valid range
 
     Examples:
-      | flagValue |
-      | 0         |
-      | 65536     |
-      | abc       |
-      | 3100abc   |
-      | 31.5      |
-      | -1        |
-      | 0x10      |
-      | 0b1010    |
-      | 1e3       |
-      | +3100     |
+      | source       | flagValue | envValue   |
+      | --port       | 0         |            |
+      | --port       | 65536     |            |
+      | --port       | abc       |            |
+      | --port       | 3100abc   |            |
+      | --port       | 31.5      |            |
+      | --port       | -1        |            |
+      | --port       | 0x10      |            |
+      | --port       | 0b1010    |            |
+      | --port       | 1e3       |            |
+      | --port       | +3100     |            |
+      | OSE_WWW_PORT |           | not-a-port |
 
-  # Exemption(integration): the pure resolver owns no local resource boundary for Integration to exercise; alternative-proof: ts-env-loader:test:unit / A malformed prefixed variable names that variable in the error
-  @integration-exempt
-  Scenario: A malformed prefixed variable names that variable in the error
-    Given the app declares the prefixed variable "OSE_WWW_PORT" with fallback 3100
-    And the environment sets "OSE_WWW_PORT" to "not-a-port"
-    When the port resolves with no "--port" flag
-    Then resolution throws, naming "OSE_WWW_PORT" and the valid range
-
-  # Exemption(integration): the pure resolver owns no local resource boundary for Integration to exercise; alternative-proof: ts-env-loader:test:unit / An out-of-range compiled-in fallback is caught at startup
-  @integration-exempt
+  # Behaviour: TEL-017
   Scenario: An out-of-range compiled-in fallback is caught at startup
     Given the app declares the prefixed variable "OSE_WWW_PORT" with fallback 70000
     And the environment does not set "OSE_WWW_PORT"
     When the port resolves with no "--port" flag
     Then resolution throws, naming "OSE_WWW_PORT" and the valid range
+
+  # Behaviour: TEL-014
+  Scenario: A whitespace-only flag or variable is blank and falls through to the next tier
+    Given the app declares the prefixed variable "OSE_WWW_PORT" with fallback 3100
+    And the environment sets "OSE_WWW_PORT" to "   "
+    When the port resolves with a "--port" flag of "   "
+    Then the resolved port is 3100

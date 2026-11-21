@@ -39,6 +39,7 @@ let ``add creates new entry and returns true`` () =
         | Error msg -> Assert.Fail(sprintf "add failed: %s" msg))
 
 [<Fact>]
+// @scenario specs/libs/fsharp-crane-core/behaviours/reports/reports.feature: A skiplist finding is keyed by a stable hash and never added twice
 let ``add returns false for duplicate entry`` () =
     withTempPath (fun () ->
         add "test.md" "text-completeness" "some description" |> ignore
@@ -83,6 +84,7 @@ let ``add appends to existing file`` () =
         File.Delete(Environment.GetEnvironmentVariable("CRANE_SKIPLIST_PATH")))
 
 [<Fact>]
+// @scenario specs/libs/fsharp-crane-core/behaviours/reports/reports.feature: CRANE_SKIPLIST_PATH overrides the skiplist file path
 let ``resolveSkiplistPath returns env var override when set`` () =
     let tempPath = Path.GetTempFileName()
 

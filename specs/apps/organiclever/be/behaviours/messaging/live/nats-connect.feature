@@ -4,10 +4,15 @@ Feature: organiclever-be NATS connection
   I want organiclever-be to connect to NATS on startup
   So that messaging infrastructure is available before the API accepts requests
 
-  # Exemption(integration): NATS is reached over a network boundary forbidden to Integration; alternative-proof: organiclever-be-e2e:test:e2e / organiclever-be connects to its NATS server at startup
-  @integration-exempt
-  Scenario: organiclever-be connects to its NATS server at startup
+  # Behaviour: OBE-024
+  Scenario: Backend reports healthy after starting with a reachable NATS server
     Given ORGANICLEVER_BE_NATS_URL points to a running NATS server with JetStream enabled
     When organiclever-be starts up
-    Then the NATS connection is established
-    And the backend reports healthy after connecting
+    Then the backend reports healthy after connecting
+
+  # Behaviour: OBE-011
+  Scenario: Messaging status endpoint reports the failure when NATS is unreachable and the HTTP service still starts
+    Given ORGANICLEVER_BE_NATS_URL points to a NATS server that is unreachable
+    When organiclever-be starts up
+    Then the backend still serves its health endpoint
+    And the messaging status endpoint reports NATS as unavailable

@@ -107,6 +107,7 @@ def usage_rows(session: Session) -> dict[str | None, dict[str, Any]]:
     return by_skill
 
 
+# @scenario specs/apps/ferret/cli/behaviours/harness/fail-open-capabilities-and-platforms.feature: Count skill invocations the harness could not name as unknown, not as zero usage
 @scenario(FEATURE, "Count skill invocations the harness could not name as unknown, not as zero usage")
 def test_count_unnamed_skill_invocations_as_unknown() -> None:
     """Bound to the feature scenario; the steps below carry the assertions."""
@@ -220,6 +221,7 @@ def stored_harnesses(session: Session) -> list[str]:
     return sorted(item["harness"] for item in json.loads(listing.stdout)["items"])
 
 
+# @scenario specs/apps/ferret/cli/behaviours/harness/fail-open-capabilities-and-platforms.feature: Install privately for the current user
 @scenario(FEATURE, "Install privately for the current user")
 def test_install_privately_for_the_current_user() -> None:
     """Bound to the feature outline; each example expands independently."""
@@ -295,6 +297,7 @@ def then_no_startup_file_or_path_is_modified(session: Session) -> None:
     assert machine_path_snapshot() == session.machine_path
 
 
+# @scenario specs/apps/ferret/cli/behaviours/harness/fail-open-capabilities-and-platforms.feature: Remove FERRET without changing harness behaviour
 @scenario(FEATURE, "Remove FERRET without changing harness behaviour")
 def test_remove_ferret_without_changing_harness_behaviour() -> None:
     """Bound to the feature scenario; the steps below carry the assertions."""
@@ -397,6 +400,7 @@ def unusable_database(adapters: Adapters) -> bool:
     return not adapters.bench.database.read_bytes().startswith(b"SQLite format 3")
 
 
+# @scenario specs/apps/ferret/cli/behaviours/harness/fail-open-capabilities-and-platforms.feature: Keep a harness fail-open after a local failure
 @scenario(FEATURE, "Keep a harness fail-open after a local failure")
 def test_keep_a_harness_fail_open_after_a_local_failure() -> None:
     """Bound to the feature outline; each example expands independently."""
@@ -448,11 +452,13 @@ def then_the_adapter_writes_no_output(adapters: Adapters) -> None:
         assert adapters.bench.stored() == 0
 
 
+# @scenario specs/apps/ferret/cli/behaviours/harness/fail-open-capabilities-and-platforms.feature: Keep one POSIX adapter fail-open at the wrapper boundary
 @scenario(FEATURE, "Keep one POSIX adapter fail-open at the wrapper boundary")
 def test_keep_one_posix_adapter_fail_open_at_the_wrapper_boundary() -> None:
     """Bound to the feature outline; each example expands independently."""
 
 
+# @scenario specs/apps/ferret/cli/behaviours/harness/fail-open-capabilities-and-platforms.feature: Keep the OpenCode plugin fail-open at its process boundary
 @scenario(FEATURE, "Keep the OpenCode plugin fail-open at its process boundary")
 def test_keep_the_opencode_plugin_fail_open_at_its_process_boundary() -> None:
     """Bound to the feature outline; each example expands independently."""

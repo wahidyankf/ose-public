@@ -38,7 +38,8 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
     languageHarness.runPromise.mockReset().mockResolvedValue(undefined);
   });
 
-  Scenario("Switch to Bahasa Indonesia", ({ Given, When, Then }) => {
+  // @scenario specs/apps/organiclever/app-web/behaviours/settings/language.feature: Selecting Bahasa shows the app in Indonesian
+  Scenario("Selecting Bahasa shows the app in Indonesian", ({ Given, When, Then }) => {
     Given("the settings screen shows language is English", () => {
       renderLanguage("en");
       expect(screen.getByTestId("lang-btn-en")).toHaveAttribute("data-active", "true");
@@ -54,7 +55,8 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
     });
   });
 
-  Scenario("Switch back to English", ({ Given, When, Then }) => {
+  // @scenario specs/apps/organiclever/app-web/behaviours/settings/language.feature: Selecting English shows the app in English
+  Scenario("Selecting English shows the app in English", ({ Given, When, Then }) => {
     Given("the settings screen shows language is Indonesian", () => {
       renderLanguage("id");
       expect(screen.getByTestId("lang-btn-id")).toHaveAttribute("data-active", "true");

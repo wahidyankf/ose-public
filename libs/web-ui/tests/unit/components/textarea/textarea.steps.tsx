@@ -11,6 +11,7 @@ const feature = await loadFeature(
 );
 
 describeFeature(feature, ({ Scenario }) => {
+  // @scenario specs/libs/web-ui/behaviours/textarea/textarea.feature: Renders with placeholder
   Scenario("Renders with placeholder", ({ When, Then, And }) => {
     let textarea: HTMLTextAreaElement;
 
@@ -29,6 +30,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
+  // @scenario specs/libs/web-ui/behaviours/textarea/textarea.feature: Accepts input
   Scenario("Accepts input", ({ Given, When, Then }) => {
     let textarea: HTMLTextAreaElement;
 
@@ -47,6 +49,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
+  // @scenario specs/libs/web-ui/behaviours/textarea/textarea.feature: Disabled state
   Scenario("Disabled state", ({ When, Then }) => {
     let textarea: HTMLTextAreaElement;
 
@@ -61,6 +64,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
+  // @scenario specs/libs/web-ui/behaviours/textarea/textarea.feature: Focus ring visible on keyboard focus
   Scenario("Focus ring visible on keyboard focus", ({ Given, When, Then }) => {
     let textarea: HTMLTextAreaElement;
     let focusedThroughKeyboard = false;

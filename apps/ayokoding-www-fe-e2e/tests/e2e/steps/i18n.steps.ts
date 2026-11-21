@@ -1,3 +1,6 @@
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/i18n/i18n.feature: Language switcher displays the current locale
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/i18n/i18n.feature: Switching language redirects to the locale-specific URL
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/i18n/i18n.feature: UI labels change to the selected language
 import { createBdd } from "playwright-bdd";
 import { expect } from "@playwright/test";
 
@@ -48,14 +51,6 @@ Then("the page title and headings should reflect the Indonesian locale content",
   const main = page.getByRole("main");
   await expect(main.getByRole("heading", { level: 1, name: "Alat", exact: true })).toBeVisible();
   await expect(main.getByRole("link", { name: "Kalkulator Biaya Hidup", exact: true })).toBeVisible();
-});
-
-When("a visitor opens the root URL \\/", async ({ page }) => {
-  await page.goto("/");
-});
-
-Then(/they should be redirected to \/en/, async ({ page }) => {
-  await expect(page).toHaveURL(/\/en$/u);
 });
 
 Then("the English version of the home page should be displayed", async ({ page }) => {

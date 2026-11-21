@@ -37,6 +37,15 @@
       "inputs": ["{projectRoot}/src/**/*", "{projectRoot}/tests/unit/**/*"],
       "outputs": ["{projectRoot}/coverage"]
     },
+    "test:integration": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx vitest run tests/integration",
+        "cwd": "libs/web-ui-token"
+      },
+      "cache": true,
+      "inputs": ["{projectRoot}/src/**/*", "{projectRoot}/tests/integration/**/*"]
+    },
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {

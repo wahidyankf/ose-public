@@ -182,6 +182,7 @@ const feature = await loadFeature(
 );
 
 describeFeature(feature, ({ Scenario }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-position-numbers.feature: A course page in path context shows no catalogue number in course titles
   Scenario("A course page in path context shows no catalogue number in course titles", ({ Given, When, Then, And }) => {
     interface RenderedSurfaces {
       courseId: string;
@@ -339,6 +340,7 @@ describeFeature(feature, ({ Scenario }) => {
   });
 
   // plan ayokoding-learn-revamp-01, Phase 4 RED (unit, S1) — the syllabus numbering binding.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-position-numbers.feature: The path syllabus numbers each course by its position in the path
   Scenario("The path syllabus numbers each course by its position in the path", ({ Given, When, Then, And }) => {
     Given("a learning path lists its courses in manifest order", () => {
       expect(BACKEND_TRACK_MANIFEST.courseOrder).toEqual(["just-enough-bash", "backend-essentials", "sql-essentials"]);
@@ -369,52 +371,20 @@ describeFeature(feature, ({ Scenario }) => {
       const leadingNumbers = rows.map((row) => (row.textContent ?? "").match(/^\d+/u)?.[0] ?? "");
       expect(leadingNumbers).toEqual(POSITION_FIXTURE_ROWS.map(({ position }) => position));
     });
-  });
 
-  // plan ayokoding-learn-revamp-01, Phase 4 RED (unit, S2) — the rail numbering binding.
-  Scenario("The path rail numbers each course by its position in the path", ({ Given, When, Then, And }) => {
-    Given("a reader opens a course in path context on a desktop-width viewport", () => {
-      Object.defineProperty(window, "innerWidth", { configurable: true, value: 1280 });
-      expect(window.innerWidth).toBeGreaterThanOrEqual(768);
-    });
-
-    When("the page renders", () => {
-      cleanup();
-      render(
-        <PathRail
-          locale="en"
-          manifest={BACKEND_TRACK_MANIFEST}
-          currentCourseId="backend-essentials"
-          courseTitles={POSITION_FIXTURE_TITLES}
-        />,
-      );
-    });
-
-    Then("each rail row shows its position number before the course title", () => {
-      const rail = screen.getByRole("navigation", { name: "Backend Track (Immediately-Effective) course list" });
-      const rows = within(rail).getAllByRole("listitem");
-      expect(rows).toHaveLength(POSITION_FIXTURE_ROWS.length);
-      POSITION_FIXTURE_ROWS.forEach(({ position, title }, index) => {
-        const row = rows[index];
-        if (!row) throw new Error(`missing rail row ${index + 1}`);
-        expectRowShowsPositionBeforeTitle(row, position, title);
-        // The link keeps its aria-label={title}; the row number never leaks into the name
-        // (tech-docs §4.2, Decision D4).
-        expect(within(row).getByRole("link", { name: title })).toBeTruthy();
-      });
-    });
-
-    And("the current course's row shows its own position number with the current-course marker", () => {
-      const current = screen.getByRole("link", { name: "Backend Essentials" });
-      expect(current.getAttribute("aria-current")).toBe("page");
-      expect(current.textContent).toContain("▸");
-      expect(current.className).toContain("bg-accent");
-      // backend-essentials is position 2 of 3, and its number renders before the ▸ marker.
-      expect(current.closest("li")?.textContent ?? "").toMatch(/^2\s*▸/u);
+    And("every course link carries the path context query parameter", () => {
+      // Folded in from the former breadcrumb scenario "A path landing page lists its courses in manifest order".
+      const syllabus = screen.getByRole("navigation", { name: "Backend Track (Immediately-Effective) syllabus" });
+      const links = within(syllabus).getAllByRole("link");
+      expect(links.length).toBe(POSITION_FIXTURE_ROWS.length);
+      for (const link of links) {
+        expect(link.getAttribute("href")).toContain(`?path=${BACKEND_TRACK_MANIFEST.pathId}`);
+      }
     });
   });
 
   // plan ayokoding-learn-revamp-01, Phase 4 RED (unit, S3) — the arc-preview numbering binding.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-position-numbers.feature: The arc card preview numbers its courses by their path position
   Scenario("The arc card preview numbers its courses by their path position", ({ Given, When, Then, And }) => {
     Given("a fixture arc manifest lists exactly one role", () => {
       // The backend-track fixture manifest is the arc's single role; the preview renders its

@@ -31,52 +31,43 @@ const feature = await loadFeature(
   path.resolve(process.cwd(), "../../specs/apps/ayokoding/www/behaviours/frontend/tools/tools-index.feature"),
 );
 
-describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
+// The tool entries of the tools index, keyed by the feature's Examples value: each entry's link
+// name and the test id of its description element.
+const TOOL_ENTRIES: Record<string, { link: RegExp; descriptionTestId: string }> = {
+  "Cost of living calculator": { link: /cost of living calculator/i, descriptionTestId: "tool-desc-calculator" },
+  "AI benchmark": { link: /ai (model )?benchmark/i, descriptionTestId: "tool-desc-ai-benchmark" },
+};
+
+describeFeature(feature, ({ ScenarioOutline, AfterEachScenario }) => {
   AfterEachScenario(() => {
     cleanup();
   });
 
-  // AC-13 (UWT-009) — Tools index calculator entry has a description distinct from its link text.
-  Scenario("The calculator entry shows a description distinct from its link text", async ({ Given, When, Then }) => {
-    let link: HTMLElement;
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/tools-index.feature: Each tool entry on the tools index has a description distinct from its link text
+  ScenarioOutline(
+    "Each tool entry on the tools index has a description distinct from its link text",
+    ({ Given, When, Then }, variables) => {
+      let link: HTMLElement;
+      const entry = TOOL_ENTRIES[String(variables.tool)];
+      if (entry === undefined) throw new Error(`unknown tool entry: ${String(variables.tool)}`);
 
-    Given("I am on the tools index page", async () => {
-      const jsx = await ToolsIndexPage({ params: Promise.resolve({ locale: "en" as const }) });
-      render(jsx);
-    });
+      Given("I am on the tools index page", async () => {
+        const jsx = await ToolsIndexPage({ params: Promise.resolve({ locale: "en" as const }) });
+        render(jsx);
+      });
 
-    When("the calculator entry renders", () => {
-      link = screen.getByRole("link", { name: /cost of living calculator/i });
-      expect(link).toBeTruthy();
-    });
+      When('the "<tool>" entry renders', () => {
+        link = screen.getByRole("link", { name: entry.link });
+        expect(link).toBeTruthy();
+      });
 
-    Then("the calculator entry shows a description distinct from its link text", () => {
-      const desc = screen.getByTestId("tool-desc-calculator");
-      expect((desc.textContent ?? "").trim()).not.toBe("");
-      expect((desc.textContent ?? "").trim()).not.toBe((link.textContent ?? "").trim());
-    });
-  });
-
-  // AC-3 — Phase 10 reveal: the AI benchmark tool gets its own tools-index entry.
-  Scenario("The AI benchmark entry shows a description distinct from its link text", async ({ Given, When, Then }) => {
-    let link: HTMLElement;
-
-    Given("I am on the tools index page", async () => {
-      const jsx = await ToolsIndexPage({ params: Promise.resolve({ locale: "en" as const }) });
-      render(jsx);
-    });
-
-    When("the AI benchmark entry renders", () => {
-      link = screen.getByRole("link", { name: /ai (model )?benchmark/i });
-      expect(link).toBeTruthy();
-    });
-
-    Then("the AI benchmark entry shows a description distinct from its link text", () => {
-      const desc = screen.getByTestId("tool-desc-ai-benchmark");
-      expect((desc.textContent ?? "").trim()).not.toBe("");
-      expect((desc.textContent ?? "").trim()).not.toBe((link.textContent ?? "").trim());
-    });
-  });
+      Then('the "<tool>" entry shows a description distinct from its link text', () => {
+        const desc = screen.getByTestId(entry.descriptionTestId);
+        expect((desc.textContent ?? "").trim()).not.toBe("");
+        expect((desc.textContent ?? "").trim()).not.toBe((link.textContent ?? "").trim());
+      });
+    },
+  );
 
   // EWT-001 (Rule-15 retest regression, pr-review-synthesis-maker HIGH finding, PR #122 cycle 1):
   // both Tools pages' page-level wrapper was a nested `<main>` inside the app shell's own
@@ -89,6 +80,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   // `benchmark-content.tsx`) and passes against the corrected `<div>` wrapper. The e2e binding
   // (`apps/ayokoding-www-fe-e2e/tests/e2e/steps/tools-index.steps.ts`) is the one asserting the REAL
   // assembled page's total count is exactly 1.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/tools-index.feature: Exactly one main landmark renders on the Tools pages
   ScenarioOutline("Exactly one main landmark renders on the Tools pages", ({ When, Then }, variables) => {
     When('I navigate to "<path>"', async () => {
       const examplePath = String(variables.path);

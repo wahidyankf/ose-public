@@ -34,6 +34,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/navigation.feature: Sidebar shows section tree with collapsible nodes
   Scenario("Sidebar shows section tree with collapsible nodes", ({ When, Then, And }) => {
     When("a visitor opens a content page that has child sections", () => {
       render(
@@ -69,6 +70,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/navigation.feature: Breadcrumb shows ancestor path hierarchy without current page
   Scenario("Breadcrumb shows ancestor path hierarchy without current page", ({ When, Then, And }) => {
     When("a visitor opens a nested content page", () => {
       render(
@@ -118,6 +120,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/navigation.feature: Table of contents shows heading links for H2 to H4
   Scenario("Table of contents shows heading links for H2 to H4", ({ When, Then, And }) => {
     When("a visitor opens a content page with multiple headings", () => {
       render(
@@ -147,6 +150,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/navigation.feature: Previous and Next links navigate between siblings
   Scenario("Previous and Next links navigate between siblings", ({ When, Then, And }) => {
     When("a visitor is on a content page that has sibling pages", () => {
       render(
@@ -177,6 +181,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/navigation.feature: Active page is highlighted in the sidebar
   Scenario("Active page is highlighted in the sidebar", ({ When, Then, And }) => {
     When("a visitor is on a specific content page", () => {
       mockPathname = "/en/learn/active";
@@ -210,6 +215,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/navigation.feature: In-body relative markdown links resolve to real site routes
   Scenario("In-body relative markdown links resolve to real site routes", ({ Given, When, Then, And }) => {
     const markdown = "[Overview (section)](../../overview.md)";
     let html = "";
@@ -238,6 +244,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/navigation.feature: In-body relative markdown links authored from a section index page resolve to real site routes
   Scenario(
     "In-body relative markdown links authored from a section index page resolve to real site routes",
     ({ Given, When, Then, And }) => {
@@ -266,6 +273,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     },
   );
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/navigation.feature: The Learn sidebar lists Paths, Courses, and Legacy in that order
   Scenario("The Learn sidebar lists Paths, Courses, and Legacy in that order", ({ When, Then }) => {
     // The real entries the sidebar lists under Learn, keyed to the files that back them. Each
     // `_index.md` is a section, and the retired `learn/overview.md` is gone (U1, plan

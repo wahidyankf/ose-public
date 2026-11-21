@@ -1,3 +1,5 @@
+// @scenario specs/apps/ayokoding/www/behaviours/backend/health/health-check.feature: meta.health returns status ok
+// @scenario specs/apps/ayokoding/www/behaviours/backend/health/health-check.feature: meta.languages returns the list of available locales
 import { expect } from "@playwright/test";
 import { createBdd } from "playwright-bdd";
 import { buildTrpcUrl, extractTrpcData, state } from "./helpers";

@@ -4,33 +4,22 @@ Feature: App Shell Navigation
   I want consistent bottom-tab navigation across all screens
   So that I can move between sections of the app without losing my place
 
-  Scenario: Default tab is Home on first load
-    When the app is freshly loaded
-    Then the Home tab is active
-    And the app shell is visible
-
-  Scenario: Navigate to History tab
+  # Behaviour: OAW-013
+  Scenario Outline: Tapping a tab opens its screen and marks the tab active
     Given the app shell is visible
-    When the user taps the History tab
-    Then the History tab is active
+    When the user taps the "<tab>" tab
+    Then the "<screen>" screen is visible
+    And the "<tab>" tab is marked active
 
-  Scenario: Navigate to Progress tab
-    Given the app shell is visible
-    When the user taps the Progress tab
-    Then the Progress tab is active
+    Examples:
+      | tab      | screen   |
+      | History  | History  |
+      | Progress | Progress |
+      | Settings | Settings |
 
-  Scenario: Navigate to Settings tab
-    Given the app shell is visible
-    When the user taps the Settings tab
-    Then the Settings tab is active
-
-  Scenario: Open and close Add Entry sheet
-    Given the app shell is visible
-    When the user taps the FAB button
-    Then the Add Entry sheet is open
-    And the user closes the Add Entry sheet
-    And the Add Entry sheet is closed
-
+  # Behaviour: OAW-002
+  # Behaviour: OAW-003
+  # Behaviour: OAW-004
   Scenario Outline: URL persists across page refresh on each tab
     Given the user is on "<path>"
     When the user refreshes the page
@@ -38,8 +27,8 @@ Feature: App Shell Navigation
     And the "<screen>" screen is visible
 
     Examples:
-      | path           | screen   |
-      | /app/home      | Home     |
-      | /app/history   | History  |
-      | /app/progress  | Progress |
-      | /app/settings  | Settings |
+      | path          | screen   |
+      | /app/home     | Home     |
+      | /app/history  | History  |
+      | /app/progress | Progress |
+      | /app/settings | Settings |

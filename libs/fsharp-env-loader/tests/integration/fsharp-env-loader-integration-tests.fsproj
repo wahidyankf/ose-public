@@ -10,6 +10,7 @@
   <ItemGroup>
     <Compile Include="Behaviour/EnvTierIntegrationBehaviourDriver.fs" />
     <Compile Include="Tests/EnvTierIntegrationTests.fs" />
+    <Compile Include="Tests/PortResolverIntegrationTests.fs" />
   </ItemGroup>
 
   <ItemGroup>

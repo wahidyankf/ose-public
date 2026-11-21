@@ -99,7 +99,14 @@ func withScenarioEnv(env map[string]string, run func() error) error {
 		ok    bool
 	}
 	previous := map[string]saved{}
-	for _, key := range []string{"AYOKODING_WEB_PORT", "AYOKODING_WEB_FIXTURE", "PORT"} {
+	for _, key := range []string{
+		"AYOKODING_WEB_PORT",
+		"AYOKODING_WEB_FIXTURE",
+		"AYOKODING_WEB_CONTENT_DIR",
+		"AYOKODING_WEB_MANIFESTS_DIR",
+		"AYOKODING_WEB_SHOW_DRAFTS",
+		"PORT",
+	} {
 		value, ok := os.LookupEnv(key)
 		previous[key] = saved{value, ok}
 		if scenario, ok := env[key]; ok {
@@ -123,10 +130,17 @@ func withScenarioEnv(env map[string]string, run func() error) error {
 // resolve parses the launcher configuration from the world environment.
 func (w *World) resolve() error {
 	var cfg web.Config
+	var deps web.Deps
 	err := withScenarioEnv(w.env, func() error {
 		var resolveErr error
 		cfg, resolveErr = web.ResolveConfig(w.args)
-		return resolveErr
+		if resolveErr != nil {
+			return resolveErr
+		}
+		// The seed reads the source-root and draft variables, so it is built
+		// inside the scenario environment and serves the configured fixture.
+		deps = web.SeedFixtureDeps(cfg.Fixture)
+		return nil
 	})
 	if err != nil {
 		w.startErr = err
@@ -136,7 +150,7 @@ func (w *World) resolve() error {
 	w.cfg = cfg
 	w.resolvedPort = cfg.Port
 	w.listenerStarted = true
-	w.handler = web.NewServer(cfg, seedFixtureDeps()).Handler()
+	w.handler = web.NewServer(cfg, deps).Handler()
 	return nil
 }
 

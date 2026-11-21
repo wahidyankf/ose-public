@@ -53,6 +53,15 @@
         "{projectRoot}/.python-version"
       ]
     },
+    "test:integration": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run --no-sync pytest tests",
+        "cwd": "apps/ferret-cli-e2e"
+      },
+      "dependsOn": ["ferret-cli:build"],
+      "cache": false
+    },
     "test:e2e": {
       "executor": "nx:run-commands",
       "options": {

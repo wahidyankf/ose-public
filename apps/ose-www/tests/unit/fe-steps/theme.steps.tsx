@@ -85,6 +85,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ose/www/behaviours/frontend/app-shell/theme.feature: Default theme is light mode
   Scenario("Default theme is light mode", ({ When, Then }) => {
     When("the site loads without a stored theme preference", () => {
       render(<ThemeHarness />);
@@ -97,6 +98,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ose/www/behaviours/frontend/app-shell/theme.feature: Theme toggle switches between modes
   Scenario("Theme toggle switches between modes", ({ Given, When, Then }) => {
     Given("the site is in light mode", () => {
       render(<ThemeHarness />);

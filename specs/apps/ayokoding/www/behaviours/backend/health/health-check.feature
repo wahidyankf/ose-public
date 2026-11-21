@@ -6,14 +6,12 @@ Feature: Service Health and Metadata
   Background:
     Given the API is running
 
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / meta.health returns status ok
-  @integration-exempt
+  # Behaviour: AYW-066
   Scenario: meta.health returns status ok
     When the client calls meta.health
     Then the response should contain "status" equal to "ok"
 
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / meta.languages returns the list of available locales
-  @integration-exempt
+  # Behaviour: AYW-067
   Scenario: meta.languages returns the list of available locales
     When the client calls meta.languages
     Then the response should contain a non-null "languages" array

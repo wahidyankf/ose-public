@@ -1,8 +1,7 @@
 import path from "path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { expect, vi } from "vitest";
-import type { PathManifest } from "@/features/course-paths/core/schemas";
 
 vi.mock("next/link", () => ({
   default: ({ href, children, ...rest }: { href: string; children: React.ReactNode; [key: string]: unknown }) => (
@@ -14,23 +13,7 @@ vi.mock("next/link", () => ({
 
 // eslint-disable-next-line import/first
 import { Breadcrumb } from "@/features/navigation/shell/breadcrumb";
-import { PathLanding } from "@/features/course-paths/shell/path-landing";
 import { courseRehomeRedirects } from "@/redirects/course-rehome";
-import { manifestFixture } from "../features/course-paths/manifest-fixture";
-
-const fixtureManifest: PathManifest = manifestFixture({
-  pathId: "careers/interview-ready/example-role",
-  arc: "interview-ready",
-  title: "Interview-Ready Example Role",
-  description: "An interview-first track.",
-  courses: ["just-enough-python", "just-enough-bash", "version-control-and-git"],
-});
-
-const courseTitles = {
-  "just-enough-python": "Just Enough Python",
-  "just-enough-bash": "Just Enough Bash",
-  "version-control-and-git": "Version Control & Git",
-};
 
 const courseSegments = [
   { label: "Home", slug: "" },
@@ -52,34 +35,7 @@ const feature = await loadFeature(
 );
 
 describeFeature(feature, ({ Scenario }) => {
-  Scenario("A path landing page lists its courses in manifest order", ({ Given, When, Then, And }) => {
-    Given("a fixture path manifest is loaded by the manifest repository", () => {
-      expect(fixtureManifest.courseOrder).toHaveLength(3);
-    });
-
-    When("a reader opens that fixture path's landing page under /en/learn/paths/", () => {
-      cleanup();
-      render(<PathLanding locale="en" manifest={fixtureManifest} courseTitles={courseTitles} />);
-    });
-
-    Then("the courses appear in the fixture manifest's phase order", () => {
-      const list = document.querySelector("ol");
-      expect(list).not.toBeNull();
-      const items = within(list as HTMLElement).getAllByRole("listitem");
-      // The path position number (Phase 4) sits outside each link, so the link's own
-      // textContent is exactly the title and the order assertion keeps its meaning.
-      const linkTexts = items.map((item) => within(item).getByRole("link").textContent);
-      expect(linkTexts).toEqual(["Just Enough Python", "Just Enough Bash", "Version Control & Git"]);
-    });
-
-    And("every course link carries the path context query parameter", () => {
-      const link = screen.getByRole("link", { name: "Just Enough Python" });
-      expect(link.getAttribute("href")).toBe(
-        "/en/learn/courses/just-enough-python?path=careers/interview-ready/example-role",
-      );
-    });
-  });
-
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/breadcrumb.feature: The breadcrumb reflects the active path
   Scenario("The breadcrumb reflects the active path", ({ Given, When, Then, And }) => {
     Given("a reader is on a course with an active path context", () => {
       expect(pathContext.pathId).toBe("skills/python-fundamentals");
@@ -117,6 +73,7 @@ describeFeature(feature, ({ Scenario }) => {
     );
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/breadcrumb.feature: A legacy fundamentally-strong URL redirects to the canonical course URL
   Scenario("A legacy fundamentally-strong URL redirects to the canonical course URL", ({ Given, When, Then, And }) => {
     let rule: (typeof courseRehomeRedirects)[number] | undefined;
 

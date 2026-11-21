@@ -1,3 +1,12 @@
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/lesson-navigation.feature: The context bar shows where the reader is in a path
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/lesson-navigation.feature: The context bar works without a path
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/lesson-navigation.feature: Mark complete and continue opens the next learning page
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/lesson-navigation.feature: The last page of a course leads to the next course in the path
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/lesson-navigation.feature: The last page of the path leads back to the path page
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/lesson-navigation.feature: Without a path, the last page leads back to the course landing page
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/lesson-navigation.feature: Previous goes back one page, then to the course landing page
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/lesson-navigation.feature: The path context is remembered inside the same course
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/lesson-navigation.feature: Opening or scrolling a page never marks it complete
 import { createBdd } from "playwright-bdd";
 import { expect, type Page } from "@playwright/test";
 import { buildTrpcUrl, extractTrpcData } from "./backend-helpers";

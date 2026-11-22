@@ -5,8 +5,6 @@ Feature: Plain path page copy
   So that I never meet internal planning vocabulary
 
   # Behaviour: AYW-145
-  # Exemption(integration): the scenario scans every committed content file under content/en/learn/paths/careers in one pass, not one served route, so no single route is the boundary it checks; alternative-proof: ayokoding-www:test:unit / Career path pages contain no internal planning vocabulary
-  @integration-exempt
   # Exemption(e2e): the scenario scans every committed content file under content/en/learn/paths/careers in one pass, not one served route, so no single route is the boundary it checks; alternative-proof: ayokoding-www:test:unit / Career path pages contain no internal planning vocabulary
   @e2e-exempt
   Scenario: Career path pages contain no internal planning vocabulary
@@ -15,8 +13,6 @@ Feature: Plain path page copy
     Then no page contains "Dangerous", "OI-2", "append", "manifest", or "from scratch" in any spelling
 
   # Behaviour: AYW-146
-  # Exemption(integration): the scenario reads the committed AI Engineer path description and its card text in one read, not one served route, so no single route is the boundary it checks; alternative-proof: ayokoding-www:test:unit / The AI Engineer path page and card say the path is for developers who already code
-  @integration-exempt
   # Exemption(e2e): the scenario reads the committed AI Engineer path description and its card text in one read, not one served route, so no single route is the boundary it checks; alternative-proof: ayokoding-www:test:unit / The AI Engineer path page and card say the path is for developers who already code
   @e2e-exempt
   Scenario: The AI Engineer path page and card say the path is for developers who already code

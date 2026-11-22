@@ -56,7 +56,7 @@ behaviour check, then complete Integration, then complete unfiltered E2E outside
 flowchart TD
     accTitle: Scheduled and On-Demand Testing
     accDescr: Scheduled/manual quality CI leads to test:behaviour:coverage; test:behaviour:coverage leads to complete test:integration; complete test:integration leads to complete unfiltered test:e2e; On demand / CI matrix leads to test:unit; and 2 more links.
-    H2["Scheduled/manual<br/>quality CI"] --> C2["test:behaviour:coverage"]
+    H2["Scheduled/manual<br/>quality CI"] --> C2["test:behaviour<br/>:coverage"]
     C2 --> I2["complete<br/>test:integration"]
     I2 --> E2["complete unfiltered<br/>test:e2e"]
 

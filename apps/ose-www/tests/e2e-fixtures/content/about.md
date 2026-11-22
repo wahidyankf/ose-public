@@ -22,5 +22,8 @@ const greeting = "hello";
 
 ```mermaid
 graph TD
+  accTitle: Fixture diagram
+  accDescr: Node A leads to node B.
   A --> B
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```

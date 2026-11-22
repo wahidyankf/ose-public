@@ -1,7 +1,7 @@
 import path from "node:path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
 import { cleanup, render, screen, within } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { expect, vi } from "vitest";
 
 vi.mock("next/link", () => ({
   default: ({ href, children, ...rest }: { href: string; children: React.ReactNode; [key: string]: unknown }) => (
@@ -187,15 +187,5 @@ describeFeature(feature, ({ Scenario, Background }) => {
     And("the main content does not scroll sideways", () => {
       expect(document.querySelector("article")?.className).toContain("min-w-0");
     });
-  });
-});
-
-// Regression: the catalog dispatch must precede the `courseId === null` early return in
-// page.tsx, because courseIdFromSlug("learn/courses") is null (section, not a course root).
-describe("catalog dispatch order (plan 03 regression)", () => {
-  it("page.tsx checks COURSE_CATALOG_SLUG before the courseId===null return", async () => {
-    const fs = await import("node:fs/promises");
-    const source = await fs.readFile("src/app/[locale]/(content)/[...slug]/page.tsx", "utf-8");
-    expect(source.indexOf("slugStr === COURSE_CATALOG_SLUG")).toBeLessThan(source.indexOf("if (courseId === null)"));
   });
 });

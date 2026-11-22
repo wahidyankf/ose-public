@@ -13,7 +13,6 @@ vi.mock("next/link", () => ({
 
 // eslint-disable-next-line import/first
 import { Breadcrumb } from "@/features/navigation/shell/breadcrumb";
-import { courseRehomeRedirects } from "@/redirects/course-rehome";
 
 const courseSegments = [
   { label: "Home", slug: "" },
@@ -72,39 +71,5 @@ describeFeature(feature, ({ Scenario }) => {
         );
       },
     );
-  });
-
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/breadcrumb.feature: A legacy fundamentally-strong URL redirects to the canonical course URL
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/breadcrumb.feature: A legacy fundamentally-strong URL redirects to the canonical course URL
-  Scenario("A legacy fundamentally-strong URL redirects to the canonical course URL", ({ Given, When, Then, And }) => {
-    let rule: (typeof courseRehomeRedirects)[number] | undefined;
-
-    Given(
-      "a re-homed course previously lived under the legacy fundamentally-strong/software-engineer content path",
-      () => {
-        expect(courseRehomeRedirects.length).toBeGreaterThan(0);
-      },
-    );
-
-    When("a reader requests the legacy URL", () => {
-      rule = courseRehomeRedirects.find(
-        (candidate) =>
-          candidate.source === "/en/learn/fundamentally-strong/software-engineer/just-enough-python/:path*",
-      );
-    });
-
-    Then("the app redirects to the course's canonical /en/learn/courses/<course-id> URL", () => {
-      expect(rule).toEqual({
-        source: "/en/learn/fundamentally-strong/software-engineer/just-enough-python/:path*",
-        destination: "/en/learn/courses/just-enough-python/:path*",
-        permanent: true,
-      });
-    });
-
-    And("the redirect preserves any path context query parameter", () => {
-      // Next.js preserves incoming query parameters when a redirect destination does not replace
-      // them. This production rule carries no destination query, so `?path=...` remains intact.
-      expect(rule?.destination).not.toContain("?");
-    });
   });
 });

@@ -77,12 +77,13 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, Background, AfterEachScen
     });
   });
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/responsive.feature: Desktop viewport shows sidebar, content, and table of contents
-  Scenario("Desktop viewport shows sidebar, content, and table of contents", ({ Given, When, Then, And }) => {
-    Given('the viewport is set to "desktop" (1280x800)', () => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/responsive.feature: layout by viewport width
+  ScenarioOutline("layout by viewport width", ({ Given, When, Then, And }, variables) => {
+    Given('the viewport is set to "<viewport>" (<size>)', () => {
+      const [width, height] = String(variables.size).split("x").map(Number);
       Object.defineProperties(window, {
-        innerWidth: { configurable: true, value: 1280 },
-        innerHeight: { configurable: true, value: 800 },
+        innerWidth: { configurable: true, value: width },
+        innerHeight: { configurable: true, value: height },
       });
     });
 
@@ -98,39 +99,16 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, Background, AfterEachScen
       expect(screen.getByRole("article").className).toContain("flex-1");
     });
 
-    And("the table of contents should be visible", () => {
+    And("the table of contents should be <toc>", () => {
       const toc = screen.getByRole("navigation", { name: "Table of contents" });
-      expect(toc.closest("aside")?.className).toContain("xl:block");
-      expect(window.innerWidth).toBeGreaterThanOrEqual(1280);
-    });
-  });
-
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/responsive.feature: Laptop viewport shows sidebar and content but hides table of contents
-  Scenario("Laptop viewport shows sidebar and content but hides table of contents", ({ Given, When, Then, And }) => {
-    Given('the viewport is set to "laptop" (1024x768)', () => {
-      Object.defineProperties(window, {
-        innerWidth: { configurable: true, value: 1024 },
-        innerHeight: { configurable: true, value: 768 },
-      });
-    });
-
-    When("a visitor opens a content page", renderContentLayout);
-
-    Then("the sidebar navigation should be visible", () => {
-      expect(screen.getByRole("navigation", { name: "Section navigation" }).closest("aside")?.className).toContain(
-        "md:block",
-      );
-    });
-
-    And("the main content area should be visible", () => {
-      expect(screen.getByRole("article")).toBeTruthy();
-    });
-
-    And("the table of contents should not be visible", () => {
-      expect(screen.getByRole("navigation", { name: "Table of contents" }).closest("aside")?.className).toMatch(
-        /hidden.*xl:block/,
-      );
-      expect(window.innerWidth).toBeLessThan(1280);
+      const aside = toc.closest("aside")?.className ?? "";
+      if (String(variables.toc) === "visible") {
+        expect(aside).toContain("xl:block");
+        expect(window.innerWidth).toBeGreaterThanOrEqual(1280);
+      } else {
+        expect(aside).toMatch(/hidden.*xl:block/);
+        expect(window.innerWidth).toBeLessThan(1280);
+      }
     });
   });
 

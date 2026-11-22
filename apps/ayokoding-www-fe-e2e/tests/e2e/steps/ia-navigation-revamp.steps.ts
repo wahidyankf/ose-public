@@ -3,8 +3,7 @@
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: Header shows primary nav links on desktop
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: mobile navigation links
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: Footer shows grouped navigation with localized labels
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: Landing homepage renders hero, sections, and tools teaser in English
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: Landing homepage renders hero, sections, and tools teaser in Indonesian
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: landing homepage per locale
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: Breadcrumb segments link to their bare content URLs
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: Sidebar, breadcrumb, previous and next, and search links go straight to their page with no redirect
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: The sitemap lists every content page by its public URL on www.ayokoding.com

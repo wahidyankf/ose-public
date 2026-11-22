@@ -249,12 +249,14 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, Background, AfterEachScen
     });
   });
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: Landing homepage renders hero, sections, and tools teaser in English
-  Scenario("Landing homepage renders hero, sections, and tools teaser in English", ({ When, Then, And }) => {
-    When('a visitor navigates to "/en"', () => {
-      // Clean up any previous renders to isolate this scenario.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: landing homepage per locale
+  ScenarioOutline("landing homepage per locale", ({ When, Then, And }, variables) => {
+    When('a visitor navigates to "<home>"', () => {
+      // The home path is "/en" or "/id", so the locale is the path without its slash.
+      const locale = String(variables.home).slice(1) as "en" | "id";
+      // Clean up any previous renders to isolate this example.
       cleanup();
-      render(<Landing locale="en" sections={EN_LANDING_SECTIONS} />);
+      render(<Landing locale={locale} sections={locale === "en" ? EN_LANDING_SECTIONS : ID_LANDING_SECTIONS} />);
     });
 
     Then("the hero heading should be visible on the landing page", () => {
@@ -274,48 +276,14 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, Background, AfterEachScen
       expect((para?.textContent ?? "").length).toBeGreaterThan(0);
     });
 
-    And('the landing section grid should include a card linking to "/en/rants"', () => {
+    And('the landing section grid should include a card linking to "<section_href>"', () => {
       // SectionCard renders as an <a> with href = contentUrl(locale, slug).
-      const link = document.querySelector('a[href="/en/rants"]');
+      const link = document.querySelector(`a[href="${String(variables.section_href)}"]`);
       expect(link).toBeTruthy();
     });
 
-    And('the tools teaser should link to "/en/tools/cost-of-living-calculator"', () => {
-      const link = document.querySelector('a[href="/en/tools/cost-of-living-calculator"]');
-      expect(link).toBeTruthy();
-    });
-  });
-
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: Landing homepage renders hero, sections, and tools teaser in Indonesian
-  Scenario("Landing homepage renders hero, sections, and tools teaser in Indonesian", ({ When, Then, And }) => {
-    When('a visitor navigates to "/id"', () => {
-      // Clean up any previous renders to isolate this scenario.
-      cleanup();
-      render(<Landing locale="id" sections={ID_LANDING_SECTIONS} />);
-    });
-
-    Then("the hero heading should be visible on the landing page", () => {
-      const h1s = screen.getAllByRole("heading", { level: 1 });
-      expect(h1s).toHaveLength(1);
-      expect(h1s[0]?.textContent).toBeTruthy();
-    });
-
-    And("the hero intro should be visible on the landing page", () => {
-      const sections = document.querySelectorAll("section");
-      const heroSection = sections[0];
-      expect(heroSection).toBeTruthy();
-      const para = heroSection!.querySelector("p");
-      expect(para).toBeTruthy();
-      expect((para?.textContent ?? "").length).toBeGreaterThan(0);
-    });
-
-    And('the landing section grid should include a card linking to "/id/celoteh"', () => {
-      const link = document.querySelector('a[href="/id/celoteh"]');
-      expect(link).toBeTruthy();
-    });
-
-    And('the tools teaser should link to "/id/tools/cost-of-living-calculator"', () => {
-      const link = document.querySelector('a[href="/id/tools/cost-of-living-calculator"]');
+    And('the tools teaser should link to "<tools_href>"', () => {
+      const link = document.querySelector(`a[href="${String(variables.tools_href)}"]`);
       expect(link).toBeTruthy();
     });
   });

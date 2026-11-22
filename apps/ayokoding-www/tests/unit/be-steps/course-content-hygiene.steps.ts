@@ -59,6 +59,31 @@ function readCourseTitle(slug: string): CourseTitleReading {
   return { slug, title: typeof data.title === "string" ? data.title : "" };
 }
 
+interface CourseFile {
+  relativePath: string;
+  content: string;
+}
+
+/** Every file under the published course tree, read in full, with its path from the repository root. */
+function readCourseFiles(): CourseFile[] {
+  const files: CourseFile[] = [];
+  const root = path.join(process.cwd(), COURSES_ROOT);
+  const walk = (relative: string) => {
+    for (const entry of fs.readdirSync(path.join(root, relative), { withFileTypes: true })) {
+      if (entry.isDirectory()) {
+        walk(path.posix.join(relative, entry.name));
+        continue;
+      }
+      files.push({
+        relativePath: path.posix.join(COURSES_ROOT, relative, entry.name),
+        content: fs.readFileSync(path.join(root, relative, entry.name), "utf8"),
+      });
+    }
+  };
+  walk("");
+  return files;
+}
+
 describeFeature(feature, ({ Scenario }) => {
   // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/course-content-hygiene.feature: The courses list page shows no course title with a leading catalogue number
   Scenario(
@@ -102,60 +127,56 @@ describeFeature(feature, ({ Scenario }) => {
   );
 
   // plan (ayokoding-learn-revamp-01-navigation-and-display), Phase 6 RED (unit, S10) —
-  // "Courses cite sources in a References section without internal verification tags", walking
-  // every file under content/en/learn/courses/** the way tech-docs §4.5 prescribes. RED until the
-  // Phase 6 References conversion: 156 files still carry an internal marker.
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/course-content-hygiene.feature: Courses cite sources in a References section without internal verification tags
-  Scenario(
-    "Courses cite sources in a References section without internal verification tags",
-    ({ Given, When, Then, And }) => {
-      let courseFiles: Array<{ relativePath: string; content: string }> = [];
+  // "No course page shows an accuracy note or internal confidence tag", walking every file under
+  // content/en/learn/courses/** the way tech-docs §4.5 prescribes. RED until the Phase 6 References
+  // conversion: 156 files still carried an internal marker.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/course-content-hygiene.feature: No course page shows an accuracy note or internal confidence tag
+  Scenario("No course page shows an accuracy note or internal confidence tag", ({ Given, When, Then }) => {
+    let courseFiles: CourseFile[] = [];
 
-      Given("the published English course library", () => {
-        courseFiles = [];
-        const root = path.join(process.cwd(), COURSES_ROOT);
-        const walk = (relative: string) => {
-          for (const entry of fs.readdirSync(path.join(root, relative), { withFileTypes: true })) {
-            if (entry.isDirectory()) {
-              walk(path.posix.join(relative, entry.name));
-              continue;
-            }
-            courseFiles.push({
-              relativePath: path.posix.join(COURSES_ROOT, relative, entry.name),
-              content: fs.readFileSync(path.join(root, relative, entry.name), "utf8"),
-            });
-          }
-        };
-        walk("");
-      });
+    Given("the published English course library", () => {
+      courseFiles = readCourseFiles();
+    });
 
-      When("its course pages and example files are read", () => {
-        expect(courseFiles.length, "no course files walked").toBeGreaterThan(0);
-      });
+    When("its course pages and example files are read", () => {
+      expect(courseFiles.length, "no course files walked").toBeGreaterThan(0);
+    });
 
-      Then(
-        'no file contains an "Accuracy notes" section, an "Accuracy note" label, or an internal confidence tag',
-        () => {
-          const offenders = courseFiles.flatMap(({ relativePath, content }) =>
-            ACCURACY_MARKER_PATTERNS.filter(({ pattern }) => pattern.test(content)).map(
-              ({ name }) => `  - ${relativePath}: ${name}`,
-            ),
-          );
-          expect(
-            offenders.length,
-            `${offenders.length} internal-marker hits across ${courseFiles.length} course files:\n` +
-              offenders.join("\n"),
-          ).toBe(0);
-        },
-      );
-
-      And('a course that cites sources shows them under a "References" heading', () => {
-        const citingCourse = courseFiles.find(
-          (file) => file.relativePath === path.posix.join(COURSES_ROOT, CITING_COURSE_RELATIVE_PATH),
+    Then(
+      'no course page shows an "Accuracy notes" section, an "Accuracy note" label, or an internal confidence tag',
+      () => {
+        const offenders = courseFiles.flatMap(({ relativePath, content }) =>
+          ACCURACY_MARKER_PATTERNS.filter(({ pattern }) => pattern.test(content)).map(
+            ({ name }) => `  - ${relativePath}: ${name}`,
+          ),
         );
-        expect(citingCourse, "the citing course page was not walked").toBeDefined();
-        expect(citingCourse?.content).toContain("## References");
-      });
-    },
-  );
+        expect(
+          offenders.length,
+          `${offenders.length} internal-marker hits across ${courseFiles.length} course files:\n` +
+            offenders.join("\n"),
+        ).toBe(0);
+      },
+    );
+  });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/course-content-hygiene.feature: Cited sources sit under a References heading
+  Scenario("Cited sources sit under a References heading", ({ Given, When, Then }) => {
+    let courseFiles: CourseFile[] = [];
+
+    Given("the published English course library", () => {
+      courseFiles = readCourseFiles();
+    });
+
+    When("its course pages and example files are read", () => {
+      expect(courseFiles.length, "no course files walked").toBeGreaterThan(0);
+    });
+
+    Then('a course that cites sources shows them under a "References" heading', () => {
+      const citingCourse = courseFiles.find(
+        (file) => file.relativePath === path.posix.join(COURSES_ROOT, CITING_COURSE_RELATIVE_PATH),
+      );
+      expect(citingCourse, "the citing course page was not walked").toBeDefined();
+      expect(citingCourse?.content).toContain("## References");
+    });
+  });
 });

@@ -22,9 +22,6 @@ function authoredCourseIds(): string[] {
     .sort();
 }
 
-const LEGACY_COURSE_URL = "/en/learn/fundamentally-strong/software-engineer/just-enough-python";
-const CANONICAL_COURSE_URL = "/en/learn/courses/just-enough-python";
-
 describeFeature(feature, ({ Scenario, ScenarioOutline, Background }) => {
   Background(({ Given }) => {
     Given("the app is running", async () => {
@@ -33,37 +30,37 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, Background }) => {
     });
   });
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/course-rehome-redirects.feature: A legacy fundamentally-strong URL redirects to the canonical course URL
-  Scenario("A legacy fundamentally-strong URL redirects to the canonical course URL", ({ When, Then }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/course-rehome-redirects.feature: legacy course URLs reach the canonical course
+  ScenarioOutline("legacy course URLs reach the canonical course", ({ When, Then, And }, variables) => {
     let response: RedirectResponse | null = null;
-    When('a visitor navigates to "/en/learn/fundamentally-strong/software-engineer/just-enough-python"', async () => {
-      response = await redirectResponseFor(LEGACY_COURSE_URL);
+    When('a visitor navigates to "<legacy_url>"', async () => {
+      response = await redirectResponseFor(String(variables.legacy_url));
     });
 
-    Then('the current URL should contain "/en/learn/courses/just-enough-python"', () => {
-      expect(response?.location).toBe(CANONICAL_COURSE_URL);
+    Then('the current URL should contain "<canonical_url>"', () => {
+      expect(response?.location).toBe(String(variables.canonical_url));
       expect(contentFileFor(response?.location ?? "")).not.toBeNull();
     });
-  });
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/course-rehome-redirects.feature: A legacy fundamentally-strong deep sub-page URL redirects to its canonical course sub-page
-  Scenario(
-    "A legacy fundamentally-strong deep sub-page URL redirects to its canonical course sub-page",
-    ({ When, Then }) => {
-      let response: RedirectResponse | null = null;
-      When(
-        'a visitor navigates to "/en/learn/fundamentally-strong/software-engineer/just-enough-python/learning/beginner"',
-        async () => {
-          response = await redirectResponseFor(`${LEGACY_COURSE_URL}/learning/beginner`);
-        },
+    And('the resolved page title should equal the canonical course page title at "<canonical_url>"', () => {
+      // The legacy URL holds no content of its own, so the visitor lands on the canonical page.
+      expect(contentFileFor(String(variables.legacy_url))).toBeNull();
+      expect(response?.location).toBe(String(variables.canonical_url));
+      expect(contentFileFor(String(variables.canonical_url))).not.toBeNull();
+    });
+
+    And('the canonical course page is titled "<canonical_title>"', () => {
+      const canonicalFile = contentFileFor(String(variables.canonical_url));
+      expect(readFileSync(canonicalFile ?? "", "utf8")).toMatch(
+        new RegExp(`^title: "${String(variables.canonical_title)}"$`, "mu"),
       );
+    });
 
-      Then('the current URL should contain "/en/learn/courses/just-enough-python/learning/beginner"', () => {
-        expect(response?.location).toBe(`${CANONICAL_COURSE_URL}/learning/beginner`);
-        expect(contentFileFor(response?.location ?? "")).not.toBeNull();
-      });
-    },
-  );
+    And("the redirect preserves any path context query parameter", () => {
+      // The redirect rule's destination adds no query, so Next.js keeps the visitor's own ?path= on the redirect.
+      expect(response?.location).not.toContain("?");
+    });
+  });
 
   // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/course-rehome-redirects.feature: The retired fundamentally-strong browse roots permanently redirect to the course library
   ScenarioOutline(
@@ -102,29 +99,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, Background }) => {
         );
         expect(missingIndexes).toEqual([]);
       });
-    },
-  );
-
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/course-rehome-redirects.feature: A course reached via its legacy course URL resolves to the single canonical course body
-  Scenario(
-    "A course reached via its legacy course URL resolves to the single canonical course body",
-    ({ When, Then }) => {
-      let response: RedirectResponse | null = null;
-      When('a visitor navigates to "/en/learn/fundamentally-strong/software-engineer/just-enough-python"', async () => {
-        response = await redirectResponseFor(LEGACY_COURSE_URL);
-      });
-
-      Then(
-        'the resolved page title should equal the canonical course page title at "/en/learn/courses/just-enough-python"',
-        () => {
-          // The legacy URL holds no content of its own, so the visitor lands on the canonical page and its title.
-          expect(contentFileFor(LEGACY_COURSE_URL)).toBeNull();
-          expect(response?.location).toBe(CANONICAL_COURSE_URL);
-          const canonicalFile = contentFileFor(CANONICAL_COURSE_URL);
-          expect(canonicalFile).not.toBeNull();
-          expect(readFileSync(canonicalFile ?? "", "utf8")).toMatch(/^title: "Just Enough Python"$/mu);
-        },
-      );
     },
   );
 });

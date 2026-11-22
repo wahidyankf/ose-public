@@ -8,19 +8,17 @@ Feature: Responsive Layout
     Given the app is running
 
   # Behaviour: AYW-050
-  Scenario: Desktop viewport shows sidebar, content, and table of contents
-    Given the viewport is set to "desktop" (1280x800)
+  Scenario Outline: layout by viewport width
+    Given the viewport is set to "<viewport>" (<size>)
     When a visitor opens a content page
     Then the sidebar navigation should be visible
     And the main content area should be visible
-    And the table of contents should be visible
+    And the table of contents should be <toc>
 
-  Scenario: Laptop viewport shows sidebar and content but hides table of contents
-    Given the viewport is set to "laptop" (1024x768)
-    When a visitor opens a content page
-    Then the sidebar navigation should be visible
-    And the main content area should be visible
-    And the table of contents should not be visible
+    Examples:
+      | viewport | size     | toc     |
+      | desktop  | 1280x800 | visible |
+      | laptop   | 1024x768 | hidden  |
 
   Scenario: Mobile viewport shows hamburger menu and hides sidebar
     Given the viewport is set to "mobile" (375x667)

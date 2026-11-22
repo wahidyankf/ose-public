@@ -12,7 +12,6 @@
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: Inline code renders without literal backticks
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: Course content never scrolls the document horizontally at 375
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/course-content-hygiene.feature: The courses list page shows no course title with a leading catalogue number
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/content/course-content-hygiene.feature: Courses cite sources in a References section without internal verification tags
 import { createBdd } from "playwright-bdd";
 import { expect } from "@playwright/test";
 

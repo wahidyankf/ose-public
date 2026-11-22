@@ -66,31 +66,34 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline }) => {
     });
   });
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/static-delivery.feature: Runtime tRPC endpoints retain their filesystem assets
-  Scenario("Runtime tRPC endpoints retain their filesystem assets", ({ Given, When, Then }) => {
-    let results: unknown[];
-    Given("the ayokoding-www standalone package is running", async () => {
-      const nextConfig = await fs.readFile(path.resolve(process.cwd(), "next.config.ts"), "utf8");
-      expect(nextConfig).toContain('output: "standalone"');
-      expect(nextConfig).toContain("TRPC_RUNTIME_TRACED_ASSETS");
-      expect((await fs.stat(path.resolve(process.cwd(), "content"))).isDirectory()).toBe(true);
-      expect((await fs.stat(path.resolve(process.cwd(), "generated"))).isDirectory()).toBe(true);
-      expect(TRPC_RUNTIME_TRACED_ASSETS).toHaveLength(3);
-    });
-    When("navigation search and course-path data are requested through tRPC", async () => {
-      results = await Promise.all([
-        integrationCaller.content.getTree({ locale: "en" }),
-        integrationCaller.search.query({ locale: "en", query: "AyoKoding" }),
-        integrationCaller.coursePaths.getRouteData("en"),
-      ]);
-    });
-    Then("every runtime data endpoint responds successfully", () => {
-      expect(results).toHaveLength(3);
-      expect(results[0]).toEqual(expect.any(Array));
-      expect(results[1]).toEqual(expect.any(Array));
-      expect(results[2]).toEqual(expect.anything());
-    });
-  });
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/static-delivery.feature: The packaged site answers its navigation, search, and course-path requests successfully
+  Scenario(
+    "The packaged site answers its navigation, search, and course-path requests successfully",
+    ({ Given, When, Then }) => {
+      let results: unknown[];
+      Given("the ayokoding-www standalone package is running", async () => {
+        const nextConfig = await fs.readFile(path.resolve(process.cwd(), "next.config.ts"), "utf8");
+        expect(nextConfig).toContain('output: "standalone"');
+        expect(nextConfig).toContain("TRPC_RUNTIME_TRACED_ASSETS");
+        expect((await fs.stat(path.resolve(process.cwd(), "content"))).isDirectory()).toBe(true);
+        expect((await fs.stat(path.resolve(process.cwd(), "generated"))).isDirectory()).toBe(true);
+        expect(TRPC_RUNTIME_TRACED_ASSETS).toHaveLength(3);
+      });
+      When("navigation search and course-path data are requested through tRPC", async () => {
+        results = await Promise.all([
+          integrationCaller.content.getTree({ locale: "en" }),
+          integrationCaller.search.query({ locale: "en", query: "AyoKoding" }),
+          integrationCaller.coursePaths.getRouteData("en"),
+        ]);
+      });
+      Then("every runtime data endpoint responds successfully", () => {
+        expect(results).toHaveLength(3);
+        expect(results[0]).toEqual(expect.any(Array));
+        expect(results[1]).toEqual(expect.any(Array));
+        expect(results[2]).toEqual(expect.anything());
+      });
+    },
+  );
 
   // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/static-delivery.feature: The document language reflects the localized page locale
   ScenarioOutline("The document language reflects the localized page locale", ({ Given, When, Then }, variables) => {

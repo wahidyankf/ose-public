@@ -1,5 +1,5 @@
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/static-delivery.feature: A repeat request to a content page remains cacheable
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/content/static-delivery.feature: Runtime tRPC endpoints retain their filesystem assets
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/content/static-delivery.feature: The packaged site answers its navigation, search, and course-path requests successfully
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/static-delivery.feature: The document language reflects the localized page locale
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/static-delivery.feature: Pages are served with security headers, including frame denial and a content security policy
 import { expect } from "@playwright/test";

@@ -21,7 +21,7 @@ Feature: Statically delivered content pages
     When the same URL is requested again
     Then the response does not carry a no-store cache directive
 
-  Scenario: Runtime tRPC endpoints retain their filesystem assets
+  Scenario: The packaged site answers its navigation, search, and course-path requests successfully
     Given the ayokoding-www standalone package is running
     When navigation search and course-path data are requested through tRPC
     Then every runtime data endpoint responds successfully

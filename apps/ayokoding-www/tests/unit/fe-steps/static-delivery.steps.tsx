@@ -92,29 +92,32 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline }) => {
     });
   });
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/static-delivery.feature: Runtime tRPC endpoints retain their filesystem assets
-  Scenario("Runtime tRPC endpoints retain their filesystem assets", ({ Given, When, Then }) => {
-    let endpointResponses: unknown[];
-    Given("the ayokoding-www standalone package is running", async () => {
-      await expect(testCaller.meta.health()).resolves.toEqual({ status: "ok" });
-    });
-    When("navigation search and course-path data are requested through tRPC", async () => {
-      endpointResponses = await Promise.all([
-        testCaller.content.getTree({ locale: "en" }),
-        testCaller.search.query({ query: "programming", locale: "en" }),
-        testCaller.coursePaths.getRouteData("en"),
-      ]);
-    });
-    Then("every runtime data endpoint responds successfully", () => {
-      expect(endpointResponses).toHaveLength(3);
-      expect(endpointResponses.every((response) => response !== undefined)).toBe(true);
-      expect(TRPC_RUNTIME_TRACED_ASSETS).toEqual([
-        "./content/**/*",
-        "./generated/**/*",
-        "./src/features/course-paths/manifests/**/*",
-      ]);
-    });
-  });
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/static-delivery.feature: The packaged site answers its navigation, search, and course-path requests successfully
+  Scenario(
+    "The packaged site answers its navigation, search, and course-path requests successfully",
+    ({ Given, When, Then }) => {
+      let endpointResponses: unknown[];
+      Given("the ayokoding-www standalone package is running", async () => {
+        await expect(testCaller.meta.health()).resolves.toEqual({ status: "ok" });
+      });
+      When("navigation search and course-path data are requested through tRPC", async () => {
+        endpointResponses = await Promise.all([
+          testCaller.content.getTree({ locale: "en" }),
+          testCaller.search.query({ query: "programming", locale: "en" }),
+          testCaller.coursePaths.getRouteData("en"),
+        ]);
+      });
+      Then("every runtime data endpoint responds successfully", () => {
+        expect(endpointResponses).toHaveLength(3);
+        expect(endpointResponses.every((response) => response !== undefined)).toBe(true);
+        expect(TRPC_RUNTIME_TRACED_ASSETS).toEqual([
+          "./content/**/*",
+          "./generated/**/*",
+          "./src/features/course-paths/manifests/**/*",
+        ]);
+      });
+    },
+  );
 
   // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/static-delivery.feature: The document language reflects the localized page locale
   ScenarioOutline("The document language reflects the localized page locale", ({ Given, When, Then }, variables) => {

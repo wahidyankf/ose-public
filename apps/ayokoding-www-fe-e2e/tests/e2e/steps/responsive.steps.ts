@@ -1,5 +1,4 @@
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/responsive.feature: Desktop viewport shows sidebar, content, and table of contents
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/responsive.feature: Laptop viewport shows sidebar and content but hides table of contents
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/responsive.feature: layout by viewport width
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/responsive.feature: Mobile viewport shows hamburger menu and hides sidebar
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/responsive.feature: Mobile hamburger menu opens the sidebar drawer
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/responsive.feature: The theme toggle switches between light, dark, and system themes
@@ -35,7 +34,7 @@ Then("the table of contents should be visible", async ({ page }) => {
   await expect(toc).toBeVisible();
 });
 
-Then("the table of contents should not be visible", async ({ page }) => {
+Then("the table of contents should be hidden", async ({ page }) => {
   const toc = page.getByRole("navigation", { name: /table of contents/i });
   await expect(toc).toBeHidden();
 });

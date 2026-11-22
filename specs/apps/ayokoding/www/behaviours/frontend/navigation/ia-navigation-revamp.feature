@@ -55,20 +55,17 @@ Feature: IA navigation revamp
     And the footer "About" column should link to "/id/syarat-dan-ketentuan"
 
   @e2e-home
-  Scenario: Landing homepage renders hero, sections, and tools teaser in English
-    When a visitor navigates to "/en"
+  Scenario Outline: landing homepage per locale
+    When a visitor navigates to "<home>"
     Then the hero heading should be visible on the landing page
     And the hero intro should be visible on the landing page
-    And the landing section grid should include a card linking to "/en/rants"
-    And the tools teaser should link to "/en/tools/cost-of-living-calculator"
+    And the landing section grid should include a card linking to "<section_href>"
+    And the tools teaser should link to "<tools_href>"
 
-  @e2e-home
-  Scenario: Landing homepage renders hero, sections, and tools teaser in Indonesian
-    When a visitor navigates to "/id"
-    Then the hero heading should be visible on the landing page
-    And the hero intro should be visible on the landing page
-    And the landing section grid should include a card linking to "/id/celoteh"
-    And the tools teaser should link to "/id/tools/cost-of-living-calculator"
+    Examples:
+      | home | section_href | tools_href                          |
+      | /en  | /en/rants    | /en/tools/cost-of-living-calculator |
+      | /id  | /id/celoteh  | /id/tools/cost-of-living-calculator |
 
   @e2e-home
   Scenario: Breadcrumb segments link to their bare content URLs

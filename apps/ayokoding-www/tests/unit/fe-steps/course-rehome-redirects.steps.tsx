@@ -1,5 +1,7 @@
+import fs from "node:fs";
 import path from "path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
+import matter from "gray-matter";
 import { expect } from "vitest";
 import "./helpers/test-setup";
 import {
@@ -27,6 +29,17 @@ function readPrerequisites(slug: string): unknown {
   return fixturePrerequisites.get(slug);
 }
 
+/** The frontmatter title of the authored page a URL serves: its own file, or else its section index. */
+function authoredTitleOf(pageUrl: string): unknown {
+  const relative = pageUrl.replace(/^\//u, "");
+  const candidates = [
+    path.resolve(process.cwd(), "content", `${relative}.md`),
+    path.resolve(process.cwd(), "content", relative, "_index.md"),
+  ];
+  const file = candidates.find((candidate) => fs.existsSync(candidate));
+  return file === undefined ? undefined : matter(fs.readFileSync(file, "utf8")).data.title;
+}
+
 describeFeature(feature, ({ Scenario, ScenarioOutline, Background }) => {
   Background(({ Given }) => {
     Given("the app is running", () => {
@@ -35,37 +48,42 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, Background }) => {
     });
   });
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/course-rehome-redirects.feature: A legacy fundamentally-strong URL redirects to the canonical course URL
-  Scenario("A legacy fundamentally-strong URL redirects to the canonical course URL", ({ When, Then }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/course-rehome-redirects.feature: legacy course URLs reach the canonical course
+  ScenarioOutline("legacy course URLs reach the canonical course", ({ When, Then, And }, variables) => {
     let resolvedUrl: string | null = null;
-    When('a visitor navigates to "/en/learn/fundamentally-strong/software-engineer/just-enough-python"', () => {
-      resolvedUrl = resolveCourseRehomeRedirect("/en/learn/fundamentally-strong/software-engineer/just-enough-python");
+    When('a visitor navigates to "<legacy_url>"', () => {
+      resolvedUrl = resolveCourseRehomeRedirect(String(variables.legacy_url));
     });
 
-    Then('the current URL should contain "/en/learn/courses/just-enough-python"', () => {
-      expect(resolvedUrl).toBe("/en/learn/courses/just-enough-python");
+    Then('the current URL should contain "<canonical_url>"', () => {
+      expect(resolvedUrl).toBe(String(variables.canonical_url));
+    });
+
+    And('the resolved page title should equal the canonical course page title at "<canonical_url>"', () => {
+      expect(resolvedUrl).toBe(String(variables.canonical_url));
+      expect(courseSlugs()).toContain("just-enough-python");
+    });
+
+    And('the canonical course page is titled "<canonical_title>"', () => {
+      // The visitor lands on the canonical page, so its authored title is the title they see.
+      expect(authoredTitleOf(String(variables.canonical_url))).toBe(String(variables.canonical_title));
+    });
+
+    And("the redirect preserves any path context query parameter", () => {
+      // Folded in from the former course-paths breadcrumb scenario: the wildcard rule that carries every
+      // course sub-page keeps a visitor's ?path= query, because its destination adds no query of its own.
+      const rule = courseRehomeRedirects.find(
+        (candidate) =>
+          candidate.source === "/en/learn/fundamentally-strong/software-engineer/just-enough-python/:path*",
+      );
+      expect(rule).toEqual({
+        source: "/en/learn/fundamentally-strong/software-engineer/just-enough-python/:path*",
+        destination: "/en/learn/courses/just-enough-python/:path*",
+        permanent: true,
+      });
+      expect(rule?.destination).not.toContain("?");
     });
   });
-
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/course-rehome-redirects.feature: A legacy fundamentally-strong deep sub-page URL redirects to its canonical course sub-page
-  Scenario(
-    "A legacy fundamentally-strong deep sub-page URL redirects to its canonical course sub-page",
-    ({ When, Then }) => {
-      let resolvedUrl: string | null = null;
-      When(
-        'a visitor navigates to "/en/learn/fundamentally-strong/software-engineer/just-enough-python/learning/beginner"',
-        () => {
-          resolvedUrl = resolveCourseRehomeRedirect(
-            "/en/learn/fundamentally-strong/software-engineer/just-enough-python/learning/beginner",
-          );
-        },
-      );
-
-      Then('the current URL should contain "/en/learn/courses/just-enough-python/learning/beginner"', () => {
-        expect(resolvedUrl).toBe("/en/learn/courses/just-enough-python/learning/beginner");
-      });
-    },
-  );
 
   // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/course-rehome-redirects.feature: The retired fundamentally-strong browse roots permanently redirect to the course library
   ScenarioOutline(
@@ -104,27 +122,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, Background }) => {
         expect(courseSlugs()).toEqual([...REHOMED_COURSE_SLUGS].sort());
         expect(courseSlugs().every((slug) => Array.isArray(readPrerequisites(slug)))).toBe(true);
       });
-    },
-  );
-
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/course-rehome-redirects.feature: A course reached via its legacy course URL resolves to the single canonical course body
-  Scenario(
-    "A course reached via its legacy course URL resolves to the single canonical course body",
-    ({ When, Then }) => {
-      let resolvedUrl: string | null = null;
-      When('a visitor navigates to "/en/learn/fundamentally-strong/software-engineer/just-enough-python"', () => {
-        resolvedUrl = resolveCourseRehomeRedirect(
-          "/en/learn/fundamentally-strong/software-engineer/just-enough-python",
-        );
-      });
-
-      Then(
-        'the resolved page title should equal the canonical course page title at "/en/learn/courses/just-enough-python"',
-        () => {
-          expect(resolvedUrl).toBe("/en/learn/courses/just-enough-python");
-          expect(courseSlugs()).toContain("just-enough-python");
-        },
-      );
     },
   );
 });

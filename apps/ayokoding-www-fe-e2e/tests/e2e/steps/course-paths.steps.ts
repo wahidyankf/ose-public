@@ -8,7 +8,6 @@ const { Given, When, Then } = createBdd();
 // omitted-course, invalid-path-fallback, and path-assumes (first scenario): their steps live here.
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/category-landing-arc-chooser.feature: The careers category landing groups path cards by arc
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/breadcrumb.feature: The breadcrumb reflects the active path
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/breadcrumb.feature: A legacy fundamentally-strong URL redirects to the canonical course URL
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/canonical-fallback.feature: A course without path context renders its body and content-tree breadcrumb
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/canonical-fallback.feature: A course opened without path context renders the generic sidebar unchanged
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/landing-hero.feature: The landing hero shows a card for each published path
@@ -690,32 +689,6 @@ Given("a fixture manifest set covers both a careers-shaped and a skills-shaped f
   const manifests = await loadPublishedManifests(page);
   expect(manifests.some((manifest) => manifest.pathId?.startsWith("careers/"))).toBe(true);
   expect(manifests.some((manifest) => manifest.pathId?.startsWith("skills/"))).toBe(true);
-});
-
-Given(
-  /^a re-homed course previously lived under the legacy fundamentally-strong\/software-engineer content path$/,
-  async ({ page }) => {
-    const response = await page.request.get(
-      "/en/learn/fundamentally-strong/software-engineer/just-enough-python?path=careers/interview-ready/backend-track",
-      { maxRedirects: 0 },
-    );
-    expect(response.status()).toBe(308);
-  },
-);
-
-When("a reader requests the legacy URL", async ({ page }) => {
-  await page.goto(
-    "/en/learn/fundamentally-strong/software-engineer/just-enough-python?path=careers/interview-ready/backend-track",
-  );
-  await page.waitForLoadState("networkidle");
-});
-
-Then(/^the app redirects to the course's canonical \/en\/learn\/courses\/<course-id> URL$/, async ({ page }) => {
-  expect(new URL(page.url()).pathname).toBe("/en/learn/courses/just-enough-python");
-});
-
-Then("the redirect preserves any path context query parameter", async ({ page }) => {
-  expect(new URL(page.url()).searchParams.get("path")).toBe("careers/interview-ready/backend-track");
 });
 
 Then("it shows Home, Learn, the path title, and the course title", async ({ page }) => {

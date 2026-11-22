@@ -1,0 +1,40 @@
+{
+  "categories": {
+    "correctness": "off",
+    "suspicious": "off",
+    "pedantic": "off",
+    "perf": "off",
+    "style": "off",
+    "restriction": "off",
+    "nursery": "off"
+  },
+  "rules": {
+    "no-restricted-imports": [
+      "error",
+      {
+        "paths": [
+          "fs",
+          "fs/promises",
+          "node:fs",
+          "node:fs/promises",
+          "child_process",
+          "node:child_process",
+          "http",
+          "node:http",
+          "https",
+          "node:https",
+          "net",
+          "node:net"
+        ]
+      }
+    ],
+    "no-restricted-globals": ["error", "fetch", "setTimeout", "setInterval"],
+    "no-restricted-properties": [
+      "error",
+      { "object": "Date", "property": "now", "message": "reads the real clock; pass a fixed instant" },
+      { "object": "Math", "property": "random", "message": "random input; use a fixed value" },
+      { "object": "process", "property": "env", "message": "reads the host environment; pass the value in" },
+      { "object": "crypto", "property": "randomUUID", "message": "random input; use a fixed value" }
+    ]
+  }
+}

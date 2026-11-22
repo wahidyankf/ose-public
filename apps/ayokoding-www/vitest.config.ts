@@ -106,6 +106,9 @@ export default defineConfig({
           exclude: ["node_modules", "**/*.unit.test.{ts,tsx}"],
           environment: "jsdom",
           setupFiles: ["./src/test/setup.ts"],
+          // Vitest blanks every CSS import unless it is listed here. The AI benchmark steps read the
+          // token stylesheet with `?raw` and check its text, so that file must pass through unchanged.
+          css: { include: [/ayokoding\.css/] },
           testTimeout: 30000,
         },
       },

@@ -20,7 +20,7 @@ const { Given, When, Then } = createBdd();
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Sub-national tax lowers net only in federal countries
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Net take-home is lower than the entered gross
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Essentials above net show a deficit
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The calculator is fully translated into Indonesian
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: calculator in Indonesian
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: No Israeli city is listed in the dataset, any table, or role candidates
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Data snapshot date is clearly shown
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Adding adults and children changes the modeled expenses
@@ -38,12 +38,11 @@ const { Given, When, Then } = createBdd();
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Minimum role from a reference city and role
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Minimum role from my own salary
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: My-salary baseline accepts the gross in local currency or USD
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings shown in USD, local, and display currency
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Every money column on the Minimum-role tab is dual currency
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: money columns show local currency and USD
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Household and area changes recalculate minimum-role candidates
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: No role can reach the bar
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Low-confidence cells are flagged on the minimum-role tab
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The Savings tab guides the user to enter a salary
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: savings empty state
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Income exactly at the low-to-mid threshold uses the mid band
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Zero savings target marks the lowest role as the minimum
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: household preview scaling
@@ -51,18 +50,14 @@ const { Given, When, Then } = createBdd();
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Negative salary input is clamped to zero
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Very large salary produces valid savings figures
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings tab shows results after salary is entered
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Minimum Role tab shows empty-state when no target amount entered
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: minimum-role empty state
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Area toggle shows selected state and confirms data update
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Tab sub-labels are visually separated from tab names
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Tools index page renders all text in the active locale
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Tools index page renders in Indonesian on /id/tools
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Cost-of-living table shows local currency and USD for each expense cell
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings table shows local currency and USD for net and savings columns
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: page title and H1 name the tool
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The gross-salary field has a visible border and a label
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Baseline selector is a segmented control
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Tab labels are clean single phrases
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Each tab has a visible description associated with its trigger
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: tab labels
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Uppercase locale URL redirects to canonical lowercase
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Mobile nav drawer shows localized site navigation
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: invalid deep-link values fall back to defaults
@@ -74,7 +69,7 @@ const { Given, When, Then } = createBdd();
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: touch targets are at least 44 px
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: no horizontal overflow at 320 px
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: savings currency indicator
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: A blank savings target shows empty-state guidance instead of the role ladder
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: minimum-role empty state
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The region selector lists exactly the nine intended regions
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Selecting a country that changes the region shows a visible advisory
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The area control is rendered as a radiogroup
@@ -83,8 +78,7 @@ const { Given, When, Then } = createBdd();
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Typing the gross salary echoes instantly but commits to the URL only after typing settles
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Public schooling not open to foreigners is charged at the private rate
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Public schooling open to foreigners keeps the public cost
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Only the active tab description is visible
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Active tab description follows the active tab
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: active tab description
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Area toggle exposes its pressed state
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Sortable savings column exposes aria-sort
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: A school cost charged at the private rate carries a clear flag in the table and the city detail
@@ -1544,11 +1538,6 @@ Then("the ladder marks the lowest role that meets or beats it", async ({ page })
 
 // ── Display currency ──────────────────────────────────────────────────────────
 
-When("I choose a display currency", async ({ page }) => {
-  await page.getByLabel("Display currency").selectOption("EUR");
-  await page.waitForURL(/displaycur=EUR/);
-});
-
 Then(
   "each role row shows its essential savings in USD, the city's local currency, and the display currency",
   async ({ page }) => {
@@ -1876,20 +1865,23 @@ When("I enter a monthly savings target of zero USD", async ({ page }) => {
   await page.waitForLoadState("networkidle");
 });
 
-Then("the qualifying divider is shown", async ({ page }) => {
-  // EWT-001: the desktop role-ladder divider is visible even at a numeric zero target, where every
-  // role qualifies. (Baseline IS engaged — savings target selected, target === 0 — distinct from
-  // the blank-target empty-state.) Desktop viewport (md+) shows the table-scoped divider.
-  await expect(page.getByTestId("qualifying-divider")).toBeVisible();
-});
-
-Then("the qualifying divider element is rendered in the role ladder", async ({ page }) => {
-  await expect(page.getByTestId("qualifying-divider")).toBeVisible();
-});
-
-Then("the minimum marker appears on the lowest-ranked role in the ladder", async ({ page }) => {
-  await expect(page.getByTestId("minimum-marker").first()).toBeVisible();
-});
+Then(
+  "the minimum marker appears on the lowest-ranked qualifying role, on each city row where it clears the bar",
+  async ({ page }) => {
+    // min-role.tsx marks every clearing row at the lowest qualifying rank (isMinEntry), so each desktop
+    // row carrying a marker must sit at the minimum rank among the qualifying rows.
+    await expect(page.getByTestId("minimum-marker").first()).toBeVisible();
+    const qualifyingRanks = await page
+      .locator('tr[data-candidate-row="true"]:not([data-testid="non-qualifying-row"])')
+      .evaluateAll((rows) => rows.map((row) => Number(row.getAttribute("data-rank"))));
+    const markedRanks = await page
+      .locator('tr:has([data-testid="minimum-marker"])')
+      .evaluateAll((rows) => rows.map((row) => Number(row.getAttribute("data-rank"))));
+    expect(markedRanks.length).toBeGreaterThan(0);
+    expect(qualifyingRanks.length).toBeGreaterThan(0);
+    for (const rank of markedRanks) expect(rank).toBe(Math.min(...qualifyingRanks));
+  },
+);
 
 // ── SG-007: Expense preview updates in real time ──────────────────────────────
 
@@ -2241,11 +2233,6 @@ Then("the Transport preview amount is unchanged from the 1-adult amount", async 
 
 // ── USS-001: Savings empty state ──────────────────────────────────────────────
 
-Given("a user has opened the Cost of Living Calculator", async ({ page }) => {
-  await page.goto("/en/tools/cost-of-living-calculator");
-  await page.waitForLoadState("networkidle");
-});
-
 When("they click the Savings tab", async ({ page }) => {
   const tab = page.getByRole("tab", { name: "Savings" });
   await tab.click();
@@ -2298,18 +2285,6 @@ Then("the savings comparison table is shown with computed savings figures", asyn
 
 // ── USS-002: Minimum Role empty state ────────────────────────────────────────
 
-When("they click the Minimum Role tab", async ({ page }) => {
-  const tab = page.getByRole("tab", { name: "Minimum role" });
-  await tab.click();
-  await expect.poll(() => new URL(page.url()).searchParams.get("tab")).toBe("min-role");
-  await expect(tab).toHaveAttribute("data-state", "active");
-  await expect(page.locator("#target-amount-input")).toBeVisible();
-});
-
-When("the Monthly savings target field contains no value or zero", async ({ page }) => {
-  await expect(page.locator("#target-amount-input")).toHaveValue("");
-});
-
 Then("the role comparison table is not shown", async ({ page }) => {
   await expect(page.locator("table")).toHaveCount(0);
 });
@@ -2352,15 +2327,6 @@ Then("a visible signal confirms the table data has been recalculated for rural e
 });
 
 // ── USS-004: Tab sub-label visual separation ──────────────────────────────────
-
-Given("a user views the Cost of Living Calculator tab bar", async ({ page }) => {
-  await page.goto("/en/tools/cost-of-living-calculator");
-  await page.waitForLoadState("networkidle");
-});
-
-When("any tab is in the inactive state", async ({ page }) => {
-  await expect(page.getByRole("tab", { name: "Savings" })).toHaveAttribute("data-state", "inactive");
-});
 
 Then("the tab primary name and its descriptive sub-label are visually distinct", async ({ page }) => {
   const tab = page.getByRole("tab", { name: "Cost of living" });
@@ -2479,12 +2445,15 @@ When("the cost-of-living table renders", async ({ page }) => {
   await page.locator("table tbody tr").first().waitFor({ state: "visible" });
 });
 
-Then("the Country and City columns show Indonesian names where translations exist", async ({ page }) => {
-  await expect(page.locator("table tbody")).toContainText("Singapura");
-  await expect(page.locator("table tbody")).toContainText("Jepang");
-  await expect(page.locator("table tbody")).toContainText("Warsawa");
-  await expect(page.locator("table tbody")).toContainText("Praha");
-});
+Then(
+  "the cost-of-living table's Country and City columns show Indonesian names where translations exist",
+  async ({ page }) => {
+    await expect(page.locator("table tbody")).toContainText("Singapura");
+    await expect(page.locator("table tbody")).toContainText("Jepang");
+    await expect(page.locator("table tbody")).toContainText("Warsawa");
+    await expect(page.locator("table tbody")).toContainText("Praha");
+  },
+);
 
 Given("the Minimum role tab is active", async ({ page }) => {
   // Tab is "Minimum role" (en) or "Jabatan minimum" (id)
@@ -2976,22 +2945,17 @@ Then(
 
 // ── AC-tab-desc: Tab descriptions associated via aria-describedby ─────────────
 
-Given("the user views the calculator tab bar", async ({ page }) => {
-  await page.goto("/en/tools/cost-of-living-calculator");
-  await page.waitForLoadState("networkidle");
-});
-
 Then(
-  "each of the three tabs has a visibly rendered description element associated with its trigger via aria-describedby",
+  "each of the three tabs has a description element associated with its trigger via aria-describedby",
   async ({ page }) => {
-    // The three tab triggers each have aria-describedby pointing to a rendered <p>
+    // The three tab triggers each have aria-describedby pointing to a <p> in the DOM. Which one is
+    // visible is the active-tab scenario's concern (inactive descriptions carry the hidden class).
     const tabTriggers = page.locator('[role="tab"]');
     const count = await tabTriggers.count();
     expect(count).toBeGreaterThanOrEqual(3);
     for (let i = 0; i < Math.min(count, 3); i++) {
       const describedById = await tabTriggers.nth(i).getAttribute("aria-describedby");
       expect(describedById).toBeTruthy();
-      // The element with that id must exist in the DOM (not necessarily visible — hidden class used)
       const descEl = page.locator(`#${describedById}`);
       await expect(descEl).toBeAttached();
     }

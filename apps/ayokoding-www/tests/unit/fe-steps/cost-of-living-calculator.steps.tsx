@@ -754,8 +754,8 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── i18n scenario ───────────────────────────────────────────────────────────
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The calculator is fully translated into Indonesian
-  Scenario("The calculator is fully translated into Indonesian", async ({ Given, When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: calculator in Indonesian
+  Scenario("calculator in Indonesian", async ({ Given, When, Then, And }) => {
     Given('I am on "/id/tools/cost-of-living-calculator"', () => {
       navState.locale = "id";
       expect(navState.locale).toBe("id");
@@ -777,7 +777,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       },
     );
 
-    And("the Country and City columns show Indonesian names where translations exist", () => {
+    And("the cost-of-living table's Country and City columns show Indonesian names where translations exist", () => {
       expect(document.body.textContent).toContain("Singapura");
       expect(document.body.textContent).toContain("Jepang");
     });
@@ -1422,65 +1422,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings shown in USD, local, and display currency
-  Scenario("Savings shown in USD, local, and display currency", async ({ Given, When, Then }) => {
-    Given('I am on the "Minimum role" tab with a baseline set', async () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
-      await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
-      const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
-      await getScenarioUser().clear(input);
-      await getScenarioUser().type(input, "1000");
-    });
-
-    When("I choose a display currency", async () => {
-      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /display currency/i }), "EUR");
-    });
-
-    Then(
-      "each role row shows its essential savings in USD, the city's local currency, and the display currency",
-      () => {
-        const savingsCells = screen.getAllByTestId("savings-triple");
-        expect(savingsCells.length).toBeGreaterThan(0);
-        expect(savingsCells[0]?.textContent?.includes("USD")).toBe(true);
-      },
-    );
-  });
-
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Every money column on the Minimum-role tab is dual currency
-  Scenario("Every money column on the Minimum-role tab is dual currency", async ({ Given, When, Then, And }) => {
-    Given('I am on the "Minimum role" tab with a baseline set and a display currency chosen', async () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
-      await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
-      const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
-      await getScenarioUser().clear(input);
-      await getScenarioUser().type(input, "1000");
-      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /display currency/i }), "EUR");
-    });
-
-    When("I read a role row", () => {
-      expect(screen.getAllByTestId("dual-currency-cell").length).toBeGreaterThan(0);
-    });
-
-    Then(
-      "every money column (p25, median, p75, non-salary comp, total comp, and essential savings) shows the display currency on the first line and the city's local currency on the second line",
-      () => {
-        const dualCells = screen.getAllByTestId("dual-currency-cell");
-        for (const cell of dualCells.slice(0, 3)) {
-          expect(cell.querySelectorAll("[data-line]").length).toBeGreaterThanOrEqual(2);
-        }
-      },
-    );
-
-    And("no money column shows only a single currency", () => {
-      for (const cell of screen.getAllByTestId("dual-currency-cell")) {
-        expect(cell.querySelector("[data-line='display']")).toBeTruthy();
-        expect(cell.querySelector("[data-line='local']")).toBeTruthy();
-      }
-    });
-  });
-
   // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Household and area changes recalculate minimum-role candidates
   Scenario("Household and area changes recalculate minimum-role candidates", async ({ Given, When, Then, And }) => {
     Given(
@@ -1604,17 +1545,22 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       await getScenarioUser().type(input, "0");
     });
 
-    Then("the qualifying divider is shown", () => {
-      // EWT-001: a numeric zero target means every role qualifies; the divider still anchors the
-      // qualifying group. (Baseline IS engaged here — savings_target selected, target === 0 — which
-      // is distinct from the blank-target empty-state.)
-      expect(screen.getByTestId("qualifying-divider")).toBeTruthy();
-    });
-
-    And("the minimum marker appears on the lowest-ranked role in the ladder", () => {
-      // With a zero target the lowest-clearing role is still flagged as the minimum.
-      expect(screen.getAllByTestId("minimum-marker").length).toBeGreaterThan(0);
-    });
+    Then(
+      "the minimum marker appears on the lowest-ranked qualifying role, on each city row where it clears the bar",
+      () => {
+        // min-role.tsx marks every clearing row at the lowest qualifying rank (isMinEntry), so every
+        // desktop row carrying a marker must sit at the minimum rank among the qualifying rows.
+        const qualifyingRanks = Array.from(document.querySelectorAll<HTMLElement>('tr[data-candidate-row="true"]'))
+          .filter((row) => row.getAttribute("data-testid") !== "non-qualifying-row")
+          .map((row) => Number(row.getAttribute("data-rank")));
+        const markedRanks = Array.from(document.querySelectorAll<HTMLElement>('[data-testid="minimum-marker"]'))
+          .map((marker) => marker.closest("tr")?.getAttribute("data-rank"))
+          .filter((rank): rank is string => rank != null)
+          .map(Number);
+        expect(markedRanks.length).toBeGreaterThan(0);
+        for (const rank of markedRanks) expect(rank).toBe(Math.min(...qualifyingRanks));
+      },
+    );
 
     And("the qualifying (city, role) rows whose savings are at or above zero appear above the divider", () => {
       // Under include-all, a zero bar is cleared by every (city, role) with non-negative savings —
@@ -1900,37 +1846,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
-  // ─── USS-002: Minimum Role tab empty-state when no target entered ─────────────
-
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Minimum Role tab shows empty-state when no target amount entered
-  Scenario("Minimum Role tab shows empty-state when no target amount entered", async ({ Given, When, And, Then }) => {
-    Given("a user has opened the Cost of Living Calculator", () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When("they click the Minimum Role tab", async () => {
-      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
-    });
-
-    And("the Monthly savings target field contains no value or zero", () => {
-      expect(screen.getByRole("main")).toBeTruthy();
-    });
-
-    Then("the role comparison table is not shown", () => {
-      // UWT-006: blank savings target (default on mount) suppresses the ladder.
-      expect(screen.queryByRole("table")).toBeNull();
-    });
-
-    And("an instructional message is shown", () => {
-      expect(screen.getByTestId("min-role-empty-state")).toBeTruthy();
-    });
-
-    And("no role salary data is visible", () => {
-      expect(screen.queryByTestId("minimum-marker")).toBeNull();
-      expect(screen.queryByTestId("city-cell")).toBeNull();
-    });
-  });
-
   // ─── USS-003: Area toggle confirms data update ────────────────────────────────
 
   // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Area toggle shows selected state and confirms data update
@@ -1958,37 +1873,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       const ruralHousing = Number(screen.getByTestId(`col-housing-${dataset.cities[0]!.id}`).getAttribute("data-raw"));
       expect(ruralHousing).toBeLessThan(centerHousing);
       expect(screen.getByTestId("area-caption").textContent).toMatch(/rural/i);
-    });
-  });
-
-  // ─── USS-004: Tab sub-labels are visually/aria distinct ──────────────────────
-
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Tab sub-labels are visually separated from tab names
-  Scenario("Tab sub-labels are visually separated from tab names", ({ Given, When, Then, And }) => {
-    Given("a user views the Cost of Living Calculator tab bar", () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When("any tab is in the inactive state", () => {
-      expect(screen.getAllByRole("tab").length).toBeGreaterThan(0);
-    });
-
-    Then("the tab primary name and its descriptive sub-label are visually distinct", () => {
-      const tab = screen.getByRole("tab", { name: /cost of living/i });
-      const description = document.getElementById(tab.getAttribute("aria-describedby")!);
-      expect(description).toBeTruthy();
-      expect(description).not.toBe(tab);
-    });
-
-    And("the two pieces of text do not run together without a visual separator", () => {
-      expect(screen.getByRole("tab", { name: /cost of living/i }).textContent).toBe(t("en", "tabCostOfLiving"));
-      expect(screen.getByTestId("tab-desc-cost").textContent).toBe(t("en", "tabCostDesc"));
-    });
-
-    And("a screen reader announces them as separate text nodes", () => {
-      expect(screen.getByRole("tab", { name: /cost of living/i }).getAttribute("aria-describedby")).toBe(
-        "tab-desc-cost",
-      );
     });
   });
 
@@ -2044,8 +1928,8 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── SG-D-001: Dual-currency display in cost-of-living and savings tables ─────
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Cost-of-living table shows local currency and USD for each expense cell
-  Scenario("Cost-of-living table shows local currency and USD for each expense cell", ({ Given, When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: money columns show local currency and USD
+  Scenario("money columns show local currency and USD", async ({ Given, When, Then, And }) => {
     Given("the user is on the Cost of living tab at desktop width", () => {
       renderPage(<CostOfLivingCalculatorPage />);
     });
@@ -2063,11 +1947,11 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     And("no money cell shows a bare integer without a currency label", () => {
       for (const cell of document.querySelectorAll("td[data-raw]")) expect(cell.textContent).toMatch(/[A-Z]{3}/);
     });
-  });
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings table shows local currency and USD for net and savings columns
-  Scenario("Savings table shows local currency and USD for net and savings columns", async ({ Given, When, Then }) => {
     Given("the user is on the Savings tab with a gross salary entered", async () => {
+      cleanup();
+      navState.params = new URLSearchParams();
+      navState.setParams(navState.params);
       renderPage(<CostOfLivingCalculatorPage />);
       await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
       const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
@@ -2087,6 +1971,46 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
         for (const row of rows.slice(0, 3)) expect(row.textContent).toMatch(/\/ \$[\d-]/);
       },
     );
+
+    Given('I am on the "Minimum role" tab with a baseline set and a display currency chosen', async () => {
+      cleanup();
+      navState.params = new URLSearchParams();
+      navState.setParams(navState.params);
+      renderPage(<CostOfLivingCalculatorPage />);
+      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
+      await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
+      const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "1000");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /display currency/i }), "EUR");
+    });
+
+    When("I read a role row", () => {
+      expect(screen.getAllByTestId("dual-currency-cell").length).toBeGreaterThan(0);
+    });
+
+    Then(
+      "every money column (p25, median, p75, non-salary comp, total comp, and essential savings) shows the display currency on the first line and the city's local currency on the second line",
+      () => {
+        const dualCells = screen.getAllByTestId("dual-currency-cell");
+        for (const cell of dualCells.slice(0, 3)) {
+          expect(cell.querySelectorAll("[data-line]").length).toBeGreaterThanOrEqual(2);
+        }
+      },
+    );
+
+    And("each role row shows its essential savings in USD, the city's local currency, and the display currency", () => {
+      const savingsCells = screen.getAllByTestId("savings-triple");
+      expect(savingsCells.length).toBeGreaterThan(0);
+      expect(savingsCells[0]?.textContent?.includes("USD")).toBe(true);
+    });
+
+    And("no money column shows only a single currency", () => {
+      for (const cell of screen.getAllByTestId("dual-currency-cell")) {
+        expect(cell.querySelector("[data-line='display']")).toBeTruthy();
+        expect(cell.querySelector("[data-line='local']")).toBeTruthy();
+      }
+    });
   });
 
   // ─── SG-D-003: Page heading matches tool identity ─────────────────────────────
@@ -2160,25 +2084,9 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Tab labels are clean single phrases
-  Scenario("Tab labels are clean single phrases", ({ Given, When, Then }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: tab labels
+  Scenario("tab labels", ({ Given, When, Then, And }) => {
     Given("the user views the tab bar at any breakpoint", () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When("the tab bar renders", () => {
-      expect(screen.getAllByRole("tab").length).toBeGreaterThan(0);
-    });
-
-    Then("each tab trigger's visible text is its label only, with the description not fused into it", () => {
-      const expected = [t("en", "tabCostOfLiving"), t("en", "tabSavings"), t("en", "tabMinRole")];
-      expect(screen.getAllByRole("tab").map((tab) => tab.textContent)).toEqual(expected);
-    });
-  });
-
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Each tab has a visible description associated with its trigger
-  Scenario("Each tab has a visible description associated with its trigger", ({ Given, When, Then, And }) => {
-    Given("the user views the calculator tab bar", () => {
       renderPage(<CostOfLivingCalculatorPage />);
     });
 
@@ -2186,26 +2094,45 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       expect(screen.getAllByRole("tab").length).toBe(3);
     });
 
-    Then(
-      "each of the three tabs has a visibly rendered description element associated with its trigger via aria-describedby",
-      () => {
-        const pairs: Array<[RegExp, string]> = [
-          [/cost of living/i, "tab-desc-cost"],
-          [/savings/i, "tab-desc-savings"],
-          [/minimum role/i, "tab-desc-min-role"],
-        ];
-        for (const [name, descId] of pairs) {
-          const trigger = screen.getByRole("tab", { name });
-          expect(trigger.getAttribute("aria-describedby")).toBe(descId);
-          const desc = document.getElementById(descId);
-          expect(desc, `#${descId} should exist`).toBeTruthy();
-          // Visible: not sr-only, not aria-hidden.
-          expect(desc!.className).not.toMatch(/\bsr-only\b/);
-          expect(desc!.getAttribute("aria-hidden")).not.toBe("true");
-          expect(desc!.textContent?.trim().length).toBeGreaterThan(0);
-        }
-      },
-    );
+    Then("each tab trigger's visible text is its label only, with the description not fused into it", () => {
+      const expected = [t("en", "tabCostOfLiving"), t("en", "tabSavings"), t("en", "tabMinRole")];
+      expect(screen.getAllByRole("tab").map((tab) => tab.textContent)).toEqual(expected);
+    });
+
+    And("the tab primary name and its descriptive sub-label are visually distinct", () => {
+      const tab = screen.getByRole("tab", { name: /cost of living/i });
+      const description = document.getElementById(tab.getAttribute("aria-describedby")!);
+      expect(description).toBeTruthy();
+      expect(description).not.toBe(tab);
+    });
+
+    And("the two pieces of text do not run together without a visual separator", () => {
+      expect(screen.getByRole("tab", { name: /cost of living/i }).textContent).toBe(t("en", "tabCostOfLiving"));
+      expect(screen.getByTestId("tab-desc-cost").textContent).toBe(t("en", "tabCostDesc"));
+    });
+
+    And("a screen reader announces them as separate text nodes", () => {
+      expect(screen.getByRole("tab", { name: /cost of living/i }).getAttribute("aria-describedby")).toBe(
+        "tab-desc-cost",
+      );
+    });
+
+    And("each of the three tabs has a description element associated with its trigger via aria-describedby", () => {
+      // Every tab's description is in the DOM and linked to its trigger; which one is visible is the
+      // active-tab scenario's concern (inactive descriptions carry the `hidden` class).
+      const pairs: Array<[RegExp, string]> = [
+        [/cost of living/i, "tab-desc-cost"],
+        [/savings/i, "tab-desc-savings"],
+        [/minimum role/i, "tab-desc-min-role"],
+      ];
+      for (const [name, descId] of pairs) {
+        const trigger = screen.getByRole("tab", { name });
+        expect(trigger.getAttribute("aria-describedby")).toBe(descId);
+        const desc = document.getElementById(descId);
+        expect(desc, `#${descId} should exist`).toBeTruthy();
+        expect(desc!.textContent?.trim().length).toBeGreaterThan(0);
+      }
+    });
 
     And("no tab description text is duplicated elsewhere on screen", () => {
       // The active (cost) tab's description prose appears exactly once in the DOM.
@@ -2611,39 +2538,46 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
-  // AC-9 (UWT-006) — Minimum-role empty-state for a BLANK target only (numeric zero → ladder)
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: A blank savings target shows empty-state guidance instead of the role ladder
-  Scenario(
-    "A blank savings target shows empty-state guidance instead of the role ladder",
-    async ({ Given, When, Then, But }) => {
-      Given('I am on the "Minimum role" tab with the savings-target baseline and a blank target', async () => {
-        renderPage(<CostOfLivingCalculatorPage />);
-        await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
-        await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
-        // No target typed → blank.
-      });
+  // USS-002 and AC-9 (UWT-006) — Minimum-role empty-state for a BLANK target only (numeric zero → ladder)
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: minimum-role empty state
+  Scenario("minimum-role empty state", async ({ Given, When, Then, And, But }) => {
+    Given('I am on the "Minimum role" tab with the savings-target baseline and a blank target', async () => {
+      renderPage(<CostOfLivingCalculatorPage />);
+      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
+      await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
+      // No target typed → blank.
+    });
 
-      When("the tab renders", () => {
-        // UWT-001: the baseline-source group's accessible name is the scent-bearing relabel.
-        expect(screen.getByRole("radiogroup", { name: /how to set your target/i })).toBeTruthy();
-      });
+    When("the tab renders", () => {
+      // UWT-001: the baseline-source group's accessible name is the scent-bearing relabel.
+      expect(screen.getByRole("radiogroup", { name: /how to set your target/i })).toBeTruthy();
+    });
 
-      Then("a minimum-role empty-state guidance message is shown", () => {
-        expect(screen.getByTestId("min-role-empty-state")).toBeTruthy();
-        // The role ladder must not render while the target is blank.
-        expect(screen.queryByRole("table")).toBeNull();
-      });
+    Then("a minimum-role empty-state guidance message is shown", () => {
+      expect(screen.getByTestId("min-role-empty-state")).toBeTruthy();
+      // The role ladder must not render while the target is blank.
+      expect(screen.queryByRole("table")).toBeNull();
+    });
 
-      But("entering an explicit zero target replaces the guidance with the role ladder and its divider", async () => {
-        const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
-        await getScenarioUser().clear(input);
-        await getScenarioUser().type(input, "0");
-        expect(screen.queryByTestId("min-role-empty-state")).toBeNull();
-        expect(screen.getByRole("table")).toBeTruthy();
-        expect(screen.getByTestId("qualifying-divider")).toBeTruthy();
-      });
-    },
-  );
+    And("the role comparison table is not shown", () => {
+      // UWT-006: blank savings target (default on mount) suppresses the ladder.
+      expect(screen.queryByRole("table")).toBeNull();
+    });
+
+    And("no role salary data is visible", () => {
+      expect(screen.queryByTestId("minimum-marker")).toBeNull();
+      expect(screen.queryByTestId("city-cell")).toBeNull();
+    });
+
+    But("entering an explicit zero target replaces the guidance with the role ladder and its divider", async () => {
+      const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "0");
+      expect(screen.queryByTestId("min-role-empty-state")).toBeNull();
+      expect(screen.getByRole("table")).toBeTruthy();
+      expect(screen.getByTestId("qualifying-divider")).toBeTruthy();
+    });
+  });
 
   // AC-10 (UWT-007) — Region selector lists exactly the nine intended regions
   // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The region selector lists exactly the nine intended regions
@@ -2865,8 +2799,8 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   // ── Phase 8: UX-hardening fold-in bindings (SG-001..003, USS-001..004, protected) ──
 
   // Cluster 1 / SG-001 — only the active tab description is visible.
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Only the active tab description is visible
-  Scenario("Only the active tab description is visible", ({ Given, When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: active tab description
+  Scenario("active tab description", ({ Given, When, Then, And }) => {
     Given('the cost-of-living calculator is open with the "Cost of living" tab active', () => {
       renderPage(<CostOfLivingCalculatorPage />);
     });
@@ -2889,14 +2823,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
     And('the "Minimum role" tab description is not visible', () => {
       expect(screen.getByTestId("tab-desc-min-role").className).toMatch(/\bhidden\b/);
-    });
-  });
-
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Active tab description follows the active tab
-  Scenario("Active tab description follows the active tab", async ({ Given, When, Then }) => {
-    Given('the cost-of-living calculator is open with the "Cost of living" tab active', () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-      expect(screen.getByTestId("tab-desc-cost").className).not.toMatch(/\bhidden\b/);
     });
 
     When('the user selects the "Savings" tab', async () => {
@@ -3156,54 +3082,51 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // Cluster 5 / USS-001 — Savings empty-state + auto-focus.
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The Savings tab guides the user to enter a salary
-  ScenarioOutline(
-    "The Savings tab guides the user to enter a salary",
-    async ({ Given, When, Then, And }, variables) => {
-      Given("the Savings tab is activated", () => {
-        // Activate the Savings tab via deep link so the tab content mounts (triggering the
-        // gross input's autoFocus) without a competing userEvent click that would steal focus
-        // to the tab trigger. mount === tab activation for this content.
-        navState.params = new URLSearchParams("tab=savings");
-        navState.setParams(navState.params);
-        renderPage(<CostOfLivingCalculatorPage />);
-      });
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: savings empty state
+  ScenarioOutline("savings empty state", async ({ Given, When, Then, And }, variables) => {
+    Given("the Savings tab is activated", () => {
+      // Activate the Savings tab via deep link so the tab content mounts (triggering the
+      // gross input's autoFocus) without a competing userEvent click that would steal focus
+      // to the tab trigger. mount === tab activation for this content.
+      navState.params = new URLSearchParams("tab=savings");
+      navState.setParams(navState.params);
+      renderPage(<CostOfLivingCalculatorPage />);
+    });
 
-      When("the gross monthly salary field is <salary>", async () => {
-        const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
-        await getScenarioUser().clear(input);
-        if (variables.salary === "zero") {
-          await getScenarioUser().type(input, "0");
-        }
-      });
+    When("the gross monthly salary field is <salary>", async () => {
+      const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
+      await getScenarioUser().clear(input);
+      if (variables.salary === "zero") {
+        await getScenarioUser().type(input, "0");
+      }
+    });
 
-      Then("a prominent empty-state prompt is shown in the data area", () => {
-        const panel = screen.getByTestId("savings-empty-state");
-        expect(panel).toBeTruthy();
-        // "Prominent" = a bordered panel, not a faint caption.
-        expect(panel.className).toMatch(/\bborder\b/);
-      });
+    Then("a prominent empty-state prompt is shown in the data area", () => {
+      const panel = screen.getByTestId("savings-empty-state");
+      expect(panel).toBeTruthy();
+      // "Prominent" = a bordered panel, not a faint caption.
+      expect(panel.className).toMatch(/\bborder\b/);
+    });
 
-      And("an instructional message is shown", () => {
-        expect(screen.getByTestId("savings-empty-state").textContent?.trim().length).toBeGreaterThan(0);
-      });
+    And("an instructional message is shown", () => {
+      expect(screen.getByTestId("savings-empty-state").textContent?.trim().length).toBeGreaterThan(0);
+    });
 
-      And("the savings comparison table is not shown", () => {
-        expect(screen.queryByRole("table")).toBeNull();
-      });
+    And("the savings comparison table is not shown", () => {
+      expect(screen.queryByRole("table")).toBeNull();
+    });
 
-      And("no savings figures or percentages are rendered without net income", () => {
-        expect(screen.queryByTestId("savings-essential")).toBeNull();
-      });
+    And("no savings figures or percentages are rendered without net income", () => {
+      expect(screen.queryByTestId("savings-essential")).toBeNull();
+    });
 
-      And("the gross salary input receives focus", async () => {
-        const input = document.getElementById("gross-salary-input");
-        expect(input).toBeTruthy();
-        // autoFocus moves focus on mount; allow the effect to settle.
-        await waitFor(() => expect(document.activeElement).toBe(input));
-      });
-    },
-  );
+    And("the gross salary input receives focus", async () => {
+      const input = document.getElementById("gross-salary-input");
+      expect(input).toBeTruthy();
+      // autoFocus moves focus on mount; allow the effect to settle.
+      await waitFor(() => expect(document.activeElement).toBe(input));
+    });
+  });
 
   // The single-city essentials preview is removed from the min-role tab (the tab now lists every
   // qualifying city, so a one-city example is redundant there).

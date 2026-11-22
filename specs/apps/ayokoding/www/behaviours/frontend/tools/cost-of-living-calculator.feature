@@ -154,11 +154,11 @@ Feature: Salary savings calculator
 
   # Behaviour: AYW-061
   # Behaviour: AYW-059
-  Scenario: The calculator is fully translated into Indonesian
+  Scenario: calculator in Indonesian
     Given I am on "/id/tools/cost-of-living-calculator"
     When the page finishes loading
     Then all labels, category names, tax wording, healthcare-scheme labels, relocation labels, and the disclaimer are in Indonesian
-    And the Country and City columns show Indonesian names where translations exist
+    And the cost-of-living table's Country and City columns show Indonesian names where translations exist
     And the City column of the minimum-role ladder shows Indonesian city and country names where translations exist
 
   # Behaviour: AYW-057
@@ -305,19 +305,6 @@ Feature: Salary savings calculator
     And the local-currency option follows the selected salary city
     And both inputs produce the same baseline and ranking
 
-  # Behaviour: AYW-058
-  Scenario: Savings shown in USD, local, and display currency
-    Given I am on the "Minimum role" tab with a baseline set
-    When I choose a display currency
-    Then each role row shows its essential savings in USD, the city's local currency, and the display currency
-
-  # Behaviour: AYW-059
-  Scenario: Every money column on the Minimum-role tab is dual currency
-    Given I am on the "Minimum role" tab with a baseline set and a display currency chosen
-    When I read a role row
-    Then every money column (p25, median, p75, non-salary comp, total comp, and essential savings) shows the display currency on the first line and the city's local currency on the second line
-    And no money column shows only a single currency
-
   # Behaviour: AYW-059
   Scenario: Household and area changes recalculate minimum-role candidates
     Given I am on the "Minimum role" tab and the "SWE I" role qualifies for the "single" household basis
@@ -351,8 +338,7 @@ Feature: Salary savings calculator
     Given I am on the "Minimum role" tab
     And I set the baseline source to "savings target"
     When I enter a monthly savings target of zero USD
-    Then the qualifying divider is shown
-    And the minimum marker appears on the lowest-ranked role in the ladder
+    Then the minimum marker appears on the lowest-ranked qualifying role, on each city row where it clears the bar
     And the qualifying (city, role) rows whose savings are at or above zero appear above the divider
 
   # Behaviour: AYW-060
@@ -413,16 +399,6 @@ Feature: Salary savings calculator
     Then the instructional message disappears
     And the savings comparison table is shown with computed savings figures
 
-  # Behaviour: AYW-059
-  # USS-002 — Minimum Role tab empty-state when no target entered
-  Scenario: Minimum Role tab shows empty-state when no target amount entered
-    Given a user has opened the Cost of Living Calculator
-    When they click the Minimum Role tab
-    And the Monthly savings target field contains no value or zero
-    Then the role comparison table is not shown
-    And an instructional message is shown
-    And no role salary data is visible
-
   # Behaviour: AYW-060
   # USS-003 — Area toggle confirms data update
   Scenario: Area toggle shows selected state and confirms data update
@@ -431,15 +407,6 @@ Feature: Salary savings calculator
     When the user clicks "Rural"
     Then the "Rural" button displays as the active/selected state
     And a visible signal confirms the table data has been recalculated for rural estimates
-
-  # Behaviour: AYW-060
-  # USS-004 — Tab name and sub-label are visually/aria distinct
-  Scenario: Tab sub-labels are visually separated from tab names
-    Given a user views the Cost of Living Calculator tab bar
-    When any tab is in the inactive state
-    Then the tab primary name and its descriptive sub-label are visually distinct
-    And the two pieces of text do not run together without a visual separator
-    And a screen reader announces them as separate text nodes
 
   # Behaviour: AYW-061
   # USS-005 — Tools index renders localized text
@@ -456,19 +423,23 @@ Feature: Salary savings calculator
     Then the heading and link labels are in Indonesian
     And no raw i18n key strings are visible
 
+  # Behaviour: AYW-058
+  # Behaviour: AYW-059
   # Behaviour: AYW-061
-  # SG-D-001 — Dual-currency display in cost-of-living and savings tables
-  Scenario: Cost-of-living table shows local currency and USD for each expense cell
+  # SG-D-001 — dual-currency display in the cost-of-living, savings, and minimum-role tables
+  Scenario: money columns show local currency and USD
     Given the user is on the Cost of living tab at desktop width
     When the table renders with at least one city row
     Then every monetary cell shows the local currency amount and the USD equivalent
     And no money cell shows a bare integer without a currency label
-
-  # Behaviour: AYW-058
-  Scenario: Savings table shows local currency and USD for net and savings columns
     Given the user is on the Savings tab with a gross salary entered
     When the table renders
     Then the Net, Essentials, Essential-savings, and After-lifestyle-savings columns show both local and USD amounts
+    Given I am on the "Minimum role" tab with a baseline set and a display currency chosen
+    When I read a role row
+    Then every money column (p25, median, p75, non-salary comp, total comp, and essential savings) shows the display currency on the first line and the city's local currency on the second line
+    And each role row shows its essential savings in USD, the city's local currency, and the display currency
+    And no money column shows only a single currency
 
   # SG-D-002 — covered by the "country shown beside city" scenario
 
@@ -501,16 +472,16 @@ Feature: Salary savings calculator
     Then the baseline-source control renders as a styled segmented button group, not a plain select
 
   # Behaviour: AYW-060
-  Scenario: Tab labels are clean single phrases
+  # USS-004 and tab-label cleanliness — each tab label is a single phrase, and each tab description is its own
+  # element linked to its trigger via aria-describedby (only the active one is visible; see "active tab description")
+  Scenario: tab labels
     Given the user views the tab bar at any breakpoint
     When the tab bar renders
     Then each tab trigger's visible text is its label only, with the description not fused into it
-
-  # Behaviour: AYW-060
-  Scenario: Each tab has a visible description associated with its trigger
-    Given the user views the calculator tab bar
-    When the tab bar renders
-    Then each of the three tabs has a visibly rendered description element associated with its trigger via aria-describedby
+    And the tab primary name and its descriptive sub-label are visually distinct
+    And the two pieces of text do not run together without a visual separator
+    And a screen reader announces them as separate text nodes
+    And each of the three tabs has a description element associated with its trigger via aria-describedby
     And no tab description text is duplicated elsewhere on screen
 
   # Behaviour: AYW-061
@@ -652,11 +623,14 @@ Feature: Salary savings calculator
     And the gross salary input displays its USD currency inline at the field
 
   # Behaviour: AYW-059
-  # AC-9 (UWT-006) — Minimum-role tab shows empty-state guidance for a BLANK savings target only
-  Scenario: A blank savings target shows empty-state guidance instead of the role ladder
+  # USS-002 and AC-9 (UWT-006) — a BLANK savings target shows empty-state guidance and no ladder. An explicit zero
+  # engages the baseline, so the role ladder shows instead (code behaviour, owner decision Q18c).
+  Scenario: minimum-role empty state
     Given I am on the "Minimum role" tab with the savings-target baseline and a blank target
     When the tab renders
     Then a minimum-role empty-state guidance message is shown
+    And the role comparison table is not shown
+    And no role salary data is visible
     But entering an explicit zero target replaces the guidance with the role ladder and its divider
 
   # Behaviour: AYW-060
@@ -741,16 +715,12 @@ Feature: Salary savings calculator
 
   # Behaviour: AYW-060
   # Cluster 1 / SG-001 — only the active tab description is visible; it follows the tab.
-  Scenario: Only the active tab description is visible
+  Scenario: active tab description
     Given the cost-of-living calculator is open with the "Cost of living" tab active
     When the page is rendered
     Then the "Cost of living" tab description is visible
     And the "Savings" tab description is not visible
     And the "Minimum role" tab description is not visible
-
-  # Behaviour: AYW-060
-  Scenario: Active tab description follows the active tab
-    Given the cost-of-living calculator is open with the "Cost of living" tab active
     When the user selects the "Savings" tab
     Then only the "Savings" tab description is visible
 
@@ -817,7 +787,7 @@ Feature: Salary savings calculator
     Then no healthcare-scheme badge is rendered in ALL CAPS while another is lower-case
 
   # Behaviour: AYW-058
-  Scenario Outline: The Savings tab guides the user to enter a salary
+  Scenario Outline: savings empty state
     Given the Savings tab is activated
     When the gross monthly salary field is <salary>
     Then a prominent empty-state prompt is shown in the data area

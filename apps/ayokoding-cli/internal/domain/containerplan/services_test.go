@@ -117,7 +117,7 @@ func (script *probeScript) probe(context.Context) error {
 // TestPollReadySucceeds requires success once a probe answers, with one
 // sleep per failed attempt.
 func TestPollReadySucceeds(t *testing.T) {
-	clock := &fakeClock{now: time.Now()}
+	clock := &fakeClock{now: time.Date(2026, time.November, 22, 9, 0, 0, 0, time.UTC)}
 	script := &probeScript{results: []error{errProbeDown, errProbeDown, nil}}
 	err := containerplan.PollReady(context.Background(), "postgres", time.Minute, clock.Now, clock.Sleep, script.probe)
 	if err != nil {
@@ -135,7 +135,7 @@ func TestPollReadySucceeds(t *testing.T) {
 // three attempts and two sleeps for a one-second timeout on the 500 ms
 // cadence, then the service-not-ready error.
 func TestPollReadyBoundedByTimeout(t *testing.T) {
-	clock := &fakeClock{now: time.Now()}
+	clock := &fakeClock{now: time.Date(2026, time.November, 22, 9, 0, 0, 0, time.UTC)}
 	script := &probeScript{results: []error{errProbeDown}}
 	err := containerplan.PollReady(context.Background(), "postgres", time.Second, clock.Now, clock.Sleep, script.probe)
 	if err == nil {
@@ -159,7 +159,7 @@ func TestPollReadyBoundedByTimeout(t *testing.T) {
 // TestPollReadyZeroTimeoutProbesOnce requires a single attempt when no wait
 // remains.
 func TestPollReadyZeroTimeoutProbesOnce(t *testing.T) {
-	clock := &fakeClock{now: time.Now()}
+	clock := &fakeClock{now: time.Date(2026, time.November, 22, 9, 0, 0, 0, time.UTC)}
 	script := &probeScript{results: []error{errProbeDown}}
 	err := containerplan.PollReady(context.Background(), "postgres", 0, clock.Now, clock.Sleep, script.probe)
 	if err == nil {
@@ -177,7 +177,7 @@ func TestPollReadyZeroTimeoutProbesOnce(t *testing.T) {
 func TestPollReadyHonoursCancel(t *testing.T) {
 	cancelled, cancel := context.WithCancel(context.Background())
 	cancel()
-	clock := &fakeClock{now: time.Now()}
+	clock := &fakeClock{now: time.Date(2026, time.November, 22, 9, 0, 0, 0, time.UTC)}
 	script := &probeScript{results: []error{errProbeDown}}
 	err := containerplan.PollReady(cancelled, "postgres", time.Minute, clock.Now, clock.Sleep, script.probe)
 	if !errors.Is(err, context.Canceled) {

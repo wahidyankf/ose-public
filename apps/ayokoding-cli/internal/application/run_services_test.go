@@ -75,7 +75,7 @@ func containsImageRun(argv []string) bool {
 // cleanup removing containers before the network.
 func TestRunServicePasses(t *testing.T) {
 	fake := &scriptedRuntime{run: okExecution("one row\n")}
-	clock := &serviceClock{now: time.Now()}
+	clock := &serviceClock{now: time.Date(2026, time.November, 22, 9, 0, 0, 0, time.UTC)}
 	cat := testCatalog()
 	for index, entry := range cat.Toolchains {
 		if entry.ID == "postgres" {
@@ -143,7 +143,7 @@ func TestRunServiceNeverReady124(t *testing.T) {
 		}
 		return application.Execution{Exit: 0}, nil
 	}}
-	clock := &serviceClock{now: time.Now()}
+	clock := &serviceClock{now: time.Date(2026, time.November, 22, 9, 0, 0, 0, time.UTC)}
 	req := withServiceClock(baseRunRequest(runContent(serviceCourse()), fake), clock)
 	_, err := application.Run(context.Background(), req)
 	if finding.ExitCode(err) != 124 {
@@ -173,7 +173,7 @@ func TestRunServiceUnreadyExit124(t *testing.T) {
 		}
 		return application.Execution{Exit: 0}, nil
 	}}
-	clock := &serviceClock{now: time.Now()}
+	clock := &serviceClock{now: time.Date(2026, time.November, 22, 9, 0, 0, 0, time.UTC)}
 	req := withServiceClock(baseRunRequest(runContent(serviceCourse()), fake), clock)
 	_, err := application.Run(context.Background(), req)
 	if finding.ExitCode(err) != 124 {
@@ -210,7 +210,7 @@ func TestRunEnvErrorStopsAtOnce(t *testing.T) {
 		}
 		return application.Execution{Exit: 0}, nil
 	}}
-	clock := &serviceClock{now: time.Now()}
+	clock := &serviceClock{now: time.Date(2026, time.November, 22, 9, 0, 0, 0, time.UTC)}
 	req := withServiceClock(application.RunRequest{
 		Content: content,
 		Catalog: testCatalog(),
@@ -293,7 +293,7 @@ func TestRunServicePullFailure(t *testing.T) {
 		run:     okExecution("one row\n"),
 		pullErr: &finding.Error{Code: finding.EnvRuntimeRefused, Message: "pull failed"},
 	}
-	clock := &serviceClock{now: time.Now()}
+	clock := &serviceClock{now: time.Date(2026, time.November, 22, 9, 0, 0, 0, time.UTC)}
 	req := withServiceClock(baseRunRequest(runContent(serviceCourse()), fake), clock)
 	_, err := application.Run(context.Background(), req)
 	if finding.ExitCode(err) != 125 {
@@ -329,7 +329,7 @@ func TestRunServiceStartFailurePropagates(t *testing.T) {
 		}
 		return application.Execution{Exit: 0}, nil
 	}}
-	clock := &serviceClock{now: time.Now()}
+	clock := &serviceClock{now: time.Date(2026, time.November, 22, 9, 0, 0, 0, time.UTC)}
 	req := withServiceClock(baseRunRequest(runContent(serviceCourse()), fake), clock)
 	_, err := application.Run(context.Background(), req)
 	if finding.ExitCode(err) != 125 {

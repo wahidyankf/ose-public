@@ -1,3 +1,5 @@
+//go:build integration || e2e
+
 package bdd_test
 
 import (
@@ -21,37 +23,13 @@ import (
 	"github.com/wahidyankf/ose-public/apps/ayokoding-cli/toolchains"
 )
 
-// allZeroCommit is the 40-zero commit the stamped-build scenarios name.
-const allZeroCommit = "0000000000000000000000000000000000000000"
-
-// errStepFailed marks every step-assertion failure; the text after it names
-// the mismatch.
-var errStepFailed = errors.New("step assertion failed")
-
-// recipeState carries the derived-image recipe for the tag scenario.
-type recipeState struct {
-	set        bool
-	id         string
-	base       string
-	dockerfile []byte
-	before     string
-}
-
-// world carries one scenario from Given through Then.
-type world struct {
-	driver          Driver
-	adapter         string
-	env             map[string]string
-	pending         []string
-	version         string
-	commit          string
-	closeAfter      int
+// levelState is the scenario state that the integration and end-to-end levels
+// stage on disk, in fake containers, and in host variables.
+type levelState struct {
 	content         string
 	course          string
 	unit            string
-	catalog         string
 	recipe          recipeState
-	result          Result
 	syncTemp        string
 	hostEnv         map[string]hostValue
 	cliBinary       string
@@ -63,6 +41,21 @@ type world struct {
 	podmanImage     string
 	nativeTrace     []string
 	nativeImageID   string
+}
+
+// recipeState carries the derived-image recipe for the tag scenario.
+type recipeState struct {
+	set        bool
+	id         string
+	base       string
+	dockerfile []byte
+	before     string
+}
+
+// hostValue remembers one host variable for the After hook.
+type hostValue struct {
+	body    string
+	present bool
 }
 
 // fixturePath resolves a committed fixture file for every driver: the unit
@@ -95,45 +88,13 @@ func requireFixture(path string) error {
 	return nil
 }
 
-// run invokes args with the scenario environment and records the result.
-func (w *world) run(args []string) error {
-	result, err := w.driver.Invoke(Invocation{
-		Args:            args,
-		Env:             w.env,
-		Version:         w.version,
-		Commit:          w.commit,
-		CloseAfterLines: w.closeAfter,
-	})
-	if err != nil {
-		return fmt.Errorf("%w: invoke %q", errStepFailed, args)
-	}
-	w.result = result
-	return nil
-}
-
-// given establishes scenario context: stamps, environment, fixtures, faults.
-func (w *world) given(text string) error {
+// givenLevel establishes the integration-level scenario context: fixtures,
+// container faults, and the staged interrupt.
+func (w *world) givenLevel(text string) error {
 	if handled, err := w.givenAdds(text); handled {
 		return err
 	}
 	switch text {
-	case `a build stamped with version "v0.0.0-test" and an all-zero commit`:
-		w.version = "v0.0.0-test"
-		w.commit = allZeroCommit
-		return nil
-	case `the environment variable NO_COLOR is set`:
-		w.env["NO_COLOR"] = "1"
-		return nil
-	case `a fixture course with a failing run`:
-		w.env["AYOKODING_FAULT"] = "failing-run"
-		return nil
-	case `the harness fails internally while checking a course`:
-		w.env["AYOKODING_FAULT"] = "panic"
-		w.pending = []string{"examples", "check", "--course", "demo"}
-		return nil
-	case `a reader that closes standard output after one line`:
-		w.closeAfter = 1
-		return nil
 	case `an opted-in course`:
 		w.content = fixtureCourses()
 		w.course = "broken-layout"
@@ -494,50 +455,26 @@ func (w *world) setHostEnv(key, value string) error {
 	return nil
 }
 
-// hostValue remembers one host variable for the After hook.
-type hostValue struct {
-	body    string
-	present bool
-}
-
 // restoreHostEnv returns every scenario host variable to its before state.
-func (w *world) restoreHostEnv() {
-	for key, saved := range w.hostEnv {
+func (state *levelState) restoreHostEnv() {
+	for key, saved := range state.hostEnv {
 		if saved.present {
 			_ = os.Setenv(key, saved.body)
 		} else {
 			_ = os.Unsetenv(key)
 		}
 	}
-	w.hostEnv = nil
+	state.hostEnv = nil
 }
 
-// when performs the scenario action.
-func (w *world) when(text string) error {
+// whenLevel performs the integration-level scenario action.
+func (w *world) whenLevel(text string) error {
 	if handled, err := w.whenAdds(text); handled {
 		return err
 	}
 	switch text {
-	case `I ask ayokoding-cli for help`:
-		return w.run([]string{"--help"})
-	case `I run ayokoding-cli with no arguments`:
-		return w.run([]string{})
-	case `I ask ayokoding-cli for its version`:
-		return w.run([]string{"--version"})
-	case `I run ayokoding-cli with the flag "--no-such-flag"`:
-		return w.run([]string{"--no-such-flag"})
 	case `I run "examples run" with JSON output and no selection`:
 		return w.run([]string{"examples", "run", "--output", "json"})
-	case `I check that course with colour set to auto`:
-		return w.run([]string{"examples", "check", "--course", "demo", "--color", "auto"})
-	case `the command ends`:
-		if len(w.pending) == 0 {
-			return fmt.Errorf("%w: no pending command for %q", errStepFailed, text)
-		}
-		return w.run(w.pending)
-	case `I check a fixture course with many findings`:
-		w.env["AYOKODING_FAULT"] = "spam"
-		return w.run([]string{"examples", "check", "--course", "many"})
 	case `I validate the course`:
 		args := []string{"examples", "validate", "--course", w.course, "--content", w.content}
 		if w.catalog != "" {
@@ -586,45 +523,6 @@ func (w *world) runRunCourse(extra ...string) error {
 	return w.run(append(args, extra...))
 }
 
-// requireStatus asserts the recorded exit status.
-func (w *world) requireStatus(want int) error {
-	if w.result.Status != want {
-		return fmt.Errorf("%w: status=%d, want %d (stdout=%q stderr=%q)",
-			errStepFailed, w.result.Status, want, w.result.Stdout, w.result.Stderr)
-	}
-	return nil
-}
-
-// requireStdoutContains asserts standard output names every value.
-func (w *world) requireStdoutContains(values ...string) error {
-	for _, value := range values {
-		if !strings.Contains(w.result.Stdout, value) {
-			return fmt.Errorf("%w: stdout missing %q (stdout=%q)", errStepFailed, value, w.result.Stdout)
-		}
-	}
-	return nil
-}
-
-// requireStderrContains asserts standard error names every value.
-func (w *world) requireStderrContains(values ...string) error {
-	for _, value := range values {
-		if !strings.Contains(w.result.Stderr, value) {
-			return fmt.Errorf("%w: stderr missing %q (stderr=%q)", errStepFailed, value, w.result.Stderr)
-		}
-	}
-	return nil
-}
-
-// requireVersionNames asserts the version names the build, commit, and catalog.
-func (w *world) requireVersionNames() error {
-	for _, value := range []string{w.version, w.commit, "catalog "} {
-		if !strings.Contains(w.result.Stdout, value) {
-			return fmt.Errorf("%w: version names no %q (stdout=%q)", errStepFailed, value, w.result.Stdout)
-		}
-	}
-	return nil
-}
-
 // requireJSONError asserts standard error is one JSON document with a code.
 func (w *world) requireJSONError(code string) error {
 	trimmed := strings.TrimSpace(w.result.Stderr)
@@ -651,52 +549,25 @@ func (w *world) requireJSONError(code string) error {
 	return nil
 }
 
-// thenContract asserts the command-line contract output: help text,
-// version, usage errors, and colour discipline.
+// thenContract asserts the command-line contract output that needs the
+// missing-selection error document.
 func (w *world) thenContract(text string) error {
 	switch text {
-	case `standard output lists the commands "examples" and "toolchains"`:
-		return w.requireStdoutContains("examples", "toolchains")
-	case `standard output lists the exit statuses 0, 1, 2, 124, 125, 126, 127, 130, and 141 with their meanings`:
-		return w.requireStdoutContains("Exit statuses", "0", "1", "2", "124", "125", "126", "127", "130", "141")
-	case `standard output is empty`:
-		if w.result.Stdout != "" {
-			return fmt.Errorf("%w: stdout not empty (stdout=%q)", errStepFailed, w.result.Stdout)
-		}
-		return nil
-	case `standard error shows the usage`:
-		return w.requireStderrContains("Usage:")
-	case `standard output names version "v0.0.0-test", the all-zero commit, and the catalog hash`:
-		return w.requireVersionNames()
 	case `standard error is one JSON document with error code "ayokoding.usage.missing-selection"`:
 		return w.requireJSONError("ayokoding.usage.missing-selection")
-	case `neither stream contains an escape sequence`:
-		if strings.Contains(w.result.Stdout, "\x1b") || strings.Contains(w.result.Stderr, "\x1b") {
-			return fmt.Errorf("%w: streams carry colour (stdout=%q stderr=%q)",
-				errStepFailed, w.result.Stdout, w.result.Stderr)
-		}
-		return nil
 	default:
 		return w.thenPhase2(text)
 	}
 }
 
-// then asserts the scenario outcome.
-func (w *world) then(text string) error {
+// thenLevel asserts the integration-level scenario outcome.
+func (w *world) thenLevel(text string) error {
 	if handled, err := w.thenAdds(text); handled {
 		return err
 	}
 	switch text {
-	case `it exits with status 0`:
-		return w.requireStatus(0)
 	case `it exits with status 1`:
 		return w.requireStatus(1)
-	case `it exits with status 2`:
-		return w.requireStatus(2)
-	case `the exit status is 141`:
-		return w.requireStatus(141)
-	case `each failed run is labelled with the word "failed"`:
-		return w.requireStdoutContains("failed")
 	case `the run is labelled "passed"`:
 		if err := w.requireStatus(0); err != nil {
 			return err
@@ -722,13 +593,6 @@ func (w *world) then(text string) error {
 		return w.requireStdoutContains("passed (static)")
 	case `the unit is labelled "passed (static)"`:
 		return w.requireStdoutContains("passed (static)")
-	case `standard error names error code "ayokoding.internal.panic"`:
-		return w.requireStderrContains("ayokoding.internal.panic")
-	case `standard error contains no stack trace`:
-		if strings.Contains(w.result.Stderr, "goroutine") {
-			return fmt.Errorf("%w: stderr leaks a stack trace (stderr=%q)", errStepFailed, w.result.Stderr)
-		}
-		return nil
 	default:
 		return w.thenPodman(text)
 	}
@@ -823,21 +687,18 @@ func (w *world) requireToolchainLines() error {
 	return nil
 }
 
-// registerSteps binds every corpus step through one dispatcher per keyword.
-func registerSteps(ctx *godog.ScenarioContext, driver Driver, adapter string) {
-	scenario := &world{driver: driver, adapter: adapter, env: map[string]string{}}
-	ctx.Given(`^(.*)$`, scenario.given)
-	ctx.When(`^(.*)$`, scenario.when)
-	ctx.Then(`^(.*)$`, scenario.then)
+// registerHooks removes what the scenario staged on disk and restores the
+// host variables it set, after every scenario at this level.
+func (state *levelState) registerHooks(ctx *godog.ScenarioContext) {
 	ctx.After(func(hookCtx context.Context, _ *godog.Scenario, _ error) (context.Context, error) {
-		scenario.restoreHostEnv()
-		if scenario.syncTemp == "" {
+		state.restoreHostEnv()
+		if state.syncTemp == "" {
 			return hookCtx, nil
 		}
-		if err := os.RemoveAll(scenario.syncTemp); err != nil {
+		if err := os.RemoveAll(state.syncTemp); err != nil {
 			return hookCtx, fmt.Errorf("%w: remove sync temp dir: %w", errStepFailed, err)
 		}
-		scenario.syncTemp = ""
+		state.syncTemp = ""
 		return hookCtx, nil
 	})
 }

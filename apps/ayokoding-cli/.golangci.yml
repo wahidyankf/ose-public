@@ -139,6 +139,25 @@ linters:
             - $gostd
             - github.com/wahidyankf/ose-public/apps/ayokoding-cli
             - golang.org/x/sys/unix$
+        # Unit scope starts no process, opens no socket or database, and draws no nondeterministic number.
+        unit-scope:
+          files:
+            - "$test"
+            - "**/tests/architecture/*.go"
+            - "!**/tests/integration/**"
+          deny:
+            - pkg: "os/exec"
+              desc: "unit scope starts no process"
+            - pkg: "net"
+              desc: "unit scope opens no socket"
+            - pkg: "database/sql"
+              desc: "unit scope opens no database"
+            - pkg: "math/rand"
+              desc: "unit scope is deterministic"
+            - pkg: "math/rand/v2"
+              desc: "unit scope is deterministic"
+            - pkg: "crypto/rand"
+              desc: "unit scope is deterministic"
     exhaustive:
       # A map keyed by an enumerated type must name every member, as a switch over it must.
       check:
@@ -156,6 +175,30 @@ linters:
         - ^github\.com/wahidyankf/ose-public/apps/ayokoding-cli/internal/domain/catalog\.Toolchain$
         - ^github\.com/wahidyankf/ose-public/apps/ayokoding-cli/internal/domain/finding\.Finding$
         - ^github\.com/wahidyankf/ose-public/apps/ayokoding-cli/internal/domain/containerplan\.Invocation$
+    forbidigo:
+      # analyze-types resolves receivers, so t.Setenv and t.TempDir match by type.
+      analyze-types: true
+      forbid:
+        - pattern: '^time\.(Now|Sleep|After|AfterFunc|NewTimer|NewTicker|Tick|Since|Until)$'
+          msg: "unit scope takes time from an injected clock, not the wall clock"
+        - pattern: '^os\.(Getenv|LookupEnv|Setenv|Unsetenv|Environ|Getwd|Chdir|ReadFile|ReadDir|WriteFile|Open|OpenFile|Create|CreateTemp|Mkdir|MkdirAll|MkdirTemp|TempDir|Remove|RemoveAll|Rename|Stat|Lstat|DirFS|Symlink|Readlink|Link)$'
+          msg: "unit scope reads no environment or disk; inject a value or an fs.FS double"
+        - pattern: '^\(\*testing\.(T|common)\)\.(Setenv|TempDir|Chdir)$'
+          msg: "unit scope sets no environment and creates no directories; inject a double"
+        - pattern: '^(exec\.Command|exec\.CommandContext)$'
+          msg: "unit scope starts no process; the real adapter owns process work"
+        - pattern: '^net\.(Listen|ListenPacket|Dial|DialTimeout|LookupHost|LookupIP)$'
+          msg: "unit scope opens no socket"
+        - pattern: '^http\.(Get|Head|Post|DefaultClient|DefaultTransport)$'
+          msg: "unit scope makes no network request"
+        - pattern: '^httptest\.NewServer$'
+          msg: "unit scope opens a listener; httptest recorders are the in-memory double"
+        - pattern: '^runtime\.Caller$'
+          msg: "unit scope locates no source file; pass fixtures in as values"
+        - pattern: '^filepath\.(Walk|WalkDir|Abs)$'
+          msg: "unit scope walks no disk and reads no working directory"
+        - pattern: '^rand\.'
+          msg: "unit scope is deterministic; inject the randomness"
     goconst:
       # Scenario data should state its inputs instead of hiding them behind production constants.
       ignore-tests: true
@@ -211,6 +254,15 @@ linters:
         text: '^Update returns interface \(charm\.land/bubbletea/v2\.Model\)$'
         linters:
           - ireturn
+      # Scope, not suppression: forbidigo judges unit-test files and the architecture check only.
+      - path-except: '(_test\.go|tests/architecture/[^/]+\.go)$'
+        linters:
+          - forbidigo
+      # The integration level runs real files, processes, and clocks by design.
+      - path: "^tests/integration/"
+        linters:
+          - forbidigo
+          - depguard
 
 issues:
   max-issues-per-linter: 0

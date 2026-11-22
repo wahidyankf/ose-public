@@ -86,7 +86,7 @@
     "test:integration": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "AYOKODING_BDD_ADAPTER=integration go test -count=1 ./tests/bdd ./tests/integration/...",
+        "command": "go test -count=1 -tags integration ./tests/bdd ./tests/integration/... ./internal/application ./internal/adapters/cli ./internal/adapters/containers ./internal/adapters/content ./tests/architecture",
         "cwd": "apps/ayokoding-cli"
       },
       "cache": false

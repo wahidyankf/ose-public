@@ -1,7 +1,8 @@
+//go:build integration || e2e
+
 package bdd_test
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -155,12 +156,6 @@ func (w *world) whenAdds(text string) (bool, error) {
 	switch text {
 	case `I list the toolchains with --no-input`:
 		return true, w.run(w.toolchainsList("--no-input"))
-	case `I list the toolchains with JSON output`:
-		return true, w.run(w.toolchainsList("--output", "json"))
-	case `I check that course with colour set to "always"`:
-		return true, w.run([]string{"examples", "check", "--course", "demo", "--color", "always"})
-	case `I check that course with colour set to "never"`:
-		return true, w.run([]string{"examples", "check", "--course", "demo", "--color", "never"})
 	case `I run "examples run" with "text" output and no selection`:
 		return true, w.run([]string{"examples", "run", "--output", "text"})
 	case `I run "examples run" with "json" output and no selection`:
@@ -200,12 +195,6 @@ func (w *world) thenAdds(text string) (bool, error) {
 		return true, w.requireOnlyUnit(match[1])
 	}
 	switch text {
-	case `the colour in the output is "present"`:
-		return true, w.requireColour(true)
-	case `the colour in the output is "absent"`:
-		return true, w.requireColour(false)
-	case `standard output is one JSON document`:
-		return true, w.requireJSONDocument()
 	case `the list names only the toolchains python and postgres`:
 		return true, w.requireOnlyToolchains("python", "postgres")
 	case `the run reports its first comparison and no nondeterministic finding`:
@@ -216,38 +205,6 @@ func (w *world) thenAdds(text string) (bool, error) {
 		return true, w.requireIDAndTagLines()
 	}
 	return false, nil
-}
-
-// toolchainsList builds the toolchain list command with the scenario catalog.
-func (w *world) toolchainsList(extra ...string) []string {
-	args := []string{"toolchains", "list"}
-	if w.catalog != "" {
-		args = append(args, "--catalog", w.catalog)
-	}
-	return append(args, extra...)
-}
-
-// requireColour asserts that either stream carries an escape sequence, or
-// that neither does.
-func (w *world) requireColour(present bool) error {
-	coloured := strings.Contains(w.result.Stdout, "\x1b") || strings.Contains(w.result.Stderr, "\x1b")
-	if coloured != present {
-		return fmt.Errorf("%w: colour present=%t, want %t (stdout=%q stderr=%q)",
-			errStepFailed, coloured, present, w.result.Stdout, w.result.Stderr)
-	}
-	return nil
-}
-
-// requireJSONDocument asserts standard output is one JSON document.
-func (w *world) requireJSONDocument() error {
-	if err := w.requireStatus(0); err != nil {
-		return err
-	}
-	var document any
-	if err := json.Unmarshal([]byte(strings.TrimSpace(w.result.Stdout)), &document); err != nil {
-		return fmt.Errorf("%w: stdout is not one JSON document (stdout=%q)", errStepFailed, w.result.Stdout)
-	}
-	return nil
 }
 
 // requireOnlyToolchains asserts the list names exactly the wanted toolchains.
@@ -296,12 +253,13 @@ func (w *world) requireFirstComparisonOnly() error {
 }
 
 // requireFakeStarted asserts the fake container CLI logged a started container.
+// The steps that aim FAKECONTAINER_LOG always put the log in the scenario
+// scratch directory, so the log is read from there.
 func (w *world) requireFakeStarted() error {
-	path := os.Getenv("FAKECONTAINER_LOG")
-	if path == "" {
+	if w.syncTemp == "" {
 		return fmt.Errorf("%w: no fake container log is set", errStepFailed)
 	}
-	raw, err := os.ReadFile(path)
+	raw, err := os.ReadFile(filepath.Join(w.syncTemp, "fakecontainer.log"))
 	if err != nil {
 		return fmt.Errorf("%w: read fake container log: %w", errStepFailed, err)
 	}

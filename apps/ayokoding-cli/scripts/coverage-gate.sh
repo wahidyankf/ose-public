@@ -5,7 +5,7 @@ root=$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd)
 cd "$root"
 
 mkdir -p coverage
-go test -race -count=1 ./tests/architecture ./tests/coverage
+go test -race -count=1 ./tests/coverage
 
 # The whole authored production tree is measured: every package under internal,
 # cmd, and toolchains, minus Windows-only files that a Linux run never compiles.
@@ -16,7 +16,7 @@ coverpkg=./internal/...,./cmd/...,./toolchains
 production_files=$(find internal cmd toolchains -name '*.go' ! -name '*_test.go' ! -name '*_windows.go' | sort | paste -sd, -)
 
 go test -race -count=1 -coverpkg="$coverpkg" -coverprofile=coverage/unit.out ./internal/... ./cmd/...
-AYOKODING_BDD_ADAPTER=unit go test -race -count=1 -coverpkg="$coverpkg" -coverprofile=coverage/bdd.out ./tests/bdd
+go test -race -count=1 -coverpkg="$coverpkg" -coverprofile=coverage/bdd.out ./tests/bdd
 {
 	cat coverage/unit.out
 	grep -v '^mode:' coverage/bdd.out

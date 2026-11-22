@@ -83,6 +83,14 @@ Course code examples run through `examples:check`, built on
 since the merge base for the PR gate, and `--configuration=full` covers every opted-in course
 for the monthly run. The harness contract lives in the CLI README linked above.
 
+## Unit coverage
+
+`test:unit` holds the 99% line floor read from the unit run only (contract C15): plain unit
+tests plus the BDD unit bindings, never merged with integration or end-to-end coverage. The
+only coverage exclusions are non-production code (category N): the test doubles and fixtures
+under `src/test/**` and the test files themselves. Every production file is measured, including
+the app shell, the app router pages, the tRPC routers, the content adapters, and the scripts.
+
 ## Delivery boundary
 
 This pre-alpha site is delivered through the repository’s automated workflow. Keep local work on

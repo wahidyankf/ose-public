@@ -6,9 +6,8 @@ expect.extend(matchers);
 
 // IntersectionObserver is not available in jsdom — must use class syntax (arrow fn can't be `new`ed)
 class IntersectionObserverMock {
-  observe = vi.fn();
-  unobserve = vi.fn();
-  disconnect = vi.fn();
-  constructor(_callback: IntersectionObserverCallback, _options?: IntersectionObserverInit) {}
+  observe = vi.fn<(...args: unknown[]) => unknown>();
+  unobserve = vi.fn<(...args: unknown[]) => unknown>();
+  disconnect = vi.fn<(...args: unknown[]) => unknown>();
 }
 vi.stubGlobal("IntersectionObserver", IntersectionObserverMock);

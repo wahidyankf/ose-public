@@ -7,7 +7,7 @@ import type { AppSettings } from "@/contexts/settings/application";
 
 const settingsHarness = vi.hoisted(() => ({
   settings: { name: "Tester", restSeconds: 60, darkMode: false, lang: "en" } as AppSettings,
-  update: vi.fn(),
+  update: vi.fn<(patch: Partial<AppSettings>) => Promise<void>>(),
 }));
 
 vi.mock("@/contexts/settings/presentation/use-settings", () => ({
@@ -26,11 +26,15 @@ const feature = await loadFeature(
   ),
 );
 
-const runtime = { runPromise: vi.fn().mockResolvedValue(undefined) } as unknown as AppRuntime;
+const runtime = {
+  runPromise: vi.fn<(...args: unknown[]) => unknown>().mockResolvedValue(undefined),
+} as unknown as AppRuntime;
 let rendered: RenderResult;
 
 function renderSettings() {
-  rendered = render(<SettingsScreen runtime={runtime} darkMode={false} onToggleDarkMode={vi.fn()} />);
+  rendered = render(
+    <SettingsScreen runtime={runtime} darkMode={false} onToggleDarkMode={vi.fn<(...args: unknown[]) => unknown>()} />,
+  );
 }
 
 describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
@@ -57,7 +61,13 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
     When("the user selects 30s rest", async () => {
       fireEvent.click(screen.getByTestId("rest-chip-30"));
       await waitFor(() => expect(settingsHarness.update).toHaveBeenCalledWith({ restSeconds: 30 }));
-      rendered.rerender(<SettingsScreen runtime={runtime} darkMode={false} onToggleDarkMode={vi.fn()} />);
+      rendered.rerender(
+        <SettingsScreen
+          runtime={runtime}
+          darkMode={false}
+          onToggleDarkMode={vi.fn<(...args: unknown[]) => unknown>()}
+        />,
+      );
     });
     Then("the 30s rest chip is active", () => {
       expect(screen.getByTestId("rest-chip-30")).toHaveAttribute("data-active", "true");
@@ -84,7 +94,13 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
       fireEvent.change(input, { target: { value: "Sam" } });
       fireEvent.blur(input);
       await waitFor(() => expect(settingsHarness.update).toHaveBeenCalledWith({ name: "Sam" }));
-      rendered.rerender(<SettingsScreen runtime={runtime} darkMode={false} onToggleDarkMode={vi.fn()} />);
+      rendered.rerender(
+        <SettingsScreen
+          runtime={runtime}
+          darkMode={false}
+          onToggleDarkMode={vi.fn<(...args: unknown[]) => unknown>()}
+        />,
+      );
     });
     Then('the profile header shows "Sam"', () => {
       expect(screen.getByText("Sam")).toBeVisible();

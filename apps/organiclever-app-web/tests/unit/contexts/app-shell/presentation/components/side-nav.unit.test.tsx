@@ -32,7 +32,7 @@ afterEach(() => {
 
 describe("SideNav", () => {
   it("renders four nav items with correct hrefs", () => {
-    render(<SideNav onLogEntry={vi.fn()} />);
+    render(<SideNav onLogEntry={vi.fn<(...args: unknown[]) => unknown>()} />);
     expect(screen.getByText("Home").closest("a")?.getAttribute("href")).toBe("/app/home");
     expect(screen.getByText("History").closest("a")?.getAttribute("href")).toBe("/app/history");
     expect(screen.getByText("Progress").closest("a")?.getAttribute("href")).toBe("/app/progress");
@@ -41,13 +41,13 @@ describe("SideNav", () => {
 
   it("marks the current pathname item with aria-current=page", () => {
     mockPathname = "/app/progress";
-    render(<SideNav onLogEntry={vi.fn()} />);
+    render(<SideNav onLogEntry={vi.fn<(...args: unknown[]) => unknown>()} />);
     const progressLink = screen.getByText("Progress").closest("a");
     expect(progressLink?.getAttribute("aria-current")).toBe("page");
   });
 
   it("calls onLogEntry when the Log entry button is clicked", () => {
-    const onLogEntry = vi.fn();
+    const onLogEntry = vi.fn<(...args: unknown[]) => unknown>();
     render(<SideNav onLogEntry={onLogEntry} />);
     fireEvent.click(screen.getByText("Log entry"));
     expect(onLogEntry).toHaveBeenCalledTimes(1);

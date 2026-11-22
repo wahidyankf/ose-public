@@ -1,11 +1,16 @@
+/* oxlint-disable vitest/no-standalone-expect -- @effect/vitest it.effect blocks inside layer() are not recognised as test blocks */
 import { layer } from "@effect/vitest";
 import { Effect, Layer, Schema } from "effect";
 import { PGlite } from "@electric-sql/pglite";
-import { expect } from "vitest";
+import { afterEach, beforeEach, expect } from "vitest";
 import { EntryName, EntryPayload } from "../../../../../src/contexts/journal/domain/schema";
 import { appendEntries, listEntries } from "../../../../../src/contexts/journal/infrastructure/journal-store";
 import { runMigrations } from "../../../../../src/contexts/journal/infrastructure/run-migrations";
 import { PgliteService } from "../../../../../src/contexts/journal/infrastructure/runtime";
+import { FIXED_INSTANT, FIXED_MS, freezeClock, restoreClock, setClock } from "../../../support/doubles";
+
+beforeEach(() => freezeClock());
+afterEach(() => restoreClock());
 
 const TestPgliteLayer = Layer.scoped(
   PgliteService,
@@ -22,7 +27,7 @@ const TestPgliteLayer = Layer.scoped(
 const makeName = (value: string) => Schema.decodeUnknownSync(EntryName)(value);
 const makePayload = (value: Record<string, unknown>) => value as unknown as typeof EntryPayload.Type;
 const makeTimestamp = () =>
-  new Date().toISOString() as unknown as import("../../../../../src/contexts/journal/domain/schema").IsoTimestamp;
+  FIXED_INSTANT as unknown as import("../../../../../src/contexts/journal/domain/schema").IsoTimestamp;
 const resetEntries = Effect.gen(function* () {
   const { db } = yield* PgliteService;
   yield* Effect.promise(() => db.exec("TRUNCATE journal_entries RESTART IDENTITY"));
@@ -120,7 +125,7 @@ layer(TestPgliteLayer)("journal-store integration tests", (it) => {
             labels: [] as const,
           },
         ]);
-        yield* Effect.promise(() => new Promise((resolve) => setTimeout(resolve, 10)));
+        yield* Effect.sync(() => setClock(FIXED_MS + 10));
         const secondTimestamp = makeTimestamp();
         yield* appendEntries([
           {

@@ -15,32 +15,58 @@ afterEach(() => {
 
 function makeRuntime(): JournalRuntime {
   return {
-    runPromise: vi.fn().mockResolvedValue([]),
+    runPromise: vi.fn<(...args: unknown[]) => unknown>().mockResolvedValue([]),
   } as unknown as JournalRuntime;
 }
 
 describe("LearningLogger", () => {
   it("renders nothing when isOpen is false", () => {
     const { container } = render(
-      <LearningLogger isOpen={false} onClose={vi.fn()} onSaved={vi.fn()} runtime={makeRuntime()} />,
+      <LearningLogger
+        isOpen={false}
+        onClose={vi.fn<(...args: unknown[]) => unknown>()}
+        onSaved={vi.fn<(...args: unknown[]) => unknown>()}
+        runtime={makeRuntime()}
+      />,
     );
     expect(container.firstChild).toBeNull();
   });
 
   it("renders form fields when open", () => {
-    render(<LearningLogger isOpen={true} onClose={vi.fn()} onSaved={vi.fn()} runtime={makeRuntime()} />);
+    render(
+      <LearningLogger
+        isOpen={true}
+        onClose={vi.fn<(...args: unknown[]) => unknown>()}
+        onSaved={vi.fn<(...args: unknown[]) => unknown>()}
+        runtime={makeRuntime()}
+      />,
+    );
     expect(screen.getByText("Log learning")).toBeDefined();
     expect(screen.getByPlaceholderText("e.g. React hooks, Spanish vocab, Piano scales")).toBeDefined();
   });
 
   it("Save is disabled when subject is empty", () => {
-    render(<LearningLogger isOpen={true} onClose={vi.fn()} onSaved={vi.fn()} runtime={makeRuntime()} />);
+    render(
+      <LearningLogger
+        isOpen={true}
+        onClose={vi.fn<(...args: unknown[]) => unknown>()}
+        onSaved={vi.fn<(...args: unknown[]) => unknown>()}
+        runtime={makeRuntime()}
+      />,
+    );
     const saveButton = screen.getByText("Save").closest("button");
     expect(saveButton?.disabled).toBe(true);
   });
 
   it("Save is enabled when subject is filled", () => {
-    render(<LearningLogger isOpen={true} onClose={vi.fn()} onSaved={vi.fn()} runtime={makeRuntime()} />);
+    render(
+      <LearningLogger
+        isOpen={true}
+        onClose={vi.fn<(...args: unknown[]) => unknown>()}
+        onSaved={vi.fn<(...args: unknown[]) => unknown>()}
+        runtime={makeRuntime()}
+      />,
+    );
     const subjectInput = screen.getByPlaceholderText("e.g. React hooks, Spanish vocab, Piano scales");
     fireEvent.change(subjectInput, { target: { value: "TypeScript generics" } });
     const saveButton = screen.getByText("Save").closest("button");
@@ -48,8 +74,15 @@ describe("LearningLogger", () => {
   });
 
   it("calls onSaved after saving with valid subject", () => {
-    const onSaved = vi.fn();
-    render(<LearningLogger isOpen={true} onClose={vi.fn()} onSaved={onSaved} runtime={makeRuntime()} />);
+    const onSaved = vi.fn<(...args: unknown[]) => unknown>();
+    render(
+      <LearningLogger
+        isOpen={true}
+        onClose={vi.fn<(...args: unknown[]) => unknown>()}
+        onSaved={onSaved}
+        runtime={makeRuntime()}
+      />,
+    );
     const subjectInput = screen.getByPlaceholderText("e.g. React hooks, Spanish vocab, Piano scales");
     fireEvent.change(subjectInput, { target: { value: "Effect TS" } });
     fireEvent.click(screen.getByText("Save"));
@@ -57,7 +90,14 @@ describe("LearningLogger", () => {
   });
 
   it("duration preset chips toggle the duration value", () => {
-    render(<LearningLogger isOpen={true} onClose={vi.fn()} onSaved={vi.fn()} runtime={makeRuntime()} />);
+    render(
+      <LearningLogger
+        isOpen={true}
+        onClose={vi.fn<(...args: unknown[]) => unknown>()}
+        onSaved={vi.fn<(...args: unknown[]) => unknown>()}
+        runtime={makeRuntime()}
+      />,
+    );
     const chip30 = screen.getAllByText("30")[0];
     fireEvent.click(chip30 as HTMLElement);
     // Click again to deselect
@@ -66,7 +106,14 @@ describe("LearningLogger", () => {
   });
 
   it("quality emoji buttons are rendered", () => {
-    render(<LearningLogger isOpen={true} onClose={vi.fn()} onSaved={vi.fn()} runtime={makeRuntime()} />);
+    render(
+      <LearningLogger
+        isOpen={true}
+        onClose={vi.fn<(...args: unknown[]) => unknown>()}
+        onSaved={vi.fn<(...args: unknown[]) => unknown>()}
+        runtime={makeRuntime()}
+      />,
+    );
     expect(screen.getByLabelText("Quality 5")).toBeDefined();
     fireEvent.click(screen.getByLabelText("Quality 3"));
     // Click again to deselect
@@ -74,8 +121,15 @@ describe("LearningLogger", () => {
   });
 
   it("calls onClose (via handleClose) and resets state when Cancel is clicked", () => {
-    const onClose = vi.fn();
-    render(<LearningLogger isOpen={true} onClose={onClose} onSaved={vi.fn()} runtime={makeRuntime()} />);
+    const onClose = vi.fn<(...args: unknown[]) => unknown>();
+    render(
+      <LearningLogger
+        isOpen={true}
+        onClose={onClose}
+        onSaved={vi.fn<(...args: unknown[]) => unknown>()}
+        runtime={makeRuntime()}
+      />,
+    );
     const subjectInput = screen.getByPlaceholderText("e.g. React hooks, Spanish vocab, Piano scales");
     fireEvent.change(subjectInput, { target: { value: "Rust ownership" } });
     fireEvent.click(screen.getByText("Cancel"));
@@ -84,7 +138,14 @@ describe("LearningLogger", () => {
   });
 
   it("updates source, custom-minutes, and notes fields as the user types", () => {
-    render(<LearningLogger isOpen={true} onClose={vi.fn()} onSaved={vi.fn()} runtime={makeRuntime()} />);
+    render(
+      <LearningLogger
+        isOpen={true}
+        onClose={vi.fn<(...args: unknown[]) => unknown>()}
+        onSaved={vi.fn<(...args: unknown[]) => unknown>()}
+        runtime={makeRuntime()}
+      />,
+    );
 
     const sourceInput = screen.getByPlaceholderText("e.g. YouTube, Udemy, Book, Practice");
     fireEvent.change(sourceInput, { target: { value: "Book" } });

@@ -15,32 +15,58 @@ afterEach(() => {
 
 function makeRuntime(): JournalRuntime {
   return {
-    runPromise: vi.fn().mockResolvedValue([]),
+    runPromise: vi.fn<(...args: unknown[]) => unknown>().mockResolvedValue([]),
   } as unknown as JournalRuntime;
 }
 
 describe("MealLogger", () => {
   it("renders nothing when isOpen is false", () => {
     const { container } = render(
-      <MealLogger isOpen={false} onClose={vi.fn()} onSaved={vi.fn()} runtime={makeRuntime()} />,
+      <MealLogger
+        isOpen={false}
+        onClose={vi.fn<(...args: unknown[]) => unknown>()}
+        onSaved={vi.fn<(...args: unknown[]) => unknown>()}
+        runtime={makeRuntime()}
+      />,
     );
     expect(container.firstChild).toBeNull();
   });
 
   it("renders form fields when open", () => {
-    render(<MealLogger isOpen={true} onClose={vi.fn()} onSaved={vi.fn()} runtime={makeRuntime()} />);
+    render(
+      <MealLogger
+        isOpen={true}
+        onClose={vi.fn<(...args: unknown[]) => unknown>()}
+        onSaved={vi.fn<(...args: unknown[]) => unknown>()}
+        runtime={makeRuntime()}
+      />,
+    );
     expect(screen.getByText("Log meal")).toBeDefined();
     expect(screen.getByPlaceholderText("e.g. Oatmeal with berries, Green tea")).toBeDefined();
   });
 
   it("Save is disabled when name is empty", () => {
-    render(<MealLogger isOpen={true} onClose={vi.fn()} onSaved={vi.fn()} runtime={makeRuntime()} />);
+    render(
+      <MealLogger
+        isOpen={true}
+        onClose={vi.fn<(...args: unknown[]) => unknown>()}
+        onSaved={vi.fn<(...args: unknown[]) => unknown>()}
+        runtime={makeRuntime()}
+      />,
+    );
     const saveButton = screen.getByText("Save").closest("button");
     expect(saveButton?.disabled).toBe(true);
   });
 
   it("Save is enabled when name is filled", () => {
-    render(<MealLogger isOpen={true} onClose={vi.fn()} onSaved={vi.fn()} runtime={makeRuntime()} />);
+    render(
+      <MealLogger
+        isOpen={true}
+        onClose={vi.fn<(...args: unknown[]) => unknown>()}
+        onSaved={vi.fn<(...args: unknown[]) => unknown>()}
+        runtime={makeRuntime()}
+      />,
+    );
     const nameInput = screen.getByPlaceholderText("e.g. Oatmeal with berries, Green tea");
     fireEvent.change(nameInput, { target: { value: "Oatmeal" } });
     const saveButton = screen.getByText("Save").closest("button");
@@ -48,8 +74,15 @@ describe("MealLogger", () => {
   });
 
   it("calls onSaved after saving with valid name", () => {
-    const onSaved = vi.fn();
-    render(<MealLogger isOpen={true} onClose={vi.fn()} onSaved={onSaved} runtime={makeRuntime()} />);
+    const onSaved = vi.fn<(...args: unknown[]) => unknown>();
+    render(
+      <MealLogger
+        isOpen={true}
+        onClose={vi.fn<(...args: unknown[]) => unknown>()}
+        onSaved={onSaved}
+        runtime={makeRuntime()}
+      />,
+    );
     const nameInput = screen.getByPlaceholderText("e.g. Oatmeal with berries, Green tea");
     fireEvent.change(nameInput, { target: { value: "Brown rice and chicken" } });
     fireEvent.click(screen.getByText("Save"));
@@ -57,7 +90,14 @@ describe("MealLogger", () => {
   });
 
   it("meal type chips toggle selection", () => {
-    render(<MealLogger isOpen={true} onClose={vi.fn()} onSaved={vi.fn()} runtime={makeRuntime()} />);
+    render(
+      <MealLogger
+        isOpen={true}
+        onClose={vi.fn<(...args: unknown[]) => unknown>()}
+        onSaved={vi.fn<(...args: unknown[]) => unknown>()}
+        runtime={makeRuntime()}
+      />,
+    );
     const lunchButton = screen.getByText("Lunch");
     fireEvent.click(lunchButton);
     fireEvent.click(lunchButton);
@@ -65,7 +105,14 @@ describe("MealLogger", () => {
   });
 
   it("energy level emoji buttons are rendered and toggle", () => {
-    render(<MealLogger isOpen={true} onClose={vi.fn()} onSaved={vi.fn()} runtime={makeRuntime()} />);
+    render(
+      <MealLogger
+        isOpen={true}
+        onClose={vi.fn<(...args: unknown[]) => unknown>()}
+        onSaved={vi.fn<(...args: unknown[]) => unknown>()}
+        runtime={makeRuntime()}
+      />,
+    );
     const energy3 = screen.getByLabelText("Energy 3");
     fireEvent.click(energy3);
     fireEvent.click(energy3);
@@ -73,8 +120,15 @@ describe("MealLogger", () => {
   });
 
   it("calls onClose (via handleClose) and resets state when Cancel is clicked", () => {
-    const onClose = vi.fn();
-    render(<MealLogger isOpen={true} onClose={onClose} onSaved={vi.fn()} runtime={makeRuntime()} />);
+    const onClose = vi.fn<(...args: unknown[]) => unknown>();
+    render(
+      <MealLogger
+        isOpen={true}
+        onClose={onClose}
+        onSaved={vi.fn<(...args: unknown[]) => unknown>()}
+        runtime={makeRuntime()}
+      />,
+    );
     const nameInput = screen.getByPlaceholderText("e.g. Oatmeal with berries, Green tea");
     fireEvent.change(nameInput, { target: { value: "Salad" } });
     fireEvent.click(screen.getByText("Cancel"));
@@ -83,7 +137,14 @@ describe("MealLogger", () => {
   });
 
   it("updates the notes field as the user types", () => {
-    render(<MealLogger isOpen={true} onClose={vi.fn()} onSaved={vi.fn()} runtime={makeRuntime()} />);
+    render(
+      <MealLogger
+        isOpen={true}
+        onClose={vi.fn<(...args: unknown[]) => unknown>()}
+        onSaved={vi.fn<(...args: unknown[]) => unknown>()}
+        runtime={makeRuntime()}
+      />,
+    );
     const notesInput = screen.getByPlaceholderText("Any thoughts worth capturing...");
     fireEvent.change(notesInput, { target: { value: "Very filling" } });
     expect((notesInput as HTMLTextAreaElement).value).toBe("Very filling");

@@ -25,10 +25,36 @@ export default [
       "node_modules/**",
       "src/generated-contracts/**",
       "storybook-static/**",
-      "**/*.unit.test.*",
-      "**/*.int.test.*",
       "test/**",
     ],
+  },
+  {
+    // Test files parse as TypeScript; the hermetic ban below applies to tests/unit only.
+    // The import plugin is registered so the existing `eslint-disable-next-line import/first` comments resolve.
+    files: ["tests/**/*.{ts,tsx}"],
+    plugins: { import: importPlugin },
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        ecmaVersion: "latest",
+        sourceType: "module",
+        ecmaFeatures: { jsx: true },
+      },
+    },
+  },
+  {
+    // Unit tests are hermetic (Test and Gate Contract C21). oxlint bans the clock, environment, and
+    // file-system APIs; a zero-argument `new Date()` needs a syntax selector, which only ESLint offers.
+    files: ["tests/unit/**/*.{ts,tsx}"],
+    rules: {
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector: "NewExpression[callee.name='Date'][arguments.length=0]",
+          message: "Unit tests are hermetic: no clock. Pass a fixed Date.",
+        },
+      ],
+    },
   },
   {
     files: ["src/**/*.{ts,tsx}"],

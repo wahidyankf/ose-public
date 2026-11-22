@@ -8,10 +8,10 @@ const config: StorybookConfig = {
     name: "@storybook/nextjs-vite",
     options: {},
   },
-  viteFinal: async (config) => {
-    config.plugins = config.plugins ?? [];
-    config.plugins.push(tailwindcss());
-    return config;
+  viteFinal: async (viteConfig) => {
+    viteConfig.plugins = viteConfig.plugins ?? [];
+    viteConfig.plugins.push(tailwindcss());
+    return viteConfig;
   },
 };
 

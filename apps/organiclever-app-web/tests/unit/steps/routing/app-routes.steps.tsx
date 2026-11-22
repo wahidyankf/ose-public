@@ -1,7 +1,13 @@
 import path from "path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
-import { expect } from "vitest";
+import { expect, vi } from "vitest";
 import { previousAppRoute, resolveAppRoute, type AppRouteResult } from "@/contexts/routing/application";
+import RootPage from "@/app/page";
+
+const mockRedirect = vi.hoisted(() => vi.fn<(...args: unknown[]) => unknown>());
+vi.mock("next/navigation", () => ({
+  redirect: (target: string) => mockRedirect(target),
+}));
 
 const feature = await loadFeature(
   path.resolve(__dirname, "../../../../../../specs/apps/organiclever/app-web/behaviours/routing/app-routes.feature"),
@@ -16,6 +22,17 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline }) => {
     Given("the application is running", () => {
       result = resolveAppRoute("GET", "/app/home");
       expect(result.status).toBe(200);
+    });
+  });
+
+  // @scenario specs/apps/organiclever/app-web/behaviours/routing/app-routes.feature: Visiting / redirects to /app/home
+  Scenario("Visiting / redirects to /app/home", ({ When, Then }) => {
+    When('a visitor requests GET "/"', () => {
+      mockRedirect.mockReset();
+      RootPage();
+    });
+    Then('the response redirects to "/app/home"', () => {
+      expect(mockRedirect).toHaveBeenCalledWith("/app/home");
     });
   });
 

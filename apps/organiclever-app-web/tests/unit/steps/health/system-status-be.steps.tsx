@@ -81,7 +81,7 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
     And('the backend health endpoint returns 200 with body {"status":"UP"}', () => {
       vi.stubGlobal(
         "fetch",
-        vi.fn().mockResolvedValue({
+        vi.fn<(...args: unknown[]) => unknown>().mockResolvedValue({
           ok: true,
           json: () => Promise.resolve({ status: "UP" }),
         }),
@@ -116,7 +116,10 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
       });
 
       And("the backend health endpoint fails with connection refused", () => {
-        vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new TypeError("fetch failed")));
+        vi.stubGlobal(
+          "fetch",
+          vi.fn<(...args: unknown[]) => unknown>().mockRejectedValue(new TypeError("fetch failed")),
+        );
       });
 
       When("a visitor requests GET /system/status/be", async () => {
@@ -148,7 +151,7 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
       });
 
       And("the backend health endpoint answers with HTTP status 503", () => {
-        vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false, status: 503 }));
+        vi.stubGlobal("fetch", vi.fn<(...args: unknown[]) => unknown>().mockResolvedValue({ ok: false, status: 503 }));
       });
 
       When("a visitor requests GET /system/status/be", async () => {
@@ -181,7 +184,7 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
       const timeoutError = Object.assign(new Error("TimeoutError: timeout exceeded"), {
         name: "TimeoutError",
       });
-      vi.stubGlobal("fetch", vi.fn().mockRejectedValue(timeoutError));
+      vi.stubGlobal("fetch", vi.fn<(...args: unknown[]) => unknown>().mockRejectedValue(timeoutError));
     });
 
     When("a visitor requests GET /system/status/be", async () => {

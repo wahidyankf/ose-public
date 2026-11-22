@@ -31,9 +31,9 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
   AfterEachScenario(() => cleanup());
 
   function renderEditor(routine: Routine | null) {
-    runPromise = vi.fn().mockResolvedValue(undefined);
-    onSave = vi.fn();
-    onBack = vi.fn();
+    runPromise = vi.fn<(...args: unknown[]) => unknown>().mockResolvedValue(undefined);
+    onSave = vi.fn<(...args: unknown[]) => unknown>();
+    onBack = vi.fn<(...args: unknown[]) => unknown>();
     runtime = { runPromise } as unknown as JournalRuntime;
     render(<EditRoutineScreen routine={routine} runtime={runtime} onSave={onSave} onBack={onBack} />);
   }

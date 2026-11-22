@@ -4,7 +4,7 @@ import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { expect, vi } from "vitest";
 import { createActor, type Actor } from "xstate";
-import { appMachine } from "@/contexts/app-shell/presentation/app-machine";
+import { appMachine, type ActiveLoggerKind } from "@/contexts/app-shell/presentation/app-machine";
 import type { JournalRuntime } from "@/contexts/journal/application";
 import { ReadingLogger } from "@/contexts/app-shell/presentation/components/loggers/reading-logger";
 import { LearningLogger } from "@/contexts/app-shell/presentation/components/loggers/learning-logger";
@@ -13,7 +13,7 @@ import { FocusLogger } from "@/contexts/app-shell/presentation/components/logger
 import { CustomEntryLogger } from "@/contexts/app-shell/presentation/components/loggers/custom-entry-logger";
 
 type LoggerKind = "reading" | "learning" | "meal" | "focus" | "custom";
-let runPromise: ReturnType<typeof vi.fn> = vi.fn().mockResolvedValue(undefined);
+let runPromise: ReturnType<typeof vi.fn> = vi.fn<(...args: unknown[]) => unknown>().mockResolvedValue(undefined);
 
 function LoggerHost({ kind }: { kind: LoggerKind }) {
   const [open, setOpen] = useState(true);
@@ -61,7 +61,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
 
   AfterEachScenario(() => {
     cleanup();
-    runPromise = vi.fn().mockResolvedValue(undefined);
+    runPromise = vi.fn<(...args: unknown[]) => unknown>().mockResolvedValue(undefined);
   });
 
   // @scenario specs/apps/organiclever/app-web/behaviours/app-shell/entry-loggers.feature: The add button opens the Add Entry sheet and the user can close it
@@ -86,7 +86,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
     });
     When('the user selects the "<kind>" entry kind', () => {
       if (kind === "Custom") actor.send({ type: "OPEN_CUSTOM_LOGGER" });
-      else actor.send({ type: "OPEN_LOGGER", kind: kind.toLowerCase() as LoggerKind });
+      else actor.send({ type: "OPEN_LOGGER", kind: kind.toLowerCase() as ActiveLoggerKind });
     });
     Then('the "<kind>" logger is open', () => {
       if (kind === "Custom") expect(actor.getSnapshot().matches("customLoggerOpen")).toBe(true);

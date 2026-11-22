@@ -113,3 +113,29 @@ adapter through `test:unit`; the dedicated `organiclever-app-web-e2e` project ow
 browser runtime. `test:behaviour:coverage` validates both adapters statically. Integration
 and owner-local E2E runtime are omitted because the client owns no non-networked local-resource
 boundary and the dedicated project owns browser execution.
+
+## Unit Tests, Coverage, and Lint
+
+Unit tests are hermetic (Test and Gate Contract C21). The unit scope runs under `tests/unit/`. Oxlint bans the
+file system, processes, network, real timers, `Date.now`, `Math.random`, `crypto.randomUUID`, and `process.env` there
+through the `tests/unit/**` override in `oxlint.json`. ESLint bans a zero-argument `new Date()` there. Fixed clocks,
+id sequences, and in-memory ports replace them (`tests/unit/support/doubles.ts`, `tests/unit/support/source-tree.ts`).
+Real file-system checks live in `tests/integration/`.
+
+- **In-memory PGlite is a double.** `new PGlite()` with no path keeps its database in memory and touches no disk. The
+  ban does not name `@electric-sql/pglite`, so no allow-list entry is needed.
+- **Config-level waivers** (each stated where it applies):
+  - `eqeqeq` is `smart`, which allows comparing with `null` (the `value != null` idiom for optional fields).
+  - `no-underscore-dangle` allows `_tag` (Effect's tagged-error field) and `__ol_db` (the browser hook that
+    `organiclever-app-web-e2e/steps/_journal-db.ts` reads).
+  - `unicorn/require-module-specifiers` is off for `src/contexts/*/*/index.ts` (empty barrels mark an ES module).
+  - `import/no-unassigned-import` allows the CSS import and the environment loaders, which load for their side effects.
+  - `react/react-in-jsx-scope` is off (the automatic JSX runtime needs no import).
+- **File-level waivers.** Five unit files that use `@effect/vitest` `it.effect` inside `layer()` disable
+  `vitest/no-standalone-expect`, because the rule cannot see those blocks as tests.
+- **Coverage exclusions.** `src/test/**` and test files are category `N`; `src/generated-contracts/**` is category `G`.
+  The remaining production exclusions in `vitest.config.ts` (`P`, layout, pages, components, hooks, seed) are still
+  open; see the Phase 6 coverage audit.
+- **Lint gate.** The `lint` target runs `oxlint --jsx-a11y-plugin` and `eslint`, failing on errors only. The strict form
+  (`-c oxlint.json --deny-warnings`) is not wired yet, because it still reports warnings and errors in production
+  components and unit tests.

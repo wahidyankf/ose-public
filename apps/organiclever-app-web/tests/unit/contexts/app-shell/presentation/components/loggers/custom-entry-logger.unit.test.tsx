@@ -15,20 +15,32 @@ afterEach(() => {
 
 function makeRuntime(): JournalRuntime {
   return {
-    runPromise: vi.fn().mockResolvedValue([]),
+    runPromise: vi.fn<(...args: unknown[]) => unknown>().mockResolvedValue([]),
   } as unknown as JournalRuntime;
 }
 
 describe("CustomEntryLogger", () => {
   it("renders nothing when isOpen is false", () => {
     const { container } = render(
-      <CustomEntryLogger isOpen={false} onClose={vi.fn()} onSaved={vi.fn()} runtime={makeRuntime()} />,
+      <CustomEntryLogger
+        isOpen={false}
+        onClose={vi.fn<(...args: unknown[]) => unknown>()}
+        onSaved={vi.fn<(...args: unknown[]) => unknown>()}
+        runtime={makeRuntime()}
+      />,
     );
     expect(container.firstChild).toBeNull();
   });
 
   it("renders new custom entry form when open without initialName", () => {
-    render(<CustomEntryLogger isOpen={true} onClose={vi.fn()} onSaved={vi.fn()} runtime={makeRuntime()} />);
+    render(
+      <CustomEntryLogger
+        isOpen={true}
+        onClose={vi.fn<(...args: unknown[]) => unknown>()}
+        onSaved={vi.fn<(...args: unknown[]) => unknown>()}
+        runtime={makeRuntime()}
+      />,
+    );
     expect(screen.getByText("New custom entry")).toBeDefined();
     expect(screen.getByPlaceholderText("e.g. Evening walk, Cold shower, Meditation")).toBeDefined();
   });
@@ -37,8 +49,8 @@ describe("CustomEntryLogger", () => {
     render(
       <CustomEntryLogger
         isOpen={true}
-        onClose={vi.fn()}
-        onSaved={vi.fn()}
+        onClose={vi.fn<(...args: unknown[]) => unknown>()}
+        onSaved={vi.fn<(...args: unknown[]) => unknown>()}
         runtime={makeRuntime()}
         initialName="Evening walk"
       />,
@@ -47,14 +59,28 @@ describe("CustomEntryLogger", () => {
   });
 
   it("Save is disabled when name is empty", () => {
-    render(<CustomEntryLogger isOpen={true} onClose={vi.fn()} onSaved={vi.fn()} runtime={makeRuntime()} />);
+    render(
+      <CustomEntryLogger
+        isOpen={true}
+        onClose={vi.fn<(...args: unknown[]) => unknown>()}
+        onSaved={vi.fn<(...args: unknown[]) => unknown>()}
+        runtime={makeRuntime()}
+      />,
+    );
     const saveButtons = screen.getAllByText("Save");
     const saveButton = saveButtons[0]?.closest("button");
     expect(saveButton?.disabled).toBe(true);
   });
 
   it("Save is enabled when name is filled", () => {
-    render(<CustomEntryLogger isOpen={true} onClose={vi.fn()} onSaved={vi.fn()} runtime={makeRuntime()} />);
+    render(
+      <CustomEntryLogger
+        isOpen={true}
+        onClose={vi.fn<(...args: unknown[]) => unknown>()}
+        onSaved={vi.fn<(...args: unknown[]) => unknown>()}
+        runtime={makeRuntime()}
+      />,
+    );
     const nameInput = screen.getByPlaceholderText("e.g. Evening walk, Cold shower, Meditation");
     fireEvent.change(nameInput, { target: { value: "Morning stretch" } });
     const saveButtons = screen.getAllByText("Save");
@@ -63,15 +89,22 @@ describe("CustomEntryLogger", () => {
   });
 
   it("calls onSaved only after persistence succeeds", async () => {
-    const onSaved = vi.fn();
+    const onSaved = vi.fn<(...args: unknown[]) => unknown>();
     let resolvePersistence: (value: unknown[]) => void = () => undefined;
     const persistence = new Promise((resolve) => {
       resolvePersistence = resolve;
     });
     const runtime = {
-      runPromise: vi.fn().mockReturnValue(persistence),
+      runPromise: vi.fn<(...args: unknown[]) => unknown>().mockReturnValue(persistence),
     } as unknown as JournalRuntime;
-    render(<CustomEntryLogger isOpen={true} onClose={vi.fn()} onSaved={onSaved} runtime={runtime} />);
+    render(
+      <CustomEntryLogger
+        isOpen={true}
+        onClose={vi.fn<(...args: unknown[]) => unknown>()}
+        onSaved={onSaved}
+        runtime={runtime}
+      />,
+    );
     const nameInput = screen.getByPlaceholderText("e.g. Evening walk, Cold shower, Meditation");
     fireEvent.change(nameInput, { target: { value: "Evening walk" } });
     const saveButtons = screen.getAllByText("Save");
@@ -82,8 +115,15 @@ describe("CustomEntryLogger", () => {
   });
 
   it("does not call onSaved when name is empty (fails validation)", () => {
-    const onSaved = vi.fn();
-    render(<CustomEntryLogger isOpen={true} onClose={vi.fn()} onSaved={onSaved} runtime={makeRuntime()} />);
+    const onSaved = vi.fn<(...args: unknown[]) => unknown>();
+    render(
+      <CustomEntryLogger
+        isOpen={true}
+        onClose={vi.fn<(...args: unknown[]) => unknown>()}
+        onSaved={onSaved}
+        runtime={makeRuntime()}
+      />,
+    );
     // Save button is disabled so no click registers
     const saveButtons = screen.getAllByText("Save");
     const saveButton = saveButtons[0]?.closest("button");
@@ -92,7 +132,14 @@ describe("CustomEntryLogger", () => {
   });
 
   it("icon picker buttons are rendered for new type", () => {
-    render(<CustomEntryLogger isOpen={true} onClose={vi.fn()} onSaved={vi.fn()} runtime={makeRuntime()} />);
+    render(
+      <CustomEntryLogger
+        isOpen={true}
+        onClose={vi.fn<(...args: unknown[]) => unknown>()}
+        onSaved={vi.fn<(...args: unknown[]) => unknown>()}
+        runtime={makeRuntime()}
+      />,
+    );
     // Icon buttons have aria-labels matching icon names
     const zapButton = screen.getByLabelText("zap");
     fireEvent.click(zapButton);
@@ -100,14 +147,28 @@ describe("CustomEntryLogger", () => {
   });
 
   it("calls onClose when Cancel is clicked", () => {
-    const onClose = vi.fn();
-    render(<CustomEntryLogger isOpen={true} onClose={onClose} onSaved={vi.fn()} runtime={makeRuntime()} />);
+    const onClose = vi.fn<(...args: unknown[]) => unknown>();
+    render(
+      <CustomEntryLogger
+        isOpen={true}
+        onClose={onClose}
+        onSaved={vi.fn<(...args: unknown[]) => unknown>()}
+        runtime={makeRuntime()}
+      />,
+    );
     fireEvent.click(screen.getByText("Cancel"));
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
   it("updates duration and notes fields as the user types", () => {
-    render(<CustomEntryLogger isOpen={true} onClose={vi.fn()} onSaved={vi.fn()} runtime={makeRuntime()} />);
+    render(
+      <CustomEntryLogger
+        isOpen={true}
+        onClose={vi.fn<(...args: unknown[]) => unknown>()}
+        onSaved={vi.fn<(...args: unknown[]) => unknown>()}
+        runtime={makeRuntime()}
+      />,
+    );
 
     const durationInput = screen.getByPlaceholderText("e.g. 30");
     fireEvent.change(durationInput, { target: { value: "45" } });
@@ -119,9 +180,16 @@ describe("CustomEntryLogger", () => {
   });
 
   it("does not call onSaved when the slugified name fails EntryName validation", () => {
-    const onSaved = vi.fn();
+    const onSaved = vi.fn<(...args: unknown[]) => unknown>();
     const runtime = makeRuntime();
-    render(<CustomEntryLogger isOpen={true} onClose={vi.fn()} onSaved={onSaved} runtime={runtime} />);
+    render(
+      <CustomEntryLogger
+        isOpen={true}
+        onClose={vi.fn<(...args: unknown[]) => unknown>()}
+        onSaved={onSaved}
+        runtime={runtime}
+      />,
+    );
 
     const nameInput = screen.getByPlaceholderText("e.g. Evening walk, Cold shower, Meditation");
     // "!" survives slugification (only whitespace is replaced), producing

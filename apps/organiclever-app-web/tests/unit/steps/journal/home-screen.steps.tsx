@@ -36,7 +36,13 @@ function renderHome(entries: ReadonlyArray<JournalEntry>) {
       .mockResolvedValueOnce(entries)
       .mockResolvedValueOnce([]),
   } as unknown as JournalRuntime;
-  render(<HomeScreen runtime={runtime} onStartWorkout={vi.fn()} onEditRoutine={vi.fn()} />);
+  render(
+    <HomeScreen
+      runtime={runtime}
+      onStartWorkout={vi.fn<(...args: unknown[]) => unknown>()}
+      onEditRoutine={vi.fn<(...args: unknown[]) => unknown>()}
+    />,
+  );
   return runtime;
 }
 

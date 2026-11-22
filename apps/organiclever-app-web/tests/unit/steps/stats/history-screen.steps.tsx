@@ -31,7 +31,7 @@ const older = makeEntry("older", "reading", "Atomic Habits", "2026-05-01T08:00:0
 
 function renderHistory(entries: ReadonlyArray<JournalEntry>) {
   const runtime = {
-    runPromise: vi.fn().mockResolvedValueOnce([]).mockResolvedValueOnce(entries),
+    runPromise: vi.fn<(...args: unknown[]) => unknown>().mockResolvedValueOnce([]).mockResolvedValueOnce(entries),
   } as unknown as JournalRuntime;
   render(<HistoryScreen runtime={runtime} />);
 }

@@ -20,18 +20,22 @@ import FinishPage from "@/app/app/workout/finish/page";
 
 // The finish page is a React route; its router and runtime context are stood in here.
 const finishPageDouble = vi.hoisted(() => ({
-  replace: vi.fn(),
+  replace: vi.fn<(...args: unknown[]) => unknown>(),
   completedSession: null as unknown,
 }));
 
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ replace: finishPageDouble.replace, push: vi.fn(), back: vi.fn() }),
+  useRouter: () => ({
+    replace: finishPageDouble.replace,
+    push: vi.fn<(...args: unknown[]) => unknown>(),
+    back: vi.fn<(...args: unknown[]) => unknown>(),
+  }),
 }));
 
 vi.mock("@/contexts/app-shell/presentation/app-runtime-context", () => ({
   useAppRuntime: () => ({
     completedSession: finishPageDouble.completedSession,
-    setCompletedSession: vi.fn(),
+    setCompletedSession: vi.fn<(...args: unknown[]) => unknown>(),
   }),
 }));
 
@@ -47,7 +51,7 @@ const mockSettings: AppSettings = {
 };
 
 const mockRuntime = {
-  runPromise: vi.fn().mockResolvedValue([]),
+  runPromise: vi.fn<(...args: unknown[]) => unknown>().mockResolvedValue([]),
 } as unknown as JournalRuntime;
 
 const routineWithRest: Routine = {

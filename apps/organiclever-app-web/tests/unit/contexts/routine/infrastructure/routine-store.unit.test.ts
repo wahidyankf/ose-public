@@ -1,3 +1,4 @@
+/* oxlint-disable vitest/no-standalone-expect -- @effect/vitest it.effect blocks inside layer() are not recognised as test blocks */
 import { layer } from "@effect/vitest";
 import { Effect, Layer } from "effect";
 import { PGlite } from "@electric-sql/pglite";
@@ -12,6 +13,7 @@ import {
 } from "../../../../../src/contexts/routine/infrastructure/routine-store";
 import type { Routine, ExerciseGroup } from "../../../../../src/contexts/routine/infrastructure/routine-store";
 import { NotFound, StorageUnavailable } from "@/contexts/journal/application";
+import { FIXED_INSTANT, nextFixtureId } from "../../../support/doubles";
 
 // ---------------------------------------------------------------------------
 // Test layer — in-memory PGlite with both migrations applied
@@ -35,11 +37,11 @@ const TestPgliteLayer = Layer.scoped(
 
 function makeRoutine(overrides: Partial<Routine> = {}): Routine {
   return {
-    id: crypto.randomUUID(),
+    id: nextFixtureId(),
     name: "Push Day",
     hue: "teal",
     type: "workout",
-    createdAt: new Date().toISOString(),
+    createdAt: FIXED_INSTANT,
     groups: [],
     ...overrides,
   };
@@ -47,7 +49,7 @@ function makeRoutine(overrides: Partial<Routine> = {}): Routine {
 
 function makeGroup(overrides: Partial<ExerciseGroup> = {}): ExerciseGroup {
   return {
-    id: crypto.randomUUID(),
+    id: nextFixtureId(),
     name: "Main Lifts",
     exercises: [],
     ...overrides,

@@ -4,7 +4,7 @@
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-const mockRedirect = vi.fn();
+const mockRedirect = vi.fn<(...args: unknown[]) => unknown>();
 vi.mock("next/navigation", () => ({
   redirect: (target: string) => mockRedirect(target),
 }));

@@ -7,15 +7,20 @@ import { describe, it, expect, vi, afterEach, beforeEach } from "vitest";
 import { render, screen, cleanup, act, fireEvent } from "@testing-library/react";
 import type { Routine } from "@/contexts/routine/application";
 import type { CompletedSession } from "@/contexts/app-shell/presentation/app-machine";
+import { FIXED_INSTANT } from "../../../support/doubles";
 
-const mockPush = vi.fn();
+const mockPush = vi.fn<(...args: unknown[]) => unknown>();
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ push: mockPush, back: vi.fn(), replace: vi.fn() }),
+  useRouter: () => ({
+    push: mockPush,
+    back: vi.fn<(...args: unknown[]) => unknown>(),
+    replace: vi.fn<(...args: unknown[]) => unknown>(),
+  }),
 }));
 
 let mockActiveRoutine: Routine | null = null;
-const mockSetCompletedSession = vi.fn();
-const mockRefreshHome = vi.fn();
+const mockSetCompletedSession = vi.fn<(...args: unknown[]) => unknown>();
+const mockRefreshHome = vi.fn<(...args: unknown[]) => unknown>();
 vi.mock("@/contexts/app-shell/presentation/app-runtime-context", () => ({
   useAppRuntime: () => ({
     runtime: { runPromise: () => Promise.resolve() },
@@ -82,7 +87,7 @@ describe("WorkoutPage", () => {
       name: "Leg Day",
       hue: "teal",
       type: "workout",
-      createdAt: new Date().toISOString(),
+      createdAt: FIXED_INSTANT,
       groups: [],
     } as Routine;
     await act(async () => {

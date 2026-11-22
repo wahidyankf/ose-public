@@ -1,3 +1,4 @@
+/* oxlint-disable vitest/no-standalone-expect -- @effect/vitest it.effect blocks inside layer() are not recognised as test blocks */
 import { layer } from "@effect/vitest";
 import { Effect, Layer } from "effect";
 import { PGlite } from "@electric-sql/pglite";

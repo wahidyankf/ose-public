@@ -13,14 +13,14 @@ import type { AppRuntimeContextValue } from "@/contexts/app-shell/presentation/a
 // Mocks
 // ---------------------------------------------------------------------------
 
-const mockReplace = vi.fn();
-const mockPush = vi.fn();
+const mockReplace = vi.fn<(...args: unknown[]) => unknown>();
+const mockPush = vi.fn<(...args: unknown[]) => unknown>();
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ replace: mockReplace, push: mockPush, back: vi.fn() }),
+  useRouter: () => ({ replace: mockReplace, push: mockPush, back: vi.fn<(...args: unknown[]) => unknown>() }),
 }));
 
 let mockContextValue: Partial<AppRuntimeContextValue> = {};
-const mockSetCompletedSession = vi.fn();
+const mockSetCompletedSession = vi.fn<(...args: unknown[]) => unknown>();
 vi.mock("@/contexts/app-shell/presentation/app-runtime-context", () => ({
   useAppRuntime: () => ({
     completedSession: mockContextValue.completedSession ?? null,

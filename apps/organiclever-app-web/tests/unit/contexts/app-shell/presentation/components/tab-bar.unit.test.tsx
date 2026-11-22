@@ -33,7 +33,7 @@ afterEach(() => {
 
 describe("TabBar", () => {
   it("renders four anchor tabs with correct hrefs", () => {
-    render(<TabBar onFabPress={vi.fn()} />);
+    render(<TabBar onFabPress={vi.fn<(...args: unknown[]) => unknown>()} />);
     expect(screen.getByText("Home").closest("a")?.getAttribute("href")).toBe("/app/home");
     expect(screen.getByText("History").closest("a")?.getAttribute("href")).toBe("/app/history");
     expect(screen.getByText("Progress").closest("a")?.getAttribute("href")).toBe("/app/progress");
@@ -42,7 +42,7 @@ describe("TabBar", () => {
 
   it("marks the current tab active via aria-current=page", () => {
     mockPathname = "/app/history";
-    render(<TabBar onFabPress={vi.fn()} />);
+    render(<TabBar onFabPress={vi.fn<(...args: unknown[]) => unknown>()} />);
     const historyLink = screen.getByText("History").closest("a");
     expect(historyLink?.getAttribute("aria-current")).toBe("page");
     const homeLink = screen.getByText("Home").closest("a");
@@ -50,7 +50,7 @@ describe("TabBar", () => {
   });
 
   it("calls onFabPress when the centre FAB is clicked", () => {
-    const onFabPress = vi.fn();
+    const onFabPress = vi.fn<(...args: unknown[]) => unknown>();
     render(<TabBar onFabPress={onFabPress} />);
     fireEvent.click(screen.getByLabelText("Log entry"));
     expect(onFabPress).toHaveBeenCalledTimes(1);

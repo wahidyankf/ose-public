@@ -12,12 +12,24 @@ afterEach(() => {
 
 describe("AddEntrySheet", () => {
   it("renders nothing when isOpen is false", () => {
-    const { container } = render(<AddEntrySheet isOpen={false} onClose={vi.fn()} onSelectEntry={vi.fn()} />);
+    const { container } = render(
+      <AddEntrySheet
+        isOpen={false}
+        onClose={vi.fn<(...args: unknown[]) => unknown>()}
+        onSelectEntry={vi.fn<(...args: unknown[]) => unknown>()}
+      />,
+    );
     expect(container.firstChild).toBeNull();
   });
 
   it("renders all entry kinds when open", () => {
-    render(<AddEntrySheet isOpen={true} onClose={vi.fn()} onSelectEntry={vi.fn()} />);
+    render(
+      <AddEntrySheet
+        isOpen={true}
+        onClose={vi.fn<(...args: unknown[]) => unknown>()}
+        onSelectEntry={vi.fn<(...args: unknown[]) => unknown>()}
+      />,
+    );
     expect(screen.getByText("Workout")).toBeDefined();
     expect(screen.getByText("Reading")).toBeDefined();
     expect(screen.getByText("Learning")).toBeDefined();
@@ -27,8 +39,10 @@ describe("AddEntrySheet", () => {
   });
 
   it("calls onSelectEntry with kind when row is clicked", () => {
-    const onSelectEntry = vi.fn();
-    render(<AddEntrySheet isOpen={true} onClose={vi.fn()} onSelectEntry={onSelectEntry} />);
+    const onSelectEntry = vi.fn<(...args: unknown[]) => unknown>();
+    render(
+      <AddEntrySheet isOpen={true} onClose={vi.fn<(...args: unknown[]) => unknown>()} onSelectEntry={onSelectEntry} />,
+    );
     // getAllByText because label may appear in multiple places; click the first button containing the text
     const readingButtons = screen.getAllByText("Reading");
     const readingButton = readingButtons[0]?.closest("button");
@@ -38,8 +52,10 @@ describe("AddEntrySheet", () => {
   });
 
   it("calls onSelectEntry with 'workout' when Workout is clicked", () => {
-    const onSelectEntry = vi.fn();
-    render(<AddEntrySheet isOpen={true} onClose={vi.fn()} onSelectEntry={onSelectEntry} />);
+    const onSelectEntry = vi.fn<(...args: unknown[]) => unknown>();
+    render(
+      <AddEntrySheet isOpen={true} onClose={vi.fn<(...args: unknown[]) => unknown>()} onSelectEntry={onSelectEntry} />,
+    );
     const workoutButtons = screen.getAllByText("Workout");
     const workoutButton = workoutButtons[0]?.closest("button");
     expect(workoutButton).not.toBeNull();
@@ -48,8 +64,10 @@ describe("AddEntrySheet", () => {
   });
 
   it("calls onSelectEntry with 'custom' when New custom type is clicked", () => {
-    const onSelectEntry = vi.fn();
-    render(<AddEntrySheet isOpen={true} onClose={vi.fn()} onSelectEntry={onSelectEntry} />);
+    const onSelectEntry = vi.fn<(...args: unknown[]) => unknown>();
+    render(
+      <AddEntrySheet isOpen={true} onClose={vi.fn<(...args: unknown[]) => unknown>()} onSelectEntry={onSelectEntry} />,
+    );
     const customButtons = screen.getAllByText("New custom type");
     const customButton = customButtons[0]?.closest("button");
     expect(customButton).not.toBeNull();
@@ -58,8 +76,8 @@ describe("AddEntrySheet", () => {
   });
 
   it("calls onClose when the header close button is clicked", () => {
-    const onClose = vi.fn();
-    render(<AddEntrySheet isOpen={true} onClose={onClose} onSelectEntry={vi.fn()} />);
+    const onClose = vi.fn<(...args: unknown[]) => unknown>();
+    render(<AddEntrySheet isOpen={true} onClose={onClose} onSelectEntry={vi.fn<(...args: unknown[]) => unknown>()} />);
     // The close button is a sibling to the title — find the flex header row
     const titleEl = screen.getByText("Log an entry");
     // Walk up to the flex row container

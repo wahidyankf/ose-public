@@ -15,7 +15,7 @@ for (const f of files) {
   }
 }
 
-const sorted = files.sort();
+const sorted = files.toSorted();
 const imports = sorted.map((f, i) => `import * as m${i} from "./${f.replace(/\.ts$/, "")}";`).join("\n");
 const arr = sorted.map((_, i) => `m${i}`).join(", ");
 
@@ -24,4 +24,4 @@ writeFileSync(
   `// AUTO-GENERATED — do not edit. Run \`npm run gen:migrations\`.\n\n${imports}\n\nimport type { PGlite, Transaction } from "@electric-sql/pglite";\ntype Queryable = PGlite | Transaction;\nexport interface Migration { id: string; up: (db: Queryable) => Promise<void>; down?: (db: Queryable) => Promise<void>; }\n\nexport const MIGRATIONS: Migration[] = [${arr}];\n`,
 );
 
-console.log(`Generated ${OUTPUT} with ${sorted.length} migration(s).`);
+process.stdout.write(`Generated ${OUTPUT} with ${sorted.length} migration(s).\n`);

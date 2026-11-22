@@ -4,13 +4,14 @@ import {
   up,
   down,
 } from "../../../../../../src/contexts/journal/infrastructure/migrations/2026_04_28T14_05_30__create_journal_entries_table";
+import { FIXED_INSTANT } from "../../../../support/doubles";
 
 describe("migration 2026_04_28T14_05_30__create_journal_entries_table", () => {
   it("applies up — the journal_entries table and its index exist", async () => {
     const db = new PGlite();
     await up(db);
 
-    const now = new Date().toISOString();
+    const now = FIXED_INSTANT;
     await db.exec(`
       INSERT INTO journal_entries (id, name, created_at, updated_at)
       VALUES ('test-up', 'workout', '${now}', '${now}')

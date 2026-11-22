@@ -4,8 +4,6 @@ Feature: Shared tool test vectors
   These scenarios prove the vectors reference stored datasets instead of
   inventing inputs, and keep the url-state keys each tool reads.
 
-  # Exemption(integration): the library owns no adapter, store, or service; its only resource is checked-in JSON read whole by the unit adapter, and the consumer boundary belongs to apps/ayokoding-www; alternative-proof: ayokoding-data:test:unit / Benchmark vectors name stored models
-  @integration-exempt
   # Exemption(e2e): a pure library with no process or network boundary; it is consumed only through in-process imports; alternative-proof: ayokoding-data:test:unit / Benchmark vectors name stored models
   @e2e-exempt
   # Behaviour: ADA-004
@@ -15,8 +13,6 @@ Feature: Shared tool test vectors
     Then every composite-index entry names a stored model
     And every substitute-finder target and option names a stored model
 
-  # Exemption(integration): the library owns no adapter, store, or service; its only resource is checked-in JSON read whole by the unit adapter, and the consumer boundary belongs to apps/ayokoding-www; alternative-proof: ayokoding-data:test:unit / Calculator vectors name stored cities
-  @integration-exempt
   # Exemption(e2e): a pure library with no process or network boundary; it is consumed only through in-process imports; alternative-proof: ayokoding-data:test:unit / Calculator vectors name stored cities
   @e2e-exempt
   # Behaviour: ADA-005
@@ -25,8 +21,6 @@ Feature: Shared tool test vectors
     When the calculator vectors are compared to the stored cities
     Then every essentials row and every savings row names a stored city
 
-  # Exemption(integration): the library owns no adapter, store, or service; its only resource is checked-in JSON read whole by the unit adapter, and the consumer boundary belongs to apps/ayokoding-www; alternative-proof: ayokoding-data:test:unit / URL-state vectors keep their benchmark and calculator keys
-  @integration-exempt
   # Exemption(e2e): a pure library with no process or network boundary; it is consumed only through in-process imports; alternative-proof: ayokoding-data:test:unit / URL-state vectors keep their benchmark and calculator keys
   @e2e-exempt
   # Behaviour: ADA-006

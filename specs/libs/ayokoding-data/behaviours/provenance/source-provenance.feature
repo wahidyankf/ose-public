@@ -4,8 +4,6 @@ Feature: Shared tool data provenance
   prove the provenance record carries the snapshot date of every dataset it
   describes, so a reader can tell how old each figure is.
 
-  # Exemption(integration): the library owns no adapter, store, or service; its only resource is checked-in JSON read whole by the unit adapter, and the consumer boundary belongs to apps/ayokoding-www; alternative-proof: ayokoding-data:test:unit / Snapshot dates in the provenance record match each dataset's own date
-  @integration-exempt
   # Exemption(e2e): a pure library with no process or network boundary; it is consumed only through in-process imports; alternative-proof: ayokoding-data:test:unit / Snapshot dates in the provenance record match each dataset's own date
   @e2e-exempt
   # Behaviour: ADA-007

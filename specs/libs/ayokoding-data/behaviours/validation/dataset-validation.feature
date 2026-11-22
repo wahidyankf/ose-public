@@ -5,8 +5,6 @@ Feature: Shared tool dataset validation
   calculator entry satisfies the shared identifier, rate, date, and tier rules
   both runtimes enforce.
 
-  # Exemption(integration): the library owns no adapter, store, or service; its only resource is checked-in JSON read whole by the unit adapter, and the consumer boundary belongs to apps/ayokoding-www; alternative-proof: ayokoding-data:test:unit / A consumer finds all datasets and test vectors at their documented paths
-  @integration-exempt
   # Exemption(e2e): a pure library with no process or network boundary; it is consumed only through in-process imports; alternative-proof: ayokoding-data:test:unit / A consumer finds all datasets and test vectors at their documented paths
   @e2e-exempt
   Scenario: A consumer finds all datasets and test vectors at their documented paths
@@ -15,8 +13,6 @@ Feature: Shared tool dataset validation
     Then data/ai-benchmark.json, data/cost-of-living.json, data/fx.json, provenance.md, and test-vectors/ exist
     And test-vectors/benchmark.json, test-vectors/calculator.json, and test-vectors/url-state.json exist
 
-  # Exemption(integration): the library owns no adapter, store, or service; its only resource is checked-in JSON read whole by the unit adapter, and the consumer boundary belongs to apps/ayokoding-www; alternative-proof: ayokoding-data:test:unit / Every benchmark model has a known id, a pinned figure version, and a source
-  @integration-exempt
   # Exemption(e2e): a pure library with no process or network boundary; it is consumed only through in-process imports; alternative-proof: ayokoding-data:test:unit / Every benchmark model has a known id, a pinned figure version, and a source
   @e2e-exempt
   # Behaviour: ADA-001
@@ -26,8 +22,6 @@ Feature: Shared tool dataset validation
     Then every model id is unique and every figure names a known benchmark
     And every figure is pinned to that benchmark's version and carries a source
 
-  # Exemption(integration): the library owns no adapter, store, or service; its only resource is checked-in JSON read whole by the unit adapter, and the consumer boundary belongs to apps/ayokoding-www; alternative-proof: ayokoding-data:test:unit / Every calculator city resolves through the shared FX table
-  @integration-exempt
   # Exemption(e2e): a pure library with no process or network boundary; it is consumed only through in-process imports; alternative-proof: ayokoding-data:test:unit / Every calculator city resolves through the shared FX table
   @e2e-exempt
   # Behaviour: ADA-002
@@ -37,8 +31,6 @@ Feature: Shared tool dataset validation
     Then every city names a listed country
     And every city currency has a positive rate in the shared FX table
 
-  # Exemption(integration): the library owns no adapter, store, or service; its only resource is checked-in JSON read whole by the unit adapter, and the consumer boundary belongs to apps/ayokoding-www; alternative-proof: ayokoding-data:test:unit / The FX table is the only home for rates, USD is 1, and every rate is positive
-  @integration-exempt
   # Exemption(e2e): a pure library with no process or network boundary; it is consumed only through in-process imports; alternative-proof: ayokoding-data:test:unit / The FX table is the only home for rates, USD is 1, and every rate is positive
   @e2e-exempt
   # Behaviour: ADA-003
@@ -49,8 +41,6 @@ Feature: Shared tool dataset validation
     And the USD rate is 1
     And every rate is greater than 0
 
-  # Exemption(integration): the library owns no adapter, store, or service; its only resource is checked-in JSON read whole by the unit adapter, and the consumer boundary belongs to apps/ayokoding-www; alternative-proof: ayokoding-data:test:unit / Snapshot dates are ISO dates and no source check is later than the dataset date
-  @integration-exempt
   # Exemption(e2e): a pure library with no process or network boundary; it is consumed only through in-process imports; alternative-proof: ayokoding-data:test:unit / Snapshot dates are ISO dates and no source check is later than the dataset date
   @e2e-exempt
   # Behaviour: ADA-010
@@ -60,8 +50,6 @@ Feature: Shared tool dataset validation
     Then every snapshot date is an ISO date
     And no operator or price source was checked after the dataset's last update
 
-  # Exemption(integration): the library owns no adapter, store, or service; its only resource is checked-in JSON read whole by the unit adapter, and the consumer boundary belongs to apps/ayokoding-www; alternative-proof: ayokoding-data:test:unit / Tier anchors are general-access models with descending floors on every benchmark
-  @integration-exempt
   # Exemption(e2e): a pure library with no process or network boundary; it is consumed only through in-process imports; alternative-proof: ayokoding-data:test:unit / Tier anchors are general-access models with descending floors on every benchmark
   @e2e-exempt
   # Behaviour: ADA-011
@@ -71,8 +59,6 @@ Feature: Shared tool dataset validation
     Then every anchor model is general-access and has a figure on its benchmark
     And on every benchmark the ultra floor is above the planning floor, which is above the execution floor
 
-  # Exemption(integration): the library owns no adapter, store, or service; its only resource is checked-in JSON read whole by the unit adapter, and the consumer boundary belongs to apps/ayokoding-www; alternative-proof: ayokoding-data:test:unit / Substitute-finder harnesses stay inside the offered catalog harnesses
-  @integration-exempt
   # Exemption(e2e): a pure library with no process or network boundary; it is consumed only through in-process imports; alternative-proof: ayokoding-data:test:unit / Substitute-finder harnesses stay inside the offered catalog harnesses
   @e2e-exempt
   # Behaviour: ADA-012
@@ -82,8 +68,6 @@ Feature: Shared tool dataset validation
     Then every substitute harness is an offered catalog harness
     And the default substitute harness is one of the substitute harnesses
 
-  # Exemption(integration): the library owns no adapter, store, or service; its only resource is checked-in JSON read whole by the unit adapter, and the consumer boundary belongs to apps/ayokoding-www; alternative-proof: ayokoding-data:test:unit / The role matrix keeps a 15-rung ladder with ordered percentile salaries
-  @integration-exempt
   # Exemption(e2e): a pure library with no process or network boundary; it is consumed only through in-process imports; alternative-proof: ayokoding-data:test:unit / The role matrix keeps a 15-rung ladder with ordered percentile salaries
   @e2e-exempt
   # Behaviour: ADA-013
@@ -93,8 +77,6 @@ Feature: Shared tool dataset validation
     Then the ladder has 15 ranked rungs
     And every country lists 15 roles whose 25th, 50th, and 75th percentile salaries ascend
 
-  # Exemption(integration): the library owns no adapter, store, or service; its only resource is checked-in JSON read whole by the unit adapter, and the consumer boundary belongs to apps/ayokoding-www; alternative-proof: ayokoding-data:test:unit / Country effective-rate bands ascend from low to mid to high
-  @integration-exempt
   # Exemption(e2e): a pure library with no process or network boundary; it is consumed only through in-process imports; alternative-proof: ayokoding-data:test:unit / Country effective-rate bands ascend from low to mid to high
   @e2e-exempt
   # Behaviour: ADA-014

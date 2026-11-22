@@ -3,5 +3,43 @@
   "categories": {
     "correctness": "error",
     "suspicious": "error"
-  }
+  },
+  "overrides": [
+    {
+      "files": ["tests/unit/**/*.{ts,tsx}"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "paths": [
+              "fs",
+              "node:fs",
+              "fs/promises",
+              "node:fs/promises",
+              "child_process",
+              "node:child_process",
+              "http",
+              "node:http",
+              "https",
+              "node:https",
+              "net",
+              "node:net",
+              "dns",
+              "node:dns"
+            ]
+          }
+        ],
+        "no-restricted-globals": ["error", "fetch", "setTimeout", "setInterval", "XMLHttpRequest"],
+        "no-restricted-properties": [
+          "error",
+          { "object": "Date", "property": "now", "message": "Use an injected clock." },
+          { "object": "Math", "property": "random", "message": "Use an injected id or value source." },
+          { "object": "crypto", "property": "randomUUID", "message": "Use an injected id generator." },
+          { "object": "process", "property": "env", "message": "Pass an env record through the port." },
+          { "object": "process", "property": "cwd", "message": "Pass the directory through the port." }
+        ],
+        "no-process-env": "error"
+      }
+    }
+  ]
 }

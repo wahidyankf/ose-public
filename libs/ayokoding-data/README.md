@@ -15,8 +15,12 @@ adapters in `apps/ayokoding-www` today and by the Go port tomorrow.
 - `test-vectors/` — checked-in expected results (scoring, cost, savings,
   minimum role, formatting, query encoding) shared by every runtime.
 - `provenance.md` — snapshot dates, sources, and refresh policy.
-- `tests/unit/data.test.ts` — in-memory structural, provenance, and vector
-  consistency tests. No product service or export daemon lives here.
+- `src/dataset-checks.ts` — pure checks over parsed dataset documents. Each
+  returns the violations it finds; no file, clock, or environment is read.
+- `tests/unit/` — the unit bindings. They run every check on in-memory
+  fixtures (valid and broken copies), with no file system access.
+- `tests/integration/` — reads the checked-in files and runs the same checks,
+  plus the structural, provenance, and inventory tests in `data.test.ts`.
 
 ## Consumers
 
@@ -36,5 +40,6 @@ green: a value mismatch returns to extraction, never to an edited expectation.
 ## Behaviour coverage
 
 `test:behaviour:coverage` runs the shared check `./rhino behaviour coverage validate` over the
-`specs/libs/ayokoding-data/behaviours/` corpus. The unit adapter over `tests/unit` is enforced by
-`test:unit`.
+`specs/libs/ayokoding-data/behaviours/` corpus. Unit bindings live in `tests/unit` and are enforced by
+`test:unit` (99% line coverage of `src`). Integration bindings live in `tests/integration` and run through
+`test:integration`. ADA-015 is bound only in `apps/ayokoding-www`, so this library's integration run excludes it.

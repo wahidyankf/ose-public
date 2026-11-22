@@ -3,6 +3,7 @@ package web
 import (
 	"errors"
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -48,12 +49,39 @@ func parsePort(source, value string) (int, error) {
 	return port, nil
 }
 
-// Environment reads one launcher variable. The binary passes os.LookupEnv;
+// Environment reads one launcher variable. The binary passes OSEnvironment;
 // unit tests and the BDD glue pass a recorded map, so no process state moves.
 type Environment func(key string) (string, bool)
 
 // noEnvironment reports every launcher variable as unset.
 func noEnvironment(string) (string, bool) { return "", false }
+
+// OSEnvironment is the only process-state boundary in this package. It
+// snapshots every launcher variable the binary honors with static
+// os.LookupEnv reads, then serves the snapshot through the Environment seam
+// so ResolveConfig and the seed keep reading injected values under test.
+func OSEnvironment() Environment {
+	values := make(map[string]string, 5)
+	if value, ok := os.LookupEnv("AYOKODING_WEB_PORT"); ok {
+		values["AYOKODING_WEB_PORT"] = value
+	}
+	if value, ok := os.LookupEnv("AYOKODING_WEB_CONTENT_DIR"); ok {
+		values["AYOKODING_WEB_CONTENT_DIR"] = value
+	}
+	if value, ok := os.LookupEnv("AYOKODING_WEB_MANIFESTS_DIR"); ok {
+		values["AYOKODING_WEB_MANIFESTS_DIR"] = value
+	}
+	if value, ok := os.LookupEnv("AYOKODING_WEB_SHOW_DRAFTS"); ok {
+		values["AYOKODING_WEB_SHOW_DRAFTS"] = value
+	}
+	if value, ok := os.LookupEnv("AYOKODING_WEB_FIXTURE"); ok {
+		values["AYOKODING_WEB_FIXTURE"] = value
+	}
+	return func(key string) (string, bool) {
+		value, ok := values[key]
+		return value, ok
+	}
+}
 
 // ResolveConfig resolves an explicit --port flag, then AYOKODING_WEB_PORT,
 // then 3102. Bare PORT is ignored by repository convention. --fixture selects

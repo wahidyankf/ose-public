@@ -73,6 +73,27 @@
         }
       ]
     },
+    "build:integration": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "next build",
+        "cwd": "apps/ayokoding-www",
+        "env": {
+          "AYOKODING_WWW_STANDALONE_OUTPUT": "off"
+        }
+      },
+      "outputs": ["{projectRoot}/.next"],
+      "dependsOn": ["generate-indexes", "generate-search-data"],
+      "inputs": [
+        "default",
+        {
+          "env": "AYOKODING_WEB_MANIFESTS_DIR"
+        },
+        {
+          "env": "AYOKODING_WEB_SHOW_DRAFTS"
+        }
+      ]
+    },
     "start": {
       "executor": "nx:run-commands",
       "options": {
@@ -114,7 +135,7 @@
     "test:integration": {
       "executor": "nx:run-commands",
       "cache": true,
-      "dependsOn": ["build"],
+      "dependsOn": ["build:integration"],
       "inputs": [
         "default",
         "{workspaceRoot}/specs/apps/ayokoding/www/behaviours/build-tools/**/*.feature",

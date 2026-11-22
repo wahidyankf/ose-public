@@ -40,10 +40,11 @@ func main() {
 	exit(run(os.Args[1:], hostFor()))
 }
 
-// osHost wires the launcher to the real process.
+// osHost wires the launcher to the real process, snapshotting the honored
+// launcher variables once at the boundary into the Environment seam.
 func osHost() host {
 	return host{
-		environment: os.LookupEnv,
+		environment: web.OSEnvironment(),
 		root:        os.DirFS,
 		listen: func(address string) (net.Listener, error) {
 			return net.Listen("tcp", address)

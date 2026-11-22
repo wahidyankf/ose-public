@@ -58,6 +58,21 @@ Then(
   },
 );
 
+// The drawer's primary-nav labels in each locale, as the chrome renders them.
+const DRAWER_PRIMARY_LABELS: Record<string, { learn: string; tools: string }> = {
+  en: { learn: "Learn", tools: "Tools" },
+  id: { learn: "Belajar", tools: "Alat" },
+};
+
+Then("every drawer label is localized to {string}", async ({ page }, locale: string) => {
+  const labels = DRAWER_PRIMARY_LABELS[locale];
+  if (labels === undefined) throw new Error(`unknown drawer locale: ${locale}`);
+  const drawer = page.getByRole("dialog");
+  await expect(drawer).toContainText(labels.learn);
+  await expect(drawer).toContainText(labels.tools);
+  if (locale !== "en") await expect(drawer).not.toContainText(/^Learn$|^Tools$/);
+});
+
 // ---------------------------------------------------------------------------
 // Footer nav assertions
 //

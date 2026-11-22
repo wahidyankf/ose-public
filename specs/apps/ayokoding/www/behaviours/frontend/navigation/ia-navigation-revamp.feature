@@ -32,12 +32,18 @@ Feature: IA navigation revamp
     And the header primary nav should contain a link to "/en/tools" labelled "Tools"
 
   @e2e-home
-  Scenario: Mobile navigation mirrors the header links
+  Scenario Outline: mobile navigation links
     Given the viewport is set to mobile width
-    When a visitor navigates to "/en"
+    When a visitor navigates to "<home>"
     And the visitor opens the mobile navigation menu
-    Then the mobile nav should contain a link to "/en/browse" labelled "Learn"
-    And the mobile nav should contain a link to "/en/tools" labelled "Tools"
+    Then the mobile nav should contain a link to "<learn_href>" labelled "<learn_label>"
+    And the mobile nav should contain a link to "<tools_href>" labelled "<tools_label>"
+    And every drawer label is localized to "<locale>"
+
+    Examples:
+      | locale | home | learn_href | learn_label | tools_href | tools_label |
+      | en     | /en  | /en/browse | Learn       | /en/tools  | Tools       |
+      | id     | /id  | /id/browse | Belajar     | /id/tools  | Alat        |
 
   @e2e-home
   Scenario: Footer shows grouped navigation with localized labels

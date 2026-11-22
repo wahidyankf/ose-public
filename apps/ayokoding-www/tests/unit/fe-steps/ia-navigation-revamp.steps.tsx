@@ -85,7 +85,7 @@ const rantsSection = {
   children: [],
 };
 
-describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
+describeFeature(feature, ({ Scenario, ScenarioOutline, Background, AfterEachScenario }) => {
   AfterEachScenario(cleanup);
 
   Background(({ Given }) => {
@@ -171,28 +171,38 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: Mobile navigation mirrors the header links
-  Scenario("Mobile navigation mirrors the header links", ({ Given, When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: mobile navigation links
+  ScenarioOutline("mobile navigation links", ({ Given, When, Then, And }, variables) => {
     let links: { label: string; href: string }[] = [];
     Given("the viewport is set to mobile width", () => {
       Object.defineProperty(window, "innerWidth", { configurable: true, value: 375 });
       expect(window.innerWidth).toBeLessThan(768);
     });
 
-    When('a visitor navigates to "/en"', () => {
-      expect(contentUrl("en", "")).toBe("/en");
+    When('a visitor navigates to "<home>"', () => {
+      expect(contentUrl(String(variables.locale) as "en" | "id", "")).toBe(String(variables.home));
     });
 
     And("the visitor opens the mobile navigation menu", () => {
-      links = PRIMARY_NAV_LINKS.map((link) => ({ label: t("en", link.labelKey), href: link.hrefFor("en") }));
+      const locale = String(variables.locale) as "en" | "id";
+      links = PRIMARY_NAV_LINKS.map((link) => ({ label: t(locale, link.labelKey), href: link.hrefFor(locale) }));
     });
 
-    Then('the mobile nav should contain a link to "/en/browse" labelled "Learn"', () => {
-      expect(links).toContainEqual({ label: "Learn", href: "/en/browse" });
+    Then('the mobile nav should contain a link to "<learn_href>" labelled "<learn_label>"', () => {
+      expect(links).toContainEqual({ label: String(variables.learn_label), href: String(variables.learn_href) });
     });
 
-    And('the mobile nav should contain a link to "/en/tools" labelled "Tools"', () => {
-      expect(links).toContainEqual({ label: "Tools", href: "/en/tools" });
+    And('the mobile nav should contain a link to "<tools_href>" labelled "<tools_label>"', () => {
+      expect(links).toContainEqual({ label: String(variables.tools_label), href: String(variables.tools_href) });
+    });
+
+    And('every drawer label is localized to "<locale>"', () => {
+      const locale = String(variables.locale) as "en" | "id";
+      expect(links.map(({ label }) => label)).toEqual(PRIMARY_NAV_LINKS.map((link) => t(locale, link.labelKey)));
+      if (locale === "en") return;
+      for (const link of PRIMARY_NAV_LINKS) {
+        expect(t(locale, link.labelKey)).not.toBe(t("en", link.labelKey));
+      }
     });
   });
 

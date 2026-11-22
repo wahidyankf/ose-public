@@ -21,8 +21,9 @@ Feature: Canonical locale entry redirects
     Then the visitor is permanently redirected to "<destination_url>"
 
     Examples:
-      | source_url              | destination_url          |
-      | /EN                     | /en                      |
-      | /ID                     | /id                      |
-      | /EN/learn/courses       | /en/learn/courses        |
-      | /ID/learn/courses       | /id/learn/courses        |
+      | source_url                          | destination_url                     |
+      | /EN                                 | /en                                 |
+      | /ID                                 | /id                                 |
+      | /EN/learn/courses                   | /en/learn/courses                   |
+      | /ID/learn/courses                   | /id/learn/courses                   |
+      | /EN/tools/cost-of-living-calculator | /en/tools/cost-of-living-calculator |

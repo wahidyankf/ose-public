@@ -11,6 +11,18 @@ Feature: Tools index
       | Cost of living calculator |
       | AI benchmark              |
 
+  # Behaviour: AYW-061
+  Scenario Outline: tools index in both locales
+    Given a user navigates to "<path>"
+    When the page renders
+    Then the page heading reads "<heading>" and the calculator link reads "<calculator_link>"
+    And no raw i18n key strings are visible
+
+    Examples:
+      | path      | heading | calculator_link           |
+      | /en/tools | Tools   | Cost of Living Calculator |
+      | /id/tools | Alat    | Kalkulator Biaya Hidup    |
+
   # Behaviour: AYW-052
   # EWT-001 (Rule-15 retest regression) — the page-level wrapper must never nest a second <main>
   # inside the app shell's own <main id="main-content"> landmark: a <main> must not contain another

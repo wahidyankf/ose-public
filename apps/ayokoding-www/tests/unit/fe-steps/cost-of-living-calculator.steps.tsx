@@ -89,12 +89,9 @@ import "./helpers/test-setup";
 import CostOfLivingCalculatorPage, {
   generateMetadata as generateCalculatorMetadata,
 } from "@/app/[locale]/tools/cost-of-living-calculator/page";
-import ToolsIndexPage from "@/app/[locale]/tools/page";
 import { dataset } from "@/features/cost-of-living-calculator/core/data/cities";
 import { fx } from "@/features/cost-of-living-calculator/core/data/fx";
 import { t } from "@/features/i18n/core/translations";
-import { PRIMARY_NAV_LINKS } from "@/features/app-shell/core/nav-links";
-import { resolveLocaleEntryRedirect } from "@/redirects/locale-entry";
 
 // The min-role tab now renders every (city, role) in scope (include-all). Unscoped, that is ~90+
 // rows re-rendered on each keystroke of `userEvent.type`; under coverage instrumentation a few of
@@ -1876,56 +1873,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
-  // ─── USS-005: Tools index renders localized text ──────────────────────────────
-
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Tools index page renders all text in the active locale
-  Scenario("Tools index page renders all text in the active locale", ({ Given, When, Then, And }) => {
-    Given("a user navigates to /en/tools", async () => {
-      const jsx = await ToolsIndexPage({ params: Promise.resolve({ locale: "en" as const }) });
-      render(jsx);
-    });
-
-    // Rule-15 EWT-001 fix: the page's own wrapper is a plain `<div>`, not `<main>` — the app
-    // shell's `<main id="main-content">` (outside what this isolated unit render includes) is the
-    // page's sole landmark, so asserting `getByRole("main")` here would always fail post-fix.
-    // Asserting the level-one heading renders instead confirms the page content mounted.
-    When("the page renders", () => {
-      expect(screen.getByRole("heading", { level: 1 })).toBeTruthy();
-    });
-
-    Then("the page heading and the calculator link display readable English labels", () => {
-      expect(screen.getByRole("heading", { level: 1 }).textContent).toBe(t("en", "toolsPageTitle"));
-      expect(screen.getByRole("link", { name: t("en", "toolsPageCalcLink") })).toBeTruthy();
-    });
-
-    And("no raw i18n key strings are visible", () => {
-      expect(document.body.textContent).not.toMatch(/toolsPage[A-Z]/);
-    });
-  });
-
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Tools index page renders in Indonesian on /id/tools
-  Scenario("Tools index page renders in Indonesian on /id/tools", ({ Given, When, Then, And }) => {
-    Given("a user navigates to /id/tools", async () => {
-      const jsx = await ToolsIndexPage({ params: Promise.resolve({ locale: "id" as const }) });
-      render(jsx);
-    });
-
-    // Rule-15 EWT-001 fix: see the comment on the English scenario above — the page's own wrapper
-    // is a plain `<div>`, not `<main>`, so this asserts the heading instead of a landmark role.
-    When("the page renders", () => {
-      expect(screen.getByRole("heading", { level: 1 })).toBeTruthy();
-    });
-
-    Then("the heading and link labels are in Indonesian", () => {
-      expect(screen.getByRole("heading", { level: 1 }).textContent).toBe(t("id", "toolsPageTitle"));
-      expect(screen.getByRole("link", { name: t("id", "toolsPageCalcLink") })).toBeTruthy();
-    });
-
-    And("no raw i18n key strings are visible", () => {
-      expect(document.body.textContent).not.toMatch(/toolsPage[A-Z]/);
-    });
-  });
-
   // ─── SG-D-001: Dual-currency display in cost-of-living and savings tables ─────
 
   // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: money columns show local currency and USD
@@ -2138,53 +2085,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       // The active (cost) tab's description prose appears exactly once in the DOM.
       const costDesc = document.getElementById("tab-desc-cost")!.textContent!.trim();
       expect(screen.getAllByText(costDesc).length).toBe(1);
-    });
-  });
-
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Uppercase locale URL redirects to canonical lowercase
-  Scenario("Uppercase locale URL redirects to canonical lowercase", ({ Given, When, Then }) => {
-    let requestedPath = "";
-    let redirectDestination: string | null = null;
-
-    Given('the user requests "/EN/tools/cost-of-living-calculator"', () => {
-      requestedPath = "/EN/tools/cost-of-living-calculator";
-    });
-
-    When("the middleware processes the request", () => {
-      redirectDestination = resolveLocaleEntryRedirect(requestedPath);
-    });
-
-    Then('the server redirects to "/en/tools/cost-of-living-calculator"', () => {
-      expect(redirectDestination).toBe("/en/tools/cost-of-living-calculator");
-    });
-  });
-
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Mobile nav drawer shows localized site navigation
-  Scenario("Mobile nav drawer shows localized site navigation", ({ Given, When, Then, And }) => {
-    let drawerLinks: Array<{ href: string; label: string }> = [];
-    Given('the user opens the mobile nav drawer at 375px on the "/id/" locale', () => {
-      navState.locale = "id";
-      renderPage(<CostOfLivingCalculatorPage />);
-      expect(navState.locale).toBe("id");
-    });
-
-    When("the drawer renders", () => {
-      drawerLinks = PRIMARY_NAV_LINKS.map((link) => ({
-        href: link.hrefFor("id"),
-        label: t("id", link.labelKey),
-      }));
-    });
-
-    Then("it shows the site's top-level navigation links", () => {
-      expect(drawerLinks).toHaveLength(PRIMARY_NAV_LINKS.length);
-      expect(drawerLinks.map(({ href }) => href)).toEqual(["/id/browse", "/id/tools"]);
-    });
-
-    And("every drawer label is localized", () => {
-      expect(drawerLinks.map(({ label }) => label)).toEqual(PRIMARY_NAV_LINKS.map((link) => t("id", link.labelKey)));
-      for (const link of PRIMARY_NAV_LINKS) {
-        expect(t("id", link.labelKey)).not.toBe(t("en", link.labelKey));
-      }
     });
   });
 

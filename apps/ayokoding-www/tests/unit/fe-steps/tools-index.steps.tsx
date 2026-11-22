@@ -69,6 +69,31 @@ describeFeature(feature, ({ ScenarioOutline, AfterEachScenario }) => {
     },
   );
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/tools-index.feature: tools index in both locales
+  ScenarioOutline("tools index in both locales", ({ Given, When, Then, And }, variables) => {
+    Given('a user navigates to "<path>"', async () => {
+      // The locale is the first segment of the path, e.g. "/id/tools" renders the Indonesian page.
+      const locale = String(variables.path).split("/")[1] as "en" | "id";
+      const jsx = await ToolsIndexPage({ params: Promise.resolve({ locale }) });
+      render(jsx);
+    });
+
+    // Rule-15 EWT-001 fix: the page's own wrapper is a plain `<div>`, not `<main>`, so the heading is
+    // asserted instead of a landmark role (see the EWT-001 scenario below).
+    When("the page renders", () => {
+      expect(screen.getByRole("heading", { level: 1 })).toBeTruthy();
+    });
+
+    Then('the page heading reads "<heading>" and the calculator link reads "<calculator_link>"', () => {
+      expect(screen.getByRole("heading", { level: 1 }).textContent).toBe(String(variables.heading));
+      expect(screen.getByRole("link", { name: String(variables.calculator_link) })).toBeTruthy();
+    });
+
+    And("no raw i18n key strings are visible", () => {
+      expect(document.body.textContent).not.toMatch(/toolsPage[A-Z]/);
+    });
+  });
+
   // EWT-001 (Rule-15 retest regression, pr-review-synthesis-maker HIGH finding, PR #122 cycle 1):
   // both Tools pages' page-level wrapper was a nested `<main>` inside the app shell's own
   // `<main id="main-content">`, producing two `role="main"` landmarks — invalid HTML5 and a WCAG

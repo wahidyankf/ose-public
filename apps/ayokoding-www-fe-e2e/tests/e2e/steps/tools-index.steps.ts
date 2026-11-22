@@ -5,6 +5,7 @@ const { Given, When, Then } = createBdd();
 
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/tools-index.feature: Each tool entry on the tools index has a description distinct from its link text
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/tools-index.feature: Exactly one main landmark renders on the Tools pages
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/tools-index.feature: tools index in both locales
 
 // The tool entries of the tools index, keyed by the feature's Examples value: each entry's link
 // name and the test id of its description element.
@@ -42,6 +43,29 @@ Then("the {string} entry shows a description distinct from its link text", async
   // The description must be non-empty and differ from the link text
   expect(descText.length).toBeGreaterThan(0);
   expect(descText).not.toBe(linkText);
+});
+
+// ── Tools index renders in both locales ─────────────────────────────────────────
+
+Given("a user navigates to {string}", async ({ page }, path: string) => {
+  await page.goto(path);
+  await page.waitForLoadState("networkidle");
+});
+
+Then(
+  "the page heading reads {string} and the calculator link reads {string}",
+  async ({ page }, heading: string, calculatorLink: string) => {
+    await expect(page.getByRole("heading", { level: 1 })).toContainText(heading);
+    // Scope to main content: the footer Tools column also links to the calculator.
+    const main = page.locator("#main-content");
+    await expect(main.getByRole("link", { name: calculatorLink })).toBeVisible();
+  },
+);
+
+Then("no raw i18n key strings are visible", async ({ page }) => {
+  const bodyText = await page.locator("body").textContent();
+  expect(bodyText).not.toMatch(/toolsPage[A-Z]/);
+  expect(bodyText).not.toMatch(/calcTitle/);
 });
 
 // ── EWT-001 regression: exactly one <main> landmark per page ───────────────────

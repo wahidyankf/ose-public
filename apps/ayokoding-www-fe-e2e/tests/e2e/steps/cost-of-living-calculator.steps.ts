@@ -52,14 +52,10 @@ const { Given, When, Then } = createBdd();
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings tab shows results after salary is entered
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: minimum-role empty state
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Area toggle shows selected state and confirms data update
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Tools index page renders all text in the active locale
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Tools index page renders in Indonesian on /id/tools
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: page title and H1 name the tool
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The gross-salary field has a visible border and a label
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Baseline selector is a segmented control
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: tab labels
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Uppercase locale URL redirects to canonical lowercase
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Mobile nav drawer shows localized site navigation
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: invalid deep-link values fall back to defaults
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: city selection backfills country and region
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: region selection clears narrower filters
@@ -2344,41 +2340,10 @@ Then("a screen reader announces them as separate text nodes", async ({ page }) =
   await expect(page.getByRole("tab", { name: "Cost of living" })).toHaveAttribute("aria-describedby", "tab-desc-cost");
 });
 
-// ── USS-005: Tools index localized text ──────────────────────────────────────
-
-Given(/a user navigates to \/en\/tools/, async ({ page }) => {
-  await page.goto("/en/tools");
-  await page.waitForLoadState("networkidle");
-});
+// ── Shared page-load step (also used by the tools index and other bindings) ──
 
 When("the page renders", async ({ page }) => {
   await page.waitForLoadState("networkidle");
-});
-
-Then("the page heading and the calculator link display readable English labels", async ({ page }) => {
-  await expect(page.getByRole("heading", { level: 1 })).toContainText(/tools/i);
-  // Scope to main content to avoid strict-mode violation with the footer Tools
-  // column which also links to the calculator (footer added in Phase 3).
-  const main = page.locator("#main-content");
-  await expect(main.getByRole("link", { name: /cost of living/i })).toBeVisible();
-});
-
-Then("no raw i18n key strings are visible", async ({ page }) => {
-  const bodyText = await page.locator("body").textContent();
-  expect(bodyText).not.toMatch(/toolsPage[A-Z]/);
-  expect(bodyText).not.toMatch(/calcTitle/);
-});
-
-Given(/a user navigates to \/id\/tools/, async ({ page }) => {
-  await page.goto("/id/tools");
-  await page.waitForLoadState("networkidle");
-});
-
-Then("the heading and link labels are in Indonesian", async ({ page }) => {
-  await expect(page.getByRole("heading", { level: 1 })).toContainText(/alat/i);
-  // Scope to main content — footer also has "Kalkulator Biaya Hidup" (Phase 3).
-  const main = page.locator("#main-content");
-  await expect(main.getByRole("link", { name: /kalkulator/i })).toBeVisible();
 });
 
 // ── SG-D-001: Dual-currency in cost-of-living and savings tables ──────────────
@@ -2541,66 +2506,6 @@ Then("each tab trigger's visible text is its label only, with the description no
     await expect(description).not.toHaveText(expectedLabels[index]!);
     expect((await tab.textContent())?.trim()).not.toContain((await description.textContent())?.trim() ?? "");
   }
-});
-
-Given("the user requests {string}", async ({ page }, path: string) => {
-  await page.goto(path);
-  await page.waitForLoadState("networkidle");
-});
-
-When("the middleware processes the request", async ({ page }) => {
-  await page.waitForLoadState("networkidle");
-});
-
-Then("the server redirects to {string}", async ({ page }, expectedPath: string) => {
-  expect(page.url()).toContain(expectedPath);
-});
-
-Given("the user opens the mobile nav drawer at 375px on the {string} locale", async ({ page }, locale: string) => {
-  await page.setViewportSize({ width: 375, height: 812 });
-  const cleanLocale = locale.replace(/^\/|\/$/g, "");
-  await page.goto(`/${cleanLocale}/`);
-  await page.waitForLoadState("networkidle");
-  // Try to open mobile nav drawer; skip if no trigger found
-  const menuTriggers = [
-    page.getByRole("button", { name: /menu/i }),
-    page.getByRole("button", { name: /navigation/i }),
-    page.getByLabel("Open menu"),
-    page.getByLabel("Toggle menu"),
-    page.getByLabel("Menu"),
-  ];
-  for (const trigger of menuTriggers) {
-    const visible = await trigger
-      .first()
-      .isVisible()
-      .catch(() => false);
-    if (visible) {
-      await trigger.first().click();
-      await page.waitForLoadState("networkidle");
-      break;
-    }
-  }
-});
-
-When("the drawer renders", async ({ page }) => {
-  await page.waitForLoadState("networkidle");
-});
-
-Then("it shows the site's top-level navigation links", async ({ page }) => {
-  const drawer = page.getByRole("dialog");
-  await expect(drawer).toBeVisible();
-  const primaryLinks = drawer
-    .getByRole("navigation", { name: "Mobile navigation", exact: true })
-    .locator(":scope > ul");
-  await expect(primaryLinks).toHaveCount(1);
-  await expect(primaryLinks.getByRole("link", { name: /belajar/i })).toHaveAttribute("href", "/id/browse");
-  await expect(primaryLinks.getByRole("link", { name: /alat/i })).toHaveAttribute("href", "/id/tools");
-});
-
-Then("every drawer label is localized", async ({ page }) => {
-  const drawer = page.getByRole("dialog");
-  await expect(drawer).toContainText(/belajar|alat/i);
-  await expect(drawer).not.toContainText(/^Learn$|^Tools$/);
 });
 
 // ── URL state Phase 4 step definitions (added 2026-06-21) ────────────────────

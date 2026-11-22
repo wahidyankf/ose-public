@@ -408,21 +408,6 @@ Feature: Salary savings calculator
     Then the "Rural" button displays as the active/selected state
     And a visible signal confirms the table data has been recalculated for rural estimates
 
-  # Behaviour: AYW-061
-  # USS-005 — Tools index renders localized text
-  Scenario: Tools index page renders all text in the active locale
-    Given a user navigates to /en/tools
-    When the page renders
-    Then the page heading and the calculator link display readable English labels
-    And no raw i18n key strings are visible
-
-  # Behaviour: AYW-061
-  Scenario: Tools index page renders in Indonesian on /id/tools
-    Given a user navigates to /id/tools
-    When the page renders
-    Then the heading and link labels are in Indonesian
-    And no raw i18n key strings are visible
-
   # Behaviour: AYW-058
   # Behaviour: AYW-059
   # Behaviour: AYW-061
@@ -483,19 +468,6 @@ Feature: Salary savings calculator
     And a screen reader announces them as separate text nodes
     And each of the three tabs has a description element associated with its trigger via aria-describedby
     And no tab description text is duplicated elsewhere on screen
-
-  # Behaviour: AYW-061
-  Scenario: Uppercase locale URL redirects to canonical lowercase
-    Given the user requests "/EN/tools/cost-of-living-calculator"
-    When the middleware processes the request
-    Then the server redirects to "/en/tools/cost-of-living-calculator"
-
-  # Behaviour: AYW-061
-  Scenario: Mobile nav drawer shows localized site navigation
-    Given the user opens the mobile nav drawer at 375px on the "/id/" locale
-    When the drawer renders
-    Then it shows the site's top-level navigation links
-    And every drawer label is localized
 
   # ── URL state Phase 4 scenarios (added 2026-06-21) ──────────────────────────
 

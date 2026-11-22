@@ -13,19 +13,28 @@ Feature: Salary savings calculator
     And each row shows a separately labelled liquidity reserve
 
   # Behaviour: AYW-060
-  Scenario: Region narrows the country filter and country narrows the city filter
+  Scenario: cascading geographic filters
     Given I am on "/en/tools/cost-of-living-calculator"
     And the "Cost of living" tab is active
     When I select the region "ASEAN" then the country "Indonesia" in the cascading filters
     Then the Country filter lists only ASEAN countries
     And the City filter lists only Indonesian cities
     And only cities in Indonesia are shown in the table
+    Given I am on the calculator with no region or country selected
+    When I select the country "Indonesia" in the country filter without first selecting a region
+    Then the city dropdown lists only cities in Indonesia
 
   # Behaviour: AYW-060
-  Scenario: Country and city are always shown together on every tab
+  Scenario: country shown beside city
     Given I am on "/en/tools/cost-of-living-calculator"
     When I view any tab's results table
     Then every row shows a Country column immediately to the left of the City column
+    Given I am on the "Minimum role" tab with a baseline set
+    When I read a qualifying (city, role) row
+    Then the row shows the city and its country
+    Given I am viewing the "Cost of living" tab on a viewport narrower than 768 px
+    When the mobile city cards render
+    Then each card header shows both the city name and its country name
 
   # Behaviour: AYW-060
   Scenario: Clicking a city name opens its single-city cost-of-living detail
@@ -168,11 +177,16 @@ Feature: Salary savings calculator
     But no schooling cost is added
 
   # Behaviour: AYW-060
-  Scenario: School type toggle is shown but disabled without school-age children
+  Scenario: school type toggle availability
     Given I am on "/en/tools/cost-of-living-calculator"
     When the household has no school-age children
     Then the school-type toggle is shown but disabled
     And a hint explains that school-age children must be added to choose
+    And the "Public" and "Private" buttons are aria-disabled
+    And their accessible description names the "add school-age children" prerequisite
+    When I set the household to 1 school-age child
+    Then the school type toggle is enabled with "Public" and "Private" options
+    And the default selection is "Public"
 
   # Behaviour: AYW-060
   Scenario: Private school raises expenses more than public
@@ -182,21 +196,31 @@ Feature: Salary savings calculator
     Then the schooling portion of the modeled expenses increases
 
   # Behaviour: AYW-060
-  Scenario: Rural area lowers housing versus city center
+  Scenario: area changes the housing estimate
     Given I am on the "Cost of living" tab
+    And I set the household to 2 adults with no children
     When I switch the area from "city center" to "rural"
     Then the modeled housing expense decreases
     And the city total decreases accordingly
+    And the housing estimate in the expense preview decreases
+    And the essentials total in the preview decreases accordingly
 
   # Behaviour: AYW-059
-  Scenario: Minimum role for a savings target ranks on essential savings and is reordered
+  Scenario: Qualifying rows sit above a divider, others dimmed below
     Given I am on "/en/tools/cost-of-living-calculator"
     And I switch to the "Minimum role" tab
     And I set the baseline source to "savings target"
     When I enter a monthly savings target of "8000" USD
     Then I see the qualifying (city, role) rows grouped above a divider and non-qualifying rows dimmed below it
-    And the lowest role rank that reaches at least 8000 USD essential savings anywhere in the filter is marked as the minimum
     And (city, role) rows that cannot reach 8000 USD essential savings are shown below the divider and de-emphasised
+
+  # Behaviour: AYW-059
+  Scenario: The lowest qualifying role is marked minimum
+    Given I am on "/en/tools/cost-of-living-calculator"
+    And I switch to the "Minimum role" tab
+    And I set the baseline source to "savings target"
+    When I enter a monthly savings target of "8000" USD
+    Then the lowest role rank that reaches at least 8000 USD essential savings anywhere in the filter is marked as the minimum
 
   # Behaviour: AYW-059
   # The reported "only one Malaysia entry / results hidden" bug. Each (city, role) is its own
@@ -224,12 +248,6 @@ Feature: Salary savings calculator
     When I read a role row
     Then the role shows its country's p25, median, and p75 salary distribution
     And the row's essential savings is computed from the median salary
-
-  # Behaviour: AYW-060
-  Scenario: A city row shows its country alongside the city name
-    Given I am on the "Minimum role" tab with a baseline set
-    When I read a qualifying (city, role) row
-    Then the row shows the city and its country
 
   # Behaviour: AYW-060
   Scenario: Geographic filter scopes the candidate cities
@@ -308,14 +326,6 @@ Feature: Salary savings calculator
 
 
   # Behaviour: AYW-060
-  Scenario: A rural area and a two-adult household lower and scale the housing estimate
-    Given I am on the "Cost of living" tab
-    And I set the household to 2 adults with no children
-    When I switch the area from "city center" to "rural"
-    Then the housing estimate in the expense preview decreases to base times subLinear 2 adults times 0.75
-    And the essentials total in the preview decreases accordingly
-
-  # Behaviour: AYW-060
   Scenario: Selecting a city from the City filter opens its detail view
     Given I am on the "Cost of living" tab
     When I select a city from the City dropdown filter
@@ -328,12 +338,6 @@ Feature: Salary savings calculator
     When I enter a gross monthly salary at exactly the low-to-mid band threshold for a city
     Then that city's net take-home uses the mid band effective tax rate
 
-  # Behaviour: AYW-060
-  Scenario: Mobile city cards show the country name alongside the city
-    Given I am viewing the "Cost of living" tab on a viewport narrower than 768 px
-    When the mobile city cards render
-    Then each card header shows both the city name and its country name
-
   # Behaviour: AYW-059
   Scenario: Zero savings target marks the lowest role as the minimum
     Given I am on the "Minimum role" tab
@@ -344,11 +348,15 @@ Feature: Salary savings calculator
     And the qualifying (city, role) rows whose savings are at or above zero appear above the divider
 
   # Behaviour: AYW-060
-  Scenario: The expense preview updates at once when household controls change
+  Scenario: household preview scaling
     Given I am on the cost-of-living calculator
     And the default household is 1 adult with no children in city center
     When I change the Adults control to 2
-    Then the Housing preview amount increases to base times subLinear 2 adults
+    Then the Housing preview amount is exactly 1.25 times the 1-adult amount
+    And the Utilities preview amount is exactly 1.25 times the 1-adult amount
+    And the Food preview amount is exactly 1.5 times the 1-adult amount
+    And the Transport preview amount is unchanged from the 1-adult amount
+    And the Housing preview amount increases for two adults
     And the Childcare and School preview amounts remain zero
     And the Total preview updates immediately without a page reload
 
@@ -412,27 +420,6 @@ Feature: Salary savings calculator
     Then the URL query string includes "country=id"
     And opening that URL in a new tab shows only Indonesian cities in the table
     And the Country filter is pre-selected to "Indonesia"
-
-  # Behaviour: AYW-060
-  # SG-005 — School type toggle is enabled when school-age children >= 1
-  Scenario: School type toggle becomes enabled when school-age children is set to one or more
-    Given I am on "/en/tools/cost-of-living-calculator"
-    And the household has no school-age children
-    And the school-type toggle is shown but disabled
-    When I set the household to 1 school-age child
-    Then the school type toggle is enabled with "Public" and "Private" options
-    And the default selection is "Public"
-
-  # Behaviour: AYW-060
-  # SG-006 — Housing scales sub-linearly (1.25x) for a 2-adult household
-  Scenario: Housing preview scales sub-linearly for 2-adult household
-    Given I am on the cost-of-living calculator
-    And the default household is 1 adult with no children in city center
-    When I change the Adults control to 2
-    Then the Housing preview amount is exactly 1.25 times the 1-adult amount
-    And the Utilities preview amount is exactly 1.25 times the 1-adult amount
-    And the Food preview amount is exactly 1.5 times the 1-adult amount
-    And the Transport preview amount is unchanged from the 1-adult amount
 
 
   # Behaviour: AYW-058
@@ -499,7 +486,7 @@ Feature: Salary savings calculator
     When the table renders
     Then the Net, Essentials, Essential-savings, and After-lifestyle-savings columns show both local and USD amounts
 
-  # SG-D-002 — covered by existing "Mobile city cards show the country name alongside the city"
+  # SG-D-002 — covered by the "country shown beside city" scenario
 
   # Behaviour: AYW-061
   # SG-D-003 — Page heading matches tool identity
@@ -760,13 +747,6 @@ Feature: Salary savings calculator
   #   Then the URL query string does not include a "tab" parameter
 
   # Behaviour: AYW-060
-  # SG-U (country-narrows-city) — selecting a country without a region narrows the city dropdown
-  Scenario: Selecting a country without a region still narrows the city dropdown
-    Given I am on the calculator with no region or country selected
-    When I select the country "Indonesia" in the country filter without first selecting a region
-    Then the city dropdown lists only cities in Indonesia
-
-  # Behaviour: AYW-060
   # SG-U (area radiogroup) — the area control renders with role="radiogroup"
   Scenario: The area control is rendered as a radiogroup
     Given I am on the cost-of-living calculator
@@ -853,14 +833,6 @@ Feature: Salary savings calculator
     When the page is rendered
     Then the "City center" button has aria-pressed "true"
     And the "Rural" button has aria-pressed "false"
-
-  # Behaviour: AYW-060
-  # USS-004 — disabled school-type buttons announce the prerequisite.
-  Scenario: Disabled school-type buttons announce the prerequisite
-    Given "School-age children" is 0
-    When the page is rendered
-    Then the "Public" and "Private" buttons are aria-disabled
-    And their accessible description names the "add school-age children" prerequisite
 
   # Behaviour: AYW-058
   Scenario: Sortable savings column exposes aria-sort

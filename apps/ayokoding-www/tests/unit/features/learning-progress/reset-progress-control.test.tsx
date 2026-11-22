@@ -1,13 +1,19 @@
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { PROGRESS_STORAGE_KEY } from "@/features/learning-progress/core/progress-schema";
 import { parseProgress, setPageComplete } from "@/features/learning-progress/core/progress-state";
 import { ResetProgressControl } from "@/features/learning-progress/shell/reset-progress-control";
 import { learningProgressStore } from "@/features/learning-progress/shell/progress-storage";
 
-/** Let Radix's portal mount, its focus scope run, and its close-focus restore settle. */
+/**
+ * Let Radix's portal mount, its focus scope run, and its close-focus restore settle. Radix defers
+ * the close-focus restore with a `setTimeout(0)`, which a microtask flush does not reach, so the
+ * faked timers are run explicitly here instead of racing the real clock.
+ */
 async function settle(): Promise<void> {
-  await act(async () => {});
+  await act(async () => {
+    vi.runOnlyPendingTimers();
+  });
 }
 
 function storedCompleted(): unknown {
@@ -19,12 +25,16 @@ function seed(): void {
 }
 
 beforeEach(() => {
+  vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
   learningProgressStore.reset();
   window.localStorage.clear();
   seed();
 });
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  vi.useRealTimers();
+});
 
 describe("ResetProgressControl", () => {
   it("opens the dialog with Cancel focused, and keeps every record when Cancel is used", async () => {

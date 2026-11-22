@@ -409,6 +409,56 @@ describe("role-lookup", () => {
     });
   });
 
+  describe("missing data guards", () => {
+    const ghostCity = { ...berlin, id: "ghost-city", countryId: "xx" };
+
+    it("roleMedianGrossUsd is zero without a distribution for the city country", () => {
+      expect(roleMedianGrossUsd(fx, roleMatrix, ghostCity, "senior_swe")).toBe(0);
+    });
+
+    it("bestCityForRole skips cities with no country and throws when none qualify", () => {
+      const scoped = [ghostCity, ...allCities.filter((c) => c.region === "asean")];
+      const result = bestCityForRole(dataset, "senior_swe", defaultOpts, roleMatrix, scoped);
+      expect(result.city.id).not.toBe("ghost-city");
+      expect(() => bestCityForRole(dataset, "senior_swe", defaultOpts, roleMatrix, [ghostCity])).toThrow(
+        /No candidate city found/,
+      );
+    });
+
+    it("resolveBaselineUsd names the unknown salary city and country", () => {
+      expect(() =>
+        resolveBaselineUsd("my_salary", { grossMonthlyUsd: 6000, cityId: "nope" }, defaultOpts, dataset, roleMatrix),
+      ).toThrow(/City not found: nope/);
+      const orphanDataset = { ...dataset, cities: [ghostCity] };
+      expect(() =>
+        resolveBaselineUsd(
+          "my_salary",
+          { grossMonthlyUsd: 6000, cityId: "ghost-city" },
+          defaultOpts,
+          orphanDataset,
+          roleMatrix,
+        ),
+      ).toThrow(/Country not found for city: ghost-city/);
+      expect(() =>
+        resolveBaselineUsd("reference_role", { role: "senior_swe", cityId: "nope" }, defaultOpts, dataset, roleMatrix),
+      ).toThrow(/City not found: nope/);
+      expect(() =>
+        resolveBaselineUsd(
+          "reference_role",
+          { role: "senior_swe", cityId: "ghost-city" },
+          defaultOpts,
+          orphanDataset,
+          roleMatrix,
+        ),
+      ).toThrow(/Country not found for city: ghost-city/);
+    });
+
+    it("enumerateCityRoleEntries skips cities with no country", () => {
+      const entries = enumerateCityRoleEntries(dataset, defaultOpts, roleMatrix, [ghostCity], 0);
+      expect(entries).toEqual([]);
+    });
+  });
+
   describe("toDisplayCurrencies", () => {
     it("converts USD savings to USD, local, and display currency", () => {
       const result = toDisplayCurrencies(fx, 10000, "EUR", "USD");

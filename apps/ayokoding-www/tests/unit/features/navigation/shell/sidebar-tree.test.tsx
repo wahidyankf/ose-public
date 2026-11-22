@@ -89,4 +89,38 @@ describe("SidebarTree — Courses category grouping (plan 03)", () => {
     expect(screen.getByRole("button", { name: /Data and databases/ })).toBeTruthy();
     expect(screen.getByRole("link", { name: "Paths" })).toBeTruthy();
   });
+
+  it("tracks overflow through ResizeObserver when available and cleans up", () => {
+    const observe = vi.fn();
+    const disconnect = vi.fn();
+    vi.stubGlobal(
+      "ResizeObserver",
+      class {
+        callback: () => void;
+        constructor(callback: () => void) {
+          this.callback = callback;
+        }
+        observe(...args: unknown[]) {
+          observe(...args);
+        }
+        unobserve() {}
+        disconnect() {
+          disconnect();
+        }
+      },
+    );
+    try {
+      const { unmount } = render(
+        <SidebarTree
+          nodes={[{ slug: "learn", title: "Learn", weight: 0, isSection: true, children: [] }]}
+          locale="en"
+        />,
+      );
+      expect(observe).toHaveBeenCalledTimes(1);
+      unmount();
+      expect(disconnect).toHaveBeenCalledTimes(1);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
 });

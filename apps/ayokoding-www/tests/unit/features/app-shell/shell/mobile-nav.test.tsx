@@ -106,6 +106,57 @@ describe("Phase 3 — mobile nav primary links", () => {
   });
 });
 
+// Persisted drawer width — a blocked store and a valid preset both render the default chrome.
+describe("mobile nav persisted width", () => {
+  it("falls back to the default preset when storage throws", async () => {
+    const getItem = vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+      throw new Error("blocked");
+    });
+    try {
+      render(
+        await (async () => {
+          const { MobileNav } = await import("../../../../../src/features/app-shell/shell/mobile-nav");
+          return <MobileNav locale="en" open={true} onOpenChange={() => {}} />;
+        })(),
+      );
+      await act(async () => {});
+      expect(screen.getByRole("link", { name: "Learn" })).not.toBeNull();
+    } finally {
+      getItem.mockRestore();
+    }
+  });
+
+  it("applies a valid persisted preset width", async () => {
+    localStorage.setItem("ayokoding-mobilenav-width", "360");
+    try {
+      render(
+        await (async () => {
+          const { MobileNav } = await import("../../../../../src/features/app-shell/shell/mobile-nav");
+          return <MobileNav locale="en" open={true} onOpenChange={() => {}} />;
+        })(),
+      );
+      await act(async () => {});
+      const drawer = document.body.querySelector("#mobile-nav-drawer");
+      expect(drawer?.getAttribute("style")).toContain("360px");
+    } finally {
+      localStorage.removeItem("ayokoding-mobilenav-width");
+    }
+  });
+
+  it("closes the drawer when a primary link is activated", async () => {
+    const onOpenChange = vi.fn();
+    render(
+      await (async () => {
+        const { MobileNav } = await import("../../../../../src/features/app-shell/shell/mobile-nav");
+        return <MobileNav locale="en" open={true} onOpenChange={onOpenChange} />;
+      })(),
+    );
+    await act(async () => {});
+    fireEvent.click(screen.getByRole("link", { name: "Learn" }));
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+  });
+});
+
 // Cycle 2.9 (course-paths plan) — the rail collapses into this shipped drawer on a phone.
 describe("Cycle 2.9 — MobileNav swaps SidebarTree for PathRail when a path context is active", () => {
   const manifest = manifestFixture({

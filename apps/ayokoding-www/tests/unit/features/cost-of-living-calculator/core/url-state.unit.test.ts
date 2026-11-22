@@ -491,6 +491,21 @@ describe("branch coverage: sanitizeState with invalid fields", () => {
     expect(result.household.schoolKids).toBe(0);
   });
 
+  it("sanitizeState clears an unknown cityId and falls back to the country", () => {
+    const badState = { ...DEFAULT_STATE, cityId: "nope", countryId: "de", region: null };
+    const result = sanitizeState(badState, mockDataset);
+    expect(result.cityId).toBeNull();
+    expect(result.countryId).toBe("de");
+    expect(result.region).toBe("europe");
+  });
+
+  it("decodeState falls back to the country when the city param names nothing", () => {
+    const result = decodeState(new URLSearchParams("city=nope&country=de"), mockDataset);
+    expect(result.cityId).toBeNull();
+    expect(result.countryId).toBe("de");
+    expect(result.region).toBe("europe");
+  });
+
   it("sanitizeState clears a countryId whose dataset entry has no cities to infer a region from", () => {
     // A country that exists in `dataset.countries` but backs zero cities in `dataset.cities` is a
     // valid `parseCountryId` result that still cannot resolve a region — `reconcileGeo`'s

@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { checkCourseCorpus, formatCorpusFailure } from "../../../../../src/features/content/shell/course-corpus-check";
+import {
+  checkCourseCorpus,
+  formatCorpusFailure,
+  nodeCourseCorpusFileSystem,
+} from "../../../../../src/features/content/shell/course-corpus-check";
 import { memoryFileSystem } from "./memory-file-system";
 
 // The real-disk version of these cases is tests/integration/features/content/shell/course-corpus-check.integration.test.ts.
@@ -87,5 +91,11 @@ describe("checkCourseCorpus (in-memory file system)", () => {
 
     const empty = await checkCourseCorpus(`${ROOT}/no-library-here`, "en", io);
     expect(empty).toEqual({ problems: [], expectedHours: {} });
+  });
+
+  it("the node file-system adapter surfaces missing paths as failures", async () => {
+    await expect(nodeCourseCorpusFileSystem.readdir("/virtual/no-such-dir")).rejects.toThrow();
+    await expect(nodeCourseCorpusFileSystem.readFile("/virtual/no-such-file")).rejects.toThrow();
+    await expect(nodeCourseCorpusFileSystem.readBytes("/virtual/no-such-file")).rejects.toThrow();
   });
 });

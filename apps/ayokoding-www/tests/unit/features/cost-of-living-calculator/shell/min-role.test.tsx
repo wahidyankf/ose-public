@@ -548,6 +548,32 @@ describe("MinRoleTable", () => {
     });
   });
 
+  it("changing the target currency commits the new code", () => {
+    const onCommit = vi.fn();
+    function Controlled() {
+      const [inputs, setInputs] = useState<MinRoleInputs>({
+        ...DEFAULT_STATE.minRole,
+        baselineSource: "savings_target",
+        targetRaw: "100",
+        targetCurrency: "USD",
+      });
+      return (
+        <MinRoleTable
+          {...defaultProps}
+          inputs={inputs}
+          onInputsChange={(next) => {
+            setInputs(next);
+            onCommit(next);
+          }}
+        />
+      );
+    }
+    render(<Controlled />);
+    const select = document.querySelector("#target-currency-select") as HTMLSelectElement;
+    fireEvent.change(select, { target: { value: "EUR" } });
+    expect(onCommit).toHaveBeenCalledWith(expect.objectContaining({ targetCurrency: "EUR" }));
+  });
+
   // DWT-003: the min-role currency/ref selects must use the shared SelectField chrome
   // (appearance-none + custom chevron) so they match the geo selects.
   describe("DWT-003 — min-role selects use the shared SelectField chrome", () => {

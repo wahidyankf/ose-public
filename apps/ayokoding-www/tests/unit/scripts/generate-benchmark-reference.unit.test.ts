@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   renderTables,
   substituteMarkers,
+  syncBenchmarkReference,
   type GeneratedTables,
 } from "../../../src/scripts/generate-benchmark-reference";
 import { dataset } from "../../../src/features/ai-benchmark/core/data/models";
@@ -157,5 +158,88 @@ describe("renderTables — pure derivation from the dataset", () => {
 
   it("is deterministic: two calls over the same dataset are byte-identical", () => {
     expect(renderTables(dataset)).toEqual(renderTables(dataset));
+  });
+});
+
+describe("substituteMarkers — marker errors", () => {
+  it("refuses a document with no markers", () => {
+    expect(() => substituteMarkers("plain prose, no markers", { roster: "x" })).toThrow(
+      /no BEGIN GENERATED markers found/,
+    );
+  });
+});
+
+describe("syncBenchmarkReference — file shell", () => {
+  const DOC = [
+    "lead",
+    "",
+    "<!-- BEGIN GENERATED: roster -->",
+    "stale",
+    "<!-- END GENERATED: roster -->",
+    "",
+    "tail",
+    "",
+  ].join("\n");
+
+  function memoryPorts(initial: string, written: { value: string }) {
+    return {
+      readFile: async () => initial,
+      writeFile: async (_path: string, content: string) => {
+        written.value = content;
+      },
+    };
+  }
+
+  it("writes regenerated content in generate mode", async () => {
+    const written = { value: "" };
+    const logs: string[] = [];
+    const exitCode = await syncBenchmarkReference({
+      refPath: "ref.md",
+      mode: "generate",
+      tables: { roster: "\n\nfresh\n" },
+      ports: memoryPorts(DOC, written),
+      log: (message) => logs.push(message),
+      errorLog: () => undefined,
+    });
+    expect(exitCode).toBe(0);
+    expect(written.value).toContain("fresh");
+    expect(written.value).not.toContain("stale");
+    expect(logs.some((line) => line.includes("updated"))).toBe(true);
+  });
+
+  it("reports drift and exits one in validate mode", async () => {
+    const written = { value: "" };
+    const errors: string[] = [];
+    const exitCode = await syncBenchmarkReference({
+      refPath: "ref.md",
+      mode: "validate",
+      tables: { roster: "\n\nfresh\n" },
+      ports: memoryPorts(DOC, written),
+      log: () => undefined,
+      errorLog: (message) => errors.push(message),
+    });
+    expect(exitCode).toBe(1);
+    expect(written.value).toBe("");
+    expect(errors.some((line) => line.includes("out of date"))).toBe(true);
+  });
+
+  it("stays quiet except for the up-to-date note when nothing drifted", async () => {
+    const tables = { roster: "\n\nsame\n" };
+    const doc = `lead\n\n<!-- BEGIN GENERATED: roster -->${tables.roster}<!-- END GENERATED: roster -->\n\ntail\n`;
+    const written = { value: "" };
+    const logs: string[] = [];
+    for (const mode of ["generate", "validate"] as const) {
+      const exitCode = await syncBenchmarkReference({
+        refPath: "ref.md",
+        mode,
+        tables,
+        ports: memoryPorts(doc, written),
+        log: (message) => logs.push(message),
+        errorLog: () => undefined,
+      });
+      expect(exitCode).toBe(0);
+    }
+    expect(written.value).toBe("");
+    expect(logs.some((line) => line.includes("up to date") || line.includes("already up to date"))).toBe(true);
   });
 });

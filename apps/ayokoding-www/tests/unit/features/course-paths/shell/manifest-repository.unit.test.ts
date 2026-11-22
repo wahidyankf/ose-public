@@ -1,6 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
+  defaultManifestsDir,
   loadManifests,
+  nodeManifestFileSystem,
   type ManifestFileSystem,
 } from "../../../../../src/features/course-paths/shell/manifest-repository";
 
@@ -123,5 +125,14 @@ describe("loadManifests (in-memory file system)", () => {
     const io = memoryFileSystem({ [`${ROOT}/notes.txt`]: "x" });
 
     await expect(loadManifests(ROOT, LIBRARY, io)).resolves.toEqual([]);
+  });
+
+  it("defaults to the checked-in manifests directory", () => {
+    expect(defaultManifestsDir().endsWith("src/features/course-paths/manifests")).toBe(true);
+  });
+
+  it("the node file-system adapter surfaces missing paths as failures", async () => {
+    await expect(nodeManifestFileSystem.readdir("/virtual/no-such-dir")).rejects.toThrow();
+    await expect(nodeManifestFileSystem.readFile("/virtual/no-such-file")).rejects.toThrow();
   });
 });

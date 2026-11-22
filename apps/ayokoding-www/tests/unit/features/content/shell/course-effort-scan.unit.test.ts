@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { scanCourseEffort } from "../../../../../src/features/content/shell/course-effort-scan";
+import { nodeEffortFileSystem, scanCourseEffort } from "../../../../../src/features/content/shell/course-effort-scan";
 import { memoryFileSystem } from "./memory-file-system";
 
 // The real-disk version of these cases is tests/integration/features/content/shell/course-effort-scan.integration.test.ts.
@@ -35,5 +35,10 @@ describe("scanCourseEffort (in-memory file system)", () => {
       inlineCodeLines: 0,
       codeFileLines: 0,
     });
+  });
+
+  it("the node file-system adapter surfaces missing paths as failures", async () => {
+    await expect(nodeEffortFileSystem.readdir("/virtual/no-such-dir")).rejects.toThrow();
+    await expect(nodeEffortFileSystem.readBytes("/virtual/no-such-file")).rejects.toThrow();
   });
 });

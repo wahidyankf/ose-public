@@ -18,6 +18,29 @@ describe("SavingsTable", () => {
     area: "center" as const,
   };
 
+  it("hydrates the gross input from the URL when uncontrolled", () => {
+    window.history.replaceState({}, "", "/?gross=5000");
+    try {
+      render(<SavingsTable {...defaultProps} />);
+      const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i }) as HTMLInputElement;
+      expect(input.value).toBe("5000");
+    } finally {
+      window.history.replaceState({}, "", "/");
+    }
+  });
+
+  it("toggles the mobile sort order", async () => {
+    const user = userEvent.setup();
+    render(<SavingsTable {...defaultProps} />);
+    const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
+    await user.clear(input);
+    await user.type(input, "8000");
+    const toggle = screen.getByTestId("sort-mobile");
+    expect(toggle.getAttribute("aria-pressed")).toBe("false");
+    fireEvent.click(toggle);
+    expect(toggle.getAttribute("aria-pressed")).toBe("true");
+  });
+
   // Gherkin (binds): "Savings tab converts gross salary to net before subtracting expenses"
   it("entering gross=8000 shows net, essentials, savings-after-essentials with % and savings-after-lifestyle with %, sortable", async () => {
     const user = userEvent.setup();

@@ -54,6 +54,11 @@ trust checked boxes alone. Any missing or unsupported row reopens execution at t
 granular outcome-section checklist. Apply this contract prospectively; do not report migration findings against archived
 plans or the existing Rhino plan.
 
+Do not demand past proof that can no longer be produced, such as a RED run nobody captured or a baseline from a removed
+worktree. Accept a recorded observation of current behaviour with one substitution line, and re-run every check that can
+still run today, per
+[Current Behaviour Over Past Proof](../../../repo-governance/development/quality/evidence-capture/current-behaviour-over-past-proof.md).
+
 Verify that delivery followed natural cohesive seams rather than LOC or file counts and that every
 merged state was immediately safe to deploy to production. For incomplete behaviour, require the
 temporary production-disabled flag, enabled and disabled path tests, and recorded rollout,

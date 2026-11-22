@@ -1,6 +1,6 @@
 // AI BENCHMARK — "find a substitute": pick a frontier model and a harness (Command Code Pro,
-// Command Code, or OpenCode Go), see that harness's models that reach at least its tier, with a
-// price comparison. Always judged on the full roster.
+// Command Code, or OpenCode Go), see that harness's models that reach at least its consensus
+// tier, with a price comparison. Always judged on the full roster.
 
 import type { Locale } from "@/features/i18n/core/config";
 import { t } from "@/features/i18n/core/translations";
@@ -8,9 +8,8 @@ import { FRONTIER_VENDORS, HARNESS_DISPLAY_NAMES, SUBSTITUTE_HARNESSES } from ".
 import type { Dataset, HarnessId, Model } from "../core/data/types";
 import { blendedPrice, priceRatio } from "../core/price";
 import { frontierModels, isSubstituteHarness, substitutesFor } from "../core/substitute";
-import { compositeIndex } from "../core/score";
-import { assignTier, type ScoredModel } from "../core/tiers";
-import { formatIndex, formatUsd, isCheaper, priceComparison, tf } from "./format";
+import { assignConsensusTier, type ConsensusModel } from "../core/tiers";
+import { formatUsd, isCheaper, priceComparison, tf } from "./format";
 import { LimitedChip, PriceText, modelNotes } from "./model-bits";
 import { SelectField } from "./select-field";
 import { TierSwatch, tierLabel } from "./tier-style";
@@ -26,8 +25,9 @@ export type SubstituteFinderProps = {
 };
 
 function TargetSummary({ target, dataset, locale }: { target: Model; dataset: Dataset; locale: Locale }) {
-  const index = compositeIndex(target);
-  if (index === undefined) {
+  const consensus = assignConsensusTier(target, dataset);
+  // A target with no consensus tier cannot be compared, like an insufficient-data target.
+  if (consensus.tier === "insufficient" || consensus.tier === "no-consensus") {
     return (
       <p data-testid="ai-bench-finder-summary">{tf(locale, "aiBenchFinderInsufficient", { model: target.name })}</p>
     );
@@ -35,8 +35,9 @@ function TargetSummary({ target, dataset, locale }: { target: Model; dataset: Da
   const blended = blendedPrice(target.price);
   const values = {
     model: target.name,
-    tier: tierLabel(assignTier(target, dataset), locale),
-    index: formatIndex(index, locale),
+    tier: tierLabel(consensus.tier, locale),
+    agreeing: consensus.agreeing,
+    considered: consensus.considered,
     price: blended === undefined ? "" : formatUsd(blended, locale),
   };
   return (
@@ -46,7 +47,7 @@ function TargetSummary({ target, dataset, locale }: { target: Model; dataset: Da
   );
 }
 
-function SubstituteItem({ s, target, locale }: { s: ScoredModel; target: Model; locale: Locale }) {
+function SubstituteItem({ s, target, locale }: { s: ConsensusModel; target: Model; locale: Locale }) {
   const blended = blendedPrice(s.model.price);
   return (
     <li data-testid="ai-bench-sub-item" data-model-id={s.model.id} className="rounded-md border p-3">
@@ -62,9 +63,8 @@ function SubstituteItem({ s, target, locale }: { s: ScoredModel; target: Model; 
           <dd data-testid="ai-bench-sub-tier">{tierLabel(s.tier, locale)}</dd>
         </div>
         <div className="flex gap-1">
-          <dt>{t(locale, "aiBenchIndexLabel")}</dt>
-          <dd data-testid="ai-bench-sub-index" className="font-medium tabular-nums">
-            {s.index === undefined ? "—" : formatIndex(s.index, locale)}
+          <dd data-testid="ai-bench-sub-count" className="font-medium tabular-nums">
+            {tf(locale, "aiBenchTierConsensusCount", { agreeing: s.agreeing, considered: s.considered })}
           </dd>
         </div>
         <div className="flex gap-1">
@@ -151,7 +151,7 @@ export function SubstituteFinder({
                   ? tf(locale, "aiBenchFinderMatches", { harness: harnessName })
                   : tf(locale, "aiBenchFinderNearest", {
                       harness: harnessName,
-                      tier: tierLabel(assignTier(target, dataset), locale),
+                      tier: tierLabel(assignConsensusTier(target, dataset).tier, locale),
                     })}
               </p>
             )}

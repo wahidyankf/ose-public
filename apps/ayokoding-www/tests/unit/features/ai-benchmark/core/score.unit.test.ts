@@ -1,11 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  compositeIndex,
-  isScoredFigure,
-  scoreOver,
-  scoredBenchmarks,
-  scoredFigure,
-} from "@/features/ai-benchmark/core/score";
+import { benchmarkScore, isScoredFigure, scoredBenchmarks, scoredFigure } from "@/features/ai-benchmark/core/score";
 import { fig, model } from "./fixtures";
 
 describe("isScoredFigure", () => {
@@ -36,36 +30,16 @@ describe("scoredBenchmarks", () => {
   });
 });
 
-describe("scoreOver", () => {
-  it("is the equal-weight mean of the raw percentages over the given benchmarks", () => {
-    const m = model("m", [fig("deep-swe", 70), fig("terminal-bench", 40), fig("swe-atlas-qna", 61)]);
-    expect(scoreOver(m, ["deep-swe", "terminal-bench", "swe-atlas-qna"])).toBe(57);
-    expect(scoreOver(m, ["deep-swe", "terminal-bench"])).toBe(55);
-  });
-
-  it("is undefined when any requested benchmark is missing", () => {
-    expect(scoreOver(model("m", [fig("deep-swe", 70)]), ["deep-swe", "terminal-bench"])).toBeUndefined();
-  });
-
-  it("is undefined for an empty benchmark list", () => {
-    expect(scoreOver(model("m", [fig("deep-swe", 70)]), [])).toBeUndefined();
-  });
-});
-
-describe("compositeIndex", () => {
-  it("averages every scored benchmark", () => {
-    expect(compositeIndex(model("m", [fig("deep-swe", 70), fig("terminal-bench", 40), fig("swe-atlas-qna", 61)]))).toBe(
-      57,
-    );
+describe("benchmarkScore", () => {
+  it("returns the raw scored figure value with no normalization", () => {
+    expect(benchmarkScore(model("m", [fig("deep-swe", 70)]), "deep-swe")).toBe(70);
   });
 
   it("ignores a figure on a non-pinned version", () => {
-    const m = model("m", [fig("deep-swe", 60), fig("terminal-bench", 40), fig("terminal-bench", 90, "2.1")]);
-    expect(compositeIndex(m)).toBe(50);
+    expect(benchmarkScore(model("m", [fig("terminal-bench", 90, "2.1")]), "terminal-bench")).toBeUndefined();
   });
 
-  it("is undefined below the minimum number of scored benchmarks", () => {
-    expect(compositeIndex(model("m", [fig("deep-swe", 70)]))).toBeUndefined();
-    expect(compositeIndex(model("m"))).toBeUndefined();
+  it("is undefined when the model has no figure for the benchmark", () => {
+    expect(benchmarkScore(model("m", [fig("deep-swe", 70)]), "terminal-bench")).toBeUndefined();
   });
 });

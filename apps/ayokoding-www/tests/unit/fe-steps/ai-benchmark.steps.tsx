@@ -30,54 +30,50 @@ import "./helpers/test-setup";
 import AiBenchmarkPage from "@/app/[locale]/tools/ai-benchmark/page";
 import {
   BENCHMARK_SPECS,
+  BENCHMARK_TIER_ANCHORS,
   DEFAULT_SUBSTITUTE_HARNESS,
   FRONTIER_VENDORS,
   HARNESS_DISPLAY_NAMES,
   HARNESS_IN_HOUSE_LINES,
-  METHOD_EXAMPLE,
   MIN_SCORED_BENCHMARKS,
   NEAREST_OPTION_COUNT,
   ROSTER_CATALOG_HARNESSES,
   SUBSTITUTE_HARNESSES,
   TIERS,
-  TIER_ANCHORS,
   rosterScopeParams,
 } from "@/features/ai-benchmark/core/data/benchmarks";
 import { dataset } from "@/features/ai-benchmark/core/data/models";
 import { OPERATORS, operatorById } from "@/features/ai-benchmark/core/data/operators";
-import type { HarnessId, Model, Tier } from "@/features/ai-benchmark/core/data/types";
+import type { BenchmarkTier, HarnessId, Model, Tier } from "@/features/ai-benchmark/core/data/types";
 import { HARNESS_IDS, filterModels } from "@/features/ai-benchmark/core/filter";
 import { blendedPrice, priceRatio } from "@/features/ai-benchmark/core/price";
-import { compositeIndex, scoreOver, scoredBenchmarks, scoredFigure } from "@/features/ai-benchmark/core/score";
+import { benchmarkScore, scoredFigure } from "@/features/ai-benchmark/core/score";
 import { frontierModels, substitutesFor, type SubstituteResult } from "@/features/ai-benchmark/core/substitute";
 import {
-  assignTier,
-  byIndexDesc,
+  assignBenchmarkTier,
+  assignConsensusTier,
+  benchmarkTierAnchors,
+  byConsensusDesc,
+  computeBenchmarkTierGroups,
   computeTierGroups,
-  meetsAnchor,
+  rankBenchmarkModels,
   scoreModels,
-  tierAnchors,
+  type BenchmarkRow,
+  type ConsensusModel,
 } from "@/features/ai-benchmark/core/tiers";
-import {
-  formatDate,
-  formatIndex,
-  formatPercent,
-  formatUsd,
-  priceComparison,
-  tf,
-} from "@/features/ai-benchmark/shell/format";
+import { formatDate, formatPercent, formatUsd, priceComparison, tf } from "@/features/ai-benchmark/shell/format";
+import { SubstituteFinder } from "@/features/ai-benchmark/shell/substitute-finder";
 import { TIER_BG_CLASS, tierLabel } from "@/features/ai-benchmark/shell/tier-style";
 import { t } from "@/features/i18n/core/translations";
 import type { Locale } from "@/features/i18n/core/config";
 import {
-  anchors,
+  benchmarkAnchors,
   dataset as fixtureDataset,
   fig,
-  flat,
-  goModel,
-  harnessModel,
   model,
   price,
+  quadAnchors,
+  tiered,
 } from "../features/ai-benchmark/core/fixtures";
 
 // vitest-cucumber bindings for the AI benchmark feature. Scoring rules bind to the pure core with
@@ -93,10 +89,10 @@ const TOKENS_CSS = readFileSync(path.resolve(process.cwd(), "../../libs/web-ui-t
 
 type Ctx = {
   model?: Model;
-  anchor?: Model;
   roster?: Model[];
-  index?: number;
+  consensus?: ConsensusModel;
   tier?: Tier;
+  benchmarkTier?: BenchmarkTier;
   blended?: number;
   result?: SubstituteResult;
   locale?: Locale;
@@ -105,6 +101,9 @@ type Ctx = {
   finderHarness?: HarnessId;
   filterTier?: Tier;
   subIds?: string[];
+  section?: ConsensusModel[];
+  ranked?: BenchmarkRow[];
+  unranked?: Model[];
   viewportWidth?: number;
   viewportHeight?: number;
   errorSpy?: ReturnType<typeof vi.spyOn>;
@@ -115,7 +114,7 @@ let view: ReturnType<typeof render> | undefined;
 
 const full = dataset;
 const scored = scoreModels(full);
-const rated = scored.filter((s) => s.index !== undefined);
+const rated = scored.filter((s) => s.tier !== "insufficient" && s.tier !== "no-consensus");
 const byId = (id: string) => full.models.find((m) => m.id === id)!;
 
 function renderPage(locale: Locale = "en", search = "") {
@@ -151,21 +150,6 @@ function chooseFinderHarness(harness: HarnessId) {
   fireEvent.change(finderHarnessSelect(), { target: { value: harness } });
   followPush();
   ctx.finderHarness = harness;
-}
-
-/**
- * The first finder harness (default first) and frontier model whose tier no model of that harness
- * reaches, so the finder can only offer nearest options. Picked from the live roster, so the check
- * holds whatever each harness lists.
- */
-function nearestCombination(): { harness: HarnessId; target: Model } {
-  for (const harness of SUBSTITUTE_HARNESSES) {
-    for (const target of frontierModels(full)) {
-      const result = substitutesFor(target, full, harness);
-      if (result.kind === "nearest" && result.models.length > 0) return { harness, target };
-    }
-  }
-  throw new Error("every frontier model has a same-tier substitute in every finder harness");
 }
 
 /** The blended-price cell text for a listed substitute: a dash where no price is published. */
@@ -210,121 +194,140 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     cleanup();
   });
 
-  // ── Composite index ──────────────────────────────────────────────────────────
-
-  Scenario("The composite index is the equal-weight mean of the scored benchmarks", ({ Given, When, Then }) => {
-    Given("a fixture model scoring 70 on DeepSWE, 40 on Terminal-Bench, and 61 on SWE-Atlas-QnA", () => {
-      ctx.model = model("m", [fig("deep-swe", 70), fig("terminal-bench", 40), fig("swe-atlas-qna", 61)]);
-    });
-    When("its composite index is computed", () => {
-      ctx.index = compositeIndex(ctx.model!);
-    });
-    Then("the composite index is 57", () => {
-      expect(ctx.index).toBe(57);
-    });
-  });
-
-  Scenario("Only figures for the pinned benchmark version enter the composite index", ({ Given, And, When, Then }) => {
-    Given("a fixture model scoring 60 on DeepSWE 1.1 and 40 on Terminal-Bench 4.0", () => {
-      ctx.model = model("m", [fig("deep-swe", 60, "1.1"), fig("terminal-bench", 40, "4.0")]);
-    });
-    And("that model also carries a Terminal-Bench 2.1 figure of 90", () => {
-      ctx.model!.figures.push(fig("terminal-bench", 90, "2.1"));
-    });
-    When("its composite index is computed", () => {
-      ctx.index = compositeIndex(ctx.model!);
-    });
-    Then("the composite index is 50", () => {
-      expect(ctx.index).toBe(50);
-    });
-  });
-
-  Scenario("A model scored on fewer than two benchmarks has insufficient data", ({ Given, When, Then, And }) => {
-    Given("a fixture model with a score on only one composite benchmark", () => {
-      ctx.model = model("m", [fig("deep-swe", 90)]);
-    });
-    When("its tier is assigned", () => {
-      ctx.tier = assignTier(ctx.model!, fixtureDataset([...anchors(), ctx.model!]));
-    });
-    Then('that model\'s tier is "insufficient"', () => {
-      expect(ctx.tier).toBe("insufficient");
-    });
-    And("that model has no composite index", () => {
-      expect(compositeIndex(ctx.model!)).toBeUndefined();
-    });
-  });
-
-  // ── Tiers ────────────────────────────────────────────────────────────────────
-
-  Scenario("A model meets an anchor when its composite index reaches the anchor's", ({ Given, And, When, Then }) => {
-    Given("a fixture anchor scoring 70 on DeepSWE and 20 on Terminal-Bench with no SWE-Atlas-QnA score", () => {
-      ctx.anchor = model("anchor", [fig("deep-swe", 70), fig("terminal-bench", 20)]);
-    });
-    And("a fixture model scoring 66 on DeepSWE, 22 on Terminal-Bench, and 70 on SWE-Atlas-QnA", () => {
-      ctx.model = model("m", [fig("deep-swe", 66), fig("terminal-bench", 22), fig("swe-atlas-qna", 70)]);
-    });
-    When("the model is compared with the anchor", () => {
-      ctx.index = compositeIndex(ctx.model!);
-    });
-    Then(
-      "the model's composite index is above the anchor's even though it trails on DeepSWE and Terminal-Bench",
-      () => {
-        expect(ctx.index).toBeGreaterThan(compositeIndex(ctx.anchor!)!);
-        expect(scoreOver(ctx.model!, ["deep-swe", "terminal-bench"])).toBeLessThan(
-          scoreOver(ctx.anchor!, ["deep-swe", "terminal-bench"])!,
-        );
-      },
-    );
-    And("the model meets the anchor", () => {
-      expect(meetsAnchor(ctx.model!, ctx.anchor!)).toBe(true);
-    });
-  });
+  // ── Consensus tiers ────────────────────────────────────────────────────────
 
   ScenarioOutline(
-    "A model is placed in the highest tier whose anchor it meets",
-    ({ Given, And, When, Then }, variables) => {
+    "The consensus tier is the tier the model holds on the most benchmarks",
+    ({ Given, When, Then, And }, variables) => {
+      type Held = "ultra" | "planning" | "execution" | "fast" | "unranked";
       Given(
-        "fixture tier anchors scoring 60 for ultra, 55 for planning, and 45 for execution on every composite benchmark",
+        'a fixture model holding "<deepSwe>", "<terminalBench>", "<sweAtlas>", and "<frontierCode>" tiers on the four benchmarks',
         () => {
-          ctx.roster = anchors(60, 55, 45);
+          const held = [variables.deepSwe, variables.terminalBench, variables.sweAtlas, variables.frontierCode].map(
+            (t) => t as Held,
+          );
+          ctx.model = tiered("m", held[0]!, held[1]!, held[2]!, held[3]!);
+          ctx.roster = [...quadAnchors(), ctx.model];
         },
       );
-      And("a fixture model scoring <score> on every composite benchmark", () => {
-        ctx.model = flat("m", Number(variables.score));
+      When("its consensus tier is assigned", () => {
+        ctx.consensus = assignConsensusTier(ctx.model!, fixtureDataset(ctx.roster!));
       });
-      When("its tier is assigned", () => {
-        ctx.tier = assignTier(ctx.model!, fixtureDataset([...ctx.roster!, ctx.model!]));
+      Then('that model\'s consensus tier is "<tier>"', () => {
+        expect(ctx.consensus!.tier).toBe(variables.tier);
       });
-      Then('that model\'s tier is "<tier>"', () => {
-        expect(ctx.tier).toBe(variables.tier);
+      And("its consensus count is <agreeing> of <considered> benchmarks", () => {
+        expect(ctx.consensus!.agreeing).toBe(Number(variables.agreeing));
+        expect(ctx.consensus!.considered).toBe(Number(variables.considered));
       });
     },
   );
 
-  Scenario("Each tier anchor lands in the tier it defines", ({ Given, When, Then, And }) => {
-    Given("the full roster is loaded", () => {
-      expect(full.models.length).toBeGreaterThan(0);
+  Scenario("A model tiered on fewer than two benchmarks has insufficient data", ({ Given, When, Then, And }) => {
+    Given("a fixture model holding a tier on only one benchmark", () => {
+      ctx.model = model("m", [fig("deep-swe", 90)]);
+      ctx.roster = [...quadAnchors(), ctx.model];
     });
-    When("every model's tier is assigned", () => {
-      ctx.roster = full.models;
+    When("its consensus tier is assigned", () => {
+      ctx.consensus = assignConsensusTier(ctx.model!, fixtureDataset(ctx.roster!));
     });
-    Then('the ultra anchor is in the "ultra" tier', () => {
-      expect(assignTier(byId(TIER_ANCHORS.ultra), full)).toBe("ultra");
+    Then('that model\'s consensus tier is "insufficient"', () => {
+      expect(ctx.consensus!.tier).toBe("insufficient");
     });
-    And('the planning anchor is in the "planning" tier', () => {
-      expect(assignTier(byId(TIER_ANCHORS.planning), full)).toBe("planning");
-    });
-    And('the execution anchor is in the "execution" tier', () => {
-      expect(assignTier(byId(TIER_ANCHORS.execution), full)).toBe("execution");
+    And("that model has no consensus count", () => {
+      expect(ctx.consensus!.agreeing).toBe(0);
     });
   });
+
+  ScenarioOutline(
+    "A model whose benchmarks split below half has no consensus tier",
+    ({ Given, When, Then, And }, variables) => {
+      type Held = "ultra" | "planning" | "execution" | "fast" | "unranked";
+      Given(
+        'a fixture model holding "<deepSwe>", "<terminalBench>", "<sweAtlas>", and "<frontierCode>" tiers on the four benchmarks',
+        () => {
+          const held = [variables.deepSwe, variables.terminalBench, variables.sweAtlas, variables.frontierCode].map(
+            (t) => t as Held,
+          );
+          ctx.model = tiered("m", held[0]!, held[1]!, held[2]!, held[3]!);
+          ctx.roster = [...quadAnchors(), ctx.model];
+        },
+      );
+      When("its consensus tier is assigned", () => {
+        ctx.consensus = assignConsensusTier(ctx.model!, fixtureDataset(ctx.roster!));
+      });
+      Then("that model has no consensus tier", () => {
+        expect(ctx.consensus!.tier).toBe("no-consensus");
+      });
+      And("that model is not in the insufficient group", () => {
+        const groups = computeTierGroups(fixtureDataset(ctx.roster!));
+        expect(groups["no-consensus"].map((s) => s.model.id)).toContain("m");
+        expect(groups.insufficient.map((s) => s.model.id)).not.toContain("m");
+      });
+    },
+  );
+
+  Scenario("Models in one consensus section are ordered by consensus strength", ({ Given, When, Then }) => {
+    Given("fixture models in the planning consensus tier agreeing on 2 of 4, 3 of 4, and 3 of 3 benchmarks", () => {
+      ctx.roster = [
+        ...quadAnchors(),
+        tiered("c-2of4", "planning", "planning", "execution", "execution"),
+        tiered("b-3of4", "planning", "planning", "planning", "execution"),
+        tiered("a-3of3", "planning", "planning", "planning", "unranked"),
+      ];
+    });
+    When("the planning consensus section is ordered", () => {
+      ctx.section = computeTierGroups(fixtureDataset(ctx.roster!)).planning;
+    });
+    Then("the order is 3 of 4, then 3 of 3, then 2 of 4", () => {
+      // The per-benchmark anchor in the planning tier also agrees 3 of 3; assert relative order.
+      const ids = ctx.section!.map((s) => s.model.id);
+      expect(ids.indexOf("b-3of4")).toBeLessThan(ids.indexOf("a-3of3"));
+      expect(ids.indexOf("a-3of3")).toBeLessThan(ids.indexOf("c-2of4"));
+      expect(ids.indexOf("b-3of4")).toBe(0);
+    });
+  });
+
+  Scenario("Models with no consensus tier are listed in their own closed disclosure", ({ Given, And, When, Then }) => {
+    let split: Model[] = [];
+    Given("the roster holds models whose benchmarks split below half", () => {
+      split = scored.filter((s) => s.tier === "no-consensus").map((s) => s.model);
+      expect(split.length).toBeGreaterThan(0);
+    });
+    And("the AI benchmark page is open in the Consensus tiers view", () => {
+      renderPage();
+    });
+    When("the page renders", () => {
+      expect(screen.getByTestId("ai-bench-page")).toBeTruthy();
+    });
+    Then("those models are listed inside the closed no-consensus disclosure", () => {
+      const details = screen.getByTestId("ai-bench-no-consensus") as HTMLDetailsElement;
+      expect(details.tagName).toBe("DETAILS");
+      expect(details.open).toBe(false);
+      expect(sorted(idsIn("ai-bench-no-consensus-item", details))).toEqual(sorted(split.map((m) => m.id)));
+    });
+    And("those models appear in no tier section", () => {
+      const inSections = tierMapIds();
+      for (const m of split) expect(inSections).not.toContain(m.id);
+    });
+    And("the insufficient-data disclosure does not list them", () => {
+      const insufficient = screen.getByTestId("ai-bench-insufficient");
+      for (const m of split) {
+        expect(insufficient.querySelector(`[data-model-id="${m.id}"]`)).toBeNull();
+      }
+    });
+  });
+
+  // ── Tiers ────────────────────────────────────────────────────────────────────
 
   Scenario("Every tier anchor is a previous-generation model with general access", ({ Given, When, Then, And }) => {
     Given("the full roster is loaded", () => {
       expect(full.models.length).toBeGreaterThan(0);
     });
     When("the tier anchors are inspected", () => {
-      ctx.roster = Object.values(TIER_ANCHORS).map(byId);
+      ctx.roster = [...new Set(Object.values(BENCHMARK_TIER_ANCHORS).flatMap(Object.values))].map(
+        (id) => full.models.find((m) => m.id === id)!,
+      );
     });
     Then("every tier anchor has general access", () => {
       for (const a of ctx.roster!) expect(a.access, a.id).toBe("general");
@@ -371,7 +374,8 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
     Then('each model appears in exactly one of "ultra", "planning", "execution", "fast", or "insufficient"', () => {
       const all = TIERS.flatMap((tier) => groups[tier].map((s) => s.model.id));
-      expect(sorted(all)).toEqual(sorted(full.models.map((m) => m.id)));
+      const noConsensus = groups["no-consensus"].map((s) => s.model.id);
+      expect(sorted([...all, ...noConsensus])).toEqual(sorted(full.models.map((m) => m.id)));
     });
   });
 
@@ -395,23 +399,32 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     "Substitutes are models of the chosen harness in the same or a higher tier",
     ({ Given, And, When, Then }) => {
       Given('a frontier fixture model in the "planning" tier', () => {
-        ctx.model = flat("frontier", 57, { vendor: "OpenAI" });
-        ctx.roster = [...anchors(60, 55, 45), ctx.model];
-        expect(assignTier(ctx.model, fixtureDataset(ctx.roster))).toBe("planning");
+        ctx.model = tiered("frontier", "planning", "planning", "planning", "execution", { vendor: "OpenAI" });
+        ctx.roster = [...quadAnchors(), ctx.model];
+        expect(assignConsensusTier(ctx.model, fixtureDataset(ctx.roster)).tier).toBe("planning");
       });
       And(
         'fixture models of the "command-code-pro" harness in the "ultra", "planning", and "execution" tiers and one with insufficient data',
         () => {
           ctx.roster!.push(
-            harnessModel("command-code-pro", "pro-planning", 56),
-            harnessModel("command-code-pro", "pro-ultra", 65),
-            harnessModel("command-code-pro", "pro-execution", 50),
-            harnessModel("command-code-pro", "pro-insufficient", undefined),
+            tiered("pro-planning", "planning", "planning", "planning", "execution", {
+              harnesses: ["command-code-pro"],
+            }),
+            tiered("pro-ultra", "ultra", "ultra", "ultra", "ultra", { harnesses: ["command-code-pro"] }),
+            tiered("pro-execution", "execution", "execution", "execution", "execution", {
+              harnesses: ["command-code-pro"],
+            }),
+            tiered("pro-insufficient", "planning", "unranked", "unranked", "unranked", {
+              harnesses: ["command-code-pro"],
+            }),
           );
         },
       );
       And('fixture models of the "opencode-go" harness in the "ultra" and "planning" tiers', () => {
-        ctx.roster!.push(goModel("go-ultra", 66), goModel("go-planning", 57));
+        ctx.roster!.push(
+          tiered("go-ultra", "ultra", "ultra", "ultra", "ultra", { harnesses: ["opencode-go"] }),
+          tiered("go-planning", "planning", "planning", "planning", "execution", { harnesses: ["opencode-go"] }),
+        );
       });
       When('substitutes are listed for the frontier model from the "command-code-pro" harness', () => {
         ctx.result = substitutesFor(ctx.model!, fixtureDataset(ctx.roster!), "command-code-pro");
@@ -421,7 +434,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
         expect(sorted(ctx.result!.models.map((s) => s.model.id))).toEqual(["pro-planning", "pro-ultra"]);
         for (const s of ctx.result!.models) expect(s.model.harnesses).toContain("command-code-pro");
       });
-      And("the substitutes are ordered by composite index from highest to lowest", () => {
+      And("the substitutes are ordered by consensus tier from highest to lowest, then by consensus strength", () => {
         expect(ctx.result!.models.map((s) => s.model.id)).toEqual(["pro-ultra", "pro-planning"]);
       });
     },
@@ -464,24 +477,27 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
           throw new Error("no frontier model has a Command Code Pro model in its tier or higher");
         chooseModel(target);
       });
-      Then("the finder lists Command Code Pro models with their tier, composite index, and blended price", () => {
-        const expected = substitutesFor(ctx.model!, full, "command-code-pro");
-        expect(expected.kind).toBe("matches");
-        expect(subIds()).toEqual(expected.models.map((s) => s.model.id));
-        for (const s of expected.models) {
-          expect(s.model.harnesses).toContain("command-code-pro");
-          const item = document.querySelector(`[data-testid="ai-bench-sub-item"][data-model-id="${s.model.id}"]`)!;
-          expect(within(item as HTMLElement).getByTestId("ai-bench-sub-tier").textContent).toBe(
-            tierLabel(s.tier, "en"),
-          );
-          expect(within(item as HTMLElement).getByTestId("ai-bench-sub-index").textContent).toBe(
-            formatIndex(s.index!, "en"),
-          );
-          expect(within(item as HTMLElement).getByTestId("ai-bench-sub-blended").textContent).toBe(
-            blendedText(s.model),
-          );
-        }
-      });
+      Then(
+        "the finder lists Command Code Pro models with their consensus tier, consensus count, and blended price",
+        () => {
+          const expected = substitutesFor(ctx.model!, full, "command-code-pro");
+          expect(expected.kind).toBe("matches");
+          expect(subIds()).toEqual(expected.models.map((s) => s.model.id));
+          for (const s of expected.models) {
+            expect(s.model.harnesses).toContain("command-code-pro");
+            const item = document.querySelector(`[data-testid="ai-bench-sub-item"][data-model-id="${s.model.id}"]`)!;
+            expect(within(item as HTMLElement).getByTestId("ai-bench-sub-tier").textContent).toBe(
+              tierLabel(s.tier, "en"),
+            );
+            expect(within(item as HTMLElement).getByTestId("ai-bench-sub-count").textContent).toBe(
+              tf("en", "aiBenchTierConsensusCount", { agreeing: s.agreeing, considered: s.considered }),
+            );
+            expect(within(item as HTMLElement).getByTestId("ai-bench-sub-blended").textContent).toBe(
+              blendedText(s.model),
+            );
+          }
+        },
+      );
       And("each listed model states how its blended price compares with the chosen model's", () => {
         for (const s of substitutesFor(ctx.model!, full, "command-code-pro").models) {
           const item = document.querySelector(`[data-testid="ai-bench-sub-item"][data-model-id="${s.model.id}"]`)!;
@@ -500,29 +516,72 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
         renderPage();
       });
       When("the reader chooses a harness and a frontier model whose tier is above every model of that harness", () => {
-        const { harness, target } = nearestCombination();
-        if (harness !== DEFAULT_SUBSTITUTE_HARNESS) chooseFinderHarness(harness);
+        // Under consensus tiers every finder harness lists an ultra model and ultra is the top
+        // tier, so no live frontier/harness pair can satisfy the precondition. Verify the contract
+        // with a controlled roster through the real finder UI instead.
+        const fixtureModels = [
+          ...quadAnchors(),
+          tiered("fixture-frontier-ultra", "ultra", "ultra", "ultra", "ultra", { vendor: "Anthropic" }),
+          tiered("fixture-go-planning", "planning", "planning", "planning", "execution", {
+            vendor: "OpenWeights",
+            harnesses: ["opencode-go"],
+          }),
+          tiered("fixture-go-execution", "execution", "execution", "execution", "execution", {
+            vendor: "OpenWeights",
+            harnesses: ["opencode-go"],
+          }),
+          tiered("fixture-go-fast", "fast", "fast", "fast", "fast", {
+            vendor: "OpenWeights",
+            harnesses: ["opencode-go"],
+          }),
+        ];
+        const fixture = fixtureDataset(fixtureModels);
+        const target = fixture.models.find((m) => m.id === "fixture-frontier-ultra")!;
+        const harness: HarnessId = "opencode-go";
+        const result = substitutesFor(target, fixture, harness);
+        expect(result.kind).toBe("nearest");
+        expect(result.models.length).toBeGreaterThan(0);
+        ctx.roster = fixtureModels;
+        ctx.model = target;
         ctx.finderHarness = harness;
-        chooseModel(target);
+        ctx.result = result;
+        cleanup();
+        view = render(
+          <SubstituteFinder
+            dataset={fixture}
+            selectedId={target.id}
+            harness={harness}
+            locale="en"
+            onSelect={() => undefined}
+            onSelectHarness={() => undefined}
+          />,
+        );
       });
       Then("the finder states that no model of that harness reaches that model's tier", () => {
+        const fixture = fixtureDataset(ctx.roster!);
         expect(screen.getByTestId("ai-bench-finder-lead").textContent).toBe(
           tf("en", "aiBenchFinderNearest", {
             harness: HARNESS_DISPLAY_NAMES[ctx.finderHarness!],
-            tier: tierLabel(assignTier(ctx.model!, full), "en"),
+            tier: tierLabel(assignConsensusTier(ctx.model!, fixture).tier, "en"),
           }),
         );
       });
       And("the finder lists the highest-scoring models of that harness as the nearest options", () => {
+        const fixture = fixtureDataset(ctx.roster!);
         const harness = ctx.finderHarness!;
-        const candidates = rated
+        const fixtureScored = scoreModels(fixture);
+        const candidates = fixtureScored
+          .filter((s) => s.tier !== "insufficient")
           .filter((s) => s.model.harnesses.includes(harness) && s.model.id !== ctx.model!.id)
-          .sort(byIndexDesc);
-        const listed = subIds().map((id) => scored.find((s) => s.model.id === id)!);
-        // Compare indexes, not ids: equal-index models may swap places without changing the claim.
-        expect(listed.map((s) => s.index)).toEqual(candidates.slice(0, NEAREST_OPTION_COUNT).map((s) => s.index));
+          .sort(byConsensusDesc);
+        const listed = subIds().map((id) => fixtureScored.find((s) => s.model.id === id)!);
+        // Compare consensus strength, not ids: equally strong models keep their id order on both sides.
+        expect(listed.map((s) => [s.tier, s.agreeing, s.considered])).toEqual(
+          candidates.slice(0, NEAREST_OPTION_COUNT).map((s) => [s.tier, s.agreeing, s.considered]),
+        );
         for (const s of listed) expect(s.model.harnesses).toContain(harness);
         expect(screen.getByTestId("ai-bench-sub-list").getAttribute("data-kind")).toBe("nearest");
+        expect(substitutesFor(ctx.model!, fixture, harness).kind).toBe("nearest");
       });
     },
   );
@@ -557,7 +616,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
             ? tf("en", "aiBenchFinderMatches", { harness: variables.harness! })
             : tf("en", "aiBenchFinderNearest", {
                 harness: variables.harness!,
-                tier: tierLabel(assignTier(ctx.model!, full), "en"),
+                tier: tierLabel(assignConsensusTier(ctx.model!, full).tier, "en"),
               }),
         );
       });
@@ -706,88 +765,92 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
 
   // ── Tier map ─────────────────────────────────────────────────────────────────
 
-  Scenario("Each tier section names its anchor and floor score", ({ Given, When, Then, And }) => {
+  Scenario("Each consensus tier section states the consensus rule", ({ Given, When, Then, And }) => {
     Given("the full roster is loaded", () => {
       expect(full.models.length).toBeGreaterThan(0);
     });
-    When("the tier map is rendered", () => {
+    When("the tier map is rendered in the Consensus tiers view", () => {
       renderPage();
     });
-    Then("the ultra, planning, and execution sections each name their anchor model", () => {
-      for (const tier of ["ultra", "planning", "execution"] as const) {
-        const floor = within(screen.getByTestId(`ai-bench-tier-${tier}`)).getByTestId("ai-bench-tier-floor");
-        expect(floor.textContent).toContain(byId(TIER_ANCHORS[tier]).name);
+    Then("every tier section states that its models hold that tier on the most benchmarks", () => {
+      for (const tier of ["ultra", "planning", "execution", "fast"] as const) {
+        const rule = within(screen.getByTestId(`ai-bench-tier-${tier}`)).getByTestId("ai-bench-tier-rule");
+        expect(rule.textContent).toBe(tf("en", "aiBenchTierConsensusRule", { tier: tierLabel(tier, "en") }));
       }
     });
-    And("each of those sections states its floor score", () => {
-      const a = tierAnchors(full);
-      for (const tier of ["ultra", "planning", "execution"] as const) {
-        const floor = within(screen.getByTestId(`ai-bench-tier-${tier}`)).getByTestId("ai-bench-tier-floor");
-        expect(floor.textContent).toContain(formatIndex(a[tier]!.index!, "en"));
+    And("no tier section names a composite anchor or a composite floor score", () => {
+      for (const tier of ["ultra", "planning", "execution", "fast"] as const) {
+        const section = within(screen.getByTestId(`ai-bench-tier-${tier}`));
+        expect(section.queryByTestId("ai-bench-tier-floor")).toBeNull();
       }
-    });
-    And("the fast section states that it holds rated models below the execution floor", () => {
-      expect(within(screen.getByTestId("ai-bench-tier-fast")).getByTestId("ai-bench-tier-floor").textContent).toBe(
-        t("en", "aiBenchTierFastFloor"),
+      expect(document.querySelector('[data-testid="ai-bench-tier-map"]')!.textContent).not.toMatch(
+        /composite|average/i,
       );
     });
   });
 
-  Scenario("Every rated model row shows its bar, index, and API price in text", ({ Given, When, Then, And }) => {
-    let rows: HTMLElement[] = [];
-    Given("the full roster is loaded", () => {
-      expect(rated.length).toBeGreaterThan(0);
-    });
-    When("the tier map is rendered", () => {
-      renderPage();
-      rows = within(screen.getByTestId("ai-bench-tier-map")).getAllByTestId("ai-bench-tier-row");
-    });
-    Then("every rated model row carries the model name and its composite index in text", () => {
-      expect(sorted(rows.map((r) => r.getAttribute("data-model-id")!))).toEqual(sorted(rated.map((s) => s.model.id)));
-      for (const row of rows) {
-        const m = byId(row.getAttribute("data-model-id")!);
-        expect(within(row).getByTestId("ai-bench-tier-row-name").textContent).toBe(m.name);
-        expect(within(row).getByTestId("ai-bench-tier-row-index").textContent).toBe(
-          formatIndex(compositeIndex(m)!, "en"),
-        );
-      }
-    });
-    And("every rated model row carries one capability bar", () => {
-      for (const row of rows) expect(within(row).getAllByTestId("ai-bench-bar")).toHaveLength(1);
-    });
-    And(
-      "every rated model row carries its input and output API price in text, or states that no public API price exists",
-      () => {
+  Scenario(
+    "Every rated model row shows its bar, consensus count, and API price in text",
+    ({ Given, When, Then, And, But }) => {
+      let rows: HTMLElement[] = [];
+      Given("the full roster is loaded", () => {
+        expect(rated.length).toBeGreaterThan(0);
+      });
+      When("the tier map is rendered in the Consensus tiers view", () => {
+        renderPage();
+        rows = within(screen.getByTestId("ai-bench-tier-map")).getAllByTestId("ai-bench-tier-row");
+      });
+      Then("every rated model row carries the model name and its consensus count in text", () => {
+        expect(sorted(rows.map((r) => r.getAttribute("data-model-id")!))).toEqual(sorted(rated.map((s) => s.model.id)));
         for (const row of rows) {
-          const m = byId(row.getAttribute("data-model-id")!);
-          const text = within(row).getByTestId("ai-bench-price").textContent;
-          if (m.price === undefined) expect(text).toBe(t("en", "aiBenchNoPrice"));
-          else {
-            expect(text).toContain(formatUsd(m.price.input, "en"));
-            expect(text).toContain(formatUsd(m.price.output, "en"));
-          }
+          const s = scored.find((x) => x.model.id === row.getAttribute("data-model-id")!)!;
+          expect(within(row).getByTestId("ai-bench-tier-row-name").textContent).toBe(s.model.name);
+          expect(within(row).getByTestId("ai-bench-tier-row-count").textContent).toBe(
+            tf("en", "aiBenchTierConsensusCount", { agreeing: s.agreeing, considered: s.considered }),
+          );
         }
-      },
-    );
-  });
+      });
+      And("every rated model row carries one capability bar", () => {
+        for (const row of rows) expect(within(row).getAllByTestId("ai-bench-bar")).toHaveLength(1);
+      });
+      And(
+        "every rated model row carries its input and output API price in text, or states that no public API price exists",
+        () => {
+          for (const row of rows) {
+            const m = byId(row.getAttribute("data-model-id")!);
+            const text = within(row).getByTestId("ai-bench-price").textContent;
+            if (m.price === undefined) expect(text).toBe(t("en", "aiBenchNoPrice"));
+            else {
+              expect(text).toContain(formatUsd(m.price.input, "en"));
+              expect(text).toContain(formatUsd(m.price.output, "en"));
+            }
+          }
+        },
+      );
+      But("no rated model row shows a composite index", () => {
+        for (const row of rows) expect(within(row).queryByTestId("ai-bench-tier-row-index")).toBeNull();
+      });
+    },
+  );
 
-  Scenario("Bar length is proportional to the composite index", ({ Given, When, Then }) => {
+  Scenario("Bar length is proportional to the agreeing count", ({ Given, When, Then }) => {
     let pair: [string, string];
-    Given("two rated models whose composite indices differ", () => {
-      const top = [...rated].sort(byIndexDesc);
+    Given("two rated models agreeing on different numbers of benchmarks", () => {
+      const top = [...rated].sort(byConsensusDesc);
       pair = [top[0]!.model.id, top[top.length - 1]!.model.id];
-      expect(top[0]!.index).not.toBe(top[top.length - 1]!.index);
+      expect(top[0]!.agreeing).not.toBe(top[top.length - 1]!.agreeing);
     });
-    When("the tier map is rendered", () => {
+    When("the tier map is rendered in the Consensus tiers view", () => {
       renderPage();
     });
-    Then("the ratio of their bar lengths equals the ratio of their composite indices", () => {
+    Then("the ratio of their bar lengths equals the ratio of their agreeing counts out of all benchmarks", () => {
       const width = (id: string) => {
         const row = document.querySelector(`[data-testid="ai-bench-tier-row"][data-model-id="${id}"]`)!;
         return parseFloat((row.querySelector('[data-testid="ai-bench-bar"]') as HTMLElement).style.width);
       };
+      const byAgreeing = (id: string) => scored.find((s) => s.model.id === id)!.agreeing;
       const [a, b] = pair;
-      expect(width(a) / width(b)).toBeCloseTo(compositeIndex(byId(a))! / compositeIndex(byId(b))!, 6);
+      expect(width(a) / width(b)).toBeCloseTo(byAgreeing(a) / byAgreeing(b), 6);
     });
   });
 
@@ -886,14 +949,14 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
       renderPage();
     });
     Then(
-      "each model row lists its tier, every benchmark score, composite index, input price, output price, and blended price",
+      "each model row lists the tier of the active view, every benchmark score, input price, output price, and blended price",
       () => {
         expect(sorted(tableIds())).toEqual(sorted(full.models.map((m) => m.id)));
         for (const s of scored) {
           const row = tableRow(s.model.id) as HTMLElement;
           const cell = (id: string) => within(row).getByTestId(id).textContent;
           expect(cell("ai-bench-table-tier")).toBe(tierLabel(s.tier, "en"));
-          expect(cell("ai-bench-table-index")).toBe(s.index === undefined ? "—" : formatIndex(s.index, "en"));
+          expect(within(row).queryByTestId("ai-bench-table-index")).toBeNull();
           const p = s.model.price;
           expect(cell("ai-bench-table-input")).toBe(p === undefined ? "—" : formatUsd(p.input, "en"));
           expect(cell("ai-bench-table-output")).toBe(p === undefined ? "—" : formatUsd(p.output, "en"));
@@ -970,13 +1033,12 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     When("the reader opens the methodology section", () => {
       details = openMethodology();
     });
-    Then("it lists every composite benchmark with its version and weight", () => {
+    Then("it lists every benchmark with its version", () => {
       const items = within(details).getAllByTestId("ai-bench-method-benchmark");
       expect(items.map((i) => i.getAttribute("data-benchmark"))).toEqual(BENCHMARK_SPECS.map((b) => b.id));
       BENCHMARK_SPECS.forEach((b, i) => {
         expect(items[i]!.textContent).toContain(b.name);
         expect(items[i]!.textContent).toContain(tf("en", "aiBenchMethodVersion", { version: b.version }));
-        expect(items[i]!.textContent).toContain(tf("en", "aiBenchMethodWeight", { weight: b.weight }));
       });
     });
     And("it states which models the roster covers", () => {
@@ -993,24 +1055,19 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
         expect(orders[i]!.textContent).toContain(b.operatorOrder.map((o) => operatorById(o).shortName).join(" → "));
       });
     });
-    And("it states the minimum number of benchmarks needed for a tier", () => {
+    And("it states the minimum number of benchmarks needed for a consensus tier", () => {
       expect(within(details).getByTestId("ai-bench-method-index").textContent).toBe(
         tf("en", "aiBenchMethodIndex", { min: MIN_SCORED_BENCHMARKS }),
       );
     });
-    And("it lists every tier anchor with its floor score", () => {
-      const a = tierAnchors(full);
-      const items = within(details).getAllByTestId("ai-bench-method-anchor");
-      expect(items.map((i) => i.getAttribute("data-tier"))).toEqual(["ultra", "planning", "execution"]);
-      for (const item of items) {
-        const anchor = a[item.getAttribute("data-tier") as "ultra"]!;
-        expect(item.textContent).toContain(anchor.model.name);
-        expect(item.textContent).toContain(formatIndex(anchor.index!, "en"));
-      }
+    And("it states that no average or composite score is computed", () => {
+      expect(within(details).getByTestId("ai-bench-method-no-average").textContent).toBe(
+        t("en", "aiBenchMethodNoAverage"),
+      );
     });
   });
 
-  Scenario("The worked example matches the computed index", ({ Given, When, Then, And }) => {
+  Scenario("The methodology states the consensus rule", ({ Given, When, Then, And }) => {
     let details: HTMLElement;
     Given("the AI benchmark page is open", () => {
       renderPage();
@@ -1018,24 +1075,30 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     When("the reader opens the methodology section", () => {
       details = openMethodology();
     });
-    Then("the worked example shows a model's benchmark scores and the resulting composite index", () => {
-      const m = byId(METHOD_EXAMPLE.indexModel);
-      const text = within(details).getByTestId("ai-bench-method-example-index").textContent!;
-      expect(text).toContain(m.name);
-      for (const b of scoredBenchmarks(m)) expect(text).toContain(formatIndex(scoredFigure(m, b)!.value, "en"));
-      expect(text).toContain(formatIndex(compositeIndex(m)!, "en"));
-      // The like-for-like example states the outcome the scoring code reaches.
-      const compare = within(details).getByTestId("ai-bench-method-example-compare").textContent!;
-      const outcome = meetsAnchor(byId(METHOD_EXAMPLE.compareModel), byId(TIER_ANCHORS[METHOD_EXAMPLE.compareTier]));
-      expect(compare).toContain(t("en", outcome ? "aiBenchMethodMeets" : "aiBenchMethodMisses"));
-    });
-    And("the worked example's composite index equals that model's index in the data table", () => {
-      const m = byId(METHOD_EXAMPLE.indexModel);
-      const tableIndex = within(tableRow(m.id) as HTMLElement).getByTestId("ai-bench-table-index").textContent!;
-      expect(within(details).getByTestId("ai-bench-method-example-index").textContent).toContain(
-        `index ${tableIndex}.`,
+    Then("it states that a model's consensus tier is the tier it holds on the most benchmarks", () => {
+      expect(within(details).getByTestId("ai-bench-method-consensus").textContent).toBe(
+        t("en", "aiBenchMethodConsensus"),
       );
     });
+    And("it states that a consensus tie goes to the highest tied tier", () => {
+      expect(within(details).getByTestId("ai-bench-method-consensus").textContent).toMatch(/highest/);
+    });
+    And(
+      "it states that a tier needs at least half of the model's tiered benchmarks to agree, and a model below half has no consensus tier",
+      () => {
+        const text = within(details).getByTestId("ai-bench-method-consensus").textContent!;
+        expect(text).toMatch(/half/);
+        expect(text).toContain("no consensus tier");
+      },
+    );
+    And(
+      "it states that models are ordered inside a tier by how many benchmarks agree, then by how many benchmarks rated the model",
+      () => {
+        expect(within(details).getByTestId("ai-bench-method-consensus-order").textContent).toBe(
+          t("en", "aiBenchMethodConsensusOrder"),
+        );
+      },
+    );
   });
 
   Scenario("The page lists every operator with its checked date and terms", ({ Given, When, Then, And }) => {
@@ -1249,6 +1312,353 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
+  // ── Score basis (average vs per-benchmark) ─────────────────────────────────
+
+  Scenario("The score basis defaults to the consensus tiers", ({ Given, When, Then, And }) => {
+    const scoreBasisSelect = () => screen.getByLabelText(t("en", "aiBenchScoreBasisLabel")) as HTMLSelectElement;
+    Given("the URL carries no benchmark parameter", () => {
+      navState.search = "";
+    });
+    When("the page renders", () => {
+      renderPage("en", navState.search);
+    });
+    Then("the tier map groups models by consensus tier", () => {
+      const groups = computeTierGroups(full);
+      expect(tierMapIds()).toEqual(
+        (["ultra", "planning", "execution", "fast"] as const).flatMap((tier) => groups[tier].map((s) => s.model.id)),
+      );
+    });
+    And('the score basis control shows "Consensus tiers"', () => {
+      expect(scoreBasisSelect().value).toBe("");
+      expect(selectedLabel(scoreBasisSelect())).toBe(t("en", "aiBenchScoreBasisConsensus"));
+      expect(scoreBasisSelect().options).toHaveLength(1 + BENCHMARK_SPECS.length);
+    });
+  });
+
+  Scenario("Naming a benchmark ranks models by its raw score", ({ Given, When, Then, And }) => {
+    Given("fixture models scoring 60, 80, and 70 on DeepSWE 1.1", () => {
+      ctx.roster = [
+        model("low", [fig("deep-swe", 60, "1.1")]),
+        model("high", [fig("deep-swe", 80, "1.1")]),
+        model("mid", [fig("deep-swe", 70, "1.1")]),
+      ];
+    });
+    When("the models are ranked for the DeepSWE score basis", () => {
+      const { ranked, unranked } = rankBenchmarkModels(ctx.roster!, "deep-swe");
+      ctx.ranked = ranked;
+      ctx.unranked = unranked;
+    });
+    Then("the ranked order is 80, 70, then 60", () => {
+      expect(ctx.ranked!.map((r) => r.score)).toEqual([80, 70, 60]);
+      expect(ctx.unranked).toEqual([]);
+    });
+    And("each shown score equals that model's DeepSWE figure with no normalization", () => {
+      for (const r of ctx.ranked!) expect(r.score).toBe(benchmarkScore(r.model, "deep-swe"));
+    });
+  });
+
+  Scenario("Only the pinned version counts in a per-benchmark view", ({ Given, When, Then }) => {
+    Given("a fixture model scoring 90 on Terminal-Bench 2.1 with no Terminal-Bench 4.0 figure", () => {
+      ctx.model = model("m", [fig("terminal-bench", 90, "2.1")]);
+    });
+    When("the models are ranked for the Terminal-Bench score basis", () => {
+      const { ranked, unranked } = rankBenchmarkModels([ctx.model!], "terminal-bench");
+      ctx.ranked = ranked;
+      ctx.unranked = unranked;
+    });
+    Then("that model is unranked", () => {
+      expect(ctx.ranked).toEqual([]);
+      expect(ctx.unranked!.map((m) => m.id)).toEqual([ctx.model!.id]);
+    });
+  });
+
+  Scenario("Models without a score on the chosen benchmark are listed as unranked", ({ Given, And, When, Then }) => {
+    Given("the roster holds models with no scored FrontierCode-AA figure", () => {
+      const missing = full.models.filter((m) => benchmarkScore(m, "frontiercode-aa") === undefined);
+      expect(missing.length).toBeGreaterThan(0);
+      expect(missing.length).toBeLessThan(full.models.length);
+    });
+    And("the URL carries a benchmark parameter naming FrontierCode-AA", () => {
+      navState.search = "benchmark=frontiercode-aa";
+    });
+    When("the page renders", () => {
+      renderPage("en", navState.search);
+    });
+    Then("those models are listed inside the closed unranked disclosure", () => {
+      const details = screen.getByTestId("ai-bench-insufficient") as HTMLDetailsElement;
+      expect(details.open).toBe(false);
+      const expected = sorted(
+        full.models.filter((m) => benchmarkScore(m, "frontiercode-aa") === undefined).map((m) => m.id),
+      );
+      expect(sorted(idsIn("ai-bench-insufficient-item", details))).toEqual(expected);
+    });
+    And("the ranked list holds only models with a scored FrontierCode-AA figure in descending raw-score order", () => {
+      const expected = full.models
+        .flatMap((m) => {
+          const score = benchmarkScore(m, "frontiercode-aa");
+          return score === undefined ? [] : [{ id: m.id, score }];
+        })
+        .sort((a, b) => b.score - a.score || (a.id < b.id ? -1 : 1));
+      expect(expected.length).toBeGreaterThan(0);
+      expect(tierMapIds()).toEqual(expected.map((e) => e.id));
+      for (const e of expected) {
+        const row = screen.getByTestId("ai-bench-tier-map").querySelector(`[data-model-id="${e.id}"]`)!;
+        expect(within(row as HTMLElement).getByTestId("ai-bench-tier-row-index").textContent).toBe(
+          formatPercent(e.score, "en"),
+        );
+      }
+    });
+  });
+
+  Scenario("An unrecognized benchmark falls back to the consensus tiers", ({ Given, When, Then, But }) => {
+    Given("the URL carries a benchmark parameter with an unknown value", () => {
+      ctx.errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+      navState.search = "benchmark=not-a-benchmark";
+    });
+    When("the page renders", () => {
+      renderPage("en", navState.search);
+    });
+    Then("the tier map groups models by consensus tier", () => {
+      const groups = computeTierGroups(full);
+      expect(tierMapIds()).toEqual(
+        (["ultra", "planning", "execution", "fast"] as const).flatMap((tier) => groups[tier].map((s) => s.model.id)),
+      );
+      expect((screen.getByLabelText(t("en", "aiBenchScoreBasisLabel")) as HTMLSelectElement).value).toBe("");
+    });
+    But("no error is surfaced to the reader", () => {
+      expect(screen.queryByRole("alert")).toBeNull();
+      expect(ctx.errorSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  Scenario("The chosen benchmark is kept in the URL", ({ Given, When, Then, And }) => {
+    Given("the AI benchmark page is open", () => {
+      renderPage("en", "");
+    });
+    When('the reader changes the score basis to "Terminal-Bench"', () => {
+      fireEvent.change(screen.getByLabelText(t("en", "aiBenchScoreBasisLabel")), {
+        target: { value: "terminal-bench" },
+      });
+      followPush();
+      ctx.subIds = tierMapIds();
+    });
+    Then("the URL carries that benchmark as the score basis", () => {
+      expect(new URLSearchParams(navState.search).get("benchmark")).toBe("terminal-bench");
+    });
+    And("reloading that URL shows the same per-benchmark ranking", () => {
+      cleanup();
+      renderPage("en", navState.search);
+      expect((screen.getByLabelText(t("en", "aiBenchScoreBasisLabel")) as HTMLSelectElement).value).toBe(
+        "terminal-bench",
+      );
+      expect(tierMapIds()).toEqual(ctx.subIds);
+    });
+  });
+
+  Scenario("Resetting the score basis to Consensus tiers removes it from the URL", ({ Given, When, Then, And }) => {
+    Given("the URL carries a benchmark parameter naming a known benchmark", () => {
+      navState.search = "benchmark=deep-swe";
+    });
+    When('the reader resets the score basis to "Consensus tiers"', () => {
+      renderPage("en", navState.search);
+      fireEvent.change(screen.getByLabelText(t("en", "aiBenchScoreBasisLabel")), { target: { value: "" } });
+      followPush();
+    });
+    Then("the URL no longer carries the benchmark parameter", () => {
+      expect(new URLSearchParams(navState.search).has("benchmark")).toBe(false);
+      expect((screen.getByLabelText(t("en", "aiBenchScoreBasisLabel")) as HTMLSelectElement).value).toBe("");
+    });
+    And("the tier map groups models by consensus tier", () => {
+      const groups = computeTierGroups(full);
+      expect(tierMapIds()).toEqual(
+        (["ultra", "planning", "execution", "fast"] as const).flatMap((tier) => groups[tier].map((s) => s.model.id)),
+      );
+    });
+  });
+
+  Scenario("The methodology explains the per-benchmark view", ({ Given, When, Then, And }) => {
+    Given("the AI benchmark page is open", () => {
+      renderPage("en", "");
+    });
+    When("the reader opens the methodology section", () => {
+      fireEvent.click(screen.getByRole("link", { name: t("en", "aiBenchJumpToMethod") }));
+    });
+    Then("it names the five score basis options: the consensus tiers and the four benchmarks", () => {
+      const text = screen.getByTestId("ai-bench-method-score-basis").textContent!;
+      expect(text).toContain(t("en", "aiBenchScoreBasisConsensus"));
+      for (const b of BENCHMARK_SPECS) expect(text).toContain(b.name);
+    });
+    And("it states that a per-benchmark view shows raw operator figures with no normalization", () => {
+      expect(screen.getByTestId("ai-bench-method-raw").textContent).toBe(t("en", "aiBenchMethodRawScores"));
+    });
+    And("it states that models without a scored figure on the chosen benchmark are unranked", () => {
+      expect(screen.getByTestId("ai-bench-method-unranked").textContent).toBe(t("en", "aiBenchMethodUnranked"));
+    });
+  });
+
+  // ── Per-benchmark tiers ────────────────────────────────────────────────────
+
+  ScenarioOutline(
+    "A model is placed in the highest per-benchmark tier whose anchor it meets on that benchmark",
+    ({ Given, And, When, Then }, variables) => {
+      Given("fixture DeepSWE anchors scoring 60 for ultra, 55 for planning, and 45 for execution", () => {
+        ctx.roster = benchmarkAnchors("deep-swe", 60, 55, 45);
+      });
+      And("a fixture model scoring <score> on DeepSWE 1.1", () => {
+        ctx.model = model("m", [fig("deep-swe", Number(variables.score), "1.1")]);
+      });
+      When("its DeepSWE tier is assigned", () => {
+        ctx.benchmarkTier = assignBenchmarkTier(ctx.model!, "deep-swe", fixtureDataset([...ctx.roster!, ctx.model!]));
+      });
+      Then('that model\'s DeepSWE tier is "<tier>"', () => {
+        expect(ctx.benchmarkTier).toBe(variables.tier);
+      });
+    },
+  );
+
+  Scenario("Every benchmark has descending per-benchmark anchor floors", ({ Given, When, Then, And }) => {
+    Given("the full roster is loaded", () => {
+      expect(full.models.length).toBeGreaterThan(0);
+    });
+    When("the per-benchmark tier anchors are inspected", () => {
+      ctx.roster = full.models;
+    });
+    Then("every benchmark names an ultra, a planning, and an execution anchor", () => {
+      for (const b of BENCHMARK_SPECS) {
+        expect(Object.keys(BENCHMARK_TIER_ANCHORS[b.id]).sort()).toEqual(["execution", "planning", "ultra"]);
+      }
+    });
+    And("every anchor is a general-access model with a scored figure on that benchmark", () => {
+      for (const b of BENCHMARK_SPECS) {
+        for (const tier of ["ultra", "planning", "execution"] as const) {
+          const anchor = byId(BENCHMARK_TIER_ANCHORS[b.id][tier]);
+          expect(anchor.access, `${b.id}/${tier}`).toBe("general");
+          expect(benchmarkScore(anchor, b.id), `${b.id}/${tier}`).not.toBeUndefined();
+        }
+      }
+    });
+    And("every anchor has a newer model from the same vendor in the roster", () => {
+      for (const b of BENCHMARK_SPECS) {
+        for (const tier of ["ultra", "planning", "execution"] as const) {
+          const anchor = byId(BENCHMARK_TIER_ANCHORS[b.id][tier]);
+          const newer = full.models.filter(
+            (m) => m.vendor === anchor.vendor && m.releaseDate !== undefined && m.releaseDate > anchor.releaseDate!,
+          );
+          expect(newer.length, `${b.id}/${tier}`).toBeGreaterThan(0);
+        }
+      }
+    });
+    And("on every benchmark the ultra floor is above the planning floor, which is above the execution floor", () => {
+      for (const b of BENCHMARK_SPECS) {
+        const floors = (["ultra", "planning", "execution"] as const).map(
+          (tier) => benchmarkScore(byId(BENCHMARK_TIER_ANCHORS[b.id][tier]), b.id)!,
+        );
+        expect(floors[0]).toBeGreaterThan(floors[1]!);
+        expect(floors[1]).toBeGreaterThan(floors[2]!);
+      }
+    });
+  });
+
+  Scenario("Each per-benchmark anchor lands in the tier it defines on its benchmark", ({ Given, When, Then, And }) => {
+    Given("the full roster is loaded", () => {
+      expect(full.models.length).toBeGreaterThan(0);
+    });
+    When("every model's tier is assigned on DeepSWE", () => {
+      ctx.roster = full.models;
+    });
+    Then('the DeepSWE ultra anchor is in the "ultra" tier on DeepSWE', () => {
+      expect(assignBenchmarkTier(byId(BENCHMARK_TIER_ANCHORS["deep-swe"].ultra), "deep-swe", full)).toBe("ultra");
+    });
+    And('the DeepSWE planning anchor is in the "planning" tier on DeepSWE', () => {
+      expect(assignBenchmarkTier(byId(BENCHMARK_TIER_ANCHORS["deep-swe"].planning), "deep-swe", full)).toBe("planning");
+    });
+    And('the DeepSWE execution anchor is in the "execution" tier on DeepSWE', () => {
+      expect(assignBenchmarkTier(byId(BENCHMARK_TIER_ANCHORS["deep-swe"].execution), "deep-swe", full)).toBe(
+        "execution",
+      );
+    });
+  });
+
+  Scenario("Per-benchmark tier sections name their benchmark anchor and floor", ({ Given, When, Then, And }) => {
+    const anchors = benchmarkTierAnchors(full, "terminal-bench");
+    Given("the URL carries a benchmark parameter naming Terminal-Bench", () => {
+      navState.search = "benchmark=terminal-bench";
+    });
+    When("the page renders", () => {
+      renderPage("en", navState.search);
+    });
+    Then("the ultra, planning, and execution sections each name their Terminal-Bench anchor model", () => {
+      for (const tier of ["ultra", "planning", "execution"] as const) {
+        const floor = within(screen.getByTestId(`ai-bench-tier-${tier}`)).getByTestId("ai-bench-tier-floor");
+        expect(floor.textContent).toContain(anchors[tier]!.model.name);
+      }
+    });
+    And("each of those sections states its floor as a raw Terminal-Bench score", () => {
+      for (const tier of ["ultra", "planning", "execution"] as const) {
+        const floor = within(screen.getByTestId(`ai-bench-tier-${tier}`)).getByTestId("ai-bench-tier-floor");
+        expect(floor.textContent).toContain("Terminal-Bench");
+        expect(floor.textContent).toContain(formatPercent(anchors[tier]!.score, "en"));
+      }
+    });
+    And("the fast section states that it holds models below the Terminal-Bench execution floor", () => {
+      expect(within(screen.getByTestId("ai-bench-tier-fast")).getByTestId("ai-bench-tier-floor").textContent).toBe(
+        tf("en", "aiBenchTierBenchmarkFastFloor", { benchmark: "Terminal-Bench" }),
+      );
+    });
+  });
+
+  Scenario(
+    "A tier parameter in a per-benchmark view narrows to that benchmark's tier",
+    ({ Given, When, Then, And }) => {
+      Given("the URL carries a benchmark parameter naming DeepSWE and a tier parameter naming a known tier", () => {
+        navState.search = "benchmark=deep-swe&tier=planning";
+      });
+      When("the page renders", () => {
+        renderPage("en", navState.search);
+      });
+      Then("only models in that tier on DeepSWE are shown in the ranked list", () => {
+        const shown = filterModels(full, { benchmark: "deep-swe", tier: "planning" }, full);
+        expect(shown.length).toBeGreaterThan(0);
+        const { groups } = computeBenchmarkTierGroups({ ...full, models: shown }, "deep-swe", full);
+        expect(tierMapIds()).toEqual(groups.planning.map((r) => r.model.id));
+        for (const id of tierMapIds()) {
+          expect(assignBenchmarkTier(byId(id), "deep-swe", full)).toBe("planning");
+        }
+      });
+      And("only models in that tier on DeepSWE are shown in the data table", () => {
+        expect(sorted(tableIds())).toEqual(sorted(tierMapIds()));
+      });
+    },
+  );
+
+  Scenario("The methodology lists every benchmark's tier anchors", ({ Given, When, Then, And }) => {
+    Given("the AI benchmark page is open", () => {
+      renderPage("en", "");
+    });
+    When("the reader opens the methodology section", () => {
+      fireEvent.click(screen.getByRole("link", { name: t("en", "aiBenchJumpToMethod") }));
+    });
+    Then("it lists every benchmark with its ultra, planning, and execution anchor and floor score", () => {
+      const items = screen.getAllByTestId("ai-bench-method-benchmark-anchor");
+      expect(items.map((i) => i.getAttribute("data-benchmark"))).toEqual(BENCHMARK_SPECS.map((b) => b.id));
+      for (const item of items) {
+        const benchmark = item.getAttribute("data-benchmark") as (typeof BENCHMARK_SPECS)[number]["id"];
+        for (const tier of ["ultra", "planning", "execution"] as const) {
+          const anchor = byId(BENCHMARK_TIER_ANCHORS[benchmark][tier]);
+          expect(item.textContent, `${benchmark}/${tier}`).toContain(anchor.name);
+          expect(item.textContent, `${benchmark}/${tier}`).toContain(
+            formatPercent(benchmarkScore(anchor, benchmark)!, "en"),
+          );
+        }
+      }
+    });
+    And("it states that a per-benchmark tier compares raw scores on that benchmark only", () => {
+      expect(screen.getByTestId("ai-bench-method-benchmark-tiers").textContent).toBe(
+        t("en", "aiBenchMethodBenchmarkTiers"),
+      );
+    });
+  });
+
   // ── Accessibility and layout (declarative contract; measured by the e2e steps) ──
 
   ScenarioOutline("Tier colours meet contrast in both themes", ({ Given, When, Then, And }, variables) => {
@@ -1271,7 +1681,10 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
       const block = variables.theme === "dark" ? TOKENS_CSS.slice(TOKENS_CSS.indexOf(".dark")) : TOKENS_CSS;
       for (const tier of TIERS) expect(block).toMatch(new RegExp(`--chart-tier-${tier}:`));
       for (const bar of bars) {
-        const tier = assignTier(byId(bar.closest("[data-model-id]")!.getAttribute("data-model-id")!), full);
+        const tier = assignConsensusTier(
+          byId(bar.closest("[data-model-id]")!.getAttribute("data-model-id")!),
+          full,
+        ).tier;
         expect(bar.className).toContain(TIER_BG_CLASS[tier]);
       }
     });
@@ -1379,6 +1792,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
         expect(screen.getByTestId(`ai-bench-tier-${tier}`)).toBeTruthy();
       }
       expect(screen.getByTestId("ai-bench-insufficient")).toBeTruthy();
+      expect(screen.getByTestId("ai-bench-no-consensus")).toBeTruthy();
     });
     And("no raw translation key is rendered", () => {
       expect(document.body.textContent).not.toMatch(/aiBench|\{\w+\}/);

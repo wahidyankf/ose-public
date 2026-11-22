@@ -162,8 +162,45 @@ describe("BenchmarkContent — substitute harness", () => {
   });
 });
 
+describe("BenchmarkContent — score basis", () => {
+  const basisSelect = () => screen.getByLabelText("Score basis") as HTMLSelectElement;
+
+  it("shows Consensus tiers with five options when the URL carries no benchmark parameter", () => {
+    render(<BenchmarkContent />);
+    expect(basisSelect().value).toBe("");
+    expect(basisSelect().options).toHaveLength(5);
+    expect(basisSelect().selectedOptions[0]!.textContent).toBe("Consensus tiers");
+  });
+
+  it("reads the score basis from the URL", () => {
+    nav.search = "benchmark=deep-swe";
+    render(<BenchmarkContent />);
+    expect(basisSelect().value).toBe("deep-swe");
+  });
+
+  it("falls back to Consensus tiers for an unknown benchmark", () => {
+    nav.search = "benchmark=not-a-benchmark";
+    render(<BenchmarkContent />);
+    expect(basisSelect().value).toBe("");
+  });
+
+  it("pushes the chosen benchmark under the benchmark key", () => {
+    render(<BenchmarkContent />);
+    change("Score basis", "terminal-bench");
+    expect(pushed(0).get("benchmark")).toBe("terminal-bench");
+  });
+
+  it("removes the benchmark parameter when Consensus tiers is chosen again", () => {
+    nav.search = "benchmark=deep-swe&harness=cursor";
+    render(<BenchmarkContent />);
+    change("Score basis", "");
+    expect(pushed(0).has("benchmark")).toBe(false);
+    expect(pushed(0).get("harness")).toBe("cursor");
+  });
+});
+
 describe("BenchmarkContent — structure", () => {
-  it("orders header → finder → filters → tier map → insufficient → table → methodology → sources", () => {
+  it("orders header → finder → filters → tier map → insufficient → no-consensus → table → methodology → sources", () => {
     render(<BenchmarkContent />);
     const order = [
       "ai-bench-last-updated",
@@ -171,6 +208,7 @@ describe("BenchmarkContent — structure", () => {
       "ai-bench-filters",
       "ai-bench-tier-map",
       "ai-bench-insufficient",
+      "ai-bench-no-consensus",
       "ai-bench-table",
       "ai-bench-methodology",
       "ai-bench-sources",
@@ -189,6 +227,35 @@ describe("BenchmarkContent — structure", () => {
 
   it("hides the tier map but keeps the insufficient list when filtering to insufficient", () => {
     nav.search = "tier=insufficient";
+    render(<BenchmarkContent />);
+    expect(screen.queryByTestId("ai-bench-tier-map")).toBeNull();
+    expect(screen.getByTestId("ai-bench-insufficient")).toBeTruthy();
+    expect(screen.queryByTestId("ai-bench-no-consensus")).toBeNull();
+  });
+});
+
+describe("BenchmarkContent — per-benchmark tiers", () => {
+  it("renders per-benchmark tier sections naming the benchmark when a score basis is set", () => {
+    nav.search = "benchmark=terminal-bench";
+    render(<BenchmarkContent />);
+    const map = screen.getByTestId("ai-bench-tier-map");
+    expect(map.querySelector("#ai-bench-rank-list-heading")!.textContent).toContain("Terminal-Bench");
+    for (const tier of ["ultra", "planning", "execution", "fast"]) {
+      expect(map.querySelector(`[data-testid="ai-bench-tier-${tier}"]`)).toBeTruthy();
+    }
+    expect(screen.getByTestId("ai-bench-insufficient")).toBeTruthy();
+  });
+
+  it("narrows the per-benchmark sections to the filtered tier", () => {
+    nav.search = "benchmark=terminal-bench&tier=planning";
+    render(<BenchmarkContent />);
+    const map = screen.getByTestId("ai-bench-tier-map");
+    expect(map.querySelector('[data-testid="ai-bench-tier-planning"]')).toBeTruthy();
+    expect(map.querySelector('[data-testid="ai-bench-tier-ultra"]')).toBeNull();
+  });
+
+  it("hides the per-benchmark tier map but keeps the unranked list when filtering to insufficient", () => {
+    nav.search = "benchmark=terminal-bench&tier=insufficient";
     render(<BenchmarkContent />);
     expect(screen.queryByTestId("ai-bench-tier-map")).toBeNull();
     expect(screen.getByTestId("ai-bench-insufficient")).toBeTruthy();

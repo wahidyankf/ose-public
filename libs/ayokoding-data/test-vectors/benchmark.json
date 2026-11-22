@@ -1,21 +1,21 @@
 {
   "compositeIndex": {
-    "glm-5.3": 53.556666666666665,
-    "kimi-k3": 51.92666666666667,
-    "claude-opus-5": 59.73,
-    "gpt-5.6-sol": 54.556666666666665,
+    "glm-5.3": 47.404999999999994,
+    "kimi-k3": 51.949999999999996,
+    "claude-opus-5": 63.79,
+    "gpt-5.6-sol": 52.01333333333333,
     "claude-sonnet-5": 33.995000000000005,
-    "gemini-4-argon": 63.75666666666666,
+    "gemini-4-argon": 54.022499999999994,
     "claude-haiku-4-5": null,
     "composer-2.5": null
   },
   "scoredBenchmarks": {
-    "glm-5.3": ["deep-swe", "terminal-bench", "swe-atlas-qna"],
+    "glm-5.3": ["deep-swe", "terminal-bench", "swe-atlas-qna", "frontiercode-aa"],
     "kimi-k3": ["deep-swe", "terminal-bench", "swe-atlas-qna"],
     "claude-opus-5": ["deep-swe", "terminal-bench", "swe-atlas-qna"],
     "gpt-5.6-sol": ["deep-swe", "terminal-bench", "swe-atlas-qna"],
     "claude-sonnet-5": ["deep-swe", "terminal-bench"],
-    "gemini-4-argon": ["deep-swe", "terminal-bench", "swe-atlas-qna"],
+    "gemini-4-argon": ["deep-swe", "terminal-bench", "swe-atlas-qna", "frontiercode-aa"],
     "claude-haiku-4-5": [],
     "composer-2.5": []
   },
@@ -25,7 +25,7 @@
     "claude-opus-5": "ultra",
     "gpt-5.6-sol": "planning",
     "claude-sonnet-5": "execution",
-    "gemini-4-argon": "ultra",
+    "gemini-4-argon": "planning",
     "claude-haiku-4-5": "insufficient",
     "composer-2.5": "insufficient"
   },
@@ -35,7 +35,7 @@
     "claude-opus-5": 10,
     "gpt-5.6-sol": 8,
     "claude-sonnet-5": 4,
-    "gemini-4-argon": null,
+    "gemini-4-argon": 4,
     "claude-haiku-4-5": 2,
     "composer-2.5": 1
   },
@@ -48,13 +48,13 @@
     {
       "candidate": "gemini-4-argon",
       "reference": "claude-opus-5",
-      "value": null
+      "value": 0.4
     }
   ],
   "filterCounts": [
     {
       "state": {},
-      "count": 93
+      "count": 109
     },
     {
       "state": {
@@ -66,20 +66,20 @@
       "state": {
         "tier": "ultra"
       },
-      "count": 9
+      "count": 1
     },
     {
       "state": {
         "harness": "command-code-pro",
         "tier": "planning"
       },
-      "count": 3
+      "count": 5
     },
     {
       "state": {
         "harness": "opencode-go"
       },
-      "count": 30
+      "count": 33
     }
   ],
   "substitutes": {
@@ -89,8 +89,8 @@
     "options": [
       {
         "id": "claude-sonnet-5-5",
-        "tier": "ultra",
-        "index": 68.36
+        "tier": "planning",
+        "index": 60.4025
       },
       {
         "id": "gpt-6-sol",
@@ -98,29 +98,34 @@
         "index": 56.663333333333334
       },
       {
-        "id": "grok-4.7",
+        "id": "gemini-4-argon",
         "tier": "planning",
-        "index": 56.26666666666666
+        "index": 54.022499999999994
+      },
+      {
+        "id": "gpt-5.6-terra",
+        "tier": "planning",
+        "index": 52.485
       },
       {
         "id": "gpt-5.6-sol",
         "tier": "planning",
-        "index": 54.556666666666665
-      },
-      {
-        "id": "muse-spark-1.3",
-        "tier": "execution",
-        "index": 54.303333333333335
-      },
-      {
-        "id": "gpt-5.6-terra",
-        "tier": "execution",
-        "index": 52.485
+        "index": 52.01333333333333
       },
       {
         "id": "kimi-k3",
         "tier": "execution",
-        "index": 51.92666666666667
+        "index": 51.949999999999996
+      },
+      {
+        "id": "gemini-4-carbon",
+        "tier": "execution",
+        "index": 51.620000000000005
+      },
+      {
+        "id": "grok-4.7",
+        "tier": "execution",
+        "index": 49.622499999999995
       },
       {
         "id": "glm-5.3-flash",
@@ -130,37 +135,32 @@
       {
         "id": "grok-4.6",
         "tier": "execution",
-        "index": 46.970000000000006
+        "index": 47.830000000000005
       },
       {
-        "id": "qwen3.8-max",
+        "id": "muse-spark-1.3",
         "tier": "execution",
-        "index": 43.26666666666667
-      },
-      {
-        "id": "gpt-5.6-luna",
-        "tier": "execution",
-        "index": 43.22666666666667
-      },
-      {
-        "id": "deepseek-v4-pro",
-        "tier": "execution",
-        "index": 43.053333333333335
+        "index": 46.205
       },
       {
         "id": "gemini-3.8-flash",
         "tier": "execution",
-        "index": 41.86333333333334
+        "index": 45.17333333333334
       },
       {
-        "id": "claude-haiku-5-5",
+        "id": "kimi-k3.1-pro",
         "tier": "execution",
-        "index": 41.44
+        "index": 44.61
       },
       {
-        "id": "gpt-6-luna",
+        "id": "gpt-5.6-luna",
         "tier": "execution",
-        "index": 41.07333333333333
+        "index": 43.5
+      },
+      {
+        "id": "qwen3.8-max",
+        "tier": "execution",
+        "index": 40.265
       },
       {
         "id": "gemini-3.7-flash",
@@ -170,7 +170,17 @@
       {
         "id": "deepseek-v4-flash",
         "tier": "execution",
-        "index": 38.74333333333333
+        "index": 38.42333333333334
+      },
+      {
+        "id": "claude-haiku-5-5",
+        "tier": "execution",
+        "index": 36.849999999999994
+      },
+      {
+        "id": "gpt-6-luna",
+        "tier": "execution",
+        "index": 36.8275
       },
       {
         "id": "claude-sonnet-5",

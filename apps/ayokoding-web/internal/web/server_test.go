@@ -234,24 +234,27 @@ func TestBenchmarkPage(t *testing.T) {
 	}
 	body := vector.Body.String()
 	// Current-codec vector from the shared dataset: filterCounts pins
-	// harness=command-code-pro&tier=planning to 3 models in
+	// harness=command-code-pro&tier=planning to 5 models in
 	// libs/ayokoding-data/test-vectors/benchmark.json, rendered in
 	// descending index order with blended prices. The order assertion scopes
 	// to the results list because the select-based filter form above it
 	// legitimately names the same models in display order.
 	results := body[strings.Index(body, "data-tool-results"):]
-	first := strings.Index(results, "GPT-6 Sol")
-	second := strings.Index(results, "Grok 4.7")
-	third := strings.Index(results, "GPT-5.6 Sol")
-	if first < 0 || second < 0 || third < 0 || first >= second || second >= third {
+	first := strings.Index(results, "Claude Sonnet 5.5")
+	second := strings.Index(results, "GPT-6 Sol")
+	third := strings.Index(results, "Gemini 4 Argon")
+	fourth := strings.Index(results, "GPT-5.6 Terra")
+	fifth := strings.Index(results, "GPT-5.6 Sol")
+	if first < 0 || second < 0 || third < 0 || fourth < 0 || fifth < 0 ||
+		first >= second || second >= third || third >= fourth || fourth >= fifth {
 		t.Fatal("benchmark must show vector figures in index order")
 	}
-	for _, marker := range []string{"56.7", "56.3", "54.6", "$4.00", "$3.00", "$8.00", `data-count="3"`} {
+	for _, marker := range []string{"60.4", "56.7", "54.0", "52.5", "52.0", "$4.00", "$4.00", "$4.00", "$4.50", "$8.00", `data-count="5"`} {
 		if !strings.Contains(body, marker) {
 			t.Fatalf("benchmark misses vector figure %q", marker)
 		}
 	}
-	empty := request(t, handler, http.MethodGet, "/en/tools/ai-benchmark?harness=opencode-go&tier=ultra")
+	empty := request(t, handler, http.MethodGet, "/en/tools/ai-benchmark?harness=codex-cli&tier=ultra")
 	if empty.Code != http.StatusOK {
 		t.Fatalf("empty benchmark status = %d, want 200", empty.Code)
 	}
@@ -296,7 +299,7 @@ func TestHtmxBenchmarkFragment(t *testing.T) {
 		t.Fatalf("benchmark fragment status = %d, want 200", vector.Code)
 	}
 	body := vector.Body.String()
-	for _, marker := range []string{`data-fragment="benchmark"`, "GPT-6 Sol", "Grok 4.7", `data-count="3"`} {
+	for _, marker := range []string{`data-fragment="benchmark"`, "Claude Sonnet 5.5", "GPT-6 Sol", "Gemini 4 Argon", `data-count="5"`} {
 		if !strings.Contains(body, marker) {
 			t.Fatalf("benchmark fragment misses %q", marker)
 		}
@@ -324,7 +327,7 @@ func TestHtmxBenchmarkFragment(t *testing.T) {
 	if !strings.Contains(invalid.Body.String(), "data-invalid-filters") {
 		t.Fatal("unexpected benchmark field must yield the invalid-filters state")
 	}
-	empty := request(t, handler, http.MethodGet, "/htmx/benchmark?harness=opencode-go&tier=ultra")
+	empty := request(t, handler, http.MethodGet, "/htmx/benchmark?harness=codex-cli&tier=ultra")
 	if !strings.Contains(empty.Body.String(), "data-empty-state") {
 		t.Fatal("no-match benchmark fragment must show the empty state")
 	}

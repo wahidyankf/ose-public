@@ -1,8 +1,8 @@
 // AI BENCHMARK — scoring constants.
 //
-// Everything the methodology section states (benchmarks, versions, weights, operator order,
-// minimum coverage, tier anchors) is read from here, so the page text and the scoring code cannot
-// drift apart. No figures live here.
+// Everything the methodology section states (benchmarks, versions, operator order, minimum
+// coverage, per-benchmark tier anchors) is read from here, so the page text and the scoring code
+// cannot drift apart. No figures live here.
 //
 // Values live in `libs/ayokoding-data/data/ai-benchmark.json` (provenance in
 // `libs/ayokoding-data/provenance.md`). This module keeps the original path and named exports;
@@ -14,7 +14,7 @@ export type BenchmarkSpec = {
   id: BenchmarkId;
   /** Proper-noun display name (not translated). */
   name: string;
-  /** The only version whose figures enter the composite. */
+  /** The only version whose figures are scored. */
   version: string;
   /** Relative weight in the composite. */
   weight: number;
@@ -27,8 +27,9 @@ export type BenchmarkSpec = {
 const config = benchmarkJson.benchmarks;
 
 /**
- * The composite benchmarks, in column order. Equal weights: each is a different kind of coding
- * work (long-horizon repository changes, terminal tasks, and codebase question answering).
+ * The scored benchmarks, in column order: different kinds of coding work (long-horizon repository
+ * changes, terminal tasks, codebase question answering, and frontier coding tasks). Weights are
+ * carried for the shared config's other consumers; the page computes no weighted score.
  */
 export const BENCHMARK_SPECS: readonly BenchmarkSpec[] = config.specs as BenchmarkSpec[];
 
@@ -37,20 +38,32 @@ export function benchmarkSpec(id: BenchmarkId): BenchmarkSpec {
   return BENCHMARK_SPECS.find((s) => s.id === id) as BenchmarkSpec;
 }
 
-/** A model needs independent scores on at least this many composite benchmarks to be tiered. */
+/** A model needs independent scores on at least this many scored benchmarks to earn a consensus tier. */
 export const MIN_SCORED_BENCHMARKS: number = config.minScoredBenchmarks;
 
-/** The composite index is a mean of percentages, so it never exceeds this. */
+/**
+ * Upper bound of the shared config's index scale. Kept for the config's other consumers; the
+ * page computes no index.
+ */
 export const COMPOSITE_INDEX_MAX: number = config.compositeIndexMax;
 
 /**
- * One previous-generation anchor per tier, highest tier first. A model belongs to the highest
- * tier whose anchor's composite index it matches or beats.
+ * One previous-generation anchor per tier, highest tier first, from the retired composite
+ * scoring. Still published for the shared config's other consumers and the roster invariant that
+ * every anchor is a previous-generation general-access model; the page no longer tiers by it.
  */
 export const TIER_ANCHORS: Readonly<Record<AnchoredTier, string>> = config.tierAnchors as Record<AnchoredTier, string>;
 
 /** Anchored tiers in the order they are tested. */
 export const ANCHORED_TIERS: readonly AnchoredTier[] = config.anchoredTiers as AnchoredTier[];
+
+/**
+ * One previous-generation anchor per tier on each benchmark, highest tier first. A model belongs
+ * to the highest per-benchmark tier whose anchor's raw score on that benchmark it matches or
+ * beats.
+ */
+export const BENCHMARK_TIER_ANCHORS: Readonly<Record<BenchmarkId, Readonly<Record<AnchoredTier, string>>>> =
+  config.benchmarkTierAnchors as Record<BenchmarkId, Record<AnchoredTier, string>>;
 
 /** Every tier in display order. */
 export const TIERS: readonly Tier[] = config.tiers as Tier[];
@@ -81,8 +94,9 @@ export const ROSTER_CATALOG_HARNESSES: readonly HarnessId[] = config.rosterCatal
 export const NEAREST_OPTION_COUNT: number = config.nearestOptionCount;
 
 /**
- * Models the methodology's worked example uses: one model's index arithmetic, and one model compared
- * with a tier anchor.
+ * Models the retired worked example used: one model's index arithmetic, and one model compared
+ * with a tier anchor. Kept for the shared config's other consumers; the methodology no longer
+ * shows a worked example.
  */
 export const METHOD_EXAMPLE = config.methodExample as {
   indexModel: string;

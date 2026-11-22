@@ -26,11 +26,9 @@ when_to_use: Use when writing or reviewing an app or infra README and checking i
 
 ## Standard 3 — Line-Count Caps
 
-| Location                               | Hard cap  |
-| -------------------------------------- | --------- |
-| `apps/<app>/README.md`                 | 120 lines |
-| `infra/dev/<app>/README.md`            | 60 lines  |
-| `infra/k8s/<app>/staging/README.md`    | 30 lines  |
-| `infra/k8s/<app>/production/README.md` | 30 lines  |
+| Location                    | Hard cap  |
+| --------------------------- | --------- |
+| `apps/<app>/README.md`      | 120 lines |
+| `infra/dev/<app>/README.md` | 60 lines  |
 
 These caps are enforced by `rules-checker`. Exceeding a cap is a HIGH finding. The cap exists because a README that exceeds it almost certainly contains Category B content.

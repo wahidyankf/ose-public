@@ -3,7 +3,7 @@
 
 import { cleanup, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
-import { scoreModels } from "@/features/ai-benchmark/core/tiers";
+import { tableRows } from "@/features/ai-benchmark/core/tiers";
 import { PriceText } from "@/features/ai-benchmark/shell/model-bits";
 import { ModelTable } from "@/features/ai-benchmark/shell/model-table";
 import type { Locale } from "@/features/i18n/core/config";
@@ -52,7 +52,7 @@ describe("PriceText", () => {
 describe("ModelTable price source", () => {
   function rowFor(id: string, locale: Locale) {
     const ds = dataset([vendorPriced, opencodePriced, commandCodePriced]);
-    render(<ModelTable rows={scoreModels(ds)} locale={locale} />);
+    render(<ModelTable rows={tableRows(ds, undefined)} locale={locale} />);
     return screen.getAllByTestId("ai-bench-table-row").find((r) => r.dataset.modelId === id)!;
   }
 

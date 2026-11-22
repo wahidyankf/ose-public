@@ -11,7 +11,7 @@ when_to_use: Use as a walkthrough when creating a worktree and running its toolc
    rtk git worktree add worktrees/my-feature-branch my-feature-branch
    ```
 
-   This repo overrides the upstream coding-agent default worktree path — worktrees land at repo-root `worktrees/<name>/`, not under the platform binding directory. See [worktree-path.md](../../../conventions/structure/worktree-path.md) for the convention and the `WorktreeCreate` hook that enforces it.
+   This repo overrides the upstream coding-agent default worktree path — worktrees land at repo-root `worktrees/<name>/`, not under the platform binding directory. See [worktree-path.md](../../../conventions/structure/worktree-path.md) for the convention and the `WorktreeCreate` hook that routes it, deferring to a repository's own project hook.
 
 2. Enter the root directory of the worktree just created.
 

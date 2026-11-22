@@ -24,6 +24,7 @@ function vectors(name: string): unknown {
 
 type Model = {
   id: string;
+  vendor: string;
   access: string;
   harnesses: string[];
   figures: { benchmark: string; version: string; operator: string; value: number; source: string }[];
@@ -51,6 +52,7 @@ const benchmark = () =>
     benchmarks: {
       specs: { id: string; version: string; operatorOrder: string[] }[];
       tierAnchors: Record<string, string>;
+      benchmarkTierAnchors: Record<string, Record<string, string>>;
       defaultSubstituteHarness: string;
       substituteHarnesses: string[];
       rosterCatalogHarnesses: string[];
@@ -160,6 +162,35 @@ describe("ai-benchmark.json", () => {
       expect(anchor, `missing anchor ${anchorId}`).toBeDefined();
       expect(anchor?.access).toBe("general");
       expect(anchor?.figures.length).toBeGreaterThanOrEqual(2);
+    }
+  });
+
+  it("covers every benchmark with descending per-benchmark anchor floors", () => {
+    const data = benchmark();
+    const specById = new Map(data.benchmarks.specs.map((s) => [s.id, s]));
+    expect(new Set(Object.keys(data.benchmarks.benchmarkTierAnchors))).toEqual(
+      new Set(data.benchmarks.specs.map((s) => s.id)),
+    );
+    for (const [benchmark, tiers] of Object.entries(data.benchmarks.benchmarkTierAnchors)) {
+      const spec = specById.get(benchmark);
+      expect(Object.keys(tiers).sort()).toEqual(["execution", "planning", "ultra"]);
+      expect(new Set(Object.values(tiers)).size, `${benchmark}: anchors must differ`).toBe(3);
+      const floors: number[] = [];
+      for (const tier of ["ultra", "planning", "execution"]) {
+        const anchor = data.dataset.models.find((m) => m.id === tiers[tier]);
+        expect(anchor, `${benchmark}/${tier}: missing anchor ${tiers[tier]}`).toBeDefined();
+        expect(anchor?.access, `${benchmark}/${tier}`).toBe("general");
+        const figure = anchor?.figures.find((f) => f.benchmark === benchmark);
+        expect(figure, `${benchmark}/${tier}: anchor needs a scored figure there`).toBeDefined();
+        expect(figure?.version, `${benchmark}/${tier}`).toBe(spec?.version);
+        const newer = data.dataset.models.filter(
+          (m) => m.vendor === anchor?.vendor && (m.releaseDate ?? "") > (anchor?.releaseDate ?? "9999"),
+        );
+        expect(newer.length, `${benchmark}/${tier}: anchor needs a newer same-vendor model`).toBeGreaterThan(0);
+        floors.push(figure!.value);
+      }
+      expect(floors[0], `${benchmark}: ultra floor above planning`).toBeGreaterThan(floors[1]!);
+      expect(floors[1], `${benchmark}: planning floor above execution`).toBeGreaterThan(floors[2]!);
     }
   });
 

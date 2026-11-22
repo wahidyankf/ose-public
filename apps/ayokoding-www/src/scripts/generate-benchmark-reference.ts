@@ -24,7 +24,7 @@ import { dataset } from "../features/ai-benchmark/core/data/models";
 import type { BenchmarkId, Dataset, Model, OperatorId } from "../features/ai-benchmark/core/data/types";
 import { blendedPrice } from "../features/ai-benchmark/core/price";
 import { scoredFigure } from "../features/ai-benchmark/core/score";
-import { scoreModels, type ScoredModel } from "../features/ai-benchmark/core/tiers";
+import { scoreModels, type ConsensusModel } from "../features/ai-benchmark/core/tiers";
 
 /** A generated block's inner content, keyed by marker name. */
 export type GeneratedTables = Record<string, string>;
@@ -51,8 +51,8 @@ function money(n: number | undefined): string {
   return n === undefined ? "—" : `$${Number(n.toFixed(3)).toString()}`;
 }
 
-function indexCell(s: ScoredModel): string {
-  return s.index === undefined ? "—" : s.index.toFixed(2);
+function consensusCell(s: ConsensusModel): string {
+  return s.tier === "insufficient" ? "—" : `${s.agreeing}/${s.considered}`;
 }
 
 /**
@@ -77,7 +77,7 @@ function block(caption: string, table: string): string {
 
 const BENCHMARK_HEADERS = BENCHMARK_SPECS.map((b) => `${b.name} ${b.version}`);
 
-function renderRoster(ds: Dataset, scored: ScoredModel[]): string {
+function renderRoster(ds: Dataset, scored: ConsensusModel[]): string {
   const rows = scored
     .filter((s) => s.model.harnesses.includes("opencode-go"))
     .map((s) => [
@@ -85,13 +85,13 @@ function renderRoster(ds: Dataset, scored: ScoredModel[]): string {
       s.model.name,
       s.model.vendor,
       s.tier,
-      indexCell(s),
+      consensusCell(s),
       s.model.harnesses.filter((h) => h !== "opencode-go").join(", ") || "—",
     ]);
   const caption =
     `> Last updated ${ds.lastUpdated} — ${rows.length} OpenCode Go models with an identified vendor. ` +
     "Derived from `apps/ayokoding-www/src/features/ai-benchmark/core/data/models.ts`.";
-  return block(caption, formatTable(["Model ID", "Name", "Vendor", "Tier", "Index", "Other harnesses"], rows));
+  return block(caption, formatTable(["Model ID", "Name", "Vendor", "Tier", "Consensus", "Other harnesses"], rows));
 }
 
 function renderPricing(ds: Dataset): string {
@@ -112,7 +112,7 @@ function renderPricing(ds: Dataset): string {
   return block(caption, formatTable(["Model", "Vendor", "Input", "Output", "Blended", "Listed by", "Note"], rows));
 }
 
-function renderFrontier(ds: Dataset, scored: ScoredModel[]): string {
+function renderFrontier(ds: Dataset, scored: ConsensusModel[]): string {
   const rows = scored
     .filter((s) => FRONTIER_VENDORS.includes(s.model.vendor))
     .map((s) => [
@@ -120,7 +120,7 @@ function renderFrontier(ds: Dataset, scored: ScoredModel[]): string {
       s.model.name,
       s.model.access,
       ...BENCHMARK_SPECS.map((b) => figureCell(s.model, b.id)),
-      indexCell(s),
+      consensusCell(s),
       s.tier,
       money(s.model.price?.input),
       money(s.model.price?.output),
@@ -128,24 +128,25 @@ function renderFrontier(ds: Dataset, scored: ScoredModel[]): string {
   const caption = `> Anthropic, OpenAI, Google, and xAI models, last updated ${ds.lastUpdated}. Independent results only.`;
   return block(
     caption,
-    formatTable(["Vendor", "Model", "Access", ...BENCHMARK_HEADERS, "Index", "Tier", "Input", "Output"], rows),
+    formatTable(["Vendor", "Model", "Access", ...BENCHMARK_HEADERS, "Consensus", "Tier", "Input", "Output"], rows),
   );
 }
 
-function renderCapabilitySummary(ds: Dataset, scored: ScoredModel[]): string {
+function renderCapabilitySummary(ds: Dataset, scored: ConsensusModel[]): string {
   const rows = scored.map((s) => [
     s.model.name,
     s.model.vendor,
     ...BENCHMARK_SPECS.map((b) => figureCell(s.model, b.id)),
-    indexCell(s),
+    consensusCell(s),
     s.tier,
     s.model.costPerTask === undefined ? "—" : `$${s.model.costPerTask.usd.toFixed(2)}`,
   ]);
   const caption =
-    `> Independent composite-benchmark results for every model, last updated ${ds.lastUpdated}. Index = ` +
-    "equal-weight mean of the scored benchmarks (at least two); tier = highest tier whose anchor's " +
-    "index the model's index matches or beats. Cost per task from Artificial Analysis.";
-  return block(caption, formatTable(["Model", "Vendor", ...BENCHMARK_HEADERS, "Index", "Tier", "Cost/task"], rows));
+    `> Independent benchmark results for every model, last updated ${ds.lastUpdated}. Consensus = ` +
+    "benchmarks holding the consensus tier out of the benchmarks with scores (at least two); tier = " +
+    "the tier the model holds on the most benchmarks, ties going to the highest tied tier. " +
+    "No average or composite score is computed. Cost per task from Artificial Analysis.";
+  return block(caption, formatTable(["Model", "Vendor", ...BENCHMARK_HEADERS, "Consensus", "Tier", "Cost/task"], rows));
 }
 
 /**

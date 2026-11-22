@@ -128,10 +128,10 @@ describe("renderTables — pure derivation from the dataset", () => {
     for (const block of Object.values(renderTables(dataset))) expect(block).toContain(dataset.lastUpdated);
   });
 
-  it("renders the ultra anchor (Claude Opus 5) with its composite index and tier", () => {
+  it("renders the ultra anchor (Claude Opus 5) with its consensus count and tier", () => {
     const { "capability-summary": summary, frontier } = renderTables(dataset);
     expect(summary).toMatch(
-      /\| Claude Opus 5 +\| Anthropic +\| 62\.54% \(AA\) +\| 54\.55% \(AA\) +\| 62\.10% \(AA\) +\| 59\.73 +\| ultra +\| \$10\.79 +\|/,
+      /\| Claude Opus 5 +\| Anthropic +\| 73\.65% \(Datacurve\) +\| 54\.55% \(AA\) +\| 63\.17% \(Scale\) +\| — +\| 3\/3 +\| ultra +\| \$10\.79 +\|/,
     );
     expect(frontier).toContain("Claude Opus 5");
   });
@@ -139,20 +139,20 @@ describe("renderTables — pure derivation from the dataset", () => {
   it("names the operator of every non-AA figure and dashes a missing one", () => {
     const { "capability-summary": summary } = renderTables(dataset);
     expect(summary).toMatch(
-      /\| GPT-5\.6 Terra +\| OpenAI +\| 69\.62% \(Datacurve\) +\| 35\.35% \(AA\) +\| — +\| 52\.48 +\| execution +\| — +\|/,
+      /\| GPT-5\.6 Terra +\| OpenAI +\| 69\.62% \(Datacurve\) +\| 35\.35% \(AA\) +\| — +\| — +\| 2\/2 +\| execution +\| — +\|/,
     );
   });
 
   it("lists only OpenCode Go models in the roster block", () => {
     const { roster } = renderTables(dataset);
-    expect(roster).toMatch(/\| glm-5\.3 +\| GLM-5\.3 +\| Z\.ai +\| execution +\|/);
+    expect(roster).toMatch(/\| glm-5\.3 +\| GLM-5\.3 +\| Z\.ai +\| planning +\| 2\/4 +\|/);
     expect(roster).not.toContain("claude-opus-5");
   });
 
   it("prices every model with its blended rate and a dash when unpublished", () => {
     const { pricing } = renderTables(dataset);
     expect(pricing).toMatch(/\| Claude Opus 5\.5 +\| Anthropic +\| \$4 +\| \$20 +\| \$8 +\| vendor +\|/);
-    expect(pricing).toMatch(/\| Gemini 4 Argon +\| Google +\| — +\| — +\| — +\| — +\|/);
+    expect(pricing).toMatch(/\| Gemini 4 Argon +\| Google +\| \$2 +\| \$10 +\| \$4 +\| vendor +\|/);
   });
 
   it("is deterministic: two calls over the same dataset are byte-identical", () => {

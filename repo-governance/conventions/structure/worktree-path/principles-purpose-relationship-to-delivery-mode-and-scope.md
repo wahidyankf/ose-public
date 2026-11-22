@@ -11,11 +11,11 @@ This convention implements the following core principles:
 
 - **[Explicit Over Implicit](../../../principles/software-engineering/explicit-over-implicit.md)**: Worktree paths are explicitly routed via hook rather than relying on defaults. The routing behaviour is documented and reproducible.
 
-- **[Reproducibility First](../../../principles/software-engineering/reproducibility.md)**: All worktrees are created in a predictable location (`worktrees/<name>/`) with consistent naming, ensuring reliable git operations and CI/CD integration.
+- **[Reproducibility First](../../../principles/software-engineering/reproducibility.md)**: Worktrees the hook creates land in a predictable location (`worktrees/<name>/`) with consistent naming, ensuring reliable git operations and CI/CD integration; a repository with its own project hook keeps that hook's creation, so the global hook defers rather than racing it.
 
 ## Purpose
 
-Standardize worktree creation so that `claude --worktree <name>` routes to `worktrees/<name>/` in the repository root (not the default `.claude/worktrees/`). This keeps worktrees visible at the repo root level while gitignoring both the conventional and custom paths.
+Standardize worktree creation so that `claude --worktree <name>` routes to `worktrees/<name>/` in the repository root (not the default `.claude/worktrees/`) in every repository without its own project hook. This keeps worktrees visible at the repo root level while gitignoring both the conventional and custom paths.
 
 ## Relationship to Delivery Mode
 

@@ -10,7 +10,7 @@ This convention establishes the worktree directory structure and routing convent
 ## In This Convention
 
 - [Principles, Purpose, Relationship to Delivery Mode, and Scope](./worktree-path/principles-purpose-relationship-to-delivery-mode-and-scope.md) — The principles this convention implements, why it exists, how it relates to the Delivery Mode concept...
-- [Standards and Examples](./worktree-path/standards-and-examples.md) — required directory structure, hook routing mechanism, naming/gitignore requirements, and PASS/FAIL examples
+- [Standards and Examples](./worktree-path/standards-and-examples.md) — required directory structure, hook routing and deferral to a project hook, naming/gitignore requirements, and PASS/FAIL examples
 - [Cleanup, Multiple Worktrees, Tools, and References](./worktree-path/worktree-cleanup-multiple-worktrees-tools-and-references.md) — removal procedure, AI/HUMAN tagging rule, and related documentation
 
 ## Platform Binding Compatibility and Industry Convention
@@ -21,7 +21,7 @@ This convention establishes the worktree directory structure and routing convent
 The WorktreeCreate hook is registered in ~/.claude/settings.json. The primary coding agent supports this hook event natively (see https://code.claude.com/docs/en/hooks for the field schema and transport contract); other coding agent platforms that support a `WorktreeCreate` hook with the same JSON-on-stdin contract reuse the same shell script without modification.
 ```
 
-The hook script itself is platform-agnostic bash with `jq` for JSON parsing (`jq` is part of the doctor minimal toolchain per AGENTS.md), ensuring compatibility across platforms.
+The hook script itself is platform-agnostic bash with `jq` for JSON parsing (`jq` is part of the doctor minimal toolchain per AGENTS.md), ensuring compatibility across platforms. Its deferral check reads only the primary platform's `<repo-root>/.claude/settings.json`: a project hook registered in another platform's settings file, or in `.claude/settings.local.json`, is not detected.
 
 ### Industry Convention vs. Chosen Approach
 

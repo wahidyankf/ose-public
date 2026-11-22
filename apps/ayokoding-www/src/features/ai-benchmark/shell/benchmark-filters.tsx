@@ -3,8 +3,8 @@
 
 import type { Locale } from "@/features/i18n/core/config";
 import { t } from "@/features/i18n/core/translations";
-import { HARNESS_DISPLAY_NAMES, TIERS } from "../core/data/benchmarks";
-import { HARNESS_IDS, isKnownHarness, isKnownTier, type FilterState } from "../core/filter";
+import { BENCHMARK_SPECS, HARNESS_DISPLAY_NAMES, TIERS } from "../core/data/benchmarks";
+import { HARNESS_IDS, isKnownBenchmark, isKnownHarness, isKnownTier, type FilterState } from "../core/filter";
 import { tf } from "./format";
 import { SelectField } from "./select-field";
 import { tierLabel } from "./tier-style";
@@ -18,13 +18,13 @@ export type BenchmarkFiltersProps = {
 };
 
 export function BenchmarkFilters({ state, shownCount, totalCount, locale, onChange }: BenchmarkFiltersProps) {
-  const active = state.harness !== undefined || state.tier !== undefined;
+  const active = state.harness !== undefined || state.tier !== undefined || state.benchmark !== undefined;
   return (
     <section aria-labelledby="ai-bench-filters-heading" data-testid="ai-bench-filters" className="space-y-3">
       <h2 id="ai-bench-filters-heading" className="sr-only">
         {t(locale, "aiBenchFilterHeading")}
       </h2>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_auto] lg:items-end">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_auto] lg:items-end">
         <SelectField
           id="ai-bench-filter-harness"
           label={t(locale, "aiBenchFilterHarness")}
@@ -41,12 +41,20 @@ export function BenchmarkFilters({ state, shownCount, totalCount, locale, onChan
           options={TIERS.map((tier) => ({ value: tier, label: tierLabel(tier, locale) }))}
           onChange={(v) => onChange({ tier: isKnownTier(v) ? v : undefined })}
         />
+        <SelectField
+          id="ai-bench-filter-benchmark"
+          label={t(locale, "aiBenchScoreBasisLabel")}
+          value={state.benchmark ?? ""}
+          emptyLabel={t(locale, "aiBenchScoreBasisConsensus")}
+          options={BENCHMARK_SPECS.map((b) => ({ value: b.id, label: b.name }))}
+          onChange={(v) => onChange({ benchmark: isKnownBenchmark(v) ? v : undefined })}
+        />
         <button
           type="button"
           data-testid="ai-bench-filter-reset"
           disabled={!active}
           onClick={() => {
-            onChange({ harness: undefined, tier: undefined });
+            onChange({ harness: undefined, tier: undefined, benchmark: undefined });
             // Reset disables itself once nothing is filtered; hand focus to the first filter so a
             // keyboard user is not dropped back to the top of the document.
             document.getElementById("ai-bench-filter-harness")?.focus();

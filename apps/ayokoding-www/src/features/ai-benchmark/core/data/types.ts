@@ -4,8 +4,8 @@
 // read these types. Only independently run results are stored — vendor-reported figures are never
 // recorded, so nothing here needs an "origin" flag to keep them out of the score.
 
-/** The three benchmarks that make up the composite index. Versions are pinned in `benchmarks.ts`. */
-export type BenchmarkId = "deep-swe" | "terminal-bench" | "swe-atlas-qna";
+/** The benchmarks whose pinned-version figures are scored. Versions are pinned in `benchmarks.ts`. */
+export type BenchmarkId = "deep-swe" | "terminal-bench" | "swe-atlas-qna" | "frontiercode-aa";
 
 /** The independent operators whose published runs supply the figures. */
 export type OperatorId = "artificial-analysis" | "datacurve" | "terminal-bench" | "vals" | "scale";
@@ -29,8 +29,18 @@ export type HarnessId =
 /** The three tiers defined by an anchor model, highest first. */
 export type AnchoredTier = "ultra" | "planning" | "execution";
 
-/** Every tier a model can land in: the anchored tiers, `fast` below them, and `insufficient`. */
-export type Tier = AnchoredTier | "fast" | "insufficient";
+/**
+ * Every tier a model can land in: the anchored tiers, `fast` below them, `insufficient` when
+ * fewer than two benchmarks rate it, and `no-consensus` when at least two do but fewer than
+ * half agree on the modal tier.
+ */
+export type Tier = AnchoredTier | "fast" | "no-consensus" | "insufficient";
+
+/**
+ * Every tier a model can land in on one benchmark: the anchored tiers, `fast` below them, and
+ * `unranked` when the model has no scored figure there.
+ */
+export type BenchmarkTier = AnchoredTier | "fast" | "unranked";
 
 /** `limited` = invite-only or staged rollout; such a model is shown and labelled, never an anchor. */
 export type Access = "general" | "limited";
@@ -38,7 +48,7 @@ export type Access = "general" | "limited";
 /** One independently run benchmark result. */
 export type Figure = {
   benchmark: BenchmarkId;
-  /** The benchmark version the operator ran; only the pinned version enters the composite. */
+  /** The benchmark version the operator ran; only the pinned version is scored. */
   version: string;
   /** Percentage of tasks solved, 0–100. */
   value: number;

@@ -7,7 +7,18 @@ was re-sourced during the JSON migration.
 
 ## AI benchmark — `data/ai-benchmark.json`
 
-- **Last checked as a whole:** `2026-10-14` (`dataset.lastUpdated`).
+- **Last checked as a whole:** `2026-11-15` (`dataset.lastUpdated`). The
+  November figures refresh re-read every operator board: AA Coding Agent Index
+  v2.1 (DeepSWE dropped, Terminal-Bench 4.1, re-graded SWE-Atlas-QnA-AA),
+  Datacurve DeepSWE v1.1 (unchanged), AA Terminal-Bench 4.0 eval (top-3),
+  official Terminal-Bench board (moved to 4.1, unusable for 4.0), Vals AI
+  Terminal-Bench 4.0 (updated 2026-11-11, top-3 named), Scale SWE-Atlas QnA
+  board (unchanged figures). Version pins kept (DeepSWE 1.1, Terminal-Bench
+  4.0, SWE-Atlas QnA); figures follow the operator order against current
+  publications, unchanged historical figures kept where no current pinned
+  figure exists. Added the FrontierCode-AA 2.0 benchmark (fourth composite
+  parameter, equal weight) from AA's per-model runs. No roster rows added or
+  removed; no model is older than two years.
 - **Roster rule.** Every model from the four frontier vendors (Anthropic,
   OpenAI, Google, xAI); every model on the catalog harnesses (OpenCode Go and
   Command Code) with an identified vendor; each listed harness's own in-house
@@ -25,15 +36,15 @@ was re-sourced during the JSON migration.
   vendor publishes no reachable price page, the OpenCode-listed rate for a
   model an OpenCode harness sells (`listedBy: "opencode"`), else the Command
   Code-listed rate (`listedBy: "commandcode"`).
-- **Operator checks.** All five operator pages last read `2026-10-14`.
-  Source-stated updates: Datacurve `2026-09-22`, Terminal-Bench board
-  `2026-09-21`, Vals AI `2026-10-13`. All pricing pages last read
-  `2026-10-08`.
-- **Scoring configuration.** Three composite benchmarks (DeepSWE 1.1,
-  Terminal-Bench 4.0, SWE-Atlas QnA), equal weights, pinned operator order,
-  minimum coverage of 2, anchored tiers (ultra → `claude-opus-5`, planning →
-  `gpt-5.6-sol`, execution → `claude-sonnet-5`), blend ratio 3:1
-  input:output tokens.
+- **Operator checks.** All five operator pages last read `2026-11-15`.
+  Source-stated updates: Datacurve `2026-09-22`, Terminal-Bench official board
+  now 4.1 (`2026-11`), Vals AI 4.0 board `2026-11-11`. Pricing pages last read
+  `2026-11-14`.
+- **Scoring configuration.** Four composite benchmarks (DeepSWE 1.1,
+  Terminal-Bench 4.0, SWE-Atlas QnA, FrontierCode-AA 2.0), equal weights,
+  pinned operator order, minimum coverage of 2, anchored tiers (ultra →
+  `claude-opus-5`, planning → `gpt-5.6-sol`, execution → `claude-sonnet-5`),
+  blend ratio 3:1 input:output tokens.
 - **Re-sourcing:** `apps/ayokoding-www/docs/ai-benchmark/data-sourcing-prompt.md`.
 
 ## Cost of living — `data/cost-of-living.json`

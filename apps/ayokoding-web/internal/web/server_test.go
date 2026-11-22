@@ -707,6 +707,28 @@ func TestPathCategoryWithPaths(t *testing.T) {
 	}
 }
 
+func TestPathCategoryFallsBackToIdPrefix(t *testing.T) {
+	deps := fixtureDeps()
+	deps.Paths = coursepaths.NewFakeStore(
+		[]coursepaths.LearningPath{
+			{ID: "tracks/go", Title: "Go Track", Category: "deep"},
+		},
+		nil,
+		nil,
+	)
+	recorder := request(t, web.NewServer(web.Config{Port: 3102}, deps).Handler(), http.MethodGet, "/en/learn/paths/tracks")
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("prefix category status = %d, want 200", recorder.Code)
+	}
+	body := recorder.Body.String()
+	if !strings.Contains(body, "Go Track") {
+		t.Fatal("prefix category page must list the nested path")
+	}
+	if strings.Contains(body, "data-empty-state") {
+		t.Fatal("prefix category with paths must not render the empty state")
+	}
+}
+
 func TestSearchFragment(t *testing.T) {
 	recorder := request(t, web.NewServer(web.Config{Port: 3102}, fixtureDeps()).Handler(), http.MethodGet, "/en/search?q=hello")
 	if recorder.Code != http.StatusOK {

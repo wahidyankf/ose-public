@@ -4,6 +4,7 @@ import (
 	"io/fs"
 	"testing"
 	"testing/fstest"
+	"time"
 
 	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/coursepaths"
 )
@@ -35,6 +36,31 @@ type unreadableFS struct{}
 
 func (unreadableFS) Open(string) (fs.File, error) { return nil, fs.ErrPermission }
 
+// fileRootFS is a manifest root that is a regular file, not a directory.
+type fileRootFS struct{}
+
+func (fileRootFS) Open(name string) (fs.File, error) {
+	if name != "." {
+		return nil, fs.ErrNotExist
+	}
+	return fileRootFile{}, nil
+}
+
+type fileRootFile struct{}
+
+func (fileRootFile) Stat() (fs.FileInfo, error) { return fileRootInfo{}, nil }
+func (fileRootFile) Read([]byte) (int, error)   { return 0, fs.ErrInvalid }
+func (fileRootFile) Close() error               { return nil }
+
+type fileRootInfo struct{}
+
+func (fileRootInfo) Name() string       { return "root" }
+func (fileRootInfo) Size() int64        { return 1 }
+func (fileRootInfo) Mode() fs.FileMode  { return 0 }
+func (fileRootInfo) ModTime() time.Time { return time.Time{} }
+func (fileRootInfo) IsDir() bool        { return false }
+func (fileRootInfo) Sys() any           { return nil }
+
 func manifestFile(body string) *fstest.MapFile {
 	return &fstest.MapFile{Data: []byte(body)}
 }
@@ -62,6 +88,12 @@ func fixtureManifestTree() fstest.MapFS {
 func TestCoursePathsLoadFSMissingRootFails(t *testing.T) {
 	if _, err := coursepaths.LoadFS(unreadableFS{}); err == nil {
 		t.Fatal("LoadFS with a missing root must fail")
+	}
+}
+
+func TestCoursePathsLoadFSRejectsFileRoot(t *testing.T) {
+	if _, err := coursepaths.LoadFS(fileRootFS{}); err == nil {
+		t.Fatal("LoadFS with a file root must fail")
 	}
 }
 

@@ -275,4 +275,44 @@ describe("progress storage edges", () => {
     store.remove(PROGRESS_KEY);
     expect(store.read(PROGRESS_KEY)).toBeNull();
   });
+
+  it("toggles the theme without a name element", () => {
+    render(`<button data-theme-toggle></button>`);
+    const button = el<HTMLElement>("[data-theme-toggle]");
+    button.click();
+    expect(document.documentElement.dataset["theme"]).toBe("dark");
+    expect(button.getAttribute("aria-pressed")).toBe("true");
+  });
+
+  it("ignores completion triggers without a page", () => {
+    render(`<div><button data-progress-control="complete-trigger">Done</button></div>`);
+    expect(() => el<HTMLElement>("[data-progress-control='complete-trigger']").click()).not.toThrow();
+    expect(localStorage.getItem(PROGRESS_KEY)).toBeNull();
+  });
+
+  it("hides markers for lessons outside the record", () => {
+    seedRecord([]);
+    render(`<span data-lesson-marker data-course="go-basics">x</span>` + `<span data-lesson-marker>bare</span>`);
+    const badges = Array.from(document.querySelectorAll("[data-lesson-marker]"));
+    expect(badges).toHaveLength(2);
+    for (const badge of badges) expect(badge.getAttribute("hidden")).not.toBeNull();
+  });
+
+  it("renders course counts with defaults for missing pieces", () => {
+    seedRecord([]);
+    render(
+      `<section data-course-progress data-total="2"><p data-course-count></p></section>` +
+        `<section data-course-progress data-total="1"><span>no line</span></section>`,
+    );
+    expect(el("[data-course-count]").textContent).toBe("");
+    expect(document.querySelectorAll("[data-course-progress]")).toHaveLength(2);
+  });
+
+  it("copies an empty source when the button stands alone", async () => {
+    render(`<div><button data-copy>Copy</button></div>`);
+    el<HTMLElement>("[data-copy]").click();
+    await flush();
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith("");
+    expect(el("[data-copy]").textContent).toBe("Copied");
+  });
 });

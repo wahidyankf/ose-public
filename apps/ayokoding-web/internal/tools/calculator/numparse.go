@@ -6,6 +6,7 @@ package calculator
 // stricter or looser numeric parsing.
 
 import (
+	"errors"
 	"math"
 	"strconv"
 	"strings"
@@ -63,6 +64,17 @@ func tsParseFloat(s string) (float64, bool) {
 	}
 	value, err := strconv.ParseFloat(s[start:index], 64)
 	if err != nil {
+		// The scanner above admits only the decimal grammar, so a syntax
+		// error is unreachable; a range error means the old runtime saw an
+		// infinity (parseFloat("1e999") is Infinity), which stays engaged
+		// downstream instead of collapsing to zero.
+		var numErr *strconv.NumError
+		if errors.As(err, &numErr) && numErr.Err == strconv.ErrRange {
+			if negative {
+				return -value, true
+			}
+			return value, true
+		}
 		return 0, false
 	}
 	if negative {

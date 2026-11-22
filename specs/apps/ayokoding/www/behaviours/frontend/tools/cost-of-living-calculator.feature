@@ -90,25 +90,24 @@ Feature: Salary savings calculator
     And cities outside the selected scope are not shown
 
   # Behaviour: AYW-058
-  Scenario: Gross salary entered monthly shows the derived annual figure
+  Scenario Outline: Gross salary entered monthly shows the derived annual figure
     Given I am on the "Savings" tab
-    When I enter a gross monthly salary of "8000" USD
-    Then the annual gross is shown as "96000" USD
+    When I enter a gross monthly salary of "<monthly>" USD
+    Then the annual gross is shown as "<annual>" USD
     And the annual figure equals twelve times the monthly figure
 
+    Examples:
+      | monthly | annual |
+      | 8000    | 96000  |
+      | 8000.5  | 96,006 |
+
   # Behaviour: AYW-058
-  Scenario: Non-salary comp is shown as informational context only
+  Scenario: Non-salary and total compensation are shown as context only
     Given I am on the "Savings" tab with a gross salary entered
     When I read a city row
     Then a typical non-salary compensation (RSU/equity + bonus) figure is shown as a separate informational column
-    But it is not added into the net, the essential savings, or the after-lifestyle savings
-
-  # Behaviour: AYW-058
-  Scenario: Total compensation is shown for negotiation context
-    Given I am on the "Savings" tab with a gross salary entered
-    When I read a city row
-    Then a total compensation figure equal to the base annual gross plus the typical non-salary comp is shown as informational context
-    And the total compensation is not added into the net, the essential savings, or the after-lifestyle savings
+    And a total compensation figure equal to the base annual gross plus the typical non-salary comp is shown as informational context
+    But neither figure is added into the net, the essential savings, or the after-lifestyle savings
 
   # Behaviour: AYW-058
   Scenario: Sub-national tax lowers net only in federal countries
@@ -130,16 +129,21 @@ Feature: Salary savings calculator
     Then the savings-after-essentials amount and percentage are shown as negative
 
   # Behaviour: AYW-061
-  Scenario: Indonesian locale is fully translated
+  # Behaviour: AYW-059
+  Scenario: The calculator is fully translated into Indonesian
     Given I am on "/id/tools/cost-of-living-calculator"
     When the page finishes loading
     Then all labels, category names, tax wording, healthcare-scheme labels, relocation labels, and the disclaimer are in Indonesian
+    And the Country and City columns show Indonesian names where translations exist
+    And the City column of the minimum-role ladder shows Indonesian city and country names where translations exist
 
   # Behaviour: AYW-057
-  Scenario: No Israeli cities are listed
+  # Behaviour: AYW-059
+  Scenario: No Israeli city is listed in the dataset, any table, or role candidates
     Given I am on the calculator in either locale
     When the page finishes loading
     Then no Israeli city appears in the dataset or any table
+    And no Israeli city appears as a candidate city for any role
 
   # Behaviour: AYW-057
   Scenario: Data snapshot date is clearly shown
@@ -234,17 +238,12 @@ Feature: Salary savings calculator
     Then every (city, role) row is drawn only from Indonesian cities
 
   # Behaviour: AYW-059
-  Scenario: Non-salary comp does not determine the minimum-role ranking
+  Scenario: Min-role ranking follows essential savings, not non-salary comp or lifestyle
     Given I am on the "Minimum role" tab with a baseline set
-    When I compare candidate order with their essential savings and non-salary comp
+    When I compare candidate order with their essential savings, non-salary comp, and each city's lifestyle cost
     Then rows are ordered by essential savings regardless of non-salary comp
     And at least one adjacent pair would be ordered differently by non-salary comp
-
-  # Behaviour: AYW-059
-  Scenario: Lifestyle does not determine the minimum-role ranking
-    Given I am on the "Minimum role" tab with a baseline set
-    When I compare the ladder with each city's published lifestyle cost
-    Then candidate order and the minimum marker follow essential savings rather than after-lifestyle savings
+    And candidate order and the minimum marker follow essential savings rather than after-lifestyle savings
 
   # Behaviour: AYW-059
   Scenario: Minimum role from a reference city and role
@@ -287,11 +286,12 @@ Feature: Salary savings calculator
     And no money column shows only a single currency
 
   # Behaviour: AYW-059
-  Scenario: Household composition recalculates minimum-role candidates
+  Scenario: Household and area changes recalculate minimum-role candidates
     Given I am on the "Minimum role" tab and the "SWE I" role qualifies for the "single" household basis
     When I change the household to "married with 2 children" and the area to "center"
     Then "SWE I" is re-evaluated after childcare, schooling, and central housing raise modeled essentials
     And the marked minimum reflects the recalculated household
+    And the role candidates' savings and the marked minimum role update accordingly
 
   # Behaviour: AYW-059
   Scenario: No role can reach the bar
@@ -301,29 +301,11 @@ Feature: Salary savings calculator
     And no row is marked as the minimum
 
   # Behaviour: AYW-059
-  Scenario: Cost-basis controls affect role candidates
-    Given I am on the "Minimum role" tab with a baseline set
-    When I change the household type or area
-    Then the role candidates' savings and the marked minimum role update accordingly
-
-  # Behaviour: AYW-059
   Scenario: Low-confidence cells are flagged on the minimum-role tab
     Given I am on the "Minimum role" tab with a baseline set
     When the table renders
     Then cells with lower data confidence display a visual flag indicator
 
-  # Behaviour: AYW-059
-  Scenario: No Israeli city appears among role candidates
-    Given I am on the "Minimum role" tab with a baseline set
-    When the page finishes loading
-    Then no Israeli city appears as a candidate city for any role
-
-  # Behaviour: AYW-058
-  Scenario: Zero or empty salary shows guidance instead of derived savings
-    Given I am on the "Savings" tab
-    When the gross monthly salary field is empty or zero
-    Then empty-state guidance replaces the city comparison table
-    And no percentage values are rendered without net income
 
   # Behaviour: AYW-060
   Scenario: A rural area and a two-adult household lower and scale the housing estimate
@@ -358,7 +340,6 @@ Feature: Salary savings calculator
     And I set the baseline source to "savings target"
     When I enter a monthly savings target of zero USD
     Then the qualifying divider is shown
-    And the qualifying divider element is rendered in the role ladder
     And the minimum marker appears on the lowest-ranked role in the ladder
     And the qualifying (city, role) rows whose savings are at or above zero appear above the divider
 
@@ -414,14 +395,6 @@ Feature: Salary savings calculator
     And the same zero-salary guidance replaces the city rows
 
   # Behaviour: AYW-058
-  # SG-002 — Decimal salary computes annual gross correctly
-  Scenario: Decimal monthly salary produces correct annual gross
-    Given I am on the "Savings" tab
-    When I enter a gross monthly salary of "8000.5"
-    Then the annual gross is shown as "96,006 USD"
-    And the annual figure equals twelve times the monthly figure
-
-  # Behaviour: AYW-058
   # SG-003 — Very large salary does not produce NaN or Infinity
   Scenario: Very large salary produces valid savings figures
     Given I am on the "Savings" tab
@@ -461,15 +434,6 @@ Feature: Salary savings calculator
     And the Food preview amount is exactly 1.5 times the 1-adult amount
     And the Transport preview amount is unchanged from the 1-adult amount
 
-  # Behaviour: AYW-058
-  # USS-001 — Savings tab empty-state when no salary entered
-  Scenario: Savings tab shows empty-state guidance when no salary entered
-    Given a user has opened the Cost of Living Calculator
-    When they click the Savings tab
-    And the gross monthly salary field contains no value or zero
-    Then the savings comparison table is not shown
-    And an instructional message is shown
-    And no negative savings figures are visible
 
   # Behaviour: AYW-058
   Scenario: Savings tab shows results after salary is entered
@@ -550,28 +514,13 @@ Feature: Salary savings calculator
       | en     | Cost of Living Calculator |
       | id     | Kalkulator Biaya Hidup    |
 
-  # Behaviour: AYW-061
-  # SG-D-004 — id locale uses Indonesian city/country names in all table views
-  Scenario: Id locale cost-of-living table uses Indonesian translations
-    Given the user is on "/id/tools/cost-of-living-calculator" at desktop width
-    When the cost-of-living table renders
-    Then the Country column shows Indonesian country names where translations exist
-    And the City column shows Indonesian city names where translations exist
-
-  # Behaviour: AYW-059
-  Scenario: Id locale minimum-role table uses Indonesian city names
-    Given the user is on "/id/tools/cost-of-living-calculator" at desktop width
-    And the Minimum role tab is active
-    When the ladder table renders
-    Then the City column shows Indonesian city and country names where translations exist
-
   # Behaviour: AYW-058
   # prd.md acceptance criteria — design-system controls, locale URL redirect, mobile nav
-  Scenario: Gross-salary input uses the design-system Input primitive
+  Scenario: The gross-salary field has a visible border and a label
     Given the user is on the "Savings" tab
     When the tab renders
-    Then the gross-salary field renders with a visible border, design-token radius, and padding
-    And it is paired with a Label primitive
+    Then the gross-salary field renders with a visible border and padding
+    And the gross-salary field has a visible label
 
   # Behaviour: AYW-059
   Scenario: Baseline selector is a segmented control
@@ -838,10 +787,10 @@ Feature: Salary savings calculator
   # Behaviour: AYW-060
   # Regression — changing a filter must not scroll the page back to the top. The URL write is
   # in-page view state, not a page navigation, so it requests { scroll: false }.
-  Scenario: Changing a filter preserves the scroll position
+  Scenario: Changing a filter keeps the page at the same scroll position
     Given I am on the cost-of-living calculator
     When I change the region filter to "Europe"
-    Then the URL update requests no scroll so the page does not jump to the top
+    Then the page does not jump to the top
 
   # Behaviour: AYW-058
   # Regression — typing a salary must not write the URL on every keystroke (the stutter bug).
@@ -921,13 +870,13 @@ Feature: Salary savings calculator
 
   # Behaviour: AYW-060
   # Cluster 3 — foreigner public-school flag clear, styled, and present in both views.
-  Scenario: Foreigner-school flag is clear, styled, and present in both views
+  Scenario: A school cost charged at the private rate carries a clear flag in the table and the city detail
     Given a city whose country does not open public school to foreigners
     And school-age children >= 1 and school type "public"
     When the page is rendered
     Then the cost-of-living table school cell shows a clearly-worded private-fallback flag
     And the flag is visually distinct from ordinary caption text
-    And the city-detail school row renders the school-foreigner-flag-<cityId> testid
+    And the city-detail school row shows the same flag
 
   # Behaviour: AYW-060
   # Cluster 4 — jargon glosses, localized OOP abbr title, localized region names.
@@ -948,13 +897,18 @@ Feature: Salary savings calculator
     And the id-locale out-of-pocket title is not the literal English "out-of-pocket"
 
   # Behaviour: AYW-061
-  # Protected behaviour — region option display names are localized while the serialized
-  # region key stays English for URL stability.
-  Scenario: Region option display names are localized but the serialized key stays English
+  # Protected behaviour — region option display names are localized for the reader.
+  Scenario: Region names show in the reader's language
+    Given the calculator is open
+    When the region filter renders
+    Then the region display label differs between the en and id locales
+
+  # Behaviour: AYW-061
+  # Protected behaviour — the serialized region key stays English for URL stability.
+  Scenario: The URL value of a region stays its English key
     Given the calculator is open
     When the region filter renders
     Then each region option's serialized value is its English key
-    And the region display label differs between the en and id locales
 
   # Behaviour: AYW-057
   Scenario: Healthcare scheme badges use consistent casing
@@ -963,12 +917,19 @@ Feature: Salary savings calculator
     Then no healthcare-scheme badge is rendered in ALL CAPS while another is lower-case
 
   # Behaviour: AYW-058
-  # Cluster 5 / USS-001 + USS-002 — UX states.
-  Scenario: Savings tab guides the user to enter a salary
-    Given the Savings tab is activated with no salary entered
-    When the tab activation occurs
+  Scenario Outline: The Savings tab guides the user to enter a salary
+    Given the Savings tab is activated
+    When the gross monthly salary field is <salary>
     Then a prominent empty-state prompt is shown in the data area
+    And an instructional message is shown
+    And the savings comparison table is not shown
+    And no savings figures or percentages are rendered without net income
     And the gross salary input receives focus
+
+    Examples:
+      | salary |
+      | empty  |
+      | zero   |
 
   # Behaviour: AYW-059
   Scenario: Minimum-role tab does not render the single-city essentials preview
@@ -985,11 +946,11 @@ Feature: Salary savings calculator
 
   # Behaviour: AYW-060
   # Cluster 6 / SG-002 + SG-003 — design-system fidelity.
-  Scenario: All selects share the design-system chrome
+  Scenario: Every dropdown shows one custom arrow and not the browser's native arrow
     Given the calculator at 1280px
     When the page is rendered
-    Then every <select> has computed appearance "none" and a custom chevron affordance
-    And no <select> shows the browser's native dropdown arrow
+    Then every dropdown shows a custom chevron affordance
+    And no dropdown shows the browser's native arrow
 
   # Behaviour: AYW-059
   Scenario: Baseline-source control keeps the 44px rhythm at mobile

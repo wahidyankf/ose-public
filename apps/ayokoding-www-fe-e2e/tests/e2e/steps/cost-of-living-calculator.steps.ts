@@ -15,13 +15,12 @@ const { Given, When, Then } = createBdd();
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings tab converts gross salary to net before subtracting expenses
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings tab honours the active geographic filter
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Gross salary entered monthly shows the derived annual figure
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Non-salary comp is shown as informational context only
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Total compensation is shown for negotiation context
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Non-salary and total compensation are shown as context only
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Sub-national tax lowers net only in federal countries
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Net take-home is lower than the entered gross
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Essentials above net show a deficit
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Indonesian locale is fully translated
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: No Israeli cities are listed
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The calculator is fully translated into Indonesian
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: No Israeli city is listed in the dataset, any table, or role candidates
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Data snapshot date is clearly shown
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Adding adults and children changes the modeled expenses
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Pre-school children incur childcare, not schooling
@@ -34,19 +33,16 @@ const { Given, When, Then } = createBdd();
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Each role shows its per-country salary distribution
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: A city row shows its country alongside the city name
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Geographic filter scopes the candidate cities
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Non-salary comp does not determine the minimum-role ranking
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Lifestyle does not determine the minimum-role ranking
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Min-role ranking follows essential savings, not non-salary comp or lifestyle
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Minimum role from a reference city and role
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Minimum role from my own salary
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: My-salary baseline accepts the gross in local currency or USD
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings shown in USD, local, and display currency
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Every money column on the Minimum-role tab is dual currency
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Household composition recalculates minimum-role candidates
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Household and area changes recalculate minimum-role candidates
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: No role can reach the bar
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Cost-basis controls affect role candidates
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Low-confidence cells are flagged on the minimum-role tab
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: No Israeli city appears among role candidates
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Zero or empty salary shows guidance instead of derived savings
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The Savings tab guides the user to enter a salary
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: A rural area and a two-adult household lower and scale the housing estimate
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Selecting a city from the City filter opens its detail view
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Income exactly at the low-to-mid threshold uses the mid band
@@ -58,12 +54,10 @@ const { Given, When, Then } = createBdd();
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings gross salary is serialized in the URL
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Page title includes tool name on load
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Negative salary input is clamped to zero
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Decimal monthly salary produces correct annual gross
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Very large salary produces valid savings figures
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Selecting only a country updates the URL country parameter
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: School type toggle becomes enabled when school-age children is set to one or more
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Housing preview scales sub-linearly for 2-adult household
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings tab shows empty-state guidance when no salary entered
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings tab shows results after salary is entered
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Minimum Role tab shows empty-state when no target amount entered
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Area toggle shows selected state and confirms data update
@@ -73,9 +67,7 @@ const { Given, When, Then } = createBdd();
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Cost-of-living table shows local currency and USD for each expense cell
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings table shows local currency and USD for net and savings columns
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: H1 matches the tool's official name in each locale
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Id locale cost-of-living table uses Indonesian translations
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Id locale minimum-role table uses Indonesian city names
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Gross-salary input uses the design-system Input primitive
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The gross-salary field has a visible border and a label
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Baseline selector is a segmented control
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Tab labels are clean single phrases
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Each tab has a visible description associated with its trigger
@@ -108,7 +100,7 @@ const { Given, When, Then } = createBdd();
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Selecting a country without a region still narrows the city dropdown
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The area control is rendered as a radiogroup
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The baseline selector shows the savings-target sub-form when savings target is selected
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Changing a filter preserves the scroll position
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Changing a filter keeps the page at the same scroll position
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Typing the gross salary echoes instantly but commits to the URL only after typing settles
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Public schooling not open to foreigners is charged at the private rate
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Public schooling open to foreigners keeps the public cost
@@ -118,15 +110,15 @@ const { Given, When, Then } = createBdd();
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Area toggle exposes its pressed state
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Disabled school-type buttons announce the prerequisite
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Sortable savings column exposes aria-sort
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Foreigner-school flag is clear, styled, and present in both views
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: A school cost charged at the private rate carries a clear flag in the table and the city detail
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Jargon table headers carry an accessible explanation
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The OOP abbreviation title is localized per locale
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Region option display names are localized but the serialized key stays English
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Region names show in the reader's language
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The URL value of a region stays its English key
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Healthcare scheme badges use consistent casing
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings tab guides the user to enter a salary
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Minimum-role tab does not render the single-city essentials preview
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings salary input shows its currency at the field
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: All selects share the design-system chrome
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Every dropdown shows one custom arrow and not the browser's native arrow
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Baseline-source control keeps the 44px rhythm at mobile
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Salary-currency toggle bottom-aligns with its sibling input
 
@@ -864,18 +856,23 @@ Then(
   },
 );
 
-Then("it is not added into the net, the essential savings, or the after-lifestyle savings", async ({ page }) => {
-  for (const row of await page.getByTestId("savings-row").all()) {
-    const net = await numericAttribute(row.getByTestId("net-value"), "data-usd");
-    const essentials = await numericAttribute(row.getByTestId("essentials-value"), "data-usd");
-    const savings = await numericAttribute(row.getByTestId("savings-essential"), "data-usd");
-    const afterLifestyle = await numericAttribute(row.getByTestId("savings-lifestyle"), "data-usd");
-    const nonSalary = await numericAttribute(row.getByTestId("non-salary-value"), "data-usd");
-    expect(savings).toBeCloseTo(net - essentials, 8);
-    expect(savings).not.toBeCloseTo(net + nonSalary - essentials, 3);
-    expect(afterLifestyle).toBeLessThan(savings);
-  }
-});
+Then(
+  "neither figure is added into the net, the essential savings, or the after-lifestyle savings",
+  async ({ page }) => {
+    for (const row of await page.getByTestId("savings-row").all()) {
+      const net = await numericAttribute(row.getByTestId("net-value"), "data-usd");
+      const essentials = await numericAttribute(row.getByTestId("essentials-value"), "data-usd");
+      const savings = await numericAttribute(row.getByTestId("savings-essential"), "data-usd");
+      const afterLifestyle = await numericAttribute(row.getByTestId("savings-lifestyle"), "data-usd");
+      const nonSalary = await numericAttribute(row.getByTestId("non-salary-value"), "data-usd");
+      const totalComp = await numericAttribute(row.getByTestId("total-comp-value"), "data-usd");
+      expect(savings).toBeCloseTo(net - essentials, 8);
+      expect(savings).not.toBeCloseTo(net + nonSalary - essentials, 3);
+      expect(savings).not.toBeCloseTo(totalComp / 12 - essentials, 3);
+      expect(afterLifestyle).toBeLessThan(savings);
+    }
+  },
+);
 
 // ── Total comp informational ──────────────────────────────────────────────────
 
@@ -889,22 +886,6 @@ Then(
       const totalComp = await numericAttribute(row.getByTestId("total-comp-value"), "data-usd");
       expect(totalComp).toBeCloseTo(annualGross + nonSalary, 8);
       await expect(row.getByTestId("total-comp-value")).toContainText(/\$[\d,.-]+/);
-    }
-  },
-);
-
-Then(
-  "the total compensation is not added into the net, the essential savings, or the after-lifestyle savings",
-  async ({ page }) => {
-    for (const row of await page.getByTestId("savings-row").all()) {
-      const net = await numericAttribute(row.getByTestId("net-value"), "data-usd");
-      const essentials = await numericAttribute(row.getByTestId("essentials-value"), "data-usd");
-      const savings = await numericAttribute(row.getByTestId("savings-essential"), "data-usd");
-      const afterLifestyle = await numericAttribute(row.getByTestId("savings-lifestyle"), "data-usd");
-      const totalComp = await numericAttribute(row.getByTestId("total-comp-value"), "data-usd");
-      expect(savings).toBeCloseTo(net - essentials, 8);
-      expect(savings).not.toBeCloseTo(totalComp / 12 - essentials, 3);
-      expect(afterLifestyle).toBeLessThan(savings);
     }
   },
 );
@@ -1353,7 +1334,7 @@ Then("the row's essential savings is computed from the median salary", async ({ 
 
 // ── Non-salary comp does not affect ranking ───────────────────────────────────
 
-When("I compare candidate order with their essential savings and non-salary comp", async ({ page }) => {
+async function collectNonSalaryRanking(page: Page): Promise<void> {
   const rows = candidateRows(page);
   await rows.first().waitFor({ state: "visible" });
   const comparison: Array<{ savings: number; nonSalary: number }> = [];
@@ -1364,7 +1345,7 @@ When("I compare candidate order with their essential savings and non-salary comp
     });
   }
   evidenceFor(page).nonSalaryRanking = comparison;
-});
+}
 
 Then("rows are ordered by essential savings regardless of non-salary comp", async ({ page }) => {
   const savings = evidenceFor(page).nonSalaryRanking!.map(({ savings }) => savings);
@@ -1383,7 +1364,7 @@ Then("at least one adjacent pair would be ordered differently by non-salary comp
 
 // ── Lifestyle does not affect ranking ─────────────────────────────────────────
 
-When("I compare the ladder with each city's published lifestyle cost", async ({ page }) => {
+async function collectLifestyleRanking(page: Page): Promise<void> {
   const rows = candidateRows(page);
   await rows.first().waitFor({ state: "visible" });
   const baseline = await numericAttribute(page.getByTestId("min-role-table"), "data-baseline-usd");
@@ -1461,7 +1442,15 @@ When("I compare the ladder with each city's published lifestyle cost", async ({ 
     markerRanks,
     expectedMinimumRank,
   };
-});
+}
+
+When(
+  "I compare candidate order with their essential savings, non-salary comp, and each city's lifestyle cost",
+  async ({ page }) => {
+    await collectNonSalaryRanking(page);
+    await collectLifestyleRanking(page);
+  },
+);
 
 Then(
   "candidate order and the minimum marker follow essential savings rather than after-lifestyle savings",
@@ -1784,11 +1773,18 @@ Then("no Israeli city appears as a candidate city for any role", async ({ page }
 
 // ── SG-001: Zero/empty salary guidance ─────────────────────────────────────────
 
-When("the gross monthly salary field is empty or zero", async ({ page }) => {
+When("the gross monthly salary field is zero", async ({ page }) => {
   const input = page.getByLabel("Gross monthly salary (before tax)");
   await input.click({ clickCount: 3 });
   await page.keyboard.type("0");
   await page.keyboard.press("Tab");
+  await page.waitForLoadState("networkidle");
+});
+
+When("the gross monthly salary field is empty", async ({ page }) => {
+  const input = page.getByLabel("Gross monthly salary (before tax)");
+  await input.fill("");
+  await input.press("Tab");
   await page.waitForLoadState("networkidle");
 });
 
@@ -1797,7 +1793,7 @@ Then("empty-state guidance replaces the city comparison table", async ({ page })
   await expect(page.locator("table")).toHaveCount(0);
 });
 
-Then("no percentage values are rendered without net income", async ({ page }) => {
+Then("no savings figures or percentages are rendered without net income", async ({ page }) => {
   await expect(page.locator("[data-testid='savings-essential']")).toHaveCount(0);
 });
 
@@ -2373,12 +2369,9 @@ When("the cost-of-living table renders", async ({ page }) => {
   await page.locator("table tbody tr").first().waitFor({ state: "visible" });
 });
 
-Then("the Country column shows Indonesian country names where translations exist", async ({ page }) => {
+Then("the Country and City columns show Indonesian names where translations exist", async ({ page }) => {
   await expect(page.locator("table tbody")).toContainText("Singapura");
   await expect(page.locator("table tbody")).toContainText("Jepang");
-});
-
-Then("the City column shows Indonesian city names where translations exist", async ({ page }) => {
   await expect(page.locator("table tbody")).toContainText("Warsawa");
   await expect(page.locator("table tbody")).toContainText("Praha");
 });
@@ -2414,7 +2407,7 @@ When("the tab renders", async ({ page }) => {
   await page.waitForLoadState("networkidle");
 });
 
-Then("the gross-salary field renders with a visible border, design-token radius, and padding", async ({ page }) => {
+Then("the gross-salary field renders with a visible border and padding", async ({ page }) => {
   const input = page.locator("#gross-salary-input");
   await expect(input).toBeVisible();
   const style = await input.evaluate((element) => {
@@ -2436,7 +2429,7 @@ Then("the gross-salary field renders with a visible border, design-token radius,
   expect(style.height).toBe(44);
 });
 
-Then("it is paired with a Label primitive", async ({ page }) => {
+Then("the gross-salary field has a visible label", async ({ page }) => {
   const label = page.locator("label[for='gross-salary-input']");
   await expect(label).toBeVisible();
 });
@@ -3210,13 +3203,9 @@ Then('the sortable "Savings after essentials" column header has an aria-sort val
   expect(["ascending", "descending"]).toContain(await header.getAttribute("aria-sort"));
 });
 
-Given("the Savings tab is activated with no salary entered", async ({ page }) => {
+Given("the Savings tab is activated", async ({ page }) => {
   await page.goto("/en/tools/cost-of-living-calculator?tab=savings");
   await expect(page.getByRole("tab", { name: "Savings" })).toHaveAttribute("data-state", "active");
-});
-
-When("the tab activation occurs", async ({ page }) => {
-  await expect(page.locator("#gross-salary-input")).toBeVisible();
 });
 
 Then("a prominent empty-state prompt is shown in the data area", async ({ page }) => {
@@ -3300,7 +3289,7 @@ Given("the calculator at 1280px", async ({ page }) => {
   await page.goto("/en/tools/cost-of-living-calculator");
 });
 
-Then('every <select> has computed appearance "none" and a custom chevron affordance', async ({ page }) => {
+Then("every dropdown shows a custom chevron affordance", async ({ page }) => {
   const selects = page.locator("select");
   expect(await selects.count()).toBeGreaterThan(0);
   for (const select of await selects.all()) {
@@ -3309,7 +3298,7 @@ Then('every <select> has computed appearance "none" and a custom chevron afforda
   }
 });
 
-Then("no <select> shows the browser's native dropdown arrow", async ({ page }) => {
+Then("no dropdown shows the browser's native arrow", async ({ page }) => {
   for (const select of await page.locator("select").all()) {
     expect(await select.evaluate((element) => getComputedStyle(element).appearance)).toBe("none");
   }
@@ -3357,7 +3346,7 @@ When('I change the region filter to "Europe"', async ({ page }) => {
   evidenceFor(page).scrollPosition = { before, after: await page.evaluate(() => window.scrollY) };
 });
 
-Then("the URL update requests no scroll so the page does not jump to the top", async ({ page }) => {
+Then("the page does not jump to the top", async ({ page }) => {
   const scroll = evidenceFor(page).scrollPosition;
   expect(scroll).toBeDefined();
   expect(scroll!.after).toBeCloseTo(scroll!.before, 0);
@@ -3421,7 +3410,7 @@ Then("the flag is visually distinct from ordinary caption text", async ({ page }
   );
 });
 
-Then("the city-detail school row renders the school-foreigner-flag-<cityId> testid", async ({ page }) => {
+Then("the city-detail school row shows the same flag", async ({ page }) => {
   await page.goto("/en/tools/cost-of-living-calculator?tab=cost&city=singapore&schoolkids=1&schooltype=public");
   await expect(page.getByTestId("city-detail")).toBeVisible();
   await expect(page.getByLabel("School-age children")).toHaveValue("1");
@@ -3768,11 +3757,17 @@ Then(
   },
 );
 
-Then("the City column shows Indonesian city and country names where translations exist", async ({ page }) => {
-  await expect(
-    page
-      .getByTestId("city-cell")
-      .filter({ hasText: /Singapura/ })
-      .first(),
-  ).toBeVisible();
-});
+Then(
+  "the City column of the minimum-role ladder shows Indonesian city and country names where translations exist",
+  async ({ page }) => {
+    await page.getByRole("tab", { name: /minimum role|jabatan minimum/i }).click();
+    await page.locator("#target-amount-input").fill("0");
+    await page.locator("#target-amount-input").blur();
+    await expect(
+      page
+        .getByTestId("city-cell")
+        .filter({ hasText: /Singapura/ })
+        .first(),
+    ).toBeVisible();
+  },
+);

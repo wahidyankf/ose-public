@@ -49,11 +49,7 @@ const { Given, When, Then } = createBdd();
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Choosing a frontier model lists its Command Code Pro substitutes with a price comparison
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A frontier model above every model of the chosen harness shows the nearest options
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Changing the finder's harness lists that harness's models
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The chosen substitute target is kept in the URL
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The chosen substitute harness is kept in the URL
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: An unrecognized substitute harness falls back to Command Code Pro
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The English page renders its localized heading
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The Indonesian page renders its localized heading
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The chosen substitute target, substitute harness, and score basis are kept in the URL
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The last-updated date is shown before the substitute finder
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The page states that only independent results are scored
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Each consensus tier section states the consensus rule
@@ -66,34 +62,29 @@ const { Given, When, Then } = createBdd();
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The table lists every model's scores, tier, and prices
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Every benchmark score names and links its operator
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Cost per task is shown where an independent operator publishes it
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The page explains how the score is calculated
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The methodology lists every benchmark, the roster, the operator order, and the consensus minimum
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The methodology states the consensus rule
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The page lists every operator with its checked date and terms
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: No raw translation key leaks on either locale
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The page with no query parameters shows the whole roster
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A harness parameter narrows the tier map and the table
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Every listed harness is a known harness parameter value
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A tier parameter narrows the tier map and the table
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A tier parameter narrows the results to that tier
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Harness and tier parameters intersect
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: An unrecognized filter value falls back to the unfiltered view
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A duplicated query parameter resolves to its first value
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Resetting a filter to "All" removes it from the URL
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Resetting a control removes its parameter from the URL
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A filter combination matching no model renders an explicit empty state
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The score basis defaults to the consensus tiers
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Models without a score on the chosen benchmark are listed as unranked
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: An unrecognized benchmark falls back to the consensus tiers
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The chosen benchmark is kept in the URL
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Resetting the score basis to Consensus tiers removes it from the URL
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: An unrecognized URL parameter value falls back to the default
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The methodology explains the per-benchmark view
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Per-benchmark tier sections name their benchmark anchor and floor
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A tier parameter in a per-benchmark view narrows to that benchmark's tier
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The methodology lists every benchmark's tier anchors
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Tier colours meet contrast in both themes
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The document never scrolls horizontally
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Every interactive target meets the minimum target size
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Tier map label text never exceeds the page's body text size
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The substitute finder is visible above the fold on a phone
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The page behaves identically in both locales
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The AI benchmark page renders fully in both locales
 
 // AI benchmark public-boundary step bindings. Expected values are computed from the same dataset
 // and core functions the page uses; everything asserted is read from the live, rendered page.
@@ -347,10 +338,6 @@ Given("the AI benchmark dataset is loaded", async ({ page }) => {
   expect(full.models.length).toBeGreaterThan(0);
 });
 
-Given("the locale is {string}", async ({}, locale: string) => {
-  scenarioLocale = locale;
-});
-
 When("the AI benchmark page renders", async ({ page }) => {
   await load(page);
 });
@@ -579,23 +566,28 @@ Then("reloading that URL shows the same harness and the same substitute list", a
   expect(await subIds(page)).toEqual(subIdsBefore);
 });
 
-Given("the URL carries a substitute harness parameter with an unknown value", async ({ page }) => {
-  await load(page, "?sub-harness=not-a-harness");
+Given("the URL carries the {string} parameter with an unknown value", async ({ page }, key: string) => {
+  await load(page, `?${key}=not-a-value`);
 });
 
-Then("the finder's harness is {string}", async ({ page }, name: string) => {
-  await expect(finderHarnessSelect(page)).toHaveValue(harnessIdByName(name));
-  await expect(finderHarnessSelect(page).locator("option:checked")).toHaveText(name);
+Then("the {string} falls back to its default", async ({ page }, control: string) => {
+  if (control === "substitute harness") {
+    await expect(finderHarnessSelect(page)).toHaveValue(harnessIdByName("Command Code Pro"));
+    await expect(finderHarnessSelect(page).locator("option:checked")).toHaveText("Command Code Pro");
+  } else if (control === "harness filter") {
+    expect(sorted(await tableIds(page))).toEqual(sorted(full.models.map((m) => m.id)));
+    await expect(filterSelect(page, "aiBenchFilterHarness")).toHaveValue("");
+  } else {
+    expect(await tierMapIds(page)).toEqual(consensusTierMapIds());
+    await expect(scoreBasisSelect(page)).toHaveValue("");
+  }
 });
 
 // ── Header ────────────────────────────────────────────────────────────────────
 
-Then("the page shows a level-one heading in English", async ({ page }) => {
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText(t("en", "aiBenchTitle"));
-});
-
-Then("the page shows a level-one heading in Indonesian", async ({ page }) => {
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText(t("id", "aiBenchTitle"));
+Then("the page shows a level-one heading in {string}", async ({ page }, language: string) => {
+  const code = language === "Indonesian" ? "id" : "en";
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText(t(code, "aiBenchTitle"));
 });
 
 Then("the document language attribute is {string}", async ({ page }, lang: string) => {
@@ -990,22 +982,31 @@ Then("the result count equals the number of models that harness exposes", async 
   );
 });
 
-Given("the URL carries a tier parameter naming a known tier", async ({ page }) => {
-  filterTier = "planning";
-  await load(page, `?tier=${filterTier}`);
-});
-
-Then("only models in that tier are shown in the tier map", async ({ page }) => {
-  expect(sorted(await tierMapIds(page))).toEqual(
-    sorted(scored.filter((s) => s.tier === filterTier).map((s) => s.model.id)),
-  );
-  await expect(page.getByTestId("ai-bench-tier-ultra")).toHaveCount(0);
+Then("only models in that tier are shown in the {string}", async ({ page }, view: string) => {
+  if (view === "tier map") {
+    expect(sorted(await tierMapIds(page))).toEqual(
+      sorted(scored.filter((s) => s.tier === "planning").map((s) => s.model.id)),
+    );
+    await expect(page.getByTestId("ai-bench-tier-ultra")).toHaveCount(0);
+  } else {
+    const shown = filterModels(full, { benchmark: "deep-swe", tier: "planning" }, full);
+    expect(shown.length).toBeGreaterThan(0);
+    const { groups } = computeBenchmarkTierGroups({ ...full, models: shown }, "deep-swe", full);
+    expect(await tierMapIds(page)).toEqual(groups.planning.map((r) => r.model.id));
+    for (const id of await tierMapIds(page)) {
+      expect(assignBenchmarkTier(byId(id), "deep-swe", full)).toBe("planning");
+    }
+  }
 });
 
 Then("only models in that tier are shown in the data table", async ({ page }) => {
-  expect(sorted(await tableIds(page))).toEqual(
-    sorted(scored.filter((s) => s.tier === filterTier).map((s) => s.model.id)),
-  );
+  if (new URL(page.url()).searchParams.has("benchmark")) {
+    expect(sorted(await tableIds(page))).toEqual(sorted(await tierMapIds(page)));
+  } else {
+    expect(sorted(await tableIds(page))).toEqual(
+      sorted(scored.filter((s) => s.tier === "planning").map((s) => s.model.id)),
+    );
+  }
 });
 
 Given("the URL carries both a harness parameter and a tier parameter", async ({ page }) => {
@@ -1019,15 +1020,6 @@ Then("only models satisfying both filters are shown", async ({ page }) => {
   expect(expected.length).toBeGreaterThan(0);
   expect(sorted(await tableIds(page))).toEqual(sorted(expected));
   expect(sorted(await tierMapIds(page))).toEqual(sorted(expected));
-});
-
-Given("the URL carries a harness parameter with an unknown value", async ({ page }) => {
-  await load(page, "?harness=not-a-harness");
-});
-
-Then("every roster model is shown", async ({ page }) => {
-  expect(sorted(await tableIds(page))).toEqual(sorted(full.models.map((m) => m.id)));
-  await expect(filterSelect(page, "aiBenchFilterHarness")).toHaveValue("");
 });
 
 Then("no error is surfaced to the reader", async ({ page }) => {
@@ -1045,15 +1037,40 @@ Then("the filter uses the first of the two values", async ({ page }) => {
   expect(sorted(await tableIds(page))).toEqual(sorted(filterModels(full, { harness: "cursor" }).map((m) => m.id)));
 });
 
-When('the reader resets the tier filter to "All tiers"', async ({ page }) => {
-  await filterSelect(page, "aiBenchFilterTier").selectOption("");
-  await expect(page).not.toHaveURL(/[?&]tier=/);
+let resetQuery = "";
+let resetParameter = "";
+
+Given("the URL carries {string}", async ({ page }, query: string) => {
+  resetQuery = query;
+  await load(page, `?${query}`);
 });
 
-Then("the URL retains the harness parameter but no longer carries the tier parameter", async ({ page }) => {
-  const params = new URL(page.url()).searchParams;
-  expect(params.get("harness")).toBe(harness);
-  expect(params.has("tier")).toBe(false);
+When("the reader resets the {string} to its default", async ({ page }, control: string) => {
+  resetParameter = control === "tier filter" ? "tier" : "benchmark";
+  if (control === "tier filter") await filterSelect(page, "aiBenchFilterTier").selectOption("");
+  else await scoreBasisSelect(page).selectOption("");
+  await expect(page).not.toHaveURL(new RegExp(`[?&]${resetParameter}=`));
+});
+
+Then("the URL no longer carries the {string} parameter", async ({ page }, name: string) => {
+  expect(new URL(page.url()).searchParams.has(name)).toBe(false);
+});
+
+Then("the URL keeps its other parameters", async ({ page }) => {
+  const before = new URLSearchParams(resetQuery);
+  const after = new URL(page.url()).searchParams;
+  for (const [key, value] of before) {
+    if (key !== resetParameter) expect(after.get(key)).toBe(value);
+  }
+});
+
+Then("the {string} shows its default", async ({ page }, control: string) => {
+  if (control === "tier filter") {
+    await expect(filterSelect(page, "aiBenchFilterTier")).toHaveValue("");
+  } else {
+    await expect(scoreBasisSelect(page)).toHaveValue("");
+    expect(await tierMapIds(page)).toEqual(consensusTierMapIds());
+  }
 });
 
 Given("the URL carries a filter combination that matches no model", async ({ page }) => {
@@ -1140,10 +1157,6 @@ Then(
   },
 );
 
-Given("the URL carries a benchmark parameter with an unknown value", async ({ page }) => {
-  await load(page, "?benchmark=not-a-benchmark");
-});
-
 When('the reader changes the score basis to "Terminal-Bench"', async ({ page }) => {
   await scoreBasisSelect(page).selectOption("terminal-bench");
   await expect(page).toHaveURL(/[?&]benchmark=terminal-bench(&|$)/);
@@ -1160,19 +1173,6 @@ Then("reloading that URL shows the same per-benchmark ranking", async ({ page })
   await expect(scoreBasisSelect(page)).toHaveValue("terminal-bench");
   expect(rankedIdsBefore.ids.length).toBeGreaterThan(0);
   expect(await tierMapIds(page)).toEqual(rankedIdsBefore.ids);
-});
-
-Given("the URL carries a benchmark parameter naming a known benchmark", async ({ page }) => {
-  await load(page, "?benchmark=deep-swe");
-});
-
-When('the reader resets the score basis to "Consensus tiers"', async ({ page }) => {
-  await scoreBasisSelect(page).selectOption("");
-  await expect(page).not.toHaveURL(/[?&]benchmark=/);
-});
-
-Then("the URL no longer carries the benchmark parameter", async ({ page }) => {
-  expect(new URL(page.url()).searchParams.has("benchmark")).toBe(false);
 });
 
 Then("it names the five score basis options: the consensus tiers and the four benchmarks", async ({ page }) => {
@@ -1228,27 +1228,6 @@ Then("the fast section states that it holds models below the Terminal-Bench exec
   await expect(page.getByTestId("ai-bench-tier-fast").getByTestId("ai-bench-tier-floor")).toHaveText(
     fill(t("en", "aiBenchTierBenchmarkFastFloor"), { benchmark: "Terminal-Bench" }),
   );
-});
-
-Given(
-  "the URL carries a benchmark parameter naming DeepSWE and a tier parameter naming a known tier",
-  async ({ page }) => {
-    await load(page, "?benchmark=deep-swe&tier=planning");
-  },
-);
-
-Then("only models in that tier on DeepSWE are shown in the ranked list", async ({ page }) => {
-  const shown = filterModels(full, { benchmark: "deep-swe", tier: "planning" }, full);
-  expect(shown.length).toBeGreaterThan(0);
-  const { groups } = computeBenchmarkTierGroups({ ...full, models: shown }, "deep-swe", full);
-  expect(await tierMapIds(page)).toEqual(groups.planning.map((r) => r.model.id));
-  for (const id of await tierMapIds(page)) {
-    expect(assignBenchmarkTier(byId(id), "deep-swe", full)).toBe("planning");
-  }
-});
-
-Then("only models in that tier on DeepSWE are shown in the data table", async ({ page }) => {
-  expect(sorted(await tableIds(page))).toEqual(sorted(await tierMapIds(page)));
 });
 
 Then("it lists every benchmark with its ultra, planning, and execution anchor and floor score", async ({ page }) => {

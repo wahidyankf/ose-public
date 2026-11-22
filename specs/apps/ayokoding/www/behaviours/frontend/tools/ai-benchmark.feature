@@ -99,17 +99,28 @@ Feature: AI model benchmark tool
   # ── Substitute finder ─────────────────────────────────────────────────────────
 
   # Behaviour: AYW-054
-  # Exemption(integration): substitute selection reads only in-memory benchmark data, so no database, file system, process, or network boundary exists here; alternative-proof: ayokoding-www:test:unit / Substitutes are models of the chosen harness in the same or a higher tier
+  # Exemption(integration): substitute selection reads only in-memory benchmark data, so no database, file system, process, or network boundary exists here; alternative-proof: ayokoding-www:test:unit / Only chosen-harness models at the same or a higher tier are listed
   @integration-exempt
-  # Exemption(e2e): the served build has no input seam that accepts a fixture model, so the end-to-end level cannot supply this input; alternative-proof: ayokoding-www:test:unit / Substitutes are models of the chosen harness in the same or a higher tier
+  # Exemption(e2e): the served build has no input seam that accepts a fixture model, so the end-to-end level cannot supply this input; alternative-proof: ayokoding-www:test:unit / Only chosen-harness models at the same or a higher tier are listed
   @e2e-exempt
-  Scenario: Substitutes are models of the chosen harness in the same or a higher tier
+  Scenario: Only chosen-harness models at the same or a higher tier are listed
     Given a frontier fixture model in the "planning" tier
     And fixture models of the "command-code-pro" harness in the "ultra", "planning", and "execution" tiers and one with insufficient data
     And fixture models of the "opencode-go" harness in the "ultra" and "planning" tiers
     When substitutes are listed for the frontier model from the "command-code-pro" harness
     Then the substitutes are only the "ultra" and "planning" models of the "command-code-pro" harness
-    And the substitutes are ordered by consensus tier from highest to lowest, then by consensus strength
+
+  # Behaviour: AYW-054
+  # Exemption(integration): substitute ordering reads only in-memory benchmark data, so no database, file system, process, or network boundary exists here; alternative-proof: ayokoding-www:test:unit / Substitutes are ordered best first
+  @integration-exempt
+  # Exemption(e2e): the served build has no input seam that accepts a fixture model, so the end-to-end level cannot supply this input; alternative-proof: ayokoding-www:test:unit / Substitutes are ordered best first
+  @e2e-exempt
+  Scenario: Substitutes are ordered best first
+    Given a frontier fixture model in the "planning" tier
+    And fixture models of the "command-code-pro" harness in the "ultra", "planning", and "execution" tiers and one with insufficient data
+    And fixture models of the "opencode-go" harness in the "ultra" and "planning" tiers
+    When substitutes are listed for the frontier model from the "command-code-pro" harness
+    Then the substitutes are ordered by consensus tier from highest to lowest, then by consensus strength
 
   # Behaviour: AYW-054
   Scenario: The substitute finder offers three harnesses with Command Code Pro chosen first
@@ -146,42 +157,51 @@ Feature: AI model benchmark tool
       | OpenCode Go  |
 
   # Behaviour: AYW-054
-  Scenario: The chosen substitute target is kept in the URL
+  # Behaviour: AYW-055
+  Scenario: The chosen substitute target, substitute harness, and score basis are kept in the URL
     Given the AI benchmark page is open
     When the reader chooses "GPT-5.6 Terra" in the substitute finder
     Then the URL carries that model as the substitute target
     And reloading that URL shows the same substitute list
-
-  # Behaviour: AYW-054
-  Scenario: The chosen substitute harness is kept in the URL
-    Given the AI benchmark page is open
-    When the reader chooses "GPT-5.6 Terra" in the substitute finder
-    And the reader changes the finder's harness to "Command Code"
+    When the reader changes the finder's harness to "Command Code"
     Then the URL carries that harness as the substitute harness
     And reloading that URL shows the same harness and the same substitute list
+    When the reader changes the score basis to "Terminal-Bench"
+    Then the URL carries that benchmark as the score basis
+    And reloading that URL shows the same per-benchmark ranking
 
   # Behaviour: AYW-054
-  Scenario: An unrecognized substitute harness falls back to Command Code Pro
-    Given the URL carries a substitute harness parameter with an unknown value
+  # Behaviour: AYW-055
+  Scenario Outline: An unrecognized URL parameter value falls back to the default
+    Given the URL carries the "<key>" parameter with an unknown value
     When the page renders
-    Then the finder's harness is "Command Code Pro"
+    Then the "<control>" falls back to its default
     But no error is surfaced to the reader
+
+    Examples:
+      | control            | key         |
+      | substitute harness | sub-harness |
+      | harness filter     | harness     |
+      | score basis        | benchmark   |
 
   # ── Page header and dates ─────────────────────────────────────────────────────
 
   # Behaviour: AYW-053
-  Scenario: The English page renders its localized heading
-    Given the locale is "en"
+  # Behaviour: AYW-056
+  Scenario Outline: The AI benchmark page renders fully in both locales
+    Given the AI benchmark page is loaded in the "<locale>" locale at a 390 px viewport
     When the AI benchmark page renders
-    Then the page shows a level-one heading in English
-    And the document language attribute is "en"
+    Then the page shows a level-one heading in "<language>"
+    And the document language attribute is "<locale>"
+    And the substitute finder is present above the fold
+    And every tier section is present
+    And no rendered text matches a raw translation key
+    And no raw translation key is rendered
 
-  # Behaviour: AYW-053
-  Scenario: The Indonesian page renders its localized heading
-    Given the locale is "id"
-    When the AI benchmark page renders
-    Then the page shows a level-one heading in Indonesian
-    And the document language attribute is "id"
+    Examples:
+      | locale | language   |
+      | en     | English    |
+      | id     | Indonesian |
 
   # Behaviour: AYW-053
   Scenario: The last-updated date is shown before the substitute finder
@@ -275,7 +295,7 @@ Feature: AI model benchmark tool
   # ── Methodology ───────────────────────────────────────────────────────────────
 
   # Behaviour: AYW-056
-  Scenario: The page explains how the score is calculated
+  Scenario: The methodology lists every benchmark, the roster, the operator order, and the consensus minimum
     Given the AI benchmark page is open
     When the reader opens the methodology section
     Then it lists every benchmark with its version
@@ -301,17 +321,6 @@ Feature: AI model benchmark tool
     Then a sources section lists every named operator
     And each operator entry states the date it was last checked
     And each operator entry states how its figures are cited
-
-  # Behaviour: AYW-056
-  Scenario Outline: No raw translation key leaks on either locale
-    Given the locale is "<locale>"
-    When the AI benchmark page renders
-    Then no rendered text matches a raw translation key
-
-    Examples:
-      | locale |
-      | en     |
-      | id     |
 
   # ── Filters ───────────────────────────────────────────────────────────────────
 
@@ -346,11 +355,16 @@ Feature: AI model benchmark tool
       | opencode-zen     | OpenCode Zen     |
 
   # Behaviour: AYW-055
-  Scenario: A tier parameter narrows the tier map and the table
-    Given the URL carries a tier parameter naming a known tier
+  Scenario Outline: A tier parameter narrows the results to that tier
+    Given the URL carries "<query>"
     When the page renders
-    Then only models in that tier are shown in the tier map
+    Then only models in that tier are shown in the "<view>"
     And only models in that tier are shown in the data table
+
+    Examples:
+      | query                            | view                |
+      | tier=planning                    | tier map            |
+      | benchmark=deep-swe&tier=planning | DeepSWE ranked list |
 
   # Behaviour: AYW-055
   Scenario: Harness and tier parameters intersect
@@ -359,23 +373,23 @@ Feature: AI model benchmark tool
     Then only models satisfying both filters are shown
 
   # Behaviour: AYW-055
-  Scenario: An unrecognized filter value falls back to the unfiltered view
-    Given the URL carries a harness parameter with an unknown value
-    When the page renders
-    Then every roster model is shown
-    But no error is surfaced to the reader
-
-  # Behaviour: AYW-055
   Scenario: A duplicated query parameter resolves to its first value
     Given the URL carries the harness parameter twice with two different known harness values
     When the page renders
     Then the filter uses the first of the two values
 
   # Behaviour: AYW-055
-  Scenario: Resetting a filter to "All" removes it from the URL
-    Given the URL carries both a harness parameter and a tier parameter
-    When the reader resets the tier filter to "All tiers"
-    Then the URL retains the harness parameter but no longer carries the tier parameter
+  Scenario Outline: Resetting a control removes its parameter from the URL
+    Given the URL carries "<query>"
+    When the reader resets the "<control>" to its default
+    Then the URL no longer carries the "<parameter>" parameter
+    And the URL keeps its other parameters
+    And the "<control>" shows its default
+
+    Examples:
+      | query                              | control     | parameter |
+      | harness=opencode-go&tier=execution | tier filter | tier      |
+      | benchmark=deep-swe                 | score basis | benchmark |
 
   # Behaviour: AYW-055
   Scenario: A filter combination matching no model renders an explicit empty state
@@ -423,27 +437,6 @@ Feature: AI model benchmark tool
     And the ranked list holds only models with a scored FrontierCode-AA figure in descending raw-score order
 
   # Behaviour: AYW-055
-  Scenario: An unrecognized benchmark falls back to the consensus tiers
-    Given the URL carries a benchmark parameter with an unknown value
-    When the page renders
-    Then the tier map groups models by consensus tier
-    But no error is surfaced to the reader
-
-  # Behaviour: AYW-055
-  Scenario: The chosen benchmark is kept in the URL
-    Given the AI benchmark page is open
-    When the reader changes the score basis to "Terminal-Bench"
-    Then the URL carries that benchmark as the score basis
-    And reloading that URL shows the same per-benchmark ranking
-
-  # Behaviour: AYW-055
-  Scenario: Resetting the score basis to Consensus tiers removes it from the URL
-    Given the URL carries a benchmark parameter naming a known benchmark
-    When the reader resets the score basis to "Consensus tiers"
-    Then the URL no longer carries the benchmark parameter
-    And the tier map groups models by consensus tier
-
-  # Behaviour: AYW-055
   Scenario: The methodology explains the per-benchmark view
     Given the AI benchmark page is open
     When the reader opens the methodology section
@@ -479,13 +472,6 @@ Feature: AI model benchmark tool
     Then the ultra, planning, and execution sections each name their Terminal-Bench anchor model
     And each of those sections states its floor as a raw Terminal-Bench score
     And the fast section states that it holds models below the Terminal-Bench execution floor
-
-  # Behaviour: AYW-055
-  Scenario: A tier parameter in a per-benchmark view narrows to that benchmark's tier
-    Given the URL carries a benchmark parameter naming DeepSWE and a tier parameter naming a known tier
-    When the page renders
-    Then only models in that tier on DeepSWE are shown in the ranked list
-    And only models in that tier on DeepSWE are shown in the data table
 
   # Behaviour: AYW-055
   Scenario: The methodology lists every benchmark's tier anchors
@@ -554,16 +540,3 @@ Feature: AI model benchmark tool
       | width | height |
       | 320   | 568    |
       | 390   | 664    |
-
-  # Behaviour: AYW-053
-  Scenario Outline: The page behaves identically in both locales
-    Given the AI benchmark page is loaded in the "<locale>" locale at a 390 px viewport
-    When the page renders
-    Then the substitute finder is present above the fold
-    And every tier section is present
-    And no raw translation key is rendered
-
-    Examples:
-      | locale |
-      | en     |
-      | id     |

@@ -358,51 +358,84 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
 
   // ── Substitute finder ────────────────────────────────────────────────────────
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Substitutes are models of the chosen harness in the same or a higher tier
-  Scenario(
-    "Substitutes are models of the chosen harness in the same or a higher tier",
-    ({ Given, And, When, Then }) => {
-      Given('a frontier fixture model in the "planning" tier', () => {
-        ctx.model = tiered("frontier", "planning", "planning", "planning", "execution", { vendor: "OpenAI" });
-        ctx.roster = [...quadAnchors(), ctx.model];
-        expect(assignConsensusTier(ctx.model, fixtureDataset(ctx.roster)).tier).toBe("planning");
-      });
-      And(
-        'fixture models of the "command-code-pro" harness in the "ultra", "planning", and "execution" tiers and one with insufficient data',
-        () => {
-          ctx.roster!.push(
-            tiered("pro-planning", "planning", "planning", "planning", "execution", {
-              harnesses: ["command-code-pro"],
-            }),
-            tiered("pro-ultra", "ultra", "ultra", "ultra", "ultra", { harnesses: ["command-code-pro"] }),
-            tiered("pro-execution", "execution", "execution", "execution", "execution", {
-              harnesses: ["command-code-pro"],
-            }),
-            tiered("pro-insufficient", "planning", "unranked", "unranked", "unranked", {
-              harnesses: ["command-code-pro"],
-            }),
-          );
-        },
-      );
-      And('fixture models of the "opencode-go" harness in the "ultra" and "planning" tiers', () => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Only chosen-harness models at the same or a higher tier are listed
+  Scenario("Only chosen-harness models at the same or a higher tier are listed", ({ Given, And, When, Then }) => {
+    Given('a frontier fixture model in the "planning" tier', () => {
+      ctx.model = tiered("frontier", "planning", "planning", "planning", "execution", { vendor: "OpenAI" });
+      ctx.roster = [...quadAnchors(), ctx.model];
+      expect(assignConsensusTier(ctx.model, fixtureDataset(ctx.roster)).tier).toBe("planning");
+    });
+    And(
+      'fixture models of the "command-code-pro" harness in the "ultra", "planning", and "execution" tiers and one with insufficient data',
+      () => {
         ctx.roster!.push(
-          tiered("go-ultra", "ultra", "ultra", "ultra", "ultra", { harnesses: ["opencode-go"] }),
-          tiered("go-planning", "planning", "planning", "planning", "execution", { harnesses: ["opencode-go"] }),
+          tiered("pro-planning", "planning", "planning", "planning", "execution", {
+            harnesses: ["command-code-pro"],
+          }),
+          tiered("pro-ultra", "ultra", "ultra", "ultra", "ultra", { harnesses: ["command-code-pro"] }),
+          tiered("pro-execution", "execution", "execution", "execution", "execution", {
+            harnesses: ["command-code-pro"],
+          }),
+          tiered("pro-insufficient", "planning", "unranked", "unranked", "unranked", {
+            harnesses: ["command-code-pro"],
+          }),
         );
-      });
-      When('substitutes are listed for the frontier model from the "command-code-pro" harness', () => {
-        ctx.result = substitutesFor(ctx.model!, fixtureDataset(ctx.roster!), "command-code-pro");
-      });
-      Then('the substitutes are only the "ultra" and "planning" models of the "command-code-pro" harness', () => {
-        expect(ctx.result!.kind).toBe("matches");
-        expect(sorted(ctx.result!.models.map((s) => s.model.id))).toEqual(["pro-planning", "pro-ultra"]);
-        for (const s of ctx.result!.models) expect(s.model.harnesses).toContain("command-code-pro");
-      });
-      And("the substitutes are ordered by consensus tier from highest to lowest, then by consensus strength", () => {
-        expect(ctx.result!.models.map((s) => s.model.id)).toEqual(["pro-ultra", "pro-planning"]);
-      });
-    },
-  );
+      },
+    );
+    And('fixture models of the "opencode-go" harness in the "ultra" and "planning" tiers', () => {
+      ctx.roster!.push(
+        tiered("go-ultra", "ultra", "ultra", "ultra", "ultra", { harnesses: ["opencode-go"] }),
+        tiered("go-planning", "planning", "planning", "planning", "execution", { harnesses: ["opencode-go"] }),
+      );
+    });
+    When('substitutes are listed for the frontier model from the "command-code-pro" harness', () => {
+      ctx.result = substitutesFor(ctx.model!, fixtureDataset(ctx.roster!), "command-code-pro");
+    });
+    Then('the substitutes are only the "ultra" and "planning" models of the "command-code-pro" harness', () => {
+      expect(ctx.result!.kind).toBe("matches");
+      expect(sorted(ctx.result!.models.map((s) => s.model.id))).toEqual(["pro-planning", "pro-ultra"]);
+      for (const s of ctx.result!.models) expect(s.model.harnesses).toContain("command-code-pro");
+    });
+  });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Substitutes are ordered best first
+  Scenario("Substitutes are ordered best first", ({ Given, And, When, Then }) => {
+    Given('a frontier fixture model in the "planning" tier', () => {
+      ctx.model = tiered("frontier", "planning", "planning", "planning", "execution", { vendor: "OpenAI" });
+      ctx.roster = [...quadAnchors(), ctx.model];
+      expect(assignConsensusTier(ctx.model, fixtureDataset(ctx.roster)).tier).toBe("planning");
+    });
+    And(
+      'fixture models of the "command-code-pro" harness in the "ultra", "planning", and "execution" tiers and one with insufficient data',
+      () => {
+        ctx.roster!.push(
+          tiered("pro-planning", "planning", "planning", "planning", "execution", {
+            harnesses: ["command-code-pro"],
+          }),
+          tiered("pro-ultra", "ultra", "ultra", "ultra", "ultra", { harnesses: ["command-code-pro"] }),
+          tiered("pro-execution", "execution", "execution", "execution", "execution", {
+            harnesses: ["command-code-pro"],
+          }),
+          tiered("pro-insufficient", "planning", "unranked", "unranked", "unranked", {
+            harnesses: ["command-code-pro"],
+          }),
+        );
+      },
+    );
+    And('fixture models of the "opencode-go" harness in the "ultra" and "planning" tiers', () => {
+      ctx.roster!.push(
+        tiered("go-ultra", "ultra", "ultra", "ultra", "ultra", { harnesses: ["opencode-go"] }),
+        tiered("go-planning", "planning", "planning", "planning", "execution", { harnesses: ["opencode-go"] }),
+      );
+    });
+    When('substitutes are listed for the frontier model from the "command-code-pro" harness', () => {
+      ctx.result = substitutesFor(ctx.model!, fixtureDataset(ctx.roster!), "command-code-pro");
+    });
+    Then("the substitutes are ordered by consensus tier from highest to lowest, then by consensus strength", () => {
+      expect(ctx.result!.kind).toBe("matches");
+      expect(ctx.result!.models.map((s) => s.model.id)).toEqual(["pro-ultra", "pro-planning"]);
+    });
+  });
 
   // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The substitute finder offers three harnesses with Command Code Pro chosen first
   Scenario(
@@ -591,105 +624,137 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     },
   );
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The chosen substitute target is kept in the URL
-  Scenario("The chosen substitute target is kept in the URL", ({ Given, When, Then, And }) => {
-    Given("the AI benchmark page is open", () => {
-      renderPage();
-    });
-    When('the reader chooses "GPT-5.6 Terra" in the substitute finder', () => {
-      chooseTarget("GPT-5.6 Terra");
-      ctx.subIds = subIds();
-    });
-    Then("the URL carries that model as the substitute target", () => {
-      expect(new URLSearchParams(navState.search).get("sub")).toBe(ctx.model!.id);
-    });
-    And("reloading that URL shows the same substitute list", () => {
-      const search = navState.search;
-      cleanup();
-      renderPage("en", search);
-      expect(subIds()).toEqual(ctx.subIds);
-      expect(subIds().length).toBeGreaterThan(0);
-    });
-  });
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The chosen substitute target, substitute harness, and score basis are kept in the URL
+  Scenario(
+    "The chosen substitute target, substitute harness, and score basis are kept in the URL",
+    ({ Given, When, Then, And }) => {
+      Given("the AI benchmark page is open", () => {
+        renderPage();
+      });
+      When('the reader chooses "GPT-5.6 Terra" in the substitute finder', () => {
+        chooseTarget("GPT-5.6 Terra");
+        ctx.subIds = subIds();
+      });
+      Then("the URL carries that model as the substitute target", () => {
+        expect(new URLSearchParams(navState.search).get("sub")).toBe(ctx.model!.id);
+      });
+      And("reloading that URL shows the same substitute list", () => {
+        const search = navState.search;
+        cleanup();
+        renderPage("en", search);
+        expect(subIds()).toEqual(ctx.subIds);
+        expect(subIds().length).toBeGreaterThan(0);
+      });
+      When('the reader changes the finder\'s harness to "Command Code"', () => {
+        chooseFinderHarness(harnessIdByName("Command Code"));
+        ctx.subIds = subIds();
+      });
+      Then("the URL carries that harness as the substitute harness", () => {
+        const params = new URLSearchParams(navState.search);
+        expect(params.get("sub-harness")).toBe("command-code");
+        expect(params.get("sub")).toBe(ctx.model!.id);
+        expect(params.has("harness")).toBe(false);
+      });
+      And("reloading that URL shows the same harness and the same substitute list", () => {
+        const search = navState.search;
+        cleanup();
+        renderPage("en", search);
+        expect(finderHarnessSelect().value).toBe("command-code");
+        expect(subIds()).toEqual(ctx.subIds);
+        expect(subIds().length).toBeGreaterThan(0);
+      });
+      When('the reader changes the score basis to "Terminal-Bench"', () => {
+        fireEvent.change(screen.getByLabelText(t("en", "aiBenchScoreBasisLabel")), {
+          target: { value: "terminal-bench" },
+        });
+        followPush();
+        ctx.subIds = tierMapIds();
+      });
+      Then("the URL carries that benchmark as the score basis", () => {
+        expect(new URLSearchParams(navState.search).get("benchmark")).toBe("terminal-bench");
+      });
+      And("reloading that URL shows the same per-benchmark ranking", () => {
+        cleanup();
+        renderPage("en", navState.search);
+        expect((screen.getByLabelText(t("en", "aiBenchScoreBasisLabel")) as HTMLSelectElement).value).toBe(
+          "terminal-bench",
+        );
+        expect(tierMapIds()).toEqual(ctx.subIds);
+      });
+    },
+  );
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The chosen substitute harness is kept in the URL
-  Scenario("The chosen substitute harness is kept in the URL", ({ Given, When, Then, And }) => {
-    Given("the AI benchmark page is open", () => {
-      renderPage();
-    });
-    When('the reader chooses "GPT-5.6 Terra" in the substitute finder', () => {
-      chooseTarget("GPT-5.6 Terra");
-    });
-    And('the reader changes the finder\'s harness to "Command Code"', () => {
-      chooseFinderHarness(harnessIdByName("Command Code"));
-      ctx.subIds = subIds();
-    });
-    Then("the URL carries that harness as the substitute harness", () => {
-      const params = new URLSearchParams(navState.search);
-      expect(params.get("sub-harness")).toBe("command-code");
-      expect(params.get("sub")).toBe(ctx.model!.id);
-      expect(params.has("harness")).toBe(false);
-    });
-    And("reloading that URL shows the same harness and the same substitute list", () => {
-      const search = navState.search;
-      cleanup();
-      renderPage("en", search);
-      expect(finderHarnessSelect().value).toBe("command-code");
-      expect(subIds()).toEqual(ctx.subIds);
-      expect(subIds().length).toBeGreaterThan(0);
-    });
-  });
-
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: An unrecognized substitute harness falls back to Command Code Pro
-  Scenario("An unrecognized substitute harness falls back to Command Code Pro", ({ Given, When, Then, But }) => {
-    Given("the URL carries a substitute harness parameter with an unknown value", () => {
-      ctx.errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-    });
-    When("the page renders", () => {
-      renderPage("en", "sub-harness=not-a-harness");
-    });
-    Then('the finder\'s harness is "Command Code Pro"', () => {
-      expect(finderHarnessSelect().value).toBe("command-code-pro");
-      expect(selectedLabel(finderHarnessSelect())).toBe("Command Code Pro");
-    });
-    But("no error is surfaced to the reader", () => {
-      expect(screen.queryByRole("alert")).toBeNull();
-      expect(ctx.errorSpy).not.toHaveBeenCalled();
-    });
-  });
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: An unrecognized URL parameter value falls back to the default
+  ScenarioOutline(
+    "An unrecognized URL parameter value falls back to the default",
+    ({ Given, When, Then, But }, variables) => {
+      Given('the URL carries the "<key>" parameter with an unknown value', () => {
+        ctx.errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+        navState.search = `${variables.key}=not-a-value`;
+      });
+      When("the page renders", () => {
+        renderPage("en", navState.search);
+      });
+      Then('the "<control>" falls back to its default', () => {
+        if (variables.control === "substitute harness") {
+          expect(finderHarnessSelect().value).toBe("command-code-pro");
+          expect(selectedLabel(finderHarnessSelect())).toBe("Command Code Pro");
+        } else if (variables.control === "harness filter") {
+          expect(sorted(tableIds())).toEqual(sorted(full.models.map((m) => m.id)));
+          expect((screen.getByLabelText(t("en", "aiBenchFilterHarness")) as HTMLSelectElement).value).toBe("");
+        } else {
+          const groups = computeTierGroups(full);
+          expect(tierMapIds()).toEqual(
+            (["ultra", "planning", "execution", "fast"] as const).flatMap((tier) =>
+              groups[tier].map((s) => s.model.id),
+            ),
+          );
+          expect((screen.getByLabelText(t("en", "aiBenchScoreBasisLabel")) as HTMLSelectElement).value).toBe("");
+        }
+      });
+      But("no error is surfaced to the reader", () => {
+        expect(screen.queryByRole("alert")).toBeNull();
+        expect(ctx.errorSpy).not.toHaveBeenCalled();
+      });
+    },
+  );
 
   // ── Page header and dates ────────────────────────────────────────────────────
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The English page renders its localized heading
-  Scenario("The English page renders its localized heading", ({ Given, When, Then, And }) => {
-    Given('the locale is "en"', () => {
-      ctx.locale = "en";
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The AI benchmark page renders fully in both locales
+  ScenarioOutline("The AI benchmark page renders fully in both locales", ({ Given, When, Then, And }, variables) => {
+    Given('the AI benchmark page is loaded in the "<locale>" locale at a 390 px viewport', () => {
+      ctx.viewportWidth = 390;
+      ctx.locale = variables.locale as Locale;
     });
     When("the AI benchmark page renders", () => {
-      renderPage(ctx.locale);
+      // Open every disclosure and pick a finder target so every string path renders.
+      renderPage(ctx.locale, "sub=gpt-5.6-terra");
+      for (const d of Array.from(document.querySelectorAll("details"))) d.open = true;
     });
-    Then("the page shows a level-one heading in English", () => {
-      expect(screen.getByRole("heading", { level: 1 }).textContent).toBe(t("en", "aiBenchTitle"));
+    Then('the page shows a level-one heading in "<language>"', () => {
+      const code: Locale = variables.language === "Indonesian" ? "id" : "en";
+      expect(screen.getByRole("heading", { level: 1 }).textContent).toBe(t(code, "aiBenchTitle"));
+      expect(t(code, "aiBenchTitle")).not.toBe(t(code === "en" ? "id" : "en", "aiBenchTitle"));
     });
-    And('the document language attribute is "en"', () => {
-      expect(document.documentElement.lang).toBe("en");
+    And('the document language attribute is "<locale>"', () => {
+      expect(document.documentElement.lang).toBe(variables.locale);
     });
-  });
-
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The Indonesian page renders its localized heading
-  Scenario("The Indonesian page renders its localized heading", ({ Given, When, Then, And }) => {
-    Given('the locale is "id"', () => {
-      ctx.locale = "id";
+    And("the substitute finder is present above the fold", () => {
+      expect(screen.getByTestId("ai-bench-page").children[1]).toBe(screen.getByTestId("ai-bench-finder"));
     });
-    When("the AI benchmark page renders", () => {
-      renderPage(ctx.locale);
+    And("every tier section is present", () => {
+      for (const tier of ["ultra", "planning", "execution", "fast"]) {
+        expect(screen.getByTestId(`ai-bench-tier-${tier}`)).toBeTruthy();
+      }
+      expect(screen.getByTestId("ai-bench-insufficient")).toBeTruthy();
+      expect(screen.getByTestId("ai-bench-no-consensus")).toBeTruthy();
     });
-    Then("the page shows a level-one heading in Indonesian", () => {
-      expect(screen.getByRole("heading", { level: 1 }).textContent).toBe(t("id", "aiBenchTitle"));
-      expect(t("id", "aiBenchTitle")).not.toBe(t("en", "aiBenchTitle"));
+    And("no rendered text matches a raw translation key", () => {
+      expect(document.body.textContent).not.toMatch(/aiBench|\{\w+\}/);
     });
-    And('the document language attribute is "id"', () => {
-      expect(document.documentElement.lang).toBe("id");
+    And("no raw translation key is rendered", () => {
+      expect(document.body.textContent).not.toMatch(/aiBench|\{\w+\}/);
     });
   });
 
@@ -1010,48 +1075,51 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     return details;
   }
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The page explains how the score is calculated
-  Scenario("The page explains how the score is calculated", ({ Given, When, Then, And }) => {
-    let details: HTMLElement;
-    Given("the AI benchmark page is open", () => {
-      renderPage();
-    });
-    When("the reader opens the methodology section", () => {
-      details = openMethodology();
-    });
-    Then("it lists every benchmark with its version", () => {
-      const items = within(details).getAllByTestId("ai-bench-method-benchmark");
-      expect(items.map((i) => i.getAttribute("data-benchmark"))).toEqual(BENCHMARK_SPECS.map((b) => b.id));
-      BENCHMARK_SPECS.forEach((b, i) => {
-        expect(items[i]!.textContent).toContain(b.name);
-        expect(items[i]!.textContent).toContain(tf("en", "aiBenchMethodVersion", { version: b.version }));
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The methodology lists every benchmark, the roster, the operator order, and the consensus minimum
+  Scenario(
+    "The methodology lists every benchmark, the roster, the operator order, and the consensus minimum",
+    ({ Given, When, Then, And }) => {
+      let details: HTMLElement;
+      Given("the AI benchmark page is open", () => {
+        renderPage();
       });
-    });
-    And("it states which models the roster covers", () => {
-      const roster = within(details).getByTestId("ai-bench-method-roster").textContent;
-      expect(roster).toBe(tf("en", "aiBenchMethodRoster", rosterScopeParams()));
-      for (const vendor of FRONTIER_VENDORS) expect(roster).toContain(vendor);
-      expect(roster).toContain("every OpenCode Go and Command Code model with a named vendor");
-      for (const h of ROSTER_CATALOG_HARNESSES) expect(roster).toContain(HARNESS_DISPLAY_NAMES[h]);
-      for (const l of HARNESS_IN_HOUSE_LINES) expect(roster).toContain(`${l.vendor} ${l.line}`);
-    });
-    And("it states the operator order used to pick each figure", () => {
-      const orders = within(details).getAllByTestId("ai-bench-method-operator-order");
-      BENCHMARK_SPECS.forEach((b, i) => {
-        expect(orders[i]!.textContent).toContain(b.operatorOrder.map((o) => operatorById(o).shortName).join(" → "));
+      When("the reader opens the methodology section", () => {
+        details = openMethodology();
       });
-    });
-    And("it states the minimum number of benchmarks needed for a consensus tier", () => {
-      expect(within(details).getByTestId("ai-bench-method-index").textContent).toBe(
-        tf("en", "aiBenchMethodIndex", { min: MIN_SCORED_BENCHMARKS }),
-      );
-    });
-    And("it states that no average or composite score is computed", () => {
-      expect(within(details).getByTestId("ai-bench-method-no-average").textContent).toBe(
-        t("en", "aiBenchMethodNoAverage"),
-      );
-    });
-  });
+      Then("it lists every benchmark with its version", () => {
+        const items = within(details).getAllByTestId("ai-bench-method-benchmark");
+        expect(items.map((i) => i.getAttribute("data-benchmark"))).toEqual(BENCHMARK_SPECS.map((b) => b.id));
+        BENCHMARK_SPECS.forEach((b, i) => {
+          expect(items[i]!.textContent).toContain(b.name);
+          expect(items[i]!.textContent).toContain(tf("en", "aiBenchMethodVersion", { version: b.version }));
+        });
+      });
+      And("it states which models the roster covers", () => {
+        const roster = within(details).getByTestId("ai-bench-method-roster").textContent;
+        expect(roster).toBe(tf("en", "aiBenchMethodRoster", rosterScopeParams()));
+        for (const vendor of FRONTIER_VENDORS) expect(roster).toContain(vendor);
+        expect(roster).toContain("every OpenCode Go and Command Code model with a named vendor");
+        for (const h of ROSTER_CATALOG_HARNESSES) expect(roster).toContain(HARNESS_DISPLAY_NAMES[h]);
+        for (const l of HARNESS_IN_HOUSE_LINES) expect(roster).toContain(`${l.vendor} ${l.line}`);
+      });
+      And("it states the operator order used to pick each figure", () => {
+        const orders = within(details).getAllByTestId("ai-bench-method-operator-order");
+        BENCHMARK_SPECS.forEach((b, i) => {
+          expect(orders[i]!.textContent).toContain(b.operatorOrder.map((o) => operatorById(o).shortName).join(" → "));
+        });
+      });
+      And("it states the minimum number of benchmarks needed for a consensus tier", () => {
+        expect(within(details).getByTestId("ai-bench-method-index").textContent).toBe(
+          tf("en", "aiBenchMethodIndex", { min: MIN_SCORED_BENCHMARKS }),
+        );
+      });
+      And("it states that no average or composite score is computed", () => {
+        expect(within(details).getByTestId("ai-bench-method-no-average").textContent).toBe(
+          t("en", "aiBenchMethodNoAverage"),
+        );
+      });
+    },
+  );
 
   // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The methodology states the consensus rule
   Scenario("The methodology states the consensus rule", ({ Given, When, Then, And }) => {
@@ -1120,21 +1188,6 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: No raw translation key leaks on either locale
-  ScenarioOutline("No raw translation key leaks on either locale", ({ Given, When, Then }, variables) => {
-    Given('the locale is "<locale>"', () => {
-      ctx.locale = variables.locale as Locale;
-    });
-    When("the AI benchmark page renders", () => {
-      // Open every disclosure and pick a finder target so every string path renders.
-      renderPage(ctx.locale, "sub=gpt-5.6-terra");
-      for (const d of Array.from(document.querySelectorAll("details"))) d.open = true;
-    });
-    Then("no rendered text matches a raw translation key", () => {
-      expect(document.body.textContent).not.toMatch(/aiBench|\{\w+\}/);
-    });
-  });
-
   // ── Filters ──────────────────────────────────────────────────────────────────
 
   // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The page with no query parameters shows the whole roster
@@ -1196,24 +1249,36 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     },
   );
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A tier parameter narrows the tier map and the table
-  Scenario("A tier parameter narrows the tier map and the table", ({ Given, When, Then, And }) => {
-    Given("the URL carries a tier parameter naming a known tier", () => {
-      ctx.filterTier = "planning";
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A tier parameter narrows the results to that tier
+  ScenarioOutline("A tier parameter narrows the results to that tier", ({ Given, When, Then, And }, variables) => {
+    Given('the URL carries "<query>"', () => {
+      navState.search = variables.query;
     });
     When("the page renders", () => {
-      renderPage("en", `tier=${ctx.filterTier}`);
+      renderPage("en", navState.search);
     });
-    Then("only models in that tier are shown in the tier map", () => {
-      const expected = scored.filter((s) => s.tier === ctx.filterTier).map((s) => s.model.id);
-      expect(expected.length).toBeGreaterThan(0);
-      expect(sorted(tierMapIds())).toEqual(sorted(expected));
-      expect(screen.queryByTestId("ai-bench-tier-ultra")).toBeNull();
+    Then('only models in that tier are shown in the "<view>"', () => {
+      if (variables.view === "tier map") {
+        const expected = scored.filter((s) => s.tier === "planning").map((s) => s.model.id);
+        expect(expected.length).toBeGreaterThan(0);
+        expect(sorted(tierMapIds())).toEqual(sorted(expected));
+        expect(screen.queryByTestId("ai-bench-tier-ultra")).toBeNull();
+      } else {
+        const shown = filterModels(full, { benchmark: "deep-swe", tier: "planning" }, full);
+        expect(shown.length).toBeGreaterThan(0);
+        const { groups } = computeBenchmarkTierGroups({ ...full, models: shown }, "deep-swe", full);
+        expect(tierMapIds()).toEqual(groups.planning.map((r) => r.model.id));
+        for (const id of tierMapIds()) {
+          expect(assignBenchmarkTier(byId(id), "deep-swe", full)).toBe("planning");
+        }
+      }
     });
     And("only models in that tier are shown in the data table", () => {
-      expect(sorted(tableIds())).toEqual(
-        sorted(scored.filter((s) => s.tier === ctx.filterTier).map((s) => s.model.id)),
-      );
+      if (variables.view === "tier map") {
+        expect(sorted(tableIds())).toEqual(sorted(scored.filter((s) => s.tier === "planning").map((s) => s.model.id)));
+      } else {
+        expect(sorted(tableIds())).toEqual(sorted(tierMapIds()));
+      }
     });
   });
 
@@ -1237,24 +1302,6 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: An unrecognized filter value falls back to the unfiltered view
-  Scenario("An unrecognized filter value falls back to the unfiltered view", ({ Given, When, Then, But }) => {
-    Given("the URL carries a harness parameter with an unknown value", () => {
-      ctx.errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-    });
-    When("the page renders", () => {
-      renderPage("en", "harness=not-a-harness");
-    });
-    Then("every roster model is shown", () => {
-      expect(sorted(tableIds())).toEqual(sorted(full.models.map((m) => m.id)));
-      expect((screen.getByLabelText(t("en", "aiBenchFilterHarness")) as HTMLSelectElement).value).toBe("");
-    });
-    But("no error is surfaced to the reader", () => {
-      expect(screen.queryByRole("alert")).toBeNull();
-      expect(ctx.errorSpy).not.toHaveBeenCalled();
-    });
-  });
-
   // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A duplicated query parameter resolves to its first value
   Scenario("A duplicated query parameter resolves to its first value", ({ Given, When, Then }) => {
     Given("the URL carries the harness parameter twice with two different known harness values", () => {
@@ -1271,21 +1318,36 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Resetting a filter to "All" removes it from the URL
-  Scenario('Resetting a filter to "All" removes it from the URL', ({ Given, When, Then }) => {
-    Given("the URL carries both a harness parameter and a tier parameter", () => {
-      navState.search = "harness=opencode-go&tier=execution";
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Resetting a control removes its parameter from the URL
+  ScenarioOutline("Resetting a control removes its parameter from the URL", ({ Given, When, Then, And }, variables) => {
+    const controlLabel = () =>
+      variables.control === "tier filter" ? t("en", "aiBenchFilterTier") : t("en", "aiBenchScoreBasisLabel");
+    Given('the URL carries "<query>"', () => {
+      navState.search = variables.query;
     });
-    When('the reader resets the tier filter to "All tiers"', () => {
+    When('the reader resets the "<control>" to its default', () => {
       renderPage("en", navState.search);
-      fireEvent.change(screen.getByLabelText(t("en", "aiBenchFilterTier")), { target: { value: "" } });
+      fireEvent.change(screen.getByLabelText(controlLabel()), { target: { value: "" } });
       followPush();
     });
-    Then("the URL retains the harness parameter but no longer carries the tier parameter", () => {
-      const params = new URLSearchParams(navState.search);
-      expect(params.get("harness")).toBe("opencode-go");
-      expect(params.has("tier")).toBe(false);
-      expect((screen.getByLabelText(t("en", "aiBenchFilterTier")) as HTMLSelectElement).value).toBe("");
+    Then('the URL no longer carries the "<parameter>" parameter', () => {
+      expect(new URLSearchParams(navState.search).has(variables.parameter)).toBe(false);
+    });
+    And("the URL keeps its other parameters", () => {
+      const before = new URLSearchParams(variables.query);
+      const after = new URLSearchParams(navState.search);
+      for (const [key, value] of before) {
+        if (key !== variables.parameter) expect(after.get(key)).toBe(value);
+      }
+    });
+    And('the "<control>" shows its default', () => {
+      expect((screen.getByLabelText(controlLabel()) as HTMLSelectElement).value).toBe("");
+      if (variables.control === "score basis") {
+        const groups = computeTierGroups(full);
+        expect(tierMapIds()).toEqual(
+          (["ultra", "planning", "execution", "fast"] as const).flatMap((tier) => groups[tier].map((s) => s.model.id)),
+        );
+      }
     });
   });
 
@@ -1412,75 +1474,6 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
     });
   });
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: An unrecognized benchmark falls back to the consensus tiers
-  Scenario("An unrecognized benchmark falls back to the consensus tiers", ({ Given, When, Then, But }) => {
-    Given("the URL carries a benchmark parameter with an unknown value", () => {
-      ctx.errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-      navState.search = "benchmark=not-a-benchmark";
-    });
-    When("the page renders", () => {
-      renderPage("en", navState.search);
-    });
-    Then("the tier map groups models by consensus tier", () => {
-      const groups = computeTierGroups(full);
-      expect(tierMapIds()).toEqual(
-        (["ultra", "planning", "execution", "fast"] as const).flatMap((tier) => groups[tier].map((s) => s.model.id)),
-      );
-      expect((screen.getByLabelText(t("en", "aiBenchScoreBasisLabel")) as HTMLSelectElement).value).toBe("");
-    });
-    But("no error is surfaced to the reader", () => {
-      expect(screen.queryByRole("alert")).toBeNull();
-      expect(ctx.errorSpy).not.toHaveBeenCalled();
-    });
-  });
-
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The chosen benchmark is kept in the URL
-  Scenario("The chosen benchmark is kept in the URL", ({ Given, When, Then, And }) => {
-    Given("the AI benchmark page is open", () => {
-      renderPage("en", "");
-    });
-    When('the reader changes the score basis to "Terminal-Bench"', () => {
-      fireEvent.change(screen.getByLabelText(t("en", "aiBenchScoreBasisLabel")), {
-        target: { value: "terminal-bench" },
-      });
-      followPush();
-      ctx.subIds = tierMapIds();
-    });
-    Then("the URL carries that benchmark as the score basis", () => {
-      expect(new URLSearchParams(navState.search).get("benchmark")).toBe("terminal-bench");
-    });
-    And("reloading that URL shows the same per-benchmark ranking", () => {
-      cleanup();
-      renderPage("en", navState.search);
-      expect((screen.getByLabelText(t("en", "aiBenchScoreBasisLabel")) as HTMLSelectElement).value).toBe(
-        "terminal-bench",
-      );
-      expect(tierMapIds()).toEqual(ctx.subIds);
-    });
-  });
-
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Resetting the score basis to Consensus tiers removes it from the URL
-  Scenario("Resetting the score basis to Consensus tiers removes it from the URL", ({ Given, When, Then, And }) => {
-    Given("the URL carries a benchmark parameter naming a known benchmark", () => {
-      navState.search = "benchmark=deep-swe";
-    });
-    When('the reader resets the score basis to "Consensus tiers"', () => {
-      renderPage("en", navState.search);
-      fireEvent.change(screen.getByLabelText(t("en", "aiBenchScoreBasisLabel")), { target: { value: "" } });
-      followPush();
-    });
-    Then("the URL no longer carries the benchmark parameter", () => {
-      expect(new URLSearchParams(navState.search).has("benchmark")).toBe(false);
-      expect((screen.getByLabelText(t("en", "aiBenchScoreBasisLabel")) as HTMLSelectElement).value).toBe("");
-    });
-    And("the tier map groups models by consensus tier", () => {
-      const groups = computeTierGroups(full);
-      expect(tierMapIds()).toEqual(
-        (["ultra", "planning", "execution", "fast"] as const).flatMap((tier) => groups[tier].map((s) => s.model.id)),
-      );
-    });
-  });
-
   // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The methodology explains the per-benchmark view
   Scenario("The methodology explains the per-benchmark view", ({ Given, When, Then, And }) => {
     Given("the AI benchmark page is open", () => {
@@ -1551,31 +1544,6 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
       );
     });
   });
-
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A tier parameter in a per-benchmark view narrows to that benchmark's tier
-  Scenario(
-    "A tier parameter in a per-benchmark view narrows to that benchmark's tier",
-    ({ Given, When, Then, And }) => {
-      Given("the URL carries a benchmark parameter naming DeepSWE and a tier parameter naming a known tier", () => {
-        navState.search = "benchmark=deep-swe&tier=planning";
-      });
-      When("the page renders", () => {
-        renderPage("en", navState.search);
-      });
-      Then("only models in that tier on DeepSWE are shown in the ranked list", () => {
-        const shown = filterModels(full, { benchmark: "deep-swe", tier: "planning" }, full);
-        expect(shown.length).toBeGreaterThan(0);
-        const { groups } = computeBenchmarkTierGroups({ ...full, models: shown }, "deep-swe", full);
-        expect(tierMapIds()).toEqual(groups.planning.map((r) => r.model.id));
-        for (const id of tierMapIds()) {
-          expect(assignBenchmarkTier(byId(id), "deep-swe", full)).toBe("planning");
-        }
-      });
-      And("only models in that tier on DeepSWE are shown in the data table", () => {
-        expect(sorted(tableIds())).toEqual(sorted(tierMapIds()));
-      });
-    },
-  );
 
   // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The methodology lists every benchmark's tier anchors
   Scenario("The methodology lists every benchmark's tier anchors", ({ Given, When, Then, And }) => {
@@ -1725,30 +1693,6 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
       const header = page.children[0]!;
       expect(header.children).toHaveLength(4);
       expect(header.querySelector("img, svg, picture, video")).toBeNull();
-    });
-  });
-
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The page behaves identically in both locales
-  ScenarioOutline("The page behaves identically in both locales", ({ Given, When, Then, And }, variables) => {
-    Given('the AI benchmark page is loaded in the "<locale>" locale at a 390 px viewport', () => {
-      ctx.viewportWidth = 390;
-      ctx.locale = variables.locale as Locale;
-    });
-    When("the page renders", () => {
-      renderPage(ctx.locale);
-    });
-    Then("the substitute finder is present above the fold", () => {
-      expect(screen.getByTestId("ai-bench-page").children[1]).toBe(screen.getByTestId("ai-bench-finder"));
-    });
-    And("every tier section is present", () => {
-      for (const tier of ["ultra", "planning", "execution", "fast"]) {
-        expect(screen.getByTestId(`ai-bench-tier-${tier}`)).toBeTruthy();
-      }
-      expect(screen.getByTestId("ai-bench-insufficient")).toBeTruthy();
-      expect(screen.getByTestId("ai-bench-no-consensus")).toBeTruthy();
-    });
-    And("no raw translation key is rendered", () => {
-      expect(document.body.textContent).not.toMatch(/aiBench|\{\w+\}/);
     });
   });
 });

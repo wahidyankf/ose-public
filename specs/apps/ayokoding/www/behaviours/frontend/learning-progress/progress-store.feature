@@ -8,12 +8,17 @@ Feature: Learning progress store
     Given the app is running
 
   # Behaviour: AYW-013
-  Scenario: Marking a page complete is saved in this browser only
+  Scenario: A completed page stays completed after a reload
     Given a reader has no saved progress
     When the reader marks a learning page as complete
     And the reader reloads the page
     Then the page is still shown as completed
-    And no network request sent while marking carries the progress data
+
+  # Behaviour: AYW-013
+  Scenario: Marking a page complete is saved in this browser only
+    Given a reader has no saved progress
+    When the reader marks a learning page as complete
+    Then no network request sent while marking carries the progress data
 
   Scenario: A completed page can be un-checked
     Given a reader has marked a learning page as complete

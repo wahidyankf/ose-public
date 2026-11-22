@@ -30,7 +30,7 @@ describe("MinRoleTable", () => {
     cityScope: null as null,
   };
 
-  // Gherkin (binds): "Minimum role for a savings target ranks on essential savings and is reordered"
+  // Gherkin (binds): "Qualifying rows sit above a divider, others dimmed below"; "The lowest qualifying role is marked minimum"
   // NOTE: target 8000 USD genuinely splits the ladder for the default 1-adult household
   // (savings: swe_1≈2950, swe_2≈6150, senior_swe≈8710 → senior_swe is the minimum, swe_1/swe_2
   // fall below). A target of 2000 would clear ALL roles (no split) — the prior 2000 assertion

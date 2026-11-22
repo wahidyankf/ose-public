@@ -349,7 +349,7 @@ Given("the AI benchmark page is open", async ({ page }) => {
   await load(page);
 });
 
-When("the tier groups are computed", async ({ page }) => {
+When("the consensus tier sections are rendered", async ({ page }) => {
   await expect(page.getByTestId("ai-bench-tier-map")).toBeVisible();
 });
 

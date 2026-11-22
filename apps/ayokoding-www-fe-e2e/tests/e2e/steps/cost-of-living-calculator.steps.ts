@@ -4,6 +4,7 @@ import { expect, type Locator, type Page } from "@playwright/test";
 const { Given, When, Then } = createBdd();
 
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Cost-of-living breakdown lists category expenses per city
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Relocation cost and reserve are shown apart in each city row
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: cascading geographic filters
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: country shown beside city
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Clicking a city name opens its single-city cost-of-living detail
@@ -14,6 +15,8 @@ const { Given, When, Then } = createBdd();
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The OOP abbreviation is explained on screen
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Relocation reserve is shown separately from sunk costs
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings tab converts gross salary to net before subtracting expenses
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings tab shows essentials and savings with percentages
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The savings table can be sorted by savings
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings tab honours the active geographic filter
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Gross salary entered monthly shows the derived annual figure
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Non-salary and total compensation are shown as context only
@@ -23,7 +26,9 @@ const { Given, When, Then } = createBdd();
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: calculator in Indonesian
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: No Israeli city is listed in the dataset, any table, or role candidates
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Data snapshot date is clearly shown
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Adding adults and children changes the modeled expenses
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Adding adults and children grows housing and utilities sub-linearly
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Adding adults and children grows food and healthcare near per capita
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Adding school-age children adds schooling costs
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Pre-school children incur childcare, not schooling
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: school type toggle availability
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Private school raises expenses more than public
@@ -101,7 +106,6 @@ type CalculatorEvidence = {
   areaAfter?: { housing: number; total: number };
   candidateBefore?: { firstSavings: string; minimumRole: string };
   candidateAfter?: { firstSavings: string; minimumRole: string };
-  fx?: { currencies: string[]; invalidConversions: string[]; displayCurrencies: string[] };
   preschoolBefore?: Record<string, number>;
   preschoolAfter?: Record<string, number>;
   qualifyingOracle?: {
@@ -368,15 +372,6 @@ Then("I see a table of tech-hub cities", async ({ page }) => {
   const rows = page.locator("table tbody tr");
   await rows.first().waitFor({ state: "visible" });
   expect(await rows.count()).toBeGreaterThan(0);
-});
-
-Then("each row shows a Country column immediately to the left of the City column", async ({ page }) => {
-  const headers = page.locator("table thead th");
-  const texts = await headers.allTextContents();
-  const countryIdx = texts.findIndex((h) => h.trim() === "Country");
-  const cityIdx = texts.findIndex((h) => h.trim() === "City");
-  expect(countryIdx).toBeGreaterThanOrEqual(0);
-  expect(cityIdx).toBe(countryIdx + 1);
 });
 
 Then("every row shows a Country column immediately to the left of the City column", async ({ page }) => {
@@ -983,58 +978,6 @@ Then("I see an {string} disclaimer", async ({ page }, text: string) => {
   await expect(el).toBeVisible();
   await expect(el).toHaveText(new RegExp("^" + text + "$", "i"));
 });
-
-// ── FX conversion ─────────────────────────────────────────────────────────────
-
-When("I read any USD figure derived from a local-currency value", async ({ page }) => {
-  const cells = page.locator("[data-testid^='col-housing-']");
-  await cells.first().waitFor({ state: "visible" });
-  const currencies = new Set<string>();
-  const invalidConversions: string[] = [];
-  for (const cell of await cells.all()) {
-    const text = (await cell.textContent())?.trim() ?? "";
-    const match = text.match(/^([A-Z]{3}) [\d,.-]+ \/ \$([\d,.-]+)$/);
-    if (!match) {
-      invalidConversions.push(text);
-      continue;
-    }
-    const currency = match[1]!;
-    currencies.add(currency);
-    const rate = EXPECTED_FX_RATES[currency];
-    const raw = Number(await cell.getAttribute("data-raw"));
-    const displayedUsd = Number(match[2]!.replaceAll(",", ""));
-    if (rate === undefined || displayedUsd !== Math.round(raw * rate)) invalidConversions.push(text);
-  }
-
-  await page.getByRole("tab", { name: "Minimum role" }).click();
-  await page.waitForURL(/tab=min-role/);
-  const displayCurrencies = await page
-    .locator("#display-currency-select option")
-    .evaluateAll((options) => options.map((option) => (option as HTMLOptionElement).value));
-  evidenceFor(page).fx = {
-    currencies: [...currencies].sort(),
-    invalidConversions,
-    displayCurrencies,
-  };
-});
-
-Then("the conversion uses the rate for that currency stored in the in-repo fx.ts table", async ({ page }) => {
-  const fxEvidence = evidenceFor(page).fx;
-  expect(fxEvidence).toBeDefined();
-  expect(fxEvidence!.invalidConversions).toEqual([]);
-});
-
-Then(
-  "every currency referenced by a city, country, role, or display-currency selector has an fx.ts entry",
-  async ({ page }) => {
-    const fxEvidence = evidenceFor(page).fx;
-    expect(fxEvidence).toBeDefined();
-    expect(fxEvidence!.currencies).toEqual(Object.keys(EXPECTED_FX_RATES).sort());
-    for (const currency of fxEvidence!.displayCurrencies) {
-      expect(EXPECTED_FX_RATES[currency], "FX rate for display currency " + currency).toBeDefined();
-    }
-  },
-);
 
 // ── Household composition changes expenses ────────────────────────────────────
 

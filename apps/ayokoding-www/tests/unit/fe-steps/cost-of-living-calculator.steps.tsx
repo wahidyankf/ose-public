@@ -160,14 +160,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       expect(screen.getByRole("table")).toBeTruthy();
     });
 
-    And("each row shows a Country column immediately to the left of the City column", () => {
-      const headers = screen.getAllByRole("columnheader").map((h) => h.textContent?.toLowerCase() ?? "");
-      const countryIdx = headers.findIndex((t) => t.includes("country"));
-      const cityIdx = headers.findIndex((t) => t.includes("city"));
-      expect(countryIdx).toBeGreaterThanOrEqual(0);
-      expect(cityIdx).toBeGreaterThan(countryIdx);
-    });
-
     And(
       "each row shows monthly housing, food, transport, utilities, healthcare, childcare, school, and lifestyle expenses",
       () => {
@@ -187,6 +179,25 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       const headers = screen.getAllByRole("columnheader").map((h) => h.textContent?.toLowerCase() ?? "");
       expect(headers.some((t) => t.includes("essentials"))).toBe(true);
       expect(headers.some((t) => t.includes("total"))).toBe(true);
+    });
+  });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Relocation cost and reserve are shown apart in each city row
+  Scenario("Relocation cost and reserve are shown apart in each city row", ({ Given, When, Then, And }) => {
+    Given('I am on "/en/tools/cost-of-living-calculator"', () => {
+      navState.locale = "en";
+      expect(navState.params.toString()).toBe("");
+    });
+    And('the "Cost of living" tab is active', () => {
+      expect(navState.params.get("tab")).toBeNull();
+    });
+
+    When("the page finishes loading", () => {
+      renderPage(<CostOfLivingCalculatorPage />);
+    });
+
+    Then("I see a table of tech-hub cities", () => {
+      expect(screen.getByRole("table")).toBeTruthy();
     });
 
     And("each row shows a separate one-time relocation sunk-cost total", () => {
@@ -593,21 +604,53 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
         const headers = screen.getAllByRole("columnheader").map((h) => h.textContent?.toLowerCase() ?? "");
         expect(headers.some((t) => t.includes("net"))).toBe(true);
       });
-
-      And(
-        "each row shows the essentials, the savings after essentials, and the savings after lifestyle with percentages",
-        () => {
-          const headers = screen.getAllByRole("columnheader").map((h) => h.textContent?.toLowerCase() ?? "");
-          expect(headers.some((t) => t.includes("essentials"))).toBe(true);
-          expect(headers.some((t) => t.includes("savings"))).toBe(true);
-        },
-      );
-
-      And("the table can be sorted by savings", () => {
-        expect(screen.getByRole("button", { name: /sort/i })).toBeTruthy();
-      });
     },
   );
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings tab shows essentials and savings with percentages
+  Scenario("Savings tab shows essentials and savings with percentages", ({ Given, When, Then, And }) => {
+    Given('I am on "/en/tools/cost-of-living-calculator"', () => {
+      navState.locale = "en";
+      expect(navState.params.toString()).toBe("");
+    });
+    And('I switch to the "Savings" tab', async () => {
+      renderPage(<CostOfLivingCalculatorPage />);
+      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
+    });
+    When('I enter a gross monthly salary of "8000" USD', async () => {
+      const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "8000");
+    });
+    Then(
+      "each row shows the essentials, the savings after essentials, and the savings after lifestyle with percentages",
+      () => {
+        const headers = screen.getAllByRole("columnheader").map((h) => h.textContent?.toLowerCase() ?? "");
+        expect(headers.some((t) => t.includes("essentials"))).toBe(true);
+        expect(headers.some((t) => t.includes("savings"))).toBe(true);
+      },
+    );
+  });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The savings table can be sorted by savings
+  Scenario("The savings table can be sorted by savings", ({ Given, When, Then, And }) => {
+    Given('I am on "/en/tools/cost-of-living-calculator"', () => {
+      navState.locale = "en";
+      expect(navState.params.toString()).toBe("");
+    });
+    And('I switch to the "Savings" tab', async () => {
+      renderPage(<CostOfLivingCalculatorPage />);
+      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
+    });
+    When('I enter a gross monthly salary of "8000" USD', async () => {
+      const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "8000");
+    });
+    Then("the table can be sorted by savings", () => {
+      expect(screen.getByRole("button", { name: /sort/i })).toBeTruthy();
+    });
+  });
 
   // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Gross salary entered monthly shows the derived annual figure
   ScenarioOutline(
@@ -849,8 +892,8 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── Cost-basis controls scenarios ───────────────────────────────────────────
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Adding adults and children changes the modeled expenses
-  Scenario("Adding adults and children changes the modeled expenses", async ({ Given, When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Adding adults and children grows housing and utilities sub-linearly
+  Scenario("Adding adults and children grows housing and utilities sub-linearly", ({ Given, When, Then }) => {
     Given('I am on the "Cost of living" tab', () => {
       renderPage(<CostOfLivingCalculatorPage />);
     });
@@ -864,12 +907,36 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       // Preview moved to the min-role tab; on the cost tab these figures live in the table.
       expect(screen.getByTestId(`col-housing-${dataset.cities[0]!.id}`)).toBeTruthy();
     });
+  });
 
-    And("the modeled food and healthcare increase near per-capita", () => {
-      expect(screen.getByTestId(`col-food-${dataset.cities[0]!.id}`)).toBeTruthy();
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Adding adults and children grows food and healthcare near per capita
+  Scenario("Adding adults and children grows food and healthcare near per capita", ({ Given, When, Then }) => {
+    Given('I am on the "Cost of living" tab', () => {
+      renderPage(<CostOfLivingCalculatorPage />);
     });
 
-    And("schooling is added for the two school-age children", () => {
+    When('I change the household from "single" to married with 2 school-age children', async () => {
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /adults/i }), "2");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /school-age children/i }), "2");
+    });
+
+    Then("the modeled food and healthcare increase near per-capita", () => {
+      expect(screen.getByTestId(`col-food-${dataset.cities[0]!.id}`)).toBeTruthy();
+    });
+  });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Adding school-age children adds schooling costs
+  Scenario("Adding school-age children adds schooling costs", ({ Given, When, Then }) => {
+    Given('I am on the "Cost of living" tab', () => {
+      renderPage(<CostOfLivingCalculatorPage />);
+    });
+
+    When('I change the household from "single" to married with 2 school-age children', async () => {
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /adults/i }), "2");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /school-age children/i }), "2");
+    });
+
+    Then("schooling is added for the two school-age children", () => {
       const schooling = parseFloat(
         screen.getByTestId(`col-school-${dataset.cities[0]!.id}`).getAttribute("data-raw") ?? "0",
       );

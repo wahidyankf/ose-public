@@ -29,7 +29,11 @@ Feature: Learning progress accessibility
     Given a 375 pixel wide viewport
     When the reader opens the Learn home, a path page, a learning page, and a course landing page
     Then no page scrolls horizontally
-    And every progress control is at least 44 by 44 CSS pixels
+
+  Scenario: Progress controls are at least 44 by 44 CSS pixels on a phone
+    Given a 375 pixel wide viewport
+    When the reader opens the Learn home, a path page, a learning page, and a course landing page
+    Then every progress control is at least 44 by 44 CSS pixels
 
   Scenario: Progress screens pass automated accessibility checks
     Given a reader has saved progress

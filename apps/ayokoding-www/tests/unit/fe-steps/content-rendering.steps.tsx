@@ -63,7 +63,7 @@ function renderMermaidBetweenControls() {
   return fallback;
 }
 
-describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
+describeFeature(feature, ({ Scenario, ScenarioOutline, Background, AfterEachScenario }) => {
   AfterEachScenario(cleanup);
 
   Background(({ Given }) => {
@@ -277,82 +277,55 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: Mermaid source stays keyboard reachable while its diagram is pending
-  Scenario("Mermaid source stays keyboard reachable while its diagram is pending", ({ Given, And, When, Then }) => {
-    let rendering: ReturnType<typeof controlMermaidRendering>;
-    let user: ReturnType<typeof userEvent.setup>;
-    let fallback: HTMLPreElement;
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: Mermaid source is keyboard reachable until a diagram shows
+  ScenarioOutline(
+    "Mermaid source is keyboard reachable until a diagram shows",
+    ({ Given, And, When, Then }, variables) => {
+      let rendering: ReturnType<typeof controlMermaidRendering>;
+      let user: ReturnType<typeof userEvent.setup>;
+      let fallback: HTMLPreElement;
 
-    Given("a visitor opens a content page with a Mermaid code block between two controls", async () => {
-      rendering = controlMermaidRendering();
-      user = userEvent.setup();
-      fallback = renderMermaidBetweenControls();
-      await rendering.started;
-    });
-    And("the diagram is still rendering", () => {
-      expect(screen.queryByRole("img", { name: "Source flow" })).not.toBeInTheDocument();
-    });
-    When("the visitor presses Tab to reach the control before the code block", async () => {
-      await user.tab();
-      expect(screen.getByRole("button", { name: "Before diagram" })).toHaveFocus();
-    });
-    And("the visitor presses Tab again", async () => {
-      await user.tab();
-    });
-    Then("the Mermaid source should have keyboard focus", () => {
-      expect(fallback).toHaveFocus();
-      expect(fallback).toHaveTextContent("Read the source");
-    });
-    When("the visitor presses Tab once more", async () => {
-      await user.tab();
-    });
-    Then("focus should move to the control after the code block", () => {
-      expect(screen.getByRole("button", { name: "After diagram" })).toHaveFocus();
-    });
-  });
-
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: Mermaid source stays keyboard reachable when its diagram fails to render
-  Scenario("Mermaid source stays keyboard reachable when its diagram fails to render", ({ Given, When, And, Then }) => {
-    let rendering: ReturnType<typeof controlMermaidRendering>;
-    let user: ReturnType<typeof userEvent.setup>;
-    let fallback: HTMLPreElement;
-
-    Given("a visitor opens a content page with a Mermaid code block between two controls", async () => {
-      rendering = controlMermaidRendering();
-      user = userEvent.setup();
-      fallback = renderMermaidBetweenControls();
-      await rendering.started;
-    });
-    When("the diagram rendering fails", async () => {
-      const warning = vi.spyOn(console, "warn").mockImplementation(() => undefined);
-      const failure = new Error("Synthetic Mermaid render failure");
-
-      await act(async () => {
-        rendering.result.reject(failure);
-        await rendering.result.promise.catch(() => undefined);
+      Given("a visitor opens a content page with a Mermaid code block between two controls", async () => {
+        rendering = controlMermaidRendering();
+        user = userEvent.setup();
+        fallback = renderMermaidBetweenControls();
+        await rendering.started;
       });
+      And("the diagram <state>", async () => {
+        if (variables.state === "is still rendering") {
+          expect(screen.queryByRole("img", { name: "Source flow" })).not.toBeInTheDocument();
+          return;
+        }
+        const warning = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+        const failure = new Error("Synthetic Mermaid render failure");
 
-      expect(warning).toHaveBeenCalledExactlyOnceWith("[mermaid] Failed to render diagram:", failure);
-      warning.mockRestore();
-    });
-    And("the visitor presses Tab to reach the control before the code block", async () => {
-      await user.tab();
-      expect(screen.getByRole("button", { name: "Before diagram" })).toHaveFocus();
-    });
-    And("the visitor presses Tab again", async () => {
-      await user.tab();
-    });
-    Then("the Mermaid source should have keyboard focus", () => {
-      expect(fallback).toHaveFocus();
-      expect(fallback).toHaveTextContent("Read the source");
-    });
-    When("the visitor presses Tab once more", async () => {
-      await user.tab();
-    });
-    Then("focus should move to the control after the code block", () => {
-      expect(screen.getByRole("button", { name: "After diagram" })).toHaveFocus();
-    });
-  });
+        await act(async () => {
+          rendering.result.reject(failure);
+          await rendering.result.promise.catch(() => undefined);
+        });
+
+        expect(warning).toHaveBeenCalledExactlyOnceWith("[mermaid] Failed to render diagram:", failure);
+        warning.mockRestore();
+      });
+      When("the visitor presses Tab to reach the control before the code block", async () => {
+        await user.tab();
+        expect(screen.getByRole("button", { name: "Before diagram" })).toHaveFocus();
+      });
+      And("the visitor presses Tab again", async () => {
+        await user.tab();
+      });
+      Then("the Mermaid source should have keyboard focus", () => {
+        expect(fallback).toHaveFocus();
+        expect(fallback).toHaveTextContent("Read the source");
+      });
+      When("the visitor presses Tab once more", async () => {
+        await user.tab();
+      });
+      Then("focus should move to the control after the code block", () => {
+        expect(screen.getByRole("button", { name: "After diagram" })).toHaveFocus();
+      });
+    },
+  );
 
   // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: The Mermaid source leaves keyboard focus order once the diagram renders
   Scenario("The Mermaid source leaves keyboard focus order once the diagram renders", ({ When, And, Then }) => {

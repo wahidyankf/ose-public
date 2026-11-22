@@ -65,31 +65,23 @@ Feature: Content Rendering
     Then the diagram should render as an inline SVG element
     And the raw Mermaid source should not be visible to the visitor
 
-  # Exemption(integration): the assertion reads the rendered page in a browser, and the integration project runs in node with no DOM or browser driver, so the end-to-end project supplies that browser; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Mermaid source stays keyboard reachable while its diagram is pending
+  # Exemption(integration): the assertion reads the rendered page in a browser, and the integration project runs in node with no DOM or browser driver, so the end-to-end project supplies that browser; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Mermaid source is keyboard reachable until a diagram shows
   @integration-exempt
-  # Exemption(e2e): a browser run cannot hold the renderer pending on demand without injected fault control, so the boundary is the unit tier; alternative-proof: ayokoding-www:test:unit / Mermaid source stays keyboard reachable while its diagram is pending
+  # Exemption(e2e): a browser run cannot hold the renderer pending or make it fail on demand without injected fault control, so the boundary is the unit tier; alternative-proof: ayokoding-www:test:unit / Mermaid source is keyboard reachable until a diagram shows
   @e2e-exempt
-  Scenario: Mermaid source stays keyboard reachable while its diagram is pending
+  Scenario Outline: Mermaid source is keyboard reachable until a diagram shows
     Given a visitor opens a content page with a Mermaid code block between two controls
-    And the diagram is still rendering
+    And the diagram <state>
     When the visitor presses Tab to reach the control before the code block
     And the visitor presses Tab again
     Then the Mermaid source should have keyboard focus
     When the visitor presses Tab once more
     Then focus should move to the control after the code block
 
-  # Exemption(integration): the assertion reads the rendered page in a browser, and the integration project runs in node with no DOM or browser driver, so the end-to-end project supplies that browser; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Mermaid source stays keyboard reachable when its diagram fails to render
-  @integration-exempt
-  # Exemption(e2e): a browser run cannot make the renderer fail on demand without injected fault control, so the boundary is the unit tier; alternative-proof: ayokoding-www:test:unit / Mermaid source stays keyboard reachable when its diagram fails to render
-  @e2e-exempt
-  Scenario: Mermaid source stays keyboard reachable when its diagram fails to render
-    Given a visitor opens a content page with a Mermaid code block between two controls
-    When the diagram rendering fails
-    And the visitor presses Tab to reach the control before the code block
-    And the visitor presses Tab again
-    Then the Mermaid source should have keyboard focus
-    When the visitor presses Tab once more
-    Then focus should move to the control after the code block
+    Examples:
+      | state              |
+      | is still rendering |
+      | fails to render    |
 
   Scenario: The Mermaid source leaves keyboard focus order once the diagram renders
     When a visitor opens a content page containing a Mermaid code block

@@ -1,3 +1,4 @@
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: A completed page stays completed after a reload
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: Marking a page complete is saved in this browser only
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: A completed page can be un-checked
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: Progress is shared by every path that contains the course

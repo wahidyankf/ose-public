@@ -267,12 +267,11 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: Marking a page complete is saved in this browser only
-  Scenario("Marking a page complete is saved in this browser only", ({ Given, When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: A completed page stays completed after a reload
+  Scenario("A completed page stays completed after a reload", ({ Given, When, Then, And }) => {
     Given("a reader has no saved progress", () => {
       noSavedProgress();
       expect(window.localStorage.getItem(PROGRESS_STORAGE_KEY)).toBeNull();
-      watchNetwork();
     });
 
     When("the reader marks a learning page as complete", () => {
@@ -290,8 +289,22 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(completionToggle().getAttribute("aria-pressed")).toBe("true");
       expect(completedPages()).toEqual(["learning/beginner"]);
     });
+  });
 
-    And("no network request sent while marking carries the progress data", () => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: Marking a page complete is saved in this browser only
+  Scenario("Marking a page complete is saved in this browser only", ({ Given, When, Then }) => {
+    Given("a reader has no saved progress", () => {
+      noSavedProgress();
+      expect(window.localStorage.getItem(PROGRESS_STORAGE_KEY)).toBeNull();
+      watchNetwork();
+    });
+
+    When("the reader marks a learning page as complete", () => {
+      openLessonPage({ pagePath: "learning/beginner", pathParam: PATH_ID });
+      fireEvent.click(completionToggle());
+    });
+
+    Then("no network request sent while marking carries the progress data", () => {
       expect(networkCalls).toEqual([]);
       expect(JSON.stringify(storedRecord())).toContain("learning/beginner");
       stopWatchingNetwork();

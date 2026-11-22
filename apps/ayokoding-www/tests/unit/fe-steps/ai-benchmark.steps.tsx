@@ -284,17 +284,21 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, AfterEachScen
 
   // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Every roster model appears in exactly one tier section
   Scenario("Every roster model appears in exactly one tier section", ({ Given, When, Then }) => {
-    let groups: ReturnType<typeof computeTierGroups>;
     Given("the full roster is loaded", () => {
       expect(full.models.length).toBeGreaterThan(0);
     });
-    When("the tier groups are computed", () => {
-      groups = computeTierGroups(full);
+    When("the consensus tier sections are rendered", () => {
+      renderPage();
     });
     Then('each model appears in exactly one of "ultra", "planning", "execution", "fast", or "insufficient"', () => {
-      const all = TIERS.flatMap((tier) => groups[tier].map((s) => s.model.id));
-      const noConsensus = groups["no-consensus"].map((s) => s.model.id);
-      expect(sorted([...all, ...noConsensus])).toEqual(sorted(full.models.map((m) => m.id)));
+      const insufficient = screen.queryByTestId("ai-bench-insufficient");
+      const noConsensus = screen.queryByTestId("ai-bench-no-consensus");
+      const listed = [
+        ...tierMapIds(),
+        ...(insufficient ? idsIn("ai-bench-insufficient-item", insufficient) : []),
+        ...(noConsensus ? idsIn("ai-bench-no-consensus-item", noConsensus) : []),
+      ];
+      expect(sorted(listed)).toEqual(sorted(full.models.map((m) => m.id)));
     });
   });
 

@@ -26,21 +26,16 @@ Feature: Lesson navigation
     Then the next learning page of the course opens
     And the previous page is counted as done
 
-  Scenario: The last page of a course leads to the next course in the path
-    Given a reader is on the last learning page of a course in path context
-    And the path has a course after it
+  Scenario Outline: The last page of a course leads to the next destination
+    Given a reader is on the last learning page "<position>"
     When the reader activates "Mark complete & continue"
-    Then the next course's landing page opens in the same path context
+    Then the primary action opens "<destination>"
 
-  Scenario: The last page of the path leads back to the path page
-    Given a reader is on the last learning page of the path's last course in path context
-    When the reader activates "Mark complete & continue"
-    Then the path page opens
-
-  Scenario: Without a path, the last page leads back to the course landing page
-    Given a reader is on a course's last learning page with no path context
-    When the reader activates "Mark complete & continue"
-    Then the course landing page opens
+    Examples:
+      | position                                           | destination                                              |
+      | of a course in path context with a course after it | the next course's landing page in the same path context |
+      | of the path's last course in path context          | the path page                                            |
+      | of a course with no path context                   | the course landing page                                  |
 
   # Behaviour: AYW-012
   Scenario: Previous goes back one page, then to the course landing page

@@ -55,7 +55,7 @@ Feature: AI model benchmark tool
   # Behaviour: AYW-053
   Scenario: Every roster model appears in exactly one tier section
     Given the full roster is loaded
-    When the tier groups are computed
+    When the consensus tier sections are rendered
     Then each model appears in exactly one of "ultra", "planning", "execution", "fast", or "insufficient"
 
   # ── Price ─────────────────────────────────────────────────────────────────────

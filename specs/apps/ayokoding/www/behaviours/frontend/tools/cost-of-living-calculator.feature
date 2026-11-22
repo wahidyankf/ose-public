@@ -6,9 +6,15 @@ Feature: Salary savings calculator
     And the "Cost of living" tab is active
     When the page finishes loading
     Then I see a table of tech-hub cities
-    And each row shows a Country column immediately to the left of the City column
     And each row shows monthly housing, food, transport, utilities, healthcare, childcare, school, and lifestyle expenses
     And each row shows an essentials subtotal and a total
+
+  # Behaviour: AYW-060
+  Scenario: Relocation cost and reserve are shown apart in each city row
+    Given I am on "/en/tools/cost-of-living-calculator"
+    And the "Cost of living" tab is active
+    When the page finishes loading
+    Then I see a table of tech-hub cities
     And each row shows a separate one-time relocation sunk-cost total
     And each row shows a separately labelled liquidity reserve
 
@@ -101,8 +107,20 @@ Feature: Salary savings calculator
     And I switch to the "Savings" tab
     When I enter a gross monthly salary of "8000" USD
     Then each city row shows a net take-home after the country's federal and sub-national effective tax
-    And each row shows the essentials, the savings after essentials, and the savings after lifestyle with percentages
-    And the table can be sorted by savings
+
+  # Behaviour: AYW-058
+  Scenario: Savings tab shows essentials and savings with percentages
+    Given I am on "/en/tools/cost-of-living-calculator"
+    And I switch to the "Savings" tab
+    When I enter a gross monthly salary of "8000" USD
+    Then each row shows the essentials, the savings after essentials, and the savings after lifestyle with percentages
+
+  # Behaviour: AYW-058
+  Scenario: The savings table can be sorted by savings
+    Given I am on "/en/tools/cost-of-living-calculator"
+    And I switch to the "Savings" tab
+    When I enter a gross monthly salary of "8000" USD
+    Then the table can be sorted by savings
 
   # Behaviour: AYW-058
   Scenario: Savings tab honours the active geographic filter
@@ -177,12 +195,22 @@ Feature: Salary savings calculator
     And I see an "estimates only" disclaimer
 
   # Behaviour: AYW-060
-  Scenario: Adding adults and children changes the modeled expenses
+  Scenario: Adding adults and children grows housing and utilities sub-linearly
     Given I am on the "Cost of living" tab
     When I change the household from "single" to married with 2 school-age children
     Then the modeled housing and utilities increase sub-linearly
-    And the modeled food and healthcare increase near per-capita
-    And schooling is added for the two school-age children
+
+  # Behaviour: AYW-060
+  Scenario: Adding adults and children grows food and healthcare near per capita
+    Given I am on the "Cost of living" tab
+    When I change the household from "single" to married with 2 school-age children
+    Then the modeled food and healthcare increase near per-capita
+
+  # Behaviour: AYW-060
+  Scenario: Adding school-age children adds schooling costs
+    Given I am on the "Cost of living" tab
+    When I change the household from "single" to married with 2 school-age children
+    Then schooling is added for the two school-age children
 
   # Behaviour: AYW-060
   Scenario: Pre-school children incur childcare, not schooling

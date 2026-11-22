@@ -49,7 +49,8 @@ function evaluateInChildProcess(env: Record<string, string | undefined>): {
     "process.stdout.write(JSON.stringify(buildWorkerOptions(process.env)));";
   const result = spawnSync(process.execPath, [TSX_CLI, "--eval", script], {
     cwd: process.cwd(),
-    env: childEnv,
+    // Next's global typing requires NODE_ENV on ProcessEnv. The child is pinned to "test", the value the runner sets.
+    env: { ...childEnv, NODE_ENV: "test" },
     encoding: "utf8",
   });
   return { status: result.status, stdout: result.stdout, stderr: result.stderr };

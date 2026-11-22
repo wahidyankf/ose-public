@@ -3,8 +3,8 @@ package coursepaths
 import (
 	"encoding/json"
 	"fmt"
-	"os"
-	"path/filepath"
+	"io/fs"
+	"path"
 	"sort"
 	"strings"
 )
@@ -27,48 +27,44 @@ type manifestPath struct {
 	Phases      []manifestPhase `json:"phases"`
 }
 
-// LoadDir builds a read-only path catalog from manifest JSON files without
-// rewriting them. Variable-depth path identifiers stay intact and supply the
+// LoadFS builds a read-only path catalog from manifest JSON files under fsys
+// without rewriting them. The caller chooses the root: the server passes
+// os.DirFS of the configured manifests directory, and unit tests pass an
+// in-memory tree. Variable-depth path identifiers stay intact and supply the
 // category; phase order follows the manifest. Files with invalid JSON or
 // without an identifier and phases are skipped with a diagnostic naming the
 // relative path. Courses resolve through the composed catalog: manifests
 // carry membership while course metadata arrives from the content tree, so
 // the loader reports paths and the server seeds course entries separately.
-func LoadDir(root string) (*FakeStore, error) {
-	absolute, err := filepath.Abs(root)
-	if err != nil {
-		return nil, fmt.Errorf("coursepaths: resolve root: %w", err)
-	}
-	info, err := os.Stat(absolute)
+func LoadFS(fsys fs.FS) (*FakeStore, error) {
+	info, err := fs.Stat(fsys, ".")
 	if err != nil {
 		return nil, fmt.Errorf("coursepaths: read root: %w", err)
 	}
 	if !info.IsDir() {
-		return nil, fmt.Errorf("coursepaths: root %s is not a directory", root)
+		return nil, fmt.Errorf("coursepaths: root is not a directory")
 	}
 	store := NewFakeStore(nil, nil, nil)
 	var malformed []string
 	var documents []string
 	// The callback swallows every walk error, so WalkDir always reports nil;
 	// the walkErr check below stays as a defensive totality guard.
-	walkErr := filepath.WalkDir(absolute, func(path string, entry os.DirEntry, err error) error {
+	walkErr := fs.WalkDir(fsys, ".", func(name string, entry fs.DirEntry, err error) error {
 		if err != nil || entry.IsDir() {
 			return nil
 		}
-		if filepath.Ext(path) != ".json" {
+		if path.Ext(name) != ".json" {
 			return nil
 		}
-		documents = append(documents, path)
+		documents = append(documents, name)
 		return nil
 	})
 	if walkErr != nil {
 		return nil, fmt.Errorf("coursepaths: walk root: %w", walkErr)
 	}
 	sort.Strings(documents)
-	for _, path := range documents {
-		// WalkDir joins paths lexically, so the root prefix always holds.
-		rel := strings.TrimPrefix(path, absolute+string(filepath.Separator))
-		raw, err := os.ReadFile(path)
+	for _, rel := range documents {
+		raw, err := fs.ReadFile(fsys, rel)
 		if err != nil {
 			malformed = append(malformed, "coursepaths: skipping unreadable manifest "+rel)
 			continue
@@ -83,7 +79,7 @@ func LoadDir(root string) (*FakeStore, error) {
 			id = manifest.ID
 		}
 		if id == "" {
-			id = strings.TrimSuffix(filepath.Base(rel), ".json")
+			id = strings.TrimSuffix(path.Base(rel), ".json")
 			if id == "" {
 				malformed = append(malformed, "coursepaths: skipping "+rel+": missing path identifier")
 				continue

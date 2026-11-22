@@ -418,14 +418,10 @@ describeFeature(feature, ({ Scenario }) => {
     });
 
     Then("focus moves into the drawer and returns to the control when the drawer is dismissed", async () => {
-      await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
-      });
+      await act(async () => {});
       expect(document.activeElement).not.toBe(trigger);
       fireEvent.keyDown(document, { key: "Escape", code: "Escape" });
-      await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
-      });
+      await act(async () => {});
       expect(document.activeElement).toBe(trigger);
     });
   });
@@ -465,9 +461,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
 
     When("they pick another course's row in the drawer", async () => {
-      await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
-      });
+      await act(async () => {});
       const drawerNav = screen.getByRole("navigation", { name: /course list/ });
       const rows = drawerNav.querySelectorAll("a");
       expect(rows.length).toBeGreaterThanOrEqual(2);
@@ -475,9 +469,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
 
     Then("the drawer closes", async () => {
-      await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
-      });
+      await act(async () => {});
       expect(screen.queryByRole("navigation", { name: /course list/ })).toBeNull();
     });
   });

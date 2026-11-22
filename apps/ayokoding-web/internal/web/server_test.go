@@ -11,7 +11,7 @@ import (
 )
 
 func fixtureDeps() web.Deps {
-	return web.SeedFixtureDeps("parity")
+	return web.SeedFixtureDeps("parity", web.CannedSources)
 }
 
 func request(t *testing.T, handler http.Handler, method, target string) *httptest.ResponseRecorder {
@@ -510,7 +510,7 @@ func TestIndonesianLessonOutline(t *testing.T) {
 }
 
 func TestUnavailableCatalogFixture(t *testing.T) {
-	deps := web.SeedFixtureDeps("unavailable-catalog")
+	deps := web.SeedFixtureDeps("unavailable-catalog", web.CannedSources)
 	if len(deps.Content.Published("en")) != 0 {
 		t.Fatal("unavailable-catalog fixture must hide the catalog")
 	}

@@ -2,7 +2,6 @@ namespace FsharpEnvLoader
 
 open System
 open System.IO
-open System.Diagnostics.CodeAnalysis
 
 /// Shared tiered `.env.<APP_ENV>` env-file loader for this repo's F# backends
 /// (`ose-be`, `organiclever-be`) — see the
@@ -39,7 +38,6 @@ module EnvTier =
 
     /// Rule 1 of the loader contract — the tier selector: reads APP_ENV
     /// (default "local").
-    [<ExcludeFromCodeCoverage(Justification = "Real process-environment adapter; covered by Integration tests")>]
     let resolveTier () : string =
         resolveTierWith Environment.GetEnvironmentVariable
 
@@ -92,7 +90,6 @@ module EnvTier =
     /// order for the first tier file that exists and applying it; does
     /// nothing if none of them do (the normal case in CI, where real env
     /// vars are set with no file on disk).
-    [<ExcludeFromCodeCoverage(Justification = "Real filesystem/environment adapter; covered by Integration tests")>]
     let loadEnvTierFrom (searchDirs: string list) : unit =
         let systemPorts =
             { GetEnvironmentVariable = Environment.GetEnvironmentVariable

@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Behaviour/SpecLoader.fs" />
     <Compile Include="Behaviour/FsharpEnvLoaderBehaviourDriver.fs" />
     <Compile Include="Tests/EnvTierTests.fs" />
     <Compile Include="Tests/PortResolverTests.fs" />

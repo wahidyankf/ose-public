@@ -1,6 +1,6 @@
 import path from "path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
-import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { expect, vi } from "vitest";
 import React from "react";
@@ -1195,8 +1195,9 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       const group = screen.getByRole("radiogroup", { name: /salary currency/i });
       await getScenarioUser().click(within(group).getByRole("radio", { name: "SGD" }));
       const grossInput = screen.getByRole("spinbutton", { name: /my gross monthly/i });
-      await getScenarioUser().clear(grossInput);
-      await getScenarioUser().type(grossInput, "10000");
+      // One change event, not a keystroke per digit: each keystroke re-renders the whole calculator,
+      // which pushed this scenario past its timeout under full-suite load.
+      fireEvent.change(grossInput, { target: { value: "10000" } });
       localBaseline = Number(screen.getByTestId("min-role-table").getAttribute("data-baseline-usd"));
       localMarkers = Array.from(document.querySelectorAll("tr[data-candidate-row='true']"))
         .filter((row) => row.querySelector("[data-testid='minimum-marker']") !== null)
@@ -1204,8 +1205,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
         .sort();
 
       await getScenarioUser().click(within(group).getByRole("radio", { name: "USD" }));
-      await getScenarioUser().clear(grossInput);
-      await getScenarioUser().type(grossInput, "7744");
+      fireEvent.change(grossInput, { target: { value: "7744" } });
       usdBaseline = Number(screen.getByTestId("min-role-table").getAttribute("data-baseline-usd"));
       usdMarkers = Array.from(document.querySelectorAll("tr[data-candidate-row='true']"))
         .filter((row) => row.querySelector("[data-testid='minimum-marker']") !== null)

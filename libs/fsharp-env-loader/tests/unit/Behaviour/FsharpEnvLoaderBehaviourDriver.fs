@@ -15,8 +15,6 @@ module FsharpEnvLoader.Tests.Unit.Behaviour.FsharpEnvLoaderBehaviourDriver
 
 open System
 open System.Collections.Generic
-open System.IO
-open System.Reflection
 open TickSpec
 open Xunit
 open FsharpEnvLoader
@@ -249,32 +247,6 @@ type FsharpEnvLoaderBehaviourSteps() =
         resolveOutcome <- None
         listenOutcome <- None
 
-/// Reads the Gherkin feature files TickSpec's `CopyGherkinSpecs` build target
-/// copies into this test binary's own output directory, and runs every
-/// scenario in `featureFileName` through `FsharpEnvLoaderBehaviourSteps`.
-module private FeatureRunner =
-    let private assembly = Assembly.GetExecutingAssembly()
-
-    let private specsDir =
-        let assemblyDir = Path.GetDirectoryName(assembly.Location)
-        Path.Combine(assemblyDir, "specs")
-
-    let private getFeatureFile (featureFileName: string) : string option =
-        if Directory.Exists specsDir then
-            Directory.GetFiles(specsDir, "*.feature", SearchOption.AllDirectories)
-            |> Array.tryFind (fun f -> Path.GetFileName(f) = featureFileName)
-        else
-            None
-
-    let scenarios (featureFileName: string) : seq<obj[]> =
-        match getFeatureFile featureFileName with
-        | Some path ->
-            let defs = StepDefinitions([| typeof<FsharpEnvLoaderBehaviourSteps> |])
-            let lines = File.ReadAllLines path
-            let feature = defs.GenerateFeature(path, lines)
-            feature.Scenarios |> Seq.map (fun scenario -> [| scenario :> obj |])
-        | None -> Seq.empty
-
 // @scenario specs/libs/fsharp-env-loader/behaviours/env-tier/env-tier.feature: APP_ENV unset or empty defaults to the "local" tier
 // @scenario specs/libs/fsharp-env-loader/behaviours/env-tier/env-tier.feature: APP_ENV set to a tier name resolves to that tier
 // @scenario specs/libs/fsharp-env-loader/behaviours/env-tier/env-tier.feature: Only the file matching APP_ENV is read
@@ -298,7 +270,9 @@ module private FeatureRunner =
 // @scenario specs/libs/fsharp-env-loader/behaviours/port-resolver/port-resolver.feature: The listen URL binds loopback on a developer machine and wildcard inside a container
 type EnvTierFeatureTests() =
     static member Scenarios() : seq<obj[]> =
-        FeatureRunner.scenarios "env-tier.feature" |> Seq.toList :> seq<_>
+        SpecLoader.scenarios typeof<FsharpEnvLoaderBehaviourSteps> "env-tier.feature"
+        |> Seq.toList
+        :> seq<_>
 
     [<Theory>]
     [<MemberData("Scenarios")>]
@@ -306,7 +280,9 @@ type EnvTierFeatureTests() =
 
 type PortResolverFeatureTests() =
     static member Scenarios() : seq<obj[]> =
-        FeatureRunner.scenarios "port-resolver.feature" |> Seq.toList :> seq<_>
+        SpecLoader.scenarios typeof<FsharpEnvLoaderBehaviourSteps> "port-resolver.feature"
+        |> Seq.toList
+        :> seq<_>
 
     [<Theory>]
     [<MemberData("Scenarios")>]

@@ -51,12 +51,18 @@
           "dotnet tool restore",
           "dotnet tool run fantomas --check apps/organiclever-be/src",
           "dotnet fsharplint lint apps/organiclever-be/src/OrganicleverBe/OrganicleverBe.fsproj --lint-config apps/organiclever-be/fsharplint.json",
-          "dotnet fsharp-analyzers --project apps/organiclever-be/src/OrganicleverBe/OrganicleverBe.fsproj --analyzers-path $(find $(dotnet nuget locals global-packages --list | sed 's/.*: //')g-research.fsharp.analyzers -path '*/analyzers/dotnet/fs' -type d | head -1) --treat-as-error GRA-STRING-001 GRA-STRING-002 GRA-STRING-003 GRA-STRING-004 GRA-UNIONCASE-001 GRA-VIRTUALCALL-001 GRA-JSONOPTS-001 GRA-DISPBEFOREASYNC-001 GRA-IMMUTABLECOLLECTIONEQUALITY-001 GRA-LOGARGFUNCFULLAPP-001 GRA-TYPE-ANNOTATE-001 GRA-INTERPOLATED-001"
+          "dotnet fsharp-analyzers --project apps/organiclever-be/src/OrganicleverBe/OrganicleverBe.fsproj --analyzers-path $(find $(dotnet nuget locals global-packages --list | sed 's/.*: //')g-research.fsharp.analyzers -path '*/analyzers/dotnet/fs' -type d | head -1) --treat-as-error GRA-STRING-001 GRA-STRING-002 GRA-STRING-003 GRA-STRING-004 GRA-UNIONCASE-001 GRA-VIRTUALCALL-001 GRA-JSONOPTS-001 GRA-DISPBEFOREASYNC-001 GRA-IMMUTABLECOLLECTIONEQUALITY-001 GRA-LOGARGFUNCFULLAPP-001 GRA-TYPE-ANNOTATE-001 GRA-INTERPOLATED-001",
+          "node scripts/check-fsharp-hermetic.mjs apps/organiclever-be"
         ],
         "parallel": false
       },
       "cache": true,
-      "inputs": ["{projectRoot}/src/**/*.fs", "{projectRoot}/src/OrganicleverBe/OrganicleverBe.fsproj"]
+      "inputs": [
+        "{projectRoot}/src/**/*.fs",
+        "{projectRoot}/tests/unit/**/*.fs",
+        "{projectRoot}/src/OrganicleverBe/OrganicleverBe.fsproj",
+        "{workspaceRoot}/scripts/check-fsharp-hermetic.mjs"
+      ]
     },
     "dev": {
       "executor": "nx:run-commands",

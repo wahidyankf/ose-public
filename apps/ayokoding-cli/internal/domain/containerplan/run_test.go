@@ -251,8 +251,10 @@ func TestPlanRunLinksSorted(t *testing.T) {
 
 // TestPlanRunNeverLeaksHostEnvironment requires that a host variable never
 // reaches the container: the plan only carries explicitly passed variables.
+// PlanRun takes no environment parameter and this package does not import
+// "os", so the plan cannot read the host environment; the test needs no
+// process variable to show that.
 func TestPlanRunNeverLeaksHostEnvironment(t *testing.T) {
-	t.Setenv("SECRET_TOKEN", "hunter2")
 	cfg := baseRunConfig()
 	cfg.RunEnv = map[string]string{"FOO": "bar"}
 	argv := argvString(t, cfg)

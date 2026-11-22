@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { flattenedCourseIds, loadRealManifests } from "./path-model-integrity.unit.test";
+import { flattenedCourseIds, loadRealManifests } from "./path-model-integrity.integration.test";
 import { LEGACY_MEMBERSHIP } from "./legacy-membership";
 
 describe("rewritten manifests keep every course (plan 02 AC-3.1)", () => {

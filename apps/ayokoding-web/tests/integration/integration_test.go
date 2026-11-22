@@ -12,6 +12,7 @@ import (
 
 	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/content"
 	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/web"
+	"github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/internal/glue"
 )
 
 func fixturePath(t *testing.T, name string) string {
@@ -22,7 +23,7 @@ func fixturePath(t *testing.T, name string) string {
 
 func liveServer(t *testing.T) *httptest.Server {
 	t.Helper()
-	server := httptest.NewServer(web.NewServer(web.Config{Port: 0}, web.SeedFixtureDeps("parity")).Handler())
+	server := httptest.NewServer(web.NewServer(web.Config{Port: 0}, web.SeedFixtureDeps("parity", web.CannedSources)).Handler())
 	t.Cleanup(server.Close)
 	return server
 }
@@ -118,7 +119,7 @@ func TestLiveLessonAndDraft(t *testing.T) {
 }
 
 func TestFixtureVectorsDecode(t *testing.T) {
-	benchRaw, err := os.ReadFile(fixturePath(t, "benchmark-vectors.json"))
+	benchRaw, err := glue.Vector("benchmark-vectors.json")
 	if err != nil {
 		t.Fatalf("read benchmark fixture: %v", err)
 	}
@@ -142,7 +143,7 @@ func TestFixtureVectorsDecode(t *testing.T) {
 		t.Fatalf("fixture benchmark vector = %+v, want Claude Sonnet 5.5 first in index order", benchVector)
 	}
 
-	calcRaw, err := os.ReadFile(fixturePath(t, "calculator-vectors.json"))
+	calcRaw, err := glue.Vector("calculator-vectors.json")
 	if err != nil {
 		t.Fatalf("read calculator fixture: %v", err)
 	}

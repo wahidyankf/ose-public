@@ -61,7 +61,7 @@ func TestFeedExposesEligibleEntries(t *testing.T) {
 // sitemap and feed return a generic server error that names no filesystem
 // location instead of masking the outage as an empty 200 page.
 func TestDiscoveryUnavailableCatalogIsGeneric(t *testing.T) {
-	handler := web.NewServer(web.Config{Port: 3102}, web.SeedFixtureDeps("unavailable-catalog")).Handler()
+	handler := web.NewServer(web.Config{Port: 3102}, web.SeedFixtureDeps("unavailable-catalog", web.CannedSources)).Handler()
 	for _, target := range []string{"/sitemap.xml", "/feed.xml"} {
 		recorder := request(t, handler, http.MethodGet, target)
 		if recorder.Code != http.StatusInternalServerError {
@@ -82,7 +82,7 @@ func TestDiscoveryUnavailableCatalogIsGeneric(t *testing.T) {
 // page and search rendering: an unavailable catalog never masquerades as a
 // 200 empty page or a 404 miss.
 func TestContentUnavailableCatalogIsGeneric(t *testing.T) {
-	handler := web.NewServer(web.Config{Port: 3102}, web.SeedFixtureDeps("unavailable-catalog")).Handler()
+	handler := web.NewServer(web.Config{Port: 3102}, web.SeedFixtureDeps("unavailable-catalog", web.CannedSources)).Handler()
 	for _, target := range []string{
 		"/en/learn/courses/go-basics/learning/hello-world",
 		"/en/learn/courses/go-basics",

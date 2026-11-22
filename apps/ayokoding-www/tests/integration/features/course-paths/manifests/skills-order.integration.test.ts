@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { checkMarkerUsage } from "../../../../../src/features/course-paths/core/skills-restructure-allowlist";
-import { flattenedCourseIds, loadRealManifests } from "./path-model-integrity.unit.test";
+import { flattenedCourseIds, loadRealManifests } from "./path-model-integrity.integration.test";
 import { LEGACY_SKILLS_ORDER } from "./legacy-skills-order";
 
 describe("marked skills manifests keep today's course order (plan 02 AC-3.1)", () => {

@@ -3,8 +3,8 @@ package coursepaths
 import (
 	"encoding/json"
 	"fmt"
-	"os"
-	"path/filepath"
+	"io/fs"
+	"path"
 	"sort"
 	"strings"
 )
@@ -323,25 +323,25 @@ func isMarkedShape(file fileManifest) bool {
 	return phase.ID == "all-courses" && phase.Kind == "core" && phase.Outcome == nil
 }
 
-// LoadManifestDir loads every *.json manifest below root in deterministic order,
+// LoadManifestFS loads every *.json manifest under fsys in deterministic order,
 // skipping malformed files with developer diagnostics. A missing root yields
 // the intentional empty state with one diagnostic, never an error, so the
 // path category page renders its empty state and the rest of navigation
 // stays usable.
-func LoadManifestDir(root string) (paths []Manifest, diagnostics []string) {
-	entries, err := collectManifestFiles(root)
+func LoadManifestFS(fsys fs.FS) (paths []Manifest, diagnostics []string) {
+	entries, err := collectManifestFiles(fsys)
 	if err != nil {
 		return nil, []string{"manifests: no manifest root: showing the empty state"}
 	}
 	for _, entry := range entries {
-		raw, err := os.ReadFile(entry)
+		raw, err := fs.ReadFile(fsys, entry)
 		if err != nil {
-			diagnostics = append(diagnostics, fmt.Sprintf("manifests: skipping %s: unreadable file", filepath.Base(entry)))
+			diagnostics = append(diagnostics, fmt.Sprintf("manifests: skipping %s: unreadable file", path.Base(entry)))
 			continue
 		}
 		manifest, err := ParseManifest(raw)
 		if err != nil {
-			diagnostics = append(diagnostics, fmt.Sprintf("manifests: skipping %s: %s", filepath.Base(entry), err))
+			diagnostics = append(diagnostics, fmt.Sprintf("manifests: skipping %s: %s", path.Base(entry), err))
 			continue
 		}
 		paths = append(paths, manifest)
@@ -350,10 +350,10 @@ func LoadManifestDir(root string) (paths []Manifest, diagnostics []string) {
 	return paths, diagnostics
 }
 
-// collectManifestFiles lists manifest files below root in sorted order.
-func collectManifestFiles(root string) ([]string, error) {
+// collectManifestFiles lists manifest files under fsys in sorted order.
+func collectManifestFiles(fsys fs.FS) ([]string, error) {
 	var files []string
-	err := filepath.WalkDir(root, func(path string, entry os.DirEntry, err error) error {
+	err := fs.WalkDir(fsys, ".", func(name string, entry fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
@@ -361,7 +361,7 @@ func collectManifestFiles(root string) ([]string, error) {
 			return nil
 		}
 		if strings.HasSuffix(entry.Name(), ".json") {
-			files = append(files, path)
+			files = append(files, name)
 		}
 		return nil
 	})

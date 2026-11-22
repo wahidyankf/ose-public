@@ -2,8 +2,9 @@ package web
 
 import (
 	"fmt"
+	"io/fs"
 	"os"
-	"path/filepath"
+	"path"
 	"sort"
 	"strconv"
 	"strings"
@@ -26,13 +27,25 @@ const (
 	envShowDrafts   = "AYOKODING_WEB_SHOW_DRAFTS"
 )
 
+// Sources is the port the seed reads launcher variables and source roots
+// through. The binary passes the process environment and os.DirFS; unit
+// tests pass recorded values and in-memory trees.
+type Sources struct {
+	Environment Environment
+	Root        func(dir string) fs.FS
+}
+
+// CannedSources reads nothing: no launcher variables and no source roots, so
+// the canned parity corpus serves.
+var CannedSources = Sources{Environment: noEnvironment}
+
 // SeedFixtureDeps builds the canned P1H corpus shared by the served binary,
 // handler unit tests, and the BDD unit driver. The "unavailable-catalog"
 // fixture empties the catalog for the E2E unavailable mode. When
 // AYOKODING_WEB_CONTENT_DIR names a source root, content and learning paths
-// load from disk through the file-backed adapters while tools, search, and
-// redirects keep their canned parity slices; the Deps shape stays.
-func SeedFixtureDeps(fixture string) Deps {
+// load through the file-backed adapters while tools, search, and redirects
+// keep their canned parity slices; the Deps shape stays.
+func SeedFixtureDeps(fixture string, sources Sources) Deps {
 	empty := fixture == FixtureUnavailableCatalog
 	pages := []content.Page{
 		{Locale: "en", Course: "go-basics", Slug: "hello-world", Title: "Hello World", Description: "First program", Section: "start", SectionTitle: "Start", Weight: 1, BodyHTML: lessonBodyHTML},
@@ -50,7 +63,7 @@ func SeedFixtureDeps(fixture string) Deps {
 	canned := content.NewFakeStore(pages)
 	// The draft setting applies to the canned corpus too, not only to a
 	// file-backed root, so AYOKODING_WEB_SHOW_DRAFTS=true always shows drafts.
-	canned.ShowDrafts(showDraftsEnabled())
+	canned.ShowDrafts(showDraftsEnabled(sources.Environment))
 	deps := Deps{
 		Content: canned,
 		Paths: coursepaths.NewFakeStore(
@@ -86,7 +99,7 @@ func SeedFixtureDeps(fixture string) Deps {
 		deps.CatalogErr = errUnavailableCatalog
 		return deps
 	}
-	return withFileBackedSources(deps)
+	return withFileBackedSources(deps, sources)
 }
 
 // mustSharedBenchmark loads the shared benchmark dataset from the embedded
@@ -131,28 +144,28 @@ func mustSharedCalculator() (calculator.Dataset, calculator.RoleMatrix) {
 // adapters land. An unreadable root falls back to the canned fixture with a
 // stderr warning and a recorded store diagnostic; it never serves a 200
 // empty page to mask the failure.
-func withFileBackedSources(fallback Deps) Deps {
-	contentRoot, ok := os.LookupEnv(envContentDir)
+func withFileBackedSources(fallback Deps, sources Sources) Deps {
+	contentRoot, ok := sources.Environment(envContentDir)
 	if !ok || strings.TrimSpace(contentRoot) == "" {
 		return fallback
 	}
 	locales := supportedLocaleList()
-	store, err := content.LoadDir(contentRoot)
+	store, err := content.LoadFS(sources.Root(contentRoot))
 	if err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "ayokoding-web: content root %q: %v; serving canned fixture\n", contentRoot, err)
 		fallback.Content.Report("content: file-backed root " + contentRoot + " unreadable; serving canned fixture")
 		return fallback
 	}
-	store.ShowDrafts(showDraftsEnabled())
+	store.ShowDrafts(showDraftsEnabled(sources.Environment))
 	fallback.Content = store
 	var courses []coursepaths.Course
 	var malformed []string
 	for _, locale := range locales {
-		listed, bad := ComposeCourses(contentRoot, locale)
+		listed, bad := ComposeCourses(sources.Root(contentRoot), locale)
 		courses = append(courses, listed...)
 		malformed = append(malformed, bad...)
 	}
-	manifests := loadFilePaths(fallback.Paths)
+	manifests := loadFilePaths(fallback.Paths, sources)
 	diagnostics := append(manifests.Diagnostics(), malformed...)
 	fallback.Paths = coursepaths.NewFakeStore(manifests.Paths(), courses, diagnostics)
 	return fallback
@@ -170,20 +183,21 @@ func supportedLocaleList() []string {
 
 // showDraftsEnabled reports whether owned test or authoring fixtures may see
 // draft content.
-func showDraftsEnabled() bool {
-	return strings.EqualFold(strings.TrimSpace(os.Getenv(envShowDrafts)), "true")
+func showDraftsEnabled(environment Environment) bool {
+	value, _ := environment(envShowDrafts)
+	return strings.EqualFold(strings.TrimSpace(value), "true")
 }
 
 // loadFilePaths builds the path store from AYOKODING_WEB_MANIFESTS_DIR when
 // configured, keeping the canned paths untouched otherwise. An unreadable
 // manifests root yields an empty path catalog with a diagnostic instead of
 // mixing canned paths with file-backed content.
-func loadFilePaths(fallback *coursepaths.FakeStore) *coursepaths.FakeStore {
-	manifestsRoot, ok := os.LookupEnv(envManifestsDir)
+func loadFilePaths(fallback *coursepaths.FakeStore, sources Sources) *coursepaths.FakeStore {
+	manifestsRoot, ok := sources.Environment(envManifestsDir)
 	if !ok || strings.TrimSpace(manifestsRoot) == "" {
 		return fallback
 	}
-	loaded, err := coursepaths.LoadDir(manifestsRoot)
+	loaded, err := coursepaths.LoadFS(sources.Root(manifestsRoot))
 	if err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "ayokoding-web: manifests root %q: %v; serving no file paths\n", manifestsRoot, err)
 		return coursepaths.NewFakeStore(nil, nil, []string{"coursepaths: manifests root " + manifestsRoot + " unreadable"})
@@ -191,14 +205,14 @@ func loadFilePaths(fallback *coursepaths.FakeStore) *coursepaths.FakeStore {
 	return loaded
 }
 
-// ComposeCourses scans the real corpus at contentRoot for the locale's
+// ComposeCourses scans the real corpus under fsys for the locale's
 // courses/*/_index.md manifests and returns catalog entries plus malformed
 // sources. A locale without courses contributes nothing. Invalid frontmatter,
 // missing titles, and unexpected prerequisite shapes are malformed; draft
 // courses stay hidden. Effort renders estimated hours; courses without an
 // estimate leave effort empty. "outline" status marks outline-only courses.
-func ComposeCourses(contentRoot, locale string) ([]coursepaths.Course, []string) {
-	entries, err := os.ReadDir(filepath.Join(contentRoot, locale, "learn", "courses"))
+func ComposeCourses(fsys fs.FS, locale string) ([]coursepaths.Course, []string) {
+	entries, err := fs.ReadDir(fsys, path.Join(locale, "learn", "courses"))
 	if err != nil {
 		return nil, nil
 	}
@@ -212,7 +226,7 @@ func ComposeCourses(contentRoot, locale string) ([]coursepaths.Course, []string)
 	var courses []coursepaths.Course
 	var malformed []string
 	for _, id := range ids {
-		course, ok := composeCourse(contentRoot, locale, id)
+		course, ok := composeCourse(fsys, locale, id)
 		if !ok {
 			malformed = append(malformed, id+"/_index.md")
 			continue
@@ -224,8 +238,8 @@ func ComposeCourses(contentRoot, locale string) ([]coursepaths.Course, []string)
 
 // composeCourse reads one course manifest; ok is false for malformed or
 // draft sources.
-func composeCourse(contentRoot, locale, id string) (coursepaths.Course, bool) {
-	raw, err := os.ReadFile(filepath.Join(contentRoot, locale, "learn", "courses", id, "_index.md"))
+func composeCourse(fsys fs.FS, locale, id string) (coursepaths.Course, bool) {
+	raw, err := fs.ReadFile(fsys, path.Join(locale, "learn", "courses", id, "_index.md"))
 	if err != nil {
 		return coursepaths.Course{}, false
 	}

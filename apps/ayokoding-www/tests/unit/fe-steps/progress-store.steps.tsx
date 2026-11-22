@@ -245,9 +245,7 @@ function openLearnHome(): void {
 
 /** Let Radix's portal mount, its focus scope run, and its close-focus restore settle. */
 async function settle(): Promise<void> {
-  await act(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 0));
-  });
+  await act(async () => {});
 }
 
 /** Save progress a reader can lose: every page of the path's first course, through its own control. */
@@ -499,8 +497,12 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByText("1 of 3 core courses done")).toBeTruthy();
     });
 
-    And('focus returns to the "Reset progress" button', () => {
-      expect(document.activeElement).toBe(screen.getByRole("button", { name: "Reset progress…" }));
+    And('focus returns to the "Reset progress" button', async () => {
+      const trigger = screen.getByRole("button", { name: "Reset progress…" });
+      // Radix restores focus in a deferred task; wait on the condition itself, not a fixed delay.
+      await vi.waitFor(() => {
+        expect(document.activeElement).toBe(trigger);
+      });
     });
   });
 

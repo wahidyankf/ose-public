@@ -28,14 +28,20 @@ function makeFakeRepository(readAllContent: () => Promise<ContentMeta[]>): Conte
 describe("ContentService.getIndex — concurrent build deduplication", () => {
   it("builds the content index only once when multiple callers request it concurrently before the first build resolves", async () => {
     let callCount = 0;
+    let releaseBuild: () => void = () => undefined;
+    const buildGate = new Promise<void>((resolve) => {
+      releaseBuild = resolve;
+    });
     const repo = makeFakeRepository(async () => {
       callCount++;
-      await new Promise((resolve) => setTimeout(resolve, 10));
+      await buildGate;
       return [];
     });
     const service = new ContentService(repo);
 
-    const [a, b, c] = await Promise.all([service.getIndex(), service.getIndex(), service.getIndex()]);
+    const callers = Promise.all([service.getIndex(), service.getIndex(), service.getIndex()]);
+    releaseBuild();
+    const [a, b, c] = await callers;
 
     expect(callCount).toBe(1);
     expect(a).toBe(b);

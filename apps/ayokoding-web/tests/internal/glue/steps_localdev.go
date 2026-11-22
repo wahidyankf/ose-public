@@ -2,9 +2,6 @@ package glue
 
 import (
 	"net/http"
-	"os"
-	"path/filepath"
-	"runtime"
 	"strings"
 )
 
@@ -33,7 +30,7 @@ func (w *World) StepRewriteServesBilingualEntryPagesPort3102() error {
 }
 
 func (w *World) StepAyokodingWebPortSetAvailableValidPort() error {
-	port, err := freePort()
+	port, err := w.freePort()
 	if err != nil {
 		return err
 	}
@@ -69,7 +66,7 @@ func (w *World) StepExistingSiteSConfiguredPortRemainsUnchanged() error {
 }
 
 func (w *World) StepAyokodingWebPortContainsOneValidPort() error {
-	port, err := freePort()
+	port, err := w.freePort()
 	if err != nil {
 		return err
 	}
@@ -78,7 +75,7 @@ func (w *World) StepAyokodingWebPortContainsOneValidPort() error {
 }
 
 func (w *World) StepRewriteLauncherReceivesDifferentValidPortThrough() error {
-	other, err := freePort()
+	other, err := w.freePort()
 	if err != nil {
 		return err
 	}
@@ -164,14 +161,12 @@ func (w *World) StepRewriteListenerStartsFallbackPort() error {
 	return nil
 }
 
+// StepSharedMarkdownManifestsHaveRecordedByteHashes fingerprints the shared
+// corpus. The unit adapter reads no sibling checkout, so it records nothing.
 func (w *World) StepSharedMarkdownManifestsHaveRecordedByteHashes() error {
 	w.hashes = map[string]string{}
-	for _, file := range sharedSourceFiles() {
-		raw, err := os.ReadFile(file)
-		if err != nil {
-			continue
-		}
-		w.hashes[file] = sha256Hex(raw)
+	if w.adapter != "unit" {
+		w.hashes = realSharedHashes()
 	}
 	if len(w.hashes) == 0 && w.adapter != "unit" {
 		return fail("no shared sources found to hash")
@@ -200,7 +195,7 @@ func (w *World) StepMarkdownManifestByteHashesRemainUnchanged() error {
 		}
 		// Unit must never touch the developer corpus: the file-backed root
 		// stays unset so the canned fixture serves.
-		if value, ok := os.LookupEnv("AYOKODING_WEB_CONTENT_DIR"); ok && strings.TrimSpace(value) != "" {
+		if value, ok := w.env["AYOKODING_WEB_CONTENT_DIR"]; ok && strings.TrimSpace(value) != "" {
 			return fail("AYOKODING_WEB_CONTENT_DIR=%q is set in unit context; unit must use the fixture", value)
 		}
 		// Fixture-only slug resolves; a real-corpus-only slug 404s, proving
@@ -216,14 +211,8 @@ func (w *World) StepMarkdownManifestByteHashesRemainUnchanged() error {
 		}
 		return w.mustStatus(http.StatusNotFound)
 	}
-	for _, file := range sharedSourceFiles() {
-		raw, err := os.ReadFile(file)
-		if err != nil {
-			continue
-		}
-		if w.hashes[file] != sha256Hex(raw) {
-			return fail("shared source changed: %s", file)
-		}
+	if changed := realSharedDrift(w.hashes); changed != "" {
+		return fail("shared source changed: %s", changed)
 	}
 	return nil
 }
@@ -238,25 +227,4 @@ func itoa(port int) string {
 		digits = append([]byte{byte('0' + value%10)}, digits...)
 	}
 	return string(digits)
-}
-
-// sharedSourceFiles walks the read-only corpus roots the rewrite consumes.
-func sharedSourceFiles() []string {
-	_, file, _, _ := runtime.Caller(0)
-	appRoot := filepath.Join(filepath.Dir(file), "..", "..", "..")
-	roots := []string{
-		filepath.Join(appRoot, "..", "ayokoding-www", "content"),
-		filepath.Join(appRoot, "..", "ayokoding-www", "src", "features", "course-paths", "manifests"),
-	}
-	var files []string
-	for _, root := range roots {
-		_ = filepath.WalkDir(root, func(path string, entry os.DirEntry, err error) error {
-			if err != nil || entry.IsDir() {
-				return nil
-			}
-			files = append(files, path)
-			return nil
-		})
-	}
-	return files
 }

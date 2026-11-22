@@ -5,7 +5,6 @@ package bdd
 
 import (
 	"context"
-	"os"
 	"testing"
 
 	"github.com/cucumber/godog"
@@ -31,7 +30,7 @@ import (
 // TestContract runs the web-contract corpus through the driver the
 // AYOKODING_BDD_ADAPTER environment names.
 func TestContract(t *testing.T) {
-	adapter := os.Getenv("AYOKODING_BDD_ADAPTER")
+	adapter, binary := glue.RequestedAdapter()
 	if adapter == "" {
 		adapter = "unit"
 	}
@@ -40,7 +39,6 @@ func TestContract(t *testing.T) {
 	case "unit":
 		driver = glue.UnitDriver{}
 	case "e2e":
-		binary := os.Getenv("AYOKODING_BIN")
 		if binary == "" {
 			t.Fatal("AYOKODING_BIN is empty")
 		}

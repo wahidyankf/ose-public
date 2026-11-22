@@ -5,6 +5,20 @@ import { checkManifestIntegrity } from "../core/manifest-integrity";
 import { env } from "../../../env";
 
 /**
+ * The file-system port this adapter reads through. The default is the real `node:fs/promises`
+ * adapter; unit tests pass an in-memory double, and the integration suite reads real manifest files.
+ */
+export interface ManifestFileSystem {
+  readdir(dir: string): Promise<{ name: string; isDirectory(): boolean }[]>;
+  readFile(filePath: string): Promise<string>;
+}
+
+export const nodeManifestFileSystem: ManifestFileSystem = {
+  readdir: (dir) => fs.readdir(dir, { withFileTypes: true }),
+  readFile: (filePath) => fs.readFile(filePath, "utf-8"),
+};
+
+/**
  * The manifests directory to glob, overridable via `AYOKODING_WEB_MANIFESTS_DIR` (mirrors
  * `AYOKODING_WEB_CONTENT_DIR` in `content/shell/repository-fs.ts`) so the e2e suite can point at a
  * fixture manifest set without touching the real, still-unpopulated `manifests/` directory.
@@ -43,13 +57,14 @@ export function defaultManifestsDir(): string {
 export async function loadManifests(
   manifestsDir: string,
   libraryCourseIds: readonly string[],
+  io: ManifestFileSystem = nodeManifestFileSystem,
 ): Promise<PathManifest[]> {
-  const files = await globManifestFiles(manifestsDir);
+  const files = await globManifestFiles(manifestsDir, io);
   const manifests: PathManifest[] = [];
 
   for (const filePath of files) {
     try {
-      const raw = await fs.readFile(filePath, "utf-8");
+      const raw = await io.readFile(filePath);
       const manifest = PathManifestSchema.parse(JSON.parse(raw));
 
       const integrity = checkManifestIntegrity(manifest, libraryCourseIds);
@@ -77,10 +92,10 @@ export async function loadManifests(
  * upstream schema plan but is empty until a downstream manifests plan publishes real data, and
  * that "nothing to load yet" state is not an error.
  */
-async function globManifestFiles(dir: string): Promise<string[]> {
-  let entries: import("node:fs").Dirent[];
+async function globManifestFiles(dir: string, io: ManifestFileSystem): Promise<string[]> {
+  let entries: { name: string; isDirectory(): boolean }[];
   try {
-    entries = await fs.readdir(dir, { withFileTypes: true });
+    entries = await io.readdir(dir);
   } catch {
     return [];
   }
@@ -89,7 +104,7 @@ async function globManifestFiles(dir: string): Promise<string[]> {
   for (const entry of entries) {
     const fullPath = path.join(dir, entry.name);
     if (entry.isDirectory()) {
-      files.push(...(await globManifestFiles(fullPath)));
+      files.push(...(await globManifestFiles(fullPath, io)));
     } else if (entry.name.endsWith(".json")) {
       files.push(fullPath);
     }

@@ -1,7 +1,6 @@
 package calculator_test
 
 import (
-	"encoding/json"
 	"testing"
 
 	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/tools/calculator"
@@ -10,80 +9,6 @@ import (
 func decodeCalculatorState(t *testing.T, dataset calculator.Dataset, encoded string) (calculator.CalculatorState, calculator.Validity) {
 	t.Helper()
 	return calculator.DecodeState(mustParseCalculatorQuery(t, encoded), dataset)
-}
-
-func TestDecodeCalculatorURLVectors(t *testing.T) {
-	dataset, _ := loadData(t)
-	var vectors []struct {
-		Query string `json:"query"`
-		State struct {
-			Tab       string  `json:"tab"`
-			Region    *string `json:"region"`
-			CountryID *string `json:"countryId"`
-			CityID    *string `json:"cityId"`
-			Household struct {
-				Adults        int `json:"adults"`
-				PreschoolKids int `json:"preschoolKids"`
-				SchoolKids    int `json:"schoolKids"`
-			} `json:"household"`
-			SchoolType string  `json:"schoolType"`
-			Area       string  `json:"area"`
-			Gross      float64 `json:"gross"`
-			MinRole    struct {
-				BaselineSource  string  `json:"baselineSource"`
-				TargetRaw       string  `json:"targetRaw"`
-				TargetCurrency  string  `json:"targetCurrency"`
-				RefCityID       *string `json:"refCityId"`
-				RefRole         string  `json:"refRole"`
-				MyGrossMonthly  float64 `json:"myGrossMonthly"`
-				MySalaryCityID  *string `json:"mySalaryCityId"`
-				MyGrossCurrency string  `json:"myGrossCurrency"`
-				DisplayCurrency string  `json:"displayCurrency"`
-			} `json:"minRole"`
-		} `json:"state"`
-	}
-	if err := json.Unmarshal(loadVectors(t, "url-state.json")["calculator"], &vectors); err != nil {
-		t.Fatalf("Unmarshal: %v", err)
-	}
-	if len(vectors) != 5 {
-		t.Fatalf("calculator URL vectors = %d, want 5", len(vectors))
-	}
-	deref := func(value *string) string {
-		if value == nil {
-			return ""
-		}
-		return *value
-	}
-	for _, vector := range vectors {
-		state, validity := decodeCalculatorState(t, dataset, vector.Query)
-		if validity != calculator.Valid {
-			t.Fatalf("query %q must decode valid", vector.Query)
-		}
-		want := calculator.CalculatorState{
-			Tab:        vector.State.Tab,
-			Region:     deref(vector.State.Region),
-			CountryID:  deref(vector.State.CountryID),
-			CityID:     deref(vector.State.CityID),
-			Household:  calculator.Household{Adults: vector.State.Household.Adults, PreschoolKids: vector.State.Household.PreschoolKids, SchoolKids: vector.State.Household.SchoolKids},
-			SchoolType: vector.State.SchoolType,
-			Area:       vector.State.Area,
-			Gross:      vector.State.Gross,
-			MinRole: calculator.MinRoleInputs{
-				BaselineSource:  vector.State.MinRole.BaselineSource,
-				TargetRaw:       vector.State.MinRole.TargetRaw,
-				TargetCurrency:  vector.State.MinRole.TargetCurrency,
-				RefCityID:       deref(vector.State.MinRole.RefCityID),
-				RefRole:         vector.State.MinRole.RefRole,
-				MyGrossMonthly:  vector.State.MinRole.MyGrossMonthly,
-				MySalaryCityID:  deref(vector.State.MinRole.MySalaryCityID),
-				MyGrossCurrency: vector.State.MinRole.MyGrossCurrency,
-				DisplayCurrency: vector.State.MinRole.DisplayCurrency,
-			},
-		}
-		if state != want {
-			t.Fatalf("query %q\n got %+v\nwant %+v", vector.Query, state, want)
-		}
-	}
 }
 
 func TestCalculatorURLRoundTripPreservesInputs(t *testing.T) {

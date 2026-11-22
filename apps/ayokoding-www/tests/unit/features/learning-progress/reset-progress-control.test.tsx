@@ -7,9 +7,7 @@ import { learningProgressStore } from "@/features/learning-progress/shell/progre
 
 /** Let Radix's portal mount, its focus scope run, and its close-focus restore settle. */
 async function settle(): Promise<void> {
-  await act(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 0));
-  });
+  await act(async () => {});
 }
 
 function storedCompleted(): unknown {

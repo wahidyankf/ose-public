@@ -7,7 +7,7 @@
     "test:unit:browser": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "vitest run",
+        "command": "vitest run --coverage",
         "cwd": "apps/ayokoding-web"
       },
       "cache": true,
@@ -39,11 +39,19 @@
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "go tool golangci-lint fmt --diff && go tool golangci-lint run && go tool nilaway -include-pkgs=github.com/wahidyankf/ose-public/apps/ayokoding-web -pretty-print=false ./... && go tool shfmt -d scripts",
+        "command": "go tool golangci-lint fmt --diff && go tool golangci-lint run && go tool nilaway -include-pkgs=github.com/wahidyankf/ose-public/apps/ayokoding-web -pretty-print=false ./... && go tool shfmt -d scripts && ../../node_modules/.bin/oxlint --deny-warnings assets/js",
         "cwd": "apps/ayokoding-web"
       },
       "cache": true,
-      "inputs": ["{projectRoot}/**/*.go", "{projectRoot}/scripts/**/*", "{projectRoot}/go.mod", "{projectRoot}/go.sum"]
+      "inputs": [
+        "{projectRoot}/**/*.go",
+        "{projectRoot}/scripts/**/*",
+        "{projectRoot}/go.mod",
+        "{projectRoot}/go.sum",
+        "{projectRoot}/assets/js/**/*",
+        "{projectRoot}/.oxlintrc.json",
+        "{projectRoot}/.golangci.yml"
+      ]
     },
     "typecheck": {
       "executor": "nx:run-commands",
@@ -77,7 +85,7 @@
     "test:unit": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "if grep -rn --include='*_test.go' -E '\\.Skip\\(' internal cmd tests; then echo 'test:unit forbids skipped tests' >&2; exit 1; fi; COVERAGE_MINIMUM=99 ./scripts/coverage-gate.sh",
+        "command": "if grep -rn --include='*_test.go' -E '\\.(Skip|Skipf|SkipNow)\\(' internal cmd tests; then echo 'test:unit forbids skipped tests' >&2; exit 1; fi; COVERAGE_MINIMUM=99 ./scripts/coverage-gate.sh",
         "cwd": "apps/ayokoding-web"
       },
       "cache": true,

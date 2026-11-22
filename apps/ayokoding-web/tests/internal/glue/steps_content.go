@@ -82,7 +82,7 @@ func (w *World) StepReaderSearchesCorpus() error {
 // StepShowDraftsSetForApp starts the app with draft viewing on. The scenario
 // server takes a free port so it never collides with a development server.
 func (w *World) StepShowDraftsSetForApp() error {
-	port, err := freePort()
+	port, err := w.freePort()
 	if err != nil {
 		return err
 	}

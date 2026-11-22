@@ -3,7 +3,6 @@ package web
 import (
 	"errors"
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
 )
@@ -49,11 +48,18 @@ func parsePort(source, value string) (int, error) {
 	return port, nil
 }
 
+// Environment reads one launcher variable. The binary passes os.LookupEnv;
+// unit tests and the BDD glue pass a recorded map, so no process state moves.
+type Environment func(key string) (string, bool)
+
+// noEnvironment reports every launcher variable as unset.
+func noEnvironment(string) (string, bool) { return "", false }
+
 // ResolveConfig resolves an explicit --port flag, then AYOKODING_WEB_PORT,
 // then 3102. Bare PORT is ignored by repository convention. --fixture selects
-// the canned corpus variant for test and authoring fixtures. Tests use
-// t.Setenv; the BDD glue applies the scenario environment the same way.
-func ResolveConfig(args []string) (Config, error) {
+// the canned corpus variant for test and authoring fixtures. The environment
+// is injected so the resolution reads no process state under test.
+func ResolveConfig(args []string, environment Environment) (Config, error) {
 	cfg := Config{Port: DefaultPort, Fixture: FixtureParity}
 	flagPort := ""
 	flagFixture := ""
@@ -90,7 +96,7 @@ func ResolveConfig(args []string) (Config, error) {
 			return Config{}, err
 		}
 		cfg.Port = port
-	} else if value, ok := os.LookupEnv("AYOKODING_WEB_PORT"); ok {
+	} else if value, ok := environment("AYOKODING_WEB_PORT"); ok {
 		port, err := parsePort("AYOKODING_WEB_PORT", value)
 		if err != nil {
 			return Config{}, err
@@ -99,7 +105,7 @@ func ResolveConfig(args []string) (Config, error) {
 	}
 	fixture := flagFixture
 	if fixture == "" {
-		if value, ok := os.LookupEnv("AYOKODING_WEB_FIXTURE"); ok {
+		if value, ok := environment("AYOKODING_WEB_FIXTURE"); ok {
 			fixture = value
 		}
 	}

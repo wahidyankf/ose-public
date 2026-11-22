@@ -1,4 +1,4 @@
-package shareddata_test
+package integration_test
 
 import (
 	"os"
@@ -9,15 +9,15 @@ import (
 	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/tools/shareddata"
 )
 
-// libraryRoot resolves the canonical libs/ayokoding-data tree from this
+// sharedLibraryRoot resolves the canonical libs/ayokoding-data tree from this
 // package's location so the drift check works in any checkout layout.
-func libraryRoot(t *testing.T) string {
+func sharedLibraryRoot(t *testing.T) string {
 	t.Helper()
 	_, file, _, ok := runtime.Caller(0)
 	if !ok {
 		t.Fatal("runtime caller unavailable")
 	}
-	root := filepath.Join(filepath.Dir(file), "..", "..", "..", "..", "..", "libs", "ayokoding-data", "data")
+	root := filepath.Join(filepath.Dir(file), "..", "..", "..", "..", "libs", "ayokoding-data", "data")
 	info, err := os.Stat(root)
 	if err != nil || !info.IsDir() {
 		t.Fatalf("canonical shared data missing at %s: %v", root, err)
@@ -26,7 +26,7 @@ func libraryRoot(t *testing.T) string {
 }
 
 func TestEmbeddedMatchesSource(t *testing.T) {
-	root := libraryRoot(t)
+	root := sharedLibraryRoot(t)
 	cases := map[string]func() ([]byte, error){
 		"ai-benchmark.json":   shareddata.Benchmark,
 		"cost-of-living.json": shareddata.CostOfLiving,

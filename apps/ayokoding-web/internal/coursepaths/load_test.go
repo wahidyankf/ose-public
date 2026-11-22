@@ -1,28 +1,47 @@
 package coursepaths_test
 
 import (
-	"os"
-	"path/filepath"
+	"io/fs"
 	"testing"
+	"testing/fstest"
 
 	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/coursepaths"
 )
 
-func writeManifest(t *testing.T, root, rel, body string) {
-	t.Helper()
-	path := filepath.Join(root, rel)
-	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
-		t.Fatalf("mkdir %s: %v", filepath.Dir(path), err)
-	}
-	if err := os.WriteFile(path, []byte(body), 0o600); err != nil {
-		t.Fatalf("write %s: %v", path, err)
-	}
+// faultyTree is an in-memory manifest tree in which chosen files fail to read
+// and chosen directories fail to list, as a permission denial does on disk.
+type faultyTree struct {
+	fstest.MapFS
+	unreadableFiles map[string]bool
+	unreadableDirs  map[string]bool
 }
 
-func fixtureManifestRoot(t *testing.T) string {
-	t.Helper()
-	root := t.TempDir()
-	writeManifest(t, root, "careers/backend.json", `{
+func (f faultyTree) ReadFile(name string) ([]byte, error) {
+	if f.unreadableFiles[name] {
+		return nil, fs.ErrPermission
+	}
+	return f.MapFS.ReadFile(name)
+}
+
+func (f faultyTree) ReadDir(name string) ([]fs.DirEntry, error) {
+	if f.unreadableDirs[name] {
+		return nil, fs.ErrPermission
+	}
+	return f.MapFS.ReadDir(name)
+}
+
+// unreadableFS is a manifest root the operating system refused: every open fails.
+type unreadableFS struct{}
+
+func (unreadableFS) Open(string) (fs.File, error) { return nil, fs.ErrPermission }
+
+func manifestFile(body string) *fstest.MapFile {
+	return &fstest.MapFile{Data: []byte(body)}
+}
+
+func fixtureManifestTree() fstest.MapFS {
+	return fstest.MapFS{
+		"careers/backend.json": manifestFile(`{
   "pathId": "careers/backend",
   "title": "Backend",
   "description": "Serve HTTP.",
@@ -30,50 +49,26 @@ func fixtureManifestRoot(t *testing.T) string {
     {"id": "fundamentals", "title": "Fundamentals", "courses": ["go-basics"]},
     {"title": "Practice", "courses": ["go-web"]}
   ]
-}`)
-	writeManifest(t, root, "skills/accounting.json", `{
+}`),
+		"skills/accounting.json": manifestFile(`{
   "pathId": "skills/accounting",
   "title": "Accounting",
   "description": "Count money.",
   "phases": [{"id": "core", "title": "Core", "courses": ["bookkeeping"]}]
-}`)
-	return root
-}
-
-func TestCoursePathsLoadDirMissingRootFails(t *testing.T) {
-	if _, err := coursepaths.LoadDir(filepath.Join(t.TempDir(), "no-such-root")); err == nil {
-		t.Fatal("LoadDir with a missing root must fail")
+}`),
 	}
 }
 
-func TestCoursePathsLoadDirDeletedWorkingDirectoryFails(t *testing.T) {
-	previous, err := os.Getwd()
+func TestCoursePathsLoadFSMissingRootFails(t *testing.T) {
+	if _, err := coursepaths.LoadFS(unreadableFS{}); err == nil {
+		t.Fatal("LoadFS with a missing root must fail")
+	}
+}
+
+func TestCoursePathsLoadFSDotJSONBasenameSkips(t *testing.T) {
+	store, err := coursepaths.LoadFS(fstest.MapFS{".json": manifestFile(`{"title": "Nameless"}`)})
 	if err != nil {
-		t.Fatalf("getwd: %v", err)
-	}
-	vacated := t.TempDir()
-	if err := os.Chdir(vacated); err != nil {
-		t.Fatalf("chdir %s: %v", vacated, err)
-	}
-	t.Cleanup(func() {
-		if err := os.Chdir(previous); err != nil {
-			t.Fatalf("chdir %s: %v", previous, err)
-		}
-	})
-	if err := os.Remove(vacated); err != nil {
-		t.Fatalf("remove %s: %v", vacated, err)
-	}
-	if _, err := coursepaths.LoadDir("relative-root"); err == nil {
-		t.Fatal("LoadDir with an unresolvable working directory must fail")
-	}
-}
-
-func TestCoursePathsLoadDirDotJSONBasenameSkips(t *testing.T) {
-	root := t.TempDir()
-	writeManifest(t, root, ".json", `{"title": "Nameless"}`)
-	store, err := coursepaths.LoadDir(root)
-	if err != nil {
-		t.Fatalf("LoadDir: %v", err)
+		t.Fatalf("LoadFS: %v", err)
 	}
 	if len(store.Paths()) != 0 {
 		t.Fatalf("paths = %v, want no paths from an identifierless manifest", store.Paths())
@@ -83,26 +78,13 @@ func TestCoursePathsLoadDirDotJSONBasenameSkips(t *testing.T) {
 	}
 }
 
-func TestCoursePathsLoadDirFileRootFails(t *testing.T) {
-	root := t.TempDir()
-	leaf := filepath.Join(root, "manifest.json")
-	if err := os.WriteFile(leaf, []byte(`{"pathId": "flat", "phases": []}`), 0o600); err != nil {
-		t.Fatalf("write %s: %v", leaf, err)
-	}
-	if _, err := coursepaths.LoadDir(leaf); err == nil {
-		t.Fatal("LoadDir with a file root must fail")
-	}
-}
-
-func TestCoursePathsLoadDirReportsUnreadableManifest(t *testing.T) {
-	root := fixtureManifestRoot(t)
-	locked := filepath.Join(root, "careers", "backend.json")
-	if err := os.Chmod(locked, 0); err != nil {
-		t.Skipf("permissions unavailable: %v", err)
-	}
-	store, err := coursepaths.LoadDir(root)
+func TestCoursePathsLoadFSReportsUnreadableManifest(t *testing.T) {
+	store, err := coursepaths.LoadFS(faultyTree{
+		MapFS:           fixtureManifestTree(),
+		unreadableFiles: map[string]bool{"careers/backend.json": true},
+	})
 	if err != nil {
-		t.Fatalf("LoadDir: %v", err)
+		t.Fatalf("LoadFS: %v", err)
 	}
 	if _, ok := store.Path("careers/backend"); ok {
 		t.Fatal("unreadable manifest must not resolve")
@@ -115,25 +97,23 @@ func TestCoursePathsLoadDirReportsUnreadableManifest(t *testing.T) {
 	}
 }
 
-func TestCoursePathsLoadDirSkipsUnreadableSection(t *testing.T) {
-	root := fixtureManifestRoot(t)
-	if err := os.Chmod(filepath.Join(root, "careers"), 0); err != nil {
-		t.Skipf("permissions unavailable: %v", err)
-	}
-	t.Cleanup(func() { _ = os.Chmod(filepath.Join(root, "careers"), 0o755) })
-	store, err := coursepaths.LoadDir(root)
+func TestCoursePathsLoadFSSkipsUnreadableSection(t *testing.T) {
+	store, err := coursepaths.LoadFS(faultyTree{
+		MapFS:          fixtureManifestTree(),
+		unreadableDirs: map[string]bool{"careers": true},
+	})
 	if err != nil {
-		t.Fatalf("LoadDir: %v", err)
+		t.Fatalf("LoadFS: %v", err)
 	}
 	if _, ok := store.Path("careers/backend"); ok {
 		t.Fatal("unreadable section must not publish")
 	}
 }
 
-func TestCoursePathsLoadDirKeepsManifestPhaseOrder(t *testing.T) {
-	store, err := coursepaths.LoadDir(fixtureManifestRoot(t))
+func TestCoursePathsLoadFSKeepsManifestPhaseOrder(t *testing.T) {
+	store, err := coursepaths.LoadFS(fixtureManifestTree())
 	if err != nil {
-		t.Fatalf("LoadDir: %v", err)
+		t.Fatalf("LoadFS: %v", err)
 	}
 	paths := store.Paths()
 	if len(paths) != 2 {
@@ -157,13 +137,13 @@ func TestCoursePathsLoadDirKeepsManifestPhaseOrder(t *testing.T) {
 	}
 }
 
-func TestCoursePathsLoadDirSkipsMalformedManifestWithDiagnostic(t *testing.T) {
-	root := fixtureManifestRoot(t)
-	writeManifest(t, root, "careers/broken-manifest.json", `{"pathId": "careers/broken", "phases": [`)
-	writeManifest(t, root, "careers/untitled.json", `{"description": "No identity."}`)
-	store, err := coursepaths.LoadDir(root)
+func TestCoursePathsLoadFSSkipsMalformedManifestWithDiagnostic(t *testing.T) {
+	tree := fixtureManifestTree()
+	tree["careers/broken-manifest.json"] = manifestFile(`{"pathId": "careers/broken", "phases": [`)
+	tree["careers/untitled.json"] = manifestFile(`{"description": "No identity."}`)
+	store, err := coursepaths.LoadFS(tree)
 	if err != nil {
-		t.Fatalf("LoadDir: %v", err)
+		t.Fatalf("LoadFS: %v", err)
 	}
 	for _, path := range store.Paths() {
 		if path.ID == "careers/broken" || path.ID == "untitled" {
@@ -178,26 +158,26 @@ func TestCoursePathsLoadDirSkipsMalformedManifestWithDiagnostic(t *testing.T) {
 	}
 }
 
-func TestCoursePathsLoadDirIdentifierAndNameFallbacks(t *testing.T) {
-	root := t.TempDir()
-	writeManifest(t, root, "flat.json", `{
+func TestCoursePathsLoadFSIdentifierAndNameFallbacks(t *testing.T) {
+	store, err := coursepaths.LoadFS(fstest.MapFS{
+		"flat.json": manifestFile(`{
   "id": "backend",
   "phases": [{"id": "core", "courses": ["go-basics"]}]
-}`)
-	writeManifest(t, root, "dup-a.json", `{
+}`),
+		"dup-a.json": manifestFile(`{
   "pathId": "dupe",
   "title": "First",
   "phases": [{"id": "one", "title": "One", "courses": []}]
-}`)
-	writeManifest(t, root, "dup-b.json", `{
+}`),
+		"dup-b.json": manifestFile(`{
   "pathId": "dupe",
   "title": "Second",
   "phases": [{"id": "two", "title": "Two", "courses": []}]
-}`)
-	writeManifest(t, root, "notes.txt", `not a manifest`)
-	store, err := coursepaths.LoadDir(root)
+}`),
+		"notes.txt": manifestFile(`not a manifest`),
+	})
 	if err != nil {
-		t.Fatalf("LoadDir: %v", err)
+		t.Fatalf("LoadFS: %v", err)
 	}
 	flat, ok := store.Path("backend")
 	if !ok {
@@ -228,9 +208,9 @@ func TestCoursePathsLoadDirIdentifierAndNameFallbacks(t *testing.T) {
 }
 
 func TestActivePathContextSelectsMemberCourseOnly(t *testing.T) {
-	store, err := coursepaths.LoadDir(fixtureManifestRoot(t))
+	store, err := coursepaths.LoadFS(fixtureManifestTree())
 	if err != nil {
-		t.Fatalf("LoadDir: %v", err)
+		t.Fatalf("LoadFS: %v", err)
 	}
 	if !store.ActivePathContext("careers/backend", "go-basics") {
 		t.Fatal("member course must resolve an active path context")

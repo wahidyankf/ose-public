@@ -1,4 +1,4 @@
-package benchmark_test
+package integration_test
 
 import (
 	"encoding/json"
@@ -10,18 +10,18 @@ import (
 	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/tools/benchmark"
 )
 
-func testDataRoot(t *testing.T) string {
+func benchmarkDataRoot(t *testing.T) string {
 	t.Helper()
-	root := filepath.Join("..", "..", "..", "..", "..", "libs", "ayokoding-data")
+	root := filepath.Join("..", "..", "..", "..", "libs", "ayokoding-data")
 	if _, err := os.Stat(filepath.Join(root, "data", "ai-benchmark.json")); err != nil {
 		t.Fatalf("shared data is missing: %v", err)
 	}
 	return root
 }
 
-func loadDataset(t *testing.T) *benchmark.Dataset {
+func benchmarkDataset(t *testing.T) *benchmark.Dataset {
 	t.Helper()
-	raw, err := os.ReadFile(filepath.Join(testDataRoot(t), "data", "ai-benchmark.json"))
+	raw, err := os.ReadFile(filepath.Join(benchmarkDataRoot(t), "data", "ai-benchmark.json"))
 	if err != nil {
 		t.Fatalf("ReadFile: %v", err)
 	}
@@ -32,9 +32,9 @@ func loadDataset(t *testing.T) *benchmark.Dataset {
 	return dataset
 }
 
-func loadVectors(t *testing.T, name string) map[string]json.RawMessage {
+func benchmarkVectors(t *testing.T, name string) map[string]json.RawMessage {
 	t.Helper()
-	raw, err := os.ReadFile(filepath.Join(testDataRoot(t), "test-vectors", name))
+	raw, err := os.ReadFile(filepath.Join(benchmarkDataRoot(t), "test-vectors", name))
 	if err != nil {
 		t.Fatalf("ReadFile: %v", err)
 	}
@@ -45,7 +45,7 @@ func loadVectors(t *testing.T, name string) map[string]json.RawMessage {
 	return vectors
 }
 
-func modelByID(t *testing.T, dataset *benchmark.Dataset, id string) *benchmark.Model {
+func benchmarkModelByID(t *testing.T, dataset *benchmark.Dataset, id string) *benchmark.Model {
 	t.Helper()
 	for index := range dataset.Models {
 		if dataset.Models[index].ID == id {
@@ -56,7 +56,7 @@ func modelByID(t *testing.T, dataset *benchmark.Dataset, id string) *benchmark.M
 	return nil
 }
 
-func mustParseBenchmarkQuery(t *testing.T, encoded string) url.Values {
+func benchmarkQuery(t *testing.T, encoded string) url.Values {
 	t.Helper()
 	query, err := url.ParseQuery(encoded)
 	if err != nil {
@@ -66,7 +66,7 @@ func mustParseBenchmarkQuery(t *testing.T, encoded string) url.Values {
 }
 
 func TestLoadDatasetPreservesOrderDatesAndProvenance(t *testing.T) {
-	dataset := loadDataset(t)
+	dataset := benchmarkDataset(t)
 	if dataset.LastUpdated != "2026-11-15" {
 		t.Fatalf("lastUpdated = %q, want the shared source date", dataset.LastUpdated)
 	}
@@ -103,16 +103,16 @@ func TestLoadDatasetPreservesOrderDatesAndProvenance(t *testing.T) {
 }
 
 func TestCompositeIndexMatchesSharedVectors(t *testing.T) {
-	dataset := loadDataset(t)
+	dataset := benchmarkDataset(t)
 	var expected map[string]*float64
-	if err := json.Unmarshal(loadVectors(t, "benchmark.json")["compositeIndex"], &expected); err != nil {
+	if err := json.Unmarshal(benchmarkVectors(t, "benchmark.json")["compositeIndex"], &expected); err != nil {
 		t.Fatalf("Unmarshal: %v", err)
 	}
 	if len(expected) == 0 {
 		t.Fatal("no composite vectors to check")
 	}
 	for id, want := range expected {
-		got, ok := dataset.CompositeIndex(modelByID(t, dataset, id))
+		got, ok := dataset.CompositeIndex(benchmarkModelByID(t, dataset, id))
 		if want == nil {
 			if ok {
 				t.Fatalf("index(%s) = %v, want undefined", id, got)
@@ -126,13 +126,13 @@ func TestCompositeIndexMatchesSharedVectors(t *testing.T) {
 }
 
 func TestScoredBenchmarksMatchSharedVectors(t *testing.T) {
-	dataset := loadDataset(t)
+	dataset := benchmarkDataset(t)
 	var expected map[string][]string
-	if err := json.Unmarshal(loadVectors(t, "benchmark.json")["scoredBenchmarks"], &expected); err != nil {
+	if err := json.Unmarshal(benchmarkVectors(t, "benchmark.json")["scoredBenchmarks"], &expected); err != nil {
 		t.Fatalf("Unmarshal: %v", err)
 	}
 	for id, want := range expected {
-		got := dataset.ScoredBenchmarks(modelByID(t, dataset, id))
+		got := dataset.ScoredBenchmarks(benchmarkModelByID(t, dataset, id))
 		if len(got) != len(want) {
 			t.Fatalf("scored(%s) = %v, want %v", id, got, want)
 		}
@@ -145,26 +145,26 @@ func TestScoredBenchmarksMatchSharedVectors(t *testing.T) {
 }
 
 func TestTiersMatchSharedVectors(t *testing.T) {
-	dataset := loadDataset(t)
+	dataset := benchmarkDataset(t)
 	var expected map[string]string
-	if err := json.Unmarshal(loadVectors(t, "benchmark.json")["tiers"], &expected); err != nil {
+	if err := json.Unmarshal(benchmarkVectors(t, "benchmark.json")["tiers"], &expected); err != nil {
 		t.Fatalf("Unmarshal: %v", err)
 	}
 	for id, want := range expected {
-		if got := dataset.AssignTier(modelByID(t, dataset, id)); got != want {
+		if got := dataset.AssignTier(benchmarkModelByID(t, dataset, id)); got != want {
 			t.Fatalf("tier(%s) = %q, want %q", id, got, want)
 		}
 	}
 }
 
 func TestBlendedPriceMatchesSharedVectors(t *testing.T) {
-	dataset := loadDataset(t)
+	dataset := benchmarkDataset(t)
 	var expected map[string]*float64
-	if err := json.Unmarshal(loadVectors(t, "benchmark.json")["blendedPrice"], &expected); err != nil {
+	if err := json.Unmarshal(benchmarkVectors(t, "benchmark.json")["blendedPrice"], &expected); err != nil {
 		t.Fatalf("Unmarshal: %v", err)
 	}
 	for id, want := range expected {
-		got, ok := benchmark.BlendedPrice(modelByID(t, dataset, id).Price, 3, 1)
+		got, ok := benchmark.BlendedPrice(benchmarkModelByID(t, dataset, id).Price, 3, 1)
 		if want == nil {
 			if ok {
 				t.Fatalf("blended(%s) = %v, want undefined", id, got)
@@ -178,13 +178,13 @@ func TestBlendedPriceMatchesSharedVectors(t *testing.T) {
 }
 
 func TestPriceRatioMatchesSharedVectors(t *testing.T) {
-	dataset := loadDataset(t)
+	dataset := benchmarkDataset(t)
 	var expected []struct {
 		Candidate string   `json:"candidate"`
 		Reference string   `json:"reference"`
 		Value     *float64 `json:"value"`
 	}
-	if err := json.Unmarshal(loadVectors(t, "benchmark.json")["priceRatio"], &expected); err != nil {
+	if err := json.Unmarshal(benchmarkVectors(t, "benchmark.json")["priceRatio"], &expected); err != nil {
 		t.Fatalf("Unmarshal: %v", err)
 	}
 	if len(expected) != 2 {
@@ -192,8 +192,8 @@ func TestPriceRatioMatchesSharedVectors(t *testing.T) {
 	}
 	for _, vector := range expected {
 		got, ok := benchmark.PriceRatio(
-			modelByID(t, dataset, vector.Candidate),
-			modelByID(t, dataset, vector.Reference), 3, 1,
+			benchmarkModelByID(t, dataset, vector.Candidate),
+			benchmarkModelByID(t, dataset, vector.Reference), 3, 1,
 		)
 		if vector.Value == nil {
 			if ok {
@@ -208,12 +208,12 @@ func TestPriceRatioMatchesSharedVectors(t *testing.T) {
 }
 
 func TestFilterCountsMatchSharedVectors(t *testing.T) {
-	dataset := loadDataset(t)
+	dataset := benchmarkDataset(t)
 	var expected []struct {
 		State map[string]string `json:"state"`
 		Count int               `json:"count"`
 	}
-	if err := json.Unmarshal(loadVectors(t, "benchmark.json")["filterCounts"], &expected); err != nil {
+	if err := json.Unmarshal(benchmarkVectors(t, "benchmark.json")["filterCounts"], &expected); err != nil {
 		t.Fatalf("Unmarshal: %v", err)
 	}
 	if len(expected) != 5 {
@@ -231,7 +231,7 @@ func TestFilterCountsMatchSharedVectors(t *testing.T) {
 }
 
 func TestSubstitutesMatchSharedVector(t *testing.T) {
-	dataset := loadDataset(t)
+	dataset := benchmarkDataset(t)
 	var expected struct {
 		Target  string `json:"target"`
 		Harness string `json:"harness"`
@@ -242,10 +242,10 @@ func TestSubstitutesMatchSharedVector(t *testing.T) {
 			Index float64 `json:"index"`
 		} `json:"options"`
 	}
-	if err := json.Unmarshal(loadVectors(t, "benchmark.json")["substitutes"], &expected); err != nil {
+	if err := json.Unmarshal(benchmarkVectors(t, "benchmark.json")["substitutes"], &expected); err != nil {
 		t.Fatalf("Unmarshal: %v", err)
 	}
-	result := benchmark.SubstitutesFor(modelByID(t, dataset, expected.Target), dataset, expected.Harness)
+	result := benchmark.SubstitutesFor(benchmarkModelByID(t, dataset, expected.Target), dataset, expected.Harness)
 	if result.Kind != expected.Kind {
 		t.Fatalf("substitutes kind = %q, want %q", result.Kind, expected.Kind)
 	}
@@ -267,9 +267,59 @@ func TestSubstitutesMatchSharedVector(t *testing.T) {
 }
 
 func TestInsufficientTargetHasNoSubstitutes(t *testing.T) {
-	dataset := loadDataset(t)
-	result := benchmark.SubstitutesFor(modelByID(t, dataset, "claude-haiku-4-5"), dataset, "command-code-pro")
+	dataset := benchmarkDataset(t)
+	result := benchmark.SubstitutesFor(benchmarkModelByID(t, dataset, "claude-haiku-4-5"), dataset, "command-code-pro")
 	if result.Kind != "insufficient" || len(result.Models) != 0 {
 		t.Fatalf("insufficient target must yield no substitutes, got %+v", result)
+	}
+}
+
+func TestDecodeBenchmarkURLVectors(t *testing.T) {
+	dataset := benchmarkDataset(t)
+	var vectors []struct {
+		Query string            `json:"query"`
+		State map[string]string `json:"state"`
+	}
+	if err := json.Unmarshal(benchmarkVectors(t, "url-state.json")["benchmark"], &vectors); err != nil {
+		t.Fatalf("Unmarshal: %v", err)
+	}
+	if len(vectors) != 5 {
+		t.Fatalf("benchmark URL vectors = %d, want 5", len(vectors))
+	}
+	for _, vector := range vectors {
+		state, validity := benchmark.DecodeState(benchmarkQuery(t, vector.Query), dataset)
+		if validity != benchmark.Valid {
+			t.Fatalf("query %q must decode valid", vector.Query)
+		}
+		want := benchmark.UrlState{
+			Harness:    vector.State["harness"],
+			Tier:       vector.State["tier"],
+			Sub:        vector.State["sub"],
+			SubHarness: vector.State["subHarness"],
+		}
+		// The shared vector omits the sub-harness key when the default
+		// harness applies; decoding expresses the same unset state.
+		if state != want {
+			t.Fatalf("query %q = %+v, want %+v", vector.Query, state, want)
+		}
+	}
+}
+
+func TestBenchmarkRosterScopeMatchesVectors(t *testing.T) {
+	var expected struct {
+		En map[string]string `json:"en"`
+		ID map[string]string `json:"id"`
+	}
+	if err := json.Unmarshal(benchmarkVectors(t, "url-state.json")["benchmarkRosterScope"], &expected); err != nil {
+		t.Fatalf("Unmarshal: %v", err)
+	}
+	dataset := benchmarkDataset(t)
+	frontier, catalogs, inHouse := benchmark.RosterScope(dataset, "en")
+	if frontier != expected.En["frontier"] || catalogs != expected.En["catalogs"] || inHouse != expected.En["inHouse"] {
+		t.Fatalf("en scope = %q/%q/%q, want %v", frontier, catalogs, inHouse, expected.En)
+	}
+	frontier, catalogs, inHouse = benchmark.RosterScope(dataset, "id")
+	if frontier != expected.ID["frontier"] || catalogs != expected.ID["catalogs"] || inHouse != expected.ID["inHouse"] {
+		t.Fatalf("id scope = %q/%q/%q, want %v", frontier, catalogs, inHouse, expected.ID)
 	}
 }

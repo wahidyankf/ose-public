@@ -1,4 +1,4 @@
-package calculator_test
+package integration_test
 
 import (
 	"encoding/json"
@@ -10,18 +10,18 @@ import (
 	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/tools/calculator"
 )
 
-func testDataRoot(t *testing.T) string {
+func calculatorDataRoot(t *testing.T) string {
 	t.Helper()
-	root := filepath.Join("..", "..", "..", "..", "..", "libs", "ayokoding-data")
+	root := filepath.Join("..", "..", "..", "..", "libs", "ayokoding-data")
 	if _, err := os.Stat(filepath.Join(root, "data", "cost-of-living.json")); err != nil {
 		t.Fatalf("shared data is missing: %v", err)
 	}
 	return root
 }
 
-func loadData(t *testing.T) (calculator.Dataset, calculator.RoleMatrix) {
+func calculatorData(t *testing.T) (calculator.Dataset, calculator.RoleMatrix) {
 	t.Helper()
-	root := testDataRoot(t)
+	root := calculatorDataRoot(t)
 	col, err := os.ReadFile(filepath.Join(root, "data", "cost-of-living.json"))
 	if err != nil {
 		t.Fatalf("ReadFile: %v", err)
@@ -37,9 +37,9 @@ func loadData(t *testing.T) (calculator.Dataset, calculator.RoleMatrix) {
 	return dataset, matrix
 }
 
-func loadVectors(t *testing.T, name string) map[string]json.RawMessage {
+func calculatorVectors(t *testing.T, name string) map[string]json.RawMessage {
 	t.Helper()
-	raw, err := os.ReadFile(filepath.Join(testDataRoot(t), "test-vectors", name))
+	raw, err := os.ReadFile(filepath.Join(calculatorDataRoot(t), "test-vectors", name))
 	if err != nil {
 		t.Fatalf("ReadFile: %v", err)
 	}
@@ -50,7 +50,7 @@ func loadVectors(t *testing.T, name string) map[string]json.RawMessage {
 	return vectors
 }
 
-func mustParseCalculatorQuery(t *testing.T, encoded string) url.Values {
+func calculatorQuery(t *testing.T, encoded string) url.Values {
 	t.Helper()
 	query, err := url.ParseQuery(encoded)
 	if err != nil {
@@ -59,7 +59,7 @@ func mustParseCalculatorQuery(t *testing.T, encoded string) url.Values {
 	return query
 }
 
-func findCity(t *testing.T, dataset calculator.Dataset, id string) *calculator.City {
+func calculatorCity(t *testing.T, dataset calculator.Dataset, id string) *calculator.City {
 	t.Helper()
 	for index := range dataset.Cities {
 		if dataset.Cities[index].ID == id {
@@ -70,7 +70,7 @@ func findCity(t *testing.T, dataset calculator.Dataset, id string) *calculator.C
 	return nil
 }
 
-func findCountry(t *testing.T, dataset calculator.Dataset, id string) *calculator.Country {
+func calculatorCountry(t *testing.T, dataset calculator.Dataset, id string) *calculator.Country {
 	t.Helper()
 	for index := range dataset.Countries {
 		if dataset.Countries[index].ID == id {
@@ -81,12 +81,12 @@ func findCountry(t *testing.T, dataset calculator.Dataset, id string) *calculato
 	return nil
 }
 
-func defaultHousehold() calculator.Household {
+func calculatorHousehold() calculator.Household {
 	return calculator.Household{Adults: 1}
 }
 
 func TestLoadDatasetPreservesSnapshotDates(t *testing.T) {
-	dataset, matrix := loadData(t)
+	dataset, matrix := calculatorData(t)
 	if dataset.SnapshotDate != "2026-07-30" {
 		t.Fatalf("snapshotDate = %q, want the shared cost-of-living date", dataset.SnapshotDate)
 	}
@@ -105,7 +105,7 @@ func TestLoadDatasetPreservesSnapshotDates(t *testing.T) {
 }
 
 func TestEssentialsLocalMatchesSharedVectors(t *testing.T) {
-	dataset, _ := loadData(t)
+	dataset, _ := calculatorData(t)
 	var vectors []struct {
 		City      string `json:"city"`
 		Household struct {
@@ -117,15 +117,15 @@ func TestEssentialsLocalMatchesSharedVectors(t *testing.T) {
 		Area       string  `json:"area"`
 		Value      float64 `json:"value"`
 	}
-	if err := json.Unmarshal(loadVectors(t, "calculator.json")["essentialsLocal"], &vectors); err != nil {
+	if err := json.Unmarshal(calculatorVectors(t, "calculator.json")["essentialsLocal"], &vectors); err != nil {
 		t.Fatalf("Unmarshal: %v", err)
 	}
 	if len(vectors) != 3 {
 		t.Fatalf("essentials vectors = %d, want 3", len(vectors))
 	}
 	for _, vector := range vectors {
-		city := findCity(t, dataset, vector.City)
-		country := findCountry(t, dataset, city.CountryID)
+		city := calculatorCity(t, dataset, vector.City)
+		country := calculatorCountry(t, dataset, city.CountryID)
 		household := calculator.Household{
 			Adults:        vector.Household.Adults,
 			PreschoolKids: vector.Household.PreschoolKids,
@@ -138,21 +138,21 @@ func TestEssentialsLocalMatchesSharedVectors(t *testing.T) {
 }
 
 func TestNetUSDMatchesSharedVectors(t *testing.T) {
-	dataset, _ := loadData(t)
+	dataset, _ := calculatorData(t)
 	var vectors []struct {
 		City            string  `json:"city"`
 		GrossMonthlyUSD float64 `json:"grossMonthlyUsd"`
 		Value           float64 `json:"value"`
 	}
-	if err := json.Unmarshal(loadVectors(t, "calculator.json")["netUsd"], &vectors); err != nil {
+	if err := json.Unmarshal(calculatorVectors(t, "calculator.json")["netUsd"], &vectors); err != nil {
 		t.Fatalf("Unmarshal: %v", err)
 	}
 	if len(vectors) != 3 {
 		t.Fatalf("net vectors = %d, want 3", len(vectors))
 	}
 	for _, vector := range vectors {
-		city := findCity(t, dataset, vector.City)
-		country := findCountry(t, dataset, city.CountryID)
+		city := calculatorCity(t, dataset, vector.City)
+		country := calculatorCountry(t, dataset, city.CountryID)
 		if got := calculator.NetUSD(vector.GrossMonthlyUSD, city, country); got != vector.Value {
 			t.Fatalf("net(%s) = %v, want %v", vector.City, got, vector.Value)
 		}
@@ -160,7 +160,7 @@ func TestNetUSDMatchesSharedVectors(t *testing.T) {
 }
 
 func TestSavingsRowMatchesSharedVectors(t *testing.T) {
-	dataset, _ := loadData(t)
+	dataset, _ := calculatorData(t)
 	var vectors []struct {
 		City            string  `json:"city"`
 		GrossMonthlyUSD float64 `json:"grossMonthlyUsd"`
@@ -182,15 +182,15 @@ func TestSavingsRowMatchesSharedVectors(t *testing.T) {
 			AfterLifestyleSavings float64 `json:"afterLifestyleSavings"`
 		} `json:"row"`
 	}
-	if err := json.Unmarshal(loadVectors(t, "calculator.json")["savingsRow"], &vectors); err != nil {
+	if err := json.Unmarshal(calculatorVectors(t, "calculator.json")["savingsRow"], &vectors); err != nil {
 		t.Fatalf("Unmarshal: %v", err)
 	}
 	if len(vectors) != 3 {
 		t.Fatalf("savings vectors = %d, want 3", len(vectors))
 	}
 	for _, vector := range vectors {
-		city := findCity(t, dataset, vector.City)
-		country := findCountry(t, dataset, city.CountryID)
+		city := calculatorCity(t, dataset, vector.City)
+		country := calculatorCountry(t, dataset, city.CountryID)
 		household := calculator.Household{
 			Adults:        vector.Household.Adults,
 			PreschoolKids: vector.Household.PreschoolKids,
@@ -211,18 +211,18 @@ func TestSavingsRowMatchesSharedVectors(t *testing.T) {
 }
 
 func TestMinimumRoleMatchesSharedVectors(t *testing.T) {
-	dataset, matrix := loadData(t)
+	dataset, matrix := calculatorData(t)
 	var vectors []struct {
 		BaselineUSD float64 `json:"baselineUsd"`
 		Role        *string `json:"role"`
 	}
-	if err := json.Unmarshal(loadVectors(t, "calculator.json")["minimumRole"], &vectors); err != nil {
+	if err := json.Unmarshal(calculatorVectors(t, "calculator.json")["minimumRole"], &vectors); err != nil {
 		t.Fatalf("Unmarshal: %v", err)
 	}
 	if len(vectors) != 5 {
 		t.Fatalf("minimum-role vectors = %d, want 5", len(vectors))
 	}
-	ladder, err := calculator.RankLadder(dataset, matrix, defaultHousehold(), "public", "center", nil)
+	ladder, err := calculator.RankLadder(dataset, matrix, calculatorHousehold(), "public", "center", nil)
 	if err != nil {
 		t.Fatalf("RankLadder: %v", err)
 	}
@@ -245,7 +245,7 @@ func TestFormatMatchesSharedVectors(t *testing.T) {
 		FmtNum      [][2]json.RawMessage `json:"fmtNum"`
 		FmtCurrency [][2]json.RawMessage `json:"fmtCurrency"`
 	}
-	raw := loadVectors(t, "calculator.json")["format"]
+	raw := calculatorVectors(t, "calculator.json")["format"]
 	var formatRaw struct {
 		FmtNum      [][]json.RawMessage `json:"fmtNum"`
 		FmtCurrency [][]json.RawMessage `json:"fmtCurrency"`
@@ -283,20 +283,20 @@ func TestFormatMatchesSharedVectors(t *testing.T) {
 }
 
 func TestRoleMedianGrossUSDMatchesSharedVectors(t *testing.T) {
-	dataset, matrix := loadData(t)
+	dataset, matrix := calculatorData(t)
 	var vectors []struct {
 		City  string  `json:"city"`
 		Role  string  `json:"role"`
 		Value float64 `json:"value"`
 	}
-	if err := json.Unmarshal(loadVectors(t, "calculator.json")["roleMedianGrossUsd"], &vectors); err != nil {
+	if err := json.Unmarshal(calculatorVectors(t, "calculator.json")["roleMedianGrossUsd"], &vectors); err != nil {
 		t.Fatalf("Unmarshal: %v", err)
 	}
 	if len(vectors) != 3 {
 		t.Fatalf("median vectors = %d, want 3", len(vectors))
 	}
 	for _, vector := range vectors {
-		city := findCity(t, dataset, vector.City)
+		city := calculatorCity(t, dataset, vector.City)
 		if got := calculator.RoleMedianGrossUSD(dataset.Fx, matrix, city, vector.Role); got != vector.Value {
 			t.Fatalf("median(%s/%s) = %v, want %v", vector.City, vector.Role, got, vector.Value)
 		}
@@ -327,7 +327,7 @@ func TestDualCurrencyMatchesSharedVectors(t *testing.T) {
 		USDAmount     float64 `json:"usdAmount"`
 		Text          string  `json:"text"`
 	}
-	if err := json.Unmarshal(loadVectors(t, "calculator.json")["dualCurrency"], &vectors); err != nil {
+	if err := json.Unmarshal(calculatorVectors(t, "calculator.json")["dualCurrency"], &vectors); err != nil {
 		t.Fatalf("Unmarshal: %v", err)
 	}
 	if len(vectors) != 2 {
@@ -338,4 +338,82 @@ func TestDualCurrencyMatchesSharedVectors(t *testing.T) {
 			t.Fatalf("FmtDualCurrency = %q, want %q", got, vector.Text)
 		}
 	}
+}
+
+func TestDecodeCalculatorURLVectors(t *testing.T) {
+	dataset, _ := calculatorData(t)
+	var vectors []struct {
+		Query string `json:"query"`
+		State struct {
+			Tab       string  `json:"tab"`
+			Region    *string `json:"region"`
+			CountryID *string `json:"countryId"`
+			CityID    *string `json:"cityId"`
+			Household struct {
+				Adults        int `json:"adults"`
+				PreschoolKids int `json:"preschoolKids"`
+				SchoolKids    int `json:"schoolKids"`
+			} `json:"household"`
+			SchoolType string  `json:"schoolType"`
+			Area       string  `json:"area"`
+			Gross      float64 `json:"gross"`
+			MinRole    struct {
+				BaselineSource  string  `json:"baselineSource"`
+				TargetRaw       string  `json:"targetRaw"`
+				TargetCurrency  string  `json:"targetCurrency"`
+				RefCityID       *string `json:"refCityId"`
+				RefRole         string  `json:"refRole"`
+				MyGrossMonthly  float64 `json:"myGrossMonthly"`
+				MySalaryCityID  *string `json:"mySalaryCityId"`
+				MyGrossCurrency string  `json:"myGrossCurrency"`
+				DisplayCurrency string  `json:"displayCurrency"`
+			} `json:"minRole"`
+		} `json:"state"`
+	}
+	if err := json.Unmarshal(calculatorVectors(t, "url-state.json")["calculator"], &vectors); err != nil {
+		t.Fatalf("Unmarshal: %v", err)
+	}
+	if len(vectors) != 5 {
+		t.Fatalf("calculator URL vectors = %d, want 5", len(vectors))
+	}
+	deref := func(value *string) string {
+		if value == nil {
+			return ""
+		}
+		return *value
+	}
+	for _, vector := range vectors {
+		state, validity := calculatorDecodeState(t, dataset, vector.Query)
+		if validity != calculator.Valid {
+			t.Fatalf("query %q must decode valid", vector.Query)
+		}
+		want := calculator.CalculatorState{
+			Tab:        vector.State.Tab,
+			Region:     deref(vector.State.Region),
+			CountryID:  deref(vector.State.CountryID),
+			CityID:     deref(vector.State.CityID),
+			Household:  calculator.Household{Adults: vector.State.Household.Adults, PreschoolKids: vector.State.Household.PreschoolKids, SchoolKids: vector.State.Household.SchoolKids},
+			SchoolType: vector.State.SchoolType,
+			Area:       vector.State.Area,
+			Gross:      vector.State.Gross,
+			MinRole: calculator.MinRoleInputs{
+				BaselineSource:  vector.State.MinRole.BaselineSource,
+				TargetRaw:       vector.State.MinRole.TargetRaw,
+				TargetCurrency:  vector.State.MinRole.TargetCurrency,
+				RefCityID:       deref(vector.State.MinRole.RefCityID),
+				RefRole:         vector.State.MinRole.RefRole,
+				MyGrossMonthly:  vector.State.MinRole.MyGrossMonthly,
+				MySalaryCityID:  deref(vector.State.MinRole.MySalaryCityID),
+				MyGrossCurrency: vector.State.MinRole.MyGrossCurrency,
+				DisplayCurrency: vector.State.MinRole.DisplayCurrency,
+			},
+		}
+		if state != want {
+			t.Fatalf("query %q\n got %+v\nwant %+v", vector.Query, state, want)
+		}
+	}
+}
+func calculatorDecodeState(t *testing.T, dataset calculator.Dataset, encoded string) (calculator.CalculatorState, calculator.Validity) {
+	t.Helper()
+	return calculator.DecodeState(calculatorQuery(t, encoded), dataset)
 }

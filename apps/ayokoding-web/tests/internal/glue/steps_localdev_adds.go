@@ -3,8 +3,7 @@ package glue
 import (
 	"errors"
 	"net/http"
-	"os"
-	"path/filepath"
+	"path"
 	"strconv"
 	"strings"
 )
@@ -31,33 +30,21 @@ var corpusFiles = map[string]string{
 }`,
 }
 
-func writeCorpusFile(path, body string) error {
-	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
-		return err
-	}
-	return os.WriteFile(path, []byte(body), 0o600)
-}
-
-// StepCorpusDirsNameAnotherRoot writes a temporary corpus and points the content
-// and manifest variables at it. The directory is removed when the scenario closes.
+// StepCorpusDirsNameAnotherRoot stages a corpus and points the content and
+// manifest variables at it. The unit adapter keeps the corpus in memory; the
+// other adapters write a directory that the scenario removes when it closes.
 func (w *World) StepCorpusDirsNameAnotherRoot() error {
-	root, err := os.MkdirTemp("", "ayokoding-web-corpus-")
+	root, err := w.stageCorpus(corpusFiles)
 	if err != nil {
 		return err
 	}
-	w.stops = append(w.stops, func() { _ = os.RemoveAll(root) })
-	for rel, body := range corpusFiles {
-		if err := writeCorpusFile(filepath.Join(root, rel), body); err != nil {
-			return err
-		}
-	}
-	port, err := freePort()
+	port, err := w.freePort()
 	if err != nil {
 		return err
 	}
 	w.env = map[string]string{
-		"AYOKODING_WEB_CONTENT_DIR":   filepath.Join(root, "content"),
-		"AYOKODING_WEB_MANIFESTS_DIR": filepath.Join(root, "manifests"),
+		"AYOKODING_WEB_CONTENT_DIR":   path.Join(root, "content"),
+		"AYOKODING_WEB_MANIFESTS_DIR": path.Join(root, "manifests"),
 		"AYOKODING_WEB_PORT":          itoa(port),
 	}
 	return nil
@@ -164,7 +151,7 @@ func (w *World) StepStartupFailsWithMessageNaming(naming string) error {
 // StepRewriteStartsWithFixtureSetBy starts the launcher with a fixture chosen
 // by the --fixture flag or by AYOKODING_WEB_FIXTURE.
 func (w *World) StepRewriteStartsWithFixtureSetBy(fixture, channel string) error {
-	port, err := freePort()
+	port, err := w.freePort()
 	if err != nil {
 		return err
 	}

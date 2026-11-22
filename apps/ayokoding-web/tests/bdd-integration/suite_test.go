@@ -5,7 +5,6 @@ package bddintegration
 
 import (
 	"context"
-	"os"
 	"testing"
 
 	"github.com/cucumber/godog"
@@ -30,12 +29,14 @@ import (
 // TestContract runs the non-exempt web-contract corpus against real listeners
 // and fixture roots.
 func TestContract(t *testing.T) {
-	if adapter := os.Getenv("AYOKODING_BDD_ADAPTER"); adapter != "" && adapter != "integration" {
-		t.Skipf("bdd-integration suite owns the integration adapter, got %q", adapter)
+	// The integration suite runs under the integration adapter or with no
+	// adapter named; any other adapter must not reach this suite silently.
+	if adapter, _ := glue.RequestedAdapter(); adapter != "" && adapter != "integration" {
+		t.Fatalf("bdd-integration suite owns the integration adapter, got %q", adapter)
 	}
 	binary, err := glue.BuildBinary(t)
 	if err != nil {
-		t.Skipf("integration binary unavailable: %v", err)
+		t.Fatalf("integration binary must build: %v", err)
 	}
 	features, err := glue.IntegrationCorpus()
 	if err != nil {

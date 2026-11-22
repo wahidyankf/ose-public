@@ -9,7 +9,7 @@ import json
 import signal
 from collections.abc import Mapping
 from datetime import timedelta
-from typing import Any
+from typing import Any, TextIO
 
 from ferret import __version__, cli
 from ferret._bootstrap import EXIT_NOT_EXECUTABLE, OVERRIDE_VARIABLE, relaunch, unstartable
@@ -110,7 +110,7 @@ def test_a_closed_output_pipe_exits_141_and_an_interrupt_exits_130() -> None:
     assert signal.getsignal(signal.SIGPIPE) == signal.SIG_DFL
 
     # 130: an interrupt is a BaseException, so the entry point lets it end the process, not turn it into a code.
-    def interrupted(request: cli.Request, stdout: io.StringIO, stderr: io.StringIO) -> Any:
+    def interrupted(request: cli.Request, stdout: TextIO, stderr: TextIO) -> Any:
         raise KeyboardInterrupt
 
     raised = False

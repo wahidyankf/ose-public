@@ -57,6 +57,7 @@
       "inputs": [
         "{projectRoot}/src/**/*.py",
         "{projectRoot}/tests/**/*.py",
+        "{projectRoot}/tests/unit/ruff.toml",
         "{projectRoot}/scripts/**/*.py",
         "{projectRoot}/pyproject.toml",
         "{projectRoot}/uv.lock",
@@ -154,6 +155,7 @@
       "inputs": [
         "default",
         "{projectRoot}/tests/**/*.py",
+        "{projectRoot}/tests/unit/ruff.toml",
         "{projectRoot}/pyproject.toml",
         "{workspaceRoot}/specs/apps/ferret/cli/behaviours/**/*.feature",
         "{projectRoot}/src/**/*.py",

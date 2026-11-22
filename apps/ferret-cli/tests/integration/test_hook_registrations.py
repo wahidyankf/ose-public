@@ -10,7 +10,6 @@ still forward every event its mapper supports.
 
 import json
 from pathlib import Path
-from typing import Any
 
 import pytest
 
@@ -25,7 +24,10 @@ PROJECT_HOOK_FILES = [
 PLUGIN = REPOSITORY / ".opencode" / "plugins" / "ferret.ts"
 
 
-def commands_in(node: Any) -> list[str]:
+type HarnessDocument = dict[str, HarnessDocument] | list[HarnessDocument] | str | int | float | bool | None
+
+
+def commands_in(node: HarnessDocument) -> list[str]:
     """Every ``command`` string anywhere in a harness configuration document."""
     if isinstance(node, dict):
         found = [value for key, value in node.items() if key == "command" and isinstance(value, str)]

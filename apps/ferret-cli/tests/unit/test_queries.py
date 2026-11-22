@@ -311,7 +311,7 @@ def test_a_page_size_of_more_zeros_than_an_integer_may_be_read_from_is_answered_
 
 
 def test_a_clock_reading_with_no_time_zone_is_an_internal_failure() -> None:
-    error = refusal_of(criteria_from_options({}, now=datetime(2026, 9, 18, 8, 15, 30)))
+    error = refusal_of(criteria_from_options({}, now=datetime(2026, 9, 18, 8, 15, 30, tzinfo=UTC).replace(tzinfo=None)))
 
     assert (error.code, error.exit_code, error.field, error.retryable) == ("ferret.internal.failure", 2, None, False)
 

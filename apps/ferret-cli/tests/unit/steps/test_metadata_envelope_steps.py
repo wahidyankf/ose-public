@@ -262,7 +262,7 @@ def then_one_event_with_only_allowlisted_metadata(session: Session, event: str, 
     assert (document["harness"], document["eventType"], document["toolName"]) == (session.harness, event, tool)
     assert re.fullmatch(r"ws_[0-9a-f]{32}", document["workspaceId"])
     assert re.fullmatch(r"ss_[0-9a-f]{32}", document["sessionId"])
-    assert not any(canary in json.dumps(document) for canary in CANARIES + (IMAGE_CANARY,))
+    assert not any(canary in json.dumps(document) for canary in (*CANARIES, IMAGE_CANARY))
     assert session.world.input.reads == [RAW_LIMIT_BYTES + 1]
 
 

@@ -2,7 +2,7 @@ import path from "path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
 import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { expect, vi } from "vitest";
+import { expect, vi, type Mock } from "vitest";
 import "./helpers/test-setup";
 import { MARKDOWN_PROSE_CLASS, MarkdownRenderer } from "@/features/content/shell/markdown-renderer";
 import { MermaidDiagram } from "@/features/content/shell/mermaid";
@@ -502,10 +502,10 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, Background, AfterEachScen
 
   // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: A rendering failure shows "Something went wrong" with a Try again button
   Scenario('A rendering failure shows "Something went wrong" with a Try again button', ({ Given, Then, When }) => {
-    let reset: ReturnType<typeof vi.fn>;
+    let reset: Mock<() => void>;
 
     Given("a content page fails while rendering", () => {
-      reset = vi.fn();
+      reset = vi.fn<() => void>();
       // Next.js shows this route error boundary in place of a page whose render threw.
       render(<ContentError error={new Error("render failed")} reset={reset} />);
     });

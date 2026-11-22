@@ -735,4 +735,23 @@ describe("MinRoleTable", () => {
       expect(hasTitle).toBe(true);
     });
   });
+
+  // Baseline failure containment: an unconvertible target currency (no fx rate) must not
+  // crash the tab — the baseline stays disengaged, so no ladder renders, but the controls stay live.
+  it("an unknown target currency disengages the baseline without crashing", () => {
+    render(
+      <MinRoleTable
+        {...defaultProps}
+        inputs={{ ...DEFAULT_STATE.minRole, baselineSource: "savings_target", targetRaw: "100", targetCurrency: "XXX" }}
+        onInputsChange={() => {}}
+      />,
+    );
+    // No baseline engaged: no table, no cards, no divider, no minimum marker…
+    expect(screen.queryByTestId("min-role-table")).toBeNull();
+    expect(screen.queryByTestId("mobile-role-cards")).toBeNull();
+    expect(screen.queryByTestId("qualifying-divider")).toBeNull();
+    expect(screen.queryAllByTestId("minimum-marker").length).toBe(0);
+    // …but the tab stays alive — the savings-target input still accepts a fix.
+    expect(screen.getByRole("spinbutton", { name: /monthly savings target/i })).toBeTruthy();
+  });
 });

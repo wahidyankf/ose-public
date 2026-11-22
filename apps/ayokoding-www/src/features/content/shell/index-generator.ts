@@ -72,7 +72,7 @@ export interface IndexGeneratorPort {
   now(): Date;
 }
 
-function nodeIndexGeneratorPort(contentDir: string): IndexGeneratorPort {
+export function nodeIndexGeneratorPort(contentDir: string): IndexGeneratorPort {
   return {
     repository: new FileSystemContentRepository(contentDir),
     readText(filePath) {

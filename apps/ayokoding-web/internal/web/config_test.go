@@ -68,6 +68,36 @@ func TestResolveConfigRejectsInvalidPort(t *testing.T) {
 	}
 }
 
+func TestOSEnvironmentSnapshotsLauncher(t *testing.T) {
+	t.Setenv("AYOKODING_WEB_PORT", "3200")
+	t.Setenv("AYOKODING_WEB_FIXTURE", "parity")
+	t.Setenv("AYOKODING_WEB_CONTENT_DIR", "content")
+	t.Setenv("AYOKODING_WEB_MANIFESTS_DIR", "manifests")
+	t.Setenv("AYOKODING_WEB_SHOW_DRAFTS", "true")
+	environment := web.OSEnvironment()
+	for key, want := range map[string]string{
+		"AYOKODING_WEB_PORT":          "3200",
+		"AYOKODING_WEB_FIXTURE":       "parity",
+		"AYOKODING_WEB_CONTENT_DIR":   "content",
+		"AYOKODING_WEB_MANIFESTS_DIR": "manifests",
+		"AYOKODING_WEB_SHOW_DRAFTS":   "true",
+	} {
+		if value, ok := environment(key); !ok || value != want {
+			t.Fatalf("snapshot %s = %q, %v; want %q, true", key, value, ok, want)
+		}
+	}
+	if value, ok := environment("AYOKODING_WEB_DOES_NOT_EXIST"); ok {
+		t.Fatalf("unknown key = %q, true; want missing", value)
+	}
+	cfg, err := web.ResolveConfig(nil, environment)
+	if err != nil {
+		t.Fatalf("ResolveConfig: %v", err)
+	}
+	if cfg.Port != 3200 || cfg.Fixture != web.FixtureParity {
+		t.Fatalf("wired config = %+v, want port 3200 fixture parity", cfg)
+	}
+}
+
 func TestResolveConfigRejectsInvalidFlag(t *testing.T) {
 	if _, err := resolve([]string{"--port", "nope"}, nil); err == nil {
 		t.Fatal("invalid --port must fail")

@@ -1,4 +1,3 @@
-import fs from "node:fs";
 import path from "node:path";
 import { describeFeature, loadFeature } from "@amiceli/vitest-cucumber";
 import matter from "gray-matter";
@@ -6,10 +5,9 @@ import { expect } from "vitest";
 
 // plan (ayokoding-learn-revamp-01-navigation-and-display), Phase 3 RED (unit, S9) — step
 // bindings for course-content-hygiene.feature's "The courses list page shows no course title with a leading catalogue number"
-// scenario, reading the real published content the way
-// tests/unit/features/course-paths/manifests/careers/careers-se-manifests.unit.test.ts does
-// (paths from process.cwd(), node:fs, gray-matter). RED until the Phase 3 title-strip codemod
-// runs: 76 course titles still start with a catalogue or pass number.
+// scenario. The unit binding reads an in-memory stand-in for the published library, so the checks
+// run hermetically; the real library is read by
+// tests/integration/features/content/course-content-hygiene.integration.test.ts.
 
 const feature = await loadFeature(
   path.resolve(
@@ -35,28 +33,34 @@ const ACCURACY_MARKER_PATTERNS: Array<{ name: string; pattern: RegExp }> = [
 
 const COURSES_ROOT = "content/en/learn/courses";
 /** The course that cites sources and must present them under a heading headlined "References". */
-const CITING_COURSE_RELATIVE_PATH = "search-and-information-retrieval/overview.md";
+const CITING_COURSE_RELATIVE_PATH = `${COURSES_ROOT}/search-and-information-retrieval/overview.md`;
+const COURSE_INDEX = new RegExp(`^${COURSES_ROOT}/([^/]+)/_index\\.md$`, "u");
+
+/**
+ * The in-memory stand-in for the published English course library: relative path to file text.
+ * Every course root carries its `_index.md`, and the citing course carries a References heading.
+ */
+const LIBRARY: Readonly<Record<string, string>> = {
+  [`${COURSES_ROOT}/_index.md`]: [
+    "---",
+    'title: "Courses"',
+    "---",
+    "",
+    "- [Just Enough Python](/en/learn/courses/just-enough-python)",
+    "- [Search and Information Retrieval](/en/learn/courses/search-and-information-retrieval)",
+    "",
+  ].join("\n"),
+  [`${COURSES_ROOT}/just-enough-python/_index.md`]: '---\ntitle: "Just Enough Python"\n---\n\nWrite small programs.\n',
+  [`${COURSES_ROOT}/just-enough-python/learning/overview.md`]: '---\ntitle: "Overview"\n---\n\nSyntax first.\n',
+  [`${COURSES_ROOT}/search-and-information-retrieval/_index.md`]:
+    '---\ntitle: "Search and Information Retrieval"\n---\n\nFind the right documents.\n',
+  [CITING_COURSE_RELATIVE_PATH]:
+    '---\ntitle: "Overview"\n---\n\nIndexes and ranking.\n\n## References\n\n- Manning, Raghavan, and Schütze.\n',
+};
 
 interface CourseTitleReading {
   slug: string;
   title: string;
-}
-
-function isNumberedTitle(title: string): boolean {
-  return CATALOGUE_NUMBERED_TITLE.test(title) || PASS_NUMBERED_TITLE.test(title);
-}
-
-function publishedCourseSlugs(): string[] {
-  return fs
-    .readdirSync(path.join(process.cwd(), COURSES_ROOT), { withFileTypes: true })
-    .filter((entry) => entry.isDirectory())
-    .map((entry) => entry.name);
-}
-
-function readCourseTitle(slug: string): CourseTitleReading {
-  const raw = fs.readFileSync(path.join(process.cwd(), COURSES_ROOT, slug, "_index.md"), "utf8");
-  const { data } = matter(raw);
-  return { slug, title: typeof data.title === "string" ? data.title : "" };
 }
 
 interface CourseFile {
@@ -64,24 +68,22 @@ interface CourseFile {
   content: string;
 }
 
-/** Every file under the published course tree, read in full, with its path from the repository root. */
+function isNumberedTitle(title: string): boolean {
+  return CATALOGUE_NUMBERED_TITLE.test(title) || PASS_NUMBERED_TITLE.test(title);
+}
+
+function publishedCourseSlugs(): string[] {
+  return Object.keys(LIBRARY).flatMap((relativePath) => COURSE_INDEX.exec(relativePath)?.[1] ?? []);
+}
+
+function readCourseTitle(slug: string): CourseTitleReading {
+  const { data } = matter(LIBRARY[`${COURSES_ROOT}/${slug}/_index.md`] ?? "");
+  return { slug, title: typeof data.title === "string" ? data.title : "" };
+}
+
+/** Every file under the library, with its path from the repository root. */
 function readCourseFiles(): CourseFile[] {
-  const files: CourseFile[] = [];
-  const root = path.join(process.cwd(), COURSES_ROOT);
-  const walk = (relative: string) => {
-    for (const entry of fs.readdirSync(path.join(root, relative), { withFileTypes: true })) {
-      if (entry.isDirectory()) {
-        walk(path.posix.join(relative, entry.name));
-        continue;
-      }
-      files.push({
-        relativePath: path.posix.join(COURSES_ROOT, relative, entry.name),
-        content: fs.readFileSync(path.join(root, relative, entry.name), "utf8"),
-      });
-    }
-  };
-  walk("");
-  return files;
+  return Object.entries(LIBRARY).map(([relativePath, content]) => ({ relativePath, content }));
 }
 
 describeFeature(feature, ({ Scenario }) => {
@@ -110,12 +112,13 @@ describeFeature(feature, ({ Scenario }) => {
       });
 
       And("the course list page shows every course title without a leading number", () => {
-        const courseListSource = fs.readFileSync(path.join(process.cwd(), COURSES_ROOT, "_index.md"), "utf8");
+        const courseListSource = LIBRARY[`${COURSES_ROOT}/_index.md`] ?? "";
         // The courses section _index.md lists each course row as `- [Title](/en/learn/courses/<slug>)`;
         // two-space-indented rows are the courses' own sub-pages, not course titles.
         const courseListTitles = [...courseListSource.matchAll(/^- \[(.+?)\]\(\/en\/learn\/courses\/[^/)]+\)$/gmu)].map(
           (match) => match[1] ?? "",
         );
+        expect(courseListTitles.length, "no course list rows read").toBeGreaterThan(0);
         const offenders = courseListTitles.filter(isNumberedTitle);
         expect(
           offenders.length,
@@ -172,9 +175,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
 
     Then('a course that cites sources shows them under a "References" heading', () => {
-      const citingCourse = courseFiles.find(
-        (file) => file.relativePath === path.posix.join(COURSES_ROOT, CITING_COURSE_RELATIVE_PATH),
-      );
+      const citingCourse = courseFiles.find((file) => file.relativePath === CITING_COURSE_RELATIVE_PATH);
       expect(citingCourse, "the citing course page was not walked").toBeDefined();
       expect(citingCourse?.content).toContain("## References");
     });

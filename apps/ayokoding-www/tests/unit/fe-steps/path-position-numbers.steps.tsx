@@ -1,8 +1,6 @@
-import fs from "node:fs";
 import path from "node:path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
 import { cleanup, render, screen, within } from "@testing-library/react";
-import matter from "gray-matter";
 import { expect, vi } from "vitest";
 import type { PathManifest } from "@/features/course-paths/core/schemas";
 import { manifestFixture } from "../features/course-paths/manifest-fixture";
@@ -11,10 +9,10 @@ import { manifestFixture } from "../features/course-paths/manifest-fixture";
 // bindings for path-position-numbers.feature's "A course page in path context shows no
 // catalogue number in course titles", rendering the course page chrome the way
 // path-order-nav.steps.tsx does (same mocks and renderCoursePathPage setup) for the
-// backend-track fixture path's three courses, but with every course title read from the real
-// content/en/learn/courses/<slug>/_index.md frontmatter (node:fs + gray-matter) instead of a
-// synthetic fixture. RED until the Phase 3 title-strip codemod runs: the real titles still
-// carried their leading catalogue and pass numbers.
+// backend-track fixture path's three courses, with every course title taken from the committed
+// content/en/learn/courses/<slug>/_index.md frontmatter (an in-memory double here; the e2e suite
+// renders the real course pages) instead of a synthetic fixture. RED until the Phase 3 title-strip
+// codemod runs: the real titles still carried their leading catalogue and pass numbers.
 
 vi.mock("next/link", () => ({
   default: ({ href, children, ...rest }: { href: string; children: React.ReactNode; [key: string]: unknown }) => (
@@ -105,8 +103,6 @@ import { renderCoursePathPage } from "../render-course-path-page";
 // eslint-disable-next-line import/first
 import { PathLanding } from "@/features/course-paths/shell/path-landing";
 // eslint-disable-next-line import/first
-import { PathRail } from "@/features/course-paths/shell/path-rail";
-// eslint-disable-next-line import/first
 import { SyllabusPreview } from "@/features/course-paths/shell/syllabus-preview";
 
 const COURSES_ROOT = "content/en/learn/courses";
@@ -162,16 +158,22 @@ interface CourseFrontmatter {
   prerequisites: string[];
 }
 
-/** Read one course's real frontmatter (title + declared prerequisites) from the content tree. */
+/**
+ * The committed frontmatter (title and declared prerequisites) of each course these scenarios render,
+ * as each course's `_index.md` states it. This in-memory double stands in for the content tree.
+ */
+const COURSE_FRONTMATTER: ReadonlyMap<string, CourseFrontmatter> = new Map([
+  ["just-enough-bash", { title: "Just Enough Bash", prerequisites: [] }],
+  ["backend-essentials", { title: "Backend Essentials", prerequisites: ["sql-essentials", "just-enough-python"] }],
+  ["sql-essentials", { title: "SQL Essentials", prerequisites: ["just-enough-python"] }],
+  ["just-enough-python", { title: "Just Enough Python", prerequisites: [] }],
+]);
+
+/** Read one course's frontmatter (title + declared prerequisites) from the content double. */
 function readCourseFrontmatter(courseId: string): CourseFrontmatter {
-  const raw = fs.readFileSync(path.join(process.cwd(), COURSES_ROOT, courseId, "_index.md"), "utf8");
-  const { data } = matter(raw);
-  return {
-    title: typeof data.title === "string" ? data.title : "",
-    prerequisites: Array.isArray(data.prerequisites)
-      ? data.prerequisites.filter((candidate): candidate is string => typeof candidate === "string")
-      : [],
-  };
+  const frontmatter = COURSE_FRONTMATTER.get(courseId);
+  if (!frontmatter) throw new Error(`no course frontmatter in the content double for ${courseId}`);
+  return { title: frontmatter.title, prerequisites: [...frontmatter.prerequisites] };
 }
 
 const feature = await loadFeature(

@@ -30,7 +30,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline }) => {
     });
 
     And("the English version of the home page should be displayed", () => {
-      expect(resolveLocaleEntryRedirect("/").slice(1)).toBe("en");
+      expect(resolveLocaleEntryRedirect("/")?.slice(1)).toBe("en");
       expect(t("en", "breadcrumbHome")).toBe("Home");
     });
   });

@@ -70,8 +70,8 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/navigation.feature: Breadcrumb shows ancestor path hierarchy without current page
-  Scenario("Breadcrumb shows ancestor path hierarchy without current page", ({ When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/navigation.feature: breadcrumb trail
+  Scenario("breadcrumb trail", ({ When, Then, And }) => {
     When("a visitor opens a nested content page", () => {
       render(
         <Breadcrumb

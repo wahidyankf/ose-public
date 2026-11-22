@@ -18,17 +18,13 @@ Feature: Content namespace redirects
     Then the response status should be 308
     And the response Location header should equal "/id/belajar/ikhtisar"
 
-  Scenario: About page keeps its top-level URL and is not redirected
-    When a visitor navigates to "/en/about-ayokoding"
+  Scenario Outline: top-level pages are not redirected
+    When a visitor navigates to "<url>"
     Then the page should load successfully
     And the current URL should not contain "/c/"
 
-  Scenario: Indonesian terms page keeps its top-level URL and is not redirected
-    When a visitor navigates to "/id/syarat-dan-ketentuan"
-    Then the page should load successfully
-    And the current URL should not contain "/c/"
-
-  Scenario: Tools index keeps its top-level URL and is not redirected
-    When a visitor navigates to "/en/tools"
-    Then the page should load successfully
-    And the current URL should not contain "/c/"
+    Examples:
+      | url                      |
+      | /en/about-ayokoding      |
+      | /id/syarat-dan-ketentuan |
+      | /en/tools                |

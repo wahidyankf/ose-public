@@ -1,8 +1,6 @@
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/content-namespace-redirects.feature: A /c/-namespaced English learn URL permanently redirects to its bare URL
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/content-namespace-redirects.feature: A /c/-namespaced Indonesian belajar URL permanently redirects to its bare URL
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/content-namespace-redirects.feature: About page keeps its top-level URL and is not redirected
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/content-namespace-redirects.feature: Indonesian terms page keeps its top-level URL and is not redirected
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/content-namespace-redirects.feature: Tools index keeps its top-level URL and is not redirected
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/content-namespace-redirects.feature: top-level pages are not redirected
 import { createBdd } from "playwright-bdd";
 import { expect } from "@playwright/test";
 import { getResilient } from "../support/resilient-request";

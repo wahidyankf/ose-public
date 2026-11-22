@@ -16,12 +16,7 @@ Feature: Learn-section three-bucket IA
     Then its only structural buckets are paths, courses, and legacy
     And no former subject domain remains as a direct child of the learn section
 
-  @specs
-  Scenario: A relocated legacy domain URL redirects to its legacy address
-    When a visitor navigates to "/en/learn/software-engineering/overview"
-    Then the current URL should contain "/en/learn/legacy/software-engineering/overview"
-
-  Scenario Outline: A relocated legacy domain URL redirects to its legacy address in one hop
+  Scenario Outline: legacy domain URLs redirect to the legacy bucket
     When a visitor navigates to "/en/learn/<domain>/overview"
     Then the current URL should contain "/en/learn/legacy/<domain>/overview"
     And the response status should not be a client or server error
@@ -54,13 +49,14 @@ Feature: Learn-section three-bucket IA
     Then the current URL should contain "/en/learn/legacy/personal-development/overview"
     And the response status should not be a client or server error
 
-  Scenario: The legacy redirect does not rewrite a canonical courses URL
-    When a visitor navigates to "/en/learn/courses/just-enough-nvim"
+  Scenario Outline: canonical URLs are not rewritten to legacy
+    When a visitor navigates to "<url>"
     Then the current URL should not contain "/legacy/"
 
-  Scenario: The legacy redirect does not rewrite a canonical paths URL
-    When a visitor navigates to "/en/learn/paths/careers"
-    Then the current URL should not contain "/legacy/"
+    Examples:
+      | url                                |
+      | /en/learn/courses/just-enough-nvim |
+      | /en/learn/paths/careers            |
 
   Scenario: The legacy redirect does not interfere with a re-homed fundamentally-strong course URL
     When a visitor navigates to "/en/learn/fundamentally-strong/software-engineer/just-enough-python"

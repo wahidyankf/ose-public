@@ -25,23 +25,20 @@ const feature = await loadFeature(
 
 const cases = [
   {
-    scenario: "In FP case route is reachable",
     slug: "learn/software-engineering/software-architecture/by-example/cases/in-fp",
     heading: "In FP — F# / Clojure / TypeScript / Haskell",
   },
   {
-    scenario: "In OOP case route is reachable",
     slug: "learn/software-engineering/software-architecture/by-example/cases/in-oop",
     heading: "In OOP — Java / Spring Boot",
   },
   {
-    scenario: "In Procedural case route is reachable",
     slug: "learn/software-engineering/software-architecture/by-example/cases/in-procedural",
     heading: "In Procedural — Go / Rust",
   },
 ] as const;
 
-describeFeature(feature, ({ Scenario, Background }) => {
+describeFeature(feature, ({ ScenarioOutline, Background }) => {
   let service: ContentService;
   let response: Awaited<ReturnType<ContentService["getBySlug"]>>;
   let resolvedRoute = "";
@@ -81,51 +78,18 @@ describeFeature(feature, ({ Scenario, Background }) => {
     expect(response?.title).toBe(heading);
   }
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/architecture-cases-routes.feature: In FP case route is reachable
-  Scenario("In FP case route is reachable", ({ When, Then, And }) => {
-    When(
-      'a visitor navigates to "/en/learn/software-engineering/software-architecture/by-example/cases/in-fp"',
-      async () => {
-        await navigate(cases[0].slug);
-      },
-    );
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/architecture-cases-routes.feature: architecture case pages are reachable
+  ScenarioOutline("architecture case pages are reachable", ({ When, Then, And }, variables) => {
+    const slug = String(variables.slug);
+    const heading = String(variables.heading);
+    When('a visitor navigates to "/en/<slug>"', async () => {
+      await navigate(slug);
+    });
     Then("the page should respond with HTTP 200", () => {
       expect(response).not.toBeNull();
     });
-    And('the page should contain a heading with text "In FP — F# / Clojure / TypeScript / Haskell"', () => {
-      assertPage(cases[0].slug, cases[0].heading);
-    });
-  });
-
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/architecture-cases-routes.feature: In OOP case route is reachable
-  Scenario("In OOP case route is reachable", ({ When, Then, And }) => {
-    When(
-      'a visitor navigates to "/en/learn/software-engineering/software-architecture/by-example/cases/in-oop"',
-      async () => {
-        await navigate(cases[1].slug);
-      },
-    );
-    Then("the page should respond with HTTP 200", () => {
-      expect(response).not.toBeNull();
-    });
-    And('the page should contain a heading with text "In OOP — Java / Spring Boot"', () => {
-      assertPage(cases[1].slug, cases[1].heading);
-    });
-  });
-
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/architecture-cases-routes.feature: In Procedural case route is reachable
-  Scenario("In Procedural case route is reachable", ({ When, Then, And }) => {
-    When(
-      'a visitor navigates to "/en/learn/software-engineering/software-architecture/by-example/cases/in-procedural"',
-      async () => {
-        await navigate(cases[2].slug);
-      },
-    );
-    Then("the page should respond with HTTP 200", () => {
-      expect(response).not.toBeNull();
-    });
-    And('the page should contain a heading with text "In Procedural — Go / Rust"', () => {
-      assertPage(cases[2].slug, cases[2].heading);
+    And('the page should contain a heading with text "<heading>"', () => {
+      assertPage(slug, heading);
     });
   });
 });

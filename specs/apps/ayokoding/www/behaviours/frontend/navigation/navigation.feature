@@ -15,7 +15,7 @@ Feature: Site Navigation
     And the visitor clicks a collapsed parent node
     And its child items should become visible
 
-  Scenario: Breadcrumb shows ancestor path hierarchy without current page
+  Scenario: breadcrumb trail
     When a visitor opens a nested content page
     Then a breadcrumb trail should be displayed above the page title
     And each breadcrumb segment should reflect an ancestor level of the URL hierarchy

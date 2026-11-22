@@ -292,7 +292,7 @@ describe("progress storage edges", () => {
 
   it("hides markers for lessons outside the record", () => {
     seedRecord([]);
-    render(`<span data-lesson-marker data-course="go-basics">x</span>` + `<span data-lesson-marker>bare</span>`);
+    render(`<span data-lesson-marker data-course="go-basics">x</span><span data-lesson-marker>bare</span>`);
     const badges = Array.from(document.querySelectorAll("[data-lesson-marker]"));
     expect(badges).toHaveLength(2);
     for (const badge of badges) expect(badge.getAttribute("hidden")).not.toBeNull();

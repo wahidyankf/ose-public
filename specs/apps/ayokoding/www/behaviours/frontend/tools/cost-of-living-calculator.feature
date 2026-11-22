@@ -53,10 +53,14 @@ Feature: Salary savings calculator
     And the table shows that country's cities as a filtered list rather than a single-city detail
 
   # Behaviour: AYW-060
-  Scenario: A city link takes precedence over a country link when both params are present
+  Scenario: city wins in deep links
     Given I am on the calculator with both a country and a city query param set
     When the page resolves the deep link at "?tab=cost&country=<id>&city=<id>"
     Then the single-city Cost-of-living detail for the city is shown because a city implies its country
+    Given a deep link with query string "region=europe&city=singapore"
+    When the page resolves the deep link
+    Then the single-city detail for Singapore is shown
+    And the URL is rewritten to canonical form with "city=singapore" and "region" backfilled to "asean"
 
   # Behaviour: AYW-057
   Scenario: Healthcare funding scheme is always shown
@@ -361,30 +365,24 @@ Feature: Salary savings calculator
     And the Total preview updates immediately without a page reload
 
   # Behaviour: AYW-060
-  # Reconciled 2026-06-21: all 9 controls now serialized (region/country/city/tab/adults/
-  # preschool/schoolkids/schooltype/area); selecting country alone encodes only "country=id",
-  # not "tab=cost" (default tab is omitted per encodeState default-stripping).
-  Scenario: Selecting filters updates the URL with all active query parameters
-    Given a user is on the cost-of-living calculator page
-    When the user selects Country "Indonesia" and City "Jakarta"
-    Then the URL updates to include query parameters reflecting those selections
-    And copying the URL and opening it in a new tab restores the same filter state
-
   # Behaviour: AYW-059
-  # Reconciled 2026-06-22: the min-role baseline source (savings target / match a role / my
-  # salary) and its inputs, plus the savings gross, are now part of the URL (single source of
-  # truth) so deep links restore the full tab state.
-  Scenario: Min-role baseline source and inputs are serialized in the URL
-    Given I am on the "Minimum role" tab
-    When I set the baseline source to "my salary"
-    And I enter my gross salary and its city
-    Then the URL query string includes the baseline source and the entered salary inputs
-
   # Behaviour: AYW-058
-  Scenario: Savings gross salary is serialized in the URL
-    Given I am on the "Savings" tab
-    When I enter a gross monthly salary of "5000" USD
-    Then the URL query string includes the entered gross salary
+  # Reconciled 2026-06-21 and 2026-06-22: all 9 controls, the min-role baseline source and its
+  # inputs, and the savings gross are serialized in the URL (single source of truth). Selecting
+  # country alone encodes only "country=id", not "tab=cost" (default tab is omitted).
+  Scenario Outline: calculator state is kept in the URL
+    Given I am on the calculator for the "<control>" control
+    When I change the "<control>" control
+    Then the URL query string holds the "<control>" state
+
+    Examples:
+      | control       |
+      | filters       |
+      | baseline      |
+      | savings gross |
+      | country       |
+      | tab           |
+      | cost basis    |
 
   # Behaviour: AYW-057
   Scenario: Page title includes tool name on load
@@ -409,18 +407,6 @@ Feature: Salary savings calculator
     When I enter a gross monthly salary of "99999999"
     Then no city row shows "NaN" or "Infinity" in any column
     And each city row shows a positive net take-home
-
-  # Behaviour: AYW-060
-  # SG-004 — Selecting only a country updates the URL
-  # Reconciled 2026-06-21: default tab ("cost") is omitted from the URL; only "country=id" is
-  # encoded. The assertion that "tab=cost" appears in the URL was stale.
-  Scenario: Selecting only a country updates the URL country parameter
-    Given a user is on the cost-of-living calculator page
-    When the user selects Country "Indonesia" without selecting a city
-    Then the URL query string includes "country=id"
-    And opening that URL in a new tab shows only Indonesian cities in the table
-    And the Country filter is pre-selected to "Indonesia"
-
 
   # Behaviour: AYW-058
   Scenario: Savings tab shows results after salary is entered
@@ -544,44 +530,45 @@ Feature: Salary savings calculator
   # ── URL state Phase 4 scenarios (added 2026-06-21) ──────────────────────────
 
   # Behaviour: AYW-060
-  # URL-001 — Out-of-range numeric param is reset to its default on load
-  Scenario: An out-of-range numeric param is reset to its default on load
-    Given a deep link with query string "adults=4"
+  # URL-001 (adults), URL-002 (full country name), URL-012 (unknown city): an invalid deep-link
+  # value is reset to its default on load and removed from the URL.
+  Scenario Outline: invalid deep-link values fall back to defaults
+    Given a deep link with query string "<query>"
     When the page resolves the deep link
-    Then the Adults control shows "1"
-    And the URL is rewritten to have no "adults" param
+    Then the "<control>" control returns to its default "<default_value>"
+    And the URL is rewritten to have no "<param>" param
 
-  # Behaviour: AYW-060
-  # URL-002 — Full country name is dropped (only ISO id is valid)
-  Scenario: A full-country-name param is dropped on load
-    Given a deep link with query string "country=Indonesia"
-    When the page resolves the deep link
-    Then the Country filter returns to "All countries"
-    And the URL is rewritten to have no "country" param
+    Examples:
+      | query             | control | default_value | param   |
+      | adults=4          | Adults  | 1             | adults  |
+      | country=Indonesia | Country | All countries | country |
+      | city=atlantis     | City    | All cities    | city    |
 
   # Behaviour: AYW-060
   # URL-003 — Selecting a city backfills country and region
-  Scenario: Selecting a city under no prior filter backfills country and region
+  Scenario: city selection backfills country and region
     Given I am on the calculator with no query string
     When I select the city "Jakarta"
     Then the URL query string includes "city=jakarta"
     And the Country filter shows "Indonesia" and the Region filter shows "ASEAN"
+    Given a deep link with query string "city=singapore"
+    When I open that link in a fresh tab
+    Then the single-city Cost-of-living detail for Singapore is shown
+    And the Country filter shows "Singapore" and the Region filter shows "ASEAN"
 
   # Behaviour: AYW-058
   # URL-004 — Selecting a broader region clears incompatible narrower filters
-  Scenario: Selecting a broader region clears an incompatible country and city
+  # Behaviour: AYW-060
+  # URL-010 — Region selection writes region to the URL
+  Scenario: region selection clears narrower filters
     Given I am on the calculator with query string "city=singapore"
     When I select the region "Europe"
     Then the URL query string includes "region=europe"
     But the URL query string does not include "country" or "city"
-
-  # Behaviour: AYW-060
-  # URL-005 — Contradictory region+city deep link resolves with narrower filter winning
-  Scenario: A contradictory region-and-city deep link resolves with the narrower filter winning
-    Given a deep link with query string "region=europe&city=singapore"
-    When the page resolves the deep link
-    Then the single-city detail for Singapore is shown
-    And the URL is rewritten to canonical form with "city=singapore" and "region" backfilled to "asean"
+    Given I am on the calculator with no query string
+    When I choose the region "Europe" from a blank filter
+    Then the URL query string writes "region=europe"
+    And the URL query string has no "country" or "city" param
 
   # Behaviour: AYW-060
   # URL-006 — City-detail back link preserves an explicitly chosen parent geo scope.
@@ -593,22 +580,6 @@ Feature: Salary savings calculator
     When I activate the "Back to all cities" link
     Then the URL query string includes "region=asean" and "country=sg"
     But the URL query string does not include "city"
-
-  # Behaviour: AYW-060
-  # URL-007 — Tab change is written to the URL
-  Scenario: Changing the tab writes the tab to the URL
-    Given I am on the calculator with no query string
-    When I switch to the "Savings" tab
-    Then the URL query string includes "tab=savings"
-    And reloading the page keeps the "Savings" tab active
-
-  # Behaviour: AYW-060
-  # URL-008 — Cost-basis control change is written to the URL
-  Scenario: Changing a cost-basis control writes it to the URL
-    Given I am on the calculator with no query string
-    When I change the Adults control to "2"
-    Then the URL query string includes "adults=2"
-    And the household preview updates without a page reload
 
   # Behaviour: AYW-060
   # URL-009 — Breadcrumb offers Home and Tools escape links
@@ -638,30 +609,6 @@ Feature: Salary savings calculator
       | locale | expected_title            |
       | en     | Cost of Living Calculator |
       | id     | Kalkulator Biaya Hidup    |
-
-  # Behaviour: AYW-060
-  # URL-010 — Region selection writes region to the URL
-  Scenario: Selecting a region writes the region to the URL
-    Given I am on the calculator with no query string
-    When I select the region "Europe"
-    Then the URL query string includes "region=europe"
-    And the URL query string does not include "country" or "city"
-
-  # Behaviour: AYW-060
-  # URL-011 — City deep link restores city and backfills country and region
-  Scenario: A city deep link restores the city and backfills country and region
-    Given a deep link with query string "city=singapore"
-    When I open that link in a fresh tab
-    Then the single-city Cost-of-living detail for Singapore is shown
-    And the Country filter shows "Singapore" and the Region filter shows "ASEAN"
-
-  # Behaviour: AYW-060
-  # URL-012 — Unknown city param is dropped on load
-  Scenario: An unknown city param is dropped on load
-    Given a deep link with query string "city=atlantis"
-    When the page resolves the deep link
-    Then the City filter returns to "All cities"
-    And the URL is rewritten to have no "city" param
 
   # Behaviour: AYW-060
   # URL-013 — Canonicalization uses replace so Back button skips the dirty URL

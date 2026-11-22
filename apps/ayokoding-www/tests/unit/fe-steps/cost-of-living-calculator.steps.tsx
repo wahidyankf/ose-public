@@ -403,8 +403,8 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: A city link takes precedence over a country link when both params are present
-  Scenario("A city link takes precedence over a country link when both params are present", ({ Given, When, Then }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: city wins in deep links
+  Scenario("city wins in deep links", ({ Given, When, Then, And }) => {
     const firstCity = dataset.cities[0]!;
 
     Given("I am on the calculator with both a country and a city query param set", () => {
@@ -417,6 +417,28 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
     Then("the single-city Cost-of-living detail for the city is shown because a city implies its country", () => {
       expect(screen.getByTestId("city-detail")).toBeTruthy();
+    });
+
+    Given('a deep link with query string "region=europe&city=singapore"', () => {
+      // Unmount the first render so the contradictory deep link mounts a fresh page.
+      cleanup();
+      navState.params = new URLSearchParams("region=europe&city=singapore");
+      navState.setParams(navState.params);
+      renderPage(<CostOfLivingCalculatorPage />);
+    });
+
+    When("the page resolves the deep link", () => {
+      expect(screen.getByTestId("calc-page")).toBeTruthy();
+    });
+
+    Then("the single-city detail for Singapore is shown", () => {
+      expect(screen.getByTestId("city-detail").textContent).toContain("Singapore");
+    });
+
+    And('the URL is rewritten to canonical form with "city=singapore" and "region" backfilled to "asean"', () => {
+      expect(navState.params.get("city")).toBe("singapore");
+      expect(navState.params.get("region")).toBe("asean");
+      expect(navState.lastNavMethod).toBe("replace");
     });
   });
 
@@ -1365,60 +1387,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Min-role baseline source and inputs are serialized in the URL
-  Scenario("Min-role baseline source and inputs are serialized in the URL", async ({ Given, When, And, Then }) => {
-    Given('I am on the "Minimum role" tab', async () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
-    });
-    When('I set the baseline source to "my salary"', async () => {
-      await getScenarioUser().click(screen.getByRole("radio", { name: /my salary/i }));
-    });
-    And("I enter my gross salary and its city", async () => {
-      const grossInput = screen.getByRole("spinbutton", { name: /my gross monthly/i });
-      await getScenarioUser().clear(grossInput);
-      await getScenarioUser().type(grossInput, "12000");
-      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /my salary city/i }), "singapore");
-    });
-    Then("the URL query string includes the baseline source and the entered salary inputs", async () => {
-      // The gross is a debounced text input — its URL commit lands shortly after typing
-      // settles (or on blur), so wait for it rather than asserting synchronously.
-      await waitFor(() => {
-        expect(navState.params.get("baseline")).toBe("my_salary");
-        expect(navState.params.get("mygross")).toBe("12000");
-        expect(navState.params.get("mysalarycity")).toBe("singapore");
-      });
-    });
-  });
-
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings gross salary is serialized in the URL
-  Scenario("Savings gross salary is serialized in the URL", async ({ Given, When, Then }) => {
-    let replaceHistory: ReturnType<typeof vi.spyOn>;
-
-    Given('I am on the "Savings" tab', async () => {
-      vi.stubEnv("NODE_ENV", "production");
-      replaceHistory = vi.spyOn(window.history, "replaceState").mockImplementation(() => {});
-      renderPage(<CostOfLivingCalculatorPage />);
-      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
-    });
-    When('I enter a gross monthly salary of "5000" USD', async () => {
-      const gross = screen.getByRole("spinbutton");
-      await getScenarioUser().clear(gross);
-      await getScenarioUser().type(gross, "5000");
-    });
-    Then("the URL query string includes the entered gross salary", async () => {
-      // The statically exported production route must use replacement history rather than a
-      // router push: one settled field edit updates the canonical URL without adding a Back entry.
-      await waitFor(() => {
-        expect(replaceHistory).toHaveBeenCalledWith(
-          window.history.state,
-          "",
-          "/en/tools/cost-of-living-calculator?tab=savings&gross=5000",
-        );
-      });
-    });
-  });
-
   // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings shown in USD, local, and display currency
   Scenario("Savings shown in USD, local, and display currency", async ({ Given, When, Then }) => {
     Given('I am on the "Minimum role" tab with a baseline set', async () => {
@@ -1714,28 +1682,135 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── USS-002: Filter state persisted in URL ───────────────────────────────────
 
-  // Reconciled 2026-06-21: scenario title updated to match the feature file (all 9 controls serialized)
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Selecting filters updates the URL with all active query parameters
-  Scenario("Selecting filters updates the URL with all active query parameters", async ({ Given, When, Then, And }) => {
-    Given("a user is on the cost-of-living calculator page", () => {
-      renderPage(<CostOfLivingCalculatorPage />);
+  // Reconciled 2026-06-21 and 2026-06-22: all 9 controls, the min-role baseline source and its inputs, and the
+  // savings gross are serialized in the URL. Each control is one Examples row of this outline.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: calculator state is kept in the URL
+  ScenarioOutline("calculator state is kept in the URL", ({ Given, When, Then }, variables) => {
+    let pushHistory: ReturnType<typeof vi.spyOn>;
+    let replaceHistory: ReturnType<typeof vi.spyOn>;
+
+    Given('I am on the calculator for the "<control>" control', async () => {
+      navState.params = new URLSearchParams();
+      navState.setParams(navState.params);
+      switch (variables.control) {
+        case "baseline":
+          renderPage(<CostOfLivingCalculatorPage />);
+          await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
+          break;
+        case "savings gross":
+          vi.stubEnv("NODE_ENV", "production");
+          replaceHistory = vi.spyOn(window.history, "replaceState").mockImplementation(() => {});
+          renderPage(<CostOfLivingCalculatorPage />);
+          await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
+          break;
+        case "country":
+          vi.stubEnv("NODE_ENV", "production");
+          pushHistory = vi.spyOn(window.history, "pushState").mockImplementation(() => {});
+          replaceHistory = vi.spyOn(window.history, "replaceState").mockImplementation(() => {});
+          renderPage(<CostOfLivingCalculatorPage />);
+          break;
+        default:
+          renderPage(<CostOfLivingCalculatorPage />);
+      }
     });
 
-    When('the user selects Country "Indonesia" and City "Jakarta"', async () => {
-      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /country/i }), "id");
-      const jakartaId = dataset.cities.find((c) => c.name.en === "Jakarta")?.id ?? "jakarta";
-      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /city/i }), jakartaId);
+    When('I change the "<control>" control', async () => {
+      switch (variables.control) {
+        case "filters": {
+          await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /country/i }), "id");
+          const jakartaId = dataset.cities.find((c) => c.name.en === "Jakarta")?.id ?? "jakarta";
+          await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /city/i }), jakartaId);
+          break;
+        }
+        case "baseline": {
+          await getScenarioUser().click(screen.getByRole("radio", { name: /my salary/i }));
+          const grossInput = screen.getByRole("spinbutton", { name: /my gross monthly/i });
+          await getScenarioUser().clear(grossInput);
+          await getScenarioUser().type(grossInput, "12000");
+          await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /my salary city/i }), "singapore");
+          break;
+        }
+        case "savings gross": {
+          const gross = screen.getByRole("spinbutton");
+          await getScenarioUser().clear(gross);
+          await getScenarioUser().type(gross, "5000");
+          break;
+        }
+        case "country":
+          await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /country/i }), "id");
+          break;
+        case "tab": {
+          const tab = screen.queryByRole("tab", { name: /savings/i });
+          if (tab) {
+            await getScenarioUser().click(tab);
+          }
+          break;
+        }
+        case "cost basis":
+          await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /adults/i }), "2");
+          break;
+        default:
+          throw new Error(`unknown calculator control: ${String(variables.control)}`);
+      }
     });
 
-    Then("the URL updates to include query parameters reflecting those selections", () => {
-      expect(navState.params.get("country")).toBe("id");
-      expect(navState.params.get("city")).toBe("jakarta");
-    });
-
-    And("copying the URL and opening it in a new tab restores the same filter state", () => {
-      const copied = new URLSearchParams(navState.params);
-      expect(copied.get("country")).toBe("id");
-      expect(copied.get("city")).toBe("jakarta");
+    Then('the URL query string holds the "<control>" state', async () => {
+      switch (variables.control) {
+        case "filters": {
+          expect(navState.params.get("country")).toBe("id");
+          expect(navState.params.get("city")).toBe("jakarta");
+          // Copying the URL and opening it in a new tab restores the same filter state.
+          const copied = new URLSearchParams(navState.params);
+          expect(copied.get("country")).toBe("id");
+          expect(copied.get("city")).toBe("jakarta");
+          break;
+        }
+        case "baseline":
+          // The gross is a debounced text input — its URL commit lands shortly after typing
+          // settles (or on blur), so wait for it rather than asserting synchronously.
+          await waitFor(() => {
+            expect(navState.params.get("baseline")).toBe("my_salary");
+            expect(navState.params.get("mygross")).toBe("12000");
+            expect(navState.params.get("mysalarycity")).toBe("singapore");
+          });
+          break;
+        case "savings gross":
+          // The statically exported production route must use replacement history rather than a
+          // router push: one settled field edit updates the canonical URL without adding a Back entry.
+          await waitFor(() => {
+            expect(replaceHistory).toHaveBeenCalledWith(
+              window.history.state,
+              "",
+              "/en/tools/cost-of-living-calculator?tab=savings&gross=5000",
+            );
+          });
+          break;
+        case "country": {
+          expect(pushHistory).toHaveBeenCalledWith(
+            window.history.state,
+            "",
+            "/en/tools/cost-of-living-calculator?region=asean&country=id",
+          );
+          // A discrete filter change owns a new Back entry; it must not collapse the current entry.
+          expect(replaceHistory).not.toHaveBeenCalled();
+          const rows = screen.getAllByRole("row").slice(1);
+          for (const row of rows) expect(row.textContent).toContain("Indonesia");
+          expect((screen.getByRole("combobox", { name: /country/i }) as HTMLSelectElement).value).toBe("id");
+          break;
+        }
+        case "tab":
+          expect(navState.params.get("tab")).toBe("savings");
+          expect(navState.lastNavMethod).toBe("push");
+          expect(screen.getByRole("tab", { name: /savings/i }).getAttribute("data-state")).toBe("active");
+          break;
+        case "cost basis":
+          expect(navState.params.get("adults")).toBe("2");
+          expect(navState.lastNavMethod).toBe("push");
+          expect((screen.getByRole("combobox", { name: /adults/i }) as HTMLSelectElement).value).toBe("2");
+          break;
+        default:
+          throw new Error(`unknown calculator control: ${String(variables.control)}`);
+      }
     });
   });
 
@@ -1807,46 +1882,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       for (const cell of screen.getAllByTestId("net-value")) {
         expect(Number(cell.getAttribute("data-usd"))).toBeGreaterThan(0);
       }
-    });
-  });
-
-  // ─── SG-004: Selecting only a country updates the URL ────────────────────────
-
-  // Reconciled 2026-06-21: scenario title updated; default tab is omitted from the URL.
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Selecting only a country updates the URL country parameter
-  Scenario("Selecting only a country updates the URL country parameter", async ({ Given, When, Then, And }) => {
-    let pushHistory: ReturnType<typeof vi.spyOn>;
-    let replaceHistory: ReturnType<typeof vi.spyOn>;
-
-    Given("a user is on the cost-of-living calculator page", () => {
-      vi.stubEnv("NODE_ENV", "production");
-      pushHistory = vi.spyOn(window.history, "pushState").mockImplementation(() => {});
-      replaceHistory = vi.spyOn(window.history, "replaceState").mockImplementation(() => {});
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When('the user selects Country "Indonesia" without selecting a city', async () => {
-      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /country/i }), "id");
-    });
-
-    Then('the URL query string includes "country=id"', () => {
-      expect(pushHistory).toHaveBeenCalledWith(
-        window.history.state,
-        "",
-        "/en/tools/cost-of-living-calculator?region=asean&country=id",
-      );
-      // A discrete filter change owns a new Back entry; it must not collapse the current entry.
-      expect(replaceHistory).not.toHaveBeenCalled();
-    });
-
-    And("opening that URL in a new tab shows only Indonesian cities in the table", () => {
-      const rows = screen.getAllByRole("row").slice(1);
-      for (const row of rows) expect(row.textContent).toContain("Indonesia");
-    });
-
-    And('the Country filter is pre-selected to "Indonesia"', () => {
-      const countrySelect = screen.getByRole("combobox", { name: /country/i });
-      expect((countrySelect as HTMLSelectElement).value).toBe("id");
     });
   });
 
@@ -2241,11 +2276,11 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   // backfill, sanitize/canonicalize, back-button history, and breadcrumb.
   // Unit-level URL-state proofs complement the browser-history assertions in the E2E adapter.
 
-  // URL-001 — Out-of-range numeric param is reset to default on load
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: An out-of-range numeric param is reset to its default on load
-  Scenario("An out-of-range numeric param is reset to its default on load", ({ Given, When, Then, And }) => {
-    Given('a deep link with query string "adults=4"', () => {
-      navState.params = new URLSearchParams("adults=4");
+  // URL-001, URL-002, URL-012 — an invalid deep-link value is reset to its default on load and removed from the URL.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: invalid deep-link values fall back to defaults
+  ScenarioOutline("invalid deep-link values fall back to defaults", ({ Given, When, Then, And }, variables) => {
+    Given('a deep link with query string "<query>"', () => {
+      navState.params = new URLSearchParams(String(variables.query));
       navState.setParams(navState.params);
       renderPage(<CostOfLivingCalculatorPage />);
     });
@@ -2254,42 +2289,22 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       expect(screen.getByTestId("calc-page")).toBeTruthy();
     });
 
-    Then('the Adults control shows "1"', () => {
-      expect((screen.getByRole("combobox", { name: /adults/i }) as HTMLSelectElement).value).toBe("1");
+    Then('the "<control>" control returns to its default "<default_value>"', () => {
+      const select = screen.getByRole("combobox", { name: new RegExp(String(variables.control), "i") });
+      // The Adults control keeps its numeric default; the Country and City filters return to "All ..." (empty value).
+      const expected = variables.control === "Adults" ? String(variables.default_value) : "";
+      expect((select as HTMLSelectElement).value).toBe(expected);
     });
 
-    And('the URL is rewritten to have no "adults" param', () => {
-      expect(navState.params.has("adults")).toBe(false);
+    And('the URL is rewritten to have no "<param>" param', () => {
+      expect(navState.params.has(String(variables.param))).toBe(false);
       expect(navState.lastNavMethod).toBe("replace");
     });
   });
 
-  // URL-002 — Full country name is dropped (only ISO id is valid)
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: A full-country-name param is dropped on load
-  Scenario("A full-country-name param is dropped on load", ({ Given, When, Then, And }) => {
-    Given('a deep link with query string "country=Indonesia"', () => {
-      navState.params = new URLSearchParams("country=Indonesia");
-      navState.setParams(navState.params);
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When("the page resolves the deep link", () => {
-      expect(screen.getByTestId("calc-page")).toBeTruthy();
-    });
-
-    Then('the Country filter returns to "All countries"', () => {
-      expect((screen.getByRole("combobox", { name: /country/i }) as HTMLSelectElement).value).toBe("");
-    });
-
-    And('the URL is rewritten to have no "country" param', () => {
-      expect(navState.params.has("country")).toBe(false);
-      expect(navState.lastNavMethod).toBe("replace");
-    });
-  });
-
-  // URL-003 — Selecting a city backfills country and region
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Selecting a city under no prior filter backfills country and region
-  Scenario("Selecting a city under no prior filter backfills country and region", ({ Given, When, Then, And }) => {
+  // URL-003 — Selecting a city backfills country and region (and URL-011 restores a city deep link)
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: city selection backfills country and region
+  Scenario("city selection backfills country and region", ({ Given, When, Then, And }) => {
     Given("I am on the calculator with no query string", () => {
       navState.params = new URLSearchParams();
       navState.setParams(navState.params);
@@ -2311,11 +2326,32 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       expect(navState.params.get("country")).toBe("id");
       expect(navState.params.get("region")).toBe("asean");
     });
+
+    Given('a deep link with query string "city=singapore"', () => {
+      // Unmount the first render so the deep link mounts a fresh page.
+      cleanup();
+      navState.params = new URLSearchParams("city=singapore");
+      navState.setParams(navState.params);
+      renderPage(<CostOfLivingCalculatorPage />);
+    });
+
+    When("I open that link in a fresh tab", () => {
+      expect(screen.getByTestId("calc-page")).toBeTruthy();
+    });
+
+    Then("the single-city Cost-of-living detail for Singapore is shown", () => {
+      expect(screen.getByTestId("city-detail").textContent).toContain("Singapore");
+    });
+
+    And('the Country filter shows "Singapore" and the Region filter shows "ASEAN"', () => {
+      expect(navState.params.get("country")).toBe("sg");
+      expect(navState.params.get("region")).toBe("asean");
+    });
   });
 
-  // URL-004 — Selecting a broader region clears incompatible narrower filters
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Selecting a broader region clears an incompatible country and city
-  Scenario("Selecting a broader region clears an incompatible country and city", ({ Given, When, Then, But }) => {
+  // URL-004 (broader region clears narrower filters) and URL-010 (region selection writes the region)
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: region selection clears narrower filters
+  Scenario("region selection clears narrower filters", ({ Given, When, Then, And, But }) => {
     Given('I am on the calculator with query string "city=singapore"', () => {
       navState.params = new URLSearchParams("city=singapore");
       navState.setParams(navState.params);
@@ -2337,34 +2373,31 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       expect(navState.params.has("country")).toBe(false);
       expect(navState.params.has("city")).toBe(false);
     });
+
+    Given("I am on the calculator with no query string", () => {
+      // Unmount the first render so the blank calculator mounts a fresh page.
+      cleanup();
+      navState.params = new URLSearchParams();
+      navState.setParams(navState.params);
+      renderPage(<CostOfLivingCalculatorPage />);
+    });
+
+    When('I choose the region "Europe" from a blank filter', async () => {
+      const regionSelect = screen.queryByRole("combobox", { name: /region/i });
+      if (regionSelect) {
+        await getScenarioUser().selectOptions(regionSelect, "europe");
+      }
+    });
+
+    Then('the URL query string writes "region=europe"', () => {
+      expect(navState.params.get("region")).toBe("europe");
+    });
+
+    And('the URL query string has no "country" or "city" param', () => {
+      expect(navState.params.has("country")).toBe(false);
+      expect(navState.params.has("city")).toBe(false);
+    });
   });
-
-  // URL-005 — Contradictory region+city deep link resolves with narrower filter winning
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: A contradictory region-and-city deep link resolves with the narrower filter winning
-  Scenario(
-    "A contradictory region-and-city deep link resolves with the narrower filter winning",
-    ({ Given, When, Then, And }) => {
-      Given('a deep link with query string "region=europe&city=singapore"', () => {
-        navState.params = new URLSearchParams("region=europe&city=singapore");
-        navState.setParams(navState.params);
-        renderPage(<CostOfLivingCalculatorPage />);
-      });
-
-      When("the page resolves the deep link", () => {
-        expect(screen.getByTestId("calc-page")).toBeTruthy();
-      });
-
-      Then("the single-city detail for Singapore is shown", () => {
-        expect(screen.getByTestId("city-detail").textContent).toContain("Singapore");
-      });
-
-      And('the URL is rewritten to canonical form with "city=singapore" and "region" backfilled to "asean"', () => {
-        expect(navState.params.get("city")).toBe("singapore");
-        expect(navState.params.get("region")).toBe("asean");
-        expect(navState.lastNavMethod).toBe("replace");
-      });
-    },
-  );
 
   // URL-006 — City-detail back link preserves an explicitly chosen parent geo scope
   // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The city-detail back link preserves the parent geo scope
@@ -2392,55 +2425,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     But('the URL query string does not include "city"', () => {
       const params = new URLSearchParams(backHref.replace(/^\?/, ""));
       expect(params.has("city")).toBe(false);
-    });
-  });
-
-  // URL-007 — Tab change is written to the URL
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Changing the tab writes the tab to the URL
-  Scenario("Changing the tab writes the tab to the URL", ({ Given, When, Then, And }) => {
-    Given("I am on the calculator with no query string", () => {
-      navState.params = new URLSearchParams();
-      navState.setParams(navState.params);
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When('I switch to the "Savings" tab', async () => {
-      const tab = screen.queryByRole("tab", { name: /savings/i });
-      if (tab) {
-        await getScenarioUser().click(tab);
-      }
-    });
-
-    Then('the URL query string includes "tab=savings"', () => {
-      expect(navState.params.get("tab")).toBe("savings");
-      expect(navState.lastNavMethod).toBe("push");
-    });
-
-    And('reloading the page keeps the "Savings" tab active', () => {
-      expect(screen.getByRole("tab", { name: /savings/i }).getAttribute("data-state")).toBe("active");
-    });
-  });
-
-  // URL-008 — Cost-basis control change is written to the URL
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Changing a cost-basis control writes it to the URL
-  Scenario("Changing a cost-basis control writes it to the URL", ({ Given, When, Then, And }) => {
-    Given("I am on the calculator with no query string", () => {
-      navState.params = new URLSearchParams();
-      navState.setParams(navState.params);
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When('I change the Adults control to "2"', async () => {
-      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /adults/i }), "2");
-    });
-
-    Then('the URL query string includes "adults=2"', () => {
-      expect(navState.params.get("adults")).toBe("2");
-      expect(navState.lastNavMethod).toBe("push");
-    });
-
-    And("the household preview updates without a page reload", () => {
-      expect((screen.getByRole("combobox", { name: /adults/i }) as HTMLSelectElement).value).toBe("2");
     });
   });
 
@@ -2532,78 +2516,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       });
     },
   );
-
-  // URL-010 — Region selection writes region to the URL
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Selecting a region writes the region to the URL
-  Scenario("Selecting a region writes the region to the URL", ({ Given, When, Then, And }) => {
-    Given("I am on the calculator with no query string", () => {
-      navState.params = new URLSearchParams();
-      navState.setParams(navState.params);
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When('I select the region "Europe"', async () => {
-      const regionSelect = screen.queryByRole("combobox", { name: /region/i });
-      if (regionSelect) {
-        await getScenarioUser().selectOptions(regionSelect, "europe");
-      }
-    });
-
-    Then('the URL query string includes "region=europe"', () => {
-      expect(navState.params.get("region")).toBe("europe");
-    });
-
-    And('the URL query string does not include "country" or "city"', () => {
-      expect(navState.params.has("country")).toBe(false);
-      expect(navState.params.has("city")).toBe(false);
-    });
-  });
-
-  // URL-011 — City deep link restores city and backfills country and region
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: A city deep link restores the city and backfills country and region
-  Scenario("A city deep link restores the city and backfills country and region", ({ Given, When, Then, And }) => {
-    Given('a deep link with query string "city=singapore"', () => {
-      navState.params = new URLSearchParams("city=singapore");
-      navState.setParams(navState.params);
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When("I open that link in a fresh tab", () => {
-      expect(screen.getByTestId("calc-page")).toBeTruthy();
-    });
-
-    Then("the single-city Cost-of-living detail for Singapore is shown", () => {
-      expect(screen.getByTestId("city-detail").textContent).toContain("Singapore");
-    });
-
-    And('the Country filter shows "Singapore" and the Region filter shows "ASEAN"', () => {
-      expect(navState.params.get("country")).toBe("sg");
-      expect(navState.params.get("region")).toBe("asean");
-    });
-  });
-
-  // URL-012 — Unknown city param is dropped on load
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: An unknown city param is dropped on load
-  Scenario("An unknown city param is dropped on load", ({ Given, When, Then, And }) => {
-    Given('a deep link with query string "city=atlantis"', () => {
-      navState.params = new URLSearchParams("city=atlantis");
-      navState.setParams(navState.params);
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When("the page resolves the deep link", () => {
-      expect(screen.getByTestId("calc-page")).toBeTruthy();
-    });
-
-    Then('the City filter returns to "All cities"', () => {
-      expect((screen.getByRole("combobox", { name: /city/i }) as HTMLSelectElement).value).toBe("");
-    });
-
-    And('the URL is rewritten to have no "city" param', () => {
-      expect(navState.params.has("city")).toBe(false);
-      expect(navState.lastNavMethod).toBe("replace");
-    });
-  });
 
   // URL-013 — Canonicalization uses replace so Back button skips the dirty URL
   // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Canonicalization does not add a browser history entry

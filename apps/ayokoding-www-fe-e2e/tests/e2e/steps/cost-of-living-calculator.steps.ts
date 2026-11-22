@@ -8,7 +8,7 @@ const { Given, When, Then } = createBdd();
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: country shown beside city
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Clicking a city name opens its single-city cost-of-living detail
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Clicking a country opens Cost-of-living filtered to that country
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: A city link takes precedence over a country link when both params are present
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: city wins in deep links
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Healthcare funding scheme is always shown
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The OOP abbreviation is explained on screen
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Relocation reserve is shown separately from sunk costs
@@ -47,13 +47,10 @@ const { Given, When, Then } = createBdd();
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Income exactly at the low-to-mid threshold uses the mid band
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Zero savings target marks the lowest role as the minimum
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: household preview scaling
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Selecting filters updates the URL with all active query parameters
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Min-role baseline source and inputs are serialized in the URL
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings gross salary is serialized in the URL
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: calculator state is kept in the URL
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Page title includes tool name on load
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Negative salary input is clamped to zero
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Very large salary produces valid savings figures
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Selecting only a country updates the URL country parameter
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings tab shows results after salary is entered
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Minimum Role tab shows empty-state when no target amount entered
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Area toggle shows selected state and confirms data update
@@ -69,20 +66,13 @@ const { Given, When, Then } = createBdd();
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Each tab has a visible description associated with its trigger
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Uppercase locale URL redirects to canonical lowercase
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Mobile nav drawer shows localized site navigation
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: An out-of-range numeric param is reset to its default on load
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: A full-country-name param is dropped on load
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Selecting a city under no prior filter backfills country and region
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Selecting a broader region clears an incompatible country and city
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: A contradictory region-and-city deep link resolves with the narrower filter winning
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: invalid deep-link values fall back to defaults
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: city selection backfills country and region
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: region selection clears narrower filters
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The city-detail back link preserves the parent geo scope
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Changing the tab writes the tab to the URL
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Changing a cost-basis control writes it to the URL
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The breadcrumb offers an escape to the Tools index and Home
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The breadcrumb separates crumbs with chevrons, not a literal slash
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The final breadcrumb crumb matches the page title in each locale
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Selecting a region writes the region to the URL
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: A city deep link restores the city and backfills country and region
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: An unknown city param is dropped on load
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Canonicalization does not add a browser history entry
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Geo-filter selects meet the minimum touch-target height on mobile
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The calculator page has no horizontal overflow at 320px
@@ -1511,7 +1501,8 @@ Then("the marked minimum role reaches at least that essential savings in absolut
 
 // ── My salary baseline ────────────────────────────────────────────────────────
 
-When("I enter my gross salary and its city", async ({ page }) => {
+// Shared by the "I enter my gross salary and its city" step and the calculator-state outline.
+async function enterMySalaryAndCity({ page }: { page: Page }): Promise<void> {
   await page.locator("#my-city-select").selectOption("singapore");
   await page.waitForURL(/mysalarycity=singapore/);
   await page
@@ -1547,7 +1538,9 @@ When("I enter my gross salary and its city", async ({ page }) => {
     minimumRank: Math.min(...ranks),
     markerRanks,
   };
-});
+}
+
+When("I enter my gross salary and its city", enterMySalaryAndCity);
 
 Then("the ladder marks the lowest role that meets or beats it", async ({ page }) => {
   const evidence = evidenceFor(page).mySalaryBaseline;
@@ -1993,6 +1986,157 @@ Then("copying the URL and opening it in a new tab restores the same filter state
 });
 
 // ── USS-005: Descriptive page title ──────────────────────────────────────────
+
+// ── Calculator state kept in the URL (outline over each control) ─────────────
+
+Given("I am on the calculator for the {string} control", async ({ page }, control: string) => {
+  const paths: Record<string, string> = {
+    baseline: "/en/tools/cost-of-living-calculator?tab=min-role",
+    "savings gross": "/en/tools/cost-of-living-calculator?tab=savings",
+  };
+  await page.goto(paths[control] ?? "/en/tools/cost-of-living-calculator");
+  await expect(page.getByTestId("calc-page")).toHaveAttribute("data-hydrated", "true");
+  if (control === "savings gross") {
+    await expect(page.getByTestId("savings-table")).toHaveAttribute("data-hydrated", "true");
+  }
+});
+
+When("I change the {string} control", async ({ page }, control: string) => {
+  switch (control) {
+    case "filters":
+      await page.getByLabel("Country").first().selectOption({ label: "Indonesia" });
+      await page.waitForURL(/country=/);
+      await page.getByLabel("City").first().selectOption({ label: "Jakarta" });
+      await page.waitForURL(/city=/);
+      break;
+    case "baseline":
+      await page.getByRole("radio", { name: "My salary" }).click();
+      await expect(page.getByRole("radio", { name: "My salary" })).toHaveAttribute("aria-checked", "true");
+      await enterMySalaryAndCity({ page });
+      break;
+    case "savings gross": {
+      const input = page.getByLabel("Gross monthly salary (before tax)");
+      await input.click();
+      await input.fill("5000");
+      await expect(input).toHaveValue("5000", { timeout: 5000 });
+      // Leaving the field is the public interaction that flushes its documented debounce immediately.
+      await input.press("Tab");
+      break;
+    }
+    case "country": {
+      const select = page.getByLabel("Country").first();
+      await select.selectOption({ label: "Indonesia" });
+      await expect.poll(() => new URL(page.url()).searchParams.get("country")).toBe("id");
+      await expect(select).toHaveValue("id");
+      break;
+    }
+    case "tab":
+      await expect(page.getByTestId("calc-page")).toHaveAttribute("data-hydrated", "true");
+      await page.getByRole("tab", { name: "Savings" }).click();
+      break;
+    case "cost basis":
+      await page.getByLabel("Adults").first().selectOption("2");
+      await page.waitForURL(/adults=2/);
+      break;
+    default:
+      throw new Error(`unknown calculator control: ${control}`);
+  }
+});
+
+Then("the URL query string holds the {string} state", async ({ page, context }, control: string) => {
+  switch (control) {
+    case "filters": {
+      await expect.poll(() => page.url()).toMatch(/country=|city=/);
+      // Copying the URL and opening it in a new tab restores the same filter state.
+      const copied = await context.newPage();
+      await copied.goto(page.url());
+      await expect(copied.getByLabel("Country").first()).toHaveValue("id");
+      await expect(copied.getByLabel("City").first()).toHaveValue("jakarta");
+      await copied.close();
+      break;
+    }
+    case "baseline": {
+      await page.locator("#my-gross-input").blur();
+      await page.waitForURL(/baseline=my_salary/);
+      const params = new URL(page.url()).searchParams;
+      expect(params.get("baseline")).toBe("my_salary");
+      expect(Number(params.get("mygross"))).toBeGreaterThan(0);
+      expect(params.get("mysalarycity")).toBeTruthy();
+      break;
+    }
+    case "savings gross":
+      await page.locator("#gross-salary-input").blur();
+      await page.waitForURL(/gross=5000/);
+      expect(new URL(page.url()).searchParams.get("gross")).toBe("5000");
+      break;
+    case "country": {
+      await expect.poll(() => new URL(page.url()).searchParams.get("country")).toBe("id");
+      const copied = await context.newPage();
+      await copied.goto(page.url());
+      await expect(copied.getByLabel("Country").first()).toHaveValue("id");
+      const rows = copied.locator("table tbody tr");
+      await expect(rows.first()).toBeVisible();
+      expect(await rows.count()).toBeGreaterThan(0);
+      for (const row of await rows.all()) await expect(row.locator("td").first()).toContainText("Indonesia");
+      await copied.close();
+      await expect(page.getByLabel("Country")).toHaveValue("id");
+      await expect(page.getByLabel("Country").locator("option:checked")).toHaveText("Indonesia");
+      break;
+    }
+    case "tab": {
+      await expect.poll(() => new URL(page.url()).searchParams.get("tab")).toBe("savings");
+      await page.reload();
+      await page.waitForLoadState("networkidle");
+      // The active tab has aria-selected="true"
+      const activeTab = page.getByRole("tab", { name: /savings/i });
+      const isSelected = await activeTab
+        .evaluate((el) => el.getAttribute("aria-selected") === "true")
+        .catch(() => false);
+      expect(isSelected).toBe(true);
+      break;
+    }
+    case "cost basis":
+      await expect(page.getByLabel("Adults")).toHaveValue("2");
+      expect(new URL(page.url()).searchParams.get("adults")).toBe("2");
+      expect(
+        Number(await page.locator("[data-testid^='col-essentials-']").first().getAttribute("data-raw")),
+      ).toBeGreaterThan(0);
+      break;
+    default:
+      throw new Error(`unknown calculator control: ${control}`);
+  }
+});
+
+// ── Deep-link fallbacks and region/city narrowing (outline and scenarios) ────
+
+Then("the {string} control returns to its default {string}", async ({ page }, control: string, value: string) => {
+  const select = page.getByLabel(control).first();
+  if (control === "Adults") {
+    await expect(select).toHaveValue(value, { timeout: 5000 });
+    return;
+  }
+  await expect(select).toHaveValue("");
+  expect(await selectedLabel(select)).toBe(value);
+});
+
+When("I choose the region {string} from a blank filter", async ({ page }, region: string) => {
+  await page.getByLabel("Region").selectOption({ label: region });
+  await page.waitForLoadState("networkidle");
+});
+
+Then("the URL query string writes {string}", async ({ page }, paramStr: string) => {
+  const [key, val] = paramStr.split("=");
+  await expect.poll(() => new URL(page.url()).searchParams.get(key!)).toBe(val);
+});
+
+Then("the URL query string has no {string} or {string} param", async ({ page }, param1: string, param2: string) => {
+  await expect
+    .poll(() => {
+      const params = new URL(page.url()).searchParams;
+      return params.has(param1) || params.has(param2);
+    })
+    .toBe(false);
+});
 
 Given("a user navigates to the cost-of-living calculator", async ({ page }) => {
   await page.goto("/en/tools/cost-of-living-calculator");

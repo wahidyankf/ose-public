@@ -3,6 +3,7 @@ import { TRPCError } from "@trpc/server";
 import { describeFeature, loadFeature } from "@amiceli/vitest-cucumber";
 import { expect } from "vitest";
 import { integrationCaller } from "./helpers/integration-caller";
+import { isValidLocale, type Locale } from "../../../src/features/i18n/core/config";
 
 const feature = await loadFeature(
   path.resolve(process.cwd(), "../../specs/apps/ayokoding/www/behaviours/backend/i18n/i18n-api.feature"),
@@ -13,6 +14,12 @@ const PHRASE_BY_LANGUAGE: Readonly<Record<string, string>> = {
   English: "Examples 1–26 establish Go's daily toolchain",
   Indonesian: "Selamat datang di pusat pembelajaran AyoKoding",
 };
+
+/** Narrows an Examples locale cell to a supported locale; any other value fails the scenario. */
+function localeOf(cell: string): Locale {
+  if (!isValidLocale(cell)) throw new Error(`Examples locale must be a supported locale, got: ${cell}`);
+  return cell;
+}
 
 /** The Examples cell carries the locale prefix; the client call takes the slug without it. */
 function bareSlug(locale: string, slugWithLocale: string): string {
@@ -28,7 +35,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, Background }) => {
 
   // @scenario specs/apps/ayokoding/www/behaviours/backend/i18n/i18n-api.feature: Content is served in the requested locale
   ScenarioOutline("Content is served in the requested locale", ({ Given, When, Then, And }, examples) => {
-    const locale = String(examples["locale"]);
+    const locale = localeOf(String(examples["locale"]));
     const slug = String(examples["slug"]);
     const language = String(examples["language"]);
     let result: Awaited<ReturnType<typeof integrationCaller.content.getBySlug>>;

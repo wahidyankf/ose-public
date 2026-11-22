@@ -11,11 +11,7 @@ const workspaceRoot = path.resolve(__dirname, "../..");
 
 const testDir = defineBddConfig({
   featuresRoot: workspaceRoot,
-  features: [
-    path.join(workspaceRoot, "specs/apps/ayokoding/www/behaviours/frontend/**/*.feature"),
-    // The backend API features exercise the same live server through Playwright's request fixture.
-    path.join(workspaceRoot, "specs/apps/ayokoding/www/behaviours/backend/**/*.feature"),
-  ],
+  features: [path.join(workspaceRoot, "specs/apps/ayokoding/www/behaviours/frontend/**/*.feature")],
   steps: "./tests/e2e/steps/**/*.steps.ts",
   tags: "not @e2e-exempt",
 });

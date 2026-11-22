@@ -85,8 +85,6 @@ Feature: Shared tool dataset validation
     When each country's effective-rate band is read
     Then the mid band is at least the low band and the high band is at least the mid band
 
-  # Exemption(integration): the library has no process, network, or database boundary; the site's decode is an in-process read of checked-in JSON; alternative-proof: ayokoding-www:test:unit / carries the same models in the same order
-  @integration-exempt
   # Exemption(e2e): the library and the site's decode cross no process or network boundary; the JSON is read in-process from checked-in files; alternative-proof: ayokoding-www:test:unit / carries the same models in the same order
   @e2e-exempt
   # Behaviour: ADA-015

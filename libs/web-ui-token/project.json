@@ -13,7 +13,8 @@
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npx oxlint --deny-warnings ."
+        "command": "npx oxlint --deny-warnings .",
+        "cwd": "libs/web-ui-token"
       }
     },
     "test:unit": {

@@ -4,7 +4,6 @@
 // @scenario specs/libs/web-ui-token/behaviours/tokens/tokens-export.feature: Importing organiclever.css activates the warm palette
 // @scenario specs/libs/web-ui-token/behaviours/tokens/tokens-export.feature: Each colorTokens name is a custom property defined by tokens.css
 // @scenario specs/libs/web-ui-token/behaviours/tokens/tokens-export.feature: The radius, spacing, and typography values match the documented scales
-import { readFileSync } from "node:fs";
 import path from "path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
 import { expect } from "vitest";
@@ -13,13 +12,15 @@ import { colorTokens } from "../../src/colors";
 import { radius } from "../../src/radius";
 import { spacing } from "../../src/spacing";
 import { typography } from "../../src/typography";
+import { ORGANICLEVER_CSS, TOKENS_CSS } from "./stylesheet-fixtures";
 
 const feature = await loadFeature(
   path.resolve(__dirname, "../../../../specs/libs/web-ui-token/behaviours/tokens/tokens-export.feature"),
 );
 
-const tokensCss = readFileSync(path.resolve(__dirname, "../../src/tokens.css"), "utf8");
-const organicleverCss = readFileSync(path.resolve(__dirname, "../../src/organiclever.css"), "utf8");
+// The stylesheet seam: unit bindings read in-memory copies; tests/integration reads the files on disk.
+const tokensCss = TOKENS_CSS;
+const organicleverCss = ORGANICLEVER_CSS;
 
 const HUES = ["terracotta", "honey", "sage", "teal", "sky", "plum"];
 const SPACING_STEPS = [1, 2, 3, 4, 5, 6, 8, 10, 12, 16];

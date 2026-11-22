@@ -111,7 +111,7 @@
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npx oxlint --jsx-a11y-plugin .",
+        "command": "npx oxlint --jsx-a11y-plugin . && npx oxlint -c oxlint-unit-hermetic.json tests/unit && if grep -rnE 'new Date\\(\\s*\\)' tests/unit --include='*.ts' --include='*.tsx'; then echo 'ERROR: new Date() with no argument reads the real clock in tests/unit; pass a fixed instant'; exit 1; fi",
         "cwd": "apps/ayokoding-www"
       }
     },

@@ -45,6 +45,10 @@ describe("hueForManifest", () => {
   it("returns undefined for a skills manifest whose subject is not one of the four documented ones", () => {
     expect(hueForManifest({ pathId: "skills/e2e-fixture-alpha", arc: "e2e-fixture-alpha-track" })).toBeUndefined();
   });
+
+  it("returns undefined for a path outside the careers/skills categories (plain neutral treatment)", () => {
+    expect(hueForManifest({ pathId: "labs/prototype-x", arc: "prototype" })).toBeUndefined();
+  });
 });
 
 describe("hueCssVars", () => {

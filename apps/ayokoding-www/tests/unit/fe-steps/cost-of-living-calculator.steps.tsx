@@ -333,40 +333,75 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Clicking a city name opens its single-city cost-of-living detail
-  Scenario("Clicking a city name opens its single-city cost-of-living detail", async ({ Given, When, Then, And }) => {
+  // Opens the first city's link from the results table, as a reader clicking the city name would.
+  async function clickFirstCityName() {
     const firstCity = dataset.cities[0]!;
+    const links = screen.getAllByRole("link", { name: firstCity.name.en });
+    const cityLink = links.find((l) => l.getAttribute("href") === `?tab=cost&city=${firstCity.id}`);
+    expect(cityLink).toBeDefined();
+    await getScenarioUser().click(cityLink!);
+  }
 
-    Given('I am on "/en/tools/cost-of-living-calculator"', () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Clicking a city name opens its single-city cost-of-living detail
+  ScenarioOutline(
+    "Clicking a city name opens its single-city cost-of-living detail",
+    ({ Given, When, Then, And }, variables) => {
+      const firstCity = dataset.cities[0]!;
 
-    When("I click a city name in any table", async () => {
-      const links = screen.getAllByRole("link", { name: firstCity.name.en });
-      const cityLink = links.find((l) => l.getAttribute("href") === `?tab=cost&city=${firstCity.id}`);
-      expect(cityLink).toBeDefined();
-      await getScenarioUser().click(cityLink!);
-    });
+      Given('I am on "/en/tools/cost-of-living-calculator"', () => {
+        renderPage(<CostOfLivingCalculatorPage />);
+      });
 
-    Then('I am taken to that city\'s single-city Cost-of-living detail at "?city=<id>"', () => {
-      // City detail is shown — CityDetail renders a heading with the city name.
-      // (Cost-of-living is the default tab, so encodeState omits tab=cost from the URL.)
-      expect(screen.getByTestId("city-detail")).toBeTruthy();
-    });
+      When("I <how>", async () => {
+        if (variables.how === "click a city name in any table") {
+          await clickFirstCityName();
+        } else {
+          await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /city/i }), firstCity.id);
+        }
+      });
 
-    And("the City filter is pre-selected to that city", () => {
-      // The city detail is shown with the city name visible
-      expect(screen.getByTestId("city-detail").textContent).toContain(firstCity.name.en);
-    });
+      Then('I am taken to that city\'s single-city Cost-of-living detail at "?city=<id>"', () => {
+        // City detail is shown — CityDetail renders a heading with the city name.
+        // (Cost-of-living is the default tab, so encodeState omits tab=cost from the URL.)
+        expect(screen.getByTestId("city-detail")).toBeTruthy();
+      });
 
-    And(
-      "the detail shows the full per-category breakdown, essentials subtotal, total, healthcare scheme badge, and split relocation in both local currency and USD",
-      () => {
-        // Healthcare badge present in city detail
-        expect(screen.getByTestId("healthcare-badge")).toBeTruthy();
-      },
-    );
-  });
+      And("the City filter is pre-selected to that city", () => {
+        // The city detail is shown with the city name visible
+        expect(screen.getByTestId("city-detail").textContent).toContain(firstCity.name.en);
+      });
+
+      And("the detail is identical to the one shown when clicking the city name in the table", () => {
+        const detail = screen.getByTestId("city-detail");
+        expect(detail.textContent).toContain(firstCity.name.en);
+        expect(detail.querySelector("[data-testid='expense-housing']")).toBeTruthy();
+      });
+    },
+  );
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The single-city detail shows the breakdown, scheme badge, and split relocation in local currency and USD
+  Scenario(
+    "The single-city detail shows the breakdown, scheme badge, and split relocation in local currency and USD",
+    async ({ Given, When, Then }) => {
+      Given('I am on "/en/tools/cost-of-living-calculator"', () => {
+        renderPage(<CostOfLivingCalculatorPage />);
+      });
+
+      When("I click a city name in any table", async () => {
+        await clickFirstCityName();
+      });
+
+      Then(
+        "the detail shows the full per-category breakdown, essentials subtotal, total, healthcare scheme badge, and split relocation in both local currency and USD",
+        () => {
+          const detail = screen.getByTestId("city-detail");
+          expect(detail.querySelector("[data-testid='expense-housing']")).toBeTruthy();
+          expect(detail.querySelector("[data-testid='relocation-sunk']")).toBeTruthy();
+          expect(screen.getByTestId("healthcare-badge")).toBeTruthy();
+        },
+      );
+    },
+  );
 
   // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Clicking a country opens Cost-of-living filtered to that country
   Scenario("Clicking a country opens Cost-of-living filtered to that country", async ({ Given, When, Then, And }) => {
@@ -1528,31 +1563,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── SG-001: Zero/empty salary guidance ───────────────────────────────────────
 
-  // ─── SG-003: City filter dropdown opens detail view ───────────────────────────
-
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Selecting a city from the City filter opens its detail view
-  Scenario("Selecting a city from the City filter opens its detail view", async ({ Given, When, Then, And }) => {
-    const firstCity = dataset.cities[0]!;
-
-    Given('I am on the "Cost of living" tab', () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When("I select a city from the City dropdown filter", async () => {
-      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /city/i }), firstCity.id);
-    });
-
-    Then("the single-city cost-of-living detail for that city is shown", () => {
-      expect(screen.getByTestId("city-detail")).toBeTruthy();
-    });
-
-    And("the detail is identical to the one shown when clicking the city name in the table", () => {
-      const detail = screen.getByTestId("city-detail");
-      expect(detail.textContent).toContain(firstCity.name.en);
-      expect(detail.querySelector("[data-testid='expense-housing']")).toBeTruthy();
-    });
-  });
-
   // ─── SG-004: Income-band boundary handling ────────────────────────────────────
 
   // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Income exactly at the low-to-mid threshold uses the mid band
@@ -1811,26 +1821,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
         default:
           throw new Error(`unknown calculator control: ${String(variables.control)}`);
       }
-    });
-  });
-
-  // ─── USS-005: Descriptive page title ─────────────────────────────────────────
-
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Page title includes tool name on load
-  Scenario("Page title includes tool name on load", ({ Given, When, Then }) => {
-    let metadataTitle: string | undefined;
-    Given("a user navigates to the cost-of-living calculator", () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When("the page finishes loading with default filter state", async () => {
-      expect(screen.getByRole("main")).toBeTruthy();
-      const metadata = await generateCalculatorMetadata({ params: Promise.resolve({ locale: "en" }) });
-      metadataTitle = String(metadata.title);
-    });
-
-    Then("the browser tab title includes the name of the tool", () => {
-      expect(metadataTitle).toContain(t("en", "calcTitle"));
     });
   });
 
@@ -2101,8 +2091,8 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── SG-D-003: Page heading matches tool identity ─────────────────────────────
 
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: H1 matches the tool's official name in each locale
-  ScenarioOutline("H1 matches the tool's official name in each locale", ({ Given, When, Then, And }, variables) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: page title and H1 name the tool
+  ScenarioOutline("page title and H1 name the tool", ({ Given, When, Then, And }, variables) => {
     Given('the user opens "/<locale>/tools/cost-of-living-calculator"', () => {
       navState.locale = String(variables.locale);
       renderPage(<CostOfLivingCalculatorPage />);
@@ -2399,74 +2389,43 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
-  // URL-006 — City-detail back link preserves an explicitly chosen parent geo scope
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The city-detail back link preserves the parent geo scope
-  Scenario("The city-detail back link preserves the parent geo scope", ({ Given, When, Then, But }) => {
+  // URL-006 and AC-12 (UWT-015) — the city-detail back link keeps an explicitly chosen parent geo
+  // scope; a city-only deep link, whose scope was auto-derived, returns to the bare calculator.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: city detail back link
+  ScenarioOutline("city detail back link", ({ Given, When, Then, And }, variables) => {
     let backHref = "";
 
-    Given('I am on the single-city detail with query string "region=asean&country=sg&city=singapore"', () => {
-      navState.params = new URLSearchParams("region=asean&country=sg&city=singapore");
+    Given('I am on the single-city detail with query string "<query>"', () => {
+      navState.params = new URLSearchParams(String(variables.query));
       navState.setParams(navState.params);
       renderPage(<CostOfLivingCalculatorPage />);
     });
 
-    When('I activate the "Back to all cities" link', () => {
+    When("I read the single-city detail back link", () => {
       const link = screen.getByRole("link", { name: /back to all cities/i });
       backHref = link.getAttribute("href") ?? "";
     });
 
-    Then('the URL query string includes "region=asean" and "country=sg"', () => {
-      // Explicit scope was chosen, so the back link encodes the parent region+country.
-      const params = new URLSearchParams(backHref.replace(/^\?/, ""));
-      expect(params.get("region")).toBe("asean");
-      expect(params.get("country")).toBe("sg");
+    Then('the back link points to "<back_link>"', () => {
+      expect(backHref).toBe(variables.back_link);
     });
 
-    But('the URL query string does not include "city"', () => {
+    And('the back link does not include "city"', () => {
       const params = new URLSearchParams(backHref.replace(/^\?/, ""));
       expect(params.has("city")).toBe(false);
     });
   });
 
-  // URL-009 — Breadcrumb offers Home and Tools escape links
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The breadcrumb offers an escape to the Tools index and Home
-  Scenario("The breadcrumb offers an escape to the Tools index and Home", ({ Given, When, Then, And }) => {
-    Given('I am on the calculator with query string "city=singapore"', () => {
-      navState.params = new URLSearchParams("city=singapore");
-      navState.setParams(navState.params);
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When("I read the breadcrumb above the page title", () => {
-      const nav = screen.queryByRole("navigation", { name: /breadcrumb/i });
-      expect(nav).toBeTruthy();
-    });
-
-    Then('a "Home" link to "/en" is shown', () => {
-      const links = screen.getAllByRole("link");
-      const homeLink = links.find((l) => {
-        const href = l.getAttribute("href") ?? "";
-        return href === "/en" || href.endsWith("/en");
-      });
-      expect(homeLink).toBeTruthy();
-    });
-
-    And('a "Tools" link to "/en/tools" is shown', () => {
-      const links = screen.getAllByRole("link");
-      const toolsLink = links.find((l) => {
-        const href = l.getAttribute("href") ?? "";
-        return href.includes("/en/tools");
-      });
-      expect(toolsLink).toBeTruthy();
-    });
-  });
-
-  // AC-2 (DWT-B-003/DWT-B-004) — Breadcrumb uses the shared primitive with chevron separators
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The breadcrumb separates crumbs with chevrons, not a literal slash
-  Scenario("The breadcrumb separates crumbs with chevrons, not a literal slash", ({ Given, When, Then, And }) => {
+  // URL-009 (escape links), AC-2 (DWT-B-003/DWT-B-004, chevron separators) and AC-3 (UWT-013, final
+  // crumb equals the page H1) — the breadcrumb on the single-city detail, in each locale.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: calculator breadcrumb
+  ScenarioOutline("calculator breadcrumb", ({ Given, When, Then, And }, variables) => {
+    const locale = String(variables.locale);
     let breadcrumbNav: HTMLElement | null = null;
+    let currentCrumb: HTMLElement | null = null;
 
-    Given('I am on the calculator with query string "city=singapore"', () => {
+    Given('the user opens "/<locale>/tools/cost-of-living-calculator?city=singapore"', () => {
+      navState.locale = locale;
       navState.params = new URLSearchParams("city=singapore");
       navState.setParams(navState.params);
       renderPage(<CostOfLivingCalculatorPage />);
@@ -2477,7 +2436,25 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       expect(breadcrumbNav).toBeTruthy();
     });
 
-    Then("the crumbs are separated by chevron icons", () => {
+    Then('a "Home" link to "/<locale>" is shown', () => {
+      const links = screen.getAllByRole("link");
+      const homeLink = links.find((l) => {
+        const href = l.getAttribute("href") ?? "";
+        return href === `/${locale}` || href.endsWith(`/${locale}`);
+      });
+      expect(homeLink).toBeTruthy();
+    });
+
+    And('a "Tools" link to "/<locale>/tools" is shown', () => {
+      const links = screen.getAllByRole("link");
+      const toolsLink = links.find((l) => {
+        const href = l.getAttribute("href") ?? "";
+        return href.includes(`/${locale}/tools`);
+      });
+      expect(toolsLink).toBeTruthy();
+    });
+
+    And("the crumbs are separated by chevron icons", () => {
       // Home, Tools, current → two chevron <svg> separators rendered by lucide-react.
       const chevrons = breadcrumbNav!.querySelectorAll("svg");
       expect(chevrons.length).toBe(2);
@@ -2486,36 +2463,17 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     And('no literal "/" separator is shown between crumbs', () => {
       expect(breadcrumbNav!.textContent).not.toContain("/");
     });
+
+    And('the current-page crumb text reads "<expected_title>"', () => {
+      currentCrumb = document.querySelector('[aria-current="page"]');
+      expect(currentCrumb).toBeTruthy();
+      expect(currentCrumb!.textContent).toBe(variables.expected_title);
+    });
+
+    And('the current-page crumb is marked aria-current="page"', () => {
+      expect(currentCrumb!.getAttribute("aria-current")).toBe("page");
+    });
   });
-
-  // AC-3 (UWT-013) — Final breadcrumb crumb equals the page H1 in each locale
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The final breadcrumb crumb matches the page title in each locale
-  ScenarioOutline(
-    "The final breadcrumb crumb matches the page title in each locale",
-    ({ Given, When, Then, And }, variables) => {
-      let currentCrumb: HTMLElement | null = null;
-
-      Given('the user opens "/<locale>/tools/cost-of-living-calculator"', () => {
-        navState.locale = String(variables.locale);
-        renderPage(<CostOfLivingCalculatorPage />);
-      });
-
-      When("the breadcrumb renders", () => {
-        const nav = screen.getByRole("navigation", { name: /breadcrumb/i });
-        expect(nav).toBeTruthy();
-      });
-
-      Then('the current-page crumb text reads "<expected_title>"', () => {
-        currentCrumb = document.querySelector('[aria-current="page"]');
-        expect(currentCrumb).toBeTruthy();
-        expect(currentCrumb!.textContent).toBe(variables.expected_title);
-      });
-
-      And('the current-page crumb is marked aria-current="page"', () => {
-        expect(currentCrumb!.getAttribute("aria-current")).toBe("page");
-      });
-    },
-  );
 
   // URL-013 — Canonicalization uses replace so Back button skips the dirty URL
   // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Canonicalization does not add a browser history entry
@@ -2535,44 +2493,71 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
-  // AC-4 (UWT-016/DWT-005) — Geo-filter selects meet the 44px minimum touch target
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Geo-filter selects meet the minimum touch-target height on mobile
-  Scenario("Geo-filter selects meet the minimum touch-target height on mobile", ({ Given, When, Then }) => {
-    Given("I am on the calculator at a 375px-wide viewport", () => {
-      // jsdom has no layout engine, so the rendered pixel height is verified at the
-      // e2e level (boundingBox >= 44px). The unit tier asserts the 44px-minimum
-      // styling contract on each geo-filter select: an explicit fixed height (h-11)
-      // PLUS appearance-none. The appearance-none is the load-bearing cross-browser
-      // fix — WebKit native selects use appearance:auto and pin min-height:18px in the
-      // UA stylesheet, overriding min-h-[44px]; removing the native appearance lets the
-      // author height apply on Safari, Chromium, AND Firefox alike.
-      navState.params = new URLSearchParams();
-      navState.setParams(navState.params);
+  // AC-4 (UWT-016/DWT-005), Cluster 2 and SG-003 — every control meets the 44px minimum touch target.
+  // jsdom has no layout engine, so the rendered pixel height is verified at the e2e level
+  // (boundingBox >= 44px). The unit tier asserts each control's 44px styling contract instead:
+  // geo-filter selects carry an explicit fixed height (h-11) PLUS appearance-none, because WebKit
+  // native selects use appearance:auto and pin min-height:18px in the UA stylesheet.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: touch targets are at least 44 px
+  ScenarioOutline("touch targets are at least 44 px", ({ Given, When, Then }, variables) => {
+    Given('I am on the "<tab>" tab at a <width>px-wide viewport', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
+      if (variables.tab !== "Cost of living") {
+        await getScenarioUser().click(screen.getByRole("tab", { name: new RegExp(String(variables.tab), "i") }));
+      }
     });
 
-    When("the geo-filter selects render", () => {
-      expect(document.getElementById("geo-region-select")).toBeTruthy();
+    When('the "<control>" control is rendered', () => {
+      if (variables.control === "geo-filter select") {
+        expect(document.getElementById("geo-region-select")).toBeTruthy();
+      } else if (variables.control === "tab trigger") {
+        expect(screen.getAllByRole("tab").length).toBe(3);
+      } else if (variables.control === "segmented radio") {
+        expect(screen.getAllByRole("radio").length).toBeGreaterThan(0);
+      } else {
+        expect(screen.getByRole("radiogroup", { name: /how to set your target/i })).toBeTruthy();
+      }
     });
 
-    Then("each geo-filter select is at least 44 pixels tall", () => {
-      for (const id of ["geo-region-select", "geo-country-select", "geo-city-select"]) {
-        const select = document.getElementById(id);
-        expect(select, id).toBeTruthy();
-        expect(select!.className).toContain("min-h-[44px]");
-        expect(select!.className).toContain("h-11");
-        expect(select!.className).toContain("appearance-none");
+    Then('each "<control>" is at least 44 pixels tall', () => {
+      if (variables.control === "geo-filter select") {
+        for (const id of ["geo-region-select", "geo-country-select", "geo-city-select"]) {
+          const select = document.getElementById(id);
+          expect(select, id).toBeTruthy();
+          expect(select!.className).toContain("min-h-[44px]");
+          expect(select!.className).toContain("h-11");
+          expect(select!.className).toContain("appearance-none");
+        }
+      } else if (variables.control === "tab trigger") {
+        for (const tab of screen.getAllByRole("tab")) {
+          expect(tab.className).toContain("min-h-[44px]");
+        }
+      } else if (variables.control === "segmented radio") {
+        // The school-type and area segmented radios; each role=radio button inherits min-h-[44px].
+        for (const radio of screen.getAllByRole("radio")) {
+          expect(radio.className).toContain("min-h-[44px]");
+        }
+      } else {
+        // flex-wrap lets the baseline options flow to a second row, each keeping min-h-[44px].
+        const group = screen.getByRole("radiogroup", { name: /how to set your target/i });
+        expect(group.className).toContain("flex-wrap");
+        expect(group.className).toContain("min-h-[44px]");
+        for (const radio of group.querySelectorAll('[role="radio"]')) {
+          expect((radio as HTMLElement).className).toContain("min-h-[44px]");
+        }
       }
     });
   });
 
-  // AC-5 (UWT-008) — Calculator page does not overflow horizontally at 320px
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The calculator page has no horizontal overflow at 320px
-  Scenario("The calculator page has no horizontal overflow at 320px", ({ Given, When, Then }) => {
-    Given("I am on the calculator at a 320px-wide viewport", () => {
-      // Horizontal scrollWidth is a layout measurement, verified at e2e level
-      // (scrollWidth <= 320). The unit tier asserts the structural contract: the
-      // geo-filter selects can shrink (min-w-0) so the row never forces overflow.
+  // AC-5 (UWT-008) and EWT-R01 (regression of UWT-008) — the page does not overflow horizontally at
+  // 320px in English or Indonesian. Horizontal scrollWidth is a layout measurement, verified at e2e
+  // level. The unit tier asserts the structural contract instead: the geo-filter selects can shrink
+  // (min-w-0), and the tablist is width-bounded (max-w-full + overflow-x-auto) so longer Indonesian
+  // labels scroll INTERNALLY instead of forcing document overflow.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: no horizontal overflow at 320 px
+  ScenarioOutline("no horizontal overflow at 320 px", ({ Given, When, Then }, variables) => {
+    Given('I am on the "<locale>" locale calculator at a 320px-wide viewport', () => {
+      navState.locale = String(variables.locale);
       navState.params = new URLSearchParams();
       navState.setParams(navState.params);
       renderPage(<CostOfLivingCalculatorPage />);
@@ -2588,61 +2573,16 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
         expect(select, id).toBeTruthy();
         expect(select!.className).toContain("min-w-0");
       }
-    });
-  });
-
-  // EWT-R01 (regression of UWT-008) — id-locale tab labels must not widen the page at 320px
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The calculator page has no horizontal overflow at 320px in the id locale
-  Scenario("The calculator page has no horizontal overflow at 320px in the id locale", ({ Given, When, Then }) => {
-    Given("I am on the id-locale calculator at a 320px-wide viewport", () => {
-      // Horizontal scrollWidth is a layout measurement, verified at e2e level
-      // (scrollWidth <= 320). The unit tier asserts the locale-independent structural
-      // contract: the tablist is width-bounded (max-w-full + overflow-x-auto) so longer
-      // id labels scroll INTERNALLY instead of forcing document overflow.
-      navState.params = new URLSearchParams();
-      navState.setParams(navState.params);
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When("the calculator page renders", () => {
-      expect(screen.getByTestId("calc-page")).toBeTruthy();
-    });
-
-    Then("the document does not scroll horizontally", () => {
       const tablist = screen.getByRole("tablist");
       expect(tablist.className).toContain("max-w-full");
       expect(tablist.className).toContain("overflow-x-auto");
     });
   });
 
-  // AC-8 (UWT-004) — Savings gross-salary field surfaces the active currency separately
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The Savings gross-salary field shows the active currency as a separate indicator
-  Scenario(
-    "The Savings gross-salary field shows the active currency as a separate indicator",
-    async ({ Given, When, Then, And }) => {
-      Given('I am on the "Savings" tab', async () => {
-        renderPage(<CostOfLivingCalculatorPage />);
-        await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
-      });
-
-      When("the gross-salary field renders", () => {
-        expect(document.querySelector("#gross-salary-input")).toBeTruthy();
-      });
-
-      Then('the gross-salary label does not contain the literal currency code "USD"', () => {
-        const label = document.querySelector('label[for="gross-salary-input"]');
-        expect(label?.textContent).not.toMatch(/USD/);
-      });
-
-      And('an active-currency indicator next to the field shows "USD"', () => {
-        expect(screen.getByTestId("salary-currency-indicator").textContent).toMatch(/USD/);
-      });
-    },
-  );
-
-  // UWT-019 — the fixed USD indicator carries a short explanation of why USD is used
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The Savings currency indicator explains why USD is used for every city
-  Scenario("The Savings currency indicator explains why USD is used for every city", async ({ Given, When, Then }) => {
+  // AC-8 (UWT-004), UWT-019 and UWT-007 — the Savings gross-salary field names its active currency
+  // as a separate indicator at the field, and a short explanation says why USD is used for every city.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: savings currency indicator
+  Scenario("savings currency indicator", async ({ Given, When, Then, And }) => {
     Given('I am on the "Savings" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
       await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
@@ -2652,9 +2592,22 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       expect(document.querySelector("#gross-salary-input")).toBeTruthy();
     });
 
-    Then("an explanation states salaries are compared in USD across all cities", () => {
+    Then('the gross-salary label does not contain the literal currency code "USD"', () => {
+      const label = document.querySelector('label[for="gross-salary-input"]');
+      expect(label?.textContent).not.toMatch(/USD/);
+    });
+
+    And('an active-currency indicator next to the field shows "USD"', () => {
+      expect(screen.getByTestId("salary-currency-indicator").textContent).toMatch(/USD/);
+    });
+
+    And("an explanation states salaries are compared in USD across all cities", () => {
       const explanation = screen.getByTestId("salary-currency-explanation");
       expect(explanation.textContent).toMatch(/USD/);
+    });
+
+    And("the gross salary input displays its USD currency inline at the field", () => {
+      expect(screen.getByTestId("salary-currency-indicator").textContent).toMatch(/USD/);
     });
   });
 
@@ -2739,30 +2692,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       const advisory = screen.getByTestId("region-auto-advisory");
       expect(advisory).toBeTruthy();
       expect(advisory.textContent ?? "").not.toBe("");
-    });
-  });
-
-  // AC-12 (UWT-015) — A city-only deep link returns to the bare calculator
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: A city-only deep link back link omits the auto-derived region and country
-  Scenario("A city-only deep link back link omits the auto-derived region and country", ({ Given, When, Then }) => {
-    let backLink: HTMLElement;
-
-    Given('a deep link with query string "city=london"', () => {
-      navState.params = new URLSearchParams("city=london");
-      navState.setParams(navState.params);
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When("I read the single-city detail back link", () => {
-      backLink = screen.getByRole("link", { name: /back to all cities/i });
-      expect(backLink).toBeTruthy();
-    });
-
-    Then('the back link points to the bare calculator "?tab=cost" with no region or country', () => {
-      const href = backLink.getAttribute("href") ?? "";
-      expect(href).toBe("?tab=cost");
-      expect(href).not.toContain("region=");
-      expect(href).not.toContain("country=");
     });
   });
 
@@ -2978,36 +2907,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       expect(screen.getByTestId("tab-desc-savings").className).not.toMatch(/\bhidden\b/);
       expect(screen.getByTestId("tab-desc-cost").className).toMatch(/\bhidden\b/);
       expect(screen.getByTestId("tab-desc-min-role").className).toMatch(/\bhidden\b/);
-    });
-  });
-
-  // Cluster 2 — touch targets on tab triggers + segmented radios.
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Interactive controls meet the 44px touch target
-  Scenario("Interactive controls meet the 44px touch target", ({ Given, When, Then, And }) => {
-    Given("the calculator at 375px", () => {
-      // jsdom has no layout engine; the unit tier asserts the 44px styling contract
-      // (min-h-[44px]) on each interactive control. Pixel height is verified at e2e.
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When("the page is rendered", () => {
-      expect(screen.getAllByRole("tab").length).toBe(3);
-    });
-
-    Then("every tab trigger is at least 44px tall", () => {
-      for (const tab of screen.getAllByRole("tab")) {
-        expect(tab.className).toContain("min-h-[44px]");
-      }
-    });
-
-    And("every school-type, area, and salary-currency segmented radio is at least 44px tall", () => {
-      // The school-type + area segmented radios live in the cost-basis controls; every
-      // role=radio button inherits the primitive's min-h-[44px].
-      const radios = screen.getAllByRole("radio");
-      expect(radios.length).toBeGreaterThan(0);
-      for (const radio of radios) {
-        expect(radio.className).toContain("min-h-[44px]");
-      }
     });
   });
 
@@ -3325,24 +3224,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
-  // UWT-007 — at-field currency indicator on the Savings gross input.
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings salary input shows its currency at the field
-  Scenario("Savings salary input shows its currency at the field", async ({ Given, When, Then }) => {
-    Given("the Savings tab is shown", async () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
-    });
-
-    When("the page is rendered", () => {
-      expect(document.getElementById("gross-salary-input")).toBeTruthy();
-    });
-
-    Then("the gross salary input displays its USD currency inline at the field", () => {
-      const indicator = screen.getByTestId("salary-currency-indicator");
-      expect(indicator.textContent).toMatch(/USD/);
-    });
-  });
-
   // Cluster 6 / SG-002 — all selects share the design-system chrome (appearance-none + chevron).
   // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Every dropdown shows one custom arrow and not the browser's native arrow
   Scenario(
@@ -3378,30 +3259,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       });
     },
   );
-
-  // SG-003 — Baseline-source segmented control keeps the 44px rhythm via flex-wrap.
-  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Baseline-source control keeps the 44px rhythm at mobile
-  Scenario("Baseline-source control keeps the 44px rhythm at mobile", async ({ Given, When, Then }) => {
-    Given("the Minimum-role tab at 320px and 375px", async () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
-    });
-
-    When("the page is rendered", () => {
-      expect(screen.getByRole("radiogroup", { name: /how to set your target/i })).toBeTruthy();
-    });
-
-    Then('each "Baseline source" option remains at least 44px tall when the control wraps', () => {
-      // jsdom has no layout; the contract is flex-wrap (so 3 options flow to a second row)
-      // with each option keeping min-h-[44px] per row instead of one ballooning row.
-      const group = screen.getByRole("radiogroup", { name: /how to set your target/i });
-      expect(group.className).toContain("flex-wrap");
-      expect(group.className).toContain("min-h-[44px]");
-      for (const radio of group.querySelectorAll('[role="radio"]')) {
-        expect((radio as HTMLElement).className).toContain("min-h-[44px]");
-      }
-    });
-  });
 
   // DWT-007 — salary-currency toggle bottom-aligns with the gross input (items-end field row).
   // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Salary-currency toggle bottom-aligns with its sibling input

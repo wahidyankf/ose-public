@@ -37,12 +37,23 @@ Feature: Salary savings calculator
     Then each card header shows both the city name and its country name
 
   # Behaviour: AYW-060
-  Scenario: Clicking a city name opens its single-city cost-of-living detail
+  Scenario Outline: Clicking a city name opens its single-city cost-of-living detail
     Given I am on "/en/tools/cost-of-living-calculator"
-    When I click a city name in any table
+    When I <how>
     Then I am taken to that city's single-city Cost-of-living detail at "?city=<id>"
     And the City filter is pre-selected to that city
-    And the detail shows the full per-category breakdown, essentials subtotal, total, healthcare scheme badge, and split relocation in both local currency and USD
+    And the detail is identical to the one shown when clicking the city name in the table
+
+    Examples:
+      | how                                         |
+      | click a city name in any table              |
+      | select a city from the City dropdown filter |
+
+  # Behaviour: AYW-060
+  Scenario: The single-city detail shows the breakdown, scheme badge, and split relocation in local currency and USD
+    Given I am on "/en/tools/cost-of-living-calculator"
+    When I click a city name in any table
+    Then the detail shows the full per-category breakdown, essentials subtotal, total, healthcare scheme badge, and split relocation in both local currency and USD
 
   # Behaviour: AYW-060
   Scenario: Clicking a country opens Cost-of-living filtered to that country
@@ -329,13 +340,6 @@ Feature: Salary savings calculator
     Then cells with lower data confidence display a visual flag indicator
 
 
-  # Behaviour: AYW-060
-  Scenario: Selecting a city from the City filter opens its detail view
-    Given I am on the "Cost of living" tab
-    When I select a city from the City dropdown filter
-    Then the single-city cost-of-living detail for that city is shown
-    And the detail is identical to the one shown when clicking the city name in the table
-
   # Behaviour: AYW-057
   Scenario: Income exactly at the low-to-mid threshold uses the mid band
     Given I am on the "Savings" tab
@@ -383,12 +387,6 @@ Feature: Salary savings calculator
       | country       |
       | tab           |
       | cost basis    |
-
-  # Behaviour: AYW-057
-  Scenario: Page title includes tool name on load
-    Given a user navigates to the cost-of-living calculator
-    When the page finishes loading with default filter state
-    Then the browser tab title includes the name of the tool
 
   # ── Accepted proposals: SG-001…006, USS-001…005, SG-D-001…004 (Phase 4 grill 2026-06-20) ──
 
@@ -474,9 +472,10 @@ Feature: Salary savings calculator
 
   # SG-D-002 — covered by the "country shown beside city" scenario
 
+  # Behaviour: AYW-057
   # Behaviour: AYW-061
-  # SG-D-003 — Page heading matches tool identity
-  Scenario Outline: H1 matches the tool's official name in each locale
+  # SG-D-003 — Page heading matches tool identity; the browser title names the tool in each locale
+  Scenario Outline: page title and H1 name the tool
     Given the user opens "/<locale>/tools/cost-of-living-calculator"
     When the page renders
     Then the H1 reads "<expected_h1>"
@@ -571,38 +570,31 @@ Feature: Salary savings calculator
     And the URL query string has no "country" or "city" param
 
   # Behaviour: AYW-060
-  # URL-006 — City-detail back link preserves an explicitly chosen parent geo scope.
-  # When the user explicitly selected region+country before opening a city, the back
-  # link returns to that scope. (A city-ONLY deep link, where scope was auto-derived,
-  # instead returns to the bare calculator — see the UWT-015 scenario below.)
-  Scenario: The city-detail back link preserves the parent geo scope
-    Given I am on the single-city detail with query string "region=asean&country=sg&city=singapore"
-    When I activate the "Back to all cities" link
-    Then the URL query string includes "region=asean" and "country=sg"
-    But the URL query string does not include "city"
+  # URL-006 and AC-12 (UWT-015) — the city-detail back link keeps an explicitly chosen parent
+  # geo scope. A city-ONLY deep link, where the scope was auto-derived, returns to the bare calculator.
+  Scenario Outline: city detail back link
+    Given I am on the single-city detail with query string "<query>"
+    When I read the single-city detail back link
+    Then the back link points to "<back_link>"
+    And the back link does not include "city"
+
+    Examples:
+      | query                                  | back_link                |
+      | region=asean&country=sg&city=singapore | ?region=asean&country=sg |
+      | city=london                            | ?tab=cost                |
 
   # Behaviour: AYW-060
-  # URL-009 — Breadcrumb offers Home and Tools escape links
-  Scenario: The breadcrumb offers an escape to the Tools index and Home
-    Given I am on the calculator with query string "city=singapore"
-    When I read the breadcrumb above the page title
-    Then a "Home" link to "/en" is shown
-    And a "Tools" link to "/en/tools" is shown
-
-  # Behaviour: AYW-060
-  # AC-2 (DWT-B-003/DWT-B-004) — Breadcrumb uses the shared primitive with chevron separators
-  Scenario: The breadcrumb separates crumbs with chevrons, not a literal slash
-    Given I am on the calculator with query string "city=singapore"
-    When I read the breadcrumb above the page title
-    Then the crumbs are separated by chevron icons
-    And no literal "/" separator is shown between crumbs
-
   # Behaviour: AYW-061
-  # AC-3 (UWT-013) — Final breadcrumb crumb equals the page H1 in each locale
-  Scenario Outline: The final breadcrumb crumb matches the page title in each locale
-    Given the user opens "/<locale>/tools/cost-of-living-calculator"
-    When the breadcrumb renders
-    Then the current-page crumb text reads "<expected_title>"
+  # URL-009 (escape links), AC-2 (DWT-B-003/DWT-B-004, chevron separators) and AC-3 (UWT-013, final
+  # crumb equals the page H1) — the breadcrumb on the single-city detail, in each locale.
+  Scenario Outline: calculator breadcrumb
+    Given the user opens "/<locale>/tools/cost-of-living-calculator?city=singapore"
+    When I read the breadcrumb above the page title
+    Then a "Home" link to "/<locale>" is shown
+    And a "Tools" link to "/<locale>/tools" is shown
+    And the crumbs are separated by chevron icons
+    And no literal "/" separator is shown between crumbs
+    And the current-page crumb text reads "<expected_title>"
     And the current-page crumb is marked aria-current="page"
 
     Examples:
@@ -618,42 +610,46 @@ Feature: Salary savings calculator
     Then pressing the browser Back button does not return to the "city=atlantis" URL
 
   # Behaviour: AYW-059
-  # AC-4 (UWT-016/DWT-005) — Geo-filter selects meet the 44px minimum touch target
-  Scenario: Geo-filter selects meet the minimum touch-target height on mobile
-    Given I am on the calculator at a 375px-wide viewport
-    When the geo-filter selects render
-    Then each geo-filter select is at least 44 pixels tall
+  # Behaviour: AYW-057
+  # AC-4 (UWT-016/DWT-005), Cluster 2 and SG-003 — every control meets the 44px minimum touch target
+  Scenario Outline: touch targets are at least 44 px
+    Given I am on the "<tab>" tab at a <width>px-wide viewport
+    When the "<control>" control is rendered
+    Then each "<control>" is at least 44 pixels tall
+
+    Examples:
+      | tab            | width | control                |
+      | Cost of living | 375   | geo-filter select      |
+      | Cost of living | 375   | tab trigger            |
+      | Cost of living | 375   | segmented radio        |
+      | Minimum role   | 320   | baseline source option |
+      | Minimum role   | 375   | baseline source option |
 
   # Behaviour: AYW-057
-  # AC-5 (UWT-008) — Calculator page does not overflow horizontally at 320px
-  Scenario: The calculator page has no horizontal overflow at 320px
-    Given I am on the calculator at a 320px-wide viewport
+  # Behaviour: AYW-061
+  # AC-5 (UWT-008) and EWT-R01 (regression of UWT-008) — the calculator page does not overflow
+  # horizontally at 320px in English or Indonesian, because the longer Indonesian tab labels
+  # must not widen the document either.
+  Scenario Outline: no horizontal overflow at 320 px
+    Given I am on the "<locale>" locale calculator at a 320px-wide viewport
     When the calculator page renders
     Then the document does not scroll horizontally
 
-  # Behaviour: AYW-061
-  # EWT-R01 (regression of UWT-008) — the longer Indonesian tab labels must not
-  # widen the document beyond 320px either.
-  Scenario: The calculator page has no horizontal overflow at 320px in the id locale
-    Given I am on the id-locale calculator at a 320px-wide viewport
-    When the calculator page renders
-    Then the document does not scroll horizontally
+    Examples:
+      | locale |
+      | en     |
+      | id     |
 
   # Behaviour: AYW-058
-  # AC-8 (UWT-004) — Savings gross-salary field surfaces the active currency, not a hardcoded label
-  Scenario: The Savings gross-salary field shows the active currency as a separate indicator
+  # AC-8 (UWT-004), UWT-019 and UWT-007 — the Savings gross-salary field names its active currency
+  # as a separate indicator at the field, and says why USD is used for every city.
+  Scenario: savings currency indicator
     Given I am on the "Savings" tab
     When the gross-salary field renders
     Then the gross-salary label does not contain the literal currency code "USD"
     And an active-currency indicator next to the field shows "USD"
-
-  # Behaviour: AYW-058
-  # UWT-019 — the fixed USD indicator is accompanied by a short explanation of why USD
-  # is used for every city, so it is not mistaken for a missing currency selector.
-  Scenario: The Savings currency indicator explains why USD is used for every city
-    Given I am on the "Savings" tab
-    When the gross-salary field renders
-    Then an explanation states salaries are compared in USD across all cities
+    And an explanation states salaries are compared in USD across all cities
+    And the gross salary input displays its USD currency inline at the field
 
   # Behaviour: AYW-059
   # AC-9 (UWT-006) — Minimum-role tab shows empty-state guidance for a BLANK savings target only
@@ -676,13 +672,6 @@ Feature: Salary savings calculator
     Given I am on the calculator with no region selected
     When I select a country whose region differs from the current selection
     Then a visible region-auto-advisory message is shown
-
-  # Behaviour: AYW-060
-  # AC-12 (UWT-015) — A city-only deep link returns to the bare calculator
-  Scenario: A city-only deep link back link omits the auto-derived region and country
-    Given a deep link with query string "city=london"
-    When I read the single-city detail back link
-    Then the back link points to the bare calculator "?tab=cost" with no region or country
 
   # ── Phase 7: spec coverage sweep ──────────────────────────────────────────────
 
@@ -764,14 +753,6 @@ Feature: Salary savings calculator
     Given the cost-of-living calculator is open with the "Cost of living" tab active
     When the user selects the "Savings" tab
     Then only the "Savings" tab description is visible
-
-  # Behaviour: AYW-057
-  # Cluster 2 — touch targets + segmented/sort a11y.
-  Scenario: Interactive controls meet the 44px touch target
-    Given the calculator at 375px
-    When the page is rendered
-    Then every tab trigger is at least 44px tall
-    And every school-type, area, and salary-currency segmented radio is at least 44px tall
 
   # Behaviour: AYW-060
   # USS-003 — Area toggle exposes its active state via ARIA.
@@ -857,12 +838,6 @@ Feature: Salary savings calculator
     Then no "Example — estimated monthly essentials" single-city cost preview is shown
     # The min-role tab now lists every qualifying city, so a one-city example is redundant there.
 
-  # Behaviour: AYW-058
-  Scenario: Savings salary input shows its currency at the field
-    Given the Savings tab is shown
-    When the page is rendered
-    Then the gross salary input displays its USD currency inline at the field
-
   # Behaviour: AYW-060
   # Cluster 6 / SG-002 + SG-003 — design-system fidelity.
   Scenario: Every dropdown shows one custom arrow and not the browser's native arrow
@@ -870,12 +845,6 @@ Feature: Salary savings calculator
     When the page is rendered
     Then every dropdown shows a custom chevron affordance
     And no dropdown shows the browser's native arrow
-
-  # Behaviour: AYW-059
-  Scenario: Baseline-source control keeps the 44px rhythm at mobile
-    Given the Minimum-role tab at 320px and 375px
-    When the page is rendered
-    Then each "Baseline source" option remains at least 44px tall when the control wraps
 
   # Behaviour: AYW-058
   Scenario: Salary-currency toggle bottom-aligns with its sibling input

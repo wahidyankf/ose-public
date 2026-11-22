@@ -25,8 +25,7 @@ import { CalculatorBreadcrumb } from "../../../../../src/features/cost-of-living
 
 afterEach(cleanup);
 
-// Gherkin (binds): "Breadcrumb nav provides Home / Tools / Calculator escape affordance"
-// and "The breadcrumb separates crumbs with chevrons, not a literal '/'".
+// Gherkin (binds): "calculator breadcrumb" (escape links, chevron separators, final crumb).
 describe("CalculatorBreadcrumb", () => {
   it("3a: renders a <nav> with aria-label='Breadcrumb'", () => {
     localeHolder.value = "en";

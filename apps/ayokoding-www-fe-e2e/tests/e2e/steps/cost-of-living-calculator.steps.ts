@@ -7,6 +7,7 @@ const { Given, When, Then } = createBdd();
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: cascading geographic filters
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: country shown beside city
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Clicking a city name opens its single-city cost-of-living detail
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The single-city detail shows the breakdown, scheme badge, and split relocation in local currency and USD
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Clicking a country opens Cost-of-living filtered to that country
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: city wins in deep links
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Healthcare funding scheme is always shown
@@ -43,12 +44,10 @@ const { Given, When, Then } = createBdd();
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: No role can reach the bar
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Low-confidence cells are flagged on the minimum-role tab
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The Savings tab guides the user to enter a salary
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Selecting a city from the City filter opens its detail view
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Income exactly at the low-to-mid threshold uses the mid band
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Zero savings target marks the lowest role as the minimum
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: household preview scaling
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: calculator state is kept in the URL
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Page title includes tool name on load
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Negative salary input is clamped to zero
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Very large salary produces valid savings figures
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings tab shows results after salary is entered
@@ -59,7 +58,7 @@ const { Given, When, Then } = createBdd();
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Tools index page renders in Indonesian on /id/tools
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Cost-of-living table shows local currency and USD for each expense cell
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings table shows local currency and USD for net and savings columns
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: H1 matches the tool's official name in each locale
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: page title and H1 name the tool
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The gross-salary field has a visible border and a label
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Baseline selector is a segmented control
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Tab labels are clean single phrases
@@ -69,20 +68,15 @@ const { Given, When, Then } = createBdd();
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: invalid deep-link values fall back to defaults
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: city selection backfills country and region
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: region selection clears narrower filters
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The city-detail back link preserves the parent geo scope
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The breadcrumb offers an escape to the Tools index and Home
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The breadcrumb separates crumbs with chevrons, not a literal slash
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The final breadcrumb crumb matches the page title in each locale
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: city detail back link
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: calculator breadcrumb
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Canonicalization does not add a browser history entry
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Geo-filter selects meet the minimum touch-target height on mobile
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The calculator page has no horizontal overflow at 320px
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The calculator page has no horizontal overflow at 320px in the id locale
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The Savings gross-salary field shows the active currency as a separate indicator
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The Savings currency indicator explains why USD is used for every city
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: touch targets are at least 44 px
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: no horizontal overflow at 320 px
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: savings currency indicator
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: A blank savings target shows empty-state guidance instead of the role ladder
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The region selector lists exactly the nine intended regions
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Selecting a country that changes the region shows a visible advisory
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: A city-only deep link back link omits the auto-derived region and country
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The area control is rendered as a radiogroup
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The baseline selector shows the savings-target sub-form when savings target is selected
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Changing a filter keeps the page at the same scroll position
@@ -91,7 +85,6 @@ const { Given, When, Then } = createBdd();
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Public schooling open to foreigners keeps the public cost
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Only the active tab description is visible
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Active tab description follows the active tab
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Interactive controls meet the 44px touch target
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Area toggle exposes its pressed state
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Sortable savings column exposes aria-sort
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: A school cost charged at the private rate carries a clear flag in the table and the city detail
@@ -101,9 +94,7 @@ const { Given, When, Then } = createBdd();
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The URL value of a region stays its English key
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Healthcare scheme badges use consistent casing
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Minimum-role tab does not render the single-city essentials preview
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings salary input shows its currency at the field
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Every dropdown shows one custom arrow and not the browser's native arrow
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Baseline-source control keeps the 44px rhythm at mobile
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Salary-currency toggle bottom-aligns with its sibling input
 
 const freshTabs = new WeakMap<Page, Page>();
@@ -536,10 +527,12 @@ Then(
 );
 
 Then("the City filter is pre-selected to that city", async ({ page }) => {
+  // A city opened from its table name is known by its link; one picked in the City filter is read from the URL.
   const clicked = evidenceFor(page).clickedCity;
-  expect(clicked).toBeDefined();
-  await expect(page.locator("#geo-city-select")).toHaveValue(clicked!.id);
-  expect(await selectedLabel(page.locator("#geo-city-select"))).toBe(clicked!.name);
+  const cityId = clicked?.id ?? new URL(page.url()).searchParams.get("city");
+  expect(cityId).toBeTruthy();
+  await expect(page.locator("#geo-city-select")).toHaveValue(cityId!);
+  if (clicked) expect(await selectedLabel(page.locator("#geo-city-select"))).toBe(clicked.name);
 });
 
 Then(
@@ -1812,11 +1805,6 @@ When("I select a city from the City dropdown filter", async ({ page }) => {
   await page.waitForLoadState("networkidle");
 });
 
-Then("the single-city cost-of-living detail for that city is shown", async ({ page }) => {
-  await expect(page.getByTestId("city-detail")).toBeVisible();
-  expect(new URL(page.url()).searchParams.get("city")).toBeTruthy();
-});
-
 Then("the detail is identical to the one shown when clicking the city name in the table", async ({ page }) => {
   const cityId = new URL(page.url()).searchParams.get("city");
   await expect(page.getByTestId("city-detail").locator("[data-testid='expense-housing']")).toBeVisible();
@@ -2136,19 +2124,6 @@ Then("the URL query string has no {string} or {string} param", async ({ page }, 
       return params.has(param1) || params.has(param2);
     })
     .toBe(false);
-});
-
-Given("a user navigates to the cost-of-living calculator", async ({ page }) => {
-  await page.goto("/en/tools/cost-of-living-calculator");
-});
-
-When("the page finishes loading with default filter state", async ({ page }) => {
-  await page.waitForLoadState("networkidle");
-});
-
-Then("the browser tab title includes the name of the tool", async ({ page }) => {
-  const title = await page.title();
-  expect(title.toLowerCase()).toMatch(/cost.of.living|calculator|kalkulator/i);
 });
 
 // ── SG-001 / SG-002 / SG-003: Salary edge cases ──────────────────────────────
@@ -2756,12 +2731,8 @@ When("I read the breadcrumb above the page title", async ({ page }) => {
   await expect(page.getByRole("navigation", { name: /breadcrumb/i })).toBeVisible();
 });
 
-When("I activate the {string} link", async ({ page }, linkText: string) => {
-  await page
-    .getByRole("link", { name: new RegExp(linkText, "i") })
-    .first()
-    .click();
-  await page.waitForLoadState("networkidle");
+When("the breadcrumb renders", async ({ page }) => {
+  await expect(page.getByRole("navigation", { name: /breadcrumb/i })).toBeVisible();
 });
 
 Then("the Adults control shows {string}", async ({ page }, value: string) => {
@@ -2827,33 +2798,6 @@ Then("the URL query string includes {string}", async ({ page }, paramStr: string
   }
 });
 
-Then("the URL query string includes {string} and {string}", async ({ page }, paramStr1: string, paramStr2: string) => {
-  const [key1, val1] = paramStr1.split("=");
-  const [key2, val2] = paramStr2.split("=");
-  // Wait for both params to appear in the URL
-  await page.waitForFunction(
-    ([k1, v1, k2, v2]: [string, string | undefined, string, string | undefined]) => {
-      const url = new URL(window.location.href);
-      const p1 = v1 !== undefined ? url.searchParams.get(k1) === v1 : url.searchParams.has(k1);
-      const p2 = v2 !== undefined ? url.searchParams.get(k2) === v2 : url.searchParams.has(k2);
-      return p1 && p2;
-    },
-    [key1, val1, key2!, val2] as [string, string | undefined, string, string | undefined],
-    { timeout: 8000 },
-  );
-  const url = new URL(page.url());
-  if (val1 !== undefined) {
-    expect(url.searchParams.get(key1!)).toBe(val1);
-  } else {
-    expect(url.searchParams.has(key1!)).toBe(true);
-  }
-  if (val2 !== undefined) {
-    expect(url.searchParams.get(key2!)).toBe(val2);
-  } else {
-    expect(url.searchParams.has(key2!)).toBe(true);
-  }
-});
-
 Then("the URL query string does not include {string} or {string}", async ({ page }, param1: string, param2: string) => {
   await page.waitForLoadState("networkidle");
   await page.waitForTimeout(500);
@@ -2862,14 +2806,6 @@ Then("the URL query string does not include {string} or {string}", async ({ page
   const key2 = param2.split("=")[0]!;
   expect(url.searchParams.has(key1)).toBe(false);
   expect(url.searchParams.has(key2)).toBe(false);
-});
-
-Then("the URL query string does not include {string}", async ({ page }, paramStr: string) => {
-  await page.waitForLoadState("networkidle");
-  await page.waitForTimeout(500);
-  const url = new URL(page.url());
-  const key = paramStr.split("=")[0]!;
-  expect(url.searchParams.has(key)).toBe(false);
 });
 
 Then("the single-city detail for Singapore is shown", async ({ page }) => {
@@ -2940,33 +2876,53 @@ Then("pressing the browser Back button does not return to the {string} URL", asy
 
 // ── AC-4 / AC-5: Touch targets and 320px horizontal overflow ──────────────────
 
-Given("I am on the calculator at a 375px-wide viewport", async ({ page }) => {
-  await page.setViewportSize({ width: 375, height: 812 });
-  await page.goto("/en/tools/cost-of-living-calculator");
+Given("I am on the {string} tab at a {int}px-wide viewport", async ({ page }, tabName: string, width: number) => {
+  const tabParam: Record<string, string> = {
+    "Cost of living": "cost",
+    Savings: "savings",
+    "Minimum role": "min-role",
+  };
+  await page.setViewportSize({ width, height: 812 });
+  await page.goto(`/en/tools/cost-of-living-calculator?tab=${tabParam[tabName] ?? "cost"}`);
   await page.waitForLoadState("networkidle");
+  await expect(page.getByRole("tab", { name: tabName })).toHaveAttribute("data-state", "active");
 });
 
-When("the geo-filter selects render", async ({ page }) => {
-  await expect(page.locator("#geo-region-select")).toBeVisible();
+// The controls the 44px touch-target rule covers, located as the feature names them.
+function touchTargetsOf(page: Page, control: string): Locator {
+  switch (control) {
+    case "geo-filter select":
+      return page.locator("#geo-region-select, #geo-country-select, #geo-city-select");
+    case "tab trigger":
+      return page.getByRole("tab");
+    case "segmented radio":
+      return page.getByRole("radio");
+    case "baseline source option":
+      return page.getByRole("radiogroup", { name: /how to set your target|baseline source/i }).getByRole("radio");
+    default:
+      throw new Error(`no touch-target locator for "${control}"`);
+  }
+}
+
+When("the {string} control is rendered", async ({ page }, control: string) => {
+  await expect(touchTargetsOf(page, control).first()).toBeVisible();
 });
 
-Then("each geo-filter select is at least 44 pixels tall", async ({ page }) => {
-  for (const id of ["#geo-region-select", "#geo-country-select", "#geo-city-select"]) {
-    const box = await page.locator(id).boundingBox();
-    expect(box, `bounding box for ${id}`).not.toBeNull();
-    expect(box!.height, `rendered height for ${id}`).toBeGreaterThanOrEqual(44);
+Then("each {string} is at least 44 pixels tall", async ({ page }, control: string) => {
+  const targets = await touchTargetsOf(page, control).all();
+  expect(targets.length, `count of ${control}`).toBeGreaterThan(0);
+  if (control === "baseline source option") expect(targets.length).toBe(3);
+  for (const target of targets) {
+    if (!(await target.isVisible())) continue;
+    const box = await target.boundingBox();
+    expect(box, `bounding box of a ${control}`).not.toBeNull();
+    expect(box!.height, `rendered height of a ${control}`).toBeGreaterThanOrEqual(44);
   }
 });
 
-Given("I am on the calculator at a 320px-wide viewport", async ({ page }) => {
+Given("I am on the {string} locale calculator at a 320px-wide viewport", async ({ page }, locale: string) => {
   await page.setViewportSize({ width: 320, height: 812 });
-  await page.goto("/en/tools/cost-of-living-calculator");
-  await page.waitForLoadState("networkidle");
-});
-
-Given("I am on the id-locale calculator at a 320px-wide viewport", async ({ page }) => {
-  await page.setViewportSize({ width: 320, height: 812 });
-  await page.goto("/id/tools/cost-of-living-calculator");
+  await page.goto(`/${locale}/tools/cost-of-living-calculator`);
   await page.waitForLoadState("networkidle");
 });
 
@@ -2991,10 +2947,6 @@ Then(/^no literal "\/" separator is shown between crumbs$/, async ({ page }) => 
   const breadcrumb = page.getByRole("navigation", { name: /breadcrumb/i });
   const separatorListItems = breadcrumb.locator("li", { hasText: /^\s*\/\s*$/ });
   expect(await separatorListItems.count()).toBe(0);
-});
-
-When("the breadcrumb renders", async ({ page }) => {
-  await expect(page.getByRole("navigation", { name: /breadcrumb/i })).toBeVisible();
 });
 
 Then("the current-page crumb text reads {string}", async ({ page }, expected: string) => {
@@ -3172,24 +3124,24 @@ Then("a visible region-auto-advisory message is shown", async ({ page }) => {
   await expect(advisory).toBeVisible();
 });
 
-// ── AC-12: City-only deep link back link omits auto-derived region/country ────
+// ── City-detail back link keeps the parent geo scope, or returns to the bare calculator ──
 
 When("I read the single-city detail back link", async ({ page }) => {
   // Ensure city detail is rendered
   await expect(page.locator("[data-testid='city-detail']")).toBeVisible({ timeout: 8000 });
 });
 
-Then(
-  "the back link points to the bare calculator {string} with no region or country",
-  async ({ page }, expectedHref: string) => {
-    const backLink = page.locator("[data-testid='city-detail'] [data-back-link='true']");
-    await expect(backLink).toBeVisible();
-    const href = await backLink.getAttribute("href");
-    expect(href).toBe(expectedHref);
-    expect(href).not.toMatch(/region=/);
-    expect(href).not.toMatch(/country=/);
-  },
-);
+Then("the back link points to {string}", async ({ page }, expectedHref: string) => {
+  const backLink = page.locator("[data-testid='city-detail'] [data-back-link='true']");
+  await expect(backLink).toBeVisible();
+  expect(await backLink.getAttribute("href")).toBe(expectedHref);
+});
+
+Then("the back link does not include {string}", async ({ page }, param: string) => {
+  const backLink = page.locator("[data-testid='city-detail'] [data-back-link='true']");
+  const href = (await backLink.getAttribute("href")) ?? "";
+  expect(new URLSearchParams(href.replace(/^\?/, "")).has(param)).toBe(false);
+});
 
 // ── SG-U: Country-narrows-city (no prior region selected) ───────────────────
 
@@ -3353,10 +3305,6 @@ Then("the gross salary input receives focus", async ({ page }) => {
   await expect(page.locator("#gross-salary-input")).toBeFocused();
 });
 
-Given("the Savings tab is shown", async ({ page }) => {
-  await page.goto("/en/tools/cost-of-living-calculator?tab=savings");
-});
-
 Then("the gross salary input displays its USD currency inline at the field", async ({ page }) => {
   const input = page.locator("#gross-salary-input");
   const indicator = page.getByTestId("salary-currency-indicator");
@@ -3400,25 +3348,6 @@ Then('only the "Savings" tab description is visible', async ({ page }) => {
   await expect(page.getByTestId("tab-desc-min-role")).toBeHidden();
 });
 
-Given("the calculator at 375px", async ({ page }) => {
-  await page.setViewportSize({ width: 375, height: 812 });
-  await page.goto("/en/tools/cost-of-living-calculator?tab=min-role&baseline=my_salary&mysalarycity=singapore");
-});
-
-Then("every tab trigger is at least 44px tall", async ({ page }) => {
-  for (const tab of await page.getByRole("tab").all()) {
-    expect((await tab.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(44);
-  }
-});
-
-Then("every school-type, area, and salary-currency segmented radio is at least 44px tall", async ({ page }) => {
-  const radios = page.getByRole("radio");
-  expect(await radios.count()).toBeGreaterThan(0);
-  for (const radio of await radios.all()) {
-    if (await radio.isVisible()) expect((await radio.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(44);
-  }
-});
-
 Given("the calculator at 1280px", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto("/en/tools/cost-of-living-calculator");
@@ -3436,22 +3365,6 @@ Then("every dropdown shows a custom chevron affordance", async ({ page }) => {
 Then("no dropdown shows the browser's native arrow", async ({ page }) => {
   for (const select of await page.locator("select").all()) {
     expect(await select.evaluate((element) => getComputedStyle(element).appearance)).toBe("none");
-  }
-});
-
-Given("the Minimum-role tab at 320px and 375px", async ({ page }) => {
-  await page.setViewportSize({ width: 320, height: 812 });
-  await page.goto("/en/tools/cost-of-living-calculator?tab=min-role");
-  await expect(page.getByRole("tab", { name: "Minimum role" })).toHaveAttribute("data-state", "active");
-});
-
-Then('each "Baseline source" option remains at least 44px tall when the control wraps', async ({ page }) => {
-  const group = page.getByRole("radiogroup", { name: /how to set your target|baseline source/i });
-  await expect(group).toBeVisible();
-  const options = group.getByRole("radio");
-  await expect(options).toHaveCount(3);
-  for (const option of await options.all()) {
-    expect((await option.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(44);
   }
 });
 

@@ -389,7 +389,7 @@ describe("Controls", () => {
     expect(schoolingPrivate).toBeGreaterThan(schoolingPublic);
   });
 
-  // Gherkin (binds): "Rural area lowers housing versus city center"
+  // Gherkin (binds): "area changes the housing estimate"
   it("switching to rural reduces modeled housing and city total", async () => {
     const user = userEvent.setup();
     render(<ControlsWithState />);

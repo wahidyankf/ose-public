@@ -32,6 +32,20 @@ let ``loadEnvTierFromWith uses injected environment and filesystem ports`` () =
     Assert.Equal<string list>([ "root/.env.test" ], reads)
 
 [<Fact>]
+let ``resolveTier always names a usable tier`` () =
+    // The tier comes from the real process environment, which this test
+    // never touches: whatever APP_ENV holds (or its absence), the loader
+    // contract resolves a non-empty tier, defaulting to "local".
+    Assert.False(System.String.IsNullOrEmpty(resolveTier ()))
+
+[<Fact>]
+let ``loadEnvTierFrom does nothing when no tier file exists`` () =
+    // Rule 4 through the real entry point: a search with no tier file on
+    // disk is not an error. The directory never exists, so the check
+    // performs no write and changes no state.
+    loadEnvTierFrom [ "fsharp-env-loader-no-such-dir" ]
+
+[<Fact>]
 let ``loadEnvTierFromWith preserves an existing environment value`` () =
     let mutable environment = Map.ofList [ "APP_ENV", "test"; "VALUE", "from-process" ]
 

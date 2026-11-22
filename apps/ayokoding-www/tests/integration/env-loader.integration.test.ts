@@ -56,7 +56,8 @@ function startDevWrapperPort(portValue: string | undefined): string {
   const result = spawnSync(
     process.execPath,
     [DEV_WRAPPER, "--env", "AYOKODING_WWW_PORT", "--default", "3101", "--server", fixture],
-    { cwd: dir, env: childEnv, encoding: "utf8" },
+    // Next's global typing requires NODE_ENV on ProcessEnv. The child is pinned to "test", the value the runner sets.
+    { cwd: dir, env: { ...childEnv, NODE_ENV: "test" }, encoding: "utf8" },
   );
   expect(result.status, result.stderr).toBe(0);
   return result.stdout;

@@ -43,13 +43,13 @@ import { t } from "../../../../ayokoding-www/src/features/i18n/core/translations
 
 const { Given, When, Then } = createBdd();
 
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Models with no consensus tier are listed in their own closed disclosure
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: no-consensus models
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Every roster model appears in exactly one tier section
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The substitute finder offers three harnesses with Command Code Pro chosen first
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Choosing a frontier model lists its Command Code Pro substitutes with a price comparison
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A frontier model above every model of the chosen harness shows the nearest options
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Changing the finder's harness lists that harness's models
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The chosen substitute target, substitute harness, and score basis are kept in the URL
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: AI benchmark choices are kept in the URL
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The last-updated date is shown before the substitute finder
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The page states that only independent results are scored
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Each consensus tier section states the consensus rule
@@ -57,7 +57,7 @@ const { Given, When, Then } = createBdd();
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Bar length is proportional to the agreeing count
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The tier is carried in text, not by colour alone
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A limited-access model is labelled
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Models with insufficient data are listed in a collapsed section
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: insufficient-data models
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The data table is present without any interaction
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The table lists every model's scores, tier, and prices
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Every benchmark score names and links its operator
@@ -66,16 +66,15 @@ const { Given, When, Then } = createBdd();
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The methodology states the consensus rule
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The page lists every operator with its checked date and terms
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The page with no query parameters shows the whole roster
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A harness parameter narrows the tier map and the table
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Every listed harness is a known harness parameter value
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A tier parameter narrows the results to that tier
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: harness filter
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: tier filter
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Harness and tier parameters intersect
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A duplicated query parameter resolves to its first value
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Resetting a control removes its parameter from the URL
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: resetting a control removes it from the URL
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: A filter combination matching no model renders an explicit empty state
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The score basis defaults to the consensus tiers
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Models without a score on the chosen benchmark are listed as unranked
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: An unrecognized URL parameter value falls back to the default
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: unrecognized URL values fall back to the default
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The methodology explains the per-benchmark view
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Per-benchmark tier sections name their benchmark anchor and floor
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The methodology lists every benchmark's tier anchors
@@ -84,7 +83,7 @@ const { Given, When, Then } = createBdd();
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Every interactive target meets the minimum target size
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: Tier map label text never exceeds the page's body text size
 // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The substitute finder is visible above the fold on a phone
-// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: The AI benchmark page renders fully in both locales
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature: AI benchmark renders fully in both locales
 
 // AI benchmark public-boundary step bindings. Expected values are computed from the same dataset
 // and core functions the page uses; everything asserted is read from the live, rendered page.
@@ -401,6 +400,12 @@ Then("those models are listed inside the closed no-consensus disclosure", async 
   expect(sorted(await idsIn(page, '[data-testid="ai-bench-no-consensus"]', "ai-bench-no-consensus-item"))).toEqual(
     sorted(expected),
   );
+});
+
+Then("each of those models has no consensus tier", async ({}) => {
+  const split = scored.filter((s) => s.tier === "no-consensus");
+  expect(split.length).toBeGreaterThan(0);
+  for (const s of split) expect(assignConsensusTier(s.model, full).tier).toBe("no-consensus");
 });
 
 Then("those models appear in no tier section", async ({ page }) => {
@@ -754,6 +759,14 @@ Then("each listed model shows whatever independent scores it has", async ({ page
   }
 });
 
+Then('each of those models has consensus tier "insufficient" and no consensus count', async ({}) => {
+  for (const s of scored.filter((x) => x.tier === "insufficient")) {
+    const consensus = assignConsensusTier(s.model, full);
+    expect(consensus.tier).toBe("insufficient");
+    expect(consensus.agreeing).toBe(0);
+  }
+});
+
 // ── Data table ────────────────────────────────────────────────────────────────
 
 Then("a data table is present in the document", async ({ page }) => {
@@ -946,11 +959,6 @@ Given("the URL carries no query parameters", async ({ page }) => {
 
 Then("every roster model is shown in the data table", async ({ page }) => {
   expect(sorted(await tableIds(page))).toEqual(sorted(full.models.map((m) => m.id)));
-});
-
-Given("the URL carries a harness parameter naming a known harness", async ({ page }) => {
-  harness = "codex-cli";
-  await load(page, `?harness=${harness}`);
 });
 
 Then("only models that harness exposes are shown in the tier map", async ({ page }) => {

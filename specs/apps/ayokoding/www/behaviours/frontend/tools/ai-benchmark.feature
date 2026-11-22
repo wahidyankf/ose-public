@@ -31,38 +31,12 @@ Feature: AI model benchmark tool
       | ultra    | planning      | unranked | unranked     | ultra     | 1        | 2          |
 
   # Behaviour: AYW-053
-  # Exemption(integration): the minimum-coverage rule reads only in-memory benchmark data, so no database, file system, process, or network boundary exists here; alternative-proof: ayokoding-www:test:unit / A model tiered on fewer than two benchmarks has insufficient data
-  @integration-exempt
-  # Exemption(e2e): the served build has no input seam that accepts a fixture model, so the end-to-end level cannot supply this input; alternative-proof: ayokoding-www:test:unit / A model tiered on fewer than two benchmarks has insufficient data
-  @e2e-exempt
-  Scenario: A model tiered on fewer than two benchmarks has insufficient data
-    Given a fixture model holding a tier on only one benchmark
-    When its consensus tier is assigned
-    Then that model's consensus tier is "insufficient"
-    And that model has no consensus count
-
-  # Behaviour: AYW-053
-  # Exemption(integration): consensus assignment reads only in-memory benchmark data, so no database, file system, process, or network boundary exists here; alternative-proof: ayokoding-www:test:unit / A model whose benchmarks split below half has no consensus tier
-  @integration-exempt
-  # Exemption(e2e): the served build has no input seam that accepts a fixture model, so the end-to-end level cannot supply this input; alternative-proof: ayokoding-www:test:unit / A model whose benchmarks split below half has no consensus tier
-  @e2e-exempt
-  Scenario Outline: A model whose benchmarks split below half has no consensus tier
-    Given a fixture model holding "<deepSwe>", "<terminalBench>", "<sweAtlas>", and "<frontierCode>" tiers on the four benchmarks
-    When its consensus tier is assigned
-    Then that model has no consensus tier
-    And that model is not in the insufficient group
-
-    Examples:
-      | deepSwe | terminalBench | sweAtlas  | frontierCode |
-      | ultra   | planning      | execution | unranked     |
-      | ultra   | planning      | execution | fast         |
-
-  # Behaviour: AYW-053
-  Scenario: Models with no consensus tier are listed in their own closed disclosure
+  Scenario: no-consensus models
     Given the roster holds models whose benchmarks split below half
     And the AI benchmark page is open in the Consensus tiers view
     When the page renders
     Then those models are listed inside the closed no-consensus disclosure
+    And each of those models has no consensus tier
     And those models appear in no tier section
     And the insufficient-data disclosure does not list them
 
@@ -158,7 +132,7 @@ Feature: AI model benchmark tool
 
   # Behaviour: AYW-054
   # Behaviour: AYW-055
-  Scenario: The chosen substitute target, substitute harness, and score basis are kept in the URL
+  Scenario: AI benchmark choices are kept in the URL
     Given the AI benchmark page is open
     When the reader chooses "GPT-5.6 Terra" in the substitute finder
     Then the URL carries that model as the substitute target
@@ -172,7 +146,7 @@ Feature: AI model benchmark tool
 
   # Behaviour: AYW-054
   # Behaviour: AYW-055
-  Scenario Outline: An unrecognized URL parameter value falls back to the default
+  Scenario Outline: unrecognized URL values fall back to the default
     Given the URL carries the "<key>" parameter with an unknown value
     When the page renders
     Then the "<control>" falls back to its default
@@ -188,7 +162,7 @@ Feature: AI model benchmark tool
 
   # Behaviour: AYW-053
   # Behaviour: AYW-056
-  Scenario Outline: The AI benchmark page renders fully in both locales
+  Scenario Outline: AI benchmark renders fully in both locales
     Given the AI benchmark page is loaded in the "<locale>" locale at a 390 px viewport
     When the AI benchmark page renders
     Then the page shows a level-one heading in "<language>"
@@ -255,12 +229,13 @@ Feature: AI model benchmark tool
     Then that model's row carries a limited-access label in text
 
   # Behaviour: AYW-053
-  Scenario: Models with insufficient data are listed in a collapsed section
+  Scenario: insufficient-data models
     Given the roster holds models scored on fewer than two benchmarks
     And the AI benchmark page is open
     When the page renders
     Then those models are listed inside a closed disclosure
     And each listed model shows whatever independent scores it has
+    And each of those models has consensus tier "insufficient" and no consensus count
 
   # ── Data table ────────────────────────────────────────────────────────────────
 
@@ -331,18 +306,13 @@ Feature: AI model benchmark tool
     Then every roster model is shown in the data table
 
   # Behaviour: AYW-055
-  Scenario: A harness parameter narrows the tier map and the table
-    Given the URL carries a harness parameter naming a known harness
-    When the page renders
-    Then only models that harness exposes are shown in the tier map
-    And only models that harness exposes are shown in the data table
-
-  # Behaviour: AYW-055
-  Scenario Outline: Every listed harness is a known harness parameter value
+  Scenario Outline: harness filter
     Given the URL carries the harness parameter "<harness>"
     When the page renders
     Then the harness filter shows "<name>"
     And the result count equals the number of models that harness exposes
+    And only models that harness exposes are shown in the tier map
+    And only models that harness exposes are shown in the data table
 
     Examples:
       | harness          | name             |
@@ -355,7 +325,7 @@ Feature: AI model benchmark tool
       | opencode-zen     | OpenCode Zen     |
 
   # Behaviour: AYW-055
-  Scenario Outline: A tier parameter narrows the results to that tier
+  Scenario Outline: tier filter
     Given the URL carries "<query>"
     When the page renders
     Then only models in that tier are shown in the "<view>"
@@ -379,7 +349,7 @@ Feature: AI model benchmark tool
     Then the filter uses the first of the two values
 
   # Behaviour: AYW-055
-  Scenario Outline: Resetting a control removes its parameter from the URL
+  Scenario Outline: resetting a control removes it from the URL
     Given the URL carries "<query>"
     When the reader resets the "<control>" to its default
     Then the URL no longer carries the "<parameter>" parameter

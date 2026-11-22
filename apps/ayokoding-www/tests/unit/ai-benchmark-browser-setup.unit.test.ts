@@ -60,7 +60,7 @@ async function step(name: string, page: FakePage, ...args: string[]): Promise<vo
   await callback({ page }, ...args);
 }
 const background = "the AI benchmark dataset is loaded";
-const unknown = "the URL carries a harness parameter with an unknown value";
+const unknown = "the URL carries the {string} parameter with an unknown value";
 const noError = "no error is surfaced to the reader";
 
 describe("AI benchmark browser initial setup", () => {
@@ -74,8 +74,8 @@ describe("AI benchmark browser initial setup", () => {
   it("subscribes before one direct unknown URL load and preserves a clean error check", async () => {
     await step(background, page);
     expect(page.events).toEqual(["listen"]);
-    await step(unknown, page);
-    expect(page.events).toEqual(["listen", "goto:/en/tools/ai-benchmark?harness=not-a-harness"]);
+    await step(unknown, page, "harness");
+    expect(page.events).toEqual(["listen", "goto:/en/tools/ai-benchmark?harness=not-a-value"]);
     await step(noError, page);
   });
   it("still loads the ordinary page, chosen locale and viewport explicitly", async () => {
@@ -84,9 +84,8 @@ describe("AI benchmark browser initial setup", () => {
     expect(page.events).toEqual(["listen", "goto:/en/tools/ai-benchmark"]);
     page = new FakePage();
     await step(background, page);
-    await step("the locale is {string}", page, "id");
-    await step("the AI benchmark page renders", page);
-    expect(page.events).toEqual(["listen", "goto:/id/tools/ai-benchmark"]);
+    await step("the AI benchmark page is loaded in the {string} locale at a 390 px viewport", page, "id");
+    expect(page.events).toEqual(["listen", "viewport:390x664", "goto:/id/tools/ai-benchmark"]);
     page = new FakePage();
     await step(background, page);
     await step("the AI benchmark page is loaded at a {string} px viewport in the {string} locale", page, "390", "id");
@@ -95,12 +94,12 @@ describe("AI benchmark browser initial setup", () => {
   it("retains an error emitted during the initial load", async () => {
     await step(background, page);
     page.errorOnGoto = "initial sentinel";
-    await step(unknown, page);
+    await step(unknown, page, "harness");
     await expect(step(noError, page)).rejects.toThrow("initial sentinel");
   });
   it("retains an error across a subsequent navigation", async () => {
     await step(background, page);
-    await step(unknown, page);
+    await step(unknown, page, "harness");
     page.emitError("later sentinel");
     await step("the AI benchmark page is open", page);
     await expect(step(noError, page)).rejects.toThrow("later sentinel");

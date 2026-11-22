@@ -1,10 +1,10 @@
 """E2E bindings for the metadata envelope feature: the built artifact, fed real standard input."""
 
+import dataclasses
 import json
 import re
 import sqlite3
 from contextlib import closing
-import dataclasses
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any

@@ -8,11 +8,27 @@ import { env } from "../../../env";
 
 const DEFAULT_CONTENT_DIR = env.AYOKODING_WEB_CONTENT_DIR ?? path.resolve(process.cwd(), "content");
 
+/**
+ * The file-system port this repository reads through. The default is the real `node:fs/promises`
+ * adapter; unit tests pass an in-memory double, and the integration suite reads real content files.
+ */
+export interface ContentFileSystem {
+  readdir(dir: string): Promise<{ name: string; isDirectory(): boolean }[]>;
+  readFile(filePath: string): Promise<string>;
+}
+
+export const nodeContentFileSystem: ContentFileSystem = {
+  readdir: (dir) => fs.readdir(dir, { withFileTypes: true }),
+  readFile: (filePath) => fs.readFile(filePath, "utf-8"),
+};
+
 export class FileSystemContentRepository implements ContentRepository {
   private readonly contentDir: string;
+  private readonly io: ContentFileSystem;
 
-  constructor(contentDir?: string) {
+  constructor(contentDir?: string, io: ContentFileSystem = nodeContentFileSystem) {
     this.contentDir = contentDir ?? DEFAULT_CONTENT_DIR;
+    this.io = io;
   }
 
   async readAllContent(): Promise<ContentMeta[]> {
@@ -21,7 +37,7 @@ export class FileSystemContentRepository implements ContentRepository {
 
     for (const filePath of files) {
       try {
-        const raw = await fs.readFile(filePath, "utf-8");
+        const raw = await this.io.readFile(filePath);
         const { data } = matter(raw);
         const parsed = frontmatterSchema.safeParse(data);
 
@@ -66,7 +82,7 @@ export class FileSystemContentRepository implements ContentRepository {
   }
 
   async readFileContent(filePath: string): Promise<{ content: string; frontmatter: Record<string, unknown> }> {
-    const raw = await fs.readFile(filePath, "utf-8");
+    const raw = await this.io.readFile(filePath);
     const { content, data } = matter(raw);
     return { content, frontmatter: data as Record<string, unknown> };
   }
@@ -96,9 +112,9 @@ export class FileSystemContentRepository implements ContentRepository {
    * absent path) would 500 the entire site rather than degrading to an empty content index.
    */
   private async globMarkdownFiles(dir: string): Promise<string[]> {
-    let entries: import("node:fs").Dirent[];
+    let entries: { name: string; isDirectory(): boolean }[];
     try {
-      entries = await fs.readdir(dir, { withFileTypes: true });
+      entries = await this.io.readdir(dir);
     } catch {
       return [];
     }

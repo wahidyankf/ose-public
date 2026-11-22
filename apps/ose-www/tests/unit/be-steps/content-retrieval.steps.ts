@@ -10,7 +10,9 @@ import { appRouter } from "@/features/app-shell/shell/root-router";
 import AboutPage from "@/app/about/page";
 import UpdatesPage from "@/app/updates/page";
 import UpdateDetailPage from "@/app/updates/[slug]/page";
+import { InMemoryContentRepository } from "@/features/content/core/repository-memory";
 import { testContentService, testRepositoryWithDraft } from "./helpers/test-service";
+import { memoryContentFs } from "../helpers/memory-content-fs";
 
 // The pages read content through the server caller. The harness points that caller at whichever
 // content service the current scenario set up, so the page renders the same data the scenario checks.
@@ -42,10 +44,27 @@ vi.mock("@/features/app-shell/shell/header", () => ({ Header: () => null }));
 vi.mock("@/features/app-shell/shell/footer", () => ({ Footer: () => null }));
 
 const feature = await loadFeature(
-  path.resolve(process.cwd(), "../../specs/apps/ose/www/behaviours/backend/content/content-retrieval.feature"),
+  path.resolve(__dirname, "../../../../../specs/apps/ose/www/behaviours/backend/content/content-retrieval.feature"),
 );
 
 const createCaller = createCallerFactory(appRouter);
+
+// The file-system scenarios read through an in-memory double; the integration run reads the real disk.
+function contentFixture(directory: string): Record<string, string> {
+  return {
+    [`${directory}/about.md`]: `---\ntitle: "About"\n---\n\n# About\n`,
+    [`${directory}/updates/2026-02-04-phase-4.md`]: `---\ntitle: "Phase 4"\ndate: 2026-02-04T00:00:00Z\n---\n\nPhase four.\n`,
+  };
+}
+
+const SEARCH_INDEX = [
+  {
+    id: "about",
+    title: "Enterprise Compliance Fixture",
+    content: "Synthetic enterprise and compliance evidence for isolated search tests.",
+    slug: "about",
+  },
+];
 
 describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
   AfterEachScenario(() => {
@@ -216,7 +235,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     Then("the update titles are listed newest first", async () => {
       const updates = await testContentService.listUpdates();
       for (let i = 0; i < updates.length - 1; i++) {
-        expect(updates[i]!.date.getTime()).toBeGreaterThanOrEqual(updates[i + 1]!.date.getTime());
+        expect(updates[i]!.date!.getTime()).toBeGreaterThanOrEqual(updates[i + 1]!.date!.getTime());
       }
       const positions = updates.map((update) => html.indexOf(update.title));
       expect(positions.every((position) => position >= 0)).toBe(true);
@@ -271,19 +290,20 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
 
   // @scenario specs/apps/ose/www/behaviours/backend/content/content-retrieval.feature: Content is read from the directory named by OSE_WEB_CONTENT_DIR
   Scenario("Content is read from the directory named by OSE_WEB_CONTENT_DIR", ({ Given, When, Then }) => {
-    const contentDirectory = path.resolve(process.cwd(), "tests/e2e-fixtures/content");
+    const contentDirectory = "/fixture/content";
+    const fileSystem = memoryContentFs({ files: contentFixture(contentDirectory) });
     let results: ContentMeta[] = [];
     let service: ContentService;
 
-    Given("the OSE_WEB_CONTENT_DIR environment variable names the content directory", async () => {
+    Given("the OSE_WEB_CONTENT_DIR environment variable names the content directory", () => {
       vi.stubEnv("OSE_WEB_CONTENT_DIR", contentDirectory);
-      vi.resetModules();
-      const { FileSystemContentRepository: FreshRepository } = await import("@/features/content/shell/repository-fs");
-      const { ContentService: FreshService } = await import("@/features/content/shell/service");
-      service = new FreshService(new FreshRepository());
     });
 
     When("the content service lists all updates", async () => {
+      vi.resetModules();
+      const { FileSystemContentRepository: FreshRepository } = await import("@/features/content/shell/repository-fs");
+      const { ContentService: FreshService } = await import("@/features/content/shell/service");
+      service = new FreshService(new FreshRepository(undefined, false, fileSystem));
       results = await service.listUpdates();
     });
 
@@ -292,12 +312,14 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
       for (const entry of results) {
         expect(entry.filePath.startsWith(contentDirectory)).toBe(true);
       }
+      expect(fileSystem.reads.every((filePath) => filePath.startsWith(contentDirectory))).toBe(true);
     });
   });
 
   // @scenario specs/apps/ose/www/behaviours/backend/content/content-retrieval.feature: Search reads the index at the path named by OSE_WEB_SEARCH_DATA_PATH
   Scenario("Search reads the index at the path named by OSE_WEB_SEARCH_DATA_PATH", ({ Given, When, Then }) => {
-    const indexPath = path.resolve(process.cwd(), "tests/e2e-fixtures/search-data.json");
+    const indexPath = "/fixture/search-data.json";
+    const readPaths: string[] = [];
     let results: { title: string; slug: string }[] = [];
 
     Given("the OSE_WEB_SEARCH_DATA_PATH environment variable names a search index file", () => {
@@ -306,11 +328,19 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
 
     When('a search query "synthetic" is executed', async () => {
       vi.resetModules();
-      const { createTRPCContext } = await import("@/lib/trpc/init");
-      results = await createTRPCContext().contentService.search("synthetic");
+      const { env: freshEnv } = await import("@/env");
+      const { ContentService: FreshService } = await import("@/features/content/shell/service");
+      const service = new FreshService(new InMemoryContentRepository([]), freshEnv.OSE_WEB_SEARCH_DATA_PATH, {
+        readSearchData: async (searchDataPath) => {
+          readPaths.push(searchDataPath);
+          return JSON.stringify(SEARCH_INDEX);
+        },
+      });
+      results = await service.search("synthetic");
     });
 
     Then("the results contain the page indexed in that file", () => {
+      expect(readPaths).toEqual([indexPath]);
       expect(results).toContainEqual(
         expect.objectContaining({ slug: "about", title: "Enterprise Compliance Fixture" }),
       );

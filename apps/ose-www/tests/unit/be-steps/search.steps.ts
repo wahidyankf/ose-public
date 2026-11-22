@@ -8,7 +8,7 @@ import { appRouter } from "@/features/app-shell/shell/root-router";
 import { testContentService, testContentServiceWithPhase } from "./helpers/test-service";
 
 const feature = await loadFeature(
-  path.resolve(process.cwd(), "../../specs/apps/ose/www/behaviours/backend/search/search.feature"),
+  path.resolve(__dirname, "../../../../../specs/apps/ose/www/behaviours/backend/search/search.feature"),
 );
 
 const createCaller = createCallerFactory(appRouter);

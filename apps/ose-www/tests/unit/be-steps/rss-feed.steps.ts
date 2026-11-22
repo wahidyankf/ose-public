@@ -7,7 +7,7 @@ import { ContentService } from "@/features/content/shell/service";
 import { buildFeedResponse } from "@/features/rss-feed/core/feed";
 
 const feature = await loadFeature(
-  path.resolve(process.cwd(), "../../specs/apps/ose/www/behaviours/backend/rss-feed/rss-feed.feature"),
+  path.resolve(__dirname, "../../../../../specs/apps/ose/www/behaviours/backend/rss-feed/rss-feed.feature"),
 );
 
 const SITE_URL = "https://www.oseplatform.com";

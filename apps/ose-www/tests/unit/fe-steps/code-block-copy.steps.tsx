@@ -7,7 +7,7 @@ import { expect, vi } from "vitest";
 import { MarkdownRenderer } from "@/features/content/shell/markdown-renderer";
 
 const feature = await loadFeature(
-  path.resolve(process.cwd(), "../../specs/apps/ose/www/behaviours/frontend/content/code-block-copy.feature"),
+  path.resolve(__dirname, "../../../../../specs/apps/ose/www/behaviours/frontend/content/code-block-copy.feature"),
 );
 
 const luaFigureHtml = `<figure data-rehype-pretty-code-figure><pre data-language="lua"><code><span>print("hi")</span></code></pre></figure>`;
@@ -56,7 +56,7 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
   Scenario(
     "Clicking the copy button copies the code to the clipboard and confirms it",
     ({ Given, When, Then, And }) => {
-      const writeText = vi.fn().mockResolvedValue(undefined);
+      const writeText = vi.fn<() => Promise<void>>().mockResolvedValue(undefined);
 
       Given("a reader opens the about page with a code sample", () => {
         Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true });

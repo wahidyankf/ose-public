@@ -34,15 +34,15 @@ vi.mock("@/features/app-shell/shell/mobile-nav", () => ({
 
 // Mock search context
 vi.mock("@/features/search/shell/use-search", () => ({
-  useSearchOpen: () => ({ open: false, setOpen: vi.fn() }),
-  SearchContext: React.createContext({ open: false, setOpen: vi.fn() }),
+  useSearchOpen: () => ({ open: false, setOpen: vi.fn<(open: boolean) => void>() }),
+  SearchContext: React.createContext({ open: false, setOpen: vi.fn<(open: boolean) => void>() }),
 }));
 
 import { Header } from "@/features/app-shell/shell/header";
 import { Hero } from "@/features/landing/shell/hero";
 
 const feature = await loadFeature(
-  path.resolve(process.cwd(), "../../specs/apps/ose/www/behaviours/frontend/app-shell/accessibility.feature"),
+  path.resolve(__dirname, "../../../../../specs/apps/ose/www/behaviours/frontend/app-shell/accessibility.feature"),
 );
 
 describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {

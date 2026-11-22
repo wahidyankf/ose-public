@@ -18,7 +18,8 @@ describe("cn utility", () => {
   });
 
   it("handles conditional classes", () => {
-    const result = cn("base", false && "skipped", "included");
+    const hidden: boolean = false;
+    const result = cn("base", hidden && "skipped", "included");
     expect(result).toBe("base included");
   });
 
@@ -184,26 +185,26 @@ describe("ContentService with valid prebuilt search data", () => {
   });
 });
 
+const makeUpdateMeta = (n: number) => ({
+  meta: {
+    title: `Update ${n}`,
+    slug: `updates/update-${n}`,
+    date: new Date(`2026-0${n}-01T00:00:00Z`),
+    draft: false,
+    description: `Update ${n}`,
+    tags: [],
+    summary: `Summary ${n}`,
+    weight: 0,
+    isSection: false,
+    filePath: `/mock/updates/update-${n}.md`,
+    readingTime: 1,
+    category: "updates" as const,
+  },
+  content: `## Update ${n}\n\nContent ${n}.`,
+});
+
 // --- service.ts: getBySlug prev/next navigation for update pages ---
 describe("ContentService getBySlug prev/next navigation", () => {
-  const makeUpdateMeta = (n: number) => ({
-    meta: {
-      title: `Update ${n}`,
-      slug: `updates/update-${n}`,
-      date: new Date(`2026-0${n}-01T00:00:00Z`),
-      draft: false,
-      description: `Update ${n}`,
-      tags: [],
-      summary: `Summary ${n}`,
-      weight: 0,
-      isSection: false,
-      filePath: `/mock/updates/update-${n}.md`,
-      readingTime: 1,
-      category: "updates" as const,
-    },
-    content: `## Update ${n}\n\nContent ${n}.`,
-  });
-
   it("returns prev and next for a middle update page", async () => {
     const repo = new InMemoryContentRepository([makeUpdateMeta(1), makeUpdateMeta(2), makeUpdateMeta(3)]);
     const service = new ContentService(repo);

@@ -5,9 +5,9 @@ import { render, screen, fireEvent, cleanup } from "@testing-library/react";
 import React, { useState } from "react";
 
 const { observedTheme, themeObserver } = vi.hoisted(() => {
-  const observedTheme = { selected: "light" };
-  const themeObserver = { update: (_theme: string) => {} };
-  return { observedTheme, themeObserver };
+  const theme = { selected: "light" };
+  const observer = { update: (_theme: string) => {} };
+  return { observedTheme: theme, themeObserver: observer };
 });
 
 // Mock lucide-react icons
@@ -93,7 +93,7 @@ function PersistenceHarness() {
 }
 
 const feature = await loadFeature(
-  path.resolve(process.cwd(), "../../specs/apps/ose/www/behaviours/frontend/app-shell/theme.feature"),
+  path.resolve(__dirname, "../../../../../specs/apps/ose/www/behaviours/frontend/app-shell/theme.feature"),
 );
 
 describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {

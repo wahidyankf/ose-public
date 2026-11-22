@@ -6,7 +6,7 @@ import React from "react";
 
 // The search dialog's results come from the tRPC client; the scenario sets the rows it returns.
 const searchState = vi.hoisted(() => ({ results: [] as { title: string; slug: string; excerpt: string }[] }));
-const routerPush = vi.hoisted(() => vi.fn());
+const routerPush = vi.hoisted(() => vi.fn<(...args: unknown[]) => unknown>());
 
 vi.mock("@/lib/trpc/client", () => ({
   trpcClient: {
@@ -60,7 +60,7 @@ vi.mock("@open-sharia-enterprise/web-ui", () => ({
   },
   // Minimal stand-ins for the command palette; the scenarios test the search dialog's own behaviour.
   CommandDialog: ({ open, children }: { open: boolean; children: React.ReactNode }) =>
-    open ? <div role="dialog">{children}</div> : null,
+    open ? <dialog open>{children}</dialog> : null,
   CommandInput: ({
     placeholder,
     value,
@@ -74,9 +74,7 @@ vi.mock("@open-sharia-enterprise/web-ui", () => ({
   CommandEmpty: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   CommandGroup: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   CommandItem: ({ children, onSelect }: { children: React.ReactNode; onSelect?: () => void }) => (
-    <button role="option" onClick={onSelect}>
-      {children}
-    </button>
+    <option onClick={onSelect}>{children}</option>
   ),
 }));
 
@@ -92,7 +90,7 @@ import { PrevNext } from "@/features/content/shell/prev-next";
 import { SearchProvider } from "@/features/search/shell/search-provider";
 
 const feature = await loadFeature(
-  path.resolve(process.cwd(), "../../specs/apps/ose/www/behaviours/frontend/app-shell/navigation.feature"),
+  path.resolve(__dirname, "../../../../../specs/apps/ose/www/behaviours/frontend/app-shell/navigation.feature"),
 );
 
 describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {

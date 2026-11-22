@@ -51,7 +51,7 @@ import { SocialIcons } from "@/features/landing/shell/social-icons";
 import { metadata } from "@/app/layout";
 
 const feature = await loadFeature(
-  path.resolve(process.cwd(), "../../specs/apps/ose/www/behaviours/frontend/landing/landing-page.feature"),
+  path.resolve(__dirname, "../../../../../specs/apps/ose/www/behaviours/frontend/landing/landing-page.feature"),
 );
 
 describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {

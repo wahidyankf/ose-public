@@ -157,7 +157,7 @@ describeFeature(feature, ({ Background, Scenario, AfterEachScenario }) => {
     Then("the update titles are listed newest first", () => {
       expect(updates.map(({ title }) => title)[0]).toBe("Phase 0 End");
       for (let i = 0; i < updates.length - 1; i++) {
-        expect(updates[i]!.date.getTime()).toBeGreaterThanOrEqual(updates[i + 1]!.date.getTime());
+        expect(updates[i]!.date!.getTime()).toBeGreaterThanOrEqual(updates[i + 1]!.date!.getTime());
       }
     });
   });

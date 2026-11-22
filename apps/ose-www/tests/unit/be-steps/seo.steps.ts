@@ -8,7 +8,7 @@ import { buildRobots } from "@/features/seo/core/robots";
 import { buildSitemapEntries } from "@/features/seo/core/sitemap";
 
 const feature = await loadFeature(
-  path.resolve(process.cwd(), "../../specs/apps/ose/www/behaviours/backend/seo/seo.feature"),
+  path.resolve(__dirname, "../../../../../specs/apps/ose/www/behaviours/backend/seo/seo.feature"),
 );
 
 const FIXED_NOW = new Date("2026-01-01T00:00:00Z");

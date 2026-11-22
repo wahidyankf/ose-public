@@ -1,8 +1,9 @@
 import path from "path";
-import { readFileSync } from "fs";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { expect, vi } from "vitest";
+// The committed token stylesheet, inlined as text at build time (Vite `?raw`); no runtime file read.
+import TOKENS_CSS from "../../../../../libs/web-ui-token/src/ayokoding.css?raw";
 
 // The page reads its locale from useParams() and its state from useSearchParams(). `navState`
 // holds both so each scenario can set them before rendering; `router.push` records the URL it
@@ -84,8 +85,6 @@ import {
 const feature = await loadFeature(
   path.resolve(process.cwd(), "../../specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature"),
 );
-
-const TOKENS_CSS = readFileSync(path.resolve(process.cwd(), "../../libs/web-ui-token/src/ayokoding.css"), "utf8");
 
 type Ctx = {
   model?: Model;

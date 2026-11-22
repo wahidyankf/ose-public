@@ -41,10 +41,12 @@ export function findOffendingPages(files: readonly string[]): { file: string; pa
 }
 
 describe("path-copy", () => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-copy.feature: Career path pages contain no internal planning vocabulary
   it("career path pages contain no internal planning vocabulary", () => {
     expect(findOffendingPages(listPathCopyPages())).toEqual([]);
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-copy.feature: The AI Engineer path page and card say the path is for developers who already code
   it("the AI Engineer path says who it is for", () => {
     const pageDescription = (matter(fs.readFileSync(aiPagePath, "utf8")).data as { description?: string }).description;
     const manifestDescription = (JSON.parse(fs.readFileSync(aiManifestPath, "utf8")) as { description?: string })

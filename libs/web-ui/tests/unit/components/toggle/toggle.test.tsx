@@ -44,3 +44,10 @@ describe("Toggle", () => {
     expect(screen.getByText("Notifications")).toBeTruthy();
   });
 });
+
+describe("Toggle accessible name", () => {
+  it("names the switch after its visible label", () => {
+    render(<Toggle value={false} onChange={() => {}} label="Notifications" />);
+    expect(screen.getByRole("switch", { name: "Notifications" })).toBeTruthy();
+  });
+});

@@ -17,7 +17,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     When("I render a ProgressRing with progress <progress>", () => {
       cleanup();
       progressbar = render(<ProgressRing progress={Number(examples["progress"])} />).container.querySelector(
-        "[role='progressbar']",
+        "progress",
       );
     });
 
@@ -32,7 +32,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
 
     When("I render a ProgressRing with progress 0.75", () => {
       cleanup();
-      progressbar = render(<ProgressRing progress={0.75} />).container.querySelector("[role='progressbar']");
+      progressbar = render(<ProgressRing progress={0.75} />).container.querySelector("progress");
     });
 
     Then('the progressbar should have aria-valuemin "0"', () => {
@@ -51,7 +51,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
     When("I render a ProgressRing with progress <progress>", () => {
       cleanup();
       progressbar = render(<ProgressRing progress={Number(examples["progress"])} />).container.querySelector(
-        "[role='progressbar']",
+        "progress",
       );
     });
 

@@ -40,6 +40,15 @@
         ],
         "no-process-env": "error"
       }
+    },
+    {
+      // The resizable-panel handle keeps role="separator" on purpose. The WAI-ARIA Authoring Practices window splitter
+      // pattern (https://www.w3.org/WAI/ARIA/apg/patterns/windowsplitter/) needs a focusable separator that exposes
+      // its value range, and a native <hr> cannot take focus for keyboard resizing.
+      "files": ["src/primitives/resizable-panel/resizable-panel.tsx"],
+      "rules": {
+        "jsx-a11y/prefer-tag-over-role": "off"
+      }
     }
   ]
 }

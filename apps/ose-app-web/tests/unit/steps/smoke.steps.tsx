@@ -5,7 +5,7 @@ import { expect } from "vitest";
 import Home from "../../../src/app/page";
 
 const feature = await loadFeature(
-  path.resolve(process.cwd(), "../../specs/apps/ose/app-web/behaviours/smoke/smoke.feature"),
+  path.resolve(__dirname, "../../../../../specs/apps/ose/app-web/behaviours/smoke/smoke.feature"),
 );
 
 describeFeature(feature, ({ Scenario, AfterEachScenario }) => {

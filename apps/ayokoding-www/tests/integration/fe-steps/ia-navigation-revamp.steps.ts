@@ -2,6 +2,7 @@ import path from "node:path";
 import { describeFeature, loadFeature } from "@amiceli/vitest-cucumber";
 import { expect } from "vitest";
 import { GET as getFeed } from "@/app/feed.xml/route";
+import robots from "@/app/robots";
 import sitemap from "@/app/sitemap";
 import { FileSystemContentRepository } from "@/features/content/shell/repository-fs";
 import { ContentService } from "@/features/content/shell/service";
@@ -97,6 +98,24 @@ describeFeature(
         expect(feedUrls.map((url) => new URL(url).host)).toEqual(feedUrls.map(() => "www.ayokoding.com"));
       });
     });
+
+    // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: robots.txt allows crawling and names the sitemap
+    Scenario("robots.txt allows crawling and names the sitemap", ({ When, Then, And }) => {
+      let rules: ReturnType<typeof robots>;
+
+      When("a search engine requests the robots.txt file", () => {
+        rules = robots();
+      });
+
+      Then("every page of the site is open to crawling", () => {
+        expect(rules.rules).toEqual([{ userAgent: "*", allow: "/" }]);
+      });
+
+      And("the robots.txt file names the sitemap", () => {
+        expect(rules.sitemap).toBe("https://www.ayokoding.com/sitemap.xml");
+      });
+    });
   },
-  { excludeTags: ["integration-exempt"] },
+  // The `e2e-home` scenarios drive a served page in a browser; the ayokoding-www-fe-e2e suite binds them.
+  { excludeTags: ["integration-exempt", "e2e-home"] },
 );

@@ -36,7 +36,7 @@
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npx oxlint --jsx-a11y-plugin .",
+        "command": "npx oxlint -c oxlint.json --jsx-a11y-plugin --deny-warnings .",
         "cwd": "{projectRoot}"
       },
       "inputs": ["{projectRoot}/src/**/*", "{projectRoot}/oxlint.json", "{projectRoot}/tsconfig.json"]

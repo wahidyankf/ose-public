@@ -206,7 +206,7 @@ export const AsChildLink: Story = {
   name: "AsChild (renders as <a>)",
   render: () => (
     <Button asChild>
-      <a href="#">Link rendered as button</a>
+      <a href="/docs">Link rendered as button</a>
     </Button>
   ),
 };

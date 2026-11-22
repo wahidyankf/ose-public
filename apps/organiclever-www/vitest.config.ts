@@ -10,16 +10,8 @@ export default defineConfig({
       provider: "v8",
       include: ["src/**/*.{ts,tsx}"],
       exclude: [
-        // Next.js route infrastructure — covered by e2e, not unit tests
-        "src/app/layout.tsx",
-        "src/app/**/page.tsx",
-        "src/app/**/*.css",
-        "src/env.ts",
+        // Non-production code (category N): the test setup and doubles. Reason also in the project README.
         "src/test/**",
-        "**/*.config.*",
-        "**/.next/**",
-        "**/dist/**",
-        "**/coverage/**",
       ],
       thresholds: {
         // Only line coverage is a repository-enforced floor (AC-COVERAGE-01);

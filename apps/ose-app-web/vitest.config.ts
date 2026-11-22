@@ -10,13 +10,10 @@ export default defineConfig({
       provider: "v8",
       include: ["src/**/*.{ts,tsx}"],
       exclude: [
-        // Next.js route infrastructure — covered by e2e, not unit tests
-        "src/app/layout.tsx",
-        "src/app/**/page.tsx",
-        "src/app/api/**",
-        "src/proxy.ts",
-        "src/test/**",
+        // Generated output (category G): OpenAPI client code, written by the codegen target.
         "src/generated-contracts/**",
+        // Non-production code (category N): test setup, test files, and stories. Reasons also in the project README.
+        "src/test/**",
         "**/*.{test,spec}.{ts,tsx}",
         "**/*.stories.{ts,tsx}",
       ],

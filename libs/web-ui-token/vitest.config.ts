@@ -5,11 +5,11 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "node",
-    include: [
-      "tests/unit/**/*.test.{ts,tsx}",
-      "tests/unit/**/*.steps.{ts,tsx}",
-      "tests/integration/**/*.test.{ts,tsx}",
-    ],
+    include: ["tests/unit/**/*.test.{ts,tsx}", "tests/unit/**/*.steps.{ts,tsx}"],
+    coverage: {
+      include: ["src/**/*.ts"],
+      reportsDirectory: "coverage/unit",
+    },
   },
   resolve: {
     alias: {

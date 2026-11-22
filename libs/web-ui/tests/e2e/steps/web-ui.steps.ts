@@ -138,16 +138,16 @@ async function installClipboard(page: Page, rejectWrites = false): Promise<void>
   await page.addInitScript(
     ({ reject }) => {
       const state = globalThis as typeof globalThis & {
-        __bddClipboardText?: string;
-        __bddClipboardReject?: boolean;
+        bddClipboardText?: string;
+        bddClipboardReject?: boolean;
       };
-      state.__bddClipboardReject = reject;
+      state.bddClipboardReject = reject;
       Object.defineProperty(navigator, "clipboard", {
         configurable: true,
         value: {
           writeText: async (text: string) => {
-            if (state.__bddClipboardReject) throw new Error("BDD clipboard rejection");
-            state.__bddClipboardText = text;
+            if (state.bddClipboardReject) throw new Error("BDD clipboard rejection");
+            state.bddClipboardText = text;
           },
         },
       });
@@ -157,7 +157,7 @@ async function installClipboard(page: Page, rejectWrites = false): Promise<void>
 }
 
 async function clipboardText(page: Page): Promise<string | undefined> {
-  return page.evaluate(() => (globalThis as typeof globalThis & { __bddClipboardText?: string }).__bddClipboardText);
+  return page.evaluate(() => (globalThis as typeof globalThis & { bddClipboardText?: string }).bddClipboardText);
 }
 
 async function runAxe(page: Page): Promise<void> {
@@ -863,7 +863,7 @@ When("the user clicks the button again before the revert timeout elapses", async
 
 When("the user clicks the button again and the clipboard write resolves", async ({ page }) => {
   await page.evaluate(() => {
-    (globalThis as typeof globalThis & { __bddClipboardReject?: boolean }).__bddClipboardReject = false;
+    (globalThis as typeof globalThis & { bddClipboardReject?: boolean }).bddClipboardReject = false;
   });
   await page.locator(COPY_BUTTON).click();
 });
@@ -1186,7 +1186,7 @@ Then("the card shows its title, description, content, and footer in that order",
     text.indexOf(part),
   );
   expect(positions.every((position) => position >= 0)).toBe(true);
-  expect(positions).toEqual([...positions].sort((first, second) => first - second));
+  expect(positions.every((position, index) => index === 0 || positions[index - 1] <= position)).toBe(true);
 });
 
 When("the user presses Space on the toggle", async ({ page }) => {

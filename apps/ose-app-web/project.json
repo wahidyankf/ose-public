@@ -46,7 +46,7 @@
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npx oxlint --jsx-a11y-plugin . && npx eslint .",
+        "command": "npx oxlint -c oxlint.json --jsx-a11y-plugin --deny-warnings . && npx eslint --max-warnings 0 .",
         "cwd": "{projectRoot}"
       },
       "inputs": [

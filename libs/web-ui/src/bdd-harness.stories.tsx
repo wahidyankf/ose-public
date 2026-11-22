@@ -75,14 +75,15 @@ function DropdownOptions() {
   );
 }
 
+function updateURL(next: string): void {
+  const url = new URL(window.location.href);
+  if (next) url.searchParams.set("q", next);
+  else url.searchParams.delete("q");
+  window.history.replaceState(null, "", url.toString());
+}
+
 function SearchHarness() {
   const [term, setTerm] = React.useState("");
-  const updateURL = (next: string) => {
-    const url = new URL(window.location.href);
-    if (next) url.searchParams.set("q", next);
-    else url.searchParams.delete("q");
-    window.history.replaceState(null, "", url.toString());
-  };
   return <SearchComponent searchTerm={term} setSearchTerm={setTerm} updateURL={updateURL} placeholder="Search posts" />;
 }
 

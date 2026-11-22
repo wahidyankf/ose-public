@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const loaderSpies = vi.hoisted(() => ({
-  loadTierEnv: vi.fn(),
-  resolveTier: vi.fn(),
-  tierEnvFilePath: vi.fn(),
+  loadTierEnv: vi.fn<(...args: unknown[]) => unknown>(),
+  resolveTier: vi.fn<(...args: unknown[]) => unknown>(),
+  tierEnvFilePath: vi.fn<(...args: unknown[]) => unknown>(),
 }));
 
 vi.mock("@open-sharia-enterprise/ts-env-loader", () => loaderSpies);

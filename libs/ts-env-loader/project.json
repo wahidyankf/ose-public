@@ -13,7 +13,7 @@
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npx oxlint .",
+        "command": "npx oxlint --deny-warnings .",
         "cwd": "libs/ts-env-loader"
       }
     },
@@ -26,7 +26,7 @@
             "forwardAllArgs": false
           },
           {
-            "command": "! grep -rnE '\\.(skip|todo)\\(' --include='*.test.*' --include='*.steps.*' src",
+            "command": "! grep -rnE '\\.(skip|only|todo)\\(' --include='*.test.*' --include='*.steps.*' src tests/unit",
             "forwardAllArgs": false
           }
         ],

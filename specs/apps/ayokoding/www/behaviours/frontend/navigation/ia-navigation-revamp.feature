@@ -7,11 +7,13 @@ Feature: IA navigation revamp
   Background:
     Given the app is running
 
+  @e2e-home
   Scenario: English content resolves at its bare URL
     When a visitor navigates to "/en/learn/legacy/software-engineering"
     Then the page should respond with HTTP 200
     And a breadcrumb nav should be present
 
+  @e2e-home
   # Behaviour: AYW-041
   Scenario: The browse index lists all content sections
     When a visitor navigates to "/en/browse"
@@ -21,6 +23,7 @@ Feature: IA navigation revamp
     And a breadcrumb nav should be present
     And the breadcrumb should start with a Home link
 
+  @e2e-home
   # Behaviour: AYW-042
   Scenario: Header shows primary nav links on desktop
     Given the viewport is set to desktop width
@@ -28,6 +31,7 @@ Feature: IA navigation revamp
     Then the header primary nav should contain a link to "/en/browse" labelled "Learn"
     And the header primary nav should contain a link to "/en/tools" labelled "Tools"
 
+  @e2e-home
   Scenario: Mobile navigation mirrors the header links
     Given the viewport is set to mobile width
     When a visitor navigates to "/en"
@@ -35,6 +39,7 @@ Feature: IA navigation revamp
     Then the mobile nav should contain a link to "/en/browse" labelled "Learn"
     And the mobile nav should contain a link to "/en/tools" labelled "Tools"
 
+  @e2e-home
   Scenario: Footer shows grouped navigation with localized labels
     When a visitor navigates to "/id"
     Then the footer should display a "Learn" column
@@ -43,6 +48,7 @@ Feature: IA navigation revamp
     And the footer "About" column should link to "/id/tentang-ayokoding"
     And the footer "About" column should link to "/id/syarat-dan-ketentuan"
 
+  @e2e-home
   Scenario: Landing homepage renders hero, sections, and tools teaser in English
     When a visitor navigates to "/en"
     Then the hero heading should be visible on the landing page
@@ -50,6 +56,7 @@ Feature: IA navigation revamp
     And the landing section grid should include a card linking to "/en/rants"
     And the tools teaser should link to "/en/tools/cost-of-living-calculator"
 
+  @e2e-home
   Scenario: Landing homepage renders hero, sections, and tools teaser in Indonesian
     When a visitor navigates to "/id"
     Then the hero heading should be visible on the landing page
@@ -57,11 +64,13 @@ Feature: IA navigation revamp
     And the landing section grid should include a card linking to "/id/celoteh"
     And the tools teaser should link to "/id/tools/cost-of-living-calculator"
 
+  @e2e-home
   Scenario: Breadcrumb segments link to their bare content URLs
     Given a visitor is on "/en/learn/legacy/software-engineering/data"
     When the breadcrumb renders its ancestor segments
     Then each ancestor crumb links to its bare content URL
 
+  @e2e-home
   Scenario: Sidebar, breadcrumb, previous and next, and search links go straight to their page with no redirect
     Given the sidebar tree, breadcrumb, prev-next, and search results render content links
     When their hrefs are computed via the central content URL helper
@@ -83,6 +92,7 @@ Feature: IA navigation revamp
     Then every content item link uses a bare URL
     And every feed link is on the canonical host "www.ayokoding.com"
 
+  @e2e-home
   # Behaviour: AYW-045
   Scenario: A content page declares its own URL as canonical, with language alternates on www.ayokoding.com
     Given the content page at "/en/learn/legacy/software-engineering"
@@ -97,6 +107,7 @@ Feature: IA navigation revamp
     Then every page of the site is open to crawling
     And the robots.txt file names the sitemap
 
+  @e2e-home
   # Behaviour: AYW-048
   Scenario: A missing page shows Page Not Found with a Go Home link
     When a visitor opens a page that does not exist

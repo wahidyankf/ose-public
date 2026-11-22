@@ -4,6 +4,7 @@
     "outDir": "../../dist/out-tsc",
     "declaration": true,
     "resolveJsonModule": true,
+    "lib": ["ES2023"],
     "types": ["node"]
   },
   "include": ["tests/**/*.ts", "vitest.config.ts"],

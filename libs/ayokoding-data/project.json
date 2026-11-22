@@ -14,7 +14,7 @@
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npx oxlint .",
+        "command": "npx oxlint --deny-warnings .",
         "cwd": "libs/ayokoding-data"
       }
     },

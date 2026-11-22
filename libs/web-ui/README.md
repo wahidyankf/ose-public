@@ -47,6 +47,13 @@ nx run web-ui:test:unit        # Unit tests with vitest-axe
 nx run web-ui:test:quick       # Unit + static coverage (Unit lines >=99%)
 ```
 
+### Coverage Exclusions
+
+The unit run measures every file under `src/**/*.{ts,tsx}` except these two categories, kept in `vitest.config.ts`:
+
+- `src/**/*.stories.{ts,tsx}` (category N): Storybook stories, non-production code.
+- `src/types/**` (category N): `vitest-axe.d.ts`, a type declaration for test-support matchers.
+
 ## Storybook
 
 ```bash

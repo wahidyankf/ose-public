@@ -13,7 +13,7 @@
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "echo 'No lint configured for web-ui-token (CSS + minimal TS)'"
+        "command": "npx oxlint --deny-warnings ."
       }
     },
     "test:unit": {
@@ -25,7 +25,7 @@
             "forwardAllArgs": false
           },
           {
-            "command": "! grep -rnE '\\.(skip|todo)\\(' --include='*.test.*' --include='*.steps.*' src",
+            "command": "! grep -rnE '\\.(skip|only|todo)\\(' --include='*.test.*' --include='*.steps.*' src tests/unit",
             "forwardAllArgs": false
           }
         ],
@@ -40,7 +40,7 @@
     "test:integration": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npx vitest run tests/integration",
+        "command": "npx vitest run --config vitest.integration.config.ts",
         "cwd": "libs/web-ui-token"
       },
       "cache": true,

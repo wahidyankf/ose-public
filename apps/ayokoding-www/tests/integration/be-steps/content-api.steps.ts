@@ -200,4 +200,25 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, Background }) => {
       expect(result.html).toContain("<code"),
     );
   });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/backend/content/content-api.feature: The course-path route data is returned for a locale
+  Scenario("The course-path route data is returned for a locale", ({ When, Then, And }) => {
+    let routeData: Awaited<ReturnType<typeof integrationCaller.coursePaths.getRouteData>>;
+    When('the client calls coursePaths.getRouteData with locale "en"', async () => {
+      routeData = await integrationCaller.coursePaths.getRouteData("en");
+    });
+
+    Then("the response should list each library course with its English page link", () => {
+      expect(routeData.libraryCourseIds.length).toBeGreaterThan(0);
+      for (const courseId of routeData.libraryCourseIds) {
+        expect(routeData.courseLinks[courseId], `${courseId} has no English page link`).toMatchObject({
+          slug: `learn/courses/${courseId}`,
+        });
+      }
+    });
+
+    And("the response should include the course path manifests", () => {
+      expect(routeData.manifests).toBeInstanceOf(Array);
+    });
+  });
 });

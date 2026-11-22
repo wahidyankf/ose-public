@@ -1,9 +1,7 @@
-import fs from "node:fs";
 import path from "path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { expect, vi } from "vitest";
-import matter from "gray-matter";
 
 let mockPathname = "/en/unrelated";
 vi.mock("next/navigation", () => ({
@@ -275,30 +273,27 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
 
   // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/navigation.feature: The Learn sidebar lists Paths, Courses, and Legacy in that order
   Scenario("The Learn sidebar lists Paths, Courses, and Legacy in that order", ({ When, Then }) => {
-    // The real entries the sidebar lists under Learn, keyed to the files that back them. Each
-    // `_index.md` is a section, and the retired `learn/overview.md` is gone (U1, plan
-    // ayokoding-learn-revamp-04), so the Learn home's own sections are the whole list.
-    const learnEntryFiles: Array<{ file: string; slug: string }> = [
-      { file: "content/en/learn/paths/_index.md", slug: "learn/paths" },
-      { file: "content/en/learn/courses/_index.md", slug: "learn/courses" },
-      { file: "content/en/learn/legacy/_index.md", slug: "learn/legacy" },
+    // The Learn home's three sections with the title and weight their `_index.md` files commit, in
+    // reverse weight order so the sort below does real work. The retired `learn/overview.md` is gone
+    // (U1, plan ayokoding-learn-revamp-04), so the Learn home's own sections are the whole list. The
+    // e2e suite reads the real files and checks the served rail.
+    const learnSections: Array<{ slug: string; title: string; weight: number }> = [
+      { slug: "learn/legacy", title: "Legacy", weight: 103 },
+      { slug: "learn/courses", title: "Courses", weight: 102 },
+      { slug: "learn/paths", title: "Paths", weight: 101 },
     ];
     let learnEntries: TreeNode[] = [];
 
     When("a visitor opens the Learn home", () => {
-      // Build the sidebar entries the way the app does: TreeNode nodes carrying the real
-      // frontmatter title/weight read from the content files at the app root (process.cwd()),
+      // Build the sidebar entries the way the app does: TreeNode nodes carrying title and weight,
       // ordered the way the app orders tree nodes (tree-builder.ts sortTreeByWeight).
-      learnEntries = learnEntryFiles.map(({ file, slug }) => {
-        const { data } = matter(fs.readFileSync(path.resolve(process.cwd(), file), "utf8"));
-        return {
-          title: String(data.title),
-          slug,
-          weight: Number(data.weight),
-          isSection: true,
-          children: [],
-        };
-      });
+      learnEntries = learnSections.map(({ slug, title, weight }) => ({
+        title,
+        slug,
+        weight,
+        isSection: true,
+        children: [],
+      }));
       sortTreeByWeight(learnEntries);
 
       // The reader is on the Learn home, so the rail renders the Learn node open (sidebar-tree.tsx

@@ -1,7 +1,5 @@
-import fs from "node:fs";
 import path from "path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
-import matter from "gray-matter";
 import { expect } from "vitest";
 import "./helpers/test-setup";
 import {
@@ -29,15 +27,19 @@ function readPrerequisites(slug: string): unknown {
   return fixturePrerequisites.get(slug);
 }
 
-/** The frontmatter title of the authored page a URL serves: its own file, or else its section index. */
+/**
+ * The authored title of each canonical course page a redirect lands on, as its frontmatter commits
+ * it. This is the in-memory stand-in for the content tree; the integration suite reads the real
+ * files (tests/integration/fe-steps/course-rehome-redirects.steps.ts).
+ */
+const AUTHORED_TITLES: ReadonlyMap<string, string> = new Map([
+  ["/en/learn/courses/just-enough-python", "Just Enough Python"],
+  ["/en/learn/courses/just-enough-python/learning/beginner", "Beginner Examples"],
+]);
+
+/** The authored title of the page a URL serves, or undefined when no authored page sits there. */
 function authoredTitleOf(pageUrl: string): unknown {
-  const relative = pageUrl.replace(/^\//u, "");
-  const candidates = [
-    path.resolve(process.cwd(), "content", `${relative}.md`),
-    path.resolve(process.cwd(), "content", relative, "_index.md"),
-  ];
-  const file = candidates.find((candidate) => fs.existsSync(candidate));
-  return file === undefined ? undefined : matter(fs.readFileSync(file, "utf8")).data.title;
+  return AUTHORED_TITLES.get(pageUrl);
 }
 
 describeFeature(feature, ({ Scenario, ScenarioOutline, Background }) => {

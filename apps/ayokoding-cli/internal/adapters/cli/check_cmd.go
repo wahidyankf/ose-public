@@ -95,10 +95,7 @@ func renderCheck(out io.Writer, mode string, report application.CheckReport) err
 				Covered:            course.Covered,
 			})
 		}
-		body, err := json.Marshal(document)
-		if err != nil {
-			return fmt.Errorf("cli: marshal check report: %w", err)
-		}
+		body, _ := json.Marshal(document)
 		if _, err := fmt.Fprintln(out, string(body)); err != nil {
 			return &finding.PipeError{}
 		}

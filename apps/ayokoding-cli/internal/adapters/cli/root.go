@@ -2,7 +2,6 @@ package cli
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -297,7 +296,7 @@ func renderRun(out io.Writer, mode string, report application.RunReport) error {
 				Message: found.Message,
 			})
 		}
-		body, _ := json.Marshal(document)
+		body := marshalReport(document)
 		if _, err := fmt.Fprintln(out, string(body)); err != nil {
 			return &finding.PipeError{}
 		}

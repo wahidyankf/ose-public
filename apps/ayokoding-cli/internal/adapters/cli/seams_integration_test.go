@@ -71,7 +71,7 @@ func copyDir(t *testing.T, src, dst string) {
 func gitRepoWithCourses(t *testing.T) (repo, courses, baseRev, programRev, tipRev string) {
 	t.Helper()
 	if _, err := exec.LookPath("git"); err != nil {
-		t.Skip("git not on PATH")
+		t.Fatal("git not on PATH")
 	}
 	repo = t.TempDir()
 	gitEnv := func() []string {

@@ -38,8 +38,24 @@ async function ensureOldOrigin(page: Page): Promise<void> {
   }
 }
 
+// flagValue reads the effective --port flag value (either spelling) from the
+// args the binary actually started with.
+function flagValue(args: string[]): string | undefined {
+  for (let index = 0; index < args.length; index += 1) {
+    if (args[index] === "--port" && index + 1 < args.length) {
+      return args[index + 1];
+    }
+    if (args[index]?.startsWith("--port=") === true) {
+      return args[index]?.slice("--port=".length);
+    }
+  }
+  return undefined;
+}
+
 // launch starts one rewrite binary for the scenario mode the Given steps
-// recorded, and remembers its address for the Then steps.
+// recorded, and remembers its address for the Then steps. A bind-collision
+// retry changes the effective port, so the effective env/flag values are
+// written back into state before the Then steps assert against them.
 async function launch(page: Page): Promise<void> {
   const state = stateFor(page);
   if (state.mode === "invalid") {
@@ -53,6 +69,7 @@ async function launch(page: Page): Promise<void> {
     trackOwned(page, spawned);
     state.spawnedUrl = spawned.url;
     state.spawnedPort = spawned.port;
+    if (spawned.env["AYOKODING_WEB_PORT"] !== undefined) state.envPort = spawned.env["AYOKODING_WEB_PORT"];
     return;
   }
   if (state.mode === "flag") {
@@ -60,6 +77,9 @@ async function launch(page: Page): Promise<void> {
     trackOwned(page, spawned);
     state.spawnedUrl = spawned.url;
     state.spawnedPort = spawned.port;
+    const effectiveFlag = flagValue(spawned.args);
+    if (effectiveFlag !== undefined) state.flagPort = effectiveFlag;
+    if (spawned.env["AYOKODING_WEB_PORT"] !== undefined) state.envPort = spawned.env["AYOKODING_WEB_PORT"];
     return;
   }
   if (state.mode === "prefixed") {
@@ -67,6 +87,7 @@ async function launch(page: Page): Promise<void> {
     trackOwned(page, spawned);
     state.spawnedUrl = spawned.url;
     state.spawnedPort = spawned.port;
+    if (spawned.env["AYOKODING_WEB_PORT"] !== undefined) state.envPort = spawned.env["AYOKODING_WEB_PORT"];
     return;
   }
   if (state.mode === "generic") {
@@ -125,7 +146,11 @@ Given("AYOKODING_WEB_PORT contains one valid port", async ({ page }) => {
 });
 
 Given("the rewrite launcher receives a different valid port through its explicit port flag", async ({ page }) => {
-  const other = (await freePort()) + 1;
+  const taken = Number(stateFor(page).envPort ?? "0");
+  let other = await freePort();
+  while (other === taken) {
+    other = await freePort();
+  }
   stateFor(page).flagPort = String(other);
 });
 

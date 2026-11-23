@@ -63,10 +63,7 @@ func renderBuiltImages(out io.Writer, mode string, built []application.BuiltImag
 		for _, image := range built {
 			document.Images = append(document.Images, builtImagePayload{ID: image.ID, Tag: image.Tag})
 		}
-		body, err := json.Marshal(document)
-		if err != nil {
-			return fmt.Errorf("cli: marshal built images: %w", err)
-		}
+		body, _ := json.Marshal(document)
 		if _, err := fmt.Fprintln(out, string(body)); err != nil {
 			return &finding.PipeError{}
 		}

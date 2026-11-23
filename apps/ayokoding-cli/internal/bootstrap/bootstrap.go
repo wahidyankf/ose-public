@@ -46,5 +46,8 @@ func run(args []string, stdout, stderr io.Writer) int {
 		Catalog: catalog,
 		NoColor: noColor,
 		Fault:   os.Getenv("AYOKODING_FAULT"),
+		// The single AYOKODING_CONTAINER_CLI read: commands below
+		// receive it through Options and never touch the environment.
+		ContainerCLI: os.Getenv("AYOKODING_CONTAINER_CLI"),
 	})
 }

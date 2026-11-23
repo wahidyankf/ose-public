@@ -34,6 +34,36 @@ func TestCommandForFallsBackToResolvedCLI(t *testing.T) {
 	}
 }
 
+// TestResolveCLIUsesConfiguredCLIOrDefault requires the CLI field to win
+// and the empty field to mean the default podman, without reading the
+// process environment.
+func TestResolveCLIUsesConfiguredCLIOrDefault(t *testing.T) {
+	if got := (&Runtime{CLI: "field-cli"}).ResolveCLI(); got != "field-cli" {
+		t.Fatalf("ResolveCLI=%q, want the configured CLI", got)
+	}
+	if got := (&Runtime{}).ResolveCLI(); got != defaultContainerCLI {
+		t.Fatalf("ResolveCLI=%q, want the default %q", got, defaultContainerCLI)
+	}
+}
+
+// TestCommandForPrefersConfiguredCLIOverPlan requires the CLI field to
+// win over the planned binary, and the plan to stand when the field is
+// empty, without reading the process environment.
+func TestCommandForPrefersConfiguredCLIOverPlan(t *testing.T) {
+	configured := &Runtime{CLI: "cfg-cli"}
+	invoke := containerplan.Invocation{Binary: "plan-cli", Args: nil}
+	if got := configured.commandFor(invoke); got != "cfg-cli" {
+		t.Fatalf("commandFor=%q, want the configured CLI", got)
+	}
+	plain := &Runtime{}
+	if got := plain.commandFor(invoke); got != "plan-cli" {
+		t.Fatalf("commandFor=%q, want the planned binary", got)
+	}
+	if got := plain.commandFor(containerplan.Invocation{}); got != defaultContainerCLI {
+		t.Fatalf("commandFor=%q, want the default %q", got, defaultContainerCLI)
+	}
+}
+
 // TestPollIntervalDefaultsToCatalogCadence requires an unconfigured runtime
 // to poll on the catalog cadence.
 func TestPollIntervalDefaultsToCatalogCadence(t *testing.T) {

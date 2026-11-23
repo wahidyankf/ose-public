@@ -2,7 +2,6 @@ package cli
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"io"
 
@@ -63,7 +62,7 @@ func renderBuiltImages(out io.Writer, mode string, built []application.BuiltImag
 		for _, image := range built {
 			document.Images = append(document.Images, builtImagePayload{ID: image.ID, Tag: image.Tag})
 		}
-		body, _ := json.Marshal(document)
+		body := marshalReport(document)
 		if _, err := fmt.Fprintln(out, string(body)); err != nil {
 			return &finding.PipeError{}
 		}

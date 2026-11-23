@@ -543,6 +543,9 @@ func TestRunFuncsReadFlagsFirst(t *testing.T) {
 		{"check content", func(cmd *cobra.Command) error {
 			return runCheck(ctx, flagCommand("catalog", "course", "since", "all", "shard"))
 		}, "read --content"},
+		{"check output", func(cmd *cobra.Command) error {
+			return runCheck(ctx, withContent("catalog", "course", "since", "all", "shard", "content"))
+		}, "read --output"},
 		{"run catalog", func(cmd *cobra.Command) error { return runRun(ctx, cmd) }, "read --catalog"},
 		{"run course", func(cmd *cobra.Command) error { return runRun(ctx, flagCommand("catalog")) }, "read --course"},
 		{"run since", func(cmd *cobra.Command) error { return runRun(ctx, flagCommand("catalog", "course")) }, "read --since"},
@@ -551,6 +554,12 @@ func TestRunFuncsReadFlagsFirst(t *testing.T) {
 		{"run unit", func(cmd *cobra.Command) error {
 			return runRun(ctx, flagCommand("catalog", "course", "since", "all", "shard"))
 		}, "read --unit"},
+		{"run seed", func(cmd *cobra.Command) error {
+			seeded := flagCommand("catalog", "course", "since", "all", "shard", "unit")
+			seeded.Flags().String("seed", "", "")
+			_ = seeded.Flags().Set("seed", "x")
+			return runRun(ctx, seeded)
+		}, "read --seed"},
 		{"run record", func(cmd *cobra.Command) error {
 			return runRun(ctx, flagCommand("catalog", "course", "since", "all", "shard", "unit"))
 		}, "read --record"},
@@ -568,6 +577,12 @@ func TestRunFuncsReadFlagsFirst(t *testing.T) {
 		{"affected all", func(cmd *cobra.Command) error { return runAffected(ctx, flagCommand("course", "since")) }, "read --all"},
 		{"affected shard", func(cmd *cobra.Command) error { return runAffected(ctx, withCourse("demo")) }, "read --shard"},
 		{"affected content", func(cmd *cobra.Command) error { return runAffected(ctx, withCourseShard("demo")) }, "read --content"},
+		{"affected output", func(cmd *cobra.Command) error {
+			selected := withCourseShard("demo")
+			selected.Flags().String("content", "", "")
+			_ = selected.Flags().Set("content", ".")
+			return runAffected(ctx, selected)
+		}, "read --output"},
 		{"sync course", func(cmd *cobra.Command) error { return runSync(cmd) }, "read --course"},
 		{"sync inert", func(cmd *cobra.Command) error { return runSync(flagCommand("course")) }, "read --include-inert"},
 		{"sync write", func(cmd *cobra.Command) error { return runSync(flagCommand("course", "include-inert")) }, "read --write"},

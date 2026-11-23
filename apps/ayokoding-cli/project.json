@@ -59,6 +59,7 @@
       "inputs": [
         "{projectRoot}/**/*.go",
         "{projectRoot}/scripts/coverage-gate.sh",
+        "{projectRoot}/tests/coverage/exemptions.txt",
         "{projectRoot}/go.mod",
         "{projectRoot}/go.sum",
         "{workspaceRoot}/scripts/container-runtime-check",

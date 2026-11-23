@@ -27,4 +27,4 @@ Feature: Canonical fallback rendering
       | /en/browse                           |
       | /en/learn/courses                    |
       | /en/learn/courses-extra/git          |
-      | /id/learn/courses/just-enough-python |
+      | /id/tentang-ayokoding                |

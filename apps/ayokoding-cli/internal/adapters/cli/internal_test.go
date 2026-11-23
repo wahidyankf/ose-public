@@ -4,11 +4,12 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"io"
 	"strings"
 	"testing"
 	"time"
 
-	"github.com/spf13/cobra"
+	"github.com/spf13/cobra" //nolint:depguard // flag-read doubles build in-memory cobra commands only; the tests start no process and read no environment.
 
 	"github.com/wahidyankf/ose-public/apps/ayokoding-cli/internal/adapters/containers"
 	"github.com/wahidyankf/ose-public/apps/ayokoding-cli/internal/application"
@@ -95,7 +96,7 @@ func sampleCheckReport() application.CheckReport {
 // outcome without starting a process: success splits the streams,
 // timeouts and expired contexts time out, and failures wrap.
 func TestRunAdapterMapsOutcomes(t *testing.T) {
-	invoke := containerplan.Invocation{Binary: "img"}
+	invoke := containerplan.Invocation{Binary: "img", Args: nil}
 	t.Run("success splits the streams", func(t *testing.T) {
 		executed, err := runAdapter{inner: fakeRuntime("out\n", nil)}.Run(context.Background(), invoke, nil)
 		if err != nil {
@@ -190,75 +191,66 @@ func TestRunAdapterSweepsAndCleans(t *testing.T) {
 	}
 }
 
+// requireReportShapes renders one report as text and JSON, requiring the
+// text lines, the JSON schema marker, a closed pipe error, and a closed
+// pipe on each of the text writes in order.
+func requireReportShapes(t *testing.T, name string, render func(io.Writer, string) error, wants []string, writes int) {
+	t.Helper()
+	var text bytes.Buffer
+	if err := render(&text, outputText); err != nil {
+		t.Fatalf("%s=%v, want nil", name, err)
+	}
+	for _, want := range wants {
+		if !strings.Contains(text.String(), want) {
+			t.Fatalf("%s text missing %q (text=%q)", name, want, text.String())
+		}
+	}
+	var document bytes.Buffer
+	if err := render(&document, outputJSON); err != nil {
+		t.Fatalf("%s=%v, want nil", name, err)
+	}
+	if !strings.Contains(document.String(), `"schemaVersion":1`) {
+		t.Fatalf("%s document missing the schema (document=%q)", name, document.String())
+	}
+	if err := render(closedPipe{}, outputJSON); err == nil {
+		t.Fatalf("%s=nil, want the closed pipe", name)
+	}
+	for allow := range writes {
+		if err := render(&shortPipe{allow: allow}, outputText); err == nil {
+			t.Fatalf("%s=nil on write %d, want the closed pipe", name, allow)
+		}
+	}
+}
+
 // TestRenderRunCoversReportShapes requires the run report to render one
 // labelled line per pass with replay traces as text, and one JSON
 // document, failing closed on every closed pipe.
 func TestRenderRunCoversReportShapes(t *testing.T) {
-	var text bytes.Buffer
-	if err := renderRun(&text, outputText, sampleRunReport()); err != nil {
-		t.Fatalf("renderRun=%v, want nil", err)
-	}
-	for _, want := range []string{"demo u main: passed", "replay seed 0", "trace line", "fragment", "failed c: m"} {
-		if !strings.Contains(text.String(), want) {
-			t.Fatalf("text missing %q (text=%q)", want, text.String())
-		}
-	}
-	var document bytes.Buffer
-	if err := renderRun(&document, outputJSON, sampleRunReport()); err != nil {
-		t.Fatalf("renderRun=%v, want nil", err)
-	}
-	if !strings.Contains(document.String(), `"schemaVersion":1`) {
-		t.Fatalf("document missing the schema (document=%q)", document.String())
-	}
-	if err := renderRun(closedPipe{}, outputJSON, sampleRunReport()); err == nil {
-		t.Fatal("renderRun=nil, want the closed pipe")
-	}
+	sample := sampleRunReport()
 	// Every text line fails closed in order over the seven writes: the
 	// pass, the two replay lines, the two traces, the trailing newline,
 	// and the finding.
-	for allow := 0; allow < 7; allow++ {
-		if err := renderRun(&shortPipe{allow: allow}, outputText, sampleRunReport()); err == nil {
-			t.Fatalf("renderRun=nil on write %d, want the closed pipe", allow)
-		}
-	}
+	requireReportShapes(t, "renderRun", func(out io.Writer, mode string) error {
+		return renderRun(out, mode, sample)
+	}, []string{"demo u main: passed", "replay seed 0", "trace line", "fragment", "failed c: m"}, 7)
 }
 
 // TestRenderCheckCoversReportShapes requires the check report to render
 // its message, passes, findings, inert courses, and summary as text, and
 // one JSON document, failing closed on every closed pipe.
 func TestRenderCheckCoversReportShapes(t *testing.T) {
-	var text bytes.Buffer
-	if err := renderCheck(&text, outputText, sampleCheckReport()); err != nil {
-		t.Fatalf("renderCheck=%v, want nil", err)
-	}
-	for _, want := range []string{
+	sample := sampleCheckReport()
+	// The message, pass, finding, inert, and summary lines fail closed in
+	// order over the five text writes.
+	requireReportShapes(t, "renderCheck", func(out io.Writer, mode string) error {
+		return renderCheck(out, mode, sample)
+	}, []string{
 		"0 opted-in courses; nothing to run",
 		"demo u main: passed",
 		"demo p:3: failed c: m",
 		"inert: quiet",
 		"1 of 1 applicable courses covered",
-	} {
-		if !strings.Contains(text.String(), want) {
-			t.Fatalf("text missing %q (text=%q)", want, text.String())
-		}
-	}
-	var document bytes.Buffer
-	if err := renderCheck(&document, outputJSON, sampleCheckReport()); err != nil {
-		t.Fatalf("renderCheck=%v, want nil", err)
-	}
-	if !strings.Contains(document.String(), `"schemaVersion":1`) {
-		t.Fatalf("document missing the schema (document=%q)", document.String())
-	}
-	if err := renderCheck(closedPipe{}, outputJSON, sampleCheckReport()); err == nil {
-		t.Fatal("renderCheck=nil, want the closed pipe")
-	}
-	// The message, pass, finding, inert, and summary lines fail closed in
-	// order over the five text writes.
-	for allow := 0; allow < 5; allow++ {
-		if err := renderCheck(&shortPipe{allow: allow}, outputText, sampleCheckReport()); err == nil {
-			t.Fatalf("renderCheck=nil on write %d, want the closed pipe", allow)
-		}
-	}
+	}, 5)
 }
 
 // TestRenderCoverageCoversCourseShapes requires the coverage report to
@@ -305,7 +297,7 @@ func TestRenderCoverageCoversCourseShapes(t *testing.T) {
 	}
 	// The not-applicable, covered, missed, summary, and finding lines fail
 	// closed in order over the five text writes.
-	for allow := 0; allow < 5; allow++ {
+	for allow := range 5 {
 		if err := renderCoverage(&shortPipe{allow: allow}, outputText, assessed); err == nil {
 			t.Fatalf("renderCoverage=nil on write %d, want the closed pipe", allow)
 		}
@@ -337,7 +329,7 @@ func TestRenderAffectedCoversSelectionShapes(t *testing.T) {
 		t.Fatal("renderAffected=nil, want the closed pipe")
 	}
 	// The mode, course, and inert lines fail closed in order.
-	for allow := 0; allow < 3; allow++ {
+	for allow := range 3 {
 		if err := renderAffected(&shortPipe{allow: allow}, outputText, resolved); err == nil {
 			t.Fatalf("renderAffected=nil on write %d, want the closed pipe", allow)
 		}
@@ -516,90 +508,92 @@ func TestRunFuncsReadFlagsFirst(t *testing.T) {
 		call func(*cobra.Command) error
 		want string
 	}{
-		{"validate catalog", func(cmd *cobra.Command) error { return runValidate(cmd) }, "read --catalog"},
-		{"validate course", func(cmd *cobra.Command) error { return runValidate(flagCommand("catalog")) }, "read --course"},
-		{"validate inert", func(cmd *cobra.Command) error { return runValidate(flagCommand("catalog", "course")) }, "read --include-inert"},
-		{"validate content", func(cmd *cobra.Command) error { return runValidate(flagCommand("catalog", "course", "include-inert")) }, "read --content"},
-		{"validate output", func(cmd *cobra.Command) error {
+		{"validate catalog", runValidate, "read --catalog"},
+		{"validate course", func(*cobra.Command) error { return runValidate(flagCommand("catalog")) }, "read --course"},
+		{"validate inert", func(*cobra.Command) error { return runValidate(flagCommand("catalog", "course")) }, "read --include-inert"},
+		{"validate content", func(*cobra.Command) error { return runValidate(flagCommand("catalog", "course", "include-inert")) }, "read --content"},
+		{"validate output", func(*cobra.Command) error {
 			return runValidate(withContent("catalog", "course", "include-inert", "content"))
 		}, "read --output"},
-		{"list catalog", func(cmd *cobra.Command) error { return runList(cmd) }, "read --catalog"},
-		{"list output", func(cmd *cobra.Command) error { return runList(flagCommand("catalog")) }, "read --output"},
-		{"coverage catalog", func(cmd *cobra.Command) error { return runCoverage(cmd) }, "read --catalog"},
-		{"coverage course", func(cmd *cobra.Command) error { return runCoverage(flagCommand("catalog")) }, "read --course"},
-		{"coverage inert", func(cmd *cobra.Command) error { return runCoverage(flagCommand("catalog", "course")) }, "read --include-inert"},
-		{"coverage percent", func(cmd *cobra.Command) error { return runCoverage(flagCommand("catalog", "course", "include-inert")) }, "read --min-percent"},
-		{"coverage content", func(cmd *cobra.Command) error {
+		{"list catalog", runList, "read --catalog"},
+		{"list output", func(*cobra.Command) error { return runList(flagCommand("catalog")) }, "read --output"},
+		{"coverage catalog", runCoverage, "read --catalog"},
+		{"coverage course", func(*cobra.Command) error { return runCoverage(flagCommand("catalog")) }, "read --course"},
+		{"coverage inert", func(*cobra.Command) error { return runCoverage(flagCommand("catalog", "course")) }, "read --include-inert"},
+		{"coverage percent", func(*cobra.Command) error {
+			return runCoverage(flagCommand("catalog", "course", "include-inert"))
+		}, "read --min-percent"},
+		{"coverage content", func(*cobra.Command) error {
 			return runCoverage(flagCommand("catalog", "course", "include-inert", "min-percent"))
 		}, "read --content"},
-		{"coverage output", func(cmd *cobra.Command) error {
+		{"coverage output", func(*cobra.Command) error {
 			return runCoverage(withContent("catalog", "course", "include-inert", "min-percent", "content"))
 		}, "read --output"},
-		{"check catalog", func(cmd *cobra.Command) error { return runCheck(ctx, cmd, Options{}) }, "read --catalog"},
-		{"check course", func(cmd *cobra.Command) error { return runCheck(ctx, flagCommand("catalog"), Options{}) }, "read --course"},
-		{"check since", func(cmd *cobra.Command) error { return runCheck(ctx, flagCommand("catalog", "course"), Options{}) }, "read --since"},
-		{"check all", func(cmd *cobra.Command) error {
+		{"check catalog", func(*cobra.Command) error { return runCheck(ctx, flagCommand(), Options{}) }, "read --catalog"},
+		{"check course", func(*cobra.Command) error { return runCheck(ctx, flagCommand("catalog"), Options{}) }, "read --course"},
+		{"check since", func(*cobra.Command) error { return runCheck(ctx, flagCommand("catalog", "course"), Options{}) }, "read --since"},
+		{"check all", func(*cobra.Command) error {
 			return runCheck(ctx, flagCommand("catalog", "course", "since"), Options{})
 		}, "read --all"},
-		{"check shard", func(cmd *cobra.Command) error {
+		{"check shard", func(*cobra.Command) error {
 			return runCheck(ctx, flagCommand("catalog", "course", "since", "all"), Options{})
 		}, "read --shard"},
-		{"check content", func(cmd *cobra.Command) error {
+		{"check content", func(*cobra.Command) error {
 			return runCheck(ctx, flagCommand("catalog", "course", "since", "all", "shard"), Options{})
 		}, "read --content"},
-		{"check output", func(cmd *cobra.Command) error {
+		{"check output", func(*cobra.Command) error {
 			return runCheck(ctx, withContent("catalog", "course", "since", "all", "shard", "content"), Options{})
 		}, "read --output"},
-		{"run catalog", func(cmd *cobra.Command) error { return runRun(ctx, cmd, Options{}) }, "read --catalog"},
-		{"run course", func(cmd *cobra.Command) error { return runRun(ctx, flagCommand("catalog"), Options{}) }, "read --course"},
-		{"run since", func(cmd *cobra.Command) error { return runRun(ctx, flagCommand("catalog", "course"), Options{}) }, "read --since"},
-		{"run all", func(cmd *cobra.Command) error {
+		{"run catalog", func(*cobra.Command) error { return runRun(ctx, flagCommand(), Options{}) }, "read --catalog"},
+		{"run course", func(*cobra.Command) error { return runRun(ctx, flagCommand("catalog"), Options{}) }, "read --course"},
+		{"run since", func(*cobra.Command) error { return runRun(ctx, flagCommand("catalog", "course"), Options{}) }, "read --since"},
+		{"run all", func(*cobra.Command) error {
 			return runRun(ctx, flagCommand("catalog", "course", "since"), Options{})
 		}, "read --all"},
-		{"run shard", func(cmd *cobra.Command) error {
+		{"run shard", func(*cobra.Command) error {
 			return runRun(ctx, flagCommand("catalog", "course", "since", "all"), Options{})
 		}, "read --shard"},
-		{"run unit", func(cmd *cobra.Command) error {
+		{"run unit", func(*cobra.Command) error {
 			return runRun(ctx, flagCommand("catalog", "course", "since", "all", "shard"), Options{})
 		}, "read --unit"},
-		{"run seed", func(cmd *cobra.Command) error {
+		{"run seed", func(*cobra.Command) error {
 			seeded := flagCommand("catalog", "course", "since", "all", "shard", "unit")
 			seeded.Flags().String("seed", "", "")
 			_ = seeded.Flags().Set("seed", "x")
 			return runRun(ctx, seeded, Options{})
 		}, "read --seed"},
-		{"run record", func(cmd *cobra.Command) error {
+		{"run record", func(*cobra.Command) error {
 			return runRun(ctx, flagCommand("catalog", "course", "since", "all", "shard", "unit"), Options{})
 		}, "read --record"},
-		{"run single", func(cmd *cobra.Command) error {
+		{"run single", func(*cobra.Command) error {
 			return runRun(ctx, flagCommand("catalog", "course", "since", "all", "shard", "unit", "record"), Options{})
 		}, "read --single-run"},
-		{"run content", func(cmd *cobra.Command) error {
+		{"run content", func(*cobra.Command) error {
 			return runRun(ctx, flagCommand("catalog", "course", "since", "all", "shard", "unit", "record", "single-run"), Options{})
 		}, "read --content"},
-		{"run output", func(cmd *cobra.Command) error {
+		{"run output", func(*cobra.Command) error {
 			return runRun(ctx, withContent("catalog", "course", "since", "all", "shard", "unit", "record", "single-run", "content"), Options{})
 		}, "read --output"},
-		{"affected course", func(cmd *cobra.Command) error { return runAffected(ctx, cmd) }, "read --course"},
-		{"affected since", func(cmd *cobra.Command) error { return runAffected(ctx, flagCommand("course")) }, "read --since"},
-		{"affected all", func(cmd *cobra.Command) error { return runAffected(ctx, flagCommand("course", "since")) }, "read --all"},
-		{"affected shard", func(cmd *cobra.Command) error { return runAffected(ctx, withCourse("demo")) }, "read --shard"},
-		{"affected content", func(cmd *cobra.Command) error { return runAffected(ctx, withCourseShard("demo")) }, "read --content"},
-		{"affected output", func(cmd *cobra.Command) error {
+		{"affected course", func(*cobra.Command) error { return runAffected(ctx, flagCommand()) }, "read --course"},
+		{"affected since", func(*cobra.Command) error { return runAffected(ctx, flagCommand("course")) }, "read --since"},
+		{"affected all", func(*cobra.Command) error { return runAffected(ctx, flagCommand("course", "since")) }, "read --all"},
+		{"affected shard", func(*cobra.Command) error { return runAffected(ctx, withCourse("demo")) }, "read --shard"},
+		{"affected content", func(*cobra.Command) error { return runAffected(ctx, withCourseShard("demo")) }, "read --content"},
+		{"affected output", func(*cobra.Command) error {
 			selected := withCourseShard("demo")
 			selected.Flags().String("content", "", "")
 			_ = selected.Flags().Set("content", ".")
 			return runAffected(ctx, selected)
 		}, "read --output"},
-		{"sync course", func(cmd *cobra.Command) error { return runSync(cmd) }, "read --course"},
-		{"sync inert", func(cmd *cobra.Command) error { return runSync(flagCommand("course")) }, "read --include-inert"},
-		{"sync write", func(cmd *cobra.Command) error { return runSync(flagCommand("course", "include-inert")) }, "read --write"},
-		{"sync content", func(cmd *cobra.Command) error { return runSync(flagCommand("course", "include-inert", "write")) }, "read --content"},
-		{"sync output", func(cmd *cobra.Command) error {
+		{"sync course", runSync, "read --course"},
+		{"sync inert", func(*cobra.Command) error { return runSync(flagCommand("course")) }, "read --include-inert"},
+		{"sync write", func(*cobra.Command) error { return runSync(flagCommand("course", "include-inert")) }, "read --write"},
+		{"sync content", func(*cobra.Command) error { return runSync(flagCommand("course", "include-inert", "write")) }, "read --content"},
+		{"sync output", func(*cobra.Command) error {
 			return runSync(withContent("course", "include-inert", "write", "content"))
 		}, "read --output"},
-		{"build catalog", func(cmd *cobra.Command) error { return runBuild(ctx, cmd, Options{}) }, "read --catalog"},
-		{"build output", func(cmd *cobra.Command) error { return runBuild(ctx, flagCommand("catalog"), Options{}) }, "read --output"},
+		{"build catalog", func(*cobra.Command) error { return runBuild(ctx, flagCommand(), Options{}) }, "read --catalog"},
+		{"build output", func(*cobra.Command) error { return runBuild(ctx, flagCommand("catalog"), Options{}) }, "read --output"},
 	}
 	for _, row := range rows {
 		t.Run(row.name, func(t *testing.T) {

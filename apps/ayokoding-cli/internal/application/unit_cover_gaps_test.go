@@ -2,6 +2,7 @@ package application_test
 
 import (
 	"context"
+	"fmt"
 	"io/fs"
 	"strings"
 	"testing"
@@ -23,11 +24,19 @@ type countFS struct {
 }
 
 func (f *countFS) Open(name string) (fs.File, error) {
-	return f.inner.Open(name)
+	opened, err := f.inner.Open(name)
+	if err != nil {
+		return nil, fmt.Errorf("application test: open %q: %w", name, err)
+	}
+	return opened, nil
 }
 
 func (f *countFS) Stat(name string) (fs.FileInfo, error) {
-	return fs.Stat(f.inner, name)
+	info, err := fs.Stat(f.inner, name)
+	if err != nil {
+		return nil, fmt.Errorf("application test: stat %q: %w", name, err)
+	}
+	return info, nil
 }
 
 func (f *countFS) ReadDir(name string) ([]fs.DirEntry, error) {
@@ -37,7 +46,11 @@ func (f *countFS) ReadDir(name string) ([]fs.DirEntry, error) {
 			return nil, errBoomFS
 		}
 	}
-	return fs.ReadDir(f.inner, name)
+	entries, err := fs.ReadDir(f.inner, name)
+	if err != nil {
+		return nil, fmt.Errorf("application test: read directory %q: %w", name, err)
+	}
+	return entries, nil
 }
 
 func (f *countFS) Sub(dir string) (fs.FS, error) {
@@ -49,7 +62,7 @@ func (f *countFS) Sub(dir string) (fs.FS, error) {
 		return nil, errBoomFS
 	}
 	if _, err := fs.Stat(f.inner, dir); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("application test: stat %q: %w", dir, err)
 	}
 	return countJoinFS{parent: f, dir: dir}, nil
 }

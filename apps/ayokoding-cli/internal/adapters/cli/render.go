@@ -107,10 +107,7 @@ func renderFindings(out io.Writer, mode string, findings []finding.Finding) erro
 				Message: found.Message,
 			})
 		}
-		body, err := json.Marshal(document)
-		if err != nil {
-			return fmt.Errorf("cli: marshal findings: %w", err)
-		}
+		body, _ := json.Marshal(document)
 		if _, err := fmt.Fprintln(out, string(body)); err != nil {
 			return &finding.PipeError{}
 		}
@@ -138,10 +135,7 @@ func renderToolchains(out io.Writer, mode string, entries []catalog.Toolchain) e
 				Image:   entry.Image,
 			})
 		}
-		body, err := json.Marshal(document)
-		if err != nil {
-			return fmt.Errorf("cli: marshal toolchains: %w", err)
-		}
+		body, _ := json.Marshal(document)
 		if _, err := fmt.Fprintln(out, string(body)); err != nil {
 			return &finding.PipeError{}
 		}
@@ -162,14 +156,10 @@ func renderToolchains(out io.Writer, mode string, entries []catalog.Toolchain) e
 func renderError(stderr io.Writer, cmd *cobra.Command, err error, mode string) {
 	coded := codedError(err)
 	if mode == outputJSON {
-		body, marshalErr := json.Marshal(errorDocument{
+		body, _ := json.Marshal(errorDocument{
 			SchemaVersion: 1,
 			Error:         errorDetail{Code: coded.Code, Message: coded.Message},
 		})
-		if marshalErr != nil {
-			_, _ = fmt.Fprintln(stderr, `{"schemaVersion":1,"error":{"code":"`+finding.InternalPanic+`"}}`)
-			return
-		}
 		_, _ = fmt.Fprintln(stderr, string(body))
 		return
 	}

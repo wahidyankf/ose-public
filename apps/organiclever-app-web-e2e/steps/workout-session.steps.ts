@@ -153,6 +153,6 @@ When("the user saves and finishes the workout", async ({ page }) => {
 
 Then("the workout summary is shown", async ({ page }) => {
   await expect(page).toHaveURL(/\/app\/workout\/finish$/);
-  await expect(page.getByText("Nice work.")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Nice work." })).toBeVisible();
   await expect(page.getByText("Workout complete")).toBeVisible();
 });

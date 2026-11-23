@@ -176,7 +176,7 @@ func TestBuilderBuildEnvironmentMapsRunFailure(t *testing.T) {
 // TestRunForwardsStdinToLocalReader requires a real local reader to echo
 // the run input, covering the standard-input handoff.
 func TestRunForwardsStdinToLocalReader(t *testing.T) {
-	result, err := (&containers.Runtime{}).Run(context.Background(), containerplan.Invocation{Binary: "/bin/cat"}, []byte("typed\n"))
+	result, err := (&containers.Runtime{}).Run(context.Background(), containerplan.Invocation{Binary: "/bin/cat", Args: nil}, []byte("typed\n"))
 	if err != nil {
 		t.Fatalf("Run=%v, want nil", err)
 	}

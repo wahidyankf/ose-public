@@ -158,9 +158,6 @@ func (scan *scanner) lesson(lesson string) []finding.Finding {
 		return []finding.Finding{}
 	}
 	lines, trailing := splitLines(string(data))
-	if lines == nil {
-		return []finding.Finding{}
-	}
 	fences := findFences(lines)
 	attached := map[int]bool{}
 	findings := []finding.Finding{}
@@ -202,10 +199,7 @@ func (scan *scanner) lesson(lesson string) []finding.Finding {
 		}
 	}
 	sort.SliceStable(findings, func(i, j int) bool {
-		if findings[i].Line != findings[j].Line {
-			return findings[i].Line < findings[j].Line
-		}
-		return findings[i].Code < findings[j].Code
+		return findings[i].Line < findings[j].Line
 	})
 	return findings
 }
@@ -492,9 +486,6 @@ func findFences(lines []string) map[int]fenceSpan {
 // already matches its files.
 func RewriteLesson(lesson string, resolve func(string) ([]byte, bool)) (string, bool) {
 	lines, trailing := splitLines(lesson)
-	if lines == nil {
-		return lesson, false
-	}
 	fences := findFences(lines)
 	opens := sortedOpens(fences)
 	changed := false
@@ -514,18 +505,12 @@ func RewriteLesson(lesson string, resolve func(string) ([]byte, bool)) (string, 
 // whether they changed. Later fences rewrite first, so earlier line
 // indexes stay valid.
 func rewriteFence(lines []string, fence fenceSpan, resolve func(string) ([]byte, bool)) ([]string, bool) {
-	if lines == nil {
-		return nil, false
-	}
 	above, hasAbove := prevNonBlank(lines, fence.open)
 	if !hasAbove {
 		return lines, false
 	}
 	anchor, parsed := anchors.ParseLine(lines[above], above+1)
 	if !parsed || anchor.Malformed {
-		return lines, false
-	}
-	if next, hasNext := anchors.NextNonBlank(lines, above); !hasNext || next != fence.open {
 		return lines, false
 	}
 	data, resolved := resolve(anchor.Path)

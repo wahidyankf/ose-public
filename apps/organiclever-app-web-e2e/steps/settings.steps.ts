@@ -67,8 +67,9 @@ Then("the saved toast appears", async ({ page }) => {
 
 When("the user changes the name to {string} and leaves the name field", async ({ page }, name: string) => {
   const input = page.getByLabel("Your name");
+  await expect(input).not.toHaveValue("");
   await input.fill(name);
-  await input.blur();
+  await page.getByText("PROFILE").click();
 });
 
 Then("the profile header shows {string}", async ({ page }, name: string) => {

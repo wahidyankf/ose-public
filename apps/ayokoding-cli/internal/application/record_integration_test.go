@@ -105,7 +105,7 @@ func loopedCourse(t *testing.T) (fs.FS, string) {
 	}
 	loop := filepath.Join(unit, "expected", "main.stdout.txt")
 	if err := os.Symlink("main.stdout.txt", loop); err != nil {
-		t.Skip("cannot create symlinks")
+		t.Fatal("cannot create symlinks")
 	}
 	return os.DirFS(dir), dir
 }
@@ -138,7 +138,7 @@ func TestIntegrationRunFailsUnreadableExpectations(t *testing.T) {
 		t.Fatal(err)
 	}
 	if err := os.Symlink("main.stderr.txt", filepath.Join(stderrUnit, "main.stderr.txt")); err != nil {
-		t.Skip("cannot create symlinks")
+		t.Fatal("cannot create symlinks")
 	}
 	stderrReq := baseRunRequest(os.DirFS(stderrDir), okStub())
 	_, stderrErr := application.Run(context.Background(), stderrReq)

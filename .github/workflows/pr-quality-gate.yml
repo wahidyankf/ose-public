@@ -427,7 +427,7 @@ jobs:
           echo "AyoKoding examples check passed"
 
   quality-gate:
-    name: quality-gate
+    name: Quality gate
     needs:
       [
         detect,

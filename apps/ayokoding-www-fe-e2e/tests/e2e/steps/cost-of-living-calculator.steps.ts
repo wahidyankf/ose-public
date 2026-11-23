@@ -106,6 +106,7 @@ type CalculatorEvidence = {
   areaAfter?: { housing: number; total: number };
   candidateBefore?: { firstSavings: string; minimumRole: string };
   candidateAfter?: { firstSavings: string; minimumRole: string };
+  selectedArea?: string;
   preschoolBefore?: Record<string, number>;
   preschoolAfter?: Record<string, number>;
   qualifyingOracle?: {
@@ -1573,7 +1574,9 @@ When(
     const areaRadio = page.getByRole("radio", { name: areaLabel });
     await areaRadio.click();
     await expect(areaRadio).toHaveAttribute("aria-checked", "true");
-    if (area === "rural") await page.waitForURL(/area=rural/);
+    // The URL omits defaults (encodeState): only a non-default area appears as a param.
+    if (area !== "center") await page.waitForURL(new RegExp(`area=${area}`));
+    evidence.selectedArea = area;
     await expect(page.locator("[data-testid='savings-triple']").first()).toBeVisible({ timeout: 60000 });
     evidence.candidateAfter = {
       firstSavings:
@@ -1646,12 +1649,13 @@ When("I change the household type or area", async ({ page }) => {
 });
 
 Then("the role candidates' savings and the marked minimum role update accordingly", async ({ page }) => {
-  const { candidateBefore: before, candidateAfter: after } = evidenceFor(page);
+  const { candidateBefore: before, candidateAfter: after, selectedArea } = evidenceFor(page);
   expect(before).toBeDefined();
   expect(after).toBeDefined();
   expect(after!.firstSavings).not.toBe(before!.firstSavings);
   expect(after!.minimumRole).not.toBe("");
-  expect(new URL(page.url()).searchParams.get("area")).toBe("rural");
+  // The URL omits the default area ("center"); compare against the area the When selected.
+  expect(new URL(page.url()).searchParams.get("area") ?? "center").toBe(selectedArea ?? "center");
 });
 
 // ── Low-confidence cells (narrowed to minimum-role tab) ──────────────────────
@@ -1685,15 +1689,15 @@ When("the gross monthly salary field is zero", async ({ page }) => {
   const input = page.getByLabel("Gross monthly salary (before tax)");
   await input.click({ clickCount: 3 });
   await page.keyboard.type("0");
-  await page.keyboard.press("Tab");
-  await page.waitForLoadState("networkidle");
+  // No Tab: the scenario ends with the input focused, so focus must stay in the field.
+  await expect(page.getByTestId("savings-empty-state")).toBeVisible();
 });
 
 When("the gross monthly salary field is empty", async ({ page }) => {
   const input = page.getByLabel("Gross monthly salary (before tax)");
   await input.fill("");
-  await input.press("Tab");
-  await page.waitForLoadState("networkidle");
+  // No Tab: the scenario ends with the input focused, so focus must stay in the field.
+  await expect(page.getByTestId("savings-empty-state")).toBeVisible();
 });
 
 Then("empty-state guidance replaces the city comparison table", async ({ page }) => {
@@ -2672,7 +2676,10 @@ Then("the household preview updates without a page reload", async ({ page }) => 
 });
 
 Then("a {string} link to {string} is shown", async ({ page }, linkText: string, href: string) => {
-  const link = page.getByRole("link", { name: new RegExp(linkText, "i") });
+  // The breadcrumb renders in the page locale: Home is "Beranda" and Tools is "Alat" under /id.
+  const localized: Record<string, string> = { Home: "(Home|Beranda)", Tools: "(Tools|Alat)" };
+  const label = localized[linkText] ?? linkText;
+  const link = page.getByRole("link", { name: new RegExp(label, "i") });
   await expect(link.first()).toBeVisible();
   const linkHref = await link.first().getAttribute("href");
   expect(linkHref).toContain(href);

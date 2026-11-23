@@ -28,7 +28,8 @@ When("the visitor opens the first search result", async ({ page }) => {
 });
 
 Then("the visitor lands on the page at {string}", async ({ page }, path: string) => {
-  await expect(page).toHaveURL((url) => url.pathname === path);
+  // Accept both /about and /about/ (Next.js strips the trailing slash by default)
+  await expect(page).toHaveURL((url) => url.pathname.replace(/\/$/, "") === path.replace(/\/$/, ""));
 });
 
 When("the visitor opens the navigation menu from the hamburger button", async ({ page }) => {

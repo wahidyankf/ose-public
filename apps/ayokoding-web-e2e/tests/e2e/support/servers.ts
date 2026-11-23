@@ -37,6 +37,8 @@ export async function freePort(): Promise<number> {
 export type SpawnedBinary = {
   port: number;
   url: string;
+  env: Record<string, string>;
+  args: string[];
   stderr: () => string;
   close: () => Promise<void>;
 };
@@ -67,19 +69,9 @@ export async function spawnExpectExit(
   return { code, stderr: errors };
 }
 
-// spawnBinary starts the built Go server and waits until it answers. The
-// server resolves its listener exactly like production: an explicit --port
-// flag wins, then AYOKODING_WEB_PORT, then 3102. A busy listener fails
-// clearly; the suite never kills or reuses another process. The caller owns
-// cleanup through the returned handle.
-export async function spawnBinary(env: Record<string, string>, args: string[] = []): Promise<SpawnedBinary> {
-  const child: ChildProcess = spawn(appBinaryPath(), args, {
-    env: { ...process.env, ...env },
-  });
-  let errors = "";
-  child.stderr?.on("data", (chunk: Buffer) => {
-    errors += chunk.toString();
-  });
+// resolvePort mirrors the server's listener precedence: an explicit --port
+// flag wins, then AYOKODING_WEB_PORT, then 3102.
+function resolvePort(env: Record<string, string>, args: string[]): number {
   let port = 3102;
   for (let index = 0; index < args.length; index += 1) {
     if (args[index] === "--port" && index + 1 < args.length) {
@@ -91,30 +83,110 @@ export async function spawnBinary(env: Record<string, string>, args: string[] = 
   if (!args.some((argument) => argument.startsWith("--port")) && env["AYOKODING_WEB_PORT"] !== undefined) {
     port = Number(env["AYOKODING_WEB_PORT"]);
   }
-  const url = `http://127.0.0.1:${port}`;
-  const deadline = Date.now() + 15000;
-  for (;;) {
-    try {
-      const response = await fetch(`${url}/en`);
-      await response.text().catch(() => undefined);
-      if (response.status === 200) break;
-    } catch {
-      // Not listening yet.
+  return port;
+}
+
+// withFreshPort rewrites the port source the server actually reads: the
+// --port flag when present (either spelling), else AYOKODING_WEB_PORT.
+function withFreshPort(
+  env: Record<string, string>,
+  args: string[],
+  fresh: number,
+): { env: Record<string, string>; args: string[] } {
+  const nextArgs = [...args];
+  const flagIndex = nextArgs.findIndex((argument) => argument === "--port" || argument.startsWith("--port="));
+  if (flagIndex !== -1) {
+    if (nextArgs[flagIndex] === "--port") {
+      nextArgs[flagIndex + 1] = String(fresh);
+    } else {
+      nextArgs[flagIndex] = `--port=${fresh}`;
     }
-    if (Date.now() > deadline || child.exitCode !== null) {
-      child.kill("SIGKILL");
+    return { env: { ...env }, args: nextArgs };
+  }
+  return { env: { ...env, AYOKODING_WEB_PORT: String(fresh) }, args: nextArgs };
+}
+
+// spawnBinary starts the built Go server and waits until it answers. The
+// server resolves its listener exactly like production: an explicit --port
+// flag wins, then AYOKODING_WEB_PORT, then 3102. A spawn that loses its
+// probed port to another process (Go stderr `bind: address already in use`)
+// is retried on a fresh free port with small bounded backoff, up to 5
+// attempts, rewriting the source the server reads (flag value when args
+// carry --port, else AYOKODING_WEB_PORT); fixed-port modes (default 3102,
+// generic PORT) stay fail-fast with no retry. The returned env/args carry
+// the effective values so callers can propagate the bound port. The caller
+// owns cleanup through the returned handle.
+export async function spawnBinary(env: Record<string, string>, args: string[] = []): Promise<SpawnedBinary> {
+  const retryable = args.some((argument) => argument.startsWith("--port")) || env["AYOKODING_WEB_PORT"] !== undefined;
+  const maxAttempts = 5;
+  let attemptEnv = { ...env };
+  let attemptArgs = [...args];
+  let lastErrors = "";
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    const port = resolvePort(attemptEnv, attemptArgs);
+    const url = `http://127.0.0.1:${port}`;
+    const child: ChildProcess = spawn(appBinaryPath(), attemptArgs, {
+      env: { ...process.env, ...attemptEnv },
+    });
+    let errors = "";
+    child.stderr?.on("data", (chunk: Buffer) => {
+      errors += chunk.toString();
+    });
+    const deadline = Date.now() + 15000;
+    let ready = false;
+    for (;;) {
+      try {
+        const response = await fetch(`${url}/en`);
+        await response.text().catch(() => undefined);
+        if (response.status === 200) {
+          ready = true;
+          break;
+        }
+      } catch {
+        // Not listening yet.
+      }
+      if (Date.now() > deadline || child.exitCode !== null) {
+        break;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 200));
+    }
+    if (ready) {
+      const finalEnv = { ...attemptEnv };
+      const finalArgs = [...attemptArgs];
+      return {
+        port,
+        url,
+        env: finalEnv,
+        args: finalArgs,
+        stderr: () => errors,
+        close: async () => {
+          child.kill("SIGTERM");
+        },
+      };
+    }
+    lastErrors = errors;
+    child.kill("SIGKILL");
+    await new Promise<void>((resolve) => {
+      if (child.exitCode !== null) {
+        resolve();
+        return;
+      }
+      const timer = setTimeout(resolve, 1000);
+      child.once("exit", () => {
+        clearTimeout(timer);
+        resolve();
+      });
+    });
+    const collision = errors.includes("bind: address already in use");
+    if (!retryable || !collision || attempt === maxAttempts) {
       throw new Error(`Go server on ${port} never became ready: ${errors}`);
     }
-    await new Promise((resolve) => setTimeout(resolve, 200));
+    const rewritten = withFreshPort(attemptEnv, attemptArgs, await freePort());
+    attemptEnv = rewritten.env;
+    attemptArgs = rewritten.args;
+    await new Promise((resolve) => setTimeout(resolve, 100 * attempt));
   }
-  return {
-    port,
-    url,
-    stderr: () => errors,
-    close: async () => {
-      child.kill("SIGTERM");
-    },
-  };
+  throw new Error(`Go server never became ready: ${lastErrors}`);
 }
 
 export type StubServer = {

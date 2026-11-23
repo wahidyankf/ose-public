@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
-	"os/exec"
+	"os/exec" //nolint:depguard // the group tests name unstarted commands only; no test starts a process through this import.
 	"strings"
 	"testing"
 	"time"
@@ -59,7 +59,7 @@ func TestCommandForPrefersConfiguredCLIOverPlan(t *testing.T) {
 	if got := plain.commandFor(invoke); got != "plan-cli" {
 		t.Fatalf("commandFor=%q, want the planned binary", got)
 	}
-	if got := plain.commandFor(containerplan.Invocation{}); got != defaultContainerCLI {
+	if got := plain.commandFor(containerplan.Invocation{Binary: "", Args: nil}); got != defaultContainerCLI {
 		t.Fatalf("commandFor=%q, want the default %q", got, defaultContainerCLI)
 	}
 }
@@ -147,7 +147,7 @@ func TestRuntimeRunnerFallsBackToSupervisedExec(t *testing.T) {
 // TestFinishRunKeepsExitCode requires an injected container exit to carry
 // its status with the split streams.
 func TestFinishRunKeepsExitCode(t *testing.T) {
-	invoke := containerplan.Invocation{Binary: "img"}
+	invoke := containerplan.Invocation{Binary: "img", Args: nil}
 	result, err := finishRun(invoke, "out\n", "err\n", &exitError{code: 2})
 	if err != nil {
 		t.Fatalf("finishRun=%v, want nil", err)
@@ -169,7 +169,7 @@ func TestSetProcessGroupLeadsChild(t *testing.T) {
 
 // TestKillProcessGroupSkipsUnstartedChild requires a command without a
 // process to skip the group kill.
-func TestKillProcessGroupSkipsUnstartedChild(t *testing.T) {
+func TestKillProcessGroupSkipsUnstartedChild(_ *testing.T) {
 	killProcessGroup(&exec.Cmd{})
 }
 
@@ -177,11 +177,11 @@ func TestKillProcessGroupSkipsUnstartedChild(t *testing.T) {
 // local exit-zero binary as success and a failing one with the closed
 // build code.
 func TestRealExecReportsLocalExitStatus(t *testing.T) {
-	invoke := containerplan.Invocation{Binary: "/bin/true"}
+	invoke := containerplan.Invocation{Binary: "/bin/true", Args: nil}
 	if err := (Builder{}).run(context.Background(), invoke); err != nil {
 		t.Fatalf("run=%v, want nil", err)
 	}
-	err := (Builder{}).run(context.Background(), containerplan.Invocation{Binary: "/bin/false"})
+	err := (Builder{}).run(context.Background(), containerplan.Invocation{Binary: "/bin/false", Args: nil})
 	coded, isCoded := errors.AsType[*finding.Error](err)
 	if !isCoded || coded.Code != envBuildFailed {
 		t.Fatalf("run=%v, want the closed build code", err)

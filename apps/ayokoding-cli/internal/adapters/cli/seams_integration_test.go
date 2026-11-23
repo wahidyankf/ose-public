@@ -16,7 +16,9 @@ import (
 
 // fakeContainerScript writes a shell script standing in for the
 // container CLI: info answers rootless, pull fails closed, and every
-// other call succeeds silently. Callers add behaviour through extra.
+// other call succeeds silently. Callers add behaviour through extra. It
+// returns the script path, so tests wire it through cli.Options instead
+// of the process environment.
 func fakeContainerScript(t *testing.T, extra string) string {
 	t.Helper()
 	dir := t.TempDir()
@@ -29,8 +31,7 @@ func fakeContainerScript(t *testing.T, extra string) string {
 	if err := os.WriteFile(script, []byte(body), 0o700); err != nil {
 		t.Fatalf("write fake container CLI: %v", err)
 	}
-	t.Setenv("AYOKODING_CONTAINER_CLI", script)
-	return log
+	return script
 }
 
 // copyDir copies a fixture tree into a writable directory.
@@ -261,10 +262,10 @@ func TestIntegrationSyncWritesRepairs(t *testing.T) {
 // TestIntegrationRunWithoutRuntimeFailsClosed requires the run to
 // refuse the failing container runtime with its code.
 func TestIntegrationRunWithoutRuntimeFailsClosed(t *testing.T) {
-	fakeContainerScript(t, "")
+	script := fakeContainerScript(t, "")
 	stdout, stderr, status := invoke(t,
 		[]string{"examples", "run", "--course", "green-python", "--content", fixtureCoursesRoot, "--catalog", fixtureCatalog},
-		cli.Options{})
+		cli.Options{ContainerCLI: script})
 	if status != 125 {
 		t.Fatalf("status=%d, want 125 (stdout=%q stderr=%q)", status, stdout, stderr)
 	}
@@ -276,10 +277,10 @@ func TestIntegrationRunWithoutRuntimeFailsClosed(t *testing.T) {
 // TestIntegrationRunFindingsWithoutRuntime requires a course with no
 // runnable units to report its missing specs without running.
 func TestIntegrationRunFindingsWithoutRuntime(t *testing.T) {
-	fakeContainerScript(t, "")
+	script := fakeContainerScript(t, "")
 	stdout, stderr, status := invoke(t,
 		[]string{"examples", "run", "--course", "inert-course", "--content", fixtureCoursesRoot, "--catalog", fixtureCatalog},
-		cli.Options{})
+		cli.Options{ContainerCLI: script})
 	if status != 1 {
 		t.Fatalf("status=%d, want 1 (stdout=%q stderr=%q)", status, stdout, stderr)
 	}
@@ -288,7 +289,7 @@ func TestIntegrationRunFindingsWithoutRuntime(t *testing.T) {
 	}
 	stdout, _, status = invoke(t,
 		[]string{"examples", "run", "--course", "inert-course", "--content", fixtureCoursesRoot, "--catalog", fixtureCatalog, "--output", "json"},
-		cli.Options{})
+		cli.Options{ContainerCLI: script})
 	if status != 1 {
 		t.Fatalf("status=%d, want 1 (stdout=%q)", status, stdout)
 	}
@@ -298,14 +299,14 @@ func TestIntegrationRunFindingsWithoutRuntime(t *testing.T) {
 	var pipeErr bytes.Buffer
 	status = cli.Execute(context.Background(),
 		[]string{"examples", "run", "--course", "inert-course", "--content", fixtureCoursesRoot, "--catalog", fixtureCatalog},
-		cli.Options{Stdout: neverWriter{}, Stderr: &pipeErr})
+		cli.Options{Stdout: neverWriter{}, Stderr: &pipeErr, ContainerCLI: script})
 	if status != 141 {
 		t.Fatalf("status=%d, want 141 (stderr=%q)", status, pipeErr.String())
 	}
 	var jsonPipeErr bytes.Buffer
 	status = cli.Execute(context.Background(),
 		[]string{"examples", "run", "--course", "inert-course", "--content", fixtureCoursesRoot, "--catalog", fixtureCatalog, "--output", "json"},
-		cli.Options{Stdout: neverWriter{}, Stderr: &jsonPipeErr})
+		cli.Options{Stdout: neverWriter{}, Stderr: &jsonPipeErr, ContainerCLI: script})
 	if status != 141 {
 		t.Fatalf("status=%d, want 141 in json mode (stderr=%q)", status, jsonPipeErr.String())
 	}
@@ -314,10 +315,10 @@ func TestIntegrationRunFindingsWithoutRuntime(t *testing.T) {
 // TestIntegrationCheckWithoutRuntimeRendersEmptyReport requires the
 // check to render the empty report before failing the runtime closed.
 func TestIntegrationCheckWithoutRuntimeRendersEmptyReport(t *testing.T) {
-	fakeContainerScript(t, "")
+	script := fakeContainerScript(t, "")
 	stdout, stderr, status := invoke(t,
 		[]string{"examples", "check", "--course", "green-python", "--content", fixtureCoursesRoot, "--catalog", fixtureCatalog},
-		cli.Options{})
+		cli.Options{ContainerCLI: script})
 	if status != 125 {
 		t.Fatalf("status=%d, want 125 (stdout=%q stderr=%q)", status, stdout, stderr)
 	}
@@ -326,7 +327,7 @@ func TestIntegrationCheckWithoutRuntimeRendersEmptyReport(t *testing.T) {
 	}
 	stdout, _, status = invoke(t,
 		[]string{"examples", "check", "--course", "green-python", "--content", fixtureCoursesRoot, "--catalog", fixtureCatalog, "--output", "json"},
-		cli.Options{})
+		cli.Options{ContainerCLI: script})
 	if status != 125 {
 		t.Fatalf("status=%d, want 125 (stdout=%q)", status, stdout)
 	}
@@ -384,18 +385,20 @@ func TestIntegrationCheckRendersReportFailures(t *testing.T) {
 // TestIntegrationRunAppliesValidShard requires a well-formed shard to
 // slice the run selection, failing closed at the runtime.
 func TestIntegrationRunAppliesValidShard(t *testing.T) {
-	fakeContainerScript(t, "")
+	script := fakeContainerScript(t, "")
 	_, stderr, status := invoke(t,
 		[]string{"examples", "run", "--course", "green-python", "--shard", "1/1", "--content", fixtureCoursesRoot, "--catalog", fixtureCatalog},
-		cli.Options{})
+		cli.Options{ContainerCLI: script})
 	if status != 125 {
 		t.Fatalf("status=%d, want 125 (stderr=%q)", status, stderr)
 	}
 }
 
 // fakeContainerGreen writes a shell script whose run prints the given
-// payload with exit 0, so recorded static runs pass deterministically.
-func fakeContainerGreen(t *testing.T, payload string) {
+// payload with exit 0, so recorded static runs pass deterministically. It
+// returns the script path, so tests wire it through cli.Options instead
+// of the process environment.
+func fakeContainerGreen(t *testing.T, payload string) string {
 	t.Helper()
 	dir := t.TempDir()
 	log := filepath.Join(dir, "argv.log")
@@ -407,19 +410,19 @@ func fakeContainerGreen(t *testing.T, payload string) {
 	if err := os.WriteFile(script, []byte(body), 0o700); err != nil {
 		t.Fatalf("write fake container CLI: %v", err)
 	}
-	t.Setenv("AYOKODING_CONTAINER_CLI", script)
+	return script
 }
 
 // recordStaticCourse copies the fixture tree and records the static
 // run, returning the recorded tree.
 func recordStaticCourse(t *testing.T) string {
 	t.Helper()
-	fakeContainerGreen(t, "static check placeholder\n")
+	script := fakeContainerGreen(t, "static check placeholder\n")
 	root := t.TempDir()
 	copyDir(t, fixtureCoursesRoot, root)
 	stdout, stderr, status := invoke(t,
 		[]string{"examples", "run", "--course", "static-course", "--record", "--content", root, "--catalog", fixtureCatalog},
-		cli.Options{})
+		cli.Options{ContainerCLI: script})
 	if status != 1 {
 		t.Fatalf("status=%d, want 1 recording (stdout=%q stderr=%q)", status, stdout, stderr)
 	}
@@ -430,10 +433,10 @@ func recordStaticCourse(t *testing.T) string {
 // to pass green without containers.
 func TestIntegrationRunPassesRecordedStatic(t *testing.T) {
 	root := recordStaticCourse(t)
-	fakeContainerGreen(t, "static check placeholder\n")
+	script := fakeContainerGreen(t, "static check placeholder\n")
 	stdout, stderr, status := invoke(t,
 		[]string{"examples", "run", "--course", "static-course", "--content", root, "--catalog", fixtureCatalog},
-		cli.Options{})
+		cli.Options{ContainerCLI: script})
 	if status != 0 {
 		t.Fatalf("status=%d, want 0 (stdout=%q stderr=%q)", status, stdout, stderr)
 	}
@@ -446,10 +449,10 @@ func TestIntegrationRunPassesRecordedStatic(t *testing.T) {
 // check to report its green runs beside the sync findings.
 func TestIntegrationCheckReportsRecordedStatic(t *testing.T) {
 	root := recordStaticCourse(t)
-	fakeContainerGreen(t, "static check placeholder\n")
+	script := fakeContainerGreen(t, "static check placeholder\n")
 	stdout, stderr, status := invoke(t,
 		[]string{"examples", "check", "--course", "static-course", "--content", root, "--catalog", fixtureCatalog},
-		cli.Options{})
+		cli.Options{ContainerCLI: script})
 	if status != 1 {
 		t.Fatalf("status=%d, want 1 with the sync findings (stdout=%q stderr=%q)", status, stdout, stderr)
 	}
@@ -461,11 +464,11 @@ func TestIntegrationCheckReportsRecordedStatic(t *testing.T) {
 // TestIntegrationRunPassesLessonOnlyCourse requires a course with no
 // units to pass without running anything.
 func TestIntegrationRunPassesLessonOnlyCourse(t *testing.T) {
-	fakeContainerScript(t, "")
+	script := fakeContainerScript(t, "")
 	root := quietTree(t)
 	stdout, stderr, status := invoke(t,
 		[]string{"examples", "run", "--course", "quiet-course", "--content", root, "--catalog", fixtureCatalog},
-		cli.Options{})
+		cli.Options{ContainerCLI: script})
 	if status != 0 {
 		t.Fatalf("status=%d, want 0 (stdout=%q stderr=%q)", status, stdout, stderr)
 	}

@@ -23,3 +23,7 @@ internal/adapters/content/sync.go:628 # file-write failure after Stat+IsDir succ
 internal/adapters/content/sync.go:629 # same write-failure residue
 internal/adapters/content/sync.go:632 # chmod-after-successful-write has no deterministic trigger in unit
 internal/adapters/content/sync.go:633 # same chmod residue
+internal/adapters/content/sync.go:162 # nilaway-required nil guard; splitLines wraps strings.Split (never nil), true arm unreachable in unit
+internal/adapters/content/sync.go:493 # nilaway-required nil guard in RewriteLesson; splitLines never returns nil, true arm unreachable in unit
+internal/adapters/content/sync.go:515 # nilaway-required nil guard in rewriteFence; splitLines never returns nil, true arm unreachable in unit
+internal/bootstrap/bootstrap.go:25 # process exit in Main via os.Exit; untestable in-process like cmd entry

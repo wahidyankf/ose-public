@@ -66,6 +66,7 @@
       ]
     },
     "test:integration": {
+      "dependsOn": ["ose-be:codegen"],
       "executor": "nx:run-commands",
       "options": {
         "command": "env -u API_BASE_URL apps/ose-be/scripts/run-e2e.sh"

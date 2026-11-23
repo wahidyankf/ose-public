@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"encoding/json"
 	"fmt"
 	"strconv"
 
@@ -74,7 +73,7 @@ func renderFailures(cmd *cobra.Command, color bool, mode string) error {
 				Message: run.message,
 			})
 		}
-		body, _ := json.Marshal(document)
+		body := marshalReport(document)
 		if _, err := fmt.Fprintln(out, string(body)); err != nil {
 			return &finding.PipeError{}
 		}

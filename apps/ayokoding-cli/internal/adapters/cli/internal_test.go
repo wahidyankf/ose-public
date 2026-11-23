@@ -535,42 +535,50 @@ func TestRunFuncsReadFlagsFirst(t *testing.T) {
 		{"coverage output", func(cmd *cobra.Command) error {
 			return runCoverage(withContent("catalog", "course", "include-inert", "min-percent", "content"))
 		}, "read --output"},
-		{"check catalog", func(cmd *cobra.Command) error { return runCheck(ctx, cmd) }, "read --catalog"},
-		{"check course", func(cmd *cobra.Command) error { return runCheck(ctx, flagCommand("catalog")) }, "read --course"},
-		{"check since", func(cmd *cobra.Command) error { return runCheck(ctx, flagCommand("catalog", "course")) }, "read --since"},
-		{"check all", func(cmd *cobra.Command) error { return runCheck(ctx, flagCommand("catalog", "course", "since")) }, "read --all"},
-		{"check shard", func(cmd *cobra.Command) error { return runCheck(ctx, flagCommand("catalog", "course", "since", "all")) }, "read --shard"},
+		{"check catalog", func(cmd *cobra.Command) error { return runCheck(ctx, cmd, Options{}) }, "read --catalog"},
+		{"check course", func(cmd *cobra.Command) error { return runCheck(ctx, flagCommand("catalog"), Options{}) }, "read --course"},
+		{"check since", func(cmd *cobra.Command) error { return runCheck(ctx, flagCommand("catalog", "course"), Options{}) }, "read --since"},
+		{"check all", func(cmd *cobra.Command) error {
+			return runCheck(ctx, flagCommand("catalog", "course", "since"), Options{})
+		}, "read --all"},
+		{"check shard", func(cmd *cobra.Command) error {
+			return runCheck(ctx, flagCommand("catalog", "course", "since", "all"), Options{})
+		}, "read --shard"},
 		{"check content", func(cmd *cobra.Command) error {
-			return runCheck(ctx, flagCommand("catalog", "course", "since", "all", "shard"))
+			return runCheck(ctx, flagCommand("catalog", "course", "since", "all", "shard"), Options{})
 		}, "read --content"},
 		{"check output", func(cmd *cobra.Command) error {
-			return runCheck(ctx, withContent("catalog", "course", "since", "all", "shard", "content"))
+			return runCheck(ctx, withContent("catalog", "course", "since", "all", "shard", "content"), Options{})
 		}, "read --output"},
-		{"run catalog", func(cmd *cobra.Command) error { return runRun(ctx, cmd) }, "read --catalog"},
-		{"run course", func(cmd *cobra.Command) error { return runRun(ctx, flagCommand("catalog")) }, "read --course"},
-		{"run since", func(cmd *cobra.Command) error { return runRun(ctx, flagCommand("catalog", "course")) }, "read --since"},
-		{"run all", func(cmd *cobra.Command) error { return runRun(ctx, flagCommand("catalog", "course", "since")) }, "read --all"},
-		{"run shard", func(cmd *cobra.Command) error { return runRun(ctx, flagCommand("catalog", "course", "since", "all")) }, "read --shard"},
+		{"run catalog", func(cmd *cobra.Command) error { return runRun(ctx, cmd, Options{}) }, "read --catalog"},
+		{"run course", func(cmd *cobra.Command) error { return runRun(ctx, flagCommand("catalog"), Options{}) }, "read --course"},
+		{"run since", func(cmd *cobra.Command) error { return runRun(ctx, flagCommand("catalog", "course"), Options{}) }, "read --since"},
+		{"run all", func(cmd *cobra.Command) error {
+			return runRun(ctx, flagCommand("catalog", "course", "since"), Options{})
+		}, "read --all"},
+		{"run shard", func(cmd *cobra.Command) error {
+			return runRun(ctx, flagCommand("catalog", "course", "since", "all"), Options{})
+		}, "read --shard"},
 		{"run unit", func(cmd *cobra.Command) error {
-			return runRun(ctx, flagCommand("catalog", "course", "since", "all", "shard"))
+			return runRun(ctx, flagCommand("catalog", "course", "since", "all", "shard"), Options{})
 		}, "read --unit"},
 		{"run seed", func(cmd *cobra.Command) error {
 			seeded := flagCommand("catalog", "course", "since", "all", "shard", "unit")
 			seeded.Flags().String("seed", "", "")
 			_ = seeded.Flags().Set("seed", "x")
-			return runRun(ctx, seeded)
+			return runRun(ctx, seeded, Options{})
 		}, "read --seed"},
 		{"run record", func(cmd *cobra.Command) error {
-			return runRun(ctx, flagCommand("catalog", "course", "since", "all", "shard", "unit"))
+			return runRun(ctx, flagCommand("catalog", "course", "since", "all", "shard", "unit"), Options{})
 		}, "read --record"},
 		{"run single", func(cmd *cobra.Command) error {
-			return runRun(ctx, flagCommand("catalog", "course", "since", "all", "shard", "unit", "record"))
+			return runRun(ctx, flagCommand("catalog", "course", "since", "all", "shard", "unit", "record"), Options{})
 		}, "read --single-run"},
 		{"run content", func(cmd *cobra.Command) error {
-			return runRun(ctx, flagCommand("catalog", "course", "since", "all", "shard", "unit", "record", "single-run"))
+			return runRun(ctx, flagCommand("catalog", "course", "since", "all", "shard", "unit", "record", "single-run"), Options{})
 		}, "read --content"},
 		{"run output", func(cmd *cobra.Command) error {
-			return runRun(ctx, withContent("catalog", "course", "since", "all", "shard", "unit", "record", "single-run", "content"))
+			return runRun(ctx, withContent("catalog", "course", "since", "all", "shard", "unit", "record", "single-run", "content"), Options{})
 		}, "read --output"},
 		{"affected course", func(cmd *cobra.Command) error { return runAffected(ctx, cmd) }, "read --course"},
 		{"affected since", func(cmd *cobra.Command) error { return runAffected(ctx, flagCommand("course")) }, "read --since"},
@@ -590,8 +598,8 @@ func TestRunFuncsReadFlagsFirst(t *testing.T) {
 		{"sync output", func(cmd *cobra.Command) error {
 			return runSync(withContent("course", "include-inert", "write", "content"))
 		}, "read --output"},
-		{"build catalog", func(cmd *cobra.Command) error { return runBuild(ctx, cmd) }, "read --catalog"},
-		{"build output", func(cmd *cobra.Command) error { return runBuild(ctx, flagCommand("catalog")) }, "read --output"},
+		{"build catalog", func(cmd *cobra.Command) error { return runBuild(ctx, cmd, Options{}) }, "read --catalog"},
+		{"build output", func(cmd *cobra.Command) error { return runBuild(ctx, flagCommand("catalog"), Options{}) }, "read --output"},
 	}
 	for _, row := range rows {
 		t.Run(row.name, func(t *testing.T) {
@@ -611,7 +619,7 @@ func TestRunBuildUnknownIDFailsClosed(t *testing.T) {
 	}
 	var stdout bytes.Buffer
 	cmd.SetOut(&stdout)
-	if err := runBuild(context.Background(), cmd); err == nil ||
+	if err := runBuild(context.Background(), cmd, Options{}); err == nil ||
 		!strings.Contains(err.Error(), "cli: build images") {
 		t.Fatalf("runBuild=%v, want the build failure", err)
 	}

@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
 	"os"
@@ -80,7 +79,7 @@ func renderCoverage(out io.Writer, mode string, assessed application.CoverageRep
 				Covered:            course.Covered,
 			})
 		}
-		body, _ := json.Marshal(document)
+		body := marshalReport(document)
 		if _, err := fmt.Fprintln(out, string(body)); err != nil {
 			return &finding.PipeError{}
 		}

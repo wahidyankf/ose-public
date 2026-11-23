@@ -21,6 +21,8 @@ go test -race -count=1 -coverpkg="$coverpkg" -coverprofile=coverage/bdd.out ./te
 	cat coverage/unit.out
 	grep -v '^mode:' coverage/bdd.out
 } >coverage/unit-report.out
+# Q31 owner-granted exemptions, D4 floor stays 99: skip listed uncovered blocks, fail closed on stale/covered rules.
 go run ./tests/coverage --profile coverage/unit-report.out \
 	--files "$production_files" \
+	--exclude-blocks tests/coverage/exemptions.txt \
 	--minimum "${COVERAGE_MINIMUM:-99}"

@@ -1,0 +1,25 @@
+cmd/ayokoding-cli/main.go:7 # process entry; bootstrap.Main calls os.Exit, untestable in-process
+internal/adapters/cli/selection.go:31 # real-git ContentPrefix success; needs merge-base+rev-parse success, no double for gitOutput
+internal/adapters/cli/selection.go:33 # real-git locate-content success path, same gitOutput double gap
+internal/adapters/git/git.go:25 # real git rev-parse success after merge-base success; unit covers only failure arm
+internal/adapters/git/git.go:29 # real git TrimSpace+EvalSymlinks success; unit covers only failure arm
+internal/adapters/git/git.go:33 # real git Rel success; unit covers only failure arm
+internal/adapters/git/git.go:52 # real git diff success; unreachable in unit (failure-arm only)
+internal/adapters/git/git.go:56 # real git files-loop success; unreachable in unit (failure-arm only)
+internal/adapters/cli/selection.go:22 # filepath.Abs error needs deleted process cwd; nondeterministic under parallel tests
+internal/adapters/cli/selection.go:35 # content-locate success tail; needs real git success
+internal/adapters/cli/selection.go:64 # resolveSince success tail; post-selection success engages real runtime, integration-owned
+internal/adapters/cli/build_cmd.go:39 # run/build success tail; needs BuildDerived success with real Builder (real image build child)
+internal/adapters/cli/check_cmd.go:193 # check-completion residue; needs application.Check to complete via real runtime/container children
+internal/adapters/cli/check_cmd.go:194 # same Check-completion residue
+internal/adapters/cli/check_cmd.go:196 # same Check-completion residue
+internal/adapters/cli/root.go:417 # post-selection success; continuing in-process engages real runtime (Probe/containers), integration-owned
+internal/adapters/cli/root.go:446 # run-completion residue; needs application.Run via real containers
+internal/adapters/cli/root.go:447 # same Run-completion residue
+internal/adapters/cli/root.go:449 # same Run-completion residue
+internal/adapters/containers/build.go:49 # writeFiles wrap; write failure after MkdirTemp success has no deterministic unit trigger
+internal/adapters/containers/run.go:463 # waiter race; error neither nil nor *exec.ExitError (lost-child), no deterministic trigger
+internal/adapters/content/sync.go:628 # file-write failure after Stat+IsDir success needs read-only dir/disk-full/TOCTOU; nondeterministic
+internal/adapters/content/sync.go:629 # same write-failure residue
+internal/adapters/content/sync.go:632 # chmod-after-successful-write has no deterministic trigger in unit
+internal/adapters/content/sync.go:633 # same chmod residue

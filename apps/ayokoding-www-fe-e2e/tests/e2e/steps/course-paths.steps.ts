@@ -155,13 +155,15 @@ Then("the courses appear in the fixture manifest's phase order", async ({ page }
 });
 
 Then("every course link carries the path context query parameter", async ({ page }) => {
-  const nav = page.getByRole("navigation", { name: /backend track \(interview-ready\) syllabus/i });
+  // The position-numbers scenario stages the immediately-effective backend track; assert
+  // against that path's syllabus, not the interview-ready one used by the breadcrumb scenario.
+  const nav = page.getByRole("navigation", { name: "Backend Track (Immediately-Effective) syllabus" });
   const links = nav.getByRole("link");
   const count = await links.count();
   expect(count).toBeGreaterThan(0);
   for (let i = 0; i < count; i++) {
     const href = await links.nth(i).getAttribute("href");
-    expect(href).toContain("?path=careers/interview-ready/backend-track");
+    expect(href).toContain("?path=careers/immediately-effective/backend-track");
   }
 });
 
@@ -1354,7 +1356,10 @@ Given("a reader on a phone opens a course in path context", async ({ page }) => 
 });
 
 Then("the path readout reads {string}", async ({ page }, text: string) => {
-  await expect(page.getByText(new RegExp(text, "i")).first()).toBeVisible();
+  // On a phone viewport the desktop rail readout carries the same text but is hidden by
+  // responsive CSS; assert the phone banner (PathBanner's md:hidden container) instead.
+  const banner = page.locator("div.md\\:hidden");
+  await expect(banner.getByText(new RegExp(text, "i"))).toBeVisible();
 });
 
 Then('"You cannot yet" is shown only for a phase that declares what the reader cannot yet do', async ({ page }) => {

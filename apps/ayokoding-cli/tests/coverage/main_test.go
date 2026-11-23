@@ -2,10 +2,9 @@ package main
 
 import (
 	"errors"
-	"os"
-	"path/filepath"
 	"strings"
 	"testing"
+	"testing/fstest"
 )
 
 func TestCoverageDiscoveryDistinguishesDeclarationsFromExecutableBodies(t *testing.T) {
@@ -70,34 +69,28 @@ func TestCoverageRefusesConflictingBlockStatementCounts(t *testing.T) {
 }
 
 func TestCoverageLoadExclusionRules(t *testing.T) {
-	directory := t.TempDir()
-	missing := filepath.Join(directory, "missing.txt")
-	valid := filepath.Join(directory, "valid.txt")
-	if err := os.WriteFile(valid, []byte("body.go:10 # real runtime only\n\nother.go:20 # no unit trigger\n"), 0o600); err != nil {
-		t.Fatal(err)
-	}
-	reasonless := filepath.Join(directory, "reasonless.txt")
-	if err := os.WriteFile(reasonless, []byte("body.go:10\n"), 0o600); err != nil {
-		t.Fatal(err)
+	fsys := fstest.MapFS{
+		"valid.txt":      {Data: []byte("body.go:10 # real runtime only\n\nother.go:20 # no unit trigger\n")},
+		"reasonless.txt": {Data: []byte("body.go:10\n")},
 	}
 	for _, row := range []struct {
 		name, path string
 		want       int
 		wantErr    error
 	}{
-		{"valid rules", valid, 2, nil},
-		{"missing file", missing, 0, nil}, // any error closes the gate; sentinel asserted below
-		{"missing reason", reasonless, 0, errCoverageExcludeFormat},
+		{"valid rules", "valid.txt", 2, nil},
+		{"missing file", "missing.txt", 0, nil}, // any error closes the gate; sentinel asserted below
+		{"missing reason", "reasonless.txt", 0, errCoverageExcludeFormat},
 	} {
 		t.Run(row.name, func(t *testing.T) {
-			rules, err := loadExclusionRules(row.path)
+			rules, err := loadExclusionRules(fsys, row.path)
 			if row.wantErr != nil {
 				if !errors.Is(err, row.wantErr) {
 					t.Fatalf("error=%v, want %v", err, row.wantErr)
 				}
 				return
 			}
-			if row.path == missing {
+			if row.path == "missing.txt" {
 				if err == nil {
 					t.Fatal("missing rule file accepted")
 				}
@@ -110,6 +103,19 @@ func TestCoverageLoadExclusionRules(t *testing.T) {
 				t.Fatalf("rule parsed wrong: %+v", rules[0])
 			}
 		})
+	}
+}
+
+func TestCoverageParseExclusionRules(t *testing.T) {
+	rules, err := parseExclusionRules(strings.NewReader("body.go:10 # real runtime only\n\nother.go:20 # no unit trigger\n"))
+	if err != nil || len(rules) != 2 {
+		t.Fatalf("rules=%v error=%v, want 2 rules", rules, err)
+	}
+	if rules[0].path != "body.go" || rules[0].line != 10 || rules[0].reason == "" {
+		t.Fatalf("rule parsed wrong: %+v", rules[0])
+	}
+	if _, err := parseExclusionRules(strings.NewReader("body.go:10\n")); !errors.Is(err, errCoverageExcludeFormat) {
+		t.Fatalf("reasonless rule accepted: %v", err)
 	}
 }
 

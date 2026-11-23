@@ -297,10 +297,7 @@ func renderRun(out io.Writer, mode string, report application.RunReport) error {
 				Message: found.Message,
 			})
 		}
-		body, err := json.Marshal(document)
-		if err != nil {
-			return fmt.Errorf("cli: marshal run report: %w", err)
-		}
+		body, _ := json.Marshal(document)
 		if _, err := fmt.Fprintln(out, string(body)); err != nil {
 			return &finding.PipeError{}
 		}

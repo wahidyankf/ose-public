@@ -8,6 +8,7 @@
  * `process.env`) so the suite never touches this app's real environment or filesystem tier files.
  */
 import path from "path";
+import { spawnSync } from "node:child_process";
 import { mkdtempSync, rmSync, writeFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
@@ -38,11 +39,36 @@ function cleanupTmpDirs(): void {
   }
 }
 
+/** The real dev-server port wrapper that every Next.js app in this repository starts through. */
+const DEV_WRAPPER = path.resolve(__dirname, "../../../../scripts/next-with-port.mjs");
+
+/**
+ * Runs the real wrapper in a child process whose environment holds only the given port variable, and
+ * returns the port it hands to the server it starts. The `--server` form starts a one-line fixture
+ * server instead of Next, which keeps the test off the network while the port resolution is the real one.
+ */
+function startDevWrapperPort(portValue: string | undefined): string {
+  const dir = makeTmpAppDir();
+  const fixture = path.join(dir, "report-port.mjs");
+  writeFileSync(fixture, "process.stdout.write(String(process.env.PORT));\n", "utf-8");
+  const childEnv: Record<string, string> = { PATH: process.env["PATH"] ?? "" };
+  if (portValue !== undefined) childEnv["AYOKODING_WWW_PORT"] = portValue;
+  const result = spawnSync(
+    process.execPath,
+    [DEV_WRAPPER, "--env", "AYOKODING_WWW_PORT", "--default", "3101", "--server", fixture],
+    // Next's global typing requires NODE_ENV on ProcessEnv. The child is pinned to "test", the value the runner sets.
+    { cwd: dir, env: { ...childEnv, NODE_ENV: "test" }, encoding: "utf8" },
+  );
+  expect(result.status, result.stderr).toBe(0);
+  return result.stdout;
+}
+
 describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
   AfterEachScenario(() => {
     cleanupTmpDirs();
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/build-tools/env-loader/env-loader.feature: ayokoding-www bootstrap loads staging configuration
   Scenario("ayokoding-www bootstrap loads staging configuration", ({ Given, When, Then }) => {
     let appDir = "";
     let env: EnvRecord = {};
@@ -68,6 +94,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/build-tools/env-loader/env-loader.feature: ayokoding-www process env wins over the local tier file
   Scenario("ayokoding-www process env wins over the local tier file", ({ Given, When, Then, And }) => {
     let appDir = "";
     let env: EnvRecord = {};
@@ -91,6 +118,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/build-tools/env-loader/env-loader.feature: ayokoding-www tolerates a missing tier file
   Scenario("ayokoding-www tolerates a missing tier file", ({ Given, When, Then, And }) => {
     let appDir = "";
     let env: EnvRecord = {};
@@ -119,6 +147,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/build-tools/env-loader/env-loader.feature: ayokoding-www fails loudly on a stray auto-loaded env file
   ScenarioOutline("ayokoding-www fails loudly on a stray auto-loaded env file", ({ Given, When, Then }, examples) => {
     const file = String(examples["file"] ?? "");
     let appDir = "";
@@ -144,6 +173,25 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, AfterEachScenario }) => {
       expect((thrown as Error).message).toContain(".env.stag");
     });
   });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/build-tools/env-loader/env-loader.feature: The dev server listens on AYOKODING_WWW_PORT and defaults to port 3101
+  ScenarioOutline(
+    "The dev server listens on AYOKODING_WWW_PORT and defaults to port 3101",
+    ({ Given, When, Then }, examples) => {
+      let portValue: string | undefined;
+      let handedPort = "";
+
+      Given('AYOKODING_WWW_PORT is "<value>"', () => {
+        portValue = examples["value"] === "unset" ? undefined : String(examples["value"]);
+      });
+      When("the dev server starts", () => {
+        handedPort = startDevWrapperPort(portValue);
+      });
+      Then("the dev server listens on port <port>", () => {
+        expect(handedPort).toBe(String(examples["port"]));
+      });
+    },
+  );
 });
 
 // Rule 1 (APP_ENV unset defaults to "local") is covered once, directly against `resolveTier`, in

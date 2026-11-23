@@ -5,7 +5,7 @@ when_to_use: Use when a *-to-pr plan approaches archival and must establish curr
 
 # Finalization and Archival — Exact-Head PR CI Gate
 
-For `worktree-to-pr` and `main-to-pr`, finalization requires the `Quality gate` check from
+For `worktree-to-pr` and `main-to-pr`, finalization requires the `quality-gate` check from
 `.github/workflows/pr-quality-gate.yml` to be green for the PR's exact current head SHA and current
 base. Query the head, base, and check result together; an earlier head, different base, pending run,
 or missing run does not count. Fix and push failures, then wait for the replacement run.
@@ -21,7 +21,7 @@ or missing run does not count. Fix and push failures, then wait for the replacem
 - Run every finite surface gate required by the shipped UI, API, or other reachable behaviour.
   Record an explicit exemption only when no reachable surface exists.
 - Commit the `git mv plans/in-progress/... plans/done/...` move and index updates inside the
-  delivering PR, push it, and require a new exact-head `Quality gate` result for that archival
+  delivering PR, push it, and require a new exact-head `quality-gate` result for that archival
   commit.
 - The merge remains outside the done-boundary. `[AI]` merges once the five hardened preconditions
   in the [PR Merge Protocol](../../../development/workflow/pr-merge-protocol.md) hold; a `[HUMAN]`

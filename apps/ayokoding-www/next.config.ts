@@ -3,6 +3,7 @@ import "./src/env.ts";
 import type { NextConfig } from "next";
 import path from "node:path";
 import { buildWorkerOptions } from "./src/build-workers";
+import { standaloneOutputFromEnv } from "./src/build-output";
 import { learnReorgRedirects } from "./src/redirects/learn-reorg";
 import { courseRehomeRedirects } from "./src/redirects/course-rehome";
 import { contentNamespaceRedirects } from "./src/redirects/content-namespace";
@@ -82,5 +83,9 @@ const nextConfig: NextConfig = {
     ];
   },
 };
+
+// The integration build turns standalone output off (see src/build-output.ts): its scenario needs only the prerender
+// manifest, and the bundle costs about 7 GB. Every other build keeps `output: "standalone"`.
+if (standaloneOutputFromEnv(process.env) === undefined) delete nextConfig.output;
 
 export default nextConfig;

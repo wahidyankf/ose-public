@@ -16,6 +16,9 @@ function stubClipboard(writeText: (value: string) => Promise<void>) {
   return navigator.clipboard.writeText as ReturnType<typeof vi.fn>;
 }
 
+/** Placeholder for a write resolver before a test assigns the real one. */
+function ignoreWrite(): void {}
+
 describe("useCopyToClipboard", () => {
   afterEach(() => {
     cleanup();
@@ -56,7 +59,7 @@ describe("useCopyToClipboard", () => {
   });
 
   it("no-ops the post-write state update if the component unmounted while the write was in flight", async () => {
-    let resolveWrite: () => void = () => {};
+    let resolveWrite: () => void = ignoreWrite;
     stubClipboard(
       () =>
         new Promise<void>((resolve) => {

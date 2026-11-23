@@ -1,0 +1,69 @@
+# ayokoding-web Go lint policy. Unit-scope tests stay hermetic (test-and-gate
+# contract C21): forbidigo bans clock, environment, file-system, process,
+# socket, and randomness calls, and depguard bans the process and random
+# packages, in unit-scope test files and the BDD glue. Production code reads
+# its own environment, clock, and disk, so the ban never applies to it.
+version: "2"
+
+linters:
+  default: standard
+  enable:
+    - depguard
+    - forbidigo
+  settings:
+    forbidigo:
+      # analyze-types resolves receivers, so t.Setenv and t.TempDir match by type.
+      analyze-types: true
+      forbid:
+        - pattern: '^time\.(Now|Sleep|After|AfterFunc|NewTimer|NewTicker|Tick|Since|Until)$'
+          msg: "unit scope takes time from an injected clock, not the wall clock"
+        - pattern: '^os\.(Getenv|LookupEnv|Setenv|Unsetenv|Environ|Getwd|Chdir|ReadFile|ReadDir|WriteFile|Open|OpenFile|Create|Mkdir|MkdirAll|MkdirTemp|TempDir|Remove|RemoveAll|Stat|Lstat|DirFS|Symlink)$'
+          msg: "unit scope reads no environment or disk; inject the environment or a fs.FS double"
+        - pattern: '^\(\*testing\.(T|common)\)\.(Setenv|TempDir|Chdir)$'
+          msg: "unit scope sets no environment and creates no directories; inject a double"
+        - pattern: '^(exec\.Command|exec\.CommandContext)$'
+          msg: "unit scope starts no process; the real adapter owns process work"
+        - pattern: '^net\.(Listen|ListenPacket|Dial|DialTimeout|LookupHost)$'
+          msg: "unit scope opens no socket; httptest recorders are the in-memory double"
+        - pattern: '^http\.(Get|Head|Post|DefaultClient|DefaultTransport)$'
+          msg: "unit scope makes no network request"
+        - pattern: '^runtime\.Caller$'
+          msg: "unit scope locates no source file; pass fixtures in as values"
+        - pattern: '^filepath\.(Walk|WalkDir|Abs)$'
+          msg: "unit scope walks no disk; use fs.FS doubles"
+        - pattern: '^rand\.'
+          msg: "unit scope is deterministic; inject the randomness"
+    depguard:
+      rules:
+        unit-scope:
+          files:
+            - "$test"
+            - "**/tests/internal/glue/*.go"
+            - "!**/tests/internal/glue/host_real.go"
+            - "!**/tests/integration/**"
+            - "!**/tests/bdd-integration/**"
+          deny:
+            - pkg: "os/exec"
+              desc: "unit scope starts no process"
+            - pkg: "math/rand"
+              desc: "unit scope is deterministic"
+            - pkg: "math/rand/v2"
+              desc: "unit scope is deterministic"
+            - pkg: "crypto/rand"
+              desc: "unit scope is deterministic"
+
+  exclusions:
+    rules:
+      # Scope, not suppression: forbidigo judges unit-scope test files and the
+      # glue only. Production code is the real adapter for its own I/O.
+      - path-except: '(_test\.go|tests/internal/glue/[^/]+\.go)$'
+        linters:
+          - forbidigo
+      # The glue's one real adapter, and the integration and e2e suites, run
+      # real processes, disks, and loopback sockets by design.
+      - path: 'tests/internal/glue/host_real\.go$'
+        linters:
+          - forbidigo
+      - path: "(^|/)tests/(integration|bdd-integration)/"
+        linters:
+          - forbidigo

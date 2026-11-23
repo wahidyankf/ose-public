@@ -12,11 +12,15 @@ import { render, screen, cleanup, act } from "@testing-library/react";
 // ---------------------------------------------------------------------------
 
 let mockPathname = "/app/home";
-const mockRouterPush = vi.fn();
+const mockRouterPush = vi.fn<(...args: unknown[]) => unknown>();
 
 vi.mock("next/navigation", () => ({
   usePathname: () => mockPathname,
-  useRouter: () => ({ push: mockRouterPush, back: vi.fn(), replace: vi.fn() }),
+  useRouter: () => ({
+    push: mockRouterPush,
+    back: vi.fn<(...args: unknown[]) => unknown>(),
+    replace: vi.fn<(...args: unknown[]) => unknown>(),
+  }),
 }));
 
 vi.mock("@/contexts/journal/application", () => ({

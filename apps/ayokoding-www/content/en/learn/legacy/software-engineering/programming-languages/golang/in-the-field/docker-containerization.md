@@ -610,16 +610,24 @@ Docker containerization for Go:
 
 **Image size progression**:
 
-```
-golang:1.23       800MB (development)
-  ↓
-golang:1.23-alpine 50MB (builder stage)
-  ↓
-alpine:latest      15MB (production default)
-  ↓
-distroless         12MB (production minimal)
-  ↓
-scratch             8MB (production absolute minimal)
+```mermaid
+flowchart TD
+    accTitle: Base image size progression
+    accDescr {
+        Image sizes fall from one stage to the next.
+        The golang 1.23 development image is 800MB.
+        The golang alpine builder stage is 50MB.
+        The alpine production default is 15MB.
+        The distroless production minimal image is 12MB.
+        The scratch production absolute minimal image is 8MB.
+    }
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
+    g1["golang:1.23<br/>800MB<br/>(development)"]
+    g2["golang:1.23-alpine<br/>50MB<br/>(builder stage)"]
+    g3["alpine:latest<br/>15MB<br/>(production default)"]
+    g4["distroless<br/>12MB<br/>(production minimal)"]
+    g5["scratch<br/>8MB<br/>(production<br/>absolute minimal)"]
+    g1 --> g2 --> g3 --> g4 --> g5
 ```
 
 **Production Dockerfile template**:

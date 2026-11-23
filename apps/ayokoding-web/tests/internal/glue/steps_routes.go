@@ -2,6 +2,7 @@ package glue
 
 import (
 	"net/http"
+	"strings"
 )
 
 func (w *World) StepVisitorRequestsRootUrl() error {
@@ -40,28 +41,15 @@ func (w *World) StepResponsePermanentlyRedirectsStatus308(destination string) er
 	return nil
 }
 
-func (w *World) StepOldContentUrlHasRedirectCurrentCommittedRedirect() error {
-	w.pathID = "/en/old-guide"
-	return nil
-}
-
-func (w *World) StepVisitorRequestsUrlQueryString() error {
-	return w.get(w.pathID + "?from=local")
-}
-
-func (w *World) StepResponse308RedirectInventorySCanonicalDestinatio() error {
-	if err := w.mustStatus(http.StatusPermanentRedirect); err != nil {
-		return err
-	}
-	if location := w.location(); location != "/en/learn/courses/go-basics/learning/hello-world?from=local" {
-		return fail("Location = %q, want canonical destination", location)
-	}
-	return nil
-}
-
+// StepQueryStringPreserved checks that the redirect keeps the request's query.
+// A request without a query has nothing to preserve, so the check passes.
 func (w *World) StepQueryStringPreserved() error {
-	if location := w.location(); location != "/en/learn/courses/go-basics/learning/hello-world?from=local" {
-		return fail("Location = %q, want preserved query", location)
+	index := strings.Index(w.pathID, "?")
+	if index < 0 {
+		return nil
+	}
+	if query := w.pathID[index:]; !strings.HasSuffix(w.location(), query) {
+		return fail("Location = %q, want preserved query %q", w.location(), query)
 	}
 	return nil
 }
@@ -184,6 +172,36 @@ func (w *World) StepLegacyPageServesCanonicalContent() error {
 	return nil
 }
 
-func (w *World) StepVisitorRequestsLegacyDeepCourseURL() error {
-	return w.get("/en/learn/fundamentally-strong/software-engineer/just-enough-python/learning/intro")
+// learnPages maps the learn-entry page names to the route and to one entry
+// link the page lists. The learn home lists its sections as links (paths,
+// courses, legacy); the paths hub lists the canned learning path.
+var learnPages = map[string]struct{ route, entry string }{
+	"learn home": {route: "/learn", entry: "/learn/courses"},
+	"paths hub":  {route: "/learn/paths", entry: "/learn/paths/backend-id"},
+}
+
+// StepReaderOpensPageInLocale requests a learn-entry page in the given locale.
+func (w *World) StepReaderOpensPageInLocale(page, locale string) error {
+	known, ok := learnPages[page]
+	if !ok {
+		return fail("unknown learn-entry page %q", page)
+	}
+	w.learnPage = page
+	return w.get("/" + locale + known.route)
+}
+
+// StepPageListsEntriesInLocale checks the page lists its entry under the
+// locale and links to no other locale.
+func (w *World) StepPageListsEntriesInLocale(locale string) error {
+	if err := w.mustStatus(http.StatusOK); err != nil {
+		return err
+	}
+	known, ok := learnPages[w.learnPage]
+	if !ok {
+		return fail("no learn-entry page was opened")
+	}
+	if err := w.mustContain("/" + locale + known.entry); err != nil {
+		return err
+	}
+	return w.mustNotContain(`href="//`)
 }

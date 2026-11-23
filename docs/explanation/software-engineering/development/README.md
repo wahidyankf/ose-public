@@ -242,7 +242,7 @@ The open-sharia-enterprise project applies both TDD and BDD:
 - Ubiquitous Language from DDD used in feature files
 - Three Amigos sessions with domain experts for compliance features
 - Mandatory Unit bindings, applicable higher-layer adapters, and living documentation synchronized
-  with Nx `test:coverage` and `test:quick`
+  with Nx `test:behaviour:coverage` and `test:quick`
 
 **Complementary Practices:**
 

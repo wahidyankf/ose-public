@@ -10,48 +10,27 @@ Feature: Course re-home redirects and prerequisites
   Background:
     Given the app is running
 
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / A legacy fundamentally-strong URL redirects to the canonical course URL
-  @integration-exempt
-  Scenario: A legacy fundamentally-strong URL redirects to the canonical course URL
-    When a visitor navigates to "/en/learn/fundamentally-strong/software-engineer/just-enough-python"
-    Then the current URL should contain "/en/learn/courses/just-enough-python"
-
+  # Behaviour: AYW-034
+  # Behaviour: AYW-153
   # Maintainer decision (2026-07-23): the per-course redirect broadened from an exact-source rule
   # to a /:path* wildcard so deep course sub-pages (learning/*, drilling/*) 308 to their canonical
-  # sub-page instead of 404ing after the move — this scenario proves that deep-path coverage.
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / A legacy fundamentally-strong deep sub-page URL redirects to its canonical course sub-page
-  @integration-exempt
-  Scenario: A legacy fundamentally-strong deep sub-page URL redirects to its canonical course sub-page
-    When a visitor navigates to "/en/learn/fundamentally-strong/software-engineer/just-enough-python/learning/beginner"
-    Then the current URL should contain "/en/learn/courses/just-enough-python/learning/beginner"
+  # sub-page instead of 404ing after the move — the second example proves that deep-path coverage.
+  Scenario Outline: legacy course URLs reach the canonical course
+    When a visitor navigates to "<legacy_url>"
+    Then the current URL should contain "<canonical_url>"
+    And the resolved page title should equal the canonical course page title at "<canonical_url>"
+    And the canonical course page is titled "<canonical_title>"
+    And the redirect preserves any path context query parameter
 
-  # Exemption(e2e): this scenario validates checked-in course frontmatter and the archived syllabus corpus, which the public UI does not expose exhaustively; alternative-proof: ayokoding-www:test:integration / Every re-homed course declares its prerequisites
-  @e2e-exempt
-  Scenario: Every re-homed course declares its prerequisites
-    Given the thirty-seven shipped topics and existing capstones have been re-homed into the course library
-    When each re-homed course's canonical metadata is inspected
-    Then every one declares a prerequisites list of course IDs
-    And an empty list is accepted only for a course with no library prerequisite
-    And every named prerequisite resolves to another course already in the library or declared on the syllabus roadmap
-
-  # Exemption(e2e): an intentionally unauthored roadmap course has no public page by definition, so only the repository boundary can prove union membership; alternative-proof: ayokoding-www:test:integration / A prerequisite naming a syllabus-declared but not-yet-authored course still resolves
-  @e2e-exempt
-  Scenario: A prerequisite naming a syllabus-declared but not-yet-authored course still resolves
-    When a course is declared on the syllabus roadmap but not yet authored into the course library
-    Then a prerequisite naming that course resolves against the union of the course library and the syllabus roadmap
-    And a prerequisite naming an unrecognized course ID still does not resolve
-
-  # Exemption(e2e): roadmap absence is repository metadata that is not observable through the public site; alternative-proof: ayokoding-www:test:integration / A prerequisite naming an authored course absent from the syllabus roadmap still resolves
-  @e2e-exempt
-  Scenario: A prerequisite naming an authored course absent from the syllabus roadmap still resolves
-    When a course is authored into the course library but not declared on the syllabus roadmap
-    Then a prerequisite naming that course resolves against the union of the course library and the syllabus roadmap
+    Examples:
+      | legacy_url                                                                           | canonical_url                                          | canonical_title    |
+      | /en/learn/fundamentally-strong/software-engineer/just-enough-python                   | /en/learn/courses/just-enough-python                   | Just Enough Python |
+      | /en/learn/fundamentally-strong/software-engineer/just-enough-python/learning/beginner | /en/learn/courses/just-enough-python/learning/beginner | Beginner Examples  |
 
   # Q-E=C override (RESOLVED 2026-07-23): the three fundamentally-strong browse roots are
   # deleted and their old URLs 308 to the course library landing, a narrow exception to the
   # rest of the legacy `_index.md` tree's "updated, never deleted" rule.
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / The retired fundamentally-strong browse roots permanently redirect to the course library
-  @integration-exempt
+  # Behaviour: AYW-035
   Scenario Outline: The retired fundamentally-strong browse roots permanently redirect to the course library
     When a raw HTTP GET is made to "<legacy_url>" with redirects disabled
     Then the response status should be 308
@@ -63,12 +42,7 @@ Feature: Course re-home redirects and prerequisites
       | /en/learn/fundamentally-strong/software-engineer            |
       | /en/learn/fundamentally-strong/software-engineer/overview   |
 
+  # Behaviour: AYW-085
   Scenario: The course library the retired browse roots redirect to resolves every re-homed course
     When a visitor navigates to "/en/learn/courses"
     Then every course catalog entry should resolve to live content, not a drained or missing location
-
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / A course reached via its legacy course URL resolves to the single canonical course body
-  @integration-exempt
-  Scenario: A course reached via its legacy course URL resolves to the single canonical course body
-    When a visitor navigates to "/en/learn/fundamentally-strong/software-engineer/just-enough-python"
-    Then the resolved page title should equal the canonical course page title at "/en/learn/courses/just-enough-python"

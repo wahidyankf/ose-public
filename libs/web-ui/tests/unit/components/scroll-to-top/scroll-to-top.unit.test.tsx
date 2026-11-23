@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, fireEvent } from "@testing-library/react";
+import { act, render, fireEvent } from "@testing-library/react";
 import ScrollToTop from "../../../../src/components/scroll-to-top/scroll-to-top";
 
 describe("ScrollToTop", () => {
@@ -22,7 +22,7 @@ describe("ScrollToTop", () => {
     vi.spyOn(window, "pageYOffset", "get").mockReturnValue(400);
     fireEvent.scroll(window);
 
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await act(async () => {});
 
     expect(queryByRole("button")).not.toBeNull();
   });
@@ -33,7 +33,7 @@ describe("ScrollToTop", () => {
     vi.spyOn(window, "pageYOffset", "get").mockReturnValue(400);
     fireEvent.scroll(window);
 
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await act(async () => {});
 
     const button = getByRole("button");
     fireEvent.click(button);
@@ -50,7 +50,7 @@ describe("ScrollToTop", () => {
     vi.spyOn(window, "pageYOffset", "get").mockReturnValue(400);
     fireEvent.scroll(window);
 
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await act(async () => {});
 
     const button = getByRole("button");
     expect(button.getAttribute("aria-label")).toBe("Scroll to top");
@@ -62,14 +62,14 @@ describe("ScrollToTop", () => {
     vi.spyOn(window, "pageYOffset", "get").mockReturnValue(400);
     fireEvent.scroll(window);
 
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await act(async () => {});
 
     expect(queryByRole("button")).toBeNull();
 
     vi.spyOn(window, "pageYOffset", "get").mockReturnValue(600);
     fireEvent.scroll(window);
 
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await act(async () => {});
 
     expect(queryByRole("button")).not.toBeNull();
   });
@@ -80,7 +80,7 @@ describe("ScrollToTop", () => {
     vi.spyOn(window, "pageYOffset", "get").mockReturnValue(400);
     fireEvent.scroll(window);
 
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await act(async () => {});
 
     const button = getByRole("button");
     expect(Array.from(button.classList)).toContain("custom-btn");
@@ -92,7 +92,7 @@ describe("ScrollToTop", () => {
     vi.spyOn(window, "pageYOffset", "get").mockReturnValue(400);
     fireEvent.scroll(window);
 
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await act(async () => {});
 
     const wrapper = container.querySelector("div.wrapper");
     expect(wrapper).not.toBeNull();

@@ -8,8 +8,74 @@
   "rules": {
     "no-unused-vars": "error",
     "no-console": "error",
-    "eqeqeq": "error"
+    "eqeqeq": "error",
+    "react/react-in-jsx-scope": "off",
+    "import/no-unassigned-import": ["error", { "allow": ["**/*.css", "**/src/env-loader.ts", "**/src/env.ts"] }],
+    "vitest/no-standalone-expect": ["error", { "additionalTestBlockFunctions": ["Given", "When", "Then", "And"] }]
   },
+  "overrides": [
+    {
+      "files": ["tests/unit/**/*.{ts,tsx}"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "paths": [
+              { "name": "fs", "message": "Unit tests are hermetic: no file system. Inject a port and a double." },
+              { "name": "node:fs", "message": "Unit tests are hermetic: no file system. Inject a port and a double." },
+              {
+                "name": "fs/promises",
+                "message": "Unit tests are hermetic: no file system. Inject a port and a double."
+              },
+              {
+                "name": "node:fs/promises",
+                "message": "Unit tests are hermetic: no file system. Inject a port and a double."
+              },
+              { "name": "child_process", "message": "Unit tests are hermetic: no processes." },
+              { "name": "node:child_process", "message": "Unit tests are hermetic: no processes." },
+              { "name": "http", "message": "Unit tests are hermetic: no network." },
+              { "name": "node:http", "message": "Unit tests are hermetic: no network." },
+              { "name": "https", "message": "Unit tests are hermetic: no network." },
+              { "name": "node:https", "message": "Unit tests are hermetic: no network." },
+              { "name": "net", "message": "Unit tests are hermetic: no network." },
+              { "name": "node:net", "message": "Unit tests are hermetic: no network." },
+              { "name": "os", "message": "Unit tests are hermetic: no host environment." },
+              { "name": "node:os", "message": "Unit tests are hermetic: no host environment." }
+            ]
+          }
+        ],
+        "no-restricted-globals": [
+          "error",
+          { "name": "fetch", "message": "Unit tests are hermetic: no network. Inject a port and a double." },
+          { "name": "XMLHttpRequest", "message": "Unit tests are hermetic: no network." },
+          { "name": "WebSocket", "message": "Unit tests are hermetic: no network." },
+          { "name": "setTimeout", "message": "Unit tests are hermetic: no real timers. Use fake timers or act()." },
+          { "name": "setInterval", "message": "Unit tests are hermetic: no real timers. Use fake timers." },
+          {
+            "name": "Date",
+            "message": "Unit tests are hermetic: no clock. Pass a fixed value; a zero-argument new Date() reads the clock."
+          }
+        ],
+        "no-restricted-properties": [
+          "error",
+          { "object": "Date", "property": "now", "message": "Unit tests are hermetic: no clock." },
+          { "object": "performance", "property": "now", "message": "Unit tests are hermetic: no clock." },
+          { "object": "Math", "property": "random", "message": "Unit tests are hermetic: no randomness." },
+          {
+            "object": "crypto",
+            "property": "randomUUID",
+            "message": "Unit tests are hermetic: no randomness. Use a fixed id generator."
+          },
+          {
+            "object": "process",
+            "property": "env",
+            "message": "Unit tests are hermetic: no environment. Pass a record."
+          },
+          { "object": "process", "property": "cwd", "message": "Unit tests are hermetic: no file system path anchor." }
+        ]
+      }
+    }
+  ],
   "settings": {
     "next": { "rootDir": "." }
   },
@@ -18,5 +84,5 @@
     "node": true,
     "es2022": true
   },
-  "ignorePatterns": [".next/", "coverage/", "node_modules/", "generated-contracts/"]
+  "ignorePatterns": [".next/", "coverage/", "node_modules/", "generated-contracts/", "next-env.d.ts"]
 }

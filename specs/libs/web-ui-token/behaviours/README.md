@@ -12,5 +12,5 @@ specs/libs/web-ui-token/behaviours/
 ## Consumption
 
 `web-ui-token:test:unit` consumes every scenario through Vitest and enforces the 99% Unit line
-minimum. Static `test:coverage:unit` and aggregate coverage validate exact binding ownership
+minimum. The static `test:behaviour:coverage` target validates exact binding ownership
 without executing tests. See the corpus [README.md](../README.md#status).

@@ -9,16 +9,15 @@ when_to_use: "Use when pre-push is slow or a check fails."
 
 **Symptom**: Pre-push hook takes too long or times out on a large push
 
-**Solution** — the hook runs only the registry-declared `pre-push` gates (today the public-safety tree
-and range screens and environment validation) and no Nx target, so no test
-cache is involved. The range screen reads every outgoing commit, so a push of many commits costs
-more. Run the same gate set directly to see which gate is slow:
+**Solution** — the hook runs only the registry-declared `pre-push` gate, the leak scan over the pushed range,
+and no Nx target, so no test cache is involved. The scan reads every outgoing commit, so a push of many commits
+costs more. Run the same gate set directly to see which gate is slow:
 
 ```bash
 ./rhino gate run --surface pre-push
 ```
 
-Push fewer commits at once if the range screen is the slow gate.
+Push fewer commits at once if the range scan is the slow gate.
 
 ## A Gate Fails on Pre-push
 
@@ -32,9 +31,9 @@ Push fewer commits at once if the range screen is the slow gate.
 4. A test failure does not surface here: no hook runs `test:quick`. Reproduce it with the affected
    `test:quick` run, as the PR quality gate would run it
 
-## Config Validation Fails on Pre-commit
+## Config Validation Fails in the Pull-Request Gate
 
-**Symptom**: Pre-commit hook fails with config validation errors
+**Symptom**: The pull-request gate fails with config validation errors. The configuration gates run only there, not in a hook.
 
 **Solutions**:
 

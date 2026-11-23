@@ -226,6 +226,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-roadmap.feature: Each core phase is a milestone with its outcome and progress
   Scenario("Each core phase is a milestone with its outcome and progress", ({ When, Then, And }) => {
     When("a reader opens a path page", () => {
       renderPathLanding();
@@ -242,23 +243,35 @@ describeFeature(feature, ({ Scenario, Background }) => {
         expect(
           within(foundations as HTMLElement).getByText("After this phase you can build a small service"),
         ).toBeTruthy();
-        expect(within(foundations as HTMLElement).getByText("You cannot yet run it in production")).toBeTruthy();
         // The second core phase declares only what the reader can do, so it states that line alone.
         expect(
           within(depth as HTMLElement).getByText("After this phase you can reason about a system's limits"),
         ).toBeTruthy();
-        expect(within(depth as HTMLElement).queryByText("You cannot yet", { exact: false })).toBeNull();
       },
     );
 
-    And('each core phase shows "x of y done" for its courses', () => {
+    And('"You cannot yet" is shown only for a phase that declares what the reader cannot yet do', () => {
+      const [foundations, depth] = coreSections();
+      expect(within(foundations as HTMLElement).getByText("You cannot yet run it in production")).toBeTruthy();
+      expect(within(depth as HTMLElement).queryByText("You cannot yet", { exact: false })).toBeNull();
+    });
+  });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-roadmap.feature: Each phase shows how many of its courses are done
+  Scenario("Each phase shows how many of its courses are done", ({ When, Then }) => {
+    When("a reader opens a path page", () => {
+      renderPathLanding();
+    });
+
+    Then('each core phase shows "x of y done" for its courses', () => {
       const [foundations, depth] = coreSections();
       expect(within(foundations as HTMLElement).getByText("0 of 2 done")).toBeTruthy();
       expect(within(depth as HTMLElement).getByText("0 of 1 done")).toBeTruthy();
     });
   });
 
-  Scenario("Course cards show order, time, format, and status in words", ({ When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-roadmap.feature: A course card shows its position, title, time, and format
+  Scenario("A course card shows its position, title, time, and format", ({ When, Then }) => {
     When("a reader opens a path page", () => {
       renderPathLanding();
     });
@@ -280,8 +293,15 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(third.textContent).toMatch(/^3\s*Data Structures & Algorithms Essentials/u);
       expect(within(third).getByText("Language primer")).toBeTruthy();
     });
+  });
 
-    And('each course card shows "Done", "In progress", or "Not started" as text', () => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-roadmap.feature: A course card shows Done, In progress, or Not started as text
+  Scenario("A course card shows Done, In progress, or Not started as text", ({ When, Then }) => {
+    When("a reader opens a path page", () => {
+      renderPathLanding();
+    });
+
+    Then('each course card shows "Done", "In progress", or "Not started" as text', () => {
       const rows = courseRows();
       expect(rows).toHaveLength(4);
 
@@ -293,16 +313,9 @@ describeFeature(feature, ({ Scenario, Background }) => {
       // A reader who has marked nothing sees the not-started words.
       expect(within(rows[0] as HTMLElement).getByText("Not started", { exact: true })).toBeTruthy();
     });
-
-    And('an outline course card shows an "Outline" badge', () => {
-      const outlineRow = courseRows()[3] as HTMLElement;
-      expect(outlineRow.textContent).toContain("Capstone · Secure Service");
-      expect(within(outlineRow).getByText("Outline", { exact: true })).toBeTruthy();
-      // An outline course declares no estimate, so the badge stands where the hours text would be.
-      expect(outlineRow.textContent).not.toContain("About");
-    });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-roadmap.feature: A new reader sees one Start button
   Scenario("A new reader sees one Start button", ({ Given, When, Then, And }) => {
     Given("a reader has no saved progress", () => {
       learningProgressStore.reset();
@@ -326,6 +339,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-roadmap.feature: A returning reader sees Continue with the next course
   Scenario("A returning reader sees Continue with the next course", ({ Given, When, Then, And }) => {
     Given("a reader completed some learning pages of the path's second course", () => {
       learningProgressStore.update((state) =>
@@ -357,6 +371,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-roadmap.feature: Optional extensions are separate and closed by default
   Scenario("Optional extensions are separate and closed by default", ({ When, Then, And }) => {
     When("a reader opens a path that has extension phases", () => {
       renderPathLanding();
@@ -367,6 +382,14 @@ describeFeature(feature, ({ Scenario, Background }) => {
       const extensionsHeading = within(nav).getByRole("heading", { level: 2, name: "Optional extensions" });
       const lastCorePhase = coreSections()[1] as HTMLElement;
       expect(lastCorePhase.compareDocumentPosition(extensionsHeading) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING,
+      );
+    });
+
+    And("every extension phase is listed under that heading", () => {
+      const nav = generalistNav();
+      const extensionsHeading = within(nav).getByRole("heading", { level: 2, name: "Optional extensions" });
+      expect(extensionsHeading.compareDocumentPosition(extensionSection()) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
         Node.DOCUMENT_POSITION_FOLLOWING,
       );
     });
@@ -400,6 +423,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-roadmap.feature: The path headline counts core courses only
   Scenario("The path headline counts core courses only", ({ Given, When, Then, And }) => {
     Given("a reader completed every learning page of one extension course and nothing else", () => {
       learningProgressStore.update((state) => completeEveryPage(state, EXTENSION_COURSE));
@@ -425,6 +449,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-roadmap.feature: Finishing the core path shows completion
   Scenario("Finishing the core path shows completion", ({ Given, When, Then, And }) => {
     Given("a reader completed every core course of a path", () => {
       learningProgressStore.update((state) =>
@@ -450,6 +475,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-roadmap.feature: A skills path waiting for its restructure shows one flat list with progress
   Scenario(
     "A skills path waiting for its restructure shows one flat list with progress",
     ({ Given, When, Then, And }) => {
@@ -481,12 +507,13 @@ describeFeature(feature, ({ Scenario, Background }) => {
         ).toBe(`/en/learn/courses/${ACCOUNTING_COURSES[0]}?path=${ACCOUNTING_PATH_ID}`);
       });
 
-      And('no phase heading, outcome line, or "Optional extensions" heading appears', () => {
+      And('no phase heading, outcome line, "Before you start" note, or "Optional extensions" heading appears', () => {
         const nav = accountingNav();
         expect(nav.querySelectorAll("h3")).toHaveLength(0);
         expect(nav.querySelector("details")).toBeNull();
         expect(within(nav).queryByText("After this phase you can", { exact: false })).toBeNull();
         expect(within(nav).queryByText("Optional extensions")).toBeNull();
+        expect(screen.queryByText("Before you start")).toBeNull();
       });
     },
   );

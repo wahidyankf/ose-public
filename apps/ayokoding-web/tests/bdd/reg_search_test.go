@@ -27,4 +27,6 @@ func registerSearchSteps(ctx *godog.ScenarioContext, world *glue.World) {
 	ctx.Given(`^the search dialog is open$`, world.StepSearchDialogOpen)
 	ctx.When(`^the reader presses Escape$`, world.StepReaderPressesEscape)
 	ctx.Step(`^focus returns to the control that opened it$`, world.StepFocusReturnsControlOpened)
+	ctx.When(`^a reader opens the search page for the matching term in one locale$`, world.StepReaderOpensSearchPageMatchingTerm)
+	ctx.Then(`^the search page lists the matching results for that locale only$`, world.StepSearchPageListsMatchingResultsForLocale)
 }

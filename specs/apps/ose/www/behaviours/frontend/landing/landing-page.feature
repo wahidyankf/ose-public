@@ -6,17 +6,24 @@ Feature: Landing Page
   Background:
     Given the app is running
 
-  # Exemption(integration): the local-resource boundary cannot observe rendered landing-page content without crossing the public browser boundary; alternative-proof: ose-www-fe-e2e:test:e2e / Hero section displays platform information
-  @integration-exempt
-  Scenario: Hero section displays platform information
+  # Behaviour: OSW-001
+  Scenario: The landing page is served at / with the site title
+    When the landing page is rendered
+    Then the page title is "OSE Platform"
+
+  # Behaviour: OSW-013
+  Scenario: Hero shows the title and mission description
     When the landing page is rendered
     Then the hero section displays the title "Open Sharia Enterprise Platform"
     And the hero section displays a description of the platform mission
-    And the hero section contains a "Learn More" link to "/about/"
+
+  # Behaviour: OSW-013
+  Scenario: Hero links to About and to GitHub
+    When the landing page is rendered
+    Then the hero section contains a "Learn More" link to "/about/"
     And the hero section contains a "GitHub" link
 
-  # Exemption(integration): the local-resource boundary cannot observe rendered social links without crossing the public browser boundary; alternative-proof: ose-www-fe-e2e:test:e2e / Social icons are displayed
-  @integration-exempt
+  # Behaviour: OSW-014
   Scenario: Social icons are displayed
     When the landing page is rendered
     Then a GitHub icon link is visible

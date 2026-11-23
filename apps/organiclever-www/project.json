@@ -36,7 +36,7 @@
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npx oxlint --jsx-a11y-plugin .",
+        "command": "npx oxlint -c oxlint.json --jsx-a11y-plugin --deny-warnings .",
         "cwd": "{projectRoot}"
       },
       "inputs": ["{projectRoot}/src/**/*", "{projectRoot}/oxlint.json", "{projectRoot}/tsconfig.json"]
@@ -73,7 +73,7 @@
             "forwardAllArgs": false
           },
           {
-            "command": "npm exec -- nx run organiclever-www:test:coverage",
+            "command": "npm exec -- nx run organiclever-www:test:behaviour:coverage",
             "forwardAllArgs": false
           }
         ],
@@ -83,14 +83,20 @@
       "cache": true,
       "inputs": [
         "default",
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/organiclever-www/behaviour-coverage.json",
         "{workspaceRoot}/package-lock.json",
         "{workspaceRoot}/specs/apps/organiclever/www/behaviours/**/*.feature",
         "{workspaceRoot}/apps/organiclever-www/tests/unit/**/*.{ts,tsx,fs}",
         "{workspaceRoot}/apps/organiclever-www/vitest.config.ts",
         "{workspaceRoot}/apps/organiclever-www-fe-e2e/src/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/organiclever-www-fe-e2e/playwright.config.ts"
+        "{workspaceRoot}/apps/organiclever-www-fe-e2e/playwright.config.ts",
+        "{workspaceRoot}/repo-config.yml",
+        "{workspaceRoot}/rhino.lock",
+        "{workspaceRoot}/specs/**/*",
+        "{workspaceRoot}/apps/ayokoding-www/content/**/*.feature",
+        "{workspaceRoot}/apps/*/tests/**/*",
+        "{workspaceRoot}/apps/*-e2e/steps/**/*",
+        "{workspaceRoot}/apps/*-e2e/src/**/*",
+        "{workspaceRoot}/libs/*/tests/**/*"
       ]
     },
     "deps:audit": {
@@ -100,87 +106,22 @@
       },
       "cache": false
     },
-    "test:coverage:unit": {
+    "test:behaviour:coverage": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config apps/organiclever-www/behaviour-coverage.json --adapter unit"
+        "command": "./rhino behaviour coverage validate",
+        "cwd": "{workspaceRoot}"
       },
       "cache": true,
       "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/organiclever-www/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/apps/organiclever/www/behaviours/**/*.feature",
-        "{workspaceRoot}/apps/organiclever-www/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/organiclever-www/vitest.config.ts",
-        "{workspaceRoot}/apps/organiclever-www-fe-e2e/src/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/organiclever-www-fe-e2e/playwright.config.ts"
-      ]
-    },
-    "test:coverage:e2e": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config apps/organiclever-www/behaviour-coverage.json --adapter e2e"
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/organiclever-www/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/apps/organiclever/www/behaviours/**/*.feature",
-        "{workspaceRoot}/apps/organiclever-www/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/organiclever-www/vitest.config.ts",
-        "{workspaceRoot}/apps/organiclever-www-fe-e2e/src/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/organiclever-www-fe-e2e/playwright.config.ts"
-      ]
-    },
-    "test:coverage:behaviour": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config apps/organiclever-www/behaviour-coverage.json --adapter behaviour"
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/organiclever-www/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/apps/organiclever/www/behaviours/**/*.feature",
-        "{workspaceRoot}/apps/organiclever-www/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/organiclever-www/vitest.config.ts",
-        "{workspaceRoot}/apps/organiclever-www-fe-e2e/src/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/organiclever-www-fe-e2e/playwright.config.ts"
-      ]
-    },
-    "test:coverage": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          {
-            "command": "npm exec -- nx run organiclever-www:test:coverage:unit",
-            "forwardAllArgs": false
-          },
-          {
-            "command": "npm exec -- nx run organiclever-www:test:coverage:e2e",
-            "forwardAllArgs": false
-          },
-          {
-            "command": "npm exec -- nx run organiclever-www:test:coverage:behaviour",
-            "forwardAllArgs": false
-          }
-        ],
-        "parallel": false,
-        "forwardAllArgs": false
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/organiclever-www/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/apps/organiclever/www/behaviours/**/*.feature",
-        "{workspaceRoot}/apps/organiclever-www/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/organiclever-www/vitest.config.ts",
-        "{workspaceRoot}/apps/organiclever-www-fe-e2e/src/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/organiclever-www-fe-e2e/playwright.config.ts"
+        "{workspaceRoot}/repo-config.yml",
+        "{workspaceRoot}/rhino.lock",
+        "{workspaceRoot}/specs/**/*",
+        "{workspaceRoot}/apps/ayokoding-www/content/**/*.feature",
+        "{workspaceRoot}/apps/*/tests/**/*",
+        "{workspaceRoot}/apps/*-e2e/steps/**/*",
+        "{workspaceRoot}/apps/*-e2e/src/**/*",
+        "{workspaceRoot}/libs/*/tests/**/*"
       ]
     }
   },

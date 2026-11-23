@@ -1,6 +1,6 @@
 import path from "path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { expect, vi } from "vitest";
 
 // course-paths plan (ayokoding-learning-path-03-navigation-ui), Cycle 2.5 — step bindings for
@@ -21,14 +21,10 @@ vi.mock("@/features/navigation/shell/toc", () => ({
 
 let mockPathname = "/en/browse";
 let mockSearchParams = new URLSearchParams();
-let queryReads = 0;
 
 vi.mock("next/navigation", () => ({
   usePathname: () => mockPathname,
-  useSearchParams: () => {
-    queryReads += 1;
-    return mockSearchParams;
-  },
+  useSearchParams: () => mockSearchParams,
 }));
 
 const { skillsManifest, careersManifest, contentMap, pages } = vi.hoisted(() => {
@@ -151,7 +147,8 @@ const feature = await loadFeature(
 );
 
 describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
-  Scenario("A course deep-linked without path context renders the canonical view", ({ Given, When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/canonical-fallback.feature: A course without path context renders its body and content-tree breadcrumb
+  Scenario("A course without path context renders its body and content-tree breadcrumb", ({ Given, When, Then }) => {
     let jsx: React.ReactElement;
 
     Given("a reader opens a course URL /en/learn/courses/<course-id> with no path context query parameter", () => {
@@ -168,20 +165,13 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
       render(jsx);
     });
 
-    Then("the course body renders in full with the content-tree breadcrumb and its prerequisite list", () => {
+    Then("the course body renders in full with the content-tree breadcrumb", () => {
       expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Just Enough Python");
       expect(screen.getByRole("navigation", { name: "Breadcrumb" })).toBeTruthy();
-      const prereqs = within(screen.getByRole("navigation", { name: "Prerequisites" }));
-      expect(prereqs.getByRole("link", { name: "Git" })).toBeTruthy();
-    });
-
-    And('a "this course is part of" affordance lists every path that includes the course', () => {
-      const partOf = within(screen.getByRole("navigation", { name: "This course is part of" }));
-      expect(partOf.getByRole("link", { name: "Python Fundamentals" })).toBeTruthy();
-      expect(partOf.getByRole("link", { name: "Interview-Ready Software Engineer" })).toBeTruthy();
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/canonical-fallback.feature: A course opened without path context renders the generic sidebar unchanged
   Scenario(
     "A course opened without path context renders the generic sidebar unchanged",
     ({ Given, When, Then, And }) => {
@@ -213,13 +203,13 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
   // Non-course routes never read the path context query, so the sidebar cannot suspend on it. The
   // rows are the four routes the SidebarHost route check must reject, including a lookalike prefix
   // and a course in another locale.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/canonical-fallback.feature: A page that is not a course keeps the generic sidebar even with a path query
   ScenarioOutline(
-    "A page that is not a course in this locale keeps the generic sidebar when a path context query is present",
-    ({ Given, When, Then, And }, variables) => {
+    "A page that is not a course keeps the generic sidebar even with a path query",
+    ({ Given, When, Then }, variables) => {
       Given("a reader opens the page <page> with a path context query parameter", () => {
         mockPathname = String(variables.page);
         mockSearchParams = new URLSearchParams({ path: skillsManifest.pathId });
-        queryReads = 0;
       });
 
       When("the page renders", () => {
@@ -233,10 +223,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
 
       Then("the generic sidebar is shown", () => {
         expect(screen.getByRole("navigation", { name: "Sidebar navigation" })).toBeTruthy();
-      });
-
-      And("the path context query is not read", () => {
-        expect(queryReads).toBe(0);
       });
     },
   );

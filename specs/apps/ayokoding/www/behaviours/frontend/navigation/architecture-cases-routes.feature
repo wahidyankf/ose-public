@@ -7,23 +7,14 @@ Feature: Architecture Cases Routes
   Background:
     Given the app is running
 
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / In FP case route is reachable
-  @integration-exempt
-  Scenario: In FP case route is reachable
-    When a visitor navigates to "/en/learn/software-engineering/software-architecture/by-example/cases/in-fp"
+  # Behaviour: AYW-046
+  Scenario Outline: architecture case pages are reachable
+    When a visitor navigates to "/en/<slug>"
     Then the page should respond with HTTP 200
-    And the page should contain a heading with text "In FP — F# / Clojure / TypeScript / Haskell"
+    And the page should contain a heading with text "<heading>"
 
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / In OOP case route is reachable
-  @integration-exempt
-  Scenario: In OOP case route is reachable
-    When a visitor navigates to "/en/learn/software-engineering/software-architecture/by-example/cases/in-oop"
-    Then the page should respond with HTTP 200
-    And the page should contain a heading with text "In OOP — Java / Spring Boot"
-
-  # Exemption(integration): the scenario is observable at the public browser or HTTP boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / In Procedural case route is reachable
-  @integration-exempt
-  Scenario: In Procedural case route is reachable
-    When a visitor navigates to "/en/learn/software-engineering/software-architecture/by-example/cases/in-procedural"
-    Then the page should respond with HTTP 200
-    And the page should contain a heading with text "In Procedural — Go / Rust"
+    Examples:
+      | slug                                                                        | heading                                     |
+      | learn/software-engineering/software-architecture/by-example/cases/in-fp     | In FP — F# / Clojure / TypeScript / Haskell |
+      | learn/software-engineering/software-architecture/by-example/cases/in-oop    | In OOP — Java / Spring Boot                 |
+      | learn/software-engineering/software-architecture/by-example/cases/in-procedural | In Procedural — Go / Rust               |

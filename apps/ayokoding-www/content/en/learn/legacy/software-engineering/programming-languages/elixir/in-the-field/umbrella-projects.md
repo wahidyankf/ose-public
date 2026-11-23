@@ -401,12 +401,21 @@ end
 
 Dependency graph enforces architectural layers:
 
-```
-core (no internal deps)
-  ↑
-  ├── web (depends on core)
-  ├── workers (depends on core)
-  └── admin (depends on core)
+```mermaid
+flowchart BT
+    accTitle: Umbrella dependency direction
+    accDescr {
+        The web, workers, and admin apps each depend on core.
+        Core has no internal dependencies, so the layering runs one way.
+    }
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
+    core["core<br/>(no internal deps)"]
+    web["web"]
+    workers["workers"]
+    admin["admin"]
+    web -->|depends on| core
+    workers -->|depends on| core
+    admin -->|depends on| core
 ```
 
 ### Compilation Order

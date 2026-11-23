@@ -1,7 +1,10 @@
-import { describe, it, expect } from "vitest";
+import { afterEach, describe, it, expect } from "vitest";
 import { formatRelativeTime } from "../../../../src/shared/utils/format-relative-time";
+import { FIXED_MS, freezeClock, restoreClock } from "../../support/doubles";
 
 const now = new Date("2024-01-15T12:00:00.000Z");
+
+afterEach(() => restoreClock());
 
 describe("formatRelativeTime", () => {
   it("returns 'just now' for less than 60 seconds ago", () => {
@@ -53,7 +56,8 @@ describe("formatRelativeTime", () => {
   });
 
   it("uses current date when now is not provided", () => {
-    const recentIso = new Date(Date.now() - 5000).toISOString();
+    freezeClock();
+    const recentIso = new Date(FIXED_MS - 5000).toISOString();
     expect(formatRelativeTime(recentIso)).toBe("just now");
   });
 });

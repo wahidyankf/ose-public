@@ -18,17 +18,18 @@ git add src/index.ts
 git commit -m "feat(api): add new endpoint"
 
 # Hooks execute:
-#  Prettier formats src/index.ts
-#  Public-safety screen checks message
+#  Prettier formats src/index.ts          (pre-commit: format-staged)
+#  Commitlint checks the message          (commit-msg: commit-message)
 #  Commit succeeds
 
 # 4. Push to remote (pre-push hook runs)
 git push origin main
 
 # Pre-push hook executes:
-#  Nx detects affected projects
-#  Runs test:quick for affected projects
+#  The leak scan screens the pushed commits
 #  Push succeeds
+
+# The pull-request gate runs the rest: typecheck, lint, and test:quick for affected projects
 ```
 
 ## When Hooks Modify Files

@@ -19,7 +19,7 @@ jobs:
     outputs:
       has-changes: ${{ steps.check.outputs.has-changes }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
       - id: check
@@ -50,10 +50,10 @@ jobs:
     env:
       STORYBOOK_DISABLE_TELEMETRY: "1"
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - uses: ./.github/actions/setup-node
       - name: Build Storybook
-        run: npx nx run web-ui:build-storybook
+        run: ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npx nx run web-ui:build-storybook
 
   deploy:
     name: Deploy to prod-web-ui
@@ -61,7 +61,7 @@ jobs:
     if: needs.detect-changes.outputs.has-changes == 'true' && needs.build.result == 'success'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
       - name: Force push to prod-web-ui

@@ -10,6 +10,7 @@ const feature = await loadFeature(
 );
 
 describeFeature(feature, ({ Scenario }) => {
+  // @scenario specs/libs/web-ui/behaviours/info-tip/info-tip.feature: Trigger button renders
   Scenario("Trigger button renders", ({ When, Then }) => {
     let trigger: HTMLElement;
 
@@ -24,6 +25,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
+  // @scenario specs/libs/web-ui/behaviours/info-tip/info-tip.feature: Click trigger opens Sheet
   Scenario("Click trigger opens Sheet", ({ Given, When, Then }) => {
     let sheetDescription: HTMLElement;
 
@@ -45,6 +47,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
+  // @scenario specs/libs/web-ui/behaviours/info-tip/info-tip.feature: Sheet close button closes Sheet
   Scenario("Sheet close button closes Sheet", ({ Given, When, Then, And }) => {
     let sheetClosed = false;
 

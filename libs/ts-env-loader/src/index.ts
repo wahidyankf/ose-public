@@ -29,7 +29,7 @@
  *      app's own validation layer's job (e.g. zod's `createEnv()`), unchanged by this module.
  */
 import path from "node:path";
-import { nodeTierEnvPort } from "./node-tier-env-port";
+import { nodeProcessPort, nodeTierEnvPort } from "./node-tier-env-port";
 
 const DEFAULT_TIER = "local";
 
@@ -73,12 +73,22 @@ function assertNoStrayEnvFile(tier: string, appDir: string, port: TierEnvPort): 
 }
 
 export interface LoadTierEnvOptions {
-  /** Directory containing the tier files. Defaults to `process.cwd()`. */
+  /** Directory containing the tier files. Defaults to the process working directory. */
   appDir?: string;
   /** The process-env-like record to read `APP_ENV` from and load tier values into. Defaults to `process.env`. */
   env?: EnvRecord;
   /** Injected file boundary. Unit tests supply an in-memory port; production uses Node/dotenv. */
   port?: TierEnvPort;
+  /** Injected process boundary for the two defaults above. Unit tests supply a fixed one; production reads the real process. */
+  processPort?: ProcessPort;
+}
+
+/** Process boundary that supplies the defaults of {@link loadTierEnv}: the working directory and environment. */
+export interface ProcessPort {
+  /** Returns the process working directory. */
+  cwd(): string;
+  /** The live process environment record. */
+  env: EnvRecord;
 }
 
 /** Filesystem/dotenv boundary used by {@link loadTierEnv}. */
@@ -95,8 +105,9 @@ export interface TierEnvPort {
  * module never calls it on import.
  */
 export function loadTierEnv(options: LoadTierEnvOptions = {}): void {
-  const appDir = options.appDir ?? process.cwd();
-  const env = options.env ?? process.env;
+  const processPort = options.processPort ?? nodeProcessPort;
+  const appDir = options.appDir ?? processPort.cwd();
+  const env = options.env ?? processPort.env;
   const port = options.port ?? nodeTierEnvPort;
   const tier = resolveTier(env);
 

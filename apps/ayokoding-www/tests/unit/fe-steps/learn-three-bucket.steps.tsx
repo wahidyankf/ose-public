@@ -67,7 +67,8 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, Background }) => {
     navigation = followRedirects(pathname);
   }
 
-  Scenario("The learn section exposes exactly three structural buckets", ({ When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/learn-three-bucket.feature: The Learn section offers only Paths, Courses, and Legacy
+  Scenario("The Learn section offers only Paths, Courses, and Legacy", ({ When, Then, And }) => {
     When("the content tree under the en learn section is inspected", () => {
       buckets = structuralBuckets([
         { name: "_index.md", kind: "file" },
@@ -85,33 +86,22 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, Background }) => {
     });
   });
 
-  Scenario("A relocated legacy domain URL redirects to its legacy address", ({ When, Then }) => {
-    When('a visitor navigates to "/en/learn/software-engineering/overview"', () => {
-      visit("/en/learn/software-engineering/overview");
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/learn-three-bucket.feature: legacy domain URLs redirect to the legacy bucket
+  ScenarioOutline("legacy domain URLs redirect to the legacy bucket", ({ When, Then, And }, examples) => {
+    const domain = String(examples["domain"] ?? "");
+    When('a visitor navigates to "/en/learn/<domain>/overview"', () => {
+      visit(`/en/learn/${domain}/overview`);
     });
-    Then('the current URL should contain "/en/learn/legacy/software-engineering/overview"', () => {
-      expect(navigation.finalPath).toBe("/en/learn/legacy/software-engineering/overview");
+    Then('the current URL should contain "/en/learn/legacy/<domain>/overview"', () => {
+      expect(navigation.finalPath).toBe(`/en/learn/legacy/${domain}/overview`);
       expect(navigation.hops).toBe(1);
+    });
+    And("the response status should not be a client or server error", () => {
+      expect(navigation.healthy).toBe(true);
     });
   });
 
-  ScenarioOutline(
-    "A relocated legacy domain URL redirects to its legacy address in one hop",
-    ({ When, Then, And }, examples) => {
-      const domain = String(examples["domain"] ?? "");
-      When('a visitor navigates to "/en/learn/<domain>/overview"', () => {
-        visit(`/en/learn/${domain}/overview`);
-      });
-      Then('the current URL should contain "/en/learn/legacy/<domain>/overview"', () => {
-        expect(navigation.finalPath).toBe(`/en/learn/legacy/${domain}/overview`);
-        expect(navigation.hops).toBe(1);
-      });
-      And("the response status should not be a client or server error", () => {
-        expect(navigation.healthy).toBe(true);
-      });
-    },
-  );
-
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/learn-three-bucket.feature: A stale /c-bookmarked legacy domain URL redirects to its legacy address in two hops
   ScenarioOutline(
     "A stale /c-bookmarked legacy domain URL redirects to its legacy address in two hops",
     ({ When, Then, And }, examples) => {
@@ -129,6 +119,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, Background }) => {
     },
   );
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/learn-three-bucket.feature: A historical learn-reorg source chains through to its legacy address
   Scenario("A historical learn-reorg source chains through to its legacy address", ({ When, Then, And }) => {
     When('a visitor navigates to "/en/learn/human/overview"', () => {
       visit("/en/learn/human/overview");
@@ -142,24 +133,18 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, Background }) => {
     });
   });
 
-  Scenario("The legacy redirect does not rewrite a canonical courses URL", ({ When, Then }) => {
-    When('a visitor navigates to "/en/learn/courses/just-enough-nvim"', () => {
-      visit("/en/learn/courses/just-enough-nvim");
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/learn-three-bucket.feature: canonical URLs are not rewritten to legacy
+  ScenarioOutline("canonical URLs are not rewritten to legacy", ({ When, Then }, variables) => {
+    const url = String(variables.url);
+    When('a visitor navigates to "<url>"', () => {
+      visit(url);
     });
     Then('the current URL should not contain "/legacy/"', () => {
-      expect(navigation).toEqual({ finalPath: "/en/learn/courses/just-enough-nvim", hops: 0, healthy: true });
+      expect(navigation).toEqual({ finalPath: url, hops: 0, healthy: true });
     });
   });
 
-  Scenario("The legacy redirect does not rewrite a canonical paths URL", ({ When, Then }) => {
-    When('a visitor navigates to "/en/learn/paths/careers"', () => {
-      visit("/en/learn/paths/careers");
-    });
-    Then('the current URL should not contain "/legacy/"', () => {
-      expect(navigation).toEqual({ finalPath: "/en/learn/paths/careers", hops: 0, healthy: true });
-    });
-  });
-
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/learn-three-bucket.feature: The legacy redirect does not interfere with a re-homed fundamentally-strong course URL
   Scenario(
     "The legacy redirect does not interfere with a re-homed fundamentally-strong course URL",
     ({ When, Then }) => {
@@ -173,6 +158,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, Background }) => {
     },
   );
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/learn-three-bucket.feature: A deep legacy path keeps its sub-taxonomy verbatim
   Scenario("A deep legacy path keeps its sub-taxonomy verbatim", ({ When, Then, And }) => {
     When(
       'a visitor navigates to "/en/learn/software-engineering/programming-languages/python/by-example/advanced"',

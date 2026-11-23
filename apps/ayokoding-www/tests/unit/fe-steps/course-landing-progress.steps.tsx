@@ -103,6 +103,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/course-landing-progress.feature: A started course shows its progress and a Continue button
   Scenario("A started course shows its progress and a Continue button", ({ Given, When, Then, And }) => {
     Given("a reader completed the first two learning pages of a course", () => {
       noSavedProgress();
@@ -127,6 +128,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/course-landing-progress.feature: A finished course offers a review
   Scenario("A finished course offers a review", ({ Given, When, Then, And }) => {
     Given("a reader completed every learning page of a course", () => {
       noSavedProgress();

@@ -203,20 +203,18 @@ gate_inventory="$temporary_root/gates.json"
 ./rhino gate list --output json >"$gate_inventory"
 node -e '
 const inventory = JSON.parse(require("fs").readFileSync(process.argv[1], "utf8"));
-const expectedSafety = {
-  "pre-commit": "public-safety-tree",
-  "commit-msg": "public-safety-commit-message",
-  "pre-push": "public-safety-tree",
-  "pull-request": "public-safety-tree"
+const surfaceGates = (name) => inventory.surfaces?.find((candidate) => candidate.surface === name)?.gates;
+// C6: each local hook holds exactly the entry its allowed list names, and every other check runs at pull-request.
+const localSurfaces = {
+  "pre-commit": ["format-staged"],
+  "commit-msg": ["commit-message"],
+  "pre-push": ["public-safety-range"]
 };
-for (const [surface, gate] of Object.entries(expectedSafety)) {
-  const entry = inventory.surfaces?.find((candidate) => candidate.surface === surface);
-  if (!Array.isArray(entry?.gates) || entry.gates[0] !== gate) process.exit(1);
+for (const [surface, gates] of Object.entries(localSurfaces)) {
+  if (JSON.stringify(surfaceGates(surface)) !== JSON.stringify(gates)) process.exit(1);
 }
-const prePush = inventory.surfaces?.find((entry) => entry.surface === "pre-push");
-if (!prePush.gates.includes("env-validate")) process.exit(1);
-const pullRequest = inventory.surfaces?.find((entry) => entry.surface === "pull-request");
-if (!pullRequest.gates.includes("public-safety-commit-message")) process.exit(1);
+if (surfaceGates("pull-request")?.[0] !== "public-safety-tree") process.exit(1);
+if (!surfaceGates("pull-request")?.includes("public-safety-commit-message")) process.exit(1);
 if (inventory.surfaces?.some((entry) => entry.gates?.includes("public-safety"))) process.exit(1);
 ' "$gate_inventory"
 

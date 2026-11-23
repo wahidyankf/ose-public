@@ -375,10 +375,19 @@ apps/[app-name]/
 
 **Grouping hierarchy**:
 
-```
-Feature (describe)
-└── Business Rule (nested describe)
-    └── Test Cases (test)
+```mermaid
+flowchart TD
+    accTitle: Test grouping hierarchy
+    accDescr {
+        A feature is a describe block.
+        Each business rule is a nested describe block inside its feature.
+        Each test case is a test inside its business rule.
+    }
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
+    feature["Feature<br/>(describe)"]
+    rule["Business Rule<br/>(nested describe)"]
+    tests["Test Cases<br/>(test)"]
+    feature --> rule --> tests
 ```
 
 **PASS Example**:

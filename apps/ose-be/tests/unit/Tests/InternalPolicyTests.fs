@@ -13,6 +13,7 @@ let ``internal-policy reports ready to accept internal policy documents`` () =
     Assert.Equal(ContextReadiness.Ready, readiness.State)
     Assert.Contains("internal policy", readiness.Capability)
 
+// @scenario specs/apps/ose/be/behaviours/internal-policy/internal-policy.feature: GET /api/v1/internal-policy/status reports the context ready
 [<Fact>]
 let ``internal-policy status endpoint reports the context readiness`` () =
     let client = buildClient routes

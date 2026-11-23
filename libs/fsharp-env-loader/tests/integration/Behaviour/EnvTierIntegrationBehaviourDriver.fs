@@ -11,6 +11,8 @@ open FsharpEnvLoader
 [<assembly: CollectionBehavior(DisableTestParallelization = true)>]
 do ()
 
+/// Integration step definitions for `env-tier.feature`. Every step touches the
+/// real filesystem (temporary directories) and the real process environment.
 type EnvTierIntegrationSteps() =
     let namedDirs = Dictionary<string, string>()
     let mutable ownedDirs: string list = []
@@ -106,6 +108,11 @@ type EnvTierIntegrationSteps() =
         touchedEnvKeys.Add key |> ignore
 
     [<Given>]
+    member _.``the process environment does not have "([^"]+)" set``(key: string) =
+        Environment.SetEnvironmentVariable(key, null)
+        touchedEnvKeys.Add key |> ignore
+
+    [<Given>]
     member _.``APP_ENV is unset``() =
         Environment.SetEnvironmentVariable("APP_ENV", null)
 
@@ -137,11 +144,18 @@ type EnvTierIntegrationSteps() =
 
     [<Then>]
     member _.``the resolved tier is "([^"]*)"``(expected: string) =
-        Assert.Equal(expected, resolvedTier.Value)
+        match resolvedTier with
+        | Some actual -> Assert.Equal(expected, actual)
+        | None ->
+            Assert.Fail("no tier has been resolved — the scenario is missing its \"When the env tier resolves\" step")
 
     [<Then>]
     member _.``"([^"]+)" is "([^"]*)"``(key: string, expected: string) =
         Assert.Equal(expected, Environment.GetEnvironmentVariable key)
+
+    [<Then>]
+    member _.``the process environment has no "([^"]+)" value``(key: string) =
+        Assert.Null(Environment.GetEnvironmentVariable key)
 
     [<Then>]
     member _.``loading completes without raising``() =
@@ -167,22 +181,44 @@ type EnvTierIntegrationSteps() =
         resolvedTier <- None
         loadOutcome <- None
 
+/// Reads the `.feature` files TickSpec's `GherkinFiles` build target copies
+/// into this test binary's output directory and runs `env-tier.feature`.
 module private FeatureRunner =
     let private assembly = Assembly.GetExecutingAssembly()
 
-    let scenarios () : seq<obj[]> =
-        let assemblyDir = Path.GetDirectoryName assembly.Location
-        let featurePath = Path.Combine(assemblyDir, "specs", "env-tier", "env-tier.feature")
-        let definitions = StepDefinitions([| typeof<EnvTierIntegrationSteps> |])
+    let private specsDir =
+        Path.Combine(Path.GetDirectoryName(assembly.Location), "specs")
 
-        let feature =
-            definitions.GenerateFeature(featurePath, File.ReadAllLines featurePath)
+    let private getFeatureFile (featureFileName: string) : string option =
+        if Directory.Exists specsDir then
+            Directory.GetFiles(specsDir, "*.feature", SearchOption.AllDirectories)
+            |> Array.tryFind (fun f -> Path.GetFileName(f) = featureFileName)
+        else
+            None
 
-        feature.Scenarios |> Seq.map (fun scenario -> [| scenario :> obj |])
+    let scenarios (featureFileName: string) : seq<obj[]> =
+        match getFeatureFile featureFileName with
+        | Some path ->
+            let definitions = StepDefinitions([| typeof<EnvTierIntegrationSteps> |])
+            let feature = definitions.GenerateFeature(path, File.ReadAllLines path)
+            feature.Scenarios |> Seq.map (fun scenario -> [| scenario :> obj |])
+        | None -> Seq.empty
 
+// @scenario specs/libs/fsharp-env-loader/behaviours/env-tier/env-tier.feature: APP_ENV unset or empty defaults to the "local" tier
+// @scenario specs/libs/fsharp-env-loader/behaviours/env-tier/env-tier.feature: APP_ENV set to a tier name resolves to that tier
+// @scenario specs/libs/fsharp-env-loader/behaviours/env-tier/env-tier.feature: Only the file matching APP_ENV is read
+// @scenario specs/libs/fsharp-env-loader/behaviours/env-tier/env-tier.feature: The first search directory that holds the tier file wins
+// @scenario specs/libs/fsharp-env-loader/behaviours/env-tier/env-tier.feature: Missing or empty tier input is never an error
+// @scenario specs/libs/fsharp-env-loader/behaviours/env-tier/env-tier.feature: A value containing "=" keeps only the substring after the first "="
+// @scenario specs/libs/fsharp-env-loader/behaviours/env-tier/env-tier.feature: CRLF-terminated lines parse the same as LF-terminated lines
+// @scenario specs/libs/fsharp-env-loader/behaviours/env-tier/env-tier.feature: Blank lines and full-line "#" comments are skipped
+// @scenario specs/libs/fsharp-env-loader/behaviours/env-tier/env-tier.feature: A line with no "=" is skipped without throwing
+// @scenario specs/libs/fsharp-env-loader/behaviours/env-tier/env-tier.feature: Surrounding whitespace is trimmed from both key and value
+// @scenario specs/libs/fsharp-env-loader/behaviours/env-tier/env-tier.feature: The process environment wins over a tier file value
+// @scenario specs/libs/fsharp-env-loader/behaviours/env-tier/env-tier.feature: Referencing the library never loads a tier file
 type EnvTierIntegrationFeatureTests() =
     static member Scenarios() : seq<obj[]> =
-        FeatureRunner.scenarios () |> Seq.toList :> seq<_>
+        FeatureRunner.scenarios "env-tier.feature" |> Seq.toList :> seq<_>
 
     [<Theory>]
     [<MemberData("Scenarios")>]

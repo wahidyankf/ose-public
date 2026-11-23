@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"strings"
 	"testing"
-	"time"
 
 	"github.com/wahidyankf/ose-public/apps/ayokoding-cli/internal/adapters/cli"
 )
@@ -76,13 +75,10 @@ func TestHangYieldsToInterrupt(t *testing.T) {
 		})
 	}()
 	cancel()
-	select {
-	case status := <-done:
-		if status != 130 {
-			t.Fatalf("status=%d, want 130", status)
-		}
-	case <-time.After(10 * time.Second):
-		t.Fatal("blocked command did not yield to interrupt")
+	// No wall-clock deadline: the hang fault returns only when the context
+	// ends, so a regression stops the run at the go test -timeout bound.
+	if status := <-done; status != 130 {
+		t.Fatalf("status=%d, want 130", status)
 	}
 }
 

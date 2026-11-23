@@ -47,8 +47,7 @@ the filesystem, and `cli.py` is the composition root.
 The canonical Gherkin corpus is [`specs/apps/ferret/cli/behaviours/`](../../specs/apps/ferret/cli/README.md), six
 feature files across storage, privacy, queries, analytics, and harness concerns. The Unit adapter binds it with
 pytest-bdd step definitions, the Integration adapter binds the scenarios that need real resources, and the static
-`test:coverage:unit`, `test:coverage:integration`, and `test:coverage:behaviour` targets check that every scenario is
-bound exactly once per applicable layer.
+`test:behaviour:coverage` target checks that every scenario is bound at each applicable layer, or exempt with a reason.
 
 Every Unit and Integration test runs with a private, empty `HOME` and with `FERRET_DATA_HOME` and `XDG_DATA_HOME`
 cleared, set by an autouse fixture in `tests/conftest.py`. The CLI honours those variables, so without it a shell that

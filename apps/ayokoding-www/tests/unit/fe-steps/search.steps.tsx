@@ -67,6 +67,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/search/search.feature: Cmd+K keyboard shortcut opens the search dialog
   Scenario("Cmd+K keyboard shortcut opens the search dialog", ({ When, Then, And }) => {
     When("a visitor presses Cmd+K on the page", () => {
       render(<SearchHarness />);
@@ -83,7 +84,8 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
-  Scenario("Typing in the search input shows debounced results", ({ Given, When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/search/search.feature: Typing a query shows matching results that update as the query changes
+  Scenario("Typing a query shows matching results that update as the query changes", ({ Given, When, Then, And }) => {
     let input: HTMLElement;
     Given("the search dialog is open", () => {
       searchQuery.mockResolvedValue([programmingResult]);
@@ -107,6 +109,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/search/search.feature: Clicking a search result navigates to that page
   Scenario("Clicking a search result navigates to that page", ({ Given, When, Then, And }) => {
     let input: HTMLElement;
     Given("the search dialog is open", () => {
@@ -131,6 +134,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/search/search.feature: Escape key closes the search dialog
   Scenario("Escape key closes the search dialog", ({ Given, When, Then, And }) => {
     let trigger: HTMLElement;
     Given("the search dialog is open", async () => {
@@ -154,6 +158,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/search/search.feature: Search results show title, section path, and excerpt
   Scenario("Search results show title, section path, and excerpt", ({ Given, When, Then, And }) => {
     let input: HTMLElement;
     Given("the search dialog is open", () => {
@@ -178,6 +183,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/search/search.feature: Global search surfaces the Tools pages
   Scenario("Global search surfaces the Tools pages", ({ Given, When, Then }) => {
     let input: HTMLElement;
     Given("the search dialog is open", () => {
@@ -194,6 +200,41 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     Then("a result linking to the AI Model Benchmark tool page is shown", async () => {
       const result = await screen.findByText("AI Model Benchmark");
       expect(result.closest("[cmdk-item]")?.getAttribute("data-value")).toContain("tools/ai-benchmark");
+    });
+  });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/search/search.feature: Ctrl+K opens the search dialog on non-Mac platforms
+  Scenario("Ctrl+K opens the search dialog on non-Mac platforms", ({ When, Then, And }) => {
+    When("a visitor presses Ctrl+K on the page", () => {
+      render(<SearchHarness />);
+      fireEvent.keyDown(document, { key: "k", ctrlKey: true });
+    });
+
+    Then("the search dialog should open", () => {
+      expect(screen.getByTestId("search-open").textContent).toBe("true");
+      expect(screen.getByRole("dialog")).toBeTruthy();
+    });
+
+    And("the search input should have focus", async () => {
+      await waitFor(() => expect(document.activeElement).toBe(screen.getByPlaceholderText("Search...")));
+    });
+  });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/search/search.feature: A query with no match shows a no-results message
+  Scenario("A query with no match shows a no-results message", ({ Given, When, Then }) => {
+    let input: HTMLElement;
+    Given("the search dialog is open", () => {
+      searchQuery.mockResolvedValue([]);
+      input = renderOpenSearch();
+    });
+
+    When("the visitor types a query that matches no page", () => {
+      fireEvent.change(input, { target: { value: "zzqxv" } });
+    });
+
+    Then("the search dialog should show a no-results message", async () => {
+      await waitFor(() => expect(searchQuery).toHaveBeenCalledWith({ query: "zzqxv", locale: "en", limit: 10 }));
+      expect(await screen.findByText("No results found")).toBeTruthy();
     });
   });
 });

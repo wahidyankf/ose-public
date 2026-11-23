@@ -4,11 +4,9 @@ Feature: Regulatory source context
   So that the bounded context boundary is established for future feature plans
 
   # Stub — detailed scenarios added in regulatory-source feature plan
-  # Exemption(integration): context readiness is an in-process declaration with no local-resource boundary; alternative-proof: ose-be:test:unit / Regulatory source context is declared
-  @integration-exempt
-  # Exemption(e2e): the declaration has no externally observable public operation; alternative-proof: ose-be:test:unit / Regulatory source context is declared
-  @e2e-exempt
-  Scenario: Regulatory source context is declared
+  # Behaviour: OSB-004
+  Scenario: GET /api/v1/regulatory-source/status reports the context ready
     Given the ose-be service is running
-    When the regulatory-source bounded context is initialized
-    Then the context is ready to accept regulatory documents
+    When I send GET /api/v1/regulatory-source/status
+    Then the response status is 200
+    And the response body has a "state" field equal to "Ready"

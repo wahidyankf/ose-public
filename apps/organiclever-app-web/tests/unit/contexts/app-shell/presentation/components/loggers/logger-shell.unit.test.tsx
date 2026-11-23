@@ -16,7 +16,14 @@ afterEach(() => {
 describe("LoggerShell", () => {
   it("renders nothing when isOpen is false", () => {
     const { container } = render(
-      <LoggerShell isOpen={false} hue="teal" icon="zap" title="Test" onClose={vi.fn()} onSave={vi.fn()}>
+      <LoggerShell
+        isOpen={false}
+        hue="teal"
+        icon="zap"
+        title="Test"
+        onClose={vi.fn<(...args: unknown[]) => unknown>()}
+        onSave={vi.fn<(...args: unknown[]) => unknown>()}
+      >
         <div>content</div>
       </LoggerShell>,
     );
@@ -25,7 +32,14 @@ describe("LoggerShell", () => {
 
   it("renders title and children when isOpen is true", () => {
     render(
-      <LoggerShell isOpen={true} hue="plum" icon="calendar" title="Log reading" onClose={vi.fn()} onSave={vi.fn()}>
+      <LoggerShell
+        isOpen={true}
+        hue="plum"
+        icon="calendar"
+        title="Log reading"
+        onClose={vi.fn<(...args: unknown[]) => unknown>()}
+        onSave={vi.fn<(...args: unknown[]) => unknown>()}
+      >
         <div>form content</div>
       </LoggerShell>,
     );
@@ -34,9 +48,16 @@ describe("LoggerShell", () => {
   });
 
   it("calls onClose when Cancel is clicked", () => {
-    const onClose = vi.fn();
+    const onClose = vi.fn<(...args: unknown[]) => unknown>();
     render(
-      <LoggerShell isOpen={true} hue="sky" icon="timer" title="Log focus" onClose={onClose} onSave={vi.fn()}>
+      <LoggerShell
+        isOpen={true}
+        hue="sky"
+        icon="timer"
+        title="Log focus"
+        onClose={onClose}
+        onSave={vi.fn<(...args: unknown[]) => unknown>()}
+      >
         <div>content</div>
       </LoggerShell>,
     );
@@ -45,14 +66,14 @@ describe("LoggerShell", () => {
   });
 
   it("calls onSave when Save is clicked and not disabled", () => {
-    const onSave = vi.fn();
+    const onSave = vi.fn<(...args: unknown[]) => unknown>();
     render(
       <LoggerShell
         isOpen={true}
         hue="honey"
         icon="zap"
         title="Log learning"
-        onClose={vi.fn()}
+        onClose={vi.fn<(...args: unknown[]) => unknown>()}
         onSave={onSave}
         saveDisabled={false}
       >
@@ -70,8 +91,8 @@ describe("LoggerShell", () => {
         hue="terracotta"
         icon="clock"
         title="Log meal"
-        onClose={vi.fn()}
-        onSave={vi.fn()}
+        onClose={vi.fn<(...args: unknown[]) => unknown>()}
+        onSave={vi.fn<(...args: unknown[]) => unknown>()}
         saveDisabled={true}
       >
         <div>content</div>
@@ -83,9 +104,16 @@ describe("LoggerShell", () => {
   });
 
   it("calls onClose when backdrop is clicked", () => {
-    const onClose = vi.fn();
+    const onClose = vi.fn<(...args: unknown[]) => unknown>();
     const { container } = render(
-      <LoggerShell isOpen={true} hue="sage" icon="zap" title="Custom" onClose={onClose} onSave={vi.fn()}>
+      <LoggerShell
+        isOpen={true}
+        hue="sage"
+        icon="zap"
+        title="Custom"
+        onClose={onClose}
+        onSave={vi.fn<(...args: unknown[]) => unknown>()}
+      >
         <div>content</div>
       </LoggerShell>,
     );

@@ -194,6 +194,7 @@ Then(
   },
 );
 
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-roadmap.feature: Each phase shows how many of its courses are done
 Then('each core phase shows "x of y done" for its courses', async ({ page }) => {
   const manifest = await publishedManifest(page, GENERALIST_PATH);
   const phase = corePhaseOf(manifest);
@@ -205,6 +206,7 @@ Then('each core phase shows "x of y done" for its courses', async ({ page }) => 
 // S20 — course cards show order, time, format, and status in words.
 // ---------------------------------------------------------------------------
 
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-roadmap.feature: A course card shows its position, title, time, and format
 Then("each course card shows its position number, title, estimated time, and format", async ({ page }) => {
   const manifest = await publishedManifest(page, GENERALIST_PATH);
   expect(coreCourseIds(manifest)).toEqual(["computer-science-foundations", "software-engineering-practices"]);
@@ -228,6 +230,7 @@ Then("each course card shows its position number, title, estimated time, and for
   }
 });
 
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-roadmap.feature: A course card shows Done, In progress, or Not started as text
 Then('each course card shows "Done", "In progress", or "Not started" as text', async ({ page }) => {
   const rows = syllabus(page, GENERALIST_TITLE).locator("ol > li");
   const count = await rows.count();
@@ -258,6 +261,7 @@ Then('an outline course card shows an "Outline" badge', async ({ page }) => {
 // backend-track fixture.
 // ---------------------------------------------------------------------------
 
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-roadmap.feature: A new reader sees one Start button
 When("the reader opens a path page", async ({ page }) => {
   await openStagedPath(page, BACKEND_PATH);
 });
@@ -304,6 +308,7 @@ Then("every course card shows {string}", async ({ page }, status: string) => {
 // S22 — a returning reader sees Continue with the next course.
 // ---------------------------------------------------------------------------
 
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-roadmap.feature: A returning reader sees Continue with the next course
 Given("a reader completed some learning pages of the path's second course", async ({ page }) => {
   const manifest = await publishedManifest(page, BACKEND_PATH);
   expect(manifest.courseOrder.slice(0, 2)).toEqual([BASH_ID, BACKEND_ID]);
@@ -349,6 +354,7 @@ Then("it links to the first learning page of that course the reader has not comp
 // S23 — optional extensions are separate and closed by default.
 // ---------------------------------------------------------------------------
 
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-roadmap.feature: Optional extensions are separate and closed by default
 When("a reader opens a path that has extension phases", async ({ page }) => {
   // The generalist-track fixture is the one fixture that declares an extension phase.
   const manifest = await publishedManifest(page, GENERALIST_PATH);
@@ -401,6 +407,7 @@ Then("opening an extension phase shows its course cards", async ({ page }) => {
 // S24 — the path headline counts core courses only.
 // ---------------------------------------------------------------------------
 
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-roadmap.feature: The path headline counts core courses only
 Given("a reader completed every learning page of one extension course and nothing else", async ({ page }) => {
   const manifest = await publishedManifest(page, GENERALIST_PATH);
   expect(extensionPhaseOf(manifest).courses).toEqual([CAPSTONE_ID]);
@@ -429,6 +436,7 @@ Then('that extension phase shows "1 of M done"', async ({ page }) => {
 // S25 — finishing the core path shows completion.
 // ---------------------------------------------------------------------------
 
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-roadmap.feature: Finishing the core path shows completion
 Given("a reader completed every core course of a path", async ({ page }) => {
   const manifest = await publishedManifest(page, BACKEND_PATH);
   expect(coreCourseIds(manifest)).toEqual([BASH_ID, BACKEND_ID, "sql-essentials"]);

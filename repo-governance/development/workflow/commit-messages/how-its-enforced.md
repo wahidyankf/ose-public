@@ -1,30 +1,34 @@
 ---
-description: How commit messages are checked today — review, the on-demand Commitlint configuration, and the public-safety screen the commit-msg hook runs.
+description: How commit messages are checked — the commit-msg Commitlint hook, the pull-request range lint, review, and the public-safety screens.
 when_to_use: Use when you need to know what checks a commit message, or how to lint one against Conventional Commits yourself.
 ---
 
 # How It's Checked
 
-No hook or CI step enforces the Conventional Commits format. Reviewers check it. A Commitlint
-configuration is kept so you can check a message yourself before committing.
+The commit-msg hook and the pull-request gate both run Commitlint against `commitlint.config.js`. A message that breaks
+the Conventional Commits format stops the commit or fails the pull request. Review checks what Commitlint cannot: the
+thematic boundary of each commit.
 
 ## What the Hooks Run
 
-**Hook**: `.husky/commit-msg`, which runs
-`./rhino gate run --surface commit-msg --message-file "$1"` under the `./hippo` guard.
+**Hook**: `.husky/commit-msg`, which runs `./rhino gate run --surface commit-msg --message-file "$1"` under the
+`./hippo` guard.
 
-**What it runs**: the only gate declared on the `commit-msg` surface, `public-safety-commit-message`.
-It screens the message for the public-safety shapes this public repository must never publish, such
-as absolute home paths and private addresses. It does not check type, scope, case, or length.
+**What it runs**: the only gate declared on the `commit-msg` surface, `commit-message`. It runs Commitlint with
+`@commitlint/config-conventional` on the message, and checks type, scope, case, and description.
 
-The `pull-request` surface in `pr-quality-gate.yml` runs the same gate over the PR's commit range.
-List the live gate set with `./rhino gate list` rather than trusting this page.
+The `pull-request` surface lints each commit of the PR's base-to-head range on its own, through `commit-range-message`.
+The `public-safety-commit-message` gate there screens each message for public-safety shapes, such as absolute home paths and private addresses, and the
+`public-safety-range` gate at pre-push screens the pushed commits, messages included. List the live gate set with
+`./rhino gate list` rather than trusting this page.
 
-**Example block** (the screen names a detector and a line, never the matched value):
+**Example block** (Commitlint names the rule that failed):
 
 ```text
-[public-safety] finding maintainer-path <commit-text-1>:1
-[public-safety] commit: blocked, 1 finding(s); publication must not proceed
+⧗   input: bad message
+✖   subject may not be empty [subject-empty]
+✖   type may not be empty [type-empty]
+✖   found 2 problems, 0 warnings
 ```
 
 ## Commitlint (On Demand)
@@ -75,17 +79,16 @@ module.exports = {
 ```mermaid
 flowchart TD
     accTitle: Commit message checks
-    accDescr: Developer writes code leads to Stage changes; Stage changes leads to Pre-commit gates; Pre-commit gates leads to Write commit message; Write commit message leads to Public-safety screen; the screen blocks a leak or lets the commit succeed; Review checks the format.
+    accDescr: Developer writes code leads to Stage changes; Stage changes leads to Pre-commit formatting; Pre-commit formatting leads to Write commit message; Write commit message leads to Commitlint; Commitlint blocks a bad format or lets the commit succeed; Review checks the thematic composition.
     W["Developer<br/>writes code"] --> S["Stage changes:<br/>git add"]
-    S --> P["Pre-commit<br/>registry gates"]
+    S --> P["Pre-commit<br/>staged formatter"]
     P --> M["Write commit<br/>message"]
-    M --> H{"Public-safety<br/>screen clean?"}
+    M --> H{"Commitlint<br/>format clean?"}
     H -->|Clean| OK["Commit succeeds"]
-    H -->|Finding| R["Blocked"]
-    OK --> RV["Review checks<br/>format"]
+    H -->|Violation| R["Blocked"]
+    OK --> RV["Review checks<br/>composition"]
     classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
-The pre-commit hook runs the registry gates, including staged formatting, and the commit-msg hook
-runs the public-safety screen on the message. Conventional Commits format is left to review, with
-Commitlint available on demand.
+The pre-commit hook formats the staged files. The commit-msg hook runs Commitlint on the message, and the
+pull-request gate lints each commit in the range. Review checks the thematic composition of the commits.

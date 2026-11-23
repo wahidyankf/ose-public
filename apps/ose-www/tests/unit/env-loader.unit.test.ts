@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const loaderSpies = vi.hoisted(() => ({
-  loadTierEnv: vi.fn(),
-  resolveTier: vi.fn(),
-  tierEnvFilePath: vi.fn(),
+  loadTierEnv: vi.fn<(...args: unknown[]) => unknown>(),
+  resolveTier: vi.fn<(...args: unknown[]) => unknown>(),
+  tierEnvFilePath: vi.fn<(...args: unknown[]) => unknown>(),
 }));
 
 vi.mock("@open-sharia-enterprise/ts-env-loader", () => loaderSpies);
@@ -15,11 +15,11 @@ describe("env-loader composition wrapper", () => {
   });
 
   it("invokes the shared loader on import and re-exports its public API", async () => {
-    const module = await import("../../src/env-loader");
+    const envLoader = await import("../../src/env-loader");
 
     expect(loaderSpies.loadTierEnv).toHaveBeenCalledOnce();
-    expect(module.loadTierEnv).toBeTypeOf("function");
-    expect(module.resolveTier).toBeTypeOf("function");
-    expect(module.tierEnvFilePath).toBeTypeOf("function");
+    expect(envLoader.loadTierEnv).toBeTypeOf("function");
+    expect(envLoader.resolveTier).toBeTypeOf("function");
+    expect(envLoader.tierEnvFilePath).toBeTypeOf("function");
   });
 });

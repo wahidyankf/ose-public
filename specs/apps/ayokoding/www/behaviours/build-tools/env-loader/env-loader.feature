@@ -4,22 +4,24 @@ Feature: APP_ENV tier env-file loading
   I want the app to load exactly one .env.<tier> file selected by APP_ENV
   So that .env.stag and .env.prod stay agent-restricted while builds still resolve correct config
 
-  # Exemption(e2e): the scenario exercises a local filesystem or process boundary rather than a public browser or HTTP boundary; alternative-proof: ayokoding-www:test:integration / ayokoding-www bootstrap loads staging configuration
+  # Exemption(e2e): the build-time script writes repository files and is not part of the served site, so no end-to-end boundary exists for it; alternative-proof: ayokoding-www:test:unit / ayokoding-www bootstrap loads staging configuration
   @e2e-exempt
+  # Behaviour: AYW-073
   Scenario: ayokoding-www bootstrap loads staging configuration
     Given only ".env.stag" exists in the app directory
     When the ayokoding-www environment bootstrap runs with APP_ENV set to "stag"
     Then each Ayokoding configuration value resolves to its ".env.stag" value
 
-  # Exemption(e2e): the scenario exercises a local filesystem or process boundary rather than a public browser or HTTP boundary; alternative-proof: ayokoding-www:test:integration / ayokoding-www process env wins over the local tier file
+  # Exemption(e2e): the build-time script writes repository files and is not part of the served site, so no end-to-end boundary exists for it; alternative-proof: ayokoding-www:test:unit / ayokoding-www process env wins over the local tier file
   @e2e-exempt
+  # Behaviour: AYW-074
   Scenario: ayokoding-www process env wins over the local tier file
     Given ".env.local" sets an app variable to a file value
     When the process starts with that variable already exported at tier "local"
     Then the exported process value is used
     And the ".env.local" value is not applied over it
 
-  # Exemption(e2e): the scenario exercises a local filesystem or process boundary rather than a public browser or HTTP boundary; alternative-proof: ayokoding-www:test:integration / ayokoding-www tolerates a missing tier file
+  # Exemption(e2e): the build-time script writes repository files and is not part of the served site, so no end-to-end boundary exists for it; alternative-proof: ayokoding-www:test:unit / ayokoding-www tolerates a missing tier file
   @e2e-exempt
   Scenario: ayokoding-www tolerates a missing tier file
     Given no ".env.stag" file exists in the app directory
@@ -27,8 +29,9 @@ Feature: APP_ENV tier env-file loading
     Then the loader does not throw
     And startup proceeds using whatever the process environment already supplies
 
-  # Exemption(e2e): the scenario exercises a local filesystem or process boundary rather than a public browser or HTTP boundary; alternative-proof: ayokoding-www:test:integration / ayokoding-www fails loudly on a stray auto-loaded env file
+  # Exemption(e2e): the build-time script writes repository files and is not part of the served site, so no end-to-end boundary exists for it; alternative-proof: ayokoding-www:test:unit / ayokoding-www fails loudly on a stray auto-loaded env file
   @e2e-exempt
+  # Behaviour: AYW-077
   Scenario Outline: ayokoding-www fails loudly on a stray auto-loaded env file
     Given a stray "<file>" sits beside the app's tier file
     When the loader runs with APP_ENV set to a non-local tier
@@ -39,3 +42,16 @@ Feature: APP_ENV tier env-file loading
       | .env            |
       | .env.production |
       | .env.local      |
+
+  # Exemption(e2e): a deployed site runs on its host's own port and no deployed environment starts the dev server, so no served boundary lets a reader or operator set AYOKODING_WWW_PORT; alternative-proof: ayokoding-www:test:integration / The dev server listens on AYOKODING_WWW_PORT and defaults to port 3101
+  @e2e-exempt
+  # Behaviour: AYW-075
+  Scenario Outline: The dev server listens on AYOKODING_WWW_PORT and defaults to port 3101
+    Given AYOKODING_WWW_PORT is "<value>"
+    When the dev server starts
+    Then the dev server listens on port <port>
+
+    Examples:
+      | value | port |
+      | 4123  | 4123 |
+      | unset | 3101 |

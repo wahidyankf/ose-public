@@ -33,7 +33,7 @@ The following checks satisfy both criteria and run as staged-path gates:
   [Gated standards](../../quality/cross-language-lint-strictness/gated-standards.md).
 - **Per-file markdown validators**: `md mermaid validate` (the `md-mermaid` gate). `markdownlint-cli2`
   and `md heading-hierarchy validate` also qualify; their `markdownlint` and `md-heading-hierarchy`
-  gates currently check the whole declared tree on the same surfaces, a correct superset.
+  gates currently check the whole declared tree on the pull-request surface, a correct superset.
 - **Gherkin formatting**: deterministic staged-file formatting only; corpus/adapter validation runs
   through affected `test:quick`.
 
@@ -41,12 +41,12 @@ The following checks satisfy both criteria and run as staged-path gates:
 
 Checks that fail one or both criteria stay outside staged-path gates:
 
-| Check                             | Fails because                                                                                           | Placement                                                        |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| `md internal-link validate`       | Not per-file isolated — adding, deleting, or renaming any `.md` file can break links in untouched files | Whole-tree gate `md-internal-link` (pre-commit and pull-request) |
-| `governance word-budget validate` | Not per-file isolated — a surface's glob or thresholds can change without the measured file staged      | Whole-tree gate `word-budget` (pre-commit and pull-request)      |
-| `harness adapters generate`       | Not file-type-based — regenerates every adapter from the canonical `.agents/` source                    | Explicit `./rhino` transaction (no gate)                         |
-| `test:quick`, `typecheck`, `lint` | Not file-type-based — project-scoped compile / test                                                     | Nx target (PR quality gate language jobs)                        |
+| Check                             | Fails because                                                                                           | Placement                                         |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| `md internal-link validate`       | Not per-file isolated — adding, deleting, or renaming any `.md` file can break links in untouched files | Whole-tree gate `md-internal-link` (pull-request) |
+| `governance word-budget validate` | Not per-file isolated — a surface's glob or thresholds can change without the measured file staged      | Whole-tree gate `word-budget` (pull-request)      |
+| `harness adapters generate`       | Not file-type-based — regenerates every adapter from the canonical `.agents/` source                    | Explicit `./rhino` transaction (no gate)          |
+| `test:quick`, `typecheck`, `lint` | Not file-type-based — project-scoped compile / test                                                     | Nx target (PR quality gate language jobs)         |
 
 ## Consequences for the Nx Target Set
 
@@ -59,15 +59,16 @@ Applying this rule removes several Nx targets from `project.json` files:
 
 ## Deliberate Carve-Out: the Public-Safety Screen
 
-The public-safety tree screen (`public-safety-tree`) decides what is outbound from the staged tree
-itself and takes no `files` input. Even where a path-based check would do, it remains a **separate
-registry entry declared first** on `pre-commit`, never folded into `format-staged`, for three
-reasons:
+The public-safety tree screen (`public-safety-tree`) decides what is outbound from the tree itself and takes no
+`files` input. Even where a path-based check would do, it remains a **separate registry entry** on the
+`pull-request` surface, never folded into `format-staged`, for two reasons:
 
-1. **Order guarantee**: the screen must run before any formatter rewrites staged content.
-2. **Distinct failure semantics**: a public-safety failure is an immediate abort, not a
-   "fix and re-stage" lint error. Grouping it with formatters obscures the severity.
-3. **Defense-in-depth**: a future formatter change cannot silently weaken the public-safety gate.
+1. **Distinct failure semantics**: a public-safety failure is an immediate abort, not a "fix and re-stage" lint
+   error. Grouping it with formatters obscures the severity.
+2. **Defense-in-depth**: a future formatter change cannot silently weaken the public-safety gate.
+
+It no longer runs before the formatter at pre-commit; the local hooks hold only the staged formatter and the
+pre-push leak scan (C6).
 
 This is the single deliberate carve-out from the membership rule.
 

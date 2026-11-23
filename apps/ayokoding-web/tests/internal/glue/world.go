@@ -1,14 +1,8 @@
 package glue
 
 import (
-	"fmt"
-	"io"
-	"net"
 	"net/http"
-	"os"
-	"os/exec"
-	"strings"
-	"time"
+	"testing/fstest"
 
 	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/web"
 )
@@ -65,19 +59,27 @@ type World struct {
 	// local-dev journey state.
 	flagPort string
 	hashes   map[string]string
+	// learn-entry page and htmx fragment replies of the current scenario.
+	learnPage string
+	fragments []fragmentReply
+	// portSeq numbers the unit adapter's free ports; corpusSeq numbers its
+	// in-memory corpus roots; unitTree holds those roots (unit adapter only).
+	portSeq   int
+	corpusSeq int
+	unitTree  fstest.MapFS
 }
 
-// NewWorld builds the per-scenario state for the named adapter.
+// NewWorld builds the per-scenario state for the named adapter. The default
+// configuration is resolved from an empty scenario record, never the process.
 func NewWorld(adapter string) *World {
-	deps := seedFixtureDeps()
-	var cfg web.Config
-	_ = withScenarioEnv(map[string]string{}, func() error {
-		var resolveErr error
-		cfg, resolveErr = web.ResolveConfig(nil)
-		return resolveErr
-	})
+	cfg, err := web.ResolveConfig(nil, scenarioEnvironment(nil))
+	if err != nil {
+		panic("glue: the empty launcher configuration must resolve: " + err.Error())
+	}
 	cfg.Port = web.DefaultPort
+	deps := web.SeedFixtureDeps("parity", web.CannedSources)
 	return &World{
+		unitTree:         fstest.MapFS{},
 		adapter:          adapter,
 		cfg:              cfg,
 		handler:          web.NewServer(cfg, deps).Handler(),
@@ -90,85 +92,4 @@ func NewWorld(adapter string) *World {
 		theme:            "light",
 		sidebarWidth:     240,
 	}
-}
-
-// seedFixtureDeps delegates to the shared production seed so the unit driver
-// serves the same canned corpus as the binary.
-func seedFixtureDeps() web.Deps {
-	return web.SeedFixtureDeps("parity")
-}
-
-// callRemote performs one request against a live test server.
-func (w *World) callRemote(base, method, target string) error {
-	url := base + target
-	if strings.HasPrefix(target, "http") {
-		url = target
-	}
-	request, err := http.NewRequest(method, url, nil)
-	if err != nil {
-		return fmt.Errorf("bdd: build request: %w", err)
-	}
-	response, err := http.DefaultClient.Do(request)
-	if err != nil {
-		return fmt.Errorf("bdd: do request: %w", err)
-	}
-	defer func() { _ = response.Body.Close() }()
-	raw, err := io.ReadAll(response.Body)
-	if err != nil {
-		return fmt.Errorf("bdd: read body: %w", err)
-	}
-	w.status = response.StatusCode
-	w.header = response.Header
-	w.body = string(raw)
-	return nil
-}
-
-// startBinary launches the server binary with the given arguments and
-// environment.
-func startBinary(binary string, args []string, env map[string]string) (func(), error) {
-	cmd := exec.Command(binary, args...)
-	cmd.Env = os.Environ()
-	for key, value := range env {
-		cmd.Env = append(cmd.Env, key+"="+value)
-	}
-	cmd.Stdout = io.Discard
-	cmd.Stderr = io.Discard
-	if err := cmd.Start(); err != nil {
-		return nil, fmt.Errorf("bdd: start binary: %w", err)
-	}
-	done := make(chan struct{})
-	go func() {
-		_ = cmd.Wait()
-		close(done)
-	}()
-	return func() {
-		_ = cmd.Process.Kill()
-		<-done
-	}, nil
-}
-
-// waitReady polls until the server answers or the deadline passes.
-func waitReady(url string) error {
-	host := strings.TrimPrefix(url, "http://")
-	host = strings.TrimPrefix(host, "https://")
-	if index := strings.IndexByte(host, '/'); index >= 0 {
-		host = host[:index]
-	}
-	deadline := time.Now().Add(15 * time.Second)
-	for time.Now().Before(deadline) {
-		conn, err := net.DialTimeout("tcp", host, time.Second)
-		if err == nil {
-			_ = conn.Close()
-			response, err := http.Get(url) //nolint:gosec,noctx
-			if err == nil {
-				_, _ = io.Copy(io.Discard, response.Body)
-				_ = response.Body.Close()
-				if response.StatusCode == http.StatusOK {
-					return nil
-				}
-			}
-		}
-		time.Sleep(200 * time.Millisecond)
-	}
-	return fmt.Errorf("bdd: server at %s never became ready", url)
 }

@@ -1,45 +1,32 @@
-import { readdirSync, readFileSync, statSync } from "fs";
-import path from "path";
 import { describe, it, expect } from "vitest";
+import { memorySourceTree, scanWebUi } from "../support/source-tree";
 
 /**
- * Verifies that organiclever-app-web consumes the shared design system
- * (`@open-sharia-enterprise/web-ui`) from at least one component, and that
- * every web-ui import uses the canonical package name (decision #26 — web-ui,
- * not ts-ui).
+ * Unit binding of the design-system consumption check (decision #26: web-ui, not ts-ui). The real
+ * repository is checked by tests/integration/web-ui-consumed.integration.test.ts; here the scan runs
+ * over an in-memory double.
  */
-const CANONICAL = "@open-sharia-enterprise/web-ui";
-const srcRoot = path.resolve(__dirname, "../../../src");
-
-function collectTsxFiles(dir: string): string[] {
-  const out: string[] = [];
-  for (const entry of readdirSync(dir)) {
-    const full = path.join(dir, entry);
-    if (statSync(full).isDirectory()) {
-      out.push(...collectTsxFiles(full));
-    } else if (full.endsWith(".tsx") || full.endsWith(".ts")) {
-      out.push(full);
-    }
-  }
-  return out;
-}
-
-describe("web-ui design-system consumption", () => {
-  const files = collectTsxFiles(srcRoot);
-
-  it("imports @open-sharia-enterprise/web-ui in at least one component", () => {
-    const consumers = files.filter((f) => {
-      const content = readFileSync(f, "utf8");
-      return new RegExp(`from ["']${CANONICAL}["']`).test(content);
+describe("web-ui design-system consumption (double)", () => {
+  it("counts a component that imports the canonical package as a consumer", () => {
+    const tree = memorySourceTree({
+      "src/contexts/app-shell/presentation/tab-bar.tsx": 'import { Button } from "@open-sharia-enterprise/web-ui";',
+      "src/shared/utils/fmt.ts": 'import { x } from "date-fns";',
     });
-    expect(consumers.length).toBeGreaterThan(0);
+    expect(scanWebUi(tree).consumers).toEqual(["src/contexts/app-shell/presentation/tab-bar.tsx"]);
   });
 
-  it("uses only the canonical web-ui package name (never a ts-ui alias)", () => {
-    const offenders = files.filter((f) => {
-      const content = readFileSync(f, "utf8");
-      return /@open-sharia-enterprise\/ts-ui/.test(content);
+  it("flags a file that names the retired ts-ui alias", () => {
+    const tree = memorySourceTree({
+      "src/contexts/app-shell/presentation/side-nav.tsx": 'import { Button } from "@open-sharia-enterprise/ts-ui";',
     });
-    expect(offenders).toEqual([]);
+    expect(scanWebUi(tree).aliasOffenders).toEqual(["src/contexts/app-shell/presentation/side-nav.tsx"]);
+  });
+
+  it("ignores files outside src and non-source files", () => {
+    const tree = memorySourceTree({
+      "tests/unit/x.unit.test.ts": 'import { Button } from "@open-sharia-enterprise/ts-ui";',
+      "src/styles.css": 'import { Button } from "@open-sharia-enterprise/web-ui";',
+    });
+    expect(scanWebUi(tree)).toEqual({ consumers: [], aliasOffenders: [] });
   });
 });

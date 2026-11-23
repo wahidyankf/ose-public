@@ -7,18 +7,19 @@ Feature: Search API
   Background:
     Given the API is running
 
-  Scenario: Search returns matching results with title, slug, and excerpt
-    Given published pages indexed under locale "en" include a page titled "Beginner Examples"
-    When the client calls search.query with locale "en" and query "goroutines"
+  # Behaviour: AYW-065
+  Scenario Outline: Search results carry the <field> field
+    Given published pages indexed under locale "en" include <indexed>
+    When the client calls search.query with locale "en" and query "<query>"
     Then the response should contain at least one result
-    And each result should include a "title" field
-    And each result should include a "slug" field
-    And each result should include an "excerpt" field
+    And each result should carry its "<field>" field as "<expected>"
 
-  Scenario: Search results include locale information
-    Given published pages indexed under locale "en" include content about "programming"
-    When the client calls search.query with locale "en" and query "programming"
-    Then each result should include a "locale" field matching "en"
+    Examples:
+      | indexed                           | query       | field   | expected  |
+      | a page titled "Beginner Examples" | goroutines  | title   | non-empty |
+      | a page titled "Beginner Examples" | goroutines  | slug    | non-empty |
+      | a page titled "Beginner Examples" | goroutines  | excerpt | non-empty |
+      | content about "programming"       | programming | locale  | en        |
 
   Scenario: Search is scoped to the requested locale
     Given a page exists in locale "en" with title "Spring Security Basics"

@@ -8,7 +8,7 @@ when_to_use: Use when naming a target or writing a state diagram.
 ## Invariant E — Nx Target Naming (`{domain}:{work}`)
 
 Governance, validation, lint, and format targets use the `{domain}:{work}` scheme.
-`spec-coverage` is renamed `test:coverage:behaviour` repo-wide.
+`spec-coverage` is renamed `test:behaviour:coverage` repo-wide.
 
 Rust-specific renames applied to all Rust `project.json` files:
 

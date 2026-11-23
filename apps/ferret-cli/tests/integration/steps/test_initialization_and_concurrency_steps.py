@@ -58,8 +58,9 @@ def session(tmp_path: Path) -> Session:
     return Session(home=home, repositories=repositories)
 
 
-@scenario(FEATURE, "Initialize one private store from multiple repositories")
-def test_initialize_one_private_store_from_multiple_repositories() -> None:
+# @scenario specs/apps/ferret/cli/behaviours/storage/initialization-and-concurrency.feature: ferret init from two repositories resolves one data home
+@scenario(FEATURE, "ferret init from two repositories resolves one data home")
+def test_ferret_init_from_two_repositories_resolves_one_data_home() -> None:
     """Bound to the feature scenario; the steps below carry the assertions."""
 
 
@@ -140,6 +141,7 @@ def burst_session(tmp_path: Path) -> BurstSession:
     return BurstSession(home=home, repositories=repositories)
 
 
+# @scenario specs/apps/ferret/cli/behaviours/storage/initialization-and-concurrency.feature: Capture concurrently across repositories
 @scenario(FEATURE, "Capture concurrently across repositories")
 def test_capture_concurrently_across_repositories() -> None:
     """Bound to the feature scenario; the steps below carry the assertions."""

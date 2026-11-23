@@ -9,6 +9,9 @@ import { bodyOf, fetchText, gotoPage, statusOf } from "../support/http";
 import { stateFor } from "../support/state";
 
 const { Given, When, Then } = createBdd();
+// Behaviour corpus binding (contract C13). The Playwright home runs both tool features; no scenario is exempt.
+// @scenario specs/apps/ayokoding/web/behaviours/tools/ai-benchmark.feature: *
+// @scenario specs/apps/ayokoding/web/behaviours/tools/cost-of-living-calculator.feature: *
 
 const benchVectorURL = "/en/tools/ai-benchmark?harness=command-code-pro&tier=planning";
 const benchRestoreURL =

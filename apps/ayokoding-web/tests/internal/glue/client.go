@@ -1,17 +1,15 @@
 package glue
 
 import (
-	"bytes"
 	"crypto/sha256"
 	"encoding/hex"
-	"errors"
 	"fmt"
-	"net"
+	"io/fs"
 	"net/http"
 	"net/http/httptest"
-	"os"
-	"os/exec"
+	"path"
 	"strings"
+	"testing/fstest"
 
 	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/web"
 )
@@ -30,14 +28,20 @@ func fail(format string, args ...any) error {
 	return fmt.Errorf("%w: %s", errStepFailed, fmt.Sprintf(format, args...))
 }
 
-// freePort returns an available loopback port for override scenarios.
-func freePort() (int, error) {
-	listener, err := net.Listen("tcp", "127.0.0.1:0")
-	if err != nil {
-		return 0, fmt.Errorf("bdd: free port: %w", err)
+// unitPortBase is the first port a unit scenario is handed. The unit adapter
+// binds no socket, so these numbers only name the port a resolved launcher
+// configuration would use.
+const unitPortBase = 40000
+
+// freePort returns a loopback port for override scenarios. The unit adapter
+// hands out distinct numbers from a fixed base; the integration and e2e
+// adapters ask the operating system for a free port.
+func (w *World) freePort() (int, error) {
+	if w.adapter == "unit" {
+		w.portSeq++
+		return unitPortBase + w.portSeq, nil
 	}
-	defer func() { _ = listener.Close() }()
-	return listener.Addr().(*net.TCPAddr).Port, nil
+	return realFreePort()
 }
 
 // call performs one recorded request against the in-process handler (unit)
@@ -89,54 +93,75 @@ func (w *World) location() string {
 	return w.header.Get("Location")
 }
 
-// withScenarioEnv applies the given launcher variables to the process
-// environment for one ResolveConfig call, then restores the previous state.
-// Variables absent from the scenario are unset so ambient shell values cannot
+// scenarioEnvironment reads launcher variables from the scenario record only.
+// A variable the scenario leaves out is unset, so no ambient process value can
 // leak into a deterministic scenario.
-func withScenarioEnv(env map[string]string, run func() error) error {
-	type saved struct {
-		value string
-		ok    bool
+func scenarioEnvironment(env map[string]string) web.Environment {
+	return func(key string) (string, bool) {
+		value, ok := env[key]
+		return value, ok
 	}
-	previous := map[string]saved{}
-	for _, key := range []string{"AYOKODING_WEB_PORT", "AYOKODING_WEB_FIXTURE", "PORT"} {
-		value, ok := os.LookupEnv(key)
-		previous[key] = saved{value, ok}
-		if scenario, ok := env[key]; ok {
-			_ = os.Setenv(key, scenario)
-		} else {
-			_ = os.Unsetenv(key)
-		}
-	}
-	defer func() {
-		for key, prior := range previous {
-			if prior.ok {
-				_ = os.Setenv(key, prior.value)
-			} else {
-				_ = os.Unsetenv(key)
-			}
-		}
-	}()
-	return run()
 }
 
-// resolve parses the launcher configuration from the world environment.
+// refusedRoot stands for a source root the operating system refused.
+type refusedRoot struct{}
+
+func (refusedRoot) Open(string) (fs.File, error) { return nil, fs.ErrPermission }
+
+// openRoot opens a configured source root. The unit adapter serves only the
+// corpora the scenario staged in memory; the other adapters read disk.
+func (w *World) openRoot(dir string) fs.FS {
+	if w.adapter != "unit" {
+		return realRootFS(dir)
+	}
+	tree, err := fs.Sub(w.unitTree, strings.TrimPrefix(dir, "/"))
+	if err != nil {
+		return refusedRoot{}
+	}
+	return tree
+}
+
+// sources is the seed's port for this scenario: the recorded launcher
+// variables and the source roots the adapter opens.
+func (w *World) sources() web.Sources {
+	return web.Sources{Environment: scenarioEnvironment(w.env), Root: w.openRoot}
+}
+
+// stageCorpus places a corpus under a scenario root and returns that root. The
+// unit adapter keeps the files in memory; the other adapters write a temporary
+// directory that the scenario removes when it closes.
+func (w *World) stageCorpus(files map[string]string) (string, error) {
+	if w.adapter == "unit" {
+		w.corpusSeq++
+		root := fmt.Sprintf("unit-corpus/%d", w.corpusSeq)
+		for rel, body := range files {
+			w.unitTree[path.Join(root, rel)] = &fstest.MapFile{Data: []byte(body)}
+		}
+		return "/" + root, nil
+	}
+	root, cleanup, err := realStageCorpus(files)
+	if err != nil {
+		return "", err
+	}
+	w.stops = append(w.stops, cleanup)
+	return root, nil
+}
+
+// resolve parses the launcher configuration from the scenario environment.
 func (w *World) resolve() error {
-	var cfg web.Config
-	err := withScenarioEnv(w.env, func() error {
-		var resolveErr error
-		cfg, resolveErr = web.ResolveConfig(w.args)
-		return resolveErr
-	})
+	cfg, err := web.ResolveConfig(w.args, scenarioEnvironment(w.env))
 	if err != nil {
 		w.startErr = err
 		w.listenerStarted = false
 		return nil
 	}
+	// The seed reads the source-root and draft variables through the scenario
+	// sources, so it serves the configured fixture.
+	deps := web.SeedFixtureDeps(cfg.Fixture, w.sources())
 	w.cfg = cfg
 	w.resolvedPort = cfg.Port
 	w.listenerStarted = true
-	w.handler = web.NewServer(cfg, seedFixtureDeps()).Handler()
+	w.handler = web.NewServer(cfg, deps).Handler()
 	return nil
 }
 
@@ -172,23 +197,17 @@ func (w *World) launch() error {
 	return nil
 }
 
-// launchExpectExit runs the binary to completion for failure scenarios.
+// launchExpectExit reports how a failure scenario exits. The unit adapter starts
+// no process: it resolves the configuration the binary would resolve and reports
+// the launcher's diagnostic as the exit. Other adapters run the binary.
 func (w *World) launchExpectExit() (int, string, error) {
-	var stderr bytes.Buffer
-	cmd := exec.Command(SuiteBinary, w.args...)
-	cmd.Env = os.Environ()
-	for key, value := range w.env {
-		cmd.Env = append(cmd.Env, key+"="+value)
+	if w.adapter != "unit" {
+		return realLaunchExpectExit(w.args, w.env)
 	}
-	cmd.Stderr = &stderr
-	if err := cmd.Run(); err != nil {
-		var exit *exec.ExitError
-		if errors.As(err, &exit) {
-			return exit.ExitCode(), stderr.String(), nil
-		}
-		return 0, stderr.String(), fmt.Errorf("bdd: run binary: %w", err)
+	if _, err := web.ResolveConfig(w.args, scenarioEnvironment(w.env)); err != nil {
+		return 1, fmt.Sprintf("ayokoding-web: %v\n", err), nil
 	}
-	return 0, stderr.String(), nil
+	return 0, "", nil
 }
 
 // startExternal marks an external listener. Unit records the fake;
@@ -198,16 +217,11 @@ func (w *World) startExternal(port int) error {
 		w.external[port] = true
 		return nil
 	}
-	listener, err := net.Listen("tcp", fmt.Sprintf("127.0.0.1:%d", port))
+	stop, err := realStubListener(port)
 	if err != nil {
-		return fail("external port %d is busy; refusing to reuse another process", port)
+		return err
 	}
-	server := &http.Server{Handler: http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		writer.Header().Set("Content-Type", "text/html; charset=utf-8")
-		_, _ = fmt.Fprint(writer, "<html><body>external</body></html>")
-	})}
-	go func() { _ = server.Serve(listener) }()
-	w.stops = append(w.stops, func() { _ = server.Close() })
+	w.stops = append(w.stops, stop)
 	w.external[port] = true
 	return nil
 }

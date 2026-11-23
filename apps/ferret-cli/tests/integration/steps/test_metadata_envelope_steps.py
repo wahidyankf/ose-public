@@ -124,21 +124,19 @@ def data_home_bytes(session: Session) -> bytes:
     return b"".join(path.read_bytes() for path in sorted(session.data_home.rglob("*")) if path.is_file())
 
 
-@scenario(FEATURE, "Capture a valid lifecycle event")
-def test_capture_a_valid_lifecycle_event() -> None:
-    """Bound to the feature scenario; the steps below carry the assertions."""
-
-
+# @scenario specs/apps/ferret/cli/behaviours/privacy/metadata-envelope.feature: Refuse a raw value in place of an opaque identifier
 @scenario(FEATURE, "Refuse a raw value in place of an opaque identifier")
 def test_refuse_a_raw_value_in_place_of_an_opaque_identifier() -> None:
     """Bound to the feature outline; each example expands independently."""
 
 
+# @scenario specs/apps/ferret/cli/behaviours/privacy/metadata-envelope.feature: Reject a forbidden capture field
 @scenario(FEATURE, "Reject a forbidden capture field")
 def test_reject_a_forbidden_capture_field() -> None:
     """Bound to the feature outline; each example expands independently."""
 
 
+# @scenario specs/apps/ferret/cli/behaviours/privacy/metadata-envelope.feature: Reject an unknown capture field
 @scenario(FEATURE, "Reject an unknown capture field")
 def test_reject_an_unknown_capture_field() -> None:
     """Bound to the feature scenario; the steps below carry the assertions."""
@@ -267,11 +265,6 @@ def then_names_no_field(session: Session) -> None:
         assert canary.encode() not in data_home_bytes(session)
 
 
-@scenario(FEATURE, "Project raw hook JSON without retaining content")
-def test_project_raw_hook_json_without_retaining_content() -> None:
-    """Bound to the feature scenario; the steps below carry the assertions."""
-
-
 def files_under(root: Path) -> dict[str, bytes]:
     """Every regular file below ``root`` by relative name, so nothing the run wrote anywhere can go unread."""
     return {str(path.relative_to(root)): path.read_bytes() for path in sorted(root.rglob("*")) if path.is_file()}
@@ -326,11 +319,6 @@ def then_the_raw_bytes_are_never_written(session: Session) -> None:
 def then_no_diagnostic_names_a_value(session: Session) -> None:
     assert session.completed is not None
     assert (session.completed.returncode, session.completed.stdout, session.completed.stderr) == (0, b"", b"")
-
-
-@scenario(FEATURE, "Record a tool completion whose result is a large image")
-def test_record_a_tool_completion_whose_result_is_a_large_image() -> None:
-    """Bound to the feature scenario; the steps below carry the assertions."""
 
 
 @given("a raw Codex view_image completion whose result is a 1 MiB base64 image")

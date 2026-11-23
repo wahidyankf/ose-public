@@ -1,3 +1,16 @@
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: English content resolves at its bare URL
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: The browse index lists all content sections
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: Header shows primary nav links on desktop
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: mobile navigation links
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: Footer shows grouped navigation with localized labels
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: landing homepage per locale
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: Breadcrumb segments link to their bare content URLs
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: Sidebar, breadcrumb, previous and next, and search links go straight to their page with no redirect
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: The sitemap lists every content page by its public URL on www.ayokoding.com
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: RSS feed item links use bare content URLs
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: A content page declares its own URL as canonical, with language alternates on www.ayokoding.com
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: robots.txt allows crawling and names the sitemap
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: A missing page shows Page Not Found with a Go Home link
 import { createBdd } from "playwright-bdd";
 import { expect, type Locator } from "@playwright/test";
 import { getResilient } from "../support/resilient-request";
@@ -39,7 +52,7 @@ Then("each ancestor crumb links to its bare content URL", async ({ page }) => {
 });
 
 // ---------------------------------------------------------------------------
-// Scenario: Internal content links emit bare URLs directly without relying on redirects (DD-48)
+// Scenario: Sidebar, breadcrumb, previous and next, and search links go straight to their page with no redirect (DD-48)
 // ---------------------------------------------------------------------------
 
 Given("the sidebar tree, breadcrumb, prev-next, and search results render content links", async ({ page }) => {
@@ -102,7 +115,7 @@ Then("no internal content link resolves through a 308 redirect", async () => {
 });
 
 // ---------------------------------------------------------------------------
-// Scenario: Sitemap lists every content URL bare, with no distinct content namespace (DD-48)
+// Scenario: The sitemap lists every content page by its public URL on www.ayokoding.com (DD-48)
 // ---------------------------------------------------------------------------
 
 // The sitemap is read through the request context, not rendered, so a browser's XML viewer
@@ -191,7 +204,7 @@ Then("every feed link is on the canonical host {string}", async ({}, host: strin
 });
 
 // ---------------------------------------------------------------------------
-// Scenario: Canonical link for moved content points to its bare URL (DD-48)
+// Scenario: A content page declares its own URL as canonical, with language alternates on www.ayokoding.com (DD-48)
 // ---------------------------------------------------------------------------
 
 let contentPageUrl = "";
@@ -231,3 +244,34 @@ Then(
     expect(hrefs.map((href) => new URL(href).host).filter((candidate) => candidate !== host)).toEqual([]);
   },
 );
+
+// AYW-047: the crawler file is read from the served site, so the rules and sitemap line are checked on the wire.
+let robotsBody = "";
+
+When("a search engine requests the robots.txt file", async ({ page }) => {
+  const response = await getResilient(page, "/robots.txt");
+  expect(response.ok()).toBe(true);
+  robotsBody = await response.text();
+});
+
+Then("every page of the site is open to crawling", async () => {
+  expect(robotsBody).toMatch(/^User-Agent: \*$/m);
+  expect(robotsBody).toMatch(/^Allow: \/$/m);
+});
+
+Then("the robots.txt file names the sitemap", async () => {
+  expect(robotsBody).toMatch(/^Sitemap: https:\/\/www\.ayokoding\.com\/sitemap\.xml$/m);
+});
+
+// AYW-048: a missing page under the locale renders the content not-found page with its heading and home link.
+When("a visitor opens a page that does not exist", async ({ page }) => {
+  await page.goto("/en/this-page-does-not-exist");
+});
+
+Then('the reader sees a "Page Not Found" heading', async ({ page }) => {
+  await expect(page.getByRole("heading", { name: "Page Not Found" })).toBeVisible();
+});
+
+Then("the page offers a Go Home link to the English home page", async ({ page }) => {
+  await expect(page.getByRole("link", { name: "Go Home" })).toHaveAttribute("href", "/en");
+});

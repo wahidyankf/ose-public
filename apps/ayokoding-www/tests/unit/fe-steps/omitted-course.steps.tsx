@@ -95,6 +95,7 @@ const feature = await loadFeature(
 );
 
 describeFeature(feature, ({ Scenario }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/omitted-course.feature: A course omitted from a path shows no path nav for that path
   Scenario("A course omitted from a path shows no path nav for that path", ({ Given, When, Then, And }) => {
     let jsx: React.ReactElement;
 

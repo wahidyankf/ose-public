@@ -20,8 +20,8 @@ specs/libs/web-ui-token/
 ## Status
 
 `web-ui-token:test:unit` runs the Vitest Unit binding and enforces the 99% line-coverage hard
-minimum. Static `test:coverage:*` targets validate the canonical corpus without running tests and
-are included in `test:quick`. The library owns no separate local-resource or public runtime
+minimum. The static `test:behaviour:coverage` target validates the canonical corpus without running
+tests and is included in `test:quick`. The library owns no separate local-resource or public runtime
 boundary, so Integration and E2E are inapplicable and omitted.
 
 - [Architecture](./architecture.md) — web-ui-token

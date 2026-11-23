@@ -1,3 +1,4 @@
+// @scenario specs/apps/ose/be/behaviours/messaging/nats-config.feature: ose-be fails fast when its NATS URL is missing
 import { spawnSync, type SpawnSyncReturns } from "node:child_process";
 import { expect } from "@playwright/test";
 import { createBdd } from "playwright-bdd";

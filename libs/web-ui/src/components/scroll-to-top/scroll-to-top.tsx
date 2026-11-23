@@ -9,6 +9,13 @@ interface ScrollToTopProps {
   buttonClassName?: string;
 }
 
+const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+};
+
 const ScrollToTop = ({
   threshold = 300,
   className,
@@ -29,13 +36,6 @@ const ScrollToTop = ({
 
     return () => window.removeEventListener("scroll", toggleVisibility);
   }, [threshold]);
-
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
 
   const button = isVisible ? (
     <button onClick={scrollToTop} className={buttonClassName} aria-label="Scroll to top">

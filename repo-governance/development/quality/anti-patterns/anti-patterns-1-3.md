@@ -22,7 +22,7 @@ when_to_use: "Use when reviewing for these three quality anti-patterns."
 **Solution:**
 
 ```sh
-# .husky/pre-commit - automated hook running every declared pre-commit gate
+# .husky/pre-commit - automated hook running the declared pre-commit gate (format-staged)
 exec ./hippo run --class transactional --resource-tier standard --disk-path . -- \
   ./rhino gate run --surface pre-commit
 ```

@@ -26,6 +26,21 @@ import fixtureRecords from "../fixtures/progress-records.json";
 
 const { Given, When, Then } = createBdd();
 
+// Behaviour corpus bindings (contract C13). The Playwright home runs every
+// browser-progress scenario by name; the Go integration driver leaves this
+// feature out, so this home is its integration-level binding too.
+// @scenario specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature: Completion survives a reload
+// @scenario specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature: Progress is never sent to the server
+// @scenario specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature: Progress saved on an earlier visit shows when the reader returns
+// @scenario specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature: Completion belongs to the course across its paths
+// @scenario specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature: A completion control can undo a completed page
+// @scenario specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature: Blocked storage keeps progress for the current visit
+// @scenario specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature: Corrupt saved progress is ignored and the reader can still read and complete pages
+// @scenario specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature: Confirming reset clears learning progress and keeps other site settings
+// @scenario specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature: Cancelling reset preserves progress and restores focus
+// @scenario specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature: Another tab receives completion changes
+// @scenario specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature: Progress saved at another site address is not imported
+
 // withOrigin navigates the suite origin so localStorage is available.
 async function withOrigin(page: Page): Promise<void> {
   await gotoPage(page, "/en");

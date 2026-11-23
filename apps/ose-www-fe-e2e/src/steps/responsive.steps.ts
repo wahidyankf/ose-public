@@ -1,6 +1,9 @@
 import { expect } from "@playwright/test";
 import { createBdd } from "playwright-bdd";
 
+// @scenario specs/apps/ose/www/behaviours/frontend/app-shell/responsive.feature: Mobile viewport shows hamburger navigation
+// @scenario specs/apps/ose/www/behaviours/frontend/app-shell/responsive.feature: Desktop viewport shows full navigation
+
 const { Given, When, Then } = createBdd();
 
 Given("the viewport width is less than 640 pixels", async ({ page }) => {

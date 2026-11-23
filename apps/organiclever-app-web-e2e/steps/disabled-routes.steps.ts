@@ -1,3 +1,5 @@
+// @scenario specs/apps/organiclever/app-web/behaviours/routing/disabled-routes.feature: Disabled routes return 404
+
 /**
  * Step definitions for the Disabled Routes feature.
  *
@@ -58,6 +60,19 @@ Then("the response status is 404", async () => {
   expect({ method: currentMethod, path: currentPath, status: responseStatus }).toMatchObject({
     status: 404,
   });
+});
+
+When(/a visitor requests GET "\/"$/, async ({ request }) => {
+  const response = await request.get(`${APP_BASE_URL}/`, { maxRedirects: 0 });
+  redirectStatus = response.status();
+  redirectLocation = response.headers()["location"] ?? null;
+});
+
+Then(/the response redirects to "(\/app\/home)"$/, async ({}, target: string) => {
+  // Next.js redirect() from a server component is a temporary (307) redirect by default.
+  expect([301, 302, 307, 308]).toContain(redirectStatus);
+  const normalisedLocation = redirectLocation?.replace(APP_BASE_URL, "") ?? "";
+  expect(normalisedLocation).toBe(target);
 });
 
 Then(/the response is a 308 redirect to "(\/app\/home)"$/, async ({}, target: string) => {

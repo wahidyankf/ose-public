@@ -11,12 +11,14 @@ let ``get health returns healthy status`` () =
     let status = getHealth ()
     Assert.Equal("healthy", status.Status)
 
+// @scenario specs/apps/ose/be/behaviours/health/health.feature: Health endpoint returns 200
 [<Fact>]
 let ``health route returns 200`` () =
     let client = buildClient webApp
     let resp = client.GetAsync("/api/v1/health").Result
     Assert.Equal(HttpStatusCode.OK, resp.StatusCode)
 
+// @scenario specs/apps/ose/be/behaviours/health/health.feature: Health endpoint returns 200
 [<Fact>]
 let ``health route returns JSON status healthy`` () =
     let client = buildClient webApp

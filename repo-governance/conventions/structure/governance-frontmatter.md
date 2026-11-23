@@ -16,7 +16,7 @@ when_to_use: Use when <the situation that should send a reader here>.
 
 Both are required and non-empty. **Any other key is a validation failure** — this is an allow-list,
 not a minimum. `./rhino md frontmatter validate` enforces it, and the `md-frontmatter` registry
-gate runs that validator over every declared surface at pre-commit and on pull requests.
+gate runs that validator over every declared surface on pull requests.
 
 ## Why an Allow-List
 

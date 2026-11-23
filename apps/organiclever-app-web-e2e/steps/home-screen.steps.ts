@@ -1,3 +1,8 @@
+// @scenario specs/apps/organiclever/app-web/behaviours/journal/home-screen.feature: Home screen shows entry list
+// @scenario specs/apps/organiclever/app-web/behaviours/journal/home-screen.feature: Filter entries by kind
+// @scenario specs/apps/organiclever/app-web/behaviours/journal/home-screen.feature: Tapping an entry opens its detail sheet
+// @scenario specs/apps/organiclever/app-web/behaviours/journal/home-screen.feature: Closing the detail sheet returns to the entry list
+
 /**
  * Step definitions for the Home Screen feature.
  *
@@ -75,6 +80,12 @@ When("the user closes the sheet", async ({ page }) => {
   await page.getByRole("button", { name: "Close" }).click();
 });
 
-Then("the entry detail sheet is closed", async ({ page }) => {
-  await expect(page.getByRole("button", { name: "Close" })).not.toBeVisible();
+Given("the entry detail sheet is open", async ({ page }) => {
+  await page.goto(appPath("home"));
+  await page.waitForLoadState("domcontentloaded");
+  await seedHomeJournalEntries(page);
+  await page.reload();
+  await expect(page.getByText("Atomic Habits")).toBeVisible({ timeout: 15000 });
+  await page.getByText("Atomic Habits").click();
+  await expect(page.getByRole("button", { name: "Close" })).toBeVisible();
 });

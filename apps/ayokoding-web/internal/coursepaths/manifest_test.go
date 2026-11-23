@@ -1,10 +1,9 @@
 package coursepaths_test
 
 import (
-	"os"
-	"path/filepath"
 	"strings"
 	"testing"
+	"testing/fstest"
 
 	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/coursepaths"
 )
@@ -168,18 +167,12 @@ func TestParseManifestRejectsMarkedShapeViolation(t *testing.T) {
 	}
 }
 
-func TestLoadDirSkipsMalformedWithDiagnostic(t *testing.T) {
-	root := t.TempDir()
-	if err := os.MkdirAll(filepath.Join(root, "careers"), 0o755); err != nil {
-		t.Fatal(err)
+func TestLoadManifestFSSkipsMalformedWithDiagnostic(t *testing.T) {
+	root := fstest.MapFS{
+		"careers/good.json":    manifestFile(validManifest),
+		"broken-manifest.json": manifestFile("{nope"),
 	}
-	if err := os.WriteFile(filepath.Join(root, "careers", "good.json"), []byte(validManifest), 0o600); err != nil {
-		t.Fatal(err)
-	}
-	if err := os.WriteFile(filepath.Join(root, "broken-manifest.json"), []byte("{nope"), 0o600); err != nil {
-		t.Fatal(err)
-	}
-	paths, diagnostics := coursepaths.LoadManifestDir(root)
+	paths, diagnostics := coursepaths.LoadManifestFS(root)
 	if len(paths) != 1 || paths[0].PathID != "careers/fundamentally-strong/software-engineer" {
 		t.Fatalf("paths = %+v, want the one valid manifest", paths)
 	}
@@ -188,8 +181,8 @@ func TestLoadDirSkipsMalformedWithDiagnostic(t *testing.T) {
 	}
 }
 
-func TestLoadDirMissingRootIsEmptyState(t *testing.T) {
-	paths, diagnostics := coursepaths.LoadManifestDir(filepath.Join(t.TempDir(), "no-such-root"))
+func TestLoadManifestFSMissingRootIsEmptyState(t *testing.T) {
+	paths, diagnostics := coursepaths.LoadManifestFS(unreadableFS{})
 	if len(paths) != 0 {
 		t.Fatalf("paths = %+v, want empty state", paths)
 	}
@@ -282,30 +275,19 @@ func TestParseManifestFramingOutro(t *testing.T) {
 	}
 }
 
-func TestLoadDirNestedLayoutAndUnreadable(t *testing.T) {
-	root := t.TempDir()
-	deep := filepath.Join(root, "careers", "fundamentally-strong")
-	if err := os.MkdirAll(deep, 0o755); err != nil {
-		t.Fatal(err)
-	}
-	if err := os.WriteFile(filepath.Join(deep, "software-engineer.json"), []byte(validManifest), 0o600); err != nil {
-		t.Fatal(err)
-	}
+func TestLoadManifestFSNestedLayoutAndUnreadable(t *testing.T) {
 	second := `{"pathId": "skills/a-path", "arc": "a", "title": "A", "description": "D",
 	  "phases": [{"id": "p", "title": "P", "kind": "extension", "courses": ["c"]}]}`
-	if err := os.MkdirAll(filepath.Join(root, "skills"), 0o755); err != nil {
-		t.Fatal(err)
+	root := faultyTree{
+		MapFS: fstest.MapFS{
+			"careers/fundamentally-strong/software-engineer.json": manifestFile(validManifest),
+			"skills/a-path.json": manifestFile(second),
+			"notes.txt":          manifestFile("not a manifest"),
+			"ghost.json":         manifestFile(""),
+		},
+		unreadableFiles: map[string]bool{"ghost.json": true},
 	}
-	if err := os.WriteFile(filepath.Join(root, "skills", "a-path.json"), []byte(second), 0o600); err != nil {
-		t.Fatal(err)
-	}
-	if err := os.WriteFile(filepath.Join(root, "notes.txt"), []byte("not a manifest"), 0o600); err != nil {
-		t.Fatal(err)
-	}
-	if err := os.Symlink("no-such-target", filepath.Join(root, "ghost.json")); err != nil {
-		t.Fatal(err)
-	}
-	paths, diagnostics := coursepaths.LoadManifestDir(root)
+	paths, diagnostics := coursepaths.LoadManifestFS(root)
 	if len(paths) != 2 || paths[0].PathID != "careers/fundamentally-strong/software-engineer" || paths[1].PathID != "skills/a-path" {
 		t.Fatalf("paths = %+v, want both nested manifests in order", paths)
 	}

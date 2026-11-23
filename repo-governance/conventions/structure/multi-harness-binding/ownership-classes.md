@@ -36,7 +36,7 @@ directory **from the git index** â€” so a local scratch file is not a failure â€
 cannot classify. The longest matching declaration wins, so a broad tree declaration cannot mask a
 narrower one beneath it.
 
-The `harness-adapters` gate runs this check on the pre-commit and pull-request surfaces.
+The `harness-adapters` gate runs this check on the pull-request surface.
 
 ## Partial ownership
 

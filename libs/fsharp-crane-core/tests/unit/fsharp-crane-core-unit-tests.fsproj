@@ -20,6 +20,7 @@
     <Compile Include="Tests/FigureCheckerTests.fs" />
     <Compile Include="Tests/MermaidValidatorTests.fs" />
     <Compile Include="Tests/OcrAssessorTests.fs" />
+    <Compile Include="Tests/ContractTests.fs" />
   </ItemGroup>
 
   <ItemGroup>

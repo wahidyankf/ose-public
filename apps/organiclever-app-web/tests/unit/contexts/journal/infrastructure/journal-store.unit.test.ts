@@ -1,12 +1,17 @@
+/* oxlint-disable vitest/no-standalone-expect -- @effect/vitest it.effect blocks inside layer() are not recognised as test blocks */
 import { layer } from "@effect/vitest";
 import { Effect, Layer, Schema } from "effect";
 import { PGlite } from "@electric-sql/pglite";
-import { expect } from "vitest";
+import { afterEach, beforeEach, expect } from "vitest";
 import { EmptyBatch, StorageUnavailable } from "../../../../../src/contexts/journal/domain/errors";
 import { EntryName, EntryPayload } from "../../../../../src/contexts/journal/domain/schema";
 import { appendEntries, listEntries } from "../../../../../src/contexts/journal/infrastructure/journal-store";
 import { runMigrations } from "../../../../../src/contexts/journal/infrastructure/run-migrations";
 import { PgliteService } from "../../../../../src/contexts/journal/infrastructure/runtime";
+import { FIXED_INSTANT, FIXED_MS, freezeClock, restoreClock, setClock } from "../../../support/doubles";
+
+beforeEach(() => freezeClock());
+afterEach(() => restoreClock());
 
 const TestPgliteLayer = Layer.scoped(
   PgliteService,
@@ -23,7 +28,7 @@ const TestPgliteLayer = Layer.scoped(
 const makeName = (value: string) => Schema.decodeUnknownSync(EntryName)(value);
 const makePayload = (value: Record<string, unknown>) => Schema.decodeUnknownSync(EntryPayload)(value);
 const makeTimestamp = () =>
-  new Date().toISOString() as unknown as import("../../../../../src/contexts/journal/domain/schema").IsoTimestamp;
+  FIXED_INSTANT as unknown as import("../../../../../src/contexts/journal/domain/schema").IsoTimestamp;
 
 layer(TestPgliteLayer)("journal-store - appendEntries", (it) => {
   it.effect("returns EmptyBatch error on empty input", () =>
@@ -81,7 +86,8 @@ layer(TestPgliteLayer)("journal-store - listEntries", (it) => {
           },
         ]);
 
-        yield* Effect.promise(() => new Promise((resolve) => setTimeout(resolve, 10)));
+        // The store stamps created_at from the clock; advance the frozen clock so the second row is later.
+        yield* Effect.sync(() => setClock(FIXED_MS + 10));
 
         const secondTimestamp = makeTimestamp();
         yield* appendEntries([

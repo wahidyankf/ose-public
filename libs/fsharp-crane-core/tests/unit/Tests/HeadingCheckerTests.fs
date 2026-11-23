@@ -44,6 +44,7 @@ let ``checkHeadings skips plain text lines in pdfText`` () =
     Assert.Empty(result)
 
 [<Fact>]
+// @scenario specs/libs/fsharp-crane-core/behaviours/checks/checks.feature: A heading whose depth differs from the PDF is a HIGH finding
 let ``checkHeadings returns HIGH finding for depth mismatch`` () =
     let pdfText = "1. Introduction"
     let mdText = "### Introduction"

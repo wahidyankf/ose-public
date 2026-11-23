@@ -1,5 +1,6 @@
 import { PGlite } from "@electric-sql/pglite";
 import { describe, it, expect, beforeEach } from "vitest";
+import { FIXED_INSTANT } from "../../../../support/doubles";
 import { up as upV1 } from "../../../../../../src/contexts/journal/infrastructure/migrations/2026_04_28T14_05_30__create_journal_entries_table";
 import {
   up as upV2,
@@ -18,7 +19,7 @@ describe("migration 2026_05_01T03_33_00__add_typed_payload_columns", () => {
     await upV2(db);
 
     // Verify new columns exist by inserting a row with them
-    const now = new Date().toISOString();
+    const now = FIXED_INSTANT;
     await db.exec(`
       INSERT INTO journal_entries (id, name, payload, created_at, updated_at, started_at, finished_at, labels)
       VALUES ('test-col-check', 'workout', '{}', '${now}', '${now}', '${now}', '${now}', '{}')
@@ -73,7 +74,7 @@ describe("migration 2026_05_01T03_33_00__add_typed_payload_columns", () => {
   it("CHECK constraint — inserting name='unknown' after v2 is rejected", async () => {
     await upV2(db);
 
-    const now = new Date().toISOString();
+    const now = FIXED_INSTANT;
     await expect(
       db.exec(`
         INSERT INTO journal_entries (id, name, payload, created_at, updated_at, started_at, finished_at, labels)
@@ -85,7 +86,7 @@ describe("migration 2026_05_01T03_33_00__add_typed_payload_columns", () => {
   it("CHECK constraint — valid names are accepted after v2", async () => {
     await upV2(db);
 
-    const now = new Date().toISOString();
+    const now = FIXED_INSTANT;
     for (const name of ["workout", "reading", "learning", "meal", "focus", "custom-run"]) {
       await db.exec(`
         INSERT INTO journal_entries (id, name, payload, created_at, updated_at, started_at, finished_at, labels)
@@ -106,7 +107,7 @@ describe("migration 2026_05_01T03_33_00__add_typed_payload_columns", () => {
     await expect(db.query("SELECT 1 FROM settings LIMIT 1")).rejects.toThrow();
 
     // After down, inserting with old v1-only columns should work (no NOT NULL on started_at)
-    const now = new Date().toISOString();
+    const now = FIXED_INSTANT;
     await db.exec(`
       INSERT INTO journal_entries (id, name, payload, created_at, updated_at)
       VALUES ('after-down', 'any-name', '{}', '${now}', '${now}')

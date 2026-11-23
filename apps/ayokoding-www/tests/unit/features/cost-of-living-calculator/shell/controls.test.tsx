@@ -296,7 +296,7 @@ describe("Controls", () => {
     expect(adultsLabel!.parentElement!.children.length).toBe(2);
   });
 
-  // Gherkin (binds): "Adding adults and children changes the modeled expenses"
+  // Gherkin (binds): "Adding adults and children grows housing and utilities sub-linearly"; "Adding adults and children grows food and healthcare near per capita"; "Adding school-age children adds schooling costs"
   it("changing from single to married+2-school-kids increases housing sub-linearly and adds schooling", async () => {
     const user = userEvent.setup();
     render(<ControlsWithState />);
@@ -389,7 +389,7 @@ describe("Controls", () => {
     expect(schoolingPrivate).toBeGreaterThan(schoolingPublic);
   });
 
-  // Gherkin (binds): "Rural area lowers housing versus city center"
+  // Gherkin (binds): "area changes the housing estimate"
   it("switching to rural reduces modeled housing and city total", async () => {
     const user = userEvent.setup();
     render(<ControlsWithState />);

@@ -8,14 +8,46 @@ const feature = await loadFeature(
   path.resolve(process.cwd(), "../../specs/apps/ayokoding/www/behaviours/backend/navigation/navigation-api.feature"),
 );
 
-describeFeature(feature, ({ Scenario, Background }) => {
+function visitNodes(nodes: TreeNode[], check: (node: TreeNode) => void): void {
+  for (const node of nodes) {
+    check(node);
+    visitNodes(node.children, check);
+  }
+}
+
+// One check per Outline aspect; each mirrors the assertions of the scenario it absorbed.
+const ASPECT_CHECKS: Readonly<Record<string, (tree: TreeNode[]) => void>> = {
+  "lists top-level sections with their pages nested beneath": (tree) => {
+    expect(tree.map(({ slug }) => slug)).toEqual(expect.arrayContaining(["about-ayokoding", "learn", "rants"]));
+    expect(tree[0]!).toHaveProperty("slug");
+  },
+  "gives every section a non-empty children array": (tree) => {
+    const learn = tree.find(({ slug }) => slug === "learn");
+    const courses = learn?.children.find(({ slug }) => slug === "learn/courses");
+    const go = courses?.children.find(({ slug }) => slug === "learn/courses/just-enough-go");
+    const sectionNode = go?.children.find(({ slug }) => slug === "learn/courses/just-enough-go/learning");
+    expect(sectionNode).toBeDefined();
+    expect(Array.isArray(sectionNode?.children)).toBe(true);
+    expect(sectionNode!.children.length).toBeGreaterThan(0);
+    const firstChild = sectionNode!.children[0]!;
+    expect(firstChild).toHaveProperty("slug");
+    expect(firstChild).toHaveProperty("title");
+  },
+  "gives every node a slug and title": (tree) => {
+    visitNodes(tree, (node) => expect(node).toMatchObject({ slug: expect.any(String), title: expect.any(String) }));
+  },
+};
+
+describeFeature(feature, ({ Scenario, ScenarioOutline, Background }) => {
   Background(({ Given }) => {
     Given("the API is running", async () => {
       await expect(testCaller.meta.health()).resolves.toEqual({ status: "ok" });
     });
   });
 
-  Scenario("Navigation tree structure matches the filesystem hierarchy", ({ Given, When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/backend/navigation/navigation-api.feature: The navigation tree <aspect>
+  ScenarioOutline("The navigation tree <aspect>", ({ Given, When, Then }, examples) => {
+    const aspect = String(examples["aspect"]);
     let result: TreeNode[];
 
     Given('content exists in locale "en" with sections "about-ayokoding", "learn", and "rants"', async () => {
@@ -27,88 +59,14 @@ describeFeature(feature, ({ Scenario, Background }) => {
       result = (await testCaller.content.getTree({ locale: "en" })) as TreeNode[];
     });
 
-    Then('the response tree should contain top-level nodes for "about-ayokoding", "learn", and "rants"', () => {
-      expect(result.length).toBeGreaterThan(0);
-      expect(result.map(({ slug }) => slug)).toEqual(expect.arrayContaining(["about-ayokoding", "learn", "rants"]));
-    });
-
-    And("each node should reflect its position in the directory hierarchy", () => {
-      const firstNode = result[0]!;
-      expect(firstNode).toHaveProperty("slug");
+    Then("the tree <aspect>", () => {
+      const check = ASPECT_CHECKS[aspect];
+      expect(check, `unknown aspect: ${aspect}`).toBeDefined();
+      check!(result);
     });
   });
 
-  Scenario("Navigation nodes are ordered by weight ascending", ({ Given, When, Then }) => {
-    let result: TreeNode[];
-
-    Given(
-      'a section "learn/courses/just-enough-go/learning" in locale "en" has child nodes with weights 30, 1, 100, 20, and 10',
-      async () => {
-        const children = await testCaller.content.listChildren({
-          locale: "en",
-          parentSlug: "learn/courses/just-enough-go/learning",
-        });
-        expect(children.map(({ weight }) => weight)).toEqual([1, 10, 20, 30, 100]);
-      },
-    );
-
-    When('the client calls content.getTree with locale "en"', async () => {
-      result = (await testCaller.content.getTree({ locale: "en" })) as TreeNode[];
-    });
-
-    Then(
-      'the children of "learn/courses/just-enough-go/learning" should appear in order: weight 1, weight 10, weight 20, weight 30, weight 100',
-      () => {
-        const learn = result.find(({ slug }) => slug === "learn");
-        const courses = learn?.children.find(({ slug }) => slug === "learn/courses");
-        const go = courses?.children.find(({ slug }) => slug === "learn/courses/just-enough-go");
-        const learning = go?.children.find(({ slug }) => slug === "learn/courses/just-enough-go/learning");
-        expect(learning?.children.map(({ weight }) => weight)).toEqual([1, 10, 20, 30, 100]);
-      },
-    );
-  });
-
-  Scenario("Section nodes include a children array", ({ Given, When, Then, And }) => {
-    let result: TreeNode[];
-
-    Given(
-      'a section "learn/courses/just-enough-go/learning" in locale "en" contains at least one child page',
-      async () => {
-        const tree = (await testCaller.content.getTree({ locale: "en" })) as TreeNode[];
-        const learn = tree.find(({ slug }) => slug === "learn");
-        const courses = learn?.children.find(({ slug }) => slug === "learn/courses");
-        const go = courses?.children.find(({ slug }) => slug === "learn/courses/just-enough-go");
-        expect(go?.children.find(({ slug }) => slug.endsWith("/learning"))?.children.length).toBeGreaterThan(0);
-      },
-    );
-
-    When('the client calls content.getTree with locale "en"', async () => {
-      result = (await testCaller.content.getTree({ locale: "en" })) as TreeNode[];
-    });
-
-    Then('the "learn/courses/just-enough-go/learning" node should have a non-empty "children" array', () => {
-      const learn = result.find(({ slug }) => slug === "learn");
-      const courses = learn?.children.find(({ slug }) => slug === "learn/courses");
-      const go = courses?.children.find(({ slug }) => slug === "learn/courses/just-enough-go");
-      const sectionNode = go?.children.find(({ slug }) => slug === "learn/courses/just-enough-go/learning");
-      expect(sectionNode).toBeDefined();
-      expect(Array.isArray(sectionNode?.children)).toBe(true);
-    });
-
-    And('each child should include a "slug" and "title"', () => {
-      const learn = result.find(({ slug }) => slug === "learn");
-      const courses = learn?.children.find(({ slug }) => slug === "learn/courses");
-      const go = courses?.children.find(({ slug }) => slug === "learn/courses/just-enough-go");
-      const sectionNode = go?.children.find(
-        ({ slug, children }) => slug === "learn/courses/just-enough-go/learning" && children.length > 0,
-      );
-      expect(sectionNode).toBeDefined();
-      const firstChild = sectionNode!.children[0]!;
-      expect(firstChild).toHaveProperty("slug");
-      expect(firstChild).toHaveProperty("title");
-    });
-  });
-
+  // @scenario specs/apps/ayokoding/www/behaviours/backend/navigation/navigation-api.feature: Course nodes carry their category
   Scenario("Course nodes carry their category", ({ Given, When, Then, And }) => {
     let result: TreeNode[];
     Given(

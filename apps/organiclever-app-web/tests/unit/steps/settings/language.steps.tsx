@@ -7,13 +7,13 @@ import type { AppSettings, Lang } from "@/contexts/settings/application";
 
 const languageHarness = vi.hoisted(() => ({
   settings: { name: "Tester", restSeconds: 60, darkMode: false, lang: "en" } as AppSettings,
-  runPromise: vi.fn(),
+  runPromise: vi.fn<(...args: unknown[]) => unknown>(),
 }));
 
 vi.mock("@/contexts/settings/presentation/use-settings", () => ({
   useSettings: () => ({
     state: { status: "ready", settings: languageHarness.settings },
-    update: vi.fn().mockResolvedValue(undefined),
+    update: vi.fn<(...args: unknown[]) => unknown>().mockResolvedValue(undefined),
   }),
 }));
 
@@ -29,7 +29,9 @@ const runtime = { runPromise: languageHarness.runPromise } as unknown as AppRunt
 
 function renderLanguage(lang: Lang) {
   languageHarness.settings = { ...languageHarness.settings, lang };
-  rendered = render(<SettingsScreen runtime={runtime} darkMode={false} onToggleDarkMode={vi.fn()} />);
+  rendered = render(
+    <SettingsScreen runtime={runtime} darkMode={false} onToggleDarkMode={vi.fn<(...args: unknown[]) => unknown>()} />,
+  );
 }
 
 describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
@@ -38,7 +40,8 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
     languageHarness.runPromise.mockReset().mockResolvedValue(undefined);
   });
 
-  Scenario("Switch to Bahasa Indonesia", ({ Given, When, Then }) => {
+  // @scenario specs/apps/organiclever/app-web/behaviours/settings/language.feature: Selecting Bahasa shows the app in Indonesian
+  Scenario("Selecting Bahasa shows the app in Indonesian", ({ Given, When, Then }) => {
     Given("the settings screen shows language is English", () => {
       renderLanguage("en");
       expect(screen.getByTestId("lang-btn-en")).toHaveAttribute("data-active", "true");
@@ -47,14 +50,21 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
       fireEvent.click(screen.getByTestId("lang-btn-id"));
       await waitFor(() => expect(languageHarness.runPromise).toHaveBeenCalled());
       languageHarness.settings = { ...languageHarness.settings, lang: "id" };
-      rendered.rerender(<SettingsScreen runtime={runtime} darkMode={false} onToggleDarkMode={vi.fn()} />);
+      rendered.rerender(
+        <SettingsScreen
+          runtime={runtime}
+          darkMode={false}
+          onToggleDarkMode={vi.fn<(...args: unknown[]) => unknown>()}
+        />,
+      );
     });
     Then("the language is set to Indonesian", () => {
       expect(screen.getByTestId("lang-btn-id")).toHaveAttribute("data-active", "true");
     });
   });
 
-  Scenario("Switch back to English", ({ Given, When, Then }) => {
+  // @scenario specs/apps/organiclever/app-web/behaviours/settings/language.feature: Selecting English shows the app in English
+  Scenario("Selecting English shows the app in English", ({ Given, When, Then }) => {
     Given("the settings screen shows language is Indonesian", () => {
       renderLanguage("id");
       expect(screen.getByTestId("lang-btn-id")).toHaveAttribute("data-active", "true");
@@ -63,7 +73,13 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
       fireEvent.click(screen.getByTestId("lang-btn-en"));
       await waitFor(() => expect(languageHarness.runPromise).toHaveBeenCalled());
       languageHarness.settings = { ...languageHarness.settings, lang: "en" };
-      rendered.rerender(<SettingsScreen runtime={runtime} darkMode={false} onToggleDarkMode={vi.fn()} />);
+      rendered.rerender(
+        <SettingsScreen
+          runtime={runtime}
+          darkMode={false}
+          onToggleDarkMode={vi.fn<(...args: unknown[]) => unknown>()}
+        />,
+      );
     });
     Then("the language is set to English", () => {
       expect(screen.getByTestId("lang-btn-en")).toHaveAttribute("data-active", "true");

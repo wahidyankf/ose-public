@@ -35,12 +35,11 @@ func fakeRuntime(t *testing.T, script map[string]string) (*containers.Runtime, s
 	t.Helper()
 	fake := buildFakeContainer(t)
 	log := filepath.Join(t.TempDir(), "fake.log")
-	t.Setenv("AYOKODING_CONTAINER_CLI", fake)
 	t.Setenv("FAKECONTAINER_LOG", log)
 	for key, value := range script {
 		t.Setenv(key, value)
 	}
-	return &containers.Runtime{ReadyPoll: 10 * time.Millisecond}, log
+	return &containers.Runtime{CLI: fake, ReadyPoll: 10 * time.Millisecond}, log
 }
 
 // readFakeLog returns the fake log, empty when nothing ran yet.
@@ -182,8 +181,7 @@ func TestContainers_RunTimeoutKillsContainer(t *testing.T) {
 // ayokoding.env.not-found, exit 127.
 func TestContainers_MissingCLIExits127(t *testing.T) {
 	fakeRuntime(t, nil)
-	t.Setenv("AYOKODING_CONTAINER_CLI", filepath.Join(t.TempDir(), "no-such-cli"))
-	runtime := &containers.Runtime{}
+	runtime := &containers.Runtime{CLI: filepath.Join(t.TempDir(), "no-such-cli")}
 	invoke := containerplan.Invocation{Binary: "ignored", Args: []string{"version"}}
 	_, err := runtime.Run(context.Background(), invoke, nil)
 	requireEnvCode(t, err, finding.EnvNotFound, 127)
@@ -202,8 +200,7 @@ func TestContainers_NonExecutableCLIExits126(t *testing.T) {
 	if err := os.WriteFile(stub, []byte("#!/bin/sh\nexit 0\n"), 0o644); err != nil {
 		t.Fatalf("write stub CLI: %v", err)
 	}
-	t.Setenv("AYOKODING_CONTAINER_CLI", stub)
-	runtime := &containers.Runtime{}
+	runtime := &containers.Runtime{CLI: stub}
 	invoke := containerplan.Invocation{Binary: "ignored", Args: []string{"version"}}
 	_, err := runtime.Run(context.Background(), invoke, nil)
 	requireEnvCode(t, err, finding.EnvNotExecutable, 126)
@@ -295,7 +292,7 @@ func TestInterruptChildMain(t *testing.T) {
 		return
 	}
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
-	runtime := &containers.Runtime{}
+	runtime := &containers.Runtime{CLI: os.Getenv("AYOKODING_CONTAINER_CLI")}
 	runtime.TrackContainer("ayokoding-int-0")
 	runtime.TrackNetwork("ayokoding-int-net")
 	invoke := containerplan.Invocation{
@@ -345,7 +342,7 @@ func TestRootfulProbeAndBuildRefuseBeforeMutation(t *testing.T) {
 	parent := t.TempDir()
 	builder := containers.Builder{}
 	base := "docker.io/library/python:tag@sha256:" + strings.Repeat("a", 64)
-	_, err := builder.BuildDerived(context.Background(), containerplan.Settings{}, parent, "python", base, []byte("FROM "+base+"\n"), nil)
+	_, err := builder.BuildDerived(context.Background(), containerplan.Settings{ContainerCLI: runtime.ResolveCLI()}, parent, "python", base, []byte("FROM "+base+"\n"), nil)
 	requireEnvCode(t, err, finding.EnvRuntimeRefused, 125)
 	entries, err := os.ReadDir(parent)
 	if err != nil || len(entries) != 0 {
@@ -380,10 +377,9 @@ func TestBuildPreflightPreservesMissingAndUnusableCommand(t *testing.T) {
 					t.Fatal(err)
 				}
 			}
-			t.Setenv("AYOKODING_CONTAINER_CLI", binary)
 			contextParent := t.TempDir()
 			base := "docker.io/library/python:tag@sha256:" + strings.Repeat("a", 64)
-			_, err := (containers.Builder{}).BuildDerived(context.Background(), containerplan.Settings{}, contextParent, "python", base, []byte("FROM "+base+"\n"), nil)
+			_, err := (containers.Builder{}).BuildDerived(context.Background(), containerplan.Settings{ContainerCLI: binary}, contextParent, "python", base, []byte("FROM "+base+"\n"), nil)
 			requireEnvCode(t, err, testCase.code, testCase.status)
 			entries, err := os.ReadDir(contextParent)
 			if err != nil || len(entries) != 0 {
@@ -393,8 +389,10 @@ func TestBuildPreflightPreservesMissingAndUnusableCommand(t *testing.T) {
 	}
 }
 
-func TestBuildEnvironmentOverrideWinsOverSettings(t *testing.T) {
-	t.Setenv("AYOKODING_CONTAINER_CLI", "ambient-other")
+// TestBuildSettingsCLIUsedForProbeAndBuild proves the Builder uses Settings
+// only: bootstrap owns the single env read and hands the CLI in via
+// Settings, so Builder must never read the environment itself.
+func TestBuildSettingsCLIUsedForProbeAndBuild(t *testing.T) {
 	var used []string
 	builder := containers.Builder{Exec: func(_ context.Context, cli string, args []string) (string, error) {
 		used = append(used, cli+":"+args[0])
@@ -408,7 +406,7 @@ func TestBuildEnvironmentOverrideWinsOverSettings(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if strings.Join(used, ",") != "ambient-other:info,ambient-other:build" {
+	if strings.Join(used, ",") != "selected:info,selected:build" {
 		t.Fatalf("different executables used: %v", used)
 	}
 }

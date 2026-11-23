@@ -60,7 +60,7 @@ module Application =
     let list (repo: JournalRepository) : Task<JournalEntry list> =
         task {
             let! rows = repo.List()
-            return rows |> List.map toEntry
+            return rows |> List.sortByDescending (fun r -> r.CreatedAt) |> List.map toEntry
         }
 
     /// Finds a single journal entry by id.

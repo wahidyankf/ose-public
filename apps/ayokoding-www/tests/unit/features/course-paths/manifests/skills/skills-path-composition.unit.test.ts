@@ -23,8 +23,9 @@ const shariaAccounting = PathManifestSchema.parse(shariaAccountingSource);
 const publishedManifests = [conventionalAccounting, shariaAccounting] as const;
 
 describeFeature(feature, ({ ScenarioOutline }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/skills-path-composition.feature: Each published accounting path lists its accounting courses in published order
   ScenarioOutline(
-    "A two-segment skills path ID resolves to its full shared accounting slice",
+    "Each published accounting path lists its accounting courses in published order",
     ({ Given, When, Then, And }, examples) => {
       const pathId = String(examples["path-id"]);
       let manifest: PathManifest;
@@ -60,10 +61,6 @@ describeFeature(feature, ({ ScenarioOutline }) => {
           published.phases.flatMap((phase) => phase.courses.map((reference) => normalizeCourseRef(reference).id)),
         );
         expect(checkManifestIntegrity(manifest, injectedCourseDirectoryIds).unresolvedIds).toEqual([]);
-      });
-
-      And("an over-segmented path ID is not a published accounting path", () => {
-        expect(manifest.pathId.split("/")).toHaveLength(2);
       });
     },
   );

@@ -1,33 +1,27 @@
 package web_test
 
 import (
-	"os"
 	"testing"
 
 	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/web"
 )
 
-var launcherEnvKeys = []string{"PORT", "AYOKODING_WEB_PORT", "AYOKODING_WEB_FIXTURE"}
-
-// clearLauncherEnv unsets every launcher variable, restoring previous values
-// after the test. Call it before t.Setenv so no ambient shell value leaks in.
-func clearLauncherEnv(t *testing.T) {
-	t.Helper()
-	for _, key := range launcherEnvKeys {
-		if previous, ok := os.LookupEnv(key); ok {
-			if err := os.Unsetenv(key); err != nil {
-				t.Fatalf("unset %s: %v", key, err)
-			}
-			t.Cleanup(func() {
-				_ = os.Setenv(key, previous)
-			})
-		}
+// launcher records the launcher variables one test sets. The resolver reads
+// only what it is given, so no process environment moves under test.
+func launcher(values map[string]string) web.Environment {
+	return func(key string) (string, bool) {
+		value, ok := values[key]
+		return value, ok
 	}
 }
 
+// resolve runs ResolveConfig with the recorded launcher variables.
+func resolve(args []string, values map[string]string) (web.Config, error) {
+	return web.ResolveConfig(args, launcher(values))
+}
+
 func TestResolveConfigDefaultsTo3102(t *testing.T) {
-	clearLauncherEnv(t)
-	cfg, err := web.ResolveConfig(nil)
+	cfg, err := resolve(nil, nil)
 	if err != nil {
 		t.Fatalf("ResolveConfig: %v", err)
 	}
@@ -37,9 +31,7 @@ func TestResolveConfigDefaultsTo3102(t *testing.T) {
 }
 
 func TestResolveConfigIgnoresBarePort(t *testing.T) {
-	clearLauncherEnv(t)
-	t.Setenv("PORT", "4100")
-	cfg, err := web.ResolveConfig(nil)
+	cfg, err := resolve(nil, map[string]string{"PORT": "4100"})
 	if err != nil {
 		t.Fatalf("ResolveConfig: %v", err)
 	}
@@ -49,9 +41,7 @@ func TestResolveConfigIgnoresBarePort(t *testing.T) {
 }
 
 func TestResolveConfigPrefixedEnvWins(t *testing.T) {
-	clearLauncherEnv(t)
-	t.Setenv("AYOKODING_WEB_PORT", "3200")
-	cfg, err := web.ResolveConfig(nil)
+	cfg, err := resolve(nil, map[string]string{"AYOKODING_WEB_PORT": "3200"})
 	if err != nil {
 		t.Fatalf("ResolveConfig: %v", err)
 	}
@@ -61,11 +51,7 @@ func TestResolveConfigPrefixedEnvWins(t *testing.T) {
 }
 
 func TestResolveConfigExplicitFlagWinsOverEnv(t *testing.T) {
-	clearLauncherEnv(t)
-	t.Setenv("AYOKODING_WEB_PORT", "3200")
-	cfg, err := web.ResolveConfig(
-		[]string{"--port", "3300"},
-	)
+	cfg, err := resolve([]string{"--port", "3300"}, map[string]string{"AYOKODING_WEB_PORT": "3200"})
 	if err != nil {
 		t.Fatalf("ResolveConfig: %v", err)
 	}
@@ -75,53 +61,76 @@ func TestResolveConfigExplicitFlagWinsOverEnv(t *testing.T) {
 }
 
 func TestResolveConfigRejectsInvalidPort(t *testing.T) {
-	clearLauncherEnv(t)
 	for _, value := range []string{"abc", "0", "70000", "-1", ""} {
-		t.Setenv("AYOKODING_WEB_PORT", value)
-		if _, err := web.ResolveConfig(nil); err == nil {
+		if _, err := resolve(nil, map[string]string{"AYOKODING_WEB_PORT": value}); err == nil {
 			t.Fatalf("port %q must fail", value)
 		}
 	}
 }
 
-func TestResolveConfigRejectsInvalidFlag(t *testing.T) {
-	clearLauncherEnv(t)
-	if _, err := web.ResolveConfig([]string{"--port", "nope"}); err == nil {
-		t.Fatal("invalid --port must fail")
+func TestOSEnvironmentSnapshotsLauncher(t *testing.T) {
+	t.Setenv("AYOKODING_WEB_PORT", "3200")
+	t.Setenv("AYOKODING_WEB_FIXTURE", "parity")
+	t.Setenv("AYOKODING_WEB_CONTENT_DIR", "content")
+	t.Setenv("AYOKODING_WEB_MANIFESTS_DIR", "manifests")
+	t.Setenv("AYOKODING_WEB_SHOW_DRAFTS", "true")
+	environment := web.OSEnvironment()
+	for key, want := range map[string]string{
+		"AYOKODING_WEB_PORT":          "3200",
+		"AYOKODING_WEB_FIXTURE":       "parity",
+		"AYOKODING_WEB_CONTENT_DIR":   "content",
+		"AYOKODING_WEB_MANIFESTS_DIR": "manifests",
+		"AYOKODING_WEB_SHOW_DRAFTS":   "true",
+	} {
+		if value, ok := environment(key); !ok || value != want {
+			t.Fatalf("snapshot %s = %q, %v; want %q, true", key, value, ok, want)
+		}
+	}
+	if value, ok := environment("AYOKODING_WEB_DOES_NOT_EXIST"); ok {
+		t.Fatalf("unknown key = %q, true; want missing", value)
+	}
+	cfg, err := web.ResolveConfig(nil, environment)
+	if err != nil {
+		t.Fatalf("ResolveConfig: %v", err)
+	}
+	if cfg.Port != 3200 || cfg.Fixture != web.FixtureParity {
+		t.Fatalf("wired config = %+v, want port 3200 fixture parity", cfg)
 	}
 }
 
-func TestResolveErrorNamesSource(t *testing.T) {
-	clearLauncherEnv(t)
-	t.Setenv("AYOKODING_WEB_PORT", "abc")
-	if _, err := web.ResolveConfig(nil); err == nil {
-		t.Fatal("invalid env port must fail")
-	} else if got := err.Error(); !contains(got, "AYOKODING_WEB_PORT") {
-		t.Fatalf("diagnostic %q must name AYOKODING_WEB_PORT", got)
+func TestResolveConfigRejectsInvalidFlag(t *testing.T) {
+	if _, err := resolve([]string{"--port", "nope"}, nil); err == nil {
+		t.Fatal("invalid --port must fail")
 	}
-	if _, err := web.ResolveConfig([]string{"--port", "0"}); err == nil {
+	if _, err := resolve([]string{"--port", "0"}, nil); err == nil {
 		t.Fatal("zero flag port must fail")
 	} else if got := err.Error(); !contains(got, "--port") {
 		t.Fatalf("diagnostic %q must name --port", got)
 	}
 }
 
+func TestResolveErrorNamesSource(t *testing.T) {
+	if _, err := resolve(nil, map[string]string{"AYOKODING_WEB_PORT": "abc"}); err == nil {
+		t.Fatal("invalid env port must fail")
+	} else if got := err.Error(); !contains(got, "AYOKODING_WEB_PORT") {
+		t.Fatalf("diagnostic %q must name AYOKODING_WEB_PORT", got)
+	}
+}
+
 func TestResolveRejectsUnknownAndMissingFlags(t *testing.T) {
-	clearLauncherEnv(t)
-	if _, err := web.ResolveConfig([]string{"--bogus"}); err == nil {
+	if _, err := resolve([]string{"--bogus"}, nil); err == nil {
 		t.Fatal("unknown flag must fail")
 	}
-	if _, err := web.ResolveConfig([]string{"--port"}); err == nil {
+	if _, err := resolve([]string{"--port"}, nil); err == nil {
 		t.Fatal("missing flag value must fail")
 	}
-	if _, err := web.ResolveConfig([]string{"positional"}); err == nil {
+	if _, err := resolve([]string{"positional"}, nil); err == nil {
 		t.Fatal("positional args must fail")
 	}
 }
 
 func TestResolveEqualsFormFlag(t *testing.T) {
-	clearLauncherEnv(t)
-	cfg, err := web.ResolveConfig([]string{"--port=3333"})
+	cfg, err := resolve([]string{"--port=3333"}, nil)
 	if err != nil {
 		t.Fatalf("ResolveConfig: %v", err)
 	}
@@ -131,27 +140,24 @@ func TestResolveEqualsFormFlag(t *testing.T) {
 }
 
 func TestResolveFixtureMissingValue(t *testing.T) {
-	clearLauncherEnv(t)
-	if _, err := web.ResolveConfig([]string{"--fixture"}); err == nil {
+	if _, err := resolve([]string{"--fixture"}, nil); err == nil {
 		t.Fatal("missing fixture value must fail")
 	}
 }
 
 func TestResolveFixtureModes(t *testing.T) {
-	clearLauncherEnv(t)
-	cfg, err := web.ResolveConfig([]string{"--fixture", "unavailable-catalog"})
+	cfg, err := resolve([]string{"--fixture", "unavailable-catalog"}, nil)
 	if err != nil {
 		t.Fatalf("ResolveConfig: %v", err)
 	}
 	if cfg.Fixture != web.FixtureUnavailableCatalog {
 		t.Fatalf("fixture = %q, want unavailable-catalog", cfg.Fixture)
 	}
-	t.Setenv("AYOKODING_WEB_FIXTURE", "parity")
-	cfg, err = web.ResolveConfig(nil)
+	cfg, err = resolve(nil, map[string]string{"AYOKODING_WEB_FIXTURE": "parity"})
 	if err != nil || cfg.Fixture != web.FixtureParity {
 		t.Fatalf("env fixture = %+v, %v; want parity", cfg, err)
 	}
-	if _, err := web.ResolveConfig([]string{"--fixture", "nope"}); err == nil {
+	if _, err := resolve([]string{"--fixture", "nope"}, nil); err == nil {
 		t.Fatal("unknown fixture must fail")
 	}
 }

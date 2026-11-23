@@ -6,6 +6,7 @@ import { PgliteService, makeJournalRuntime } from "@/contexts/journal/applicatio
 import { runMigrations } from "@/contexts/journal/application";
 import { useRoutines } from "../../../../../src/contexts/routine/presentation/use-routines";
 import type { Routine } from "../../../../../src/contexts/routine/domain";
+import { FIXED_INSTANT, nextFixtureId } from "../../../support/doubles";
 
 // ---------------------------------------------------------------------------
 // Test runtime factory — in-memory PGlite with both migrations
@@ -32,11 +33,11 @@ function makeTestRuntime() {
 
 function makeRoutine(overrides: Partial<Routine> = {}): Routine {
   return {
-    id: crypto.randomUUID(),
+    id: nextFixtureId(),
     name: "Test Routine",
     hue: "teal",
     type: "workout",
-    createdAt: new Date().toISOString(),
+    createdAt: FIXED_INSTANT,
     groups: [],
     ...overrides,
   };
@@ -154,7 +155,7 @@ describe("useRoutines", () => {
       restSeconds: null,
     });
     const group = {
-      id: crypto.randomUUID(),
+      id: nextFixtureId(),
       name: "Main Lifts",
       exercises: [exercise("e1", "Squat"), exercise("e2", "Deadlift")],
     };

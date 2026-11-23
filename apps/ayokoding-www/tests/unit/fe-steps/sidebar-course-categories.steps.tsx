@@ -91,6 +91,7 @@ function renderSidebar() {
 describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
   AfterEachScenario(cleanup);
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/sidebar-course-categories.feature: The Courses section lists category groups
   Scenario("The Courses section lists category groups", ({ When, Then, And }) => {
     When("a reader opens the courses page", () => {
       currentPath = "/en/learn/courses";
@@ -107,6 +108,7 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/sidebar-course-categories.feature: The current course's group starts open
   Scenario("The current course's group starts open", ({ When, Then, And }) => {
     When('a reader opens the "SQL Essentials" course landing page', () => {
       currentPath = "/en/learn/courses/sql-essentials";
@@ -128,6 +130,7 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/sidebar-course-categories.feature: A group opens and closes from the keyboard
   Scenario("A group opens and closes from the keyboard", ({ Given, When, Then }) => {
     Given("the sidebar shows a closed group", () => {
       currentPath = "/en/learn/courses";
@@ -151,6 +154,7 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/sidebar-course-categories.feature: The mobile drawer shows the same groups
   Scenario("The mobile drawer shows the same groups", ({ Given, When, Then, And }) => {
     Given("a viewport 375 pixels wide", () => {
       expect(375).toBe(375);
@@ -170,56 +174,54 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
 
   // The catalog page is non-course, so its sidebar must not suspend while course path context loads:
   // a suspension would swap in a fresh sidebar and lose the reader's open group.
-  Scenario(
-    "An open group stays open when course path context loads on the courses page",
-    ({ Given, When, Then, And }) => {
-      let resolveQuery: () => void = () => {
-        throw new Error("query resolver missing");
-      };
-      let user: ReturnType<typeof userEvent.setup>;
-      let button: HTMLElement;
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/sidebar-course-categories.feature: A group the reader opened stays open while the page finishes loading
+  Scenario("A group the reader opened stays open while the page finishes loading", ({ Given, When, Then, And }) => {
+    let resolveQuery: () => void = () => {
+      throw new Error("query resolver missing");
+    };
+    let user: ReturnType<typeof userEvent.setup>;
+    let button: HTMLElement;
 
-      Given('the reader has opened the "Tools and practices" group on the courses page', async () => {
-        cleanup();
-        currentPath = "/en/learn/courses";
-        query.calls = 0;
-        query.pending = true;
-        query.promise = new Promise<void>((resolve) => {
-          resolveQuery = resolve;
-        });
-        user = userEvent.setup();
-        render(await ContentLayout({ params: Promise.resolve({ locale: "en" }), children: <main>Catalog</main> }));
-        button = await screen.findByRole("button", { name: /Tools and practices/ });
-        button.focus();
-        await user.keyboard("{Enter}");
-        expect(button.getAttribute("aria-expanded")).toBe("true");
-        expect(screen.getByRole("link", { name: "Git" })).toBeTruthy();
+    Given('the reader has opened the "Tools and practices" group on the courses page', async () => {
+      cleanup();
+      currentPath = "/en/learn/courses";
+      query.calls = 0;
+      query.pending = true;
+      query.promise = new Promise<void>((resolve) => {
+        resolveQuery = resolve;
       });
-      When("the course path context finishes loading", async () => {
-        await act(async () => {
-          query.pending = false;
-          resolveQuery();
-          await query.promise;
-        });
+      user = userEvent.setup();
+      render(await ContentLayout({ params: Promise.resolve({ locale: "en" }), children: <main>Catalog</main> }));
+      button = await screen.findByRole("button", { name: /Tools and practices/ });
+      button.focus();
+      await user.keyboard("{Enter}");
+      expect(button.getAttribute("aria-expanded")).toBe("true");
+      expect(screen.getByRole("link", { name: "Git" })).toBeTruthy();
+    });
+    When("the course path context finishes loading", async () => {
+      await act(async () => {
+        query.pending = false;
+        resolveQuery();
+        await query.promise;
       });
-      Then('the "Tools and practices" group is still open with its course listed', () => {
-        expect(button.isConnected).toBe(true);
-        expect(screen.getByRole("button", { name: /Tools and practices/ })).toBe(button);
-        expect(button.getAttribute("aria-expanded")).toBe("true");
-        expect(screen.getByRole("link", { name: "Git" })).toBeTruthy();
-      });
-      And("the sidebar is still a single navigation region", () => {
-        expect(screen.getAllByRole("navigation", { name: "Sidebar navigation" })).toHaveLength(1);
-      });
-      And("the path context query is not read", () => {
-        expect(query.calls).toBe(0);
-      });
-      When("the reader presses Space on the group button", async () => {
-        await user.keyboard(" ");
-      });
-      Then('the "Tools and practices" group closes', () => {
-        expect(button.getAttribute("aria-expanded")).toBe("false");
-      });
-    },
-  );
+    });
+    Then('the "Tools and practices" group is still open with its course listed', () => {
+      expect(button.isConnected).toBe(true);
+      expect(screen.getByRole("button", { name: /Tools and practices/ })).toBe(button);
+      expect(button.getAttribute("aria-expanded")).toBe("true");
+      expect(screen.getByRole("link", { name: "Git" })).toBeTruthy();
+    });
+    And("the sidebar is still a single navigation region", () => {
+      expect(screen.getAllByRole("navigation", { name: "Sidebar navigation" })).toHaveLength(1);
+    });
+    And("the path context query is not read", () => {
+      expect(query.calls).toBe(0);
+    });
+    When("the reader presses Space on the group button", async () => {
+      await user.keyboard(" ");
+    });
+    Then('the "Tools and practices" group closes', () => {
+      expect(button.getAttribute("aria-expanded")).toBe("false");
+    });
+  });
 });

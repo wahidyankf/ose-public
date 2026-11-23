@@ -3,9 +3,6 @@ package glue
 import (
 	"encoding/json"
 	"net/http"
-	"os"
-	"path/filepath"
-	"runtime"
 )
 
 // Current-codec tool journey URLs. Query keys follow the old-app codecs
@@ -109,14 +106,6 @@ func (w *World) StepTypescriptElixirProduceSameAcceptedResults() error {
 	return nil
 }
 
-// fixtureVectorPath resolves one checked-in test-vector JSON under
-// apps/ayokoding-web/tests/fixtures.
-func fixtureVectorPath(name string) string {
-	_, file, _, _ := runtime.Caller(0)
-	appRoot := filepath.Join(filepath.Dir(file), "..", "..", "..")
-	return filepath.Join(appRoot, "tests", "fixtures", name)
-}
-
 // benchmarkVector mirrors the shared-dataset comparison for one current-codec
 // filter state: display names, formatted composite indices, and blended
 // prices in descending index order plus the model count.
@@ -131,7 +120,7 @@ type benchmarkVector struct {
 }
 
 func loadBenchmarkVectorFigures() (benchmarkVector, error) {
-	raw, err := os.ReadFile(fixtureVectorPath("benchmark-vectors.json"))
+	raw, err := Vector("benchmark-vectors.json")
 	if err != nil {
 		return benchmarkVector{}, fail("read benchmark vectors: %v", err)
 	}
@@ -156,7 +145,7 @@ type calculatorVector struct {
 }
 
 func loadCalculatorVectorFigures() (calculatorVector, error) {
-	raw, err := os.ReadFile(fixtureVectorPath("calculator-vectors.json"))
+	raw, err := Vector("calculator-vectors.json")
 	if err != nil {
 		return calculatorVector{}, fail("read calculator vectors: %v", err)
 	}

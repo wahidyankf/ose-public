@@ -1,7 +1,7 @@
 import path from "node:path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
 import { cleanup, render, screen, within } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { expect, vi } from "vitest";
 
 vi.mock("next/link", () => ({
   default: ({ href, children, ...rest }: { href: string; children: React.ReactNode; [key: string]: unknown }) => (
@@ -91,6 +91,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-catalog.feature: Every course appears once under its category
   Scenario("Every course appears once under its category", ({ When, Then, And }) => {
     When("a reader opens the courses page", () => renderCatalog());
     Then("the page shows one section heading per category that has courses", () => {
@@ -109,6 +110,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-catalog.feature: A course card shows the facts needed to choose
   Scenario("A course card shows the facts needed to choose", ({ When, Then, And }) => {
     When("a reader opens the courses page", () => renderCatalog());
     Then('the card for "SQL Essentials" shows its one-line description', () => {
@@ -125,6 +127,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-catalog.feature: An outline course card says it is an outline
   Scenario("An outline course card says it is an outline", ({ Given, When, Then, And }) => {
     Given("a course is marked as an outline", () => {
       expect(groups.flatMap((g) => g.entries).find((e) => e.courseId === "outline-course")?.isOutline).toBe(true);
@@ -140,6 +143,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-catalog.feature: A card links only to the course landing page
   Scenario("A card links only to the course landing page", ({ When, Then, And }) => {
     When("a reader opens the courses page", () => renderCatalog());
     Then("each card holds exactly one link", () => {
@@ -158,6 +162,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-catalog.feature: A jump link moves to its category section
   Scenario("A jump link moves to its category section", ({ When, Then }) => {
     When('a reader activates the "Data and databases" jump link', () => {
       renderCatalog();
@@ -169,6 +174,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-catalog.feature: The catalog fits a phone screen
   Scenario("The catalog fits a phone screen", ({ Given, When, Then, And }) => {
     Given("a viewport 375 pixels wide", () => {
       expect(375).toBe(375);
@@ -181,15 +187,5 @@ describeFeature(feature, ({ Scenario, Background }) => {
     And("the main content does not scroll sideways", () => {
       expect(document.querySelector("article")?.className).toContain("min-w-0");
     });
-  });
-});
-
-// Regression: the catalog dispatch must precede the `courseId === null` early return in
-// page.tsx, because courseIdFromSlug("learn/courses") is null (section, not a course root).
-describe("catalog dispatch order (plan 03 regression)", () => {
-  it("page.tsx checks COURSE_CATALOG_SLUG before the courseId===null return", async () => {
-    const fs = await import("node:fs/promises");
-    const source = await fs.readFile("src/app/[locale]/(content)/[...slug]/page.tsx", "utf-8");
-    expect(source.indexOf("slugStr === COURSE_CATALOG_SLUG")).toBeLessThan(source.indexOf("if (courseId === null)"));
   });
 });

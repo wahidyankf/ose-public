@@ -2,11 +2,10 @@ package benchmark_test
 
 import (
 	"encoding/json"
-	"os"
-	"path/filepath"
 	"testing"
 
 	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/tools/benchmark"
+	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/tools/shareddata"
 )
 
 func TestComputeTierGroupsCoversRosterInTierOrder(t *testing.T) {
@@ -121,9 +120,9 @@ func TestDefaultSubHarnessOmitsOnEncode(t *testing.T) {
 }
 
 func TestDatasetValidationRejectsEachDefect(t *testing.T) {
-	raw, err := os.ReadFile(filepath.Join(testDataRoot(t), "data", "ai-benchmark.json"))
+	raw, err := shareddata.Benchmark()
 	if err != nil {
-		t.Fatalf("ReadFile: %v", err)
+		t.Fatalf("shared benchmark data: %v", err)
 	}
 	var file map[string]json.RawMessage
 	if err := json.Unmarshal(raw, &file); err != nil {

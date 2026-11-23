@@ -23,6 +23,10 @@ const { ContentService } = await import("../../../../../src/features/content/she
 describe("ContentService.getBySlug — render-scoped cache", () => {
   it("shares one Markdown read and parse for concurrent calls with the same locale and slug", async () => {
     let reads = 0;
+    let releaseRead: () => void = () => undefined;
+    const readGate = new Promise<void>((resolve) => {
+      releaseRead = resolve;
+    });
     const repository: ContentRepository = {
       readAllContent: async () => [
         {
@@ -38,16 +42,15 @@ describe("ContentService.getBySlug — render-scoped cache", () => {
       ],
       readFileContent: async () => {
         reads++;
-        await new Promise((resolve) => setTimeout(resolve, 5));
+        await readGate;
         return { content: "# Overview", frontmatter: {} };
       },
     };
     const service = new ContentService(repository);
 
-    const [first, second] = await Promise.all([
-      service.getBySlug("en", "learn/overview"),
-      service.getBySlug("en", "learn/overview"),
-    ]);
+    const callers = Promise.all([service.getBySlug("en", "learn/overview"), service.getBySlug("en", "learn/overview")]);
+    releaseRead();
+    const [first, second] = await callers;
 
     expect(reads).toBe(1);
     expect(first).toBe(second);

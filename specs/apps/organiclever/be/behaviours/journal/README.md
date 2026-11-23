@@ -5,7 +5,7 @@ HTTP-semantic scenarios for the OrganicLever backend journal domain.
 ## Feature Files
 
 - **[journal-crud.feature](./journal-crud.feature)** — Append-only event log CRUD operations
-  (6 scenarios)
+  (11 scenarios)
 
 ## Related
 

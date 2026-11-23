@@ -51,12 +51,12 @@ code, never a new status.
 ## BDD layers
 
 The contract corpus lives at `specs/apps/ayokoding/cli/`. The
-`tests/bdd` package binds it through three drivers, chosen by
-`AYOKODING_BDD_ADAPTER`:
+`tests/bdd` package binds it through three drivers, chosen by build tag:
 
-- `unit` — runs each command in process. Fast; this is the default.
-- `integration` — runs a freshly built binary against temp dirs.
-- `e2e` — runs the stamped binary in `AYOKODING_BIN` against real
+- default (no tag) — runs each command in process. Fast; this is the
+  unit level and reads no environment.
+- `-tags integration` — runs a freshly built binary against temp dirs.
+- `-tags e2e` — runs the stamped binary in `AYOKODING_BIN` against real
   containers.
 
 Write the Gherkin scenario first, then the failing test, then the code.

@@ -202,10 +202,7 @@ func (scan *scanner) lesson(lesson string) []finding.Finding {
 		}
 	}
 	sort.SliceStable(findings, func(i, j int) bool {
-		if findings[i].Line != findings[j].Line {
-			return findings[i].Line < findings[j].Line
-		}
-		return findings[i].Code < findings[j].Code
+		return findings[i].Line < findings[j].Line
 	})
 	return findings
 }
@@ -523,9 +520,6 @@ func rewriteFence(lines []string, fence fenceSpan, resolve func(string) ([]byte,
 	}
 	anchor, parsed := anchors.ParseLine(lines[above], above+1)
 	if !parsed || anchor.Malformed {
-		return lines, false
-	}
-	if next, hasNext := anchors.NextNonBlank(lines, above); !hasNext || next != fence.open {
 		return lines, false
 	}
 	data, resolved := resolve(anchor.Path)

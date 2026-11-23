@@ -49,7 +49,7 @@ dedicated E2E project link to its owner's corpus instead of growing a parallel t
 ## Enforcement
 
 **Enforcement disposition — unenforced by decision; checked by review.** No declared gate or pinned
-RHINO command checks the shape, and an owner's `test:coverage:behaviour` (which runs through
+RHINO command checks the shape, and an owner's `test:behaviour:coverage` (which runs through
 `test:quick` in the PR workflow's language jobs) checks only the Gherkin corpus. `specs-checker`
 reports a missing `README.md`, `architecture.md`, or `behaviours/` entry, an empty `behaviours/` tree,
 a missing `behaviours/README.md`, and any surviving legacy folder beside a corpus.

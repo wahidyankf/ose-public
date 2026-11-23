@@ -3,11 +3,10 @@ package calculator_test
 import (
 	"encoding/json"
 	"math"
-	"os"
-	"path/filepath"
 	"testing"
 
 	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/tools/calculator"
+	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/tools/shareddata"
 )
 
 func TestScaleAmountCoversEveryCategory(t *testing.T) {
@@ -349,14 +348,13 @@ func TestSortByEssentialSavingsOrdersDescending(t *testing.T) {
 }
 
 func TestCalculatorDatasetValidationRejectsEachDefect(t *testing.T) {
-	root := testDataRoot(t)
-	colRaw, err := os.ReadFile(filepath.Join(root, "data", "cost-of-living.json"))
+	colRaw, err := shareddata.CostOfLiving()
 	if err != nil {
-		t.Fatalf("ReadFile: %v", err)
+		t.Fatalf("shared cost-of-living data: %v", err)
 	}
-	fxRaw, err := os.ReadFile(filepath.Join(root, "data", "fx.json"))
+	fxRaw, err := shareddata.Fx()
 	if err != nil {
-		t.Fatalf("ReadFile: %v", err)
+		t.Fatalf("shared FX data: %v", err)
 	}
 	var col map[string]json.RawMessage
 	if err := json.Unmarshal(colRaw, &col); err != nil {

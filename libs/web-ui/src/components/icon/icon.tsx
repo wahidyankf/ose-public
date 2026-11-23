@@ -1,42 +1,46 @@
 import * as React from "react";
 import { cn } from "../../utils/cn";
 
-export type IconName =
-  | "dumbbell"
-  | "check"
-  | "check-circle"
-  | "clock"
-  | "timer"
-  | "flame"
-  | "trend"
-  | "bar-chart"
-  | "plus"
-  | "plus-circle"
-  | "minus"
-  | "x"
-  | "x-circle"
-  | "arrow-left"
-  | "arrow-up"
-  | "arrow-down"
-  | "chevron-right"
-  | "chevron-down"
-  | "chevron-up"
-  | "home"
-  | "history"
-  | "calendar"
-  | "settings"
-  | "user"
-  | "pencil"
-  | "trash"
-  | "grip"
-  | "play"
-  | "zap"
-  | "moon"
-  | "sun"
-  | "rotate-ccw"
-  | "more-vertical"
-  | "info"
-  | "save";
+/** Every icon name the set draws. `IconName` is derived from this list so the two cannot drift apart. */
+export const ICON_NAMES = [
+  "dumbbell",
+  "check",
+  "check-circle",
+  "clock",
+  "timer",
+  "flame",
+  "trend",
+  "bar-chart",
+  "plus",
+  "plus-circle",
+  "minus",
+  "x",
+  "x-circle",
+  "arrow-left",
+  "arrow-up",
+  "arrow-down",
+  "chevron-right",
+  "chevron-down",
+  "chevron-up",
+  "home",
+  "history",
+  "calendar",
+  "settings",
+  "user",
+  "pencil",
+  "trash",
+  "grip",
+  "play",
+  "zap",
+  "moon",
+  "sun",
+  "rotate-ccw",
+  "more-vertical",
+  "info",
+  "save",
+] as const;
+
+export type IconName = (typeof ICON_NAMES)[number];
 
 export interface IconProps {
   name: IconName | (string & {});

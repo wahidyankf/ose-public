@@ -1,15 +1,13 @@
-import fs from "node:fs";
 import path from "node:path";
 import { describeFeature, loadFeature } from "@amiceli/vitest-cucumber";
 import matter from "gray-matter";
 import { expect } from "vitest";
 
 // plan (ayokoding-learn-revamp-01-navigation-and-display), Phase 3 RED (unit, S9) — step
-// bindings for course-content-hygiene.feature's "No course title carries a catalogue number"
-// scenario, reading the real published content the way
-// tests/unit/features/course-paths/manifests/careers/careers-se-manifests.unit.test.ts does
-// (paths from process.cwd(), node:fs, gray-matter). RED until the Phase 3 title-strip codemod
-// runs: 76 course titles still start with a catalogue or pass number.
+// bindings for course-content-hygiene.feature's "The courses list page shows no course title with a leading catalogue number"
+// scenario. The unit binding reads an in-memory stand-in for the published library, so the checks
+// run hermetically; the real library is read by
+// tests/integration/features/content/course-content-hygiene.integration.test.ts.
 
 const feature = await loadFeature(
   path.resolve(
@@ -35,11 +33,39 @@ const ACCURACY_MARKER_PATTERNS: Array<{ name: string; pattern: RegExp }> = [
 
 const COURSES_ROOT = "content/en/learn/courses";
 /** The course that cites sources and must present them under a heading headlined "References". */
-const CITING_COURSE_RELATIVE_PATH = "search-and-information-retrieval/overview.md";
+const CITING_COURSE_RELATIVE_PATH = `${COURSES_ROOT}/search-and-information-retrieval/overview.md`;
+const COURSE_INDEX = new RegExp(`^${COURSES_ROOT}/([^/]+)/_index\\.md$`, "u");
+
+/**
+ * The in-memory stand-in for the published English course library: relative path to file text.
+ * Every course root carries its `_index.md`, and the citing course carries a References heading.
+ */
+const LIBRARY: Readonly<Record<string, string>> = {
+  [`${COURSES_ROOT}/_index.md`]: [
+    "---",
+    'title: "Courses"',
+    "---",
+    "",
+    "- [Just Enough Python](/en/learn/courses/just-enough-python)",
+    "- [Search and Information Retrieval](/en/learn/courses/search-and-information-retrieval)",
+    "",
+  ].join("\n"),
+  [`${COURSES_ROOT}/just-enough-python/_index.md`]: '---\ntitle: "Just Enough Python"\n---\n\nWrite small programs.\n',
+  [`${COURSES_ROOT}/just-enough-python/learning/overview.md`]: '---\ntitle: "Overview"\n---\n\nSyntax first.\n',
+  [`${COURSES_ROOT}/search-and-information-retrieval/_index.md`]:
+    '---\ntitle: "Search and Information Retrieval"\n---\n\nFind the right documents.\n',
+  [CITING_COURSE_RELATIVE_PATH]:
+    '---\ntitle: "Overview"\n---\n\nIndexes and ranking.\n\n## References\n\n- Manning, Raghavan, and Schütze.\n',
+};
 
 interface CourseTitleReading {
   slug: string;
   title: string;
+}
+
+interface CourseFile {
+  relativePath: string;
+  content: string;
 }
 
 function isNumberedTitle(title: string): boolean {
@@ -47,110 +73,111 @@ function isNumberedTitle(title: string): boolean {
 }
 
 function publishedCourseSlugs(): string[] {
-  return fs
-    .readdirSync(path.join(process.cwd(), COURSES_ROOT), { withFileTypes: true })
-    .filter((entry) => entry.isDirectory())
-    .map((entry) => entry.name);
+  return Object.keys(LIBRARY).flatMap((relativePath) => COURSE_INDEX.exec(relativePath)?.[1] ?? []);
 }
 
 function readCourseTitle(slug: string): CourseTitleReading {
-  const raw = fs.readFileSync(path.join(process.cwd(), COURSES_ROOT, slug, "_index.md"), "utf8");
-  const { data } = matter(raw);
+  const { data } = matter(LIBRARY[`${COURSES_ROOT}/${slug}/_index.md`] ?? "");
   return { slug, title: typeof data.title === "string" ? data.title : "" };
 }
 
+/** Every file under the library, with its path from the repository root. */
+function readCourseFiles(): CourseFile[] {
+  return Object.entries(LIBRARY).map(([relativePath, content]) => ({ relativePath, content }));
+}
+
 describeFeature(feature, ({ Scenario }) => {
-  Scenario("No course title carries a catalogue number", ({ Given, When, Then, And }) => {
-    let slugs: string[] = [];
-    let titleReadings: CourseTitleReading[] = [];
-
-    Given("the published English course library", () => {
-      slugs = publishedCourseSlugs();
-    });
-
-    When("its course titles are read", () => {
-      titleReadings = slugs.map(readCourseTitle);
-    });
-
-    Then("no course title starts with a catalogue number or a pass number", () => {
-      const offenders = titleReadings.filter((reading) => isNumberedTitle(reading.title));
-      expect(
-        offenders.length,
-        `${offenders.length} of ${titleReadings.length} course frontmatter titles still start with a catalogue number or a pass number:\n` +
-          offenders.map((offender) => `  - ${offender.slug}: "${offender.title}"`).join("\n"),
-      ).toBe(0);
-    });
-
-    And("the course list page shows every course title without a leading number", () => {
-      const courseListSource = fs.readFileSync(path.join(process.cwd(), COURSES_ROOT, "_index.md"), "utf8");
-      // The courses section _index.md lists each course row as `- [Title](/en/learn/courses/<slug>)`;
-      // two-space-indented rows are the courses' own sub-pages, not course titles.
-      const courseListTitles = [...courseListSource.matchAll(/^- \[(.+?)\]\(\/en\/learn\/courses\/[^/)]+\)$/gmu)].map(
-        (match) => match[1] ?? "",
-      );
-      const offenders = courseListTitles.filter(isNumberedTitle);
-      expect(
-        offenders.length,
-        `${offenders.length} of ${courseListTitles.length} course list page titles still show a leading number:\n` +
-          offenders.map((title) => `  - "${title}"`).join("\n"),
-      ).toBe(0);
-    });
-  });
-
-  // plan (ayokoding-learn-revamp-01-navigation-and-display), Phase 6 RED (unit, S10) —
-  // "Courses cite sources in a References section without internal verification tags", walking
-  // every file under content/en/learn/courses/** the way tech-docs §4.5 prescribes. RED until the
-  // Phase 6 References conversion: 156 files still carry an internal marker.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/course-content-hygiene.feature: The courses list page shows no course title with a leading catalogue number
   Scenario(
-    "Courses cite sources in a References section without internal verification tags",
+    "The courses list page shows no course title with a leading catalogue number",
     ({ Given, When, Then, And }) => {
-      let courseFiles: Array<{ relativePath: string; content: string }> = [];
+      let slugs: string[] = [];
+      let titleReadings: CourseTitleReading[] = [];
 
       Given("the published English course library", () => {
-        courseFiles = [];
-        const root = path.join(process.cwd(), COURSES_ROOT);
-        const walk = (relative: string) => {
-          for (const entry of fs.readdirSync(path.join(root, relative), { withFileTypes: true })) {
-            if (entry.isDirectory()) {
-              walk(path.posix.join(relative, entry.name));
-              continue;
-            }
-            courseFiles.push({
-              relativePath: path.posix.join(COURSES_ROOT, relative, entry.name),
-              content: fs.readFileSync(path.join(root, relative, entry.name), "utf8"),
-            });
-          }
-        };
-        walk("");
+        slugs = publishedCourseSlugs();
       });
 
-      When("its course pages and example files are read", () => {
-        expect(courseFiles.length, "no course files walked").toBeGreaterThan(0);
+      When("its course titles are read", () => {
+        titleReadings = slugs.map(readCourseTitle);
       });
 
-      Then(
-        'no file contains an "Accuracy notes" section, an "Accuracy note" label, or an internal confidence tag',
-        () => {
-          const offenders = courseFiles.flatMap(({ relativePath, content }) =>
-            ACCURACY_MARKER_PATTERNS.filter(({ pattern }) => pattern.test(content)).map(
-              ({ name }) => `  - ${relativePath}: ${name}`,
-            ),
-          );
-          expect(
-            offenders.length,
-            `${offenders.length} internal-marker hits across ${courseFiles.length} course files:\n` +
-              offenders.join("\n"),
-          ).toBe(0);
-        },
-      );
+      Then("no course title starts with a catalogue number or a pass number", () => {
+        const offenders = titleReadings.filter((reading) => isNumberedTitle(reading.title));
+        expect(
+          offenders.length,
+          `${offenders.length} of ${titleReadings.length} course frontmatter titles still start with a catalogue number or a pass number:\n` +
+            offenders.map((offender) => `  - ${offender.slug}: "${offender.title}"`).join("\n"),
+        ).toBe(0);
+      });
 
-      And('a course that cites sources shows them under a "References" heading', () => {
-        const citingCourse = courseFiles.find(
-          (file) => file.relativePath === path.posix.join(COURSES_ROOT, CITING_COURSE_RELATIVE_PATH),
+      And("the course list page shows every course title without a leading number", () => {
+        const courseListSource = LIBRARY[`${COURSES_ROOT}/_index.md`] ?? "";
+        // The courses section _index.md lists each course row as `- [Title](/en/learn/courses/<slug>)`;
+        // two-space-indented rows are the courses' own sub-pages, not course titles.
+        const courseListTitles = [...courseListSource.matchAll(/^- \[(.+?)\]\(\/en\/learn\/courses\/[^/)]+\)$/gmu)].map(
+          (match) => match[1] ?? "",
         );
-        expect(citingCourse, "the citing course page was not walked").toBeDefined();
-        expect(citingCourse?.content).toContain("## References");
+        expect(courseListTitles.length, "no course list rows read").toBeGreaterThan(0);
+        const offenders = courseListTitles.filter(isNumberedTitle);
+        expect(
+          offenders.length,
+          `${offenders.length} of ${courseListTitles.length} course list page titles still show a leading number:\n` +
+            offenders.map((title) => `  - "${title}"`).join("\n"),
+        ).toBe(0);
       });
     },
   );
+
+  // plan (ayokoding-learn-revamp-01-navigation-and-display), Phase 6 RED (unit, S10) —
+  // "No course page shows an accuracy note or internal confidence tag", walking every file under
+  // content/en/learn/courses/** the way tech-docs §4.5 prescribes. RED until the Phase 6 References
+  // conversion: 156 files still carried an internal marker.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/course-content-hygiene.feature: No course page shows an accuracy note or internal confidence tag
+  Scenario("No course page shows an accuracy note or internal confidence tag", ({ Given, When, Then }) => {
+    let courseFiles: CourseFile[] = [];
+
+    Given("the published English course library", () => {
+      courseFiles = readCourseFiles();
+    });
+
+    When("its course pages and example files are read", () => {
+      expect(courseFiles.length, "no course files walked").toBeGreaterThan(0);
+    });
+
+    Then(
+      'no course page shows an "Accuracy notes" section, an "Accuracy note" label, or an internal confidence tag',
+      () => {
+        const offenders = courseFiles.flatMap(({ relativePath, content }) =>
+          ACCURACY_MARKER_PATTERNS.filter(({ pattern }) => pattern.test(content)).map(
+            ({ name }) => `  - ${relativePath}: ${name}`,
+          ),
+        );
+        expect(
+          offenders.length,
+          `${offenders.length} internal-marker hits across ${courseFiles.length} course files:\n` +
+            offenders.join("\n"),
+        ).toBe(0);
+      },
+    );
+  });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/course-content-hygiene.feature: Cited sources sit under a References heading
+  Scenario("Cited sources sit under a References heading", ({ Given, When, Then }) => {
+    let courseFiles: CourseFile[] = [];
+
+    Given("the published English course library", () => {
+      courseFiles = readCourseFiles();
+    });
+
+    When("its course pages and example files are read", () => {
+      expect(courseFiles.length, "no course files walked").toBeGreaterThan(0);
+    });
+
+    Then('a course that cites sources shows them under a "References" heading', () => {
+      const citingCourse = courseFiles.find((file) => file.relativePath === CITING_COURSE_RELATIVE_PATH);
+      expect(citingCourse, "the citing course page was not walked").toBeDefined();
+      expect(citingCourse?.content).toContain("## References");
+    });
+  });
 });

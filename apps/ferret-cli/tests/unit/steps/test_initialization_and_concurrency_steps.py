@@ -8,7 +8,8 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from pytest_bdd import given, scenario, then, when
+from pytest_bdd import given, parsers, scenario, then, when
+from typekit import Err
 
 from ferret.adapters.filesystem import resolve_data_home
 from ferret.adapters.system import home_directory
@@ -18,7 +19,7 @@ from ferret.domain.errors import FerretResult
 from ferret.domain.event import Event, event_from_document
 from support.events import encode, event_document
 from support.fakes import FAKE_HOME, FIXED_NOW, FakeInput, FakeMonotonic, FakeTelemetry, World, make_world
-from support.invoke import run_runtime
+from support.invoke import Ran, run_cli, run_runtime
 from support.populate import FAR_FUTURE
 from support.results import value_of
 from support.retention import expired_events
@@ -70,6 +71,10 @@ class Session:
     runtimes: list[Runtime] = field(default_factory=lambda: list[Runtime]())
     clocks: list[FakeMonotonic] = field(default_factory=lambda: list[FakeMonotonic]())
     bursts: list[list[Attempt]] = field(default_factory=lambda: list[list[Attempt]]())
+    environment: dict[str, str] = field(default_factory=lambda: dict[str, str]())
+    refusal: str | None = None
+    refusal_exit_code: int | None = None
+    ran: Ran | None = None
 
 
 def unique_event_id(adapter: int, sequence: int) -> str:
@@ -106,8 +111,21 @@ def session() -> Session:
     return Session(world=make_world())
 
 
-@scenario(FEATURE, "Initialize one private store from multiple repositories")
-def test_initialize_one_private_store_from_multiple_repositories() -> None:
+# @scenario specs/apps/ferret/cli/behaviours/storage/initialization-and-concurrency.feature: ferret init from two repositories resolves one data home
+@scenario(FEATURE, "ferret init from two repositories resolves one data home")
+def test_ferret_init_from_two_repositories_resolves_one_data_home() -> None:
+    """Bound to the feature scenario; the steps below carry the assertions."""
+
+
+# @scenario specs/apps/ferret/cli/behaviours/storage/initialization-and-concurrency.feature: Every created file and directory is owner-only
+@scenario(FEATURE, "Every created file and directory is owner-only")
+def test_every_created_file_and_directory_is_owner_only() -> None:
+    """Bound to the feature scenario; the steps below carry the assertions."""
+
+
+# @scenario specs/apps/ferret/cli/behaviours/storage/initialization-and-concurrency.feature: No telemetry file is created inside a repository
+@scenario(FEATURE, "No telemetry file is created inside a repository")
+def test_no_telemetry_file_is_created_inside_a_repository() -> None:
     """Bound to the feature scenario; the steps below carry the assertions."""
 
 
@@ -136,14 +154,9 @@ def then_same_home_and_database(session: Session) -> None:
     assert first["databasePath"] == second["databasePath"] == str(expected / "ferret.sqlite3")
 
 
-@then("exactly one installation identity and current schema exist")
-def then_one_identity_and_schema(session: Session) -> None:
-    first, second = session.documents
-    assert (first["result"], second["result"]) == ("created", "already_initialized")
-    assert first["installationId"] == second["installationId"]
-    assert first["schemaNumber"] == second["schemaNumber"] == session.world.schema.number
-    assert session.world.randomness.uuid_calls == 1
-    assert [name for name in session.world.files.files if name == "identity.json"] == ["identity.json"]
+@when("the user runs ferret init")
+def when_the_user_runs_init(session: Session) -> None:
+    init_with_environment(session, session.environment)
 
 
 @then("POSIX modes make every artifact private")
@@ -164,6 +177,7 @@ def then_no_repository_database(session: Session) -> None:
             assert not Path(document["databasePath"]).is_relative_to(repository)
 
 
+# @scenario specs/apps/ferret/cli/behaviours/storage/initialization-and-concurrency.feature: Capture concurrently across repositories
 @scenario(FEATURE, "Capture concurrently across repositories")
 def test_capture_concurrently_across_repositories() -> None:
     """Bound to the feature scenario; the steps below carry the assertions."""
@@ -224,3 +238,136 @@ def then_every_adapter_returns_within_a_second(session: Session) -> None:
     assert len(session.world.events.stored) < EXPIRED_BACKLOG + len(attempts)
     assert all(attempt.elapsed_ms > 0 for attempt in attempts)
     assert max(attempt.elapsed_ms for attempt in attempts) < 1000
+
+
+def init_with_environment(session: Session, environment: dict[str, str]) -> None:
+    """Run ``init`` as a process started with ``environment`` does: its data home is resolved from that environment."""
+    resolved = resolve_data_home({"HOME": str(FAKE_HOME), **environment}, FAKE_HOME)
+    if isinstance(resolved, Err):
+        session.refusal = resolved.error.code
+        session.refusal_exit_code = resolved.error.exit_code
+        return
+    session.ran = run_runtime(replace(session.world.runtime, data_home=value_of(resolved)), ["init", "--json"])
+
+
+# @scenario specs/apps/ferret/cli/behaviours/storage/initialization-and-concurrency.feature: Running ferret init again reports already_initialized and changes nothing
+@scenario(FEATURE, "Running ferret init again reports already_initialized and changes nothing")
+def test_running_ferret_init_again_reports_already_initialized_and_changes_nothing() -> None:
+    """Bound to the feature scenario; the steps below carry the assertions."""
+
+
+@given("FERRET has already been initialized for the current operating-system user")
+def given_already_initialized(session: Session) -> None:
+    initialize_store(session.world.runtime)
+
+
+@when("the user runs ferret init again")
+def when_the_user_runs_init_again(session: Session) -> None:
+    session.ran = run_cli(session.world, ["init", "--json"])
+
+
+@then("the command reports already_initialized and keeps the same installation identity and schema")
+def then_init_again_reports_already_initialized(session: Session) -> None:
+    assert session.ran is not None
+    document = json.loads(session.ran.stdout)
+    assert (session.ran.code, session.ran.stderr, document["result"]) == (0, "", "already_initialized")
+    assert document["schemaNumber"] == session.world.schema.number
+    # The identity was created once, by the first initialization, and the second one created none.
+    assert session.world.randomness.uuid_calls == 1
+
+
+# @scenario specs/apps/ferret/cli/behaviours/storage/initialization-and-concurrency.feature: FERRET_DATA_HOME relocates the data home
+@scenario(FEATURE, "FERRET_DATA_HOME relocates the data home")
+def test_ferret_data_home_relocates_the_data_home() -> None:
+    """Bound to the feature scenario; the steps below carry the assertions."""
+
+
+# @scenario specs/apps/ferret/cli/behaviours/storage/initialization-and-concurrency.feature: XDG_DATA_HOME sets the data home base
+@scenario(FEATURE, "XDG_DATA_HOME sets the data home base")
+def test_xdg_data_home_sets_the_data_home_base() -> None:
+    """Bound to the feature scenario; the steps below carry the assertions."""
+
+
+# @scenario specs/apps/ferret/cli/behaviours/storage/initialization-and-concurrency.feature: HOME is the fallback data home base
+@scenario(FEATURE, "HOME is the fallback data home base")
+def test_home_is_the_fallback_data_home_base() -> None:
+    """Bound to the feature scenario; the steps below carry the assertions."""
+
+
+# @scenario specs/apps/ferret/cli/behaviours/storage/initialization-and-concurrency.feature: A relative or unsafe FERRET_DATA_HOME reports ferret.storage.unsafe
+@scenario(FEATURE, "A relative or unsafe FERRET_DATA_HOME reports ferret.storage.unsafe")
+def test_a_relative_or_unsafe_ferret_data_home_reports_storage_unsafe() -> None:
+    """Bound to the feature outline; each example expands independently."""
+
+
+@given(parsers.parse("the environment sets {name} to {value}"))
+def given_the_environment_sets(session: Session, name: str, value: str) -> None:
+    session.environment[name] = value
+
+
+@given("neither FERRET_DATA_HOME nor XDG_DATA_HOME is set")
+def given_neither_data_home_variable_is_set(session: Session) -> None:
+    assert session.environment == {}
+
+
+@then(parsers.parse("the data home is {path}"))
+def then_the_data_home_is(session: Session, path: str) -> None:
+    assert session.refusal is None
+    assert session.ran is not None
+    assert (session.ran.code, session.ran.stderr) == (0, "")
+    assert json.loads(session.ran.stdout)["dataHome"] == path
+
+
+@then("the store is kept under HOME at .local/share/ferret")
+def then_the_store_is_kept_under_home(session: Session) -> None:
+    assert session.refusal is None
+    assert session.ran is not None
+    assert json.loads(session.ran.stdout)["dataHome"] == str(FAKE_HOME / ".local" / "share" / "ferret")
+
+
+@then("the command exits 2 with ferret.storage.unsafe on stderr and creates no data home")
+def then_unsafe_data_home_is_refused(session: Session) -> None:
+    assert session.refusal == "ferret.storage.unsafe"
+    assert session.refusal_exit_code == 2
+    assert session.ran is None
+    assert session.world.files.directory is None
+
+
+# @scenario specs/apps/ferret/cli/behaviours/storage/initialization-and-concurrency.feature: A command on an uninitialized store exits 2 with ferret.storage.uninitialized
+@scenario(FEATURE, "A command on an uninitialized store exits 2 with ferret.storage.uninitialized")
+def test_a_command_on_an_uninitialized_store_exits_2_with_storage_uninitialized() -> None:
+    """Bound to the feature scenario; the steps below carry the assertions."""
+
+
+@when("the user runs events list")
+def when_the_user_runs_events_list(session: Session) -> None:
+    session.ran = run_cli(session.world, ["events", "list", "--json"])
+
+
+@then("the command exits 2 with ferret.storage.uninitialized on stderr and nothing on stdout")
+def then_uninitialized_store_is_refused(session: Session) -> None:
+    assert session.ran is not None
+    assert (session.ran.code, session.ran.stdout) == (2, "")
+    assert json.loads(session.ran.stderr)["error"]["code"] == "ferret.storage.uninitialized"
+
+
+# @scenario specs/apps/ferret/cli/behaviours/storage/initialization-and-concurrency.feature: status reports paths, runtime, storage, health, and adapters
+@scenario(FEATURE, "status reports paths, runtime, storage, health, and adapters")
+def test_status_reports_paths_runtime_storage_health_and_adapters() -> None:
+    """Bound to the feature scenario; the steps below carry the assertions."""
+
+
+@when("the user runs status")
+def when_the_user_runs_status(session: Session) -> None:
+    session.ran = run_cli(session.world, ["status", "--json"])
+
+
+@then("the status names the data home, the database, the runtime, the storage sizes, the health, and each adapter")
+def then_status_names_its_parts(session: Session) -> None:
+    assert session.ran is not None
+    assert (session.ran.code, session.ran.stderr) == (0, "")
+    document = json.loads(session.ran.stdout)
+    assert document["dataHome"] == str(FAKE_HOME / ".local" / "share" / "ferret")
+    assert document["databasePath"] == str(FAKE_HOME / ".local" / "share" / "ferret" / "ferret.sqlite3")
+    assert {"runtime", "databaseBytes", "walBytes", "freelistBytes", "integrityState"} <= set(document)
+    assert isinstance(document["adapters"], list)

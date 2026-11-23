@@ -6,15 +6,20 @@ Feature: Theme
   Background:
     Given the app is running
 
-  # Exemption(integration): the local-resource boundary cannot observe browser theme state without crossing the public browser boundary; alternative-proof: ose-www-fe-e2e:test:e2e / Default theme is light mode
-  @integration-exempt
+  # Behaviour: OSW-017
   Scenario: Default theme is light mode
     When the site loads without a stored theme preference
     Then the theme is set to light mode
 
-  # Exemption(integration): the local-resource boundary cannot observe browser theme interaction without crossing the public browser boundary; alternative-proof: ose-www-fe-e2e:test:e2e / Theme toggle switches between modes
-  @integration-exempt
+  # Behaviour: OSW-017
   Scenario: Theme toggle switches between modes
     Given the site is in light mode
     When the user clicks the theme toggle and selects dark mode
+    Then the site switches to dark mode
+
+  # Behaviour: OSW-017
+  Scenario: The chosen theme is kept when the visitor reloads the page
+    Given the site is in light mode
+    When the user clicks the theme toggle and selects dark mode
+    And the visitor reloads the page
     Then the site switches to dark mode

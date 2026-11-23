@@ -10,4 +10,4 @@ when_to_use: Use to find an existing descriptive surface to reuse or extend.
   exit integer. The number answers one question; the body names the cause.
 - [Governance Word-Budget Convention](../../../conventions/structure/governance-word-budget.md) — Past
   harness limits, instructions are silently truncated or ignored, so per-surface thresholds fail
-  loudly at pre-commit instead of letting a bloated file pass quietly.
+  loudly on the pull-request gate instead of letting a bloated file pass quietly.

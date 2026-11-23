@@ -14,7 +14,7 @@ Check and update specs in the same commit as the application change for:
 - Introducing a new data store or removing an existing one
 - Adding or removing an external integration that appears in the C4 context or container diagram
 - Adding or removing a CLI command (covered by the tool owner's mandatory static
-  `test:coverage:*` targets and semantic review)
+  `test:behaviour:coverage` target and semantic review)
 - Changing deployment target in a way that creates a new architectural boundary
 
 Do **not** update specs for:

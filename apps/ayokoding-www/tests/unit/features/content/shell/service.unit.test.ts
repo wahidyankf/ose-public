@@ -1,8 +1,9 @@
-import { mkdtemp, rm, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { ContentService } from "../../../../../src/features/content/shell/service";
+import {
+  ContentService,
+  type SearchDataFileSystem,
+  type SearchDoc,
+} from "../../../../../src/features/content/shell/service";
 import type { ContentRepository } from "../../../../../src/features/content/core/repository";
 import type { ContentMeta } from "../../../../../src/features/content/core/types";
 
@@ -28,14 +29,20 @@ function makeFakeRepository(readAllContent: () => Promise<ContentMeta[]>): Conte
 describe("ContentService.getIndex — concurrent build deduplication", () => {
   it("builds the content index only once when multiple callers request it concurrently before the first build resolves", async () => {
     let callCount = 0;
+    let releaseBuild: () => void = () => undefined;
+    const buildGate = new Promise<void>((resolve) => {
+      releaseBuild = resolve;
+    });
     const repo = makeFakeRepository(async () => {
       callCount++;
-      await new Promise((resolve) => setTimeout(resolve, 10));
+      await buildGate;
       return [];
     });
     const service = new ContentService(repo);
 
-    const [a, b, c] = await Promise.all([service.getIndex(), service.getIndex(), service.getIndex()]);
+    const callers = Promise.all([service.getIndex(), service.getIndex(), service.getIndex()]);
+    releaseBuild();
+    const [a, b, c] = await callers;
 
     expect(callCount).toBe(1);
     expect(a).toBe(b);
@@ -77,55 +84,73 @@ describe("ContentService.getIndex — concurrent build deduplication", () => {
   });
 });
 
-// `ContentService.search` builds its FlexSearch index from one of two sources:
-// `tryLoadPreBuiltSearchData()` (a JSON file at `searchDataPath`, used in production) when it
-// resolves, else a full file scan. Neither the pre-built-JSON success path, its
-// missing/unreadable-file fallback, nor `createExcerpt`'s no-substring-match branch had a direct
-// test — every existing caller constructs `ContentService` without `searchDataPath` at all.
-describe("ContentService.search — pre-built search data", () => {
-  it("builds the search index from a valid pre-built searchDataPath instead of scanning files", async () => {
-    const dir = await mkdtemp(join(tmpdir(), "ayokoding-search-"));
-    const dataPath = join(dir, "search-data.json");
+/** A search-data store that serves one JSON document at `path`, and fails for any other path. */
+function searchDataStore(path: string, json: string): SearchDataFileSystem & { reads: string[] } {
+  const reads: string[] = [];
+  return {
+    reads,
+    async readFile(filePath) {
+      reads.push(filePath);
+      if (filePath !== path) throw new Error(`ENOENT: ${filePath}`);
+      return json;
+    },
+  };
+}
 
-    try {
-      await writeFile(
-        dataPath,
-        JSON.stringify([
-          {
-            id: "en:prebuilt",
-            title: "Prebuilt Doc",
-            content: "scattered quick words fox lives here",
-            slug: "prebuilt",
-            locale: "en",
-          },
-        ]),
-        "utf-8",
-      );
-      const repo = makeFakeRepository(async () => []);
-      const service = new ContentService(repo, dataPath);
+describe("ContentService.search — pre-built search data (in-memory store)", () => {
+  const SEARCH_PATH = "/build/search-data.json";
+  const alphaDoc: SearchDoc = {
+    id: "en:learn/alpha",
+    title: "Alpha guide",
+    content: "Alpha basics for readers.",
+    slug: "learn/alpha",
+    locale: "en",
+  };
 
-      const results = await service.search("en", "Prebuilt");
+  it("indexes the pre-built documents when the search data loads, and finds them", async () => {
+    const store = searchDataStore(SEARCH_PATH, JSON.stringify([alphaDoc]));
+    const service = new ContentService(
+      makeFakeRepository(async () => []),
+      SEARCH_PATH,
+      store,
+    );
 
-      expect(results).toHaveLength(1);
-      expect(results[0]?.slug).toBe("prebuilt");
+    const results = await service.search("en", "alpha");
 
-      // "quick fox" never appears as a contiguous substring of the doc's content (the words are
-      // scattered), so `createExcerpt`'s `idx === -1` branch truncates from the start instead of
-      // centering the excerpt on a match.
-      const excerptResults = await service.search("en", "quick fox");
-
-      expect(excerptResults[0]?.excerpt.startsWith("scattered quick words fox lives here")).toBe(true);
-    } finally {
-      await rm(dir, { recursive: true, force: true });
-    }
+    expect(store.reads).toEqual([SEARCH_PATH]);
+    expect(service.isSearchIndexReady("en")).toBe(true);
+    expect(results.map((result) => result.slug)).toContain("learn/alpha");
   });
 
-  it("falls back to a file scan when searchDataPath does not resolve to a readable file", async () => {
-    const repo = makeFakeRepository(async () => []);
-    const service = new ContentService(repo, join(tmpdir(), "ayokoding-search-missing-dir", "does-not-exist.json"));
+  it("returns an excerpt of the leading content when the query is not in the body text", async () => {
+    const longBody = "Body text without the query word. ".repeat(10);
+    const store = searchDataStore(
+      SEARCH_PATH,
+      JSON.stringify([{ ...alphaDoc, id: "en:learn/long", slug: "learn/long", content: longBody }]),
+    );
+    const service = new ContentService(
+      makeFakeRepository(async () => []),
+      SEARCH_PATH,
+      store,
+    );
 
-    const results = await service.search("en", "anything");
+    const results = await service.search("en", "alpha");
 
+    const hit = results.find((result) => result.slug === "learn/long");
+    expect(hit?.excerpt).toBe(`${longBody.slice(0, 150)}...`);
+  });
+
+  it("falls back to scanning the files when the search data cannot be read", async () => {
+    const store = searchDataStore(SEARCH_PATH, "");
+    const service = new ContentService(
+      makeFakeRepository(async () => []),
+      "/build/missing.json",
+      store,
+    );
+
+    const results = await service.search("en", "alpha");
+
+    expect(store.reads).toEqual(["/build/missing.json"]);
     expect(results).toEqual([]);
   });
 });

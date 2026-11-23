@@ -158,26 +158,22 @@ def test_choose_returns_nothing_when_the_host_has_no_suitable_interpreter(only_p
 def test_by_default_the_search_reads_the_real_directory_listing_and_wants_a_regular_executable_file(
     monkeypatch: pytest.MonkeyPatch, only_path: None
 ) -> None:
-    # No probe is passed, so this is the wiring every real start gets. The os functions themselves are stood in for,
-    # for the fake host's paths only, so nothing on disk is read and pytest's own use of them is left alone.
-    real_listdir, real_isfile, real_access = os.listdir, os.path.isfile, os.access
+    # No probe is passed, so this is the wiring every real start gets. The os functions are stood in for, and any
+    # path outside the fake host fails the test, so nothing on disk is read and no real listing is ever taken.
     asked: list[tuple[str, str]] = []
 
     def listdir(directory: str) -> list[str]:
-        if not directory.startswith("/fake-host"):
-            return real_listdir(directory)
+        assert directory.startswith("/fake-host"), f"the search read a real directory: {directory}"
         asked.append(("listdir", directory))
         return ["python3.14"]
 
     def isfile(path: str) -> bool:
-        if not path.startswith("/fake-host"):
-            return real_isfile(path)
+        assert path.startswith("/fake-host"), f"the search probed a real path: {path}"
         asked.append(("isfile", path))
         return True
 
     def access(path: str, mode: int) -> bool:
-        if not path.startswith("/fake-host"):
-            return real_access(path, mode)
+        assert path.startswith("/fake-host"), f"the search probed a real path: {path}"
         asked.append(("access", path))
         return mode == os.X_OK
 

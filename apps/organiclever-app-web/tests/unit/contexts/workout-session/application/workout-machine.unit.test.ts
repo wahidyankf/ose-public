@@ -23,7 +23,7 @@ const mockSettings: AppSettings = {
 };
 
 const mockRuntime = {
-  runPromise: vi.fn().mockResolvedValue([]),
+  runPromise: vi.fn<(...args: unknown[]) => unknown>().mockResolvedValue([]),
 } as unknown as JournalRuntime;
 
 const mockExercise: ActiveExercise = {
@@ -306,7 +306,7 @@ describe("workoutSessionMachine", () => {
 
   it("CONFIRM_FINISH transitions to finishing and then done on success", async () => {
     const successRuntime = {
-      runPromise: vi.fn().mockResolvedValue([]),
+      runPromise: vi.fn<(...args: unknown[]) => unknown>().mockResolvedValue([]),
     } as unknown as JournalRuntime;
 
     const actor = createActor(workoutSessionMachine, {
@@ -333,7 +333,7 @@ describe("workoutSessionMachine", () => {
 
   it("CONFIRM_FINISH transitions to error on failure", async () => {
     const failRuntime = {
-      runPromise: vi.fn().mockRejectedValue(new Error("DB error")),
+      runPromise: vi.fn<(...args: unknown[]) => unknown>().mockRejectedValue(new Error("DB error")),
     } as unknown as JournalRuntime;
 
     const actor = createActor(workoutSessionMachine, {

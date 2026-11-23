@@ -25,8 +25,9 @@ vi.mock("next/navigation", () => ({
   useSearchParams: () => new URLSearchParams(),
   useRouter: () => ({ push: vi.fn() }),
 }));
+const { setTheme } = vi.hoisted(() => ({ setTheme: vi.fn() }));
 vi.mock("next-themes", () => ({
-  useTheme: () => ({ theme: "light", setTheme: vi.fn() }),
+  useTheme: () => ({ theme: "light", setTheme }),
 }));
 
 import "./helpers/test-setup";
@@ -34,6 +35,7 @@ import { CoursePageContent } from "@/features/course-paths/shell/course-page-con
 import { ResizableSidebar } from "@/features/navigation/shell/resizable-sidebar";
 import { Header } from "@/features/app-shell/shell/header";
 import { MobileNavOpenProvider } from "@/features/app-shell/shell/mobile-nav-open-provider";
+import { ThemeToggle } from "@/features/app-shell/shell/theme-toggle";
 
 const feature = await loadFeature(
   path.resolve(process.cwd(), "../../specs/apps/ayokoding/www/behaviours/frontend/app-shell/responsive.feature"),
@@ -66,7 +68,7 @@ function renderContentLayout() {
   );
 }
 
-describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
+describeFeature(feature, ({ Scenario, ScenarioOutline, Background, AfterEachScenario }) => {
   AfterEachScenario(cleanup);
 
   Background(({ Given }) => {
@@ -75,11 +77,13 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
-  Scenario("Desktop viewport shows sidebar, content, and table of contents", ({ Given, When, Then, And }) => {
-    Given('the viewport is set to "desktop" (1280x800)', () => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/responsive.feature: layout by viewport width
+  ScenarioOutline("layout by viewport width", ({ Given, When, Then, And }, variables) => {
+    Given('the viewport is set to "<viewport>" (<size>)', () => {
+      const [width, height] = String(variables.size).split("x").map(Number);
       Object.defineProperties(window, {
-        innerWidth: { configurable: true, value: 1280 },
-        innerHeight: { configurable: true, value: 800 },
+        innerWidth: { configurable: true, value: width },
+        innerHeight: { configurable: true, value: height },
       });
     });
 
@@ -95,41 +99,20 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
       expect(screen.getByRole("article").className).toContain("flex-1");
     });
 
-    And("the table of contents should be visible", () => {
+    And("the table of contents should be <toc>", () => {
       const toc = screen.getByRole("navigation", { name: "Table of contents" });
-      expect(toc.closest("aside")?.className).toContain("xl:block");
-      expect(window.innerWidth).toBeGreaterThanOrEqual(1280);
+      const aside = toc.closest("aside")?.className ?? "";
+      if (String(variables.toc) === "visible") {
+        expect(aside).toContain("xl:block");
+        expect(window.innerWidth).toBeGreaterThanOrEqual(1280);
+      } else {
+        expect(aside).toMatch(/hidden.*xl:block/);
+        expect(window.innerWidth).toBeLessThan(1280);
+      }
     });
   });
 
-  Scenario("Laptop viewport shows sidebar and content but hides table of contents", ({ Given, When, Then, And }) => {
-    Given('the viewport is set to "laptop" (1024x768)', () => {
-      Object.defineProperties(window, {
-        innerWidth: { configurable: true, value: 1024 },
-        innerHeight: { configurable: true, value: 768 },
-      });
-    });
-
-    When("a visitor opens a content page", renderContentLayout);
-
-    Then("the sidebar navigation should be visible", () => {
-      expect(screen.getByRole("navigation", { name: "Section navigation" }).closest("aside")?.className).toContain(
-        "md:block",
-      );
-    });
-
-    And("the main content area should be visible", () => {
-      expect(screen.getByRole("article")).toBeTruthy();
-    });
-
-    And("the table of contents should not be visible", () => {
-      expect(screen.getByRole("navigation", { name: "Table of contents" }).closest("aside")?.className).toMatch(
-        /hidden.*xl:block/,
-      );
-      expect(window.innerWidth).toBeLessThan(1280);
-    });
-  });
-
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/responsive.feature: Mobile viewport shows hamburger menu and hides sidebar
   Scenario("Mobile viewport shows hamburger menu and hides sidebar", ({ Given, When, Then, And }) => {
     Given('the viewport is set to "mobile" (375x667)', () => {
       Object.defineProperties(window, {
@@ -156,6 +139,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/responsive.feature: Mobile hamburger menu opens the sidebar drawer
   Scenario("Mobile hamburger menu opens the sidebar drawer", ({ Given, When, Then, And }) => {
     Given('the viewport is set to "mobile" (375x667)', () => {
       Object.defineProperty(window, "innerWidth", { configurable: true, value: 375 });
@@ -184,4 +168,29 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
       expect(nav.querySelector('a[href="/en/tools"]')?.textContent).toBe("Tools");
     });
   });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/responsive.feature: The theme toggle switches between light, dark, and system themes
+  ScenarioOutline(
+    "The theme toggle switches between light, dark, and system themes",
+    ({ Given, When, Then }, variables) => {
+      const theme = String(variables.theme);
+      const menuLabel = theme.charAt(0).toUpperCase() + theme.slice(1);
+
+      Given("a visitor is on a content page", () => {
+        setTheme.mockClear();
+        render(<ThemeToggle />);
+      });
+
+      When('the visitor chooses the "<theme>" theme from the theme toggle', () => {
+        // Radix opens the dropdown from the trigger's Enter key, then the item's click runs its setTheme.
+        fireEvent.keyDown(screen.getByRole("button", { name: "Toggle theme" }), { key: "Enter" });
+        fireEvent.click(screen.getByRole("menuitem", { name: menuLabel }));
+      });
+
+      Then('the page is set to the "<theme>" theme', () => {
+        expect(setTheme).toHaveBeenCalledTimes(1);
+        expect(setTheme).toHaveBeenCalledWith(theme);
+      });
+    },
+  );
 });

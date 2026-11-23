@@ -8,11 +8,10 @@ when_to_use: "Use when adding a new lint gate, deciding its failure threshold, d
 - **Threshold**: every gate fails on a finding of severity **warning or above**.
   This matches how Prettier and markdownlint are already gated — there is no
   "advisory" tier that prints findings without blocking.
-- **Two enforcement points**: every gate is declared in the `repo-config.yml` gate registry and
-  runs through `./rhino gate run` both in CI (`.github/workflows/pr-quality-gate.yml`,
-  `pull-request` surface) **and** in the local Husky hooks (`.husky/pre-commit` and its siblings).
-  CI is the hard gate; the local hook gives fast feedback. A gate whose binary is missing fails
-  rather than skipping, which is why its binary must converge through `toolchains`.
+- **One enforcement point**: every gate is declared in the `repo-config.yml` gate registry and runs
+  through `./rhino gate run --surface pull-request` in CI (`.github/workflows/pr-quality-gate.yml`).
+  No hook runs a linter, so only the pull-request gate blocks on a finding. A gate whose binary is
+  missing fails rather than skipping, which is why its binary must converge through `toolchains`.
 - **Toolchain convergence**: every native binary a declared gate invokes from `PATH` — directly or
   through its script — belongs in the `repo-config.yml` `toolchains` declaration, so
   `npm run doctor` reports it when missing. `./rhino toolchain provision --apply` runs only the

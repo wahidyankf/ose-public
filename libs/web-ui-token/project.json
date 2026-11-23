@@ -13,7 +13,8 @@
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "echo 'No lint configured for web-ui-token (CSS + minimal TS)'"
+        "command": "npx oxlint --deny-warnings .",
+        "cwd": "libs/web-ui-token"
       }
     },
     "test:unit": {
@@ -25,7 +26,7 @@
             "forwardAllArgs": false
           },
           {
-            "command": "! grep -rnE '\\.(skip|todo)\\(' --include='*.test.*' --include='*.steps.*' src",
+            "command": "! grep -rnE '\\.(skip|only|todo)\\(' --include='*.test.*' --include='*.steps.*' src tests/unit",
             "forwardAllArgs": false
           }
         ],
@@ -36,6 +37,15 @@
       "cache": true,
       "inputs": ["{projectRoot}/src/**/*", "{projectRoot}/tests/unit/**/*"],
       "outputs": ["{projectRoot}/coverage"]
+    },
+    "test:integration": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx vitest run --config vitest.integration.config.ts",
+        "cwd": "libs/web-ui-token"
+      },
+      "cache": true,
+      "inputs": ["{projectRoot}/src/**/*", "{projectRoot}/tests/integration/**/*"]
     },
     "test:quick": {
       "executor": "nx:run-commands",
@@ -54,7 +64,7 @@
             "forwardAllArgs": false
           },
           {
-            "command": "npm exec -- nx run web-ui-token:test:coverage",
+            "command": "npm exec -- nx run web-ui-token:test:behaviour:coverage",
             "forwardAllArgs": false
           }
         ],
@@ -64,12 +74,18 @@
       "cache": true,
       "inputs": [
         "default",
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/libs/web-ui-token/behaviour-coverage.json",
         "{workspaceRoot}/package-lock.json",
         "{workspaceRoot}/specs/libs/web-ui-token/behaviours/**/*.feature",
         "{workspaceRoot}/libs/web-ui-token/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/libs/web-ui-token/vitest.config.ts"
+        "{workspaceRoot}/libs/web-ui-token/vitest.config.ts",
+        "{workspaceRoot}/repo-config.yml",
+        "{workspaceRoot}/rhino.lock",
+        "{workspaceRoot}/specs/**/*",
+        "{workspaceRoot}/apps/ayokoding-www/content/**/*.feature",
+        "{workspaceRoot}/apps/*/tests/**/*",
+        "{workspaceRoot}/apps/*-e2e/steps/**/*",
+        "{workspaceRoot}/apps/*-e2e/src/**/*",
+        "{workspaceRoot}/libs/*/tests/**/*"
       ]
     },
     "deps:audit": {
@@ -79,60 +95,22 @@
       },
       "cache": false
     },
-    "test:coverage:unit": {
+    "test:behaviour:coverage": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config libs/web-ui-token/behaviour-coverage.json --adapter unit"
+        "command": "./rhino behaviour coverage validate",
+        "cwd": "{workspaceRoot}"
       },
       "cache": true,
       "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/libs/web-ui-token/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/libs/web-ui-token/behaviours/**/*.feature",
-        "{workspaceRoot}/libs/web-ui-token/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/libs/web-ui-token/vitest.config.ts"
-      ]
-    },
-    "test:coverage:behaviour": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config libs/web-ui-token/behaviour-coverage.json --adapter behaviour"
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/libs/web-ui-token/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/libs/web-ui-token/behaviours/**/*.feature",
-        "{workspaceRoot}/libs/web-ui-token/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/libs/web-ui-token/vitest.config.ts"
-      ]
-    },
-    "test:coverage": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          {
-            "command": "npm exec -- nx run web-ui-token:test:coverage:unit",
-            "forwardAllArgs": false
-          },
-          {
-            "command": "npm exec -- nx run web-ui-token:test:coverage:behaviour",
-            "forwardAllArgs": false
-          }
-        ],
-        "parallel": false,
-        "forwardAllArgs": false
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/libs/web-ui-token/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/libs/web-ui-token/behaviours/**/*.feature",
-        "{workspaceRoot}/libs/web-ui-token/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/libs/web-ui-token/vitest.config.ts"
+        "{workspaceRoot}/repo-config.yml",
+        "{workspaceRoot}/rhino.lock",
+        "{workspaceRoot}/specs/**/*",
+        "{workspaceRoot}/apps/ayokoding-www/content/**/*.feature",
+        "{workspaceRoot}/apps/*/tests/**/*",
+        "{workspaceRoot}/apps/*-e2e/steps/**/*",
+        "{workspaceRoot}/apps/*-e2e/src/**/*",
+        "{workspaceRoot}/libs/*/tests/**/*"
       ]
     }
   },

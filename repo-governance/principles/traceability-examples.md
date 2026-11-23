@@ -74,7 +74,7 @@ tools: Read, Glob, Grep
 **Implementation**: Multiple systems enforce this
 
 - **Husky + Rhino gate registry**: Pre-commit hook runs the `format-staged` gate, which formats staged code automatically
-- **Public-safety screen**: Commit-msg hook runs the `public-safety-commit-message` gate on every message; Conventional Commits format is checked by review, not a hook
+- **Commit message lint**: Commit-msg hook runs the `commit-message` gate (Commitlint) on every message; the public-safety message screen runs at pull-request and at pre-push
 - **Various checker agents**: Automated quality validation (docs-checker, rules-checker, etc.)
 
 **Result**: Code quality maintained automatically without manual intervention

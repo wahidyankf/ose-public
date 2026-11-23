@@ -12,16 +12,14 @@ Use the [BDD standard](../../../repo-governance/development/behaviour-driven-dev
 
 ## Project-Role Target Contract
 
-- Every behaviour owner has real `test:unit`, `test:coverage:unit`,
-  `test:coverage:behaviour`, and `test:quick` targets.
+- Every behaviour owner has real `test:unit`, `test:behaviour:coverage`, and `test:quick` targets.
 - `test:unit` collects native line coverage and hard-fails below 99%; dedicated E2E projects do not
   own Unit and never waive their source owner's threshold.
-- Add `test:integration` plus `test:coverage:integration` only for an owned real local-resource
-  boundary.
-- Add E2E runtime/static coverage only for a public boundary. A dedicated E2E project implements its
-  owner's corpus and does not invent Unit/Integration targets.
+- Add `test:integration` only for an owned real local-resource boundary.
+- Add `test:e2e` only for a public boundary. A dedicated E2E project implements its owner's corpus
+  and does not invent Unit/Integration targets.
 - Omit inapplicable targets. Echo/no-op/sentinel targets and compatibility aliases are violations.
-- `test:coverage` aggregates applicable static coverage validators. Every applicable validator is
+- `test:behaviour:coverage` runs the shared check `./rhino behaviour coverage validate`, and it is
   mandatory in `test:quick`.
 
 ## Boundary and Execution Contract
@@ -33,9 +31,10 @@ instead. Integration may use isolated local
 resources/processes plus a review-accepted loopback socket it owns, never an external network. E2E observes a real
 public browser, HTTP, or process boundary with synthetic isolated data.
 
-Runtime `test:*` targets execute tests. Static `test:coverage:*` targets never execute or depend on
-runtime tests. Pre-commit runs staged deterministic checks only. Pre-push runs affected quick
-targets with `--parallel=1`; PR/main may use explicitly bounded shard parallelism. Neither runs
+Runtime `test:*` targets execute tests. The static `test:behaviour:coverage` target never executes or
+depends on runtime tests. Pre-commit runs only staged-file formatting. Pre-push runs only the leak scan over the
+pushed range. The PR workflow's language jobs run affected quick targets with explicitly bounded
+parallelism. None of these runs
 Integration/E2E runtime. Development/review runs impacted higher-layer scenarios manually;
 scheduled or manually dispatched full-quality CI runs all static validators, complete Integration,
 then complete unfiltered E2E.

@@ -2,7 +2,6 @@ package cli
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -297,10 +296,7 @@ func renderRun(out io.Writer, mode string, report application.RunReport) error {
 				Message: found.Message,
 			})
 		}
-		body, err := json.Marshal(document)
-		if err != nil {
-			return fmt.Errorf("cli: marshal run report: %w", err)
-		}
+		body := marshalReport(document)
 		if _, err := fmt.Fprintln(out, string(body)); err != nil {
 			return &finding.PipeError{}
 		}
@@ -347,7 +343,7 @@ func runCommand(ctx context.Context, opts Options) *cobra.Command {
 			if err := dispatchFault(cmd, opts); err != nil {
 				return err
 			}
-			return runRun(ctx, cmd)
+			return runRun(ctx, cmd, opts)
 		},
 	}
 	cmd.Flags().StringSliceVar(&courses, "course", nil, "course slug to run; repeatable")
@@ -365,7 +361,7 @@ func runCommand(ctx context.Context, opts Options) *cobra.Command {
 // replay traces, and findings. The captured command context cancels runs,
 // mirroring the runBuild threading. --since resolves through the Phase 6
 // selection; --shard slices whatever the other flags selected.
-func runRun(ctx context.Context, cmd *cobra.Command) error {
+func runRun(ctx context.Context, cmd *cobra.Command, opts Options) error {
 	cat, err := loadCatalog(cmd)
 	if err != nil {
 		return err
@@ -424,7 +420,7 @@ func runRun(ctx context.Context, cmd *cobra.Command) error {
 	if err != nil {
 		return err
 	}
-	runtime := runAdapter{inner: &containers.Runtime{CLI: os.Getenv("AYOKODING_CONTAINER_CLI")}}
+	runtime := runAdapter{inner: &containers.Runtime{CLI: opts.ContainerCLI}}
 	report, err := application.Run(ctx, application.RunRequest{
 		Content:    os.DirFS(content),
 		ContentDir: content,
@@ -438,7 +434,7 @@ func runRun(ctx context.Context, cmd *cobra.Command) error {
 		Runtime:    runtime,
 		EnvBuilder: containers.Builder{},
 		Settings: containerplan.Settings{
-			ContainerCLI: os.Getenv("AYOKODING_CONTAINER_CLI"),
+			ContainerCLI: opts.ContainerCLI,
 		},
 	})
 	if renderErr := renderRun(cmd.OutOrStdout(), mode, report); renderErr != nil {
@@ -468,7 +464,7 @@ func checkCommand(ctx context.Context, opts Options) *cobra.Command {
 			if err := dispatchFault(cmd, opts); err != nil {
 				return err
 			}
-			return runCheck(ctx, cmd)
+			return runCheck(ctx, cmd, opts)
 		},
 	}
 	cmd.Flags().StringSliceVar(&courses, "course", nil, "course slug to check; repeatable")
@@ -501,7 +497,7 @@ func buildCommand(ctx context.Context, opts Options) *cobra.Command {
 			if err := dispatchFault(cmd, opts); err != nil {
 				return err
 			}
-			return runBuild(ctx, cmd)
+			return runBuild(ctx, cmd, opts)
 		},
 	}
 }

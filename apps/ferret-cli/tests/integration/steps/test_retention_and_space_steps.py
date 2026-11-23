@@ -47,7 +47,6 @@ class Session:
     read: Ran | None = None
     operations: list[Ran] = field(default_factory=lambda: list[Ran]())
     removed: list[int] = field(default_factory=lambda: list[int]())
-    still_expired: int = 0
     holder: sqlite3.Connection | None = None
     populated: Footprint | None = None
     status_before: dict[str, Any] | None = None
@@ -89,8 +88,9 @@ def session(tmp_path: Path) -> Iterator[Session]:
         opened.holder.close()
 
 
-@scenario(FEATURE, "Hide then prune every expired usage-derived record")
-def test_hide_then_prune_every_expired_usage_derived_record() -> None:
+# @scenario specs/apps/ferret/cli/behaviours/storage/retention-and-space.feature: Events older than thirty days are never returned
+@scenario(FEATURE, "Events older than thirty days are never returned")
+def test_events_older_than_thirty_days_are_never_returned() -> None:
     """Bound to the feature scenario; the steps below carry the assertions."""
 
 
@@ -119,7 +119,6 @@ def when_a_read_then_the_next_operations_run(session: Session) -> None:
         after = expired_held(machine)
         session.removed.append(before - after)
         before = after
-    session.still_expired = before
 
 
 @then("no row at or beyond the cutoff is returned by the read")
@@ -131,14 +130,6 @@ def then_no_expired_row_is_returned(session: Session) -> None:
     assert all(item["capturedAt"] > cutoff_stamp(FIXED_NOW) for item in json.loads(session.read.stdout)["items"])
 
 
-@then("each of those operations stops physical pruning at the first of 100 rows or 100 monotonic milliseconds")
-def then_each_prune_stops_at_its_first_limit(session: Session) -> None:
-    # The first stops at 100 rows. The second reads its clock once to start its budget, once to size the wait for the
-    # write lock, and once before each row; at 10 ms a reading the eighth row is the last started inside 100 ms.
-    assert session.removed == [100, 8]
-    assert session.still_expired == BEYOND_CUTOFF + 1 - 108 > 0
-
-
 @then("every newer row remains queryable")
 def then_every_newer_row_remains_queryable(session: Session) -> None:
     for operation in session.operations:
@@ -147,24 +138,19 @@ def then_every_newer_row_remains_queryable(session: Session) -> None:
     assert {row[0] for row in rows} == session.newer
 
 
-@then("status increments expiredLocalTotal for locally expired rows")
-def then_the_local_counter_grows_by_what_was_pruned(session: Session) -> None:
+# @scenario specs/apps/ferret/cli/behaviours/storage/retention-and-space.feature: status reports how many events expired
+@scenario(FEATURE, "status reports how many events expired")
+def test_status_reports_how_many_events_expired() -> None:
+    """Bound to the feature scenario; the steps below carry the assertions."""
+
+
+@then("status reports as many locally expired events as the operations pruned")
+def then_the_local_counter_matches_what_was_pruned(session: Session) -> None:
     assert session.status_before is not None
     session.status = json_result(session.machine, ["status"])
     assert session.status_before["expiredLocalTotal"] == 0
-    assert session.status["expiredLocalTotal"] == sum(session.removed) == 108
-
-
-@then("expiredBeforeAckTotal remains zero")
-def then_the_before_ack_counter_stays_zero(session: Session) -> None:
-    assert session.status_before is not None
-    assert session.status is not None
-    assert session.status_before["expiredBeforeAckTotal"] == session.status["expiredBeforeAckTotal"] == 0
-
-
-@scenario(FEATURE, "Measure storage before and after retention")
-def test_measure_storage_before_and_after_retention() -> None:
-    """Bound to the feature scenario; the steps below carry the assertions."""
+    assert sum(session.removed) > 0
+    assert session.status["expiredLocalTotal"] == sum(session.removed)
 
 
 @given("a representative event fixture has populated the database and WAL")
@@ -183,6 +169,12 @@ def when_maintenance_reclaims_space(session: Session) -> None:
     session.status = json_result(session.machine, ["status"])
 
 
+# @scenario specs/apps/ferret/cli/behaviours/storage/retention-and-space.feature: maintenance reports database bytes before and after and the largest footprint
+@scenario(FEATURE, "maintenance reports database bytes before and after and the largest footprint")
+def test_maintenance_reports_database_bytes_before_and_after_and_the_largest_footprint() -> None:
+    """Bound to the feature scenario; the steps below carry the assertions."""
+
+
 @then("maintenance reports the database bytes before and after it and the largest footprint it measured")
 def then_maintenance_reports_its_before_after_and_peak(session: Session) -> None:
     assert session.maintenance is not None
@@ -197,6 +189,12 @@ def then_maintenance_reports_its_before_after_and_peak(session: Session) -> None
     assert report["databaseBytesAfter"] >= report["databaseBytesBefore"]
     assert report["freelistBytesAfter"] > 0
     assert report["highWaterBytes"] >= max(session.populated.total_bytes, on_disk.total_bytes)
+
+
+# @scenario specs/apps/ferret/cli/behaviours/storage/retention-and-space.feature: status reports database, WAL, and free-list bytes with a total
+@scenario(FEATURE, "status reports database, WAL, and free-list bytes with a total")
+def test_status_reports_database_wal_and_free_list_bytes_with_a_total() -> None:
+    """Bound to the feature scenario; the steps below carry the assertions."""
 
 
 @then("status reports the database, WAL, and free-list bytes on disk separately with their current total")

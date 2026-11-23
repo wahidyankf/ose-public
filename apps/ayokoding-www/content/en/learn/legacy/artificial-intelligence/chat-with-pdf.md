@@ -234,17 +234,26 @@ Think of embeddings as coordinates in "meaning space." Similar concepts are clos
 
 **Visual Representation** (simplified to 2D):
 
-```
-                    ^
-                    |
-         🐱 cat   🐕 dog
-       🦁 lion      |
-                    |
-     ───────────────┼────────────────→
-                    |
-               💻 code
-            🐍 python   ☕ java
-                    |
+```mermaid
+flowchart TD
+    accTitle: Words in two-dimensional embedding space
+    accDescr {
+        Words placed on a two-dimensional plot of meaning space.
+        Cat, dog, and lion sit close together, forming an animal cluster.
+        Code, Python, and Java sit close together, forming a programming cluster.
+        The two clusters sit far apart.
+    }
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
+    subgraph animals["Animal words"]
+        cat
+        dog
+        lion
+    end
+    subgraph programming["Programming words"]
+        code
+        python
+        java
+    end
 ```
 
 Similar words cluster together in vector space!

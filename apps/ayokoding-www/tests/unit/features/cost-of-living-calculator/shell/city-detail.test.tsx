@@ -16,6 +16,11 @@ describe("CityDetail", () => {
     area: "center" as const,
   };
 
+  it("reports a missing city instead of rendering figures", () => {
+    render(<CityDetail {...defaultProps} cityId="nope" />);
+    expect(screen.getByText("City not found.")).not.toBeNull();
+  });
+
   it("shows relocation sunk-cost total distinct from monthly total", () => {
     render(<CityDetail {...defaultProps} />);
 

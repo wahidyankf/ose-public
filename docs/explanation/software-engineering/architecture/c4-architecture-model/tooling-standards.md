@@ -217,14 +217,10 @@ echo "Validating C4 diagrams..."
 # Implementation pending
 ```
 
-### Pre-commit Hook
+### Diagram Validation
 
-**Future: Add to `.husky/pre-commit`**:
-
-```bash
-# Validate diagrams before commit
-npm run validate:diagrams
-```
+Diagrams are validated on the pull-request surface by the `md-mermaid` and `md-mermaid-repository` gates. The
+pre-commit hook holds only the staged formatter, so a diagram check is not added there.
 
 ## Migration from Other Tools
 

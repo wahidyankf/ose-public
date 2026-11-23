@@ -1,3 +1,7 @@
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/sidebar-course-categories.feature: The Courses section lists category groups
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/sidebar-course-categories.feature: The current course's group starts open
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/sidebar-course-categories.feature: A group opens and closes from the keyboard
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/sidebar-course-categories.feature: The mobile drawer shows the same groups
 import { createBdd } from "playwright-bdd";
 import { expect } from "@playwright/test";
 

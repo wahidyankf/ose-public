@@ -1,18 +1,26 @@
 Feature: PDF-to-Markdown conversion routing
   As crane-cli
-  I want convertPdfToMarkdown to route text-based PDFs to text extraction and image-based PDFs to OCR
-  So that both PDF kinds produce a faithful Markdown conversion
+  I want convertPdfToMarkdown to return the page text of a PDF with a text layer and the OCR text of one without
+  So that both PDF kinds produce a Markdown conversion
 
-  # Exemption(integration): collaborator selection is an in-process routing decision observed through injected recording ports, while a real local resource cannot independently reveal which port member received the call; alternative-proof: fsharp-crane-core:test:unit / A text-based PDF is routed to page extraction
+  # Exemption(integration): the converter reaches its PDF and OCR ports only through injected values, and the real native PDF and Tesseract calls have no fixture in this repo; alternative-proof: fsharp-crane-core:test:unit / A PDF with a real text layer converts to its extracted page text
   @integration-exempt
-  Scenario: A text-based PDF is routed to page extraction
+  # Exemption(e2e): the library has no e2e level: a pure library with no process or network boundary of its own; alternative-proof: fsharp-crane-core:test:unit / A PDF with a real text layer converts to its extracted page text
+  @e2e-exempt
+  # Behaviour: FCC-001
+  # Behaviour: FCC-004
+  Scenario: A PDF with a real text layer converts to its extracted page text
     Given a PDF whose sampled text has more than 10 words
     When I call convertPdfToMarkdown
-    Then the pages should be extracted via the PDF port's ExtractPages
+    Then the returned Markdown is the extracted page text
 
-  # Exemption(integration): collaborator selection is an in-process routing decision observed through injected recording ports, while a real local resource cannot independently reveal which port member received the call; alternative-proof: fsharp-crane-core:test:unit / An image-based PDF is routed to OCR
+  # Exemption(integration): the converter reaches its PDF and OCR ports only through injected values, and the real native PDF and Tesseract calls have no fixture in this repo; alternative-proof: fsharp-crane-core:test:unit / A PDF with no usable text layer converts to its OCR text
   @integration-exempt
-  Scenario: An image-based PDF is routed to OCR
+  # Exemption(e2e): the library has no e2e level: a pure library with no process or network boundary of its own; alternative-proof: fsharp-crane-core:test:unit / A PDF with no usable text layer converts to its OCR text
+  @e2e-exempt
+  # Behaviour: FCC-001
+  # Behaviour: FCC-005
+  Scenario: A PDF with no usable text layer converts to its OCR text
     Given a PDF whose sampled text has 10 words or fewer
     When I call convertPdfToMarkdown
-    Then the text should be extracted via the OCR port's ExtractText
+    Then the returned Markdown is the OCR text

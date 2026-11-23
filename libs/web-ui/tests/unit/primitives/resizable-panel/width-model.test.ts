@@ -37,6 +37,11 @@ describe("clampWidth", () => {
 });
 
 describe("parsePersistedWidth", () => {
+  // @scenario specs/libs/web-ui/behaviours/resizable-panel/width-model.feature: parsePersistedWidth returns nothing for text that is not a number
+  it.each(["wide", "12px", "NaN"])("returns nothing for the stored text %s", (text) => {
+    expect(parsePersistedWidth(text)).toBeUndefined();
+  });
+
   it("rejects an unparseable persisted value", () => {
     const result = parsePersistedWidth("not-a-number");
 

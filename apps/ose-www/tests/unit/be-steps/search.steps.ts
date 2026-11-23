@@ -8,7 +8,7 @@ import { appRouter } from "@/features/app-shell/shell/root-router";
 import { testContentService, testContentServiceWithPhase } from "./helpers/test-service";
 
 const feature = await loadFeature(
-  path.resolve(process.cwd(), "../../specs/apps/ose/www/behaviours/backend/search/search.feature"),
+  path.resolve(__dirname, "../../../../../specs/apps/ose/www/behaviours/backend/search/search.feature"),
 );
 
 const createCaller = createCallerFactory(appRouter);
@@ -20,6 +20,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ose/www/behaviours/backend/search/search.feature: Search returns matching results
   Scenario("Search returns matching results", ({ Given, When, Then, And }) => {
     let results: SearchResult[];
 
@@ -49,6 +50,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ose/www/behaviours/backend/search/search.feature: Search with no matches returns empty results
   Scenario("Search with no matches returns empty results", ({ Given, When, Then }) => {
     let results: SearchResult[];
 
@@ -67,6 +69,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ose/www/behaviours/backend/search/search.feature: Search results respect the limit parameter
   Scenario("Search results respect the limit parameter", ({ Given, When, Then }) => {
     let results: SearchResult[];
 

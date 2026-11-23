@@ -1,5 +1,5 @@
 ---
-description: Per-surface word thresholds for auto-loaded instruction files, gated at pre-commit and on pull requests by `./rhino governance word-budget validate`
+description: Per-surface word thresholds for auto-loaded instruction files, gated on pull requests by `./rhino governance word-budget validate`
 when_to_use: Use when a governance or instruction file may be approaching or over its word-count threshold.
 ---
 
@@ -49,7 +49,7 @@ any `word-budget` change does.
 
 ## Enforcement Points
 
-The declared `word-budget` gate runs it at pre-commit and on the `pull-request` surface (see
+The declared `word-budget` gate runs it on the `pull-request` surface (see
 `./rhino gate list`). See
 [Governance Word-Budget Remediation](../structure/governance-word-budget-remediation.md) for the enforcement
 breakdown, the progressive-disclosure fix, and forbidden anti-fixes (deleting a rule, dense

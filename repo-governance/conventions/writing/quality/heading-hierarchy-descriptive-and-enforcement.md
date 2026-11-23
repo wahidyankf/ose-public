@@ -78,6 +78,6 @@ Heading hierarchy is mechanically enforced on a **prose allowlist** (default-den
 - All other paths not in the allowlist above
 
 **Gate locations**: The `md-heading-hierarchy` gate runs `./rhino md heading-hierarchy validate`
-(the pinned RHINO executable) on the `pre-commit` and `pull-request` surfaces; `pr-quality-gate.yml`
-reaches the latter through `./rhino gate run`. It does NOT run at pre-push or in a standalone CI
+(the pinned RHINO executable) on the `pull-request` surface only; `pr-quality-gate.yml`
+reaches it through `./rhino gate run`. It does NOT run at pre-commit or pre-push, or in a standalone CI
 workflow.

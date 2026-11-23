@@ -19,7 +19,7 @@ integration target and merge authority.
    `agents/plan-maker.md` Step 7) — flag a freshly-authored plan missing it entirely at
    **LOW** (best-practice gap, not correctness defect).
 3. **Every PR carries exact-head/base CI** — when the resolved mode produces a PR, `delivery.md`
-   requires `.github/workflows/pr-quality-gate.yml`'s `Quality gate` for the exact current head and
+   requires `.github/workflows/pr-quality-gate.yml`'s `quality-gate` for the exact current head and
    base before merge, one clean current-head `pr-leak-review` verdict held by the delivery harness, plus applicable finite
    surface gates. Missing/stale/failed/findings leak verdicts block merge; a head-changing fix
    requires one new pass, never two. Absence of broad semantic review is valid. A `pr-review` or

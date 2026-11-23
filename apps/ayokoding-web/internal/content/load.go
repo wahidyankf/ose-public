@@ -1,9 +1,10 @@
 package content
 
 import (
+	"errors"
 	"fmt"
-	"os"
-	"path/filepath"
+	"io/fs"
+	"path"
 	"sort"
 	"strconv"
 	"strings"
@@ -18,12 +19,16 @@ const (
 	KindLegacy   = "legacy"
 )
 
-// LoadDir reads the real ayokoding-www corpus at contentRoot and returns the
-// file-backed catalog. It walks content/<locale>/learn/courses/<course>/
+// LoadFS reads the real ayokoding-www corpus rooted at fsys and returns the
+// file-backed catalog. It walks <locale>/learn/courses/<course>/
 // ({learning,drilling}/<slug>.md plus the course overview.md) and
-// content/<locale>/learn/legacy/**/*.md. Kind overviews map to the track
-// slug ("learning", "drilling"); nested lessons keep their relative slug
+// <locale>/learn/legacy/**/*.md. Kind overviews map to the track slug
+// ("learning", "drilling"); nested lessons keep their relative slug
 // ("capstone/overview"); legacy pages join the rest path ("a/b/c").
+//
+// The caller chooses the root: the server passes os.DirFS of the configured
+// content directory, and unit tests pass an in-memory tree. LoadFS reads only
+// through fsys.
 //
 // A slug shared by learning/ and drilling/ inside one course fails the whole
 // load with an error: publishing both would make one route ambiguous. Section
@@ -33,8 +38,8 @@ const (
 // Locales without a learn/ tree (the legacy Indonesian layout) contribute no
 // pages. Unreadable subtrees contribute nothing; the learn-wide sweep reports
 // every markdown source it can see but no route serves.
-func LoadDir(contentRoot string) (*FakeStore, error) {
-	entries, err := os.ReadDir(contentRoot)
+func LoadFS(fsys fs.FS) (*FakeStore, error) {
+	entries, err := fs.ReadDir(fsys, ".")
 	if err != nil {
 		return nil, fmt.Errorf("content: read content root: %w", err)
 	}
@@ -47,7 +52,7 @@ func LoadDir(contentRoot string) (*FakeStore, error) {
 	sort.Strings(locales)
 	store := NewFakeStore(nil)
 	for _, locale := range locales {
-		if err := loadLocale(store, contentRoot, locale); err != nil {
+		if err := loadLocale(store, fsys, locale); err != nil {
 			return nil, err
 		}
 	}
@@ -55,10 +60,9 @@ func LoadDir(contentRoot string) (*FakeStore, error) {
 }
 
 // loadLocale loads one locale tree or records why it contributes no pages.
-func loadLocale(store *FakeStore, contentRoot, locale string) error {
-	localeDir := filepath.Join(contentRoot, locale)
-	outside := skipOutsideLearn(locale, localeDir)
-	if info, err := os.Stat(filepath.Join(localeDir, "learn")); err != nil || !info.IsDir() {
+func loadLocale(store *FakeStore, fsys fs.FS, locale string) error {
+	outside := skipOutsideLearn(fsys, locale)
+	if info, err := fs.Stat(fsys, path.Join(locale, "learn")); err != nil || !info.IsDir() {
 		store.Report(fmt.Sprintf("content: locale %q has no learn/ tree", locale))
 		if outside != "" {
 			store.Report(outside)
@@ -68,21 +72,21 @@ func loadLocale(store *FakeStore, contentRoot, locale string) error {
 	if outside != "" {
 		store.Report(outside)
 	}
-	learnDir := filepath.Join(localeDir, "learn")
-	if courseEntries, err := os.ReadDir(filepath.Join(learnDir, "courses")); err == nil {
+	learnDir := path.Join(locale, "learn")
+	if courseEntries, err := fs.ReadDir(fsys, path.Join(learnDir, "courses")); err == nil {
 		for _, entry := range courseEntries {
 			if !entry.IsDir() {
 				continue
 			}
-			if err := loadCourse(store, learnDir, locale, entry.Name()); err != nil {
+			if err := loadCourse(store, fsys, learnDir, locale, entry.Name()); err != nil {
 				return err
 			}
 		}
-	} else if !os.IsNotExist(err) {
+	} else if !errors.Is(err, fs.ErrNotExist) {
 		return fmt.Errorf("content: read courses: %w", err)
 	}
-	loadLegacy(store, learnDir, locale)
-	sweepLearn(store, learnDir, locale)
+	loadLegacy(store, fsys, learnDir, locale)
+	sweepLearn(store, fsys, learnDir, locale)
 	return nil
 }
 
@@ -90,13 +94,13 @@ func loadLocale(store *FakeStore, contentRoot, locale string) error {
 // learning/ and drilling/; course-root markdown (overview.md) maps to its
 // basename with Kind "course". Files under other subdirectories have no
 // serving route and stay for the learn-wide sweep to report.
-func loadCourse(store *FakeStore, learnDir, locale, course string) error {
-	courseDir := filepath.Join(learnDir, "courses", course)
+func loadCourse(store *FakeStore, fsys fs.FS, learnDir, locale, course string) error {
+	courseDir := path.Join(learnDir, "courses", course)
 	seen := map[string]string{}
-	for _, full := range listMarkdownFiles(courseDir) {
-		rel := filepath.ToSlash(strings.TrimPrefix(full, courseDir+string(os.PathSeparator)))
+	for _, full := range listMarkdownFiles(fsys, courseDir) {
+		rel := strings.TrimPrefix(full, courseDir+"/")
 		display := "courses/" + course + "/" + rel
-		if filepath.Base(rel) == "_index.md" {
+		if path.Base(rel) == "_index.md" {
 			continue
 		}
 		var kind, slug string
@@ -114,7 +118,7 @@ func loadCourse(store *FakeStore, learnDir, locale, course string) error {
 			return fmt.Errorf("content: slug collision in course %q: %q from learning/ and drilling/ (failing closed)", course, slug)
 		}
 		seen[slug] = kind
-		store.loadPage(locale, course, kind, slug, full, display)
+		store.loadPage(fsys, locale, course, kind, slug, full, display)
 	}
 	return nil
 }
@@ -132,30 +136,30 @@ func kindSlug(kind, rel string) string {
 
 // loadLegacy maps learn/legacy/**/*.md into Course "legacy" pages whose slug
 // joins the rest path; _index.md files stay section metadata for the sweep.
-func loadLegacy(store *FakeStore, learnDir, locale string) {
-	legacyDir := filepath.Join(learnDir, "legacy")
-	for _, full := range listMarkdownFiles(legacyDir) {
-		rel := filepath.ToSlash(strings.TrimPrefix(full, legacyDir+string(os.PathSeparator)))
-		if filepath.Base(rel) == "_index.md" {
+func loadLegacy(store *FakeStore, fsys fs.FS, learnDir, locale string) {
+	legacyDir := path.Join(learnDir, "legacy")
+	for _, full := range listMarkdownFiles(fsys, legacyDir) {
+		rel := strings.TrimPrefix(full, legacyDir+"/")
+		if path.Base(rel) == "_index.md" {
 			continue
 		}
 		slug := strings.TrimSuffix(rel, ".md")
 		display := "legacy/" + rel
-		store.loadPage(locale, KindLegacy, KindLegacy, slug, full, display)
+		store.loadPage(fsys, locale, KindLegacy, KindLegacy, slug, full, display)
 	}
 }
 
 // sweepLearn reports every learn/ markdown source that produced no page:
 // section metadata stays out of the catalog, and anything else has no
 // serving route.
-func sweepLearn(store *FakeStore, learnDir, locale string) {
+func sweepLearn(store *FakeStore, fsys fs.FS, learnDir, locale string) {
 	var sectionMeta int
-	for _, full := range listMarkdownFiles(learnDir) {
-		rel := filepath.ToSlash(strings.TrimPrefix(full, learnDir+string(os.PathSeparator)))
+	for _, full := range listMarkdownFiles(fsys, learnDir) {
+		rel := strings.TrimPrefix(full, learnDir+"/")
 		if store.consumed[rel] {
 			continue
 		}
-		if filepath.Base(rel) == "_index.md" {
+		if path.Base(rel) == "_index.md" {
 			sectionMeta++
 			continue
 		}
@@ -167,16 +171,16 @@ func sweepLearn(store *FakeStore, learnDir, locale string) {
 }
 
 // listMarkdownFiles returns every markdown source under root as sorted full
-// paths. Unreadable subtrees contribute nothing; callers surface gaps.
-func listMarkdownFiles(root string) []string {
+// fs paths. Unreadable subtrees contribute nothing; callers surface gaps.
+func listMarkdownFiles(fsys fs.FS, root string) []string {
 	var out []string
 	stack := []string{root}
 	for len(stack) > 0 {
 		dir := stack[len(stack)-1]
 		stack = stack[:len(stack)-1]
-		entries, _ := os.ReadDir(dir)
+		entries, _ := fs.ReadDir(fsys, dir)
 		for _, entry := range entries {
-			full := filepath.Join(dir, entry.Name())
+			full := path.Join(dir, entry.Name())
 			if entry.IsDir() {
 				stack = append(stack, full)
 			} else if strings.HasSuffix(entry.Name(), ".md") {
@@ -191,9 +195,9 @@ func listMarkdownFiles(root string) []string {
 // loadPage parses one markdown source into a published page and marks it
 // consumed for the learn-wide sweep. Unreadable sources, invalid frontmatter,
 // and missing titles are excluded with a diagnostic.
-func (s *FakeStore) loadPage(locale, course, kind, slug, full, display string) {
+func (s *FakeStore) loadPage(fsys fs.FS, locale, course, kind, slug, full, display string) {
 	s.consumed[display] = true
-	raw, err := os.ReadFile(full)
+	raw, err := fs.ReadFile(fsys, full)
 	if err != nil {
 		s.Report(fmt.Sprintf("content: excluded %q: unreadable source", display))
 		return
@@ -225,18 +229,18 @@ func (s *FakeStore) loadPage(locale, course, kind, slug, full, display string) {
 // skipOutsideLearn summarizes markdown sources outside a locale's learn/
 // tree (rants, about pages, or a legacy non-learn layout): none have routes.
 // It returns "" when there is nothing to skip.
-func skipOutsideLearn(locale, localeDir string) string {
+func skipOutsideLearn(fsys fs.FS, locale string) string {
 	count := 0
 	seen := map[string]bool{}
 	var names []string
-	for _, full := range listMarkdownFiles(localeDir) {
-		rel := filepath.ToSlash(strings.TrimPrefix(full, localeDir+string(os.PathSeparator)))
+	for _, full := range listMarkdownFiles(fsys, locale) {
+		rel := strings.TrimPrefix(full, locale+"/")
 		if rel == "learn" || strings.HasPrefix(rel, "learn/") {
 			continue
 		}
 		count++
 		top := strings.Split(rel, "/")[0]
-		if info, err := os.Stat(filepath.Join(localeDir, top)); err == nil && info.IsDir() {
+		if info, err := fs.Stat(fsys, path.Join(locale, top)); err == nil && info.IsDir() {
 			top += "/"
 		}
 		if !seen[top] {

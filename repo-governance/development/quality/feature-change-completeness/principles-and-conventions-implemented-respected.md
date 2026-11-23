@@ -15,7 +15,7 @@ This practice respects the following core principles:
 
 - **[Root Cause Orientation](../../../principles/general/root-cause-orientation.md)**: Stale specs, outdated contracts, and missing tests are symptoms of treating artifact updates as separate, deferrable tasks. The root cause is a workflow that permits code changes without companion artifact updates. This convention addresses the root cause by making completeness a requirement, not a suggestion.
 
-- **[Automation Over Manual](../../../principles/software-engineering/automation-over-manual.md)**: Where completeness can be enforced automatically -- Nx cache inputs that include Gherkin specs, codegen targets that fail on stale contracts, test:coverage:behaviour validation for CLI apps -- automation is preferred. Manual checking is reserved for documentation and architectural changes that require human judgment.
+- **[Automation Over Manual](../../../principles/software-engineering/automation-over-manual.md)**: Where completeness can be enforced automatically -- Nx cache inputs that include Gherkin specs, codegen targets that fail on stale contracts, test:behaviour:coverage validation for CLI apps -- automation is preferred. Manual checking is reserved for documentation and architectural changes that require human judgment.
 
 ## Conventions Implemented/Respected
 
@@ -26,6 +26,6 @@ This practice implements/respects the following conventions:
 - **[Behaviour-Driven Development](../../behaviour-driven-development.md)**: Every changed scenario updates its mandatory Unit proof and every boundary-applicable Integration/E2E adapter or independently valid exemption.
 
 - **[Code Quality Convention](.././code.md)**: Quality gates (typecheck, lint, and `test:quick`,
-  including Unit runtime and every applicable static `test:coverage:*` validator) catch many forms
+  including Unit runtime and the static `test:behaviour:coverage` check) catch many forms
   of incompleteness automatically. This convention defines the complete set of artifacts that
   constitute a "done" change.

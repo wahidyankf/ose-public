@@ -7,7 +7,7 @@ import { ContentService } from "@/features/content/shell/service";
 import { buildFeedResponse } from "@/features/rss-feed/core/feed";
 
 const feature = await loadFeature(
-  path.resolve(process.cwd(), "../../specs/apps/ose/www/behaviours/backend/rss-feed/rss-feed.feature"),
+  path.resolve(__dirname, "../../../../../specs/apps/ose/www/behaviours/backend/rss-feed/rss-feed.feature"),
 );
 
 const SITE_URL = "https://www.oseplatform.com";
@@ -19,7 +19,8 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
-  Scenario("RSS feed contains valid structure", ({ Given, When, Then, And }) => {
+  // @scenario specs/apps/ose/www/behaviours/backend/rss-feed/rss-feed.feature: Feed channel is titled OSE Platform Updates and links to the site
+  Scenario("Feed channel is titled OSE Platform Updates and links to the site", ({ Given, When, Then, And }) => {
     let updates: ContentMeta[];
     let feedXml: string;
 
@@ -43,8 +44,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
           content: "## Week 4\n\nInitial setup.",
         },
       ]);
-      const service = new ContentService(repo);
-      updates = await service.listUpdates();
+      updates = await new ContentService(repo).listUpdates();
     });
 
     When("the RSS feed is generated", async () => {
@@ -58,13 +58,80 @@ describeFeature(feature, ({ Scenario, Background }) => {
     And("the feed has a channel link to the site URL", () => {
       expect(feedXml).toContain(`<link>${SITE_URL}/updates/</link>`);
     });
+  });
 
-    And("the feed contains item elements for each update", () => {
+  // @scenario specs/apps/ose/www/behaviours/backend/rss-feed/rss-feed.feature: Feed lists an item for every update
+  Scenario("Feed lists an item for every update", ({ Given, When, Then }) => {
+    let updates: ContentMeta[];
+    let feedXml: string;
+
+    Given("the content repository contains update posts", async () => {
+      const repo = new InMemoryContentRepository([
+        {
+          meta: {
+            title: "Phase 0 Week 4",
+            slug: "updates/2025-12-14-phase-0-week-4",
+            date: new Date("2025-12-14T00:00:00Z"),
+            draft: false,
+            description: "Week 4",
+            tags: [],
+            summary: "Initial setup",
+            weight: 0,
+            isSection: false,
+            filePath: "/mock/updates/week-4.md",
+            readingTime: 5,
+            category: "updates",
+          },
+          content: "## Week 4\n\nInitial setup.",
+        },
+      ]);
+      updates = await new ContentService(repo).listUpdates();
+    });
+
+    When("the RSS feed is generated", async () => {
+      feedXml = await buildFeedResponse(updates).text();
+    });
+
+    Then("the feed contains item elements for each update", () => {
+      expect(updates).toHaveLength(1);
       expect(feedXml).toContain("<item>");
       expect(feedXml).toContain("</item>");
     });
+  });
 
-    And('every feed link is on the canonical host "www.oseplatform.com"', () => {
+  // @scenario specs/apps/ose/www/behaviours/backend/rss-feed/rss-feed.feature: Every feed link is on the canonical host
+  Scenario("Every feed link is on the canonical host", ({ Given, When, Then }) => {
+    let updates: ContentMeta[];
+    let feedXml: string;
+
+    Given("the content repository contains update posts", async () => {
+      const repo = new InMemoryContentRepository([
+        {
+          meta: {
+            title: "Phase 0 Week 4",
+            slug: "updates/2025-12-14-phase-0-week-4",
+            date: new Date("2025-12-14T00:00:00Z"),
+            draft: false,
+            description: "Week 4",
+            tags: [],
+            summary: "Initial setup",
+            weight: 0,
+            isSection: false,
+            filePath: "/mock/updates/week-4.md",
+            readingTime: 5,
+            category: "updates",
+          },
+          content: "## Week 4\n\nInitial setup.",
+        },
+      ]);
+      updates = await new ContentService(repo).listUpdates();
+    });
+
+    When("the RSS feed is generated", async () => {
+      feedXml = await buildFeedResponse(updates).text();
+    });
+
+    Then('every feed link is on the canonical host "www.oseplatform.com"', () => {
       // The channel link, the self link, and each item's link and guid.
       const feedUrls = [...feedXml.matchAll(/<(?:link|guid)>([^<]+)<\/(?:link|guid)>|<atom:link href="([^"]+)"/gu)].map(
         (match) => match[1] ?? match[2]!,
@@ -74,6 +141,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ose/www/behaviours/backend/rss-feed/rss-feed.feature: RSS feed entries contain required fields
   Scenario("RSS feed entries contain required fields", ({ Given, When, Then, And }) => {
     let updates: ContentMeta[];
     let feedXml: string;

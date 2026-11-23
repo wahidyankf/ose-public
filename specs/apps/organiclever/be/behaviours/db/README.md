@@ -5,7 +5,7 @@ HTTP-semantic scenarios for the OrganicLever backend database domain.
 ## Feature Files
 
 - **[migrations.feature](./migrations.feature)** — Database schema migration verification
-  (1 scenario)
+  (3 scenarios)
 
 ## Related
 

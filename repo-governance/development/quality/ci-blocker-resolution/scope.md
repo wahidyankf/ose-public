@@ -7,8 +7,8 @@ when_to_use: "Use when checking whether this convention applies to a CI failure.
 
 This convention applies to:
 
-- All CI quality gates, including `test:quick` with Unit runtime and every applicable static
-  `test:coverage:*` validator
+- All CI quality gates, including `test:quick` with Unit runtime and the static
+  `test:behaviour:coverage` check
 - All projects in the Nx workspace
 - All contributors: human developers and AI agents
 - All branches: main, worktree branches, and PR branches

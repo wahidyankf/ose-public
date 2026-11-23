@@ -16,7 +16,7 @@
  *    2e — Canonicalize on mount via router.replace
  */
 
-import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
+import { act, cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import React from "react";
@@ -769,5 +769,25 @@ describe("Cluster 2 — tab triggers meet the 44px touch target", () => {
     for (const trigger of triggers) {
       expect(trigger.classList.contains("min-h-[44px]")).toBe(true);
     }
+  });
+});
+
+// ─── Browser history — popstate resynchronizes state from the URL ────────────
+// Back/forward navigation bypasses the App Router, so the component listens for
+// popstate and re-decodes window.location.search (the URL stays the source of truth).
+describe("browser-history popstate resync", () => {
+  it("a popstate switches the active tab to the one named in the browser URL", () => {
+    setupSearchParams({ tab: "savings" });
+    render(<CostOfLivingCalculatorContent />);
+    expect(screen.getByTestId("tab-desc-savings").classList.contains("hidden")).toBe(false);
+    expect(screen.getByTestId("tab-desc-min-role").classList.contains("hidden")).toBe(true);
+
+    window.history.replaceState({}, "", "/en/tools/cost-of-living-calculator?tab=min-role");
+    act(() => {
+      window.dispatchEvent(new Event("popstate"));
+    });
+
+    expect(screen.getByTestId("tab-desc-min-role").classList.contains("hidden")).toBe(false);
+    expect(screen.getByTestId("tab-desc-savings").classList.contains("hidden")).toBe(true);
   });
 });

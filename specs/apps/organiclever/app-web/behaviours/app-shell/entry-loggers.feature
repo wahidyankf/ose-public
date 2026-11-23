@@ -4,77 +4,51 @@ Feature: Entry Loggers
   I want to log different types of entries (reading, learning, meal, focus, custom) from the app shell
   So that all my activities are captured in the journal with minimal friction
 
-  Scenario: Open Add Entry sheet
+  # Behaviour: OAW-014
+  Scenario: The add button opens the Add Entry sheet and the user can close it
     Given the app shell is visible
     When the user taps the FAB
     Then the Add Entry sheet is open with all entry kinds
-
-  Scenario: Close Add Entry sheet
-    Given the user has opened the Add Entry sheet
     When the user closes the Add Entry sheet
     Then the Add Entry sheet is closed
 
-  Scenario: Open reading logger from Add Entry sheet
+  # Behaviour: OAW-014
+  Scenario Outline: Choosing an entry kind opens its logger
     Given the user has opened the Add Entry sheet
-    When the user selects the Reading entry kind
-    Then the reading logger is open
+    When the user selects the "<kind>" entry kind
+    Then the "<kind>" logger is open
 
-  Scenario: Log a reading entry
-    Given the user has opened the reading logger
-    When the user enters title "Atomic Habits"
+    Examples:
+      | kind     |
+      | Reading  |
+      | Learning |
+      | Meal     |
+      | Focus    |
+      | Custom   |
+
+  # Behaviour: OAW-014
+  Scenario Outline: Saving an entry closes the logger and adds it to the journal
+    Given the user has opened the "<kind>" logger
+    When the user enters "<entry>" in the "<kind>" logger
     And the user saves the entry
-    Then the entry is saved and the logger closes
+    Then the entry appears in the journal and the logger closes
 
+    Examples:
+      | kind     | entry                |
+      | Reading  | Atomic Habits        |
+      | Learning | TypeScript generics  |
+      | Meal     | Oatmeal with berries |
+      | Focus    | 25                   |
+      | Custom   | Evening walk         |
+
+  # Behaviour: OAW-014
   Scenario: Reading logger save is disabled without title
     Given the user has opened the reading logger
     When the user has not entered a title
     Then the save button is disabled
 
-  Scenario: Open learning logger from Add Entry sheet
-    Given the user has opened the Add Entry sheet
-    When the user selects the Learning entry kind
-    Then the learning logger is open
-
-  Scenario: Log a learning entry
-    Given the user has opened the learning logger
-    When the user enters subject "TypeScript generics"
-    And the user saves the entry
-    Then the entry is saved and the logger closes
-
-  Scenario: Open meal logger from Add Entry sheet
-    Given the user has opened the Add Entry sheet
-    When the user selects the Meal entry kind
-    Then the meal logger is open
-
-  Scenario: Log a meal entry
-    Given the user has opened the meal logger
-    When the user enters meal name "Oatmeal with berries"
-    And the user saves the entry
-    Then the entry is saved and the logger closes
-
-  Scenario: Open focus logger from Add Entry sheet
-    Given the user has opened the Add Entry sheet
-    When the user selects the Focus entry kind
-    Then the focus logger is open
-
-  Scenario: Log a focus entry
-    Given the user has opened the focus logger
-    When the user selects the 25min preset
-    And the user saves the entry
-    Then the entry is saved and the logger closes
-
+  # Behaviour: OAW-014
   Scenario: Focus logger save requires task or duration
     Given the user has opened the focus logger
     When the user has not entered task or duration
     Then the save button is disabled
-
-  Scenario: Open custom entry logger
-    Given the user has opened the Add Entry sheet
-    When the user selects the custom entry kind
-    Then the custom entry logger is open
-
-  Scenario: Log a custom entry
-    Given the user has opened the custom entry logger
-    When the user enters custom entry name "Evening walk"
-    And the user saves the custom entry
-    Then the custom entry is saved and the logger closes

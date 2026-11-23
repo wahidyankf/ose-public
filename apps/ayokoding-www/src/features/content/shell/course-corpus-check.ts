@@ -9,6 +9,23 @@ import { FileSystemContentRepository } from "./repository-fs";
 import { scanCourseEffort } from "./course-effort-scan";
 
 /**
+ * The file-system port the corpus guard reads through: directories, text, and bytes. The default is
+ * the real `node:fs/promises` adapter; unit tests pass an in-memory double, and the integration
+ * suite checks the real content tree.
+ */
+export interface CourseCorpusFileSystem {
+  readdir(dir: string): Promise<{ name: string; isDirectory(): boolean; isFile(): boolean }[]>;
+  readFile(filePath: string): Promise<string>;
+  readBytes(filePath: string): Promise<Uint8Array>;
+}
+
+export const nodeCourseCorpusFileSystem: CourseCorpusFileSystem = {
+  readdir: (dir) => fs.readdir(dir, { withFileTypes: true }),
+  readFile: (filePath) => fs.readFile(filePath, "utf-8"),
+  readBytes: (filePath) => fs.readFile(filePath),
+};
+
+/**
  * The real-corpus guard (tech-docs/006): reads every course in `content/<locale>/learn/courses`,
  * strictly validates its frontmatter, recomputes its estimated hours, and checks that a Start
  * page resolves. Problems are `"<courseId>: <field>: <message>"` lines, sorted.
@@ -19,9 +36,13 @@ export interface CourseCorpusReport {
   expectedHours: Record<string, number>;
 }
 
-export async function checkCourseCorpus(contentDir: string, locale: "en" = "en"): Promise<CourseCorpusReport> {
+export async function checkCourseCorpus(
+  contentDir: string,
+  locale: "en" = "en",
+  io: CourseCorpusFileSystem = nodeCourseCorpusFileSystem,
+): Promise<CourseCorpusReport> {
   const coursesDir = path.join(contentDir, locale, "learn", "courses");
-  const repository = new FileSystemContentRepository(contentDir);
+  const repository = new FileSystemContentRepository(contentDir, io);
   const allContent = await repository.readAllContent();
   const trees = buildTrees(allContent);
   const tree = trees[locale] ?? [];
@@ -33,7 +54,7 @@ export async function checkCourseCorpus(contentDir: string, locale: "en" = "en")
 
   let courseIds: string[] = [];
   try {
-    const entries = await fs.readdir(coursesDir, { withFileTypes: true });
+    const entries = await io.readdir(coursesDir);
     courseIds = entries
       .filter((e) => e.isDirectory())
       .map((e) => e.name)
@@ -46,7 +67,7 @@ export async function checkCourseCorpus(contentDir: string, locale: "en" = "en")
     const indexPath = path.join(coursesDir, courseId, "_index.md");
     let frontmatter: Record<string, unknown> = {};
     try {
-      const raw = await fs.readFile(indexPath, "utf-8");
+      const raw = await io.readFile(indexPath);
       frontmatter = matter(raw).data as Record<string, unknown>;
     } catch {
       problems.push(`${courseId}: _index.md: missing or unreadable`);
@@ -59,7 +80,7 @@ export async function checkCourseCorpus(contentDir: string, locale: "en" = "en")
 
     const isOutline = frontmatter["status"] === "outline";
     if (!isOutline) {
-      const counts = await scanCourseEffort(path.join(coursesDir, courseId));
+      const counts = await scanCourseEffort(path.join(coursesDir, courseId), io);
       const expected = estimateCourseHours(counts);
       expectedHours[courseId] = expected;
       const stored = frontmatter["estimatedHours"];
@@ -67,7 +88,7 @@ export async function checkCourseCorpus(contentDir: string, locale: "en" = "en")
         problems.push(`${courseId}: estimatedHours: stored ${stored}, expected ${expected}`);
       }
     } else if (typeof frontmatter["estimatedHours"] === "number") {
-      const counts = await scanCourseEffort(path.join(coursesDir, courseId));
+      const counts = await scanCourseEffort(path.join(coursesDir, courseId), io);
       const expected = estimateCourseHours(counts);
       if (frontmatter["estimatedHours"] !== expected) {
         problems.push(`${courseId}: estimatedHours: stored ${frontmatter["estimatedHours"]}, expected ${expected}`);

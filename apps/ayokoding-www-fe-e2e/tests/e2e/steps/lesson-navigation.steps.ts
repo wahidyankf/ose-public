@@ -1,3 +1,10 @@
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/lesson-navigation.feature: The context bar shows where the reader is in a path
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/lesson-navigation.feature: The context bar works without a path
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/lesson-navigation.feature: Mark complete and continue opens the next learning page
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/lesson-navigation.feature: The last page of a course leads to the next destination
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/lesson-navigation.feature: Previous goes back one page, then to the course landing page
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/lesson-navigation.feature: The path context is remembered inside the same course
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/lesson-navigation.feature: Opening or scrolling a page never marks it complete
 import { createBdd } from "playwright-bdd";
 import { expect, type Page } from "@playwright/test";
 import { buildTrpcUrl, extractTrpcData } from "./backend-helpers";
@@ -221,49 +228,53 @@ Then("the previous page is counted as done", async ({ page }) => {
   expect(await completedPagePaths(page, BASH_ID)).toEqual([BASH_SECOND_PAGE]);
 });
 
-// S13.
-Given("a reader is on the last learning page of a course in path context", async ({ page }) => {
-  await openLessonPage(page, BASH_LAST_PAGE);
-  await expect(primaryAction(page)).toContainText("Next course: ");
+// S13–S15 — the last page of a course leads to the next destination (one Scenario Outline).
+Given("a reader is on the last learning page {string}", async ({ page }, position: string) => {
+  switch (position) {
+    case "of a course in path context with a course after it": {
+      await openLessonPage(page, BASH_LAST_PAGE);
+      await expect(primaryAction(page)).toContainText("Next course: ");
+      const order = await backendTrackCourseOrder(page);
+      expect(order.indexOf(BASH_ID)).toBeGreaterThanOrEqual(0);
+      expect(order[order.indexOf(BASH_ID) + 1]).toBe(BACKEND_ID);
+      break;
+    }
+    case "of the path's last course in path context":
+      await openLessonPage(page, SQL_LAST_PAGE, { courseId: SQL_ID });
+      await expect(contextLink(page, "Course 3 of 3")).toHaveAttribute(
+        "href",
+        `/en/learn/courses/${SQL_ID}?path=${PATH_ID}`,
+      );
+      await expect(primaryAction(page)).toContainText("Back to the path");
+      break;
+    case "of a course with no path context":
+      await openLessonPage(page, BASH_LAST_PAGE, { pathId: null });
+      await expect(contextLink(page, BASH_TITLE)).toHaveAttribute("href", BASH_ROOT);
+      await expect(primaryAction(page)).toContainText("Back to the course");
+      break;
+    default:
+      throw new Error(`unknown last-page position: ${position}`);
+  }
 });
 
-Given("the path has a course after it", async ({ page }) => {
-  const order = await backendTrackCourseOrder(page);
-  expect(order.indexOf(BASH_ID)).toBeGreaterThanOrEqual(0);
-  expect(order[order.indexOf(BASH_ID) + 1]).toBe(BACKEND_ID);
-});
-
-Then("the next course's landing page opens in the same path context", async ({ page }) => {
-  await expect(page).toHaveURL(urlEndingWith(`/en/learn/courses/${BACKEND_ID}?path=${PATH_ID}`));
-  await expect(page.locator(COURSE_HEADER)).toBeVisible();
-});
-
-// S14.
-Given("a reader is on the last learning page of the path's last course in path context", async ({ page }) => {
-  await openLessonPage(page, SQL_LAST_PAGE, { courseId: SQL_ID });
-  await expect(contextLink(page, "Course 3 of 3")).toHaveAttribute(
-    "href",
-    `/en/learn/courses/${SQL_ID}?path=${PATH_ID}`,
-  );
-  await expect(primaryAction(page)).toContainText("Back to the path");
-});
-
-Then("the path page opens", async ({ page }) => {
-  // The path page is the path itself: no `?path=` is carried to it.
-  await expect(page).toHaveURL(urlEndingWith(PATH_LANDING));
-  await expect(page.getByRole("heading", { level: 1, name: PATH_TITLE })).toBeVisible();
-});
-
-// S15.
-Given("a reader is on a course's last learning page with no path context", async ({ page }) => {
-  await openLessonPage(page, BASH_LAST_PAGE, { pathId: null });
-  await expect(contextLink(page, BASH_TITLE)).toHaveAttribute("href", BASH_ROOT);
-  await expect(primaryAction(page)).toContainText("Back to the course");
-});
-
-Then("the course landing page opens", async ({ page }) => {
-  await expect(page).toHaveURL(urlEndingWith(BASH_ROOT));
-  await expect(page.locator(COURSE_HEADER)).toBeVisible();
+Then("the primary action opens {string}", async ({ page }, destination: string) => {
+  switch (destination) {
+    case "the next course's landing page in the same path context":
+      await expect(page).toHaveURL(urlEndingWith(`/en/learn/courses/${BACKEND_ID}?path=${PATH_ID}`));
+      await expect(page.locator(COURSE_HEADER)).toBeVisible();
+      break;
+    case "the path page":
+      // The path page is the path itself: no `?path=` is carried to it.
+      await expect(page).toHaveURL(urlEndingWith(PATH_LANDING));
+      await expect(page.getByRole("heading", { level: 1, name: PATH_TITLE })).toBeVisible();
+      break;
+    case "the course landing page":
+      await expect(page).toHaveURL(urlEndingWith(BASH_ROOT));
+      await expect(page.locator(COURSE_HEADER)).toBeVisible();
+      break;
+    default:
+      throw new Error(`unknown last-page destination: ${destination}`);
+  }
 });
 
 // ---------------------------------------------------------------------------

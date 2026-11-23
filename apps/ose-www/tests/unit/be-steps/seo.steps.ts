@@ -8,7 +8,7 @@ import { buildRobots } from "@/features/seo/core/robots";
 import { buildSitemapEntries } from "@/features/seo/core/sitemap";
 
 const feature = await loadFeature(
-  path.resolve(process.cwd(), "../../specs/apps/ose/www/behaviours/backend/seo/seo.feature"),
+  path.resolve(__dirname, "../../../../../specs/apps/ose/www/behaviours/backend/seo/seo.feature"),
 );
 
 const FIXED_NOW = new Date("2026-01-01T00:00:00Z");
@@ -21,6 +21,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ose/www/behaviours/backend/seo/seo.feature: Sitemap contains all public pages
   Scenario("Sitemap contains all public pages", ({ Given, When, Then, And }) => {
     let sitemap: ReturnType<typeof buildSitemapEntries>;
     let updates: ContentMeta[];
@@ -89,6 +90,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ose/www/behaviours/backend/seo/seo.feature: Robots.txt allows all crawlers
   Scenario("Robots.txt allows all crawlers", ({ When, Then, And }) => {
     let robots: ReturnType<typeof buildRobots>;
 

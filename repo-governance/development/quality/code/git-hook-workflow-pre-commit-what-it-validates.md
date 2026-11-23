@@ -5,32 +5,22 @@ when_to_use: "Use when debugging a pre-commit check failure."
 
 # Git Hook Workflow: Pre-commit Hook (What It Validates)
 
-**What It Validates**: whatever gates [`repo-config.yml`](../../../../repo-config.yml) declares on
-the `pre-commit` surface. List the live set with `./rhino gate list`. The kinds of check it carries:
+**What It Validates**: whatever gates [`repo-config.yml`](../../../../repo-config.yml) declares on the `pre-commit`
+surface. List the live set with `./rhino gate list`. Today that is one gate, the staged formatter.
 
-**Public safety**: the public-safety tree screen runs first and blocks outbound-unsafe staged
-content before any formatter touches it.
+**Formatting**: the `format-staged` mutation formats staged files and applies the result to the index. See
+[Staged Formatting Gate](./staged-formatting-gate.md).
 
-**Formatting**: the `format-staged` mutation formats staged files and applies the result to the
-index — see [Staged Formatting Gate](./staged-formatting-gate.md).
+The hook runs no check. Markdown lint, Mermaid, heading, naming, and front-matter checks, file-type linters,
+configuration and environment validation, harness adapters, the public-safety tree scan, and the whole-tree README,
+link, and word-budget checks all run in the pull-request gate. That keeps the hook fast, and the full set runs once per
+pull request.
 
-**Configuration**: `repo-config.yml` and the declared environment policy are validated.
-
-**Markdown**: markdownlint, Mermaid diagrams in staged `.md` files (label length and colour contrast),
-heading hierarchy, file naming, and front matter.
-
-**File-type linters**: `shellcheck`, `hadolint`, and `actionlint` over the staged paths they own.
-
-**Whole-tree Markdown and governance checks**: README indexes (`md-readme-index`), internal link
-targets (`md-internal-link`, never `#fragment` anchors), and governance word budgets (`word-budget`).
-Each scans the whole tree, because a change can break a file it never touches.
-
-Pre-commit validates harness adapters (`harness-adapters`) but never generates them; run
-`./rhino harness adapters generate` explicitly when a canonical `.agents/` source changes.
+Harness adapters are checked by the `harness-adapters` gate at pull-request; run `./rhino harness adapters generate`
+explicitly when a canonical `.agents/` source changes.
 
 **What Happens on Failure**:
 
 - Commit is blocked
-- The dispatcher names the failing gate; run that gate's command on the reported paths to read
-  the tool's findings
+- The dispatcher names the failing gate; run that gate's command on the reported paths to read the tool's findings
 - Fix the issue and try again

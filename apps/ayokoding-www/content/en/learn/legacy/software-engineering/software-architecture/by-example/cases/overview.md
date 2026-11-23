@@ -68,12 +68,26 @@ The four families operate at different levels and slot together as follows:
 
 The stack reads top-down. **C4** describes any system independent of paradigm. **DDD** defines the units inside one C4 container. **Hexagonal Architecture** organizes the source tree implementing one DDD bounded context. **FSM** lives at the deepest layer, encoded inside an aggregate root, governing transitions that the application layer triggers through input ports.
 
-```
-C4 Container (one deployable service, e.g. procurement-platform-be)
-    └── DDD bounded context (e.g. purchasing)
-        └── Hexagonal hexagon (domain core + ports + adapters)
-            └── DDD aggregate root (e.g. PurchaseOrder)
-                └── FSM (PurchaseOrder lifecycle: draft → pending → approved → issued → ...)
+```mermaid
+flowchart TD
+    accTitle: Nesting of the four architecture families
+    accDescr {
+        Each family sits inside the one above it.
+        A C4 container holds a DDD bounded context, which holds a hexagonal hexagon.
+        The hexagon holds a DDD aggregate root, and the aggregate root has an FSM lifecycle.
+        The example service is procurement-platform-be, and the example aggregate is PurchaseOrder.
+        The FSM moves through states such as draft, pending, approved, and issued.
+    }
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
+    c4["C4 Container<br/>one deployable<br/>service"]
+    ddd["DDD bounded context<br/>(purchasing)"]
+    hex["Hexagonal hexagon<br/>domain core<br/>+ ports + adapters"]
+    agg["DDD aggregate root<br/>(PurchaseOrder)"]
+    fsm["FSM: PurchaseOrder<br/>lifecycle states"]
+    c4 -->|contains| ddd
+    ddd -->|contains| hex
+    hex -->|contains| agg
+    agg -->|contains| fsm
 ```
 
 Every guide in each case touches one or more of these layers explicitly.

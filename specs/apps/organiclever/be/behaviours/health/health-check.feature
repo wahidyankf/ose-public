@@ -7,17 +7,15 @@ Feature: Service Health Check
   Background:
     Given the API is running
 
-  # Exemption(integration): HTTP is a network boundary forbidden to Integration and the in-process route is already Unit proof; alternative-proof: organiclever-be-e2e:test:e2e / Health endpoint reports the service as UP
-  @integration-exempt
-  Scenario: Health endpoint reports the service as UP
-    When an operations engineer sends GET /health
-    Then the response status code should be 200
-    And the health status should be "ok"
-
-  # Exemption(integration): HTTP is a network boundary forbidden to Integration and the in-process route is already Unit proof; alternative-proof: organiclever-be-e2e:test:e2e / Anonymous health check does not expose component details
-  @integration-exempt
-  Scenario: Anonymous health check does not expose component details
+  # Behaviour: OBE-001
+  Scenario: Anonymous health check reports ok without component details
     When an unauthenticated engineer sends GET /health
     Then the response status code should be 200
     And the health status should be "ok"
     And the response should not include detailed component health information
+
+  # Behaviour: OBE-002
+  Scenario: GET /api/v1/health reports the service as ok
+    When an operations engineer sends GET /api/v1/health
+    Then the response status code should be 200
+    And the health status should be "ok"

@@ -1,56 +1,86 @@
 package web_test
 
 import (
-	"os"
-	"path/filepath"
+	"io/fs"
 	"strings"
 	"testing"
+	"testing/fstest"
 
 	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/web"
 )
 
-func writeSeedSource(t *testing.T, root, rel, body string) {
-	t.Helper()
-	path := filepath.Join(root, rel)
-	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
-		t.Fatalf("mkdir %s: %v", filepath.Dir(path), err)
-	}
-	if err := os.WriteFile(path, []byte(body), 0o600); err != nil {
-		t.Fatalf("write %s: %v", path, err)
+// seedSources is the recorded launcher environment and the in-memory source
+// trees the seed reads in unit tests. No process variable or disk root moves.
+type seedSources struct {
+	env   map[string]string
+	trees map[string]fs.FS
+}
+
+func (s seedSources) sources() web.Sources {
+	return web.Sources{
+		Environment: func(key string) (string, bool) {
+			value, ok := s.env[key]
+			return value, ok
+		},
+		Root: func(dir string) fs.FS {
+			if tree, ok := s.trees[dir]; ok {
+				return tree
+			}
+			return unreadableFS{}
+		},
 	}
 }
 
-func seedFileRoots(t *testing.T) (contentRoot, manifestsRoot string) {
-	t.Helper()
-	contentRoot = t.TempDir()
-	writeSeedSource(t, contentRoot, "en/learn/courses/go-basics/learning/hello-world.md", "---\ntitle: Hello World\ndescription: First program\nweight: 1\n---\n\n# Hello\n\nServed from disk.\n")
-	writeSeedSource(t, contentRoot, "en/learn/courses/go-basics/_index.md", "---\ntitle: Go Basics\ndescription: Learn Go\ncategory: fundamentals\nformat: course\nestimatedHours: 4\nprerequisites: [\"setup\"]\n---\n\nCourse index.\n")
-	writeSeedSource(t, contentRoot, "en/learn/courses/go-basics/draft-note.md", "---\ntitle: Draft\ndraft: true\n---\n\n# Draft\n")
-	writeSeedSource(t, contentRoot, "en/learn/courses/outline-course/_index.md", "---\ntitle: Outline Course\nstatus: outline\nprerequisites: []\n---\n\nCourse index.\n")
-	writeSeedSource(t, contentRoot, "en/learn/courses/float-course/_index.md", "---\ntitle: Float Course\nestimatedHours: 4.5\nprerequisites: [\"a\"]\n---\n\nCourse index.\n")
-	writeSeedSource(t, contentRoot, "en/learn/courses/labelled-course/_index.md", "---\ntitle: Labelled Course\nestimatedHours: self-paced\n---\n\nCourse index.\n")
-	writeSeedSource(t, contentRoot, "en/learn/courses/bare-course/learning/lesson.md", "---\ntitle: Bare Lesson\n---\n\n# Bare\n")
-	writeSeedSource(t, contentRoot, "en/learn/courses/broken-course/_index.md", "---\ntitle: [unclosed\n---\n\nIndex.\n")
-	writeSeedSource(t, contentRoot, "en/learn/courses/broken-course/learning/lesson.md", "---\ntitle: Broken Lesson\n---\n\n# Broken\n")
-	manifestsRoot = t.TempDir()
-	writeSeedSource(t, manifestsRoot, "careers/backend.json", `{
+// unreadableFS is a source root the operating system refused: every open fails.
+type unreadableFS struct{}
+
+func (unreadableFS) Open(string) (fs.File, error) { return nil, fs.ErrPermission }
+
+func seedFile(body string) *fstest.MapFile {
+	return &fstest.MapFile{Data: []byte(body)}
+}
+
+func seedContentTree() fstest.MapFS {
+	return fstest.MapFS{
+		"en/learn/courses/go-basics/learning/hello-world.md": seedFile("---\ntitle: Hello World\ndescription: First program\nweight: 1\n---\n\n# Hello\n\nServed from disk.\n"),
+		"en/learn/courses/go-basics/_index.md":               seedFile("---\ntitle: Go Basics\ndescription: Learn Go\ncategory: fundamentals\nformat: course\nestimatedHours: 4\nprerequisites: [\"setup\"]\n---\n\nCourse index.\n"),
+		"en/learn/courses/go-basics/draft-note.md":           seedFile("---\ntitle: Draft\ndraft: true\n---\n\n# Draft\n"),
+		"en/learn/courses/outline-course/_index.md":          seedFile("---\ntitle: Outline Course\nstatus: outline\nprerequisites: []\n---\n\nCourse index.\n"),
+		"en/learn/courses/float-course/_index.md":            seedFile("---\ntitle: Float Course\nestimatedHours: 4.5\nprerequisites: [\"a\"]\n---\n\nCourse index.\n"),
+		"en/learn/courses/labelled-course/_index.md":         seedFile("---\ntitle: Labelled Course\nestimatedHours: self-paced\n---\n\nCourse index.\n"),
+		"en/learn/courses/bare-course/learning/lesson.md":    seedFile("---\ntitle: Bare Lesson\n---\n\n# Bare\n"),
+		"en/learn/courses/broken-course/_index.md":           seedFile("---\ntitle: [unclosed\n---\n\nIndex.\n"),
+		"en/learn/courses/broken-course/learning/lesson.md":  seedFile("---\ntitle: Broken Lesson\n---\n\n# Broken\n"),
+	}
+}
+
+func seedManifestTree() fstest.MapFS {
+	return fstest.MapFS{
+		"careers/backend.json": seedFile(`{
   "pathId": "careers/backend",
   "title": "Backend",
   "phases": [{"id": "fundamentals", "title": "Fundamentals", "courses": ["go-basics"]}]
-}`)
-	return contentRoot, manifestsRoot
+}`),
+	}
 }
 
-func unsetSeedEnv(t *testing.T) {
-	t.Helper()
-	t.Setenv("AYOKODING_WEB_CONTENT_DIR", "")
-	t.Setenv("AYOKODING_WEB_MANIFESTS_DIR", "")
-	t.Setenv("AYOKODING_WEB_SHOW_DRAFTS", "")
+// fileBacked records both source roots of the file-backed seed.
+func fileBacked(contentDir, manifestsDir, showDrafts string) seedSources {
+	return seedSources{
+		env: map[string]string{
+			"AYOKODING_WEB_CONTENT_DIR":   contentDir,
+			"AYOKODING_WEB_MANIFESTS_DIR": manifestsDir,
+			"AYOKODING_WEB_SHOW_DRAFTS":   showDrafts,
+		},
+		trees: map[string]fs.FS{
+			"/content":   seedContentTree(),
+			"/manifests": seedManifestTree(),
+		},
+	}
 }
 
 func TestSeedFixtureDepsKeepsCannedCorpusWithoutSourceRoots(t *testing.T) {
-	unsetSeedEnv(t)
-	deps := web.SeedFixtureDeps("parity")
+	deps := web.SeedFixtureDeps("parity", seedSources{}.sources())
 	page, ok := deps.Content.Find("en", "go-basics", "hello-world")
 	if !ok || page.Title != "Hello World" {
 		t.Fatalf("canned lesson = %+v, %v; want Hello World", page, ok)
@@ -61,16 +91,12 @@ func TestSeedFixtureDepsKeepsCannedCorpusWithoutSourceRoots(t *testing.T) {
 }
 
 func TestSeedFileDepsServesFileBackedSources(t *testing.T) {
-	contentRoot, manifestsRoot := seedFileRoots(t)
-	t.Setenv("AYOKODING_WEB_CONTENT_DIR", contentRoot)
-	t.Setenv("AYOKODING_WEB_MANIFESTS_DIR", manifestsRoot)
-	t.Setenv("AYOKODING_WEB_SHOW_DRAFTS", "")
-	deps := web.SeedFixtureDeps("parity")
+	deps := web.SeedFixtureDeps("parity", fileBacked("/content", "/manifests", "").sources())
 	page, ok := deps.Content.Find("en", "go-basics", "hello-world")
 	if !ok || page.Title != "Hello World" {
 		t.Fatalf("file lesson = %+v, %v; want Hello World", page, ok)
 	}
-	if got := page.BodyHTML; got == "" || !contains(got, "Served from disk.") {
+	if got := page.BodyHTML; got == "" || !strings.Contains(got, "Served from disk.") {
 		t.Fatalf("file body = %q, want rendered disk content", got)
 	}
 	if _, ok := deps.Content.Find("en", "go-basics", "draft-note"); ok {
@@ -96,32 +122,32 @@ func TestSeedFileDepsServesFileBackedSources(t *testing.T) {
 }
 
 func TestSeedFileDepsHonorsShowDrafts(t *testing.T) {
-	contentRoot, _ := seedFileRoots(t)
-	t.Setenv("AYOKODING_WEB_CONTENT_DIR", contentRoot)
-	t.Setenv("AYOKODING_WEB_MANIFESTS_DIR", "")
-	t.Setenv("AYOKODING_WEB_SHOW_DRAFTS", "true")
-	deps := web.SeedFixtureDeps("parity")
+	deps := web.SeedFixtureDeps("parity", fileBacked("/content", "", "true").sources())
 	if _, ok := deps.Content.Find("en", "go-basics", "draft-note"); !ok {
 		t.Fatal("draft must resolve with AYOKODING_WEB_SHOW_DRAFTS=true")
 	}
 }
 
+// TestSeedFixtureDepsHonorsShowDraftsWithoutSourceRoot pins the draft setting
+// for the canned corpus: AYOKODING_WEB_SHOW_DRAFTS applies even when no source
+// root is configured (contract AYB-007).
+func TestSeedFixtureDepsHonorsShowDraftsWithoutSourceRoot(t *testing.T) {
+	sources := seedSources{env: map[string]string{"AYOKODING_WEB_SHOW_DRAFTS": "true"}}
+	deps := web.SeedFixtureDeps("parity", sources.sources())
+	if _, ok := deps.Content.Find("en", "go-basics", "draft-note"); !ok {
+		t.Fatal("canned draft must resolve with AYOKODING_WEB_SHOW_DRAFTS=true and no source root")
+	}
+}
+
 func TestSeedFileDepsFallsBackToCannedOnUnreadableRoot(t *testing.T) {
-	t.Setenv("AYOKODING_WEB_CONTENT_DIR", filepath.Join(t.TempDir(), "no-such-root"))
-	t.Setenv("AYOKODING_WEB_MANIFESTS_DIR", "")
-	t.Setenv("AYOKODING_WEB_SHOW_DRAFTS", "")
-	deps := web.SeedFixtureDeps("parity")
+	deps := web.SeedFixtureDeps("parity", fileBacked("/missing-root", "", "").sources())
 	if _, ok := deps.Content.Find("en", "go-basics", "hello-world"); !ok {
 		t.Fatal("unreadable source root must fall back to the canned fixture")
 	}
 }
 
 func TestSeedFileDepsComposesCourseMetadataVariants(t *testing.T) {
-	contentRoot, manifestsRoot := seedFileRoots(t)
-	t.Setenv("AYOKODING_WEB_CONTENT_DIR", contentRoot)
-	t.Setenv("AYOKODING_WEB_MANIFESTS_DIR", manifestsRoot)
-	t.Setenv("AYOKODING_WEB_SHOW_DRAFTS", "")
-	deps := web.SeedFixtureDeps("parity")
+	deps := web.SeedFixtureDeps("parity", fileBacked("/content", "/manifests", "").sources())
 	outline, ok := deps.Paths.Course("outline-course")
 	if !ok {
 		t.Fatal("outline course must compose")
@@ -171,12 +197,9 @@ func TestSeedFileDepsComposesCourseMetadataVariants(t *testing.T) {
 }
 
 func TestSeedFileDepsManifestRootFileServesNoFilePaths(t *testing.T) {
-	contentRoot, _ := seedFileRoots(t)
-	manifestFile := contentRoot + "/en/learn/courses/go-basics/learning/hello-world.md"
-	t.Setenv("AYOKODING_WEB_CONTENT_DIR", contentRoot)
-	t.Setenv("AYOKODING_WEB_MANIFESTS_DIR", manifestFile)
-	t.Setenv("AYOKODING_WEB_SHOW_DRAFTS", "")
-	deps := web.SeedFixtureDeps("parity")
+	sources := fileBacked("/content", "/manifest-file", "")
+	sources.trees["/manifest-file"] = unreadableFS{}
+	deps := web.SeedFixtureDeps("parity", sources.sources())
 	if _, ok := deps.Content.Find("en", "go-basics", "hello-world"); !ok {
 		t.Fatal("file content must still serve when manifests are unreadable")
 	}
@@ -205,11 +228,9 @@ func TestSeedFileDepsManifestRootFileServesNoFilePaths(t *testing.T) {
 }
 
 func TestSeedFileDepsContentRootFileFallsBackToCanned(t *testing.T) {
-	contentRoot, _ := seedFileRoots(t)
-	t.Setenv("AYOKODING_WEB_CONTENT_DIR", contentRoot+"/en/learn/courses/go-basics/learning/hello-world.md")
-	t.Setenv("AYOKODING_WEB_MANIFESTS_DIR", "")
-	t.Setenv("AYOKODING_WEB_SHOW_DRAFTS", "")
-	deps := web.SeedFixtureDeps("parity")
+	sources := fileBacked("/content/en/learn/courses/go-basics/learning/hello-world.md", "", "")
+	sources.trees["/content/en/learn/courses/go-basics/learning/hello-world.md"] = unreadableFS{}
+	deps := web.SeedFixtureDeps("parity", sources.sources())
 	if _, ok := deps.Content.Find("en", "go-basics", "hello-world"); !ok {
 		t.Fatal("file content root must fall back to the canned fixture")
 	}
@@ -219,8 +240,7 @@ func TestSeedFileDepsContentRootFileFallsBackToCanned(t *testing.T) {
 }
 
 func TestSeedUnavailableCatalogStaysEmpty(t *testing.T) {
-	unsetSeedEnv(t)
-	deps := web.SeedFixtureDeps("unavailable-catalog")
+	deps := web.SeedFixtureDeps("unavailable-catalog", seedSources{}.sources())
 	if _, ok := deps.Content.Find("en", "go-basics", "hello-world"); ok {
 		t.Fatal("unavailable catalog must not resolve lessons")
 	}

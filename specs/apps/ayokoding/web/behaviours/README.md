@@ -10,8 +10,8 @@
 
 All scenarios are **bound**. A scenario is evidence of an implemented test only through its
 adapters. Each domain below requires Unit proof, applicable Integration proof, and Playwright E2E
-proof. Browser-only progress uses the JavaScript/TypeScript Unit adapter and a documented
-Integration exemption. The godog scope covers the whole corpus before static verification.
+proof. Browser-only progress uses the JavaScript/TypeScript Unit adapter and the Playwright home,
+which binds it at integration and e2e level. The unit godog scope covers the whole corpus.
 
 The plan carries the full source-scenario parity inventory. These domains supplement rather than
 silently reduce the existing [`www` behavior corpus](../../www/behaviours/README.md).

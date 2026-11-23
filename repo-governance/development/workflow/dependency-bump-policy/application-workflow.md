@@ -34,4 +34,4 @@ When proposing or executing a dependency bump, follow these steps in order:
     scheduling ([EPSS Escalation](./kev-fast-track-and-epss-escalation.md#epss-escalation--soft-urgency-signal) applies).
 11. Document the audit results and any waivers in the plan's `tech-docs.md`
 12. Run quality gates for affected projects: typecheck, lint, and `test:quick` (which includes Unit
-    runtime and every applicable static `test:coverage:*` validator)
+    runtime and `test:behaviour:coverage`)

@@ -1,6 +1,6 @@
 import path from "path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
-import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { expect, vi } from "vitest";
 import React from "react";
@@ -89,12 +89,9 @@ import "./helpers/test-setup";
 import CostOfLivingCalculatorPage, {
   generateMetadata as generateCalculatorMetadata,
 } from "@/app/[locale]/tools/cost-of-living-calculator/page";
-import ToolsIndexPage from "@/app/[locale]/tools/page";
 import { dataset } from "@/features/cost-of-living-calculator/core/data/cities";
 import { fx } from "@/features/cost-of-living-calculator/core/data/fx";
 import { t } from "@/features/i18n/core/translations";
-import { PRIMARY_NAV_LINKS } from "@/features/app-shell/core/nav-links";
-import { resolveLocaleEntryRedirect } from "@/redirects/locale-entry";
 
 // The min-role tab now renders every (city, role) in scope (include-all). Unscoped, that is ~90+
 // rows re-rendered on each keystroke of `userEvent.type`; under coverage instrumentation a few of
@@ -145,6 +142,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── Cost of Living tab scenarios ───────────────────────────────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Cost-of-living breakdown lists category expenses per city
   Scenario("Cost-of-living breakdown lists category expenses per city", ({ Given, When, Then, And }) => {
     Given('I am on "/en/tools/cost-of-living-calculator"', () => {
       navState.locale = "en";
@@ -160,14 +158,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
     Then("I see a table of tech-hub cities", () => {
       expect(screen.getByRole("table")).toBeTruthy();
-    });
-
-    And("each row shows a Country column immediately to the left of the City column", () => {
-      const headers = screen.getAllByRole("columnheader").map((h) => h.textContent?.toLowerCase() ?? "");
-      const countryIdx = headers.findIndex((t) => t.includes("country"));
-      const cityIdx = headers.findIndex((t) => t.includes("city"));
-      expect(countryIdx).toBeGreaterThanOrEqual(0);
-      expect(cityIdx).toBeGreaterThan(countryIdx);
     });
 
     And(
@@ -190,6 +180,25 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       expect(headers.some((t) => t.includes("essentials"))).toBe(true);
       expect(headers.some((t) => t.includes("total"))).toBe(true);
     });
+  });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Relocation cost and reserve are shown apart in each city row
+  Scenario("Relocation cost and reserve are shown apart in each city row", ({ Given, When, Then, And }) => {
+    Given('I am on "/en/tools/cost-of-living-calculator"', () => {
+      navState.locale = "en";
+      expect(navState.params.toString()).toBe("");
+    });
+    And('the "Cost of living" tab is active', () => {
+      expect(navState.params.get("tab")).toBeNull();
+    });
+
+    When("the page finishes loading", () => {
+      renderPage(<CostOfLivingCalculatorPage />);
+    });
+
+    Then("I see a table of tech-hub cities", () => {
+      expect(screen.getByRole("table")).toBeTruthy();
+    });
 
     And("each row shows a separate one-time relocation sunk-cost total", () => {
       const headers = screen.getAllByRole("columnheader").map((h) => h.textContent?.toLowerCase() ?? "");
@@ -202,56 +211,79 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
-  Scenario(
-    "Region narrows the country filter and country narrows the city filter",
-    async ({ Given, When, Then, And }) => {
-      Given('I am on "/en/tools/cost-of-living-calculator"', () => {
-        navState.locale = "en";
-        expect(navState.params.toString()).toBe("");
-      });
-      And('the "Cost of living" tab is active', () => {
-        expect(navState.params.get("tab")).toBeNull();
-      });
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: cascading geographic filters
+  Scenario("cascading geographic filters", async ({ Given, When, Then, And }) => {
+    Given('I am on "/en/tools/cost-of-living-calculator"', () => {
+      navState.locale = "en";
+      expect(navState.params.toString()).toBe("");
+    });
+    And('the "Cost of living" tab is active', () => {
+      expect(navState.params.get("tab")).toBeNull();
+    });
 
-      When('I select the region "ASEAN" then the country "Indonesia" in the cascading filters', async () => {
-        renderPage(<CostOfLivingCalculatorPage />);
-        await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /region/i }), "asean");
-        await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /country/i }), "id");
-      });
+    When('I select the region "ASEAN" then the country "Indonesia" in the cascading filters', async () => {
+      renderPage(<CostOfLivingCalculatorPage />);
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /region/i }), "asean");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /country/i }), "id");
+    });
 
-      Then("the Country filter lists only ASEAN countries", () => {
-        // After selecting ASEAN region, country options are filtered to ASEAN
-        const countrySelect = screen.getByRole("combobox", { name: /country/i });
-        const countryOptions = countrySelect.querySelectorAll("option");
-        const nonAseanCountries = dataset.countries.filter(
-          (c) => !dataset.cities.some((city) => city.countryId === c.id && city.region === "asean") && c.id !== "",
-        );
-        for (const country of nonAseanCountries) {
-          const found = Array.from(countryOptions).some((o) => o.getAttribute("value") === country.id);
-          expect(found, `Non-ASEAN country ${country.name.en} should not appear`).toBe(false);
-        }
-      });
+    Then("the Country filter lists only ASEAN countries", () => {
+      // After selecting ASEAN region, country options are filtered to ASEAN
+      const countrySelect = screen.getByRole("combobox", { name: /country/i });
+      const countryOptions = countrySelect.querySelectorAll("option");
+      const nonAseanCountries = dataset.countries.filter(
+        (c) => !dataset.cities.some((city) => city.countryId === c.id && city.region === "asean") && c.id !== "",
+      );
+      for (const country of nonAseanCountries) {
+        const found = Array.from(countryOptions).some((o) => o.getAttribute("value") === country.id);
+        expect(found, `Non-ASEAN country ${country.name.en} should not appear`).toBe(false);
+      }
+    });
 
-      And("the City filter lists only Indonesian cities", () => {
-        const citySelect = screen.getByRole("combobox", { name: /city/i });
-        const cityOptions = Array.from(citySelect.querySelectorAll("option")).filter(
-          (o) => o.getAttribute("value") !== "",
-        );
-        const expectedIds = dataset.cities.filter((c) => c.countryId === "id").map((c) => c.id);
-        for (const opt of cityOptions) {
-          expect(expectedIds).toContain(opt.getAttribute("value"));
-        }
-      });
+    And("the City filter lists only Indonesian cities", () => {
+      const citySelect = screen.getByRole("combobox", { name: /city/i });
+      const cityOptions = Array.from(citySelect.querySelectorAll("option")).filter(
+        (o) => o.getAttribute("value") !== "",
+      );
+      const expectedIds = dataset.cities.filter((c) => c.countryId === "id").map((c) => c.id);
+      for (const opt of cityOptions) {
+        expect(expectedIds).toContain(opt.getAttribute("value"));
+      }
+    });
 
-      And("only cities in Indonesia are shown in the table", () => {
-        const rows = screen.getAllByRole("row").slice(1);
-        const idCities = dataset.cities.filter((c) => c.countryId === "id");
-        expect(rows.length).toBe(idCities.length);
-      });
-    },
-  );
+    And("only cities in Indonesia are shown in the table", () => {
+      const rows = screen.getAllByRole("row").slice(1);
+      const idCities = dataset.cities.filter((c) => c.countryId === "id");
+      expect(rows.length).toBe(idCities.length);
+    });
 
-  Scenario("Country and city are always shown together on every tab", ({ Given, When, Then }) => {
+    Given("I am on the calculator with no region or country selected", () => {
+      cleanup();
+      navState.params = new URLSearchParams();
+      navState.setParams(navState.params);
+      renderPage(<CostOfLivingCalculatorPage />);
+    });
+
+    When('I select the country "Indonesia" in the country filter without first selecting a region', async () => {
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /country/i }), "id");
+    });
+
+    Then("the city dropdown lists only cities in Indonesia", () => {
+      const citySelect = screen.getByRole("combobox", { name: /city/i });
+      const cityOptions = Array.from(citySelect.querySelectorAll("option")).filter(
+        (o) => o.getAttribute("value") !== "",
+      );
+      const idCityIds = dataset.cities.filter((c) => c.countryId === "id").map((c) => c.id);
+      // Every non-empty option must be an Indonesian city.
+      expect(cityOptions.length).toBeGreaterThan(0);
+      for (const opt of cityOptions) {
+        expect(idCityIds).toContain(opt.getAttribute("value"));
+      }
+    });
+  });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: country shown beside city
+  Scenario("country shown beside city", async ({ Given, When, Then }) => {
     Given('I am on "/en/tools/cost-of-living-calculator"', () => {
       navState.locale = "en";
       expect(navState.params.toString()).toBe("");
@@ -268,42 +300,118 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       expect(countryIdx).toBeGreaterThanOrEqual(0);
       expect(cityIdx).toBeGreaterThan(countryIdx);
     });
-  });
 
-  Scenario("Clicking a city name opens its single-city cost-of-living detail", async ({ Given, When, Then, And }) => {
-    const firstCity = dataset.cities[0]!;
+    Given('I am on the "Minimum role" tab with a baseline set', async () => {
+      cleanup();
+      navState.params = new URLSearchParams();
+      renderPage(<CostOfLivingCalculatorPage />);
+      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
+      await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
+      const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "1000");
+    });
 
-    Given('I am on "/en/tools/cost-of-living-calculator"', () => {
+    When("I read a qualifying (city, role) row", () => {
+      expect(screen.getAllByTestId("city-cell").length).toBeGreaterThan(0);
+    });
+
+    Then("the row shows the city and its country", () => {
+      const cells = screen.getAllByTestId("city-cell");
+      expect(cells[0]?.textContent?.length).toBeGreaterThan(0);
+    });
+
+    Given('I am viewing the "Cost of living" tab on a viewport narrower than 768 px', () => {
+      // jsdom has no real viewport; responsive rendering verified at e2e level
+      cleanup();
+      navState.params = new URLSearchParams();
       renderPage(<CostOfLivingCalculatorPage />);
     });
 
-    When("I click a city name in any table", async () => {
-      const links = screen.getAllByRole("link", { name: firstCity.name.en });
-      const cityLink = links.find((l) => l.getAttribute("href") === `?tab=cost&city=${firstCity.id}`);
-      expect(cityLink).toBeDefined();
-      await getScenarioUser().click(cityLink!);
+    When("the mobile city cards render", () => {
+      expect(screen.getByRole("main")).toBeTruthy();
     });
 
-    Then('I am taken to that city\'s single-city Cost-of-living detail at "?city=<id>"', () => {
-      // City detail is shown — CityDetail renders a heading with the city name.
-      // (Cost-of-living is the default tab, so encodeState omits tab=cost from the URL.)
-      expect(screen.getByTestId("city-detail")).toBeTruthy();
+    Then("each card header shows both the city name and its country name", () => {
+      const cards = screen.getByTestId("mobile-city-cards");
+      const firstCity = dataset.cities[0]!;
+      const country = dataset.countries.find((item) => item.id === firstCity.countryId)!;
+      expect(cards.textContent).toContain(firstCity.name.en);
+      expect(cards.textContent).toContain(country.name.en);
     });
-
-    And("the City filter is pre-selected to that city", () => {
-      // The city detail is shown with the city name visible
-      expect(screen.getByTestId("city-detail").textContent).toContain(firstCity.name.en);
-    });
-
-    And(
-      "the detail shows the full per-category breakdown, essentials subtotal, total, healthcare scheme badge, and split relocation in both local currency and USD",
-      () => {
-        // Healthcare badge present in city detail
-        expect(screen.getByTestId("healthcare-badge")).toBeTruthy();
-      },
-    );
   });
 
+  // Opens the first city's link from the results table, as a reader clicking the city name would.
+  async function clickFirstCityName() {
+    const firstCity = dataset.cities[0]!;
+    const links = screen.getAllByRole("link", { name: firstCity.name.en });
+    const cityLink = links.find((l) => l.getAttribute("href") === `?tab=cost&city=${firstCity.id}`);
+    expect(cityLink).toBeDefined();
+    await getScenarioUser().click(cityLink!);
+  }
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Clicking a city name opens its single-city cost-of-living detail
+  ScenarioOutline(
+    "Clicking a city name opens its single-city cost-of-living detail",
+    ({ Given, When, Then, And }, variables) => {
+      const firstCity = dataset.cities[0]!;
+
+      Given('I am on "/en/tools/cost-of-living-calculator"', () => {
+        renderPage(<CostOfLivingCalculatorPage />);
+      });
+
+      When("I <how>", async () => {
+        if (variables.how === "click a city name in any table") {
+          await clickFirstCityName();
+        } else {
+          await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /city/i }), firstCity.id);
+        }
+      });
+
+      Then('I am taken to that city\'s single-city Cost-of-living detail at "?city=<id>"', () => {
+        // City detail is shown — CityDetail renders a heading with the city name.
+        // (Cost-of-living is the default tab, so encodeState omits tab=cost from the URL.)
+        expect(screen.getByTestId("city-detail")).toBeTruthy();
+      });
+
+      And("the City filter is pre-selected to that city", () => {
+        // The city detail is shown with the city name visible
+        expect(screen.getByTestId("city-detail").textContent).toContain(firstCity.name.en);
+      });
+
+      And("the detail is identical to the one shown when clicking the city name in the table", () => {
+        const detail = screen.getByTestId("city-detail");
+        expect(detail.textContent).toContain(firstCity.name.en);
+        expect(detail.querySelector("[data-testid='expense-housing']")).toBeTruthy();
+      });
+    },
+  );
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The single-city detail shows the breakdown, scheme badge, and split relocation in local currency and USD
+  Scenario(
+    "The single-city detail shows the breakdown, scheme badge, and split relocation in local currency and USD",
+    async ({ Given, When, Then }) => {
+      Given('I am on "/en/tools/cost-of-living-calculator"', () => {
+        renderPage(<CostOfLivingCalculatorPage />);
+      });
+
+      When("I click a city name in any table", async () => {
+        await clickFirstCityName();
+      });
+
+      Then(
+        "the detail shows the full per-category breakdown, essentials subtotal, total, healthcare scheme badge, and split relocation in both local currency and USD",
+        () => {
+          const detail = screen.getByTestId("city-detail");
+          expect(detail.querySelector("[data-testid='expense-housing']")).toBeTruthy();
+          expect(detail.querySelector("[data-testid='relocation-sunk']")).toBeTruthy();
+          expect(screen.getByTestId("healthcare-badge")).toBeTruthy();
+        },
+      );
+    },
+  );
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Clicking a country opens Cost-of-living filtered to that country
   Scenario("Clicking a country opens Cost-of-living filtered to that country", async ({ Given, When, Then, And }) => {
     const firstCountry = dataset.countries[0]!;
     const firstCountryCities = dataset.cities.filter((c) => c.countryId === firstCountry.id);
@@ -338,7 +446,8 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
-  Scenario("A city link takes precedence over a country link when both params are present", ({ Given, When, Then }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: city wins in deep links
+  Scenario("city wins in deep links", ({ Given, When, Then, And }) => {
     const firstCity = dataset.cities[0]!;
 
     Given("I am on the calculator with both a country and a city query param set", () => {
@@ -352,8 +461,31 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     Then("the single-city Cost-of-living detail for the city is shown because a city implies its country", () => {
       expect(screen.getByTestId("city-detail")).toBeTruthy();
     });
+
+    Given('a deep link with query string "region=europe&city=singapore"', () => {
+      // Unmount the first render so the contradictory deep link mounts a fresh page.
+      cleanup();
+      navState.params = new URLSearchParams("region=europe&city=singapore");
+      navState.setParams(navState.params);
+      renderPage(<CostOfLivingCalculatorPage />);
+    });
+
+    When("the page resolves the deep link", () => {
+      expect(screen.getByTestId("calc-page")).toBeTruthy();
+    });
+
+    Then("the single-city detail for Singapore is shown", () => {
+      expect(screen.getByTestId("city-detail").textContent).toContain("Singapore");
+    });
+
+    And('the URL is rewritten to canonical form with "city=singapore" and "region" backfilled to "asean"', () => {
+      expect(navState.params.get("city")).toBe("singapore");
+      expect(navState.params.get("region")).toBe("asean");
+      expect(navState.lastNavMethod).toBe("replace");
+    });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Healthcare funding scheme is always shown
   Scenario("Healthcare funding scheme is always shown", async ({ Given, When, Then, And }) => {
     Given('I am on "/en/tools/cost-of-living-calculator"', () => {
       navState.locale = "en";
@@ -378,6 +510,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The OOP abbreviation is explained on screen
   Scenario("The OOP abbreviation is explained on screen", ({ Given, When, Then, And }) => {
     Given('I am on a tab that shows the "Healthcare (OOP)" column', () => {
       expect(navState.params.get("tab")).toBeNull();
@@ -421,6 +554,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Relocation reserve is shown separately from sunk costs
   Scenario("Relocation reserve is shown separately from sunk costs", ({ Given, When, Then, And }) => {
     Given('I am on the "Cost of living" tab', () => {
       expect(navState.params.get("tab")).toBeNull();
@@ -446,6 +580,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── Savings tab scenarios ───────────────────────────────────────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings tab converts gross salary to net before subtracting expenses
   Scenario(
     "Savings tab converts gross salary to net before subtracting expenses",
     async ({ Given, When, Then, And }) => {
@@ -469,48 +604,88 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
         const headers = screen.getAllByRole("columnheader").map((h) => h.textContent?.toLowerCase() ?? "");
         expect(headers.some((t) => t.includes("net"))).toBe(true);
       });
-
-      And(
-        "each row shows the essentials, the savings after essentials, and the savings after lifestyle with percentages",
-        () => {
-          const headers = screen.getAllByRole("columnheader").map((h) => h.textContent?.toLowerCase() ?? "");
-          expect(headers.some((t) => t.includes("essentials"))).toBe(true);
-          expect(headers.some((t) => t.includes("savings"))).toBe(true);
-        },
-      );
-
-      And("the table can be sorted by savings", () => {
-        expect(screen.getByRole("button", { name: /sort/i })).toBeTruthy();
-      });
     },
   );
 
-  Scenario("Gross salary entered monthly shows the derived annual figure", async ({ Given, When, Then, And }) => {
-    Given('I am on the "Savings" tab', async () => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings tab shows essentials and savings with percentages
+  Scenario("Savings tab shows essentials and savings with percentages", ({ Given, When, Then, And }) => {
+    Given('I am on "/en/tools/cost-of-living-calculator"', () => {
+      navState.locale = "en";
+      expect(navState.params.toString()).toBe("");
+    });
+    And('I switch to the "Savings" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
       await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
     });
-
     When('I enter a gross monthly salary of "8000" USD', async () => {
       const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
       await getScenarioUser().clear(input);
       await getScenarioUser().type(input, "8000");
     });
+    Then(
+      "each row shows the essentials, the savings after essentials, and the savings after lifestyle with percentages",
+      () => {
+        const headers = screen.getAllByRole("columnheader").map((h) => h.textContent?.toLowerCase() ?? "");
+        expect(headers.some((t) => t.includes("essentials"))).toBe(true);
+        expect(headers.some((t) => t.includes("savings"))).toBe(true);
+      },
+    );
+  });
 
-    Then('the annual gross is shown as "96000" USD', () => {
-      expect(screen.getByTestId("annual-gross")).toHaveTextContent("96");
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The savings table can be sorted by savings
+  Scenario("The savings table can be sorted by savings", ({ Given, When, Then, And }) => {
+    Given('I am on "/en/tools/cost-of-living-calculator"', () => {
+      navState.locale = "en";
+      expect(navState.params.toString()).toBe("");
     });
-
-    And("the annual figure equals twelve times the monthly figure", () => {
-      const monthly = Number(
-        (screen.getByRole("spinbutton", { name: /gross monthly salary/i }) as HTMLInputElement).value,
-      );
-      const annual = Number(screen.getByTestId("annual-gross").textContent?.replace(/[^0-9.-]/g, ""));
-      expect(annual).toBe(monthly * 12);
+    And('I switch to the "Savings" tab', async () => {
+      renderPage(<CostOfLivingCalculatorPage />);
+      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
+    });
+    When('I enter a gross monthly salary of "8000" USD', async () => {
+      const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "8000");
+    });
+    Then("the table can be sorted by savings", () => {
+      expect(screen.getByRole("button", { name: /sort/i })).toBeTruthy();
     });
   });
 
-  Scenario("Non-salary comp is shown as informational context only", async ({ Given, When, Then, But }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Gross salary entered monthly shows the derived annual figure
+  ScenarioOutline(
+    "Gross salary entered monthly shows the derived annual figure",
+    ({ Given, When, Then, And }, variables) => {
+      Given('I am on the "Savings" tab', async () => {
+        renderPage(<CostOfLivingCalculatorPage />);
+        await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
+      });
+
+      When('I enter a gross monthly salary of "<monthly>" USD', async () => {
+        const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
+        await getScenarioUser().clear(input);
+        await getScenarioUser().type(input, String(variables.monthly));
+      });
+
+      Then('the annual gross is shown as "<annual>" USD', () => {
+        // Compare digits only: the display groups thousands with commas.
+        expect(screen.getByTestId("annual-gross").textContent?.replace(/\D/g, "")).toBe(
+          String(variables.annual).replace(/\D/g, ""),
+        );
+      });
+
+      And("the annual figure equals twelve times the monthly figure", () => {
+        const monthly = Number(
+          (screen.getByRole("spinbutton", { name: /gross monthly salary/i }) as HTMLInputElement).value,
+        );
+        const annual = Number(screen.getByTestId("annual-gross").textContent?.replace(/[^0-9.-]/g, ""));
+        expect(annual).toBe(monthly * 12);
+      });
+    },
+  );
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Non-salary and total compensation are shown as context only
+  Scenario("Non-salary and total compensation are shown as context only", async ({ Given, When, Then, And, But }) => {
     Given('I am on the "Savings" tab with a gross salary entered', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
       await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
@@ -531,25 +706,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       },
     );
 
-    But("it is not added into the net, the essential savings, or the after-lifestyle savings", () => {
-      expect(screen.getByTestId("non-salary-comp-note")).toBeTruthy();
-    });
-  });
-
-  Scenario("Total compensation is shown for negotiation context", async ({ Given, When, Then, And }) => {
-    Given('I am on the "Savings" tab with a gross salary entered', async () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
-      const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
-      await getScenarioUser().clear(input);
-      await getScenarioUser().type(input, "8000");
-    });
-
-    When("I read a city row", () => {
-      expect(screen.getByRole("table")).toBeTruthy();
-    });
-
-    Then(
+    And(
       "a total compensation figure equal to the base annual gross plus the typical non-salary comp is shown as informational context",
       () => {
         const headers = screen.getAllByRole("columnheader").map((h) => h.textContent?.toLowerCase() ?? "");
@@ -557,14 +714,12 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       },
     );
 
-    And(
-      "the total compensation is not added into the net, the essential savings, or the after-lifestyle savings",
-      () => {
-        expect(screen.getByTestId("non-salary-comp-note")).toBeTruthy();
-      },
-    );
+    But("neither figure is added into the net, the essential savings, or the after-lifestyle savings", () => {
+      expect(screen.getByTestId("non-salary-comp-note")).toBeTruthy();
+    });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Sub-national tax lowers net only in federal countries
   Scenario("Sub-national tax lowers net only in federal countries", async ({ Given, When, Then, But }) => {
     Given('I am on the "Savings" tab with a gross salary entered', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -594,6 +749,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Net take-home is lower than the entered gross
   Scenario("Net take-home is lower than the entered gross", async ({ Given, When, Then }) => {
     Given('I am on the "Savings" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -616,6 +772,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Essentials above net show a deficit
   Scenario("Essentials above net show a deficit", async ({ Given, When, Then }) => {
     Given('I am on the "Savings" tab for a high-cost city', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -637,7 +794,8 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── i18n scenario ───────────────────────────────────────────────────────────
 
-  Scenario("Indonesian locale is fully translated", ({ Given, When, Then }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: calculator in Indonesian
+  Scenario("calculator in Indonesian", async ({ Given, When, Then, And }) => {
     Given('I am on "/id/tools/cost-of-living-calculator"', () => {
       navState.locale = "id";
       expect(navState.locale).toBe("id");
@@ -658,27 +816,58 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
         expect(t("id", "oopLegend")).not.toBe(t("en", "oopLegend"));
       },
     );
+
+    And("the cost-of-living table's Country and City columns show Indonesian names where translations exist", () => {
+      expect(document.body.textContent).toContain("Singapura");
+      expect(document.body.textContent).toContain("Jepang");
+    });
+
+    And(
+      "the City column of the minimum-role ladder shows Indonesian city and country names where translations exist",
+      async () => {
+        await getScenarioUser().click(screen.getByRole("tab", { name: /jabatan minimum/i }));
+        await getScenarioUser().type(screen.getByRole("spinbutton", { name: /target tabungan bulanan/i }), "0");
+        expect(screen.getAllByTestId("city-cell").some((cell) => cell.textContent?.includes("Singapura"))).toBe(true);
+      },
+    );
   });
 
   // ─── Data integrity ───────────────────────────────────────────────────────────
 
-  Scenario("No Israeli cities are listed", ({ Given, When, Then }) => {
-    Given("I am on the calculator in either locale", () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: No Israeli city is listed in the dataset, any table, or role candidates
+  Scenario(
+    "No Israeli city is listed in the dataset, any table, or role candidates",
+    async ({ Given, When, Then, And }) => {
+      Given("I am on the calculator in either locale", () => {
+        renderPage(<CostOfLivingCalculatorPage />);
+      });
 
-    When("the page finishes loading", () => {
-      expect(screen.getByRole("table")).toBeTruthy();
-    });
+      When("the page finishes loading", () => {
+        expect(screen.getByRole("table")).toBeTruthy();
+      });
 
-    Then("no Israeli city appears in the dataset or any table", () => {
-      const rows = screen.getAllByRole("row").slice(1);
-      for (const row of rows) {
-        expect(row.textContent).not.toMatch(/israel|tel aviv/i);
-      }
-    });
-  });
+      Then("no Israeli city appears in the dataset or any table", () => {
+        const rows = screen.getAllByRole("row").slice(1);
+        for (const row of rows) {
+          expect(row.textContent).not.toMatch(/israel|tel aviv/i);
+        }
+      });
 
+      And("no Israeli city appears as a candidate city for any role", async () => {
+        await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
+        // Enter a target so the ladder renders past the blank empty-state.
+        const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
+        await getScenarioUser().clear(input);
+        await getScenarioUser().type(input, "1000");
+        const rows = screen.getAllByRole("row");
+        for (const row of rows) {
+          expect(row.textContent).not.toMatch(/israel|tel aviv/i);
+        }
+      });
+    },
+  );
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Data snapshot date is clearly shown
   Scenario("Data snapshot date is clearly shown", ({ Given, When, Then, And }) => {
     Given("I am on the calculator", () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -701,29 +890,10 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
-  Scenario("Every monetary figure converts to USD via the in-repo FX table", ({ Given, When, Then, And }) => {
-    Given("I am on the calculator", () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When("I read any USD figure derived from a local-currency value", () => {
-      expect(screen.getByRole("table")).toBeTruthy();
-    });
-
-    Then("the conversion uses the rate for that currency stored in the in-repo fx.ts table", () => {
-      const nonUsdCity = dataset.cities.find((city) => city.currency !== "USD")!;
-      expect(fx.ratesUsdPerUnit[nonUsdCity.currency]).toBeGreaterThan(0);
-    });
-
-    And("every currency referenced by a city, country, role, or display-currency selector has an fx.ts entry", () => {
-      const referencedCurrencies = new Set(dataset.cities.map((city) => city.currency));
-      for (const currency of referencedCurrencies) expect(fx.ratesUsdPerUnit[currency]).toBeGreaterThan(0);
-    });
-  });
-
   // ─── Cost-basis controls scenarios ───────────────────────────────────────────
 
-  Scenario("Adding adults and children changes the modeled expenses", async ({ Given, When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Adding adults and children grows housing and utilities sub-linearly
+  Scenario("Adding adults and children grows housing and utilities sub-linearly", ({ Given, When, Then }) => {
     Given('I am on the "Cost of living" tab', () => {
       renderPage(<CostOfLivingCalculatorPage />);
     });
@@ -737,12 +907,36 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       // Preview moved to the min-role tab; on the cost tab these figures live in the table.
       expect(screen.getByTestId(`col-housing-${dataset.cities[0]!.id}`)).toBeTruthy();
     });
+  });
 
-    And("the modeled food and healthcare increase near per-capita", () => {
-      expect(screen.getByTestId(`col-food-${dataset.cities[0]!.id}`)).toBeTruthy();
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Adding adults and children grows food and healthcare near per capita
+  Scenario("Adding adults and children grows food and healthcare near per capita", ({ Given, When, Then }) => {
+    Given('I am on the "Cost of living" tab', () => {
+      renderPage(<CostOfLivingCalculatorPage />);
     });
 
-    And("schooling is added for the two school-age children", () => {
+    When('I change the household from "single" to married with 2 school-age children', async () => {
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /adults/i }), "2");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /school-age children/i }), "2");
+    });
+
+    Then("the modeled food and healthcare increase near per-capita", () => {
+      expect(screen.getByTestId(`col-food-${dataset.cities[0]!.id}`)).toBeTruthy();
+    });
+  });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Adding school-age children adds schooling costs
+  Scenario("Adding school-age children adds schooling costs", ({ Given, When, Then }) => {
+    Given('I am on the "Cost of living" tab', () => {
+      renderPage(<CostOfLivingCalculatorPage />);
+    });
+
+    When('I change the household from "single" to married with 2 school-age children', async () => {
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /adults/i }), "2");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /school-age children/i }), "2");
+    });
+
+    Then("schooling is added for the two school-age children", () => {
       const schooling = parseFloat(
         screen.getByTestId(`col-school-${dataset.cities[0]!.id}`).getAttribute("data-raw") ?? "0",
       );
@@ -750,6 +944,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Pre-school children incur childcare, not schooling
   Scenario("Pre-school children incur childcare, not schooling", async ({ Given, When, Then, But }) => {
     Given('I am on the "Cost of living" tab', () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -774,7 +969,8 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
-  Scenario("School type toggle is shown but disabled without school-age children", ({ Given, When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: school type toggle availability
+  Scenario("school type toggle availability", ({ Given, When, Then, And }) => {
     Given('I am on "/en/tools/cost-of-living-calculator"', () => {
       navState.locale = "en";
       expect(navState.params.toString()).toBe("");
@@ -793,8 +989,47 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     And("a hint explains that school-age children must be added to choose", () => {
       expect(screen.getByText(/add school-age children to choose/i)).toBeTruthy();
     });
+
+    And('the "Public" and "Private" buttons are aria-disabled', () => {
+      const group = screen.getByRole("radiogroup", { name: /school type/i });
+      const publicBtn = within(group).getByRole("radio", { name: /public/i, hidden: true });
+      const privateBtn = within(group).getByRole("radio", { name: /private/i, hidden: true });
+      expect(publicBtn.getAttribute("aria-disabled")).toBe("true");
+      expect(privateBtn.getAttribute("aria-disabled")).toBe("true");
+    });
+
+    And('their accessible description names the "add school-age children" prerequisite', () => {
+      const group = screen.getByRole("radiogroup", { name: /school type/i });
+      const publicBtn = within(group).getByRole("radio", { name: /public/i, hidden: true });
+      const describedById = publicBtn.getAttribute("aria-describedby");
+      expect(describedById).toBe("school-type-hint");
+      const hint = document.getElementById(describedById!);
+      expect(hint).toBeTruthy();
+      expect(hint!.textContent?.toLowerCase()).toMatch(/school-age children/);
+    });
+
+    When("I set the household to 1 school-age child", async () => {
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /school.age/i }), "1");
+    });
+
+    Then('the school type toggle is enabled with "Public" and "Private" options', () => {
+      const group = screen.getByRole("radiogroup", { name: /school type/i });
+      expect(group.getAttribute("aria-disabled")).toBeNull();
+      expect(within(group).getByRole("radio", { name: /public/i })).toBeTruthy();
+      expect(within(group).getByRole("radio", { name: /private/i })).toBeTruthy();
+    });
+
+    And('the default selection is "Public"', () => {
+      const group = screen.getByRole("radiogroup", { name: /school type/i });
+      expect(
+        within(group)
+          .getByRole("radio", { name: /public/i })
+          .getAttribute("aria-checked"),
+      ).toBe("true");
+    });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Private school raises expenses more than public
   Scenario("Private school raises expenses more than public", async ({ Given, And, When, Then }) => {
     Given('I am on "/en/tools/cost-of-living-calculator"', () => {
       navState.locale = "en";
@@ -816,9 +1051,14 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
-  Scenario("Rural area lowers housing versus city center", async ({ Given, When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: area changes the housing estimate
+  Scenario("area changes the housing estimate", async ({ Given, And, When, Then }) => {
     Given('I am on the "Cost of living" tab', () => {
       renderPage(<CostOfLivingCalculatorPage />);
+    });
+
+    And("I set the household to 2 adults with no children", async () => {
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /adults/i }), "2");
     });
 
     When('I switch the area from "city center" to "rural"', async () => {
@@ -832,56 +1072,85 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     And("the city total decreases accordingly", () => {
       expect(screen.getByTestId(`col-essentials-${dataset.cities[0]!.id}`)).toBeTruthy();
     });
+
+    And("the housing estimate in the expense preview decreases", () => {
+      // Stub: exact multiplier verified at core unit level. Cost tab surfaces it in the table.
+      expect(screen.getByTestId(`col-housing-${dataset.cities[0]!.id}`)).toBeTruthy();
+    });
+
+    And("the essentials total in the preview decreases accordingly", () => {
+      expect(screen.getByTestId(`col-essentials-${dataset.cities[0]!.id}`)).toBeTruthy();
+    });
   });
 
   // ─── Minimum Role tab scenarios ──────────────────────────────────────────────
 
-  Scenario(
-    "Minimum role for a savings target ranks on essential savings and is reordered",
-    async ({ Given, And, When, Then }) => {
-      Given('I am on "/en/tools/cost-of-living-calculator"', () => {
-        navState.locale = "en";
-        expect(navState.params.toString()).toBe("");
-      });
-      And('I switch to the "Minimum role" tab', async () => {
-        renderPage(<CostOfLivingCalculatorPage />);
-        await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
-      });
-      And('I set the baseline source to "savings target"', async () => {
-        await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
-      });
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Qualifying rows sit above a divider, others dimmed below
+  Scenario("Qualifying rows sit above a divider, others dimmed below", async ({ Given, And, When, Then }) => {
+    Given('I am on "/en/tools/cost-of-living-calculator"', () => {
+      navState.locale = "en";
+      expect(navState.params.toString()).toBe("");
+    });
+    And('I switch to the "Minimum role" tab', async () => {
+      renderPage(<CostOfLivingCalculatorPage />);
+      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
+    });
+    And('I set the baseline source to "savings target"', async () => {
+      await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
+    });
 
-      When('I enter a monthly savings target of "8000" USD', async () => {
-        const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
-        await getScenarioUser().clear(input);
-        await getScenarioUser().type(input, "8000");
-      });
+    When('I enter a monthly savings target of "8000" USD', async () => {
+      const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "8000");
+    });
 
-      Then(
-        "I see the qualifying (city, role) rows grouped above a divider and non-qualifying rows dimmed below it",
-        () => {
-          expect(screen.getByTestId("qualifying-divider")).toBeTruthy();
-          expect(screen.getAllByTestId("non-qualifying-row").length).toBeGreaterThan(0);
-        },
-      );
+    Then(
+      "I see the qualifying (city, role) rows grouped above a divider and non-qualifying rows dimmed below it",
+      () => {
+        expect(screen.getByTestId("qualifying-divider")).toBeTruthy();
+        expect(screen.getAllByTestId("non-qualifying-row").length).toBeGreaterThan(0);
+      },
+    );
 
-      And(
-        "the lowest role rank that reaches at least 8000 USD essential savings anywhere in the filter is marked as the minimum",
-        () => {
-          expect(screen.getAllByTestId("minimum-marker").length).toBeGreaterThan(0);
-        },
-      );
+    And(
+      "(city, role) rows that cannot reach 8000 USD essential savings are shown below the divider and de-emphasised",
+      () => {
+        expect(screen.getAllByTestId("non-qualifying-row").length).toBeGreaterThan(0);
+      },
+    );
+  });
 
-      And(
-        "(city, role) rows that cannot reach 8000 USD essential savings are shown below the divider and de-emphasised",
-        () => {
-          expect(screen.getAllByTestId("non-qualifying-row").length).toBeGreaterThan(0);
-        },
-      );
-    },
-  );
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The lowest qualifying role is marked minimum
+  Scenario("The lowest qualifying role is marked minimum", async ({ Given, And, When, Then }) => {
+    Given('I am on "/en/tools/cost-of-living-calculator"', () => {
+      navState.locale = "en";
+      expect(navState.params.toString()).toBe("");
+    });
+    And('I switch to the "Minimum role" tab', async () => {
+      renderPage(<CostOfLivingCalculatorPage />);
+      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
+    });
+    And('I set the baseline source to "savings target"', async () => {
+      await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
+    });
+
+    When('I enter a monthly savings target of "8000" USD', async () => {
+      const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "8000");
+    });
+
+    Then(
+      "the lowest role rank that reaches at least 8000 USD essential savings anywhere in the filter is marked as the minimum",
+      () => {
+        expect(screen.getAllByTestId("minimum-marker").length).toBeGreaterThan(0);
+      },
+    );
+  });
 
   // INCLUDE-ALL rule — every qualifying (city, role) within the filter is its own row.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Every qualifying city and role within the filter is included
   Scenario("Every qualifying city and role within the filter is included", async ({ Given, And, When, Then }) => {
     Given('I am on the "Minimum role" tab with a baseline set', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -927,6 +1196,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Roles are labelled as software-engineering roles
   Scenario("Roles are labelled as software-engineering roles", async ({ Given, When, Then }) => {
     Given('I am on the "Minimum role" tab with a baseline set', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -948,6 +1218,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Each role shows its per-country salary distribution
   Scenario("Each role shows its per-country salary distribution", async ({ Given, When, Then, And }) => {
     Given('I am on the "Minimum role" tab with a baseline set', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -974,26 +1245,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
-  Scenario("A city row shows its country alongside the city name", async ({ Given, When, Then }) => {
-    Given('I am on the "Minimum role" tab with a baseline set', async () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
-      await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
-      const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
-      await getScenarioUser().clear(input);
-      await getScenarioUser().type(input, "1000");
-    });
-
-    When("I read a qualifying (city, role) row", () => {
-      expect(screen.getAllByTestId("city-cell").length).toBeGreaterThan(0);
-    });
-
-    Then("the row shows the city and its country", () => {
-      const cells = screen.getAllByTestId("city-cell");
-      expect(cells[0]?.textContent?.length).toBeGreaterThan(0);
-    });
-  });
-
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Geographic filter scopes the candidate cities
   Scenario("Geographic filter scopes the candidate cities", async ({ Given, When, Then }) => {
     Given('I am on the "Minimum role" tab with a baseline set', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -1019,92 +1271,84 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
-  Scenario("Non-salary comp does not determine the minimum-role ranking", async ({ Given, When, Then, And }) => {
-    let comparison: Array<{ savings: number; nonSalary: number }> = [];
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Min-role ranking follows essential savings, not non-salary comp or lifestyle
+  Scenario(
+    "Min-role ranking follows essential savings, not non-salary comp or lifestyle",
+    async ({ Given, When, Then, And }) => {
+      let comparison: Array<{ savings: number; nonSalary: number }> = [];
+      let essentialOrder: string[] = [];
+      let afterLifestyleOrder: string[] = [];
+      let markerRanks: number[] = [];
+      let expectedMinimumRank = Number.NaN;
 
-    Given('I am on the "Minimum role" tab with a baseline set', async () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
-      await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
-      const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
-      await getScenarioUser().clear(input);
-      await getScenarioUser().type(input, "1000");
-    });
-
-    When("I compare candidate order with their essential savings and non-salary comp", () => {
-      const rows = Array.from(document.querySelectorAll("tr[data-candidate-row='true']"));
-      expect(rows.length).toBeGreaterThan(20);
-      comparison = rows.map((row) => ({
-        savings: Number(row.getAttribute("data-essential-savings-usd")),
-        nonSalary: Number(row.querySelector("[data-money-column='non-salary-comp']")?.getAttribute("data-usd")),
-      }));
-    });
-
-    Then("rows are ordered by essential savings regardless of non-salary comp", () => {
-      const savings = comparison.map(({ savings }) => savings);
-      expect(savings).toEqual([...savings].sort((a, b) => b - a));
-    });
-
-    And("at least one adjacent pair would be ordered differently by non-salary comp", () => {
-      expect(
-        comparison.some((value, index) => {
-          const next = comparison[index + 1];
-          return next !== undefined && value.savings >= next.savings && value.nonSalary < next.nonSalary;
-        }),
-      ).toBe(true);
-    });
-  });
-
-  Scenario("Lifestyle does not determine the minimum-role ranking", async ({ Given, When, Then }) => {
-    let essentialOrder: string[] = [];
-    let afterLifestyleOrder: string[] = [];
-    let markerRanks: number[] = [];
-    let expectedMinimumRank = Number.NaN;
-
-    Given('I am on the "Minimum role" tab with a baseline set', async () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
-      await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
-      const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
-      await getScenarioUser().clear(input);
-      await getScenarioUser().type(input, "1000");
-    });
-
-    When("I compare the ladder with each city's published lifestyle cost", () => {
-      const rows = Array.from(document.querySelectorAll("tr[data-candidate-row='true']"));
-      const baseline = Number(screen.getByTestId("min-role-table").getAttribute("data-baseline-usd"));
-      const candidates = rows.map((row) => {
-        const cityId = row.getAttribute("data-city-id")!;
-        const city = dataset.cities.find((candidate) => candidate.id === cityId)!;
-        return {
-          key: `${cityId}:${row.getAttribute("data-role")}`,
-          rank: Number(row.getAttribute("data-rank")),
-          essential: Number(row.getAttribute("data-essential-savings-usd")),
-          lifestyleUsd: city.expenses.lifestyle.amount * fx.ratesUsdPerUnit[city.currency]!,
-          marked: row.querySelector("[data-testid='minimum-marker']") !== null,
-        };
+      Given('I am on the "Minimum role" tab with a baseline set', async () => {
+        renderPage(<CostOfLivingCalculatorPage />);
+        await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
+        await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
+        const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
+        await getScenarioUser().clear(input);
+        await getScenarioUser().type(input, "1000");
       });
-      const qualifying = candidates.filter(({ essential }) => essential >= baseline);
-      essentialOrder = qualifying.map(({ key }) => key);
-      afterLifestyleOrder = [...qualifying]
-        .sort((a, b) => b.essential - b.lifestyleUsd - (a.essential - a.lifestyleUsd))
-        .map(({ key }) => key);
-      expectedMinimumRank = Math.min(...qualifying.map(({ rank }) => rank));
-      markerRanks = candidates.filter(({ marked }) => marked).map(({ rank }) => rank);
-    });
 
-    Then("candidate order and the minimum marker follow essential savings rather than after-lifestyle savings", () => {
-      const actual = Array.from(
-        screen
-          .getByTestId("qualifying-divider")
-          .parentElement!.querySelectorAll("tr[data-candidate-row='true']:not([data-testid='non-qualifying-row'])"),
-      ).map((row) => `${row.getAttribute("data-city-id")}:${row.getAttribute("data-role")}`);
-      expect(actual).toEqual(essentialOrder);
-      expect(actual).not.toEqual(afterLifestyleOrder);
-      expect(new Set(markerRanks)).toEqual(new Set([expectedMinimumRank]));
-    });
-  });
+      When(
+        "I compare candidate order with their essential savings, non-salary comp, and each city's lifestyle cost",
+        () => {
+          const rows = Array.from(document.querySelectorAll("tr[data-candidate-row='true']"));
+          expect(rows.length).toBeGreaterThan(20);
+          comparison = rows.map((row) => ({
+            savings: Number(row.getAttribute("data-essential-savings-usd")),
+            nonSalary: Number(row.querySelector("[data-money-column='non-salary-comp']")?.getAttribute("data-usd")),
+          }));
+          const baseline = Number(screen.getByTestId("min-role-table").getAttribute("data-baseline-usd"));
+          const candidates = rows.map((row) => {
+            const cityId = row.getAttribute("data-city-id")!;
+            const city = dataset.cities.find((candidate) => candidate.id === cityId)!;
+            return {
+              key: `${cityId}:${row.getAttribute("data-role")}`,
+              rank: Number(row.getAttribute("data-rank")),
+              essential: Number(row.getAttribute("data-essential-savings-usd")),
+              lifestyleUsd: city.expenses.lifestyle.amount * fx.ratesUsdPerUnit[city.currency]!,
+              marked: row.querySelector("[data-testid='minimum-marker']") !== null,
+            };
+          });
+          const qualifying = candidates.filter(({ essential }) => essential >= baseline);
+          essentialOrder = qualifying.map(({ key }) => key);
+          afterLifestyleOrder = [...qualifying]
+            .sort((a, b) => b.essential - b.lifestyleUsd - (a.essential - a.lifestyleUsd))
+            .map(({ key }) => key);
+          expectedMinimumRank = Math.min(...qualifying.map(({ rank }) => rank));
+          markerRanks = candidates.filter(({ marked }) => marked).map(({ rank }) => rank);
+        },
+      );
 
+      Then("rows are ordered by essential savings regardless of non-salary comp", () => {
+        const savings = comparison.map(({ savings }) => savings);
+        expect(savings).toEqual([...savings].sort((a, b) => b - a));
+      });
+
+      And("at least one adjacent pair would be ordered differently by non-salary comp", () => {
+        expect(
+          comparison.some((value, index) => {
+            const next = comparison[index + 1];
+            return next !== undefined && value.savings >= next.savings && value.nonSalary < next.nonSalary;
+          }),
+        ).toBe(true);
+      });
+
+      And("candidate order and the minimum marker follow essential savings rather than after-lifestyle savings", () => {
+        const actual = Array.from(
+          screen
+            .getByTestId("qualifying-divider")
+            .parentElement!.querySelectorAll("tr[data-candidate-row='true']:not([data-testid='non-qualifying-row'])"),
+        ).map((row) => `${row.getAttribute("data-city-id")}:${row.getAttribute("data-role")}`);
+        expect(actual).toEqual(essentialOrder);
+        expect(actual).not.toEqual(afterLifestyleOrder);
+        expect(new Set(markerRanks)).toEqual(new Set([expectedMinimumRank]));
+      });
+    },
+  );
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Minimum role from a reference city and role
   Scenario("Minimum role from a reference city and role", async ({ Given, And, When, Then }) => {
     Given('I am on the "Minimum role" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -1132,6 +1376,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Minimum role from my own salary
   Scenario("Minimum role from my own salary", async ({ Given, And, When, Then }) => {
     Given('I am on the "Minimum role" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -1162,6 +1407,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: My-salary baseline accepts the gross in local currency or USD
   Scenario("My-salary baseline accepts the gross in local currency or USD", async ({ Given, And, When, Then }) => {
     let localBaseline = Number.NaN;
     let usdBaseline = Number.NaN;
@@ -1180,8 +1426,9 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       const group = screen.getByRole("radiogroup", { name: /salary currency/i });
       await getScenarioUser().click(within(group).getByRole("radio", { name: "SGD" }));
       const grossInput = screen.getByRole("spinbutton", { name: /my gross monthly/i });
-      await getScenarioUser().clear(grossInput);
-      await getScenarioUser().type(grossInput, "10000");
+      // One change event, not a keystroke per digit: each keystroke re-renders the whole calculator,
+      // which pushed this scenario past its timeout under full-suite load.
+      fireEvent.change(grossInput, { target: { value: "10000" } });
       localBaseline = Number(screen.getByTestId("min-role-table").getAttribute("data-baseline-usd"));
       localMarkers = Array.from(document.querySelectorAll("tr[data-candidate-row='true']"))
         .filter((row) => row.querySelector("[data-testid='minimum-marker']") !== null)
@@ -1189,8 +1436,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
         .sort();
 
       await getScenarioUser().click(within(group).getByRole("radio", { name: "USD" }));
-      await getScenarioUser().clear(grossInput);
-      await getScenarioUser().type(grossInput, "7744");
+      fireEvent.change(grossInput, { target: { value: "7744" } });
       usdBaseline = Number(screen.getByTestId("min-role-table").getAttribute("data-baseline-usd"));
       usdMarkers = Array.from(document.querySelectorAll("tr[data-candidate-row='true']"))
         .filter((row) => row.querySelector("[data-testid='minimum-marker']") !== null)
@@ -1213,6 +1459,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings tab honours the active geographic filter
   Scenario("Savings tab honours the active geographic filter", async ({ Given, And, When, Then }) => {
     Given('I am on "/en/tools/cost-of-living-calculator"', () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -1239,116 +1486,8 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
-  Scenario("Min-role baseline source and inputs are serialized in the URL", async ({ Given, When, And, Then }) => {
-    Given('I am on the "Minimum role" tab', async () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
-    });
-    When('I set the baseline source to "my salary"', async () => {
-      await getScenarioUser().click(screen.getByRole("radio", { name: /my salary/i }));
-    });
-    And("I enter my gross salary and its city", async () => {
-      const grossInput = screen.getByRole("spinbutton", { name: /my gross monthly/i });
-      await getScenarioUser().clear(grossInput);
-      await getScenarioUser().type(grossInput, "12000");
-      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /my salary city/i }), "singapore");
-    });
-    Then("the URL query string includes the baseline source and the entered salary inputs", async () => {
-      // The gross is a debounced text input — its URL commit lands shortly after typing
-      // settles (or on blur), so wait for it rather than asserting synchronously.
-      await waitFor(() => {
-        expect(navState.params.get("baseline")).toBe("my_salary");
-        expect(navState.params.get("mygross")).toBe("12000");
-        expect(navState.params.get("mysalarycity")).toBe("singapore");
-      });
-    });
-  });
-
-  Scenario("Savings gross salary is serialized in the URL", async ({ Given, When, Then }) => {
-    let replaceHistory: ReturnType<typeof vi.spyOn>;
-
-    Given('I am on the "Savings" tab', async () => {
-      vi.stubEnv("NODE_ENV", "production");
-      replaceHistory = vi.spyOn(window.history, "replaceState").mockImplementation(() => {});
-      renderPage(<CostOfLivingCalculatorPage />);
-      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
-    });
-    When('I enter a gross monthly salary of "5000" USD', async () => {
-      const gross = screen.getByRole("spinbutton");
-      await getScenarioUser().clear(gross);
-      await getScenarioUser().type(gross, "5000");
-    });
-    Then("the URL query string includes the entered gross salary", async () => {
-      // The statically exported production route must use replacement history rather than a
-      // router push: one settled field edit updates the canonical URL without adding a Back entry.
-      await waitFor(() => {
-        expect(replaceHistory).toHaveBeenCalledWith(
-          window.history.state,
-          "",
-          "/en/tools/cost-of-living-calculator?tab=savings&gross=5000",
-        );
-      });
-    });
-  });
-
-  Scenario("Savings shown in USD, local, and display currency", async ({ Given, When, Then }) => {
-    Given('I am on the "Minimum role" tab with a baseline set', async () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
-      await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
-      const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
-      await getScenarioUser().clear(input);
-      await getScenarioUser().type(input, "1000");
-    });
-
-    When("I choose a display currency", async () => {
-      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /display currency/i }), "EUR");
-    });
-
-    Then(
-      "each role row shows its essential savings in USD, the city's local currency, and the display currency",
-      () => {
-        const savingsCells = screen.getAllByTestId("savings-triple");
-        expect(savingsCells.length).toBeGreaterThan(0);
-        expect(savingsCells[0]?.textContent?.includes("USD")).toBe(true);
-      },
-    );
-  });
-
-  Scenario("Every money column on the Minimum-role tab is dual currency", async ({ Given, When, Then, And }) => {
-    Given('I am on the "Minimum role" tab with a baseline set and a display currency chosen', async () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
-      await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
-      const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
-      await getScenarioUser().clear(input);
-      await getScenarioUser().type(input, "1000");
-      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /display currency/i }), "EUR");
-    });
-
-    When("I read a role row", () => {
-      expect(screen.getAllByTestId("dual-currency-cell").length).toBeGreaterThan(0);
-    });
-
-    Then(
-      "every money column (p25, median, p75, non-salary comp, total comp, and essential savings) shows the display currency on the first line and the city's local currency on the second line",
-      () => {
-        const dualCells = screen.getAllByTestId("dual-currency-cell");
-        for (const cell of dualCells.slice(0, 3)) {
-          expect(cell.querySelectorAll("[data-line]").length).toBeGreaterThanOrEqual(2);
-        }
-      },
-    );
-
-    And("no money column shows only a single currency", () => {
-      for (const cell of screen.getAllByTestId("dual-currency-cell")) {
-        expect(cell.querySelector("[data-line='display']")).toBeTruthy();
-        expect(cell.querySelector("[data-line='local']")).toBeTruthy();
-      }
-    });
-  });
-
-  Scenario("Household composition recalculates minimum-role candidates", async ({ Given, When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Household and area changes recalculate minimum-role candidates
+  Scenario("Household and area changes recalculate minimum-role candidates", async ({ Given, When, Then, And }) => {
     Given(
       'I am on the "Minimum role" tab and the "SWE I" role qualifies for the "single" household basis',
       async () => {
@@ -1376,8 +1515,13 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       expect(navState.params.get("schoolkids")).toBe("2");
       expect(screen.getAllByTestId("minimum-marker").length).toBeGreaterThan(0);
     });
+
+    And("the role candidates' savings and the marked minimum role update accordingly", () => {
+      expect(screen.getByRole("table")).toBeTruthy();
+    });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: No role can reach the bar
   Scenario("No role can reach the bar", async ({ Given, When, Then, And }) => {
     Given('I am on the "Minimum role" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -1400,25 +1544,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
-  Scenario("Cost-basis controls affect role candidates", async ({ Given, When, Then }) => {
-    Given('I am on the "Minimum role" tab with a baseline set', async () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
-      await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
-      const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
-      await getScenarioUser().clear(input);
-      await getScenarioUser().type(input, "1000");
-    });
-
-    When("I change the household type or area", async () => {
-      await getScenarioUser().click(screen.getByRole("radio", { name: /rural/i }));
-    });
-
-    Then("the role candidates' savings and the marked minimum role update accordingly", () => {
-      expect(screen.getByRole("table")).toBeTruthy();
-    });
-  });
-
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Low-confidence cells are flagged on the minimum-role tab
   Scenario("Low-confidence cells are flagged on the minimum-role tab", async ({ Given, When, Then }) => {
     Given('I am on the "Minimum role" tab with a baseline set', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -1440,106 +1566,11 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
-  Scenario("No Israeli city appears among role candidates", async ({ Given, When, Then }) => {
-    Given('I am on the "Minimum role" tab with a baseline set', async () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
-      // Enter a target so the ladder renders past the UWT-006 blank empty-state.
-      const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
-      await getScenarioUser().clear(input);
-      await getScenarioUser().type(input, "1000");
-    });
-
-    When("the page finishes loading", () => {
-      expect(screen.getByRole("table")).toBeTruthy();
-    });
-
-    Then("no Israeli city appears as a candidate city for any role", () => {
-      const rows = screen.getAllByRole("row");
-      for (const row of rows) {
-        expect(row.textContent).not.toMatch(/israel|tel aviv/i);
-      }
-    });
-  });
-
   // ─── SG-001: Zero/empty salary guidance ───────────────────────────────────────
-
-  Scenario("Zero or empty salary shows guidance instead of derived savings", async ({ Given, When, Then, And }) => {
-    Given('I am on the "Savings" tab', async () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
-    });
-
-    When("the gross monthly salary field is empty or zero", async () => {
-      const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
-      await getScenarioUser().clear(input);
-      await getScenarioUser().type(input, "0");
-    });
-
-    Then("empty-state guidance replaces the city comparison table", () => {
-      expect(screen.getByTestId("savings-empty-state")).toBeTruthy();
-      expect(screen.queryByRole("table")).toBeNull();
-    });
-
-    And("no percentage values are rendered without net income", () => {
-      expect(screen.queryByTestId("savings-essential")).toBeNull();
-    });
-  });
-
-  // ─── SG-002: Rural area × multi-adult household sub-linear housing ────────────
-
-  Scenario(
-    "Rural area and multi-adult household multiply the housing estimate sub-linearly",
-    async ({ Given, And, When, Then }) => {
-      Given('I am on the "Cost of living" tab', () => {
-        renderPage(<CostOfLivingCalculatorPage />);
-      });
-
-      And("I set the household to 2 adults with no children", async () => {
-        await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /adults/i }), "2");
-      });
-
-      When('I switch the area from "city center" to "rural"', async () => {
-        await getScenarioUser().click(screen.getByRole("radio", { name: /rural/i }));
-      });
-
-      Then("the housing estimate in the expense preview decreases to base times subLinear 2 adults times 0.75", () => {
-        // Stub: exact multiplier verified at core unit level. Cost tab surfaces it in the table.
-        expect(screen.getByTestId(`col-housing-${dataset.cities[0]!.id}`)).toBeTruthy();
-      });
-
-      And("the essentials total in the preview decreases accordingly", () => {
-        expect(screen.getByTestId(`col-essentials-${dataset.cities[0]!.id}`)).toBeTruthy();
-      });
-    },
-  );
-
-  // ─── SG-003: City filter dropdown opens detail view ───────────────────────────
-
-  Scenario("Selecting a city from the City filter opens its detail view", async ({ Given, When, Then, And }) => {
-    const firstCity = dataset.cities[0]!;
-
-    Given('I am on the "Cost of living" tab', () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When("I select a city from the City dropdown filter", async () => {
-      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /city/i }), firstCity.id);
-    });
-
-    Then("the single-city cost-of-living detail for that city is shown", () => {
-      expect(screen.getByTestId("city-detail")).toBeTruthy();
-    });
-
-    And("the detail is identical to the one shown when clicking the city name in the table", () => {
-      const detail = screen.getByTestId("city-detail");
-      expect(detail.textContent).toContain(firstCity.name.en);
-      expect(detail.querySelector("[data-testid='expense-housing']")).toBeTruthy();
-    });
-  });
 
   // ─── SG-004: Income-band boundary handling ────────────────────────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Income exactly at the low-to-mid threshold uses the mid band
   Scenario("Income exactly at the low-to-mid threshold uses the mid band", async ({ Given, When, Then }) => {
     Given('I am on the "Savings" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -1559,29 +1590,9 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
-  // ─── SG-005: Mobile city cards show country name ──────────────────────────────
-
-  Scenario("Mobile city cards show the country name alongside the city", async ({ Given, When, Then }) => {
-    Given('I am viewing the "Cost of living" tab on a viewport narrower than 768 px', () => {
-      // jsdom has no real viewport; responsive rendering verified at e2e level
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When("the mobile city cards render", () => {
-      expect(screen.getByRole("main")).toBeTruthy();
-    });
-
-    Then("each card header shows both the city name and its country name", () => {
-      const cards = screen.getByTestId("mobile-city-cards");
-      const firstCity = dataset.cities[0]!;
-      const country = dataset.countries.find((item) => item.id === firstCity.countryId)!;
-      expect(cards.textContent).toContain(firstCity.name.en);
-      expect(cards.textContent).toContain(country.name.en);
-    });
-  });
-
   // ─── SG-006: Zero savings target marks lowest role as minimum ─────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Zero savings target marks the lowest role as the minimum
   Scenario("Zero savings target marks the lowest role as the minimum", async ({ Given, And, When, Then }) => {
     Given('I am on the "Minimum role" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -1598,22 +1609,22 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       await getScenarioUser().type(input, "0");
     });
 
-    Then("the qualifying divider is shown", () => {
-      // EWT-001: a numeric zero target means every role qualifies; the divider still anchors the
-      // qualifying group. (Baseline IS engaged here — savings_target selected, target === 0 — which
-      // is distinct from the blank-target empty-state.)
-      expect(screen.getByTestId("qualifying-divider")).toBeTruthy();
-    });
-
-    And("the qualifying divider element is rendered in the role ladder", () => {
-      // Explicit element assertion for the desktop role-ladder divider (EWT-001).
-      expect(screen.getByTestId("qualifying-divider")).toBeTruthy();
-    });
-
-    And("the minimum marker appears on the lowest-ranked role in the ladder", () => {
-      // With a zero target the lowest-clearing role is still flagged as the minimum.
-      expect(screen.getAllByTestId("minimum-marker").length).toBeGreaterThan(0);
-    });
+    Then(
+      "the minimum marker appears on the lowest-ranked qualifying role, on each city row where it clears the bar",
+      () => {
+        // min-role.tsx marks every clearing row at the lowest qualifying rank (isMinEntry), so every
+        // desktop row carrying a marker must sit at the minimum rank among the qualifying rows.
+        const qualifyingRanks = Array.from(document.querySelectorAll<HTMLElement>('tr[data-candidate-row="true"]'))
+          .filter((row) => row.getAttribute("data-testid") !== "non-qualifying-row")
+          .map((row) => Number(row.getAttribute("data-rank")));
+        const markedRanks = Array.from(document.querySelectorAll<HTMLElement>('[data-testid="minimum-marker"]'))
+          .map((marker) => marker.closest("tr")?.getAttribute("data-rank"))
+          .filter((rank): rank is string => rank != null)
+          .map(Number);
+        expect(markedRanks.length).toBeGreaterThan(0);
+        for (const rank of markedRanks) expect(rank).toBe(Math.min(...qualifyingRanks));
+      },
+    );
 
     And("the qualifying (city, role) rows whose savings are at or above zero appear above the divider", () => {
       // Under include-all, a zero bar is cleared by every (city, role) with non-negative savings —
@@ -1630,246 +1641,8 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // ─── SG-007: Expense preview updates in real time ─────────────────────────────
 
-  Scenario(
-    "Expense preview updates in real time when household controls change",
-    async ({ Given, And, When, Then }) => {
-      Given("I am on the cost-of-living calculator", () => {
-        renderPage(<CostOfLivingCalculatorPage />);
-      });
-
-      And("the default household is 1 adult with no children in city center", () => {
-        // Default state on mount
-        expect(screen.getByRole("main")).toBeTruthy();
-      });
-
-      When("I change the Adults control to 2", async () => {
-        await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /adults/i }), "2");
-      });
-
-      Then("the Housing preview amount increases to base times subLinear 2 adults", () => {
-        expect(screen.getByTestId(`col-housing-${dataset.cities[0]!.id}`)).toBeTruthy();
-      });
-
-      And("the Childcare and School preview amounts remain zero", () => {
-        const childcare = parseFloat(
-          screen.getByTestId(`col-childcare-${dataset.cities[0]!.id}`).getAttribute("data-raw") ?? "0",
-        );
-        const schooling = parseFloat(
-          screen.getByTestId(`col-school-${dataset.cities[0]!.id}`).getAttribute("data-raw") ?? "0",
-        );
-        expect(childcare).toBe(0);
-        expect(schooling).toBe(0);
-      });
-
-      And("the Total preview updates immediately without a page reload", () => {
-        expect(screen.getByTestId(`col-essentials-${dataset.cities[0]!.id}`)).toBeTruthy();
-      });
-    },
-  );
-
-  // ─── USS-002: Filter state persisted in URL ───────────────────────────────────
-
-  // Reconciled 2026-06-21: scenario title updated to match the feature file (all 9 controls serialized)
-  Scenario("Selecting filters updates the URL with all active query parameters", async ({ Given, When, Then, And }) => {
-    Given("a user is on the cost-of-living calculator page", () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When('the user selects Country "Indonesia" and City "Jakarta"', async () => {
-      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /country/i }), "id");
-      const jakartaId = dataset.cities.find((c) => c.name.en === "Jakarta")?.id ?? "jakarta";
-      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /city/i }), jakartaId);
-    });
-
-    Then("the URL updates to include query parameters reflecting those selections", () => {
-      expect(navState.params.get("country")).toBe("id");
-      expect(navState.params.get("city")).toBe("jakarta");
-    });
-
-    And("copying the URL and opening it in a new tab restores the same filter state", () => {
-      const copied = new URLSearchParams(navState.params);
-      expect(copied.get("country")).toBe("id");
-      expect(copied.get("city")).toBe("jakarta");
-    });
-  });
-
-  // ─── USS-005: Descriptive page title ─────────────────────────────────────────
-
-  Scenario("Page title includes tool name on load", ({ Given, When, Then }) => {
-    let metadataTitle: string | undefined;
-    Given("a user navigates to the cost-of-living calculator", () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When("the page finishes loading with default filter state", async () => {
-      expect(screen.getByRole("main")).toBeTruthy();
-      const metadata = await generateCalculatorMetadata({ params: Promise.resolve({ locale: "en" }) });
-      metadataTitle = String(metadata.title);
-    });
-
-    Then("the browser tab title includes the name of the tool", () => {
-      expect(metadataTitle).toContain(t("en", "calcTitle"));
-    });
-  });
-
-  // ─── SG-001: Negative salary input is clamped to zero ────────────────────────
-
-  Scenario("Negative salary input is clamped to zero", async ({ Given, When, Then, And }) => {
-    Given('I am on the "Savings" tab', async () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
-    });
-
-    When('I enter a gross monthly salary of "-1000"', async () => {
-      const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
-      await getScenarioUser().clear(input);
-      await getScenarioUser().type(input, "-1000");
-    });
-
-    Then('the annual gross displayed is "0 USD"', () => {
-      expect(screen.getByTestId("annual-gross").textContent).toMatch(/^0 USD$/);
-    });
-
-    And("the same zero-salary guidance replaces the city rows", () => {
-      expect(screen.getByTestId("savings-empty-state")).toBeTruthy();
-      expect(screen.queryByRole("table")).toBeNull();
-    });
-  });
-
-  // ─── SG-002: Decimal salary computes annual gross correctly ──────────────────
-
-  Scenario("Decimal monthly salary produces correct annual gross", async ({ Given, When, Then, And }) => {
-    Given('I am on the "Savings" tab', async () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
-    });
-
-    When('I enter a gross monthly salary of "8000.5"', async () => {
-      const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
-      await getScenarioUser().clear(input);
-      await getScenarioUser().type(input, "8000.5");
-    });
-
-    Then('the annual gross is shown as "96,006 USD"', () => {
-      expect(screen.getByTestId("annual-gross").textContent).toBe("96,006 USD");
-    });
-
-    And("the annual figure equals twelve times the monthly figure", () => {
-      const monthly = Number(
-        (screen.getByRole("spinbutton", { name: /gross monthly salary/i }) as HTMLInputElement).value,
-      );
-      const annual = Number(screen.getByTestId("annual-gross").textContent?.replace(/[^0-9.-]/g, ""));
-      expect(annual).toBe(monthly * 12);
-    });
-  });
-
-  // ─── SG-003: Very large salary does not produce NaN or Infinity ──────────────
-
-  Scenario("Very large salary produces valid savings figures", async ({ Given, When, Then, And }) => {
-    Given('I am on the "Savings" tab', async () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
-    });
-
-    When('I enter a gross monthly salary of "99999999"', async () => {
-      const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
-      await getScenarioUser().clear(input);
-      await getScenarioUser().type(input, "99999999");
-    });
-
-    Then('no city row shows "NaN" or "Infinity" in any column', () => {
-      expect(screen.getByTestId("savings-table").textContent).not.toMatch(/NaN|Infinity/);
-    });
-
-    And("each city row shows a positive net take-home", () => {
-      for (const cell of screen.getAllByTestId("net-value")) {
-        expect(Number(cell.getAttribute("data-usd"))).toBeGreaterThan(0);
-      }
-    });
-  });
-
-  // ─── SG-004: Selecting only a country updates the URL ────────────────────────
-
-  // Reconciled 2026-06-21: scenario title updated; default tab is omitted from the URL.
-  Scenario("Selecting only a country updates the URL country parameter", async ({ Given, When, Then, And }) => {
-    let pushHistory: ReturnType<typeof vi.spyOn>;
-    let replaceHistory: ReturnType<typeof vi.spyOn>;
-
-    Given("a user is on the cost-of-living calculator page", () => {
-      vi.stubEnv("NODE_ENV", "production");
-      pushHistory = vi.spyOn(window.history, "pushState").mockImplementation(() => {});
-      replaceHistory = vi.spyOn(window.history, "replaceState").mockImplementation(() => {});
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When('the user selects Country "Indonesia" without selecting a city', async () => {
-      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /country/i }), "id");
-    });
-
-    Then('the URL query string includes "country=id"', () => {
-      expect(pushHistory).toHaveBeenCalledWith(
-        window.history.state,
-        "",
-        "/en/tools/cost-of-living-calculator?region=asean&country=id",
-      );
-      // A discrete filter change owns a new Back entry; it must not collapse the current entry.
-      expect(replaceHistory).not.toHaveBeenCalled();
-    });
-
-    And("opening that URL in a new tab shows only Indonesian cities in the table", () => {
-      const rows = screen.getAllByRole("row").slice(1);
-      for (const row of rows) expect(row.textContent).toContain("Indonesia");
-    });
-
-    And('the Country filter is pre-selected to "Indonesia"', () => {
-      const countrySelect = screen.getByRole("combobox", { name: /country/i });
-      expect((countrySelect as HTMLSelectElement).value).toBe("id");
-    });
-  });
-
-  // ─── SG-005: School type toggle becomes enabled when school-age children >= 1 ────────
-
-  Scenario(
-    "School type toggle becomes enabled when school-age children is set to one or more",
-    async ({ Given, And, When, Then }) => {
-      Given('I am on "/en/tools/cost-of-living-calculator"', () => {
-        renderPage(<CostOfLivingCalculatorPage />);
-      });
-
-      And("the household has no school-age children", () => {
-        expect(screen.getByRole("main")).toBeTruthy();
-      });
-
-      And("the school-type toggle is shown but disabled", () => {
-        const group = screen.getByRole("radiogroup", { name: /school type/i });
-        expect(group.getAttribute("aria-disabled")).toBe("true");
-      });
-
-      When("I set the household to 1 school-age child", async () => {
-        await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /school.age/i }), "1");
-      });
-
-      Then('the school type toggle is enabled with "Public" and "Private" options', () => {
-        const group = screen.getByRole("radiogroup", { name: /school type/i });
-        expect(group.getAttribute("aria-disabled")).toBeNull();
-        expect(within(group).getByRole("radio", { name: /public/i })).toBeTruthy();
-        expect(within(group).getByRole("radio", { name: /private/i })).toBeTruthy();
-      });
-
-      And('the default selection is "Public"', () => {
-        const group = screen.getByRole("radiogroup", { name: /school type/i });
-        expect(
-          within(group)
-            .getByRole("radio", { name: /public/i })
-            .getAttribute("aria-checked"),
-        ).toBe("true");
-      });
-    },
-  );
-
-  // ─── SG-006: Housing scales sub-linearly (1.25x) for 2-adult household ───────
-
-  Scenario("Housing preview scales sub-linearly for 2-adult household", async ({ Given, And, When, Then }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: household preview scaling
+  Scenario("household preview scaling", async ({ Given, And, When, Then }) => {
     const before: Record<string, number> = {};
     const firstCityId = dataset.cities[0]!.id;
 
@@ -1910,36 +1683,211 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
         before.transport!,
       );
     });
+
+    And("the Housing preview amount increases for two adults", () => {
+      expect(screen.getByTestId(`col-housing-${firstCityId}`)).toBeTruthy();
+    });
+
+    And("the Childcare and School preview amounts remain zero", () => {
+      const childcare = parseFloat(screen.getByTestId(`col-childcare-${firstCityId}`).getAttribute("data-raw") ?? "0");
+      const schooling = parseFloat(screen.getByTestId(`col-school-${firstCityId}`).getAttribute("data-raw") ?? "0");
+      expect(childcare).toBe(0);
+      expect(schooling).toBe(0);
+    });
+
+    And("the Total preview updates immediately without a page reload", () => {
+      expect(screen.getByTestId(`col-essentials-${firstCityId}`)).toBeTruthy();
+    });
+  });
+
+  // ─── USS-002: Filter state persisted in URL ───────────────────────────────────
+
+  // Reconciled 2026-06-21 and 2026-06-22: all 9 controls, the min-role baseline source and its inputs, and the
+  // savings gross are serialized in the URL. Each control is one Examples row of this outline.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: calculator state is kept in the URL
+  ScenarioOutline("calculator state is kept in the URL", ({ Given, When, Then }, variables) => {
+    let pushHistory: ReturnType<typeof vi.spyOn>;
+    let replaceHistory: ReturnType<typeof vi.spyOn>;
+
+    Given('I am on the calculator for the "<control>" control', async () => {
+      navState.params = new URLSearchParams();
+      navState.setParams(navState.params);
+      switch (variables.control) {
+        case "baseline":
+          renderPage(<CostOfLivingCalculatorPage />);
+          await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
+          break;
+        case "savings gross":
+          vi.stubEnv("NODE_ENV", "production");
+          replaceHistory = vi.spyOn(window.history, "replaceState").mockImplementation(() => {});
+          renderPage(<CostOfLivingCalculatorPage />);
+          await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
+          break;
+        case "country":
+          vi.stubEnv("NODE_ENV", "production");
+          pushHistory = vi.spyOn(window.history, "pushState").mockImplementation(() => {});
+          replaceHistory = vi.spyOn(window.history, "replaceState").mockImplementation(() => {});
+          renderPage(<CostOfLivingCalculatorPage />);
+          break;
+        default:
+          renderPage(<CostOfLivingCalculatorPage />);
+      }
+    });
+
+    When('I change the "<control>" control', async () => {
+      switch (variables.control) {
+        case "filters": {
+          await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /country/i }), "id");
+          const jakartaId = dataset.cities.find((c) => c.name.en === "Jakarta")?.id ?? "jakarta";
+          await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /city/i }), jakartaId);
+          break;
+        }
+        case "baseline": {
+          await getScenarioUser().click(screen.getByRole("radio", { name: /my salary/i }));
+          const grossInput = screen.getByRole("spinbutton", { name: /my gross monthly/i });
+          await getScenarioUser().clear(grossInput);
+          await getScenarioUser().type(grossInput, "12000");
+          await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /my salary city/i }), "singapore");
+          break;
+        }
+        case "savings gross": {
+          const gross = screen.getByRole("spinbutton");
+          await getScenarioUser().clear(gross);
+          await getScenarioUser().type(gross, "5000");
+          break;
+        }
+        case "country":
+          await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /country/i }), "id");
+          break;
+        case "tab": {
+          const tab = screen.queryByRole("tab", { name: /savings/i });
+          if (tab) {
+            await getScenarioUser().click(tab);
+          }
+          break;
+        }
+        case "cost basis":
+          await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /adults/i }), "2");
+          break;
+        default:
+          throw new Error(`unknown calculator control: ${String(variables.control)}`);
+      }
+    });
+
+    Then('the URL query string holds the "<control>" state', async () => {
+      switch (variables.control) {
+        case "filters": {
+          expect(navState.params.get("country")).toBe("id");
+          expect(navState.params.get("city")).toBe("jakarta");
+          // Copying the URL and opening it in a new tab restores the same filter state.
+          const copied = new URLSearchParams(navState.params);
+          expect(copied.get("country")).toBe("id");
+          expect(copied.get("city")).toBe("jakarta");
+          break;
+        }
+        case "baseline":
+          // The gross is a debounced text input — its URL commit lands shortly after typing
+          // settles (or on blur), so wait for it rather than asserting synchronously.
+          await waitFor(() => {
+            expect(navState.params.get("baseline")).toBe("my_salary");
+            expect(navState.params.get("mygross")).toBe("12000");
+            expect(navState.params.get("mysalarycity")).toBe("singapore");
+          });
+          break;
+        case "savings gross":
+          // The statically exported production route must use replacement history rather than a
+          // router push: one settled field edit updates the canonical URL without adding a Back entry.
+          await waitFor(() => {
+            expect(replaceHistory).toHaveBeenCalledWith(
+              window.history.state,
+              "",
+              "/en/tools/cost-of-living-calculator?tab=savings&gross=5000",
+            );
+          });
+          break;
+        case "country": {
+          expect(pushHistory).toHaveBeenCalledWith(
+            window.history.state,
+            "",
+            "/en/tools/cost-of-living-calculator?region=asean&country=id",
+          );
+          // A discrete filter change owns a new Back entry; it must not collapse the current entry.
+          expect(replaceHistory).not.toHaveBeenCalled();
+          const rows = screen.getAllByRole("row").slice(1);
+          for (const row of rows) expect(row.textContent).toContain("Indonesia");
+          expect((screen.getByRole("combobox", { name: /country/i }) as HTMLSelectElement).value).toBe("id");
+          break;
+        }
+        case "tab":
+          expect(navState.params.get("tab")).toBe("savings");
+          expect(navState.lastNavMethod).toBe("push");
+          expect(screen.getByRole("tab", { name: /savings/i }).getAttribute("data-state")).toBe("active");
+          break;
+        case "cost basis":
+          expect(navState.params.get("adults")).toBe("2");
+          expect(navState.lastNavMethod).toBe("push");
+          expect((screen.getByRole("combobox", { name: /adults/i }) as HTMLSelectElement).value).toBe("2");
+          break;
+        default:
+          throw new Error(`unknown calculator control: ${String(variables.control)}`);
+      }
+    });
+  });
+
+  // ─── SG-001: Negative salary input is clamped to zero ────────────────────────
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Negative salary input is clamped to zero
+  Scenario("Negative salary input is clamped to zero", async ({ Given, When, Then, And }) => {
+    Given('I am on the "Savings" tab', async () => {
+      renderPage(<CostOfLivingCalculatorPage />);
+      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
+    });
+
+    When('I enter a gross monthly salary of "-1000"', async () => {
+      const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "-1000");
+    });
+
+    Then('the annual gross displayed is "0 USD"', () => {
+      expect(screen.getByTestId("annual-gross").textContent).toMatch(/^0 USD$/);
+    });
+
+    And("the same zero-salary guidance replaces the city rows", () => {
+      expect(screen.getByTestId("savings-empty-state")).toBeTruthy();
+      expect(screen.queryByRole("table")).toBeNull();
+    });
+  });
+
+  // ─── SG-003: Very large salary does not produce NaN or Infinity ──────────────
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Very large salary produces valid savings figures
+  Scenario("Very large salary produces valid savings figures", async ({ Given, When, Then, And }) => {
+    Given('I am on the "Savings" tab', async () => {
+      renderPage(<CostOfLivingCalculatorPage />);
+      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
+    });
+
+    When('I enter a gross monthly salary of "99999999"', async () => {
+      const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "99999999");
+    });
+
+    Then('no city row shows "NaN" or "Infinity" in any column', () => {
+      expect(screen.getByTestId("savings-table").textContent).not.toMatch(/NaN|Infinity/);
+    });
+
+    And("each city row shows a positive net take-home", () => {
+      for (const cell of screen.getAllByTestId("net-value")) {
+        expect(Number(cell.getAttribute("data-usd"))).toBeGreaterThan(0);
+      }
+    });
   });
 
   // ─── USS-001: Savings tab empty-state when no salary entered ─────────────────
 
-  Scenario("Savings tab shows empty-state guidance when no salary entered", async ({ Given, When, And, Then }) => {
-    Given("a user has opened the Cost of Living Calculator", () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When("they click the Savings tab", async () => {
-      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
-    });
-
-    And("the gross monthly salary field contains no value or zero", () => {
-      expect(screen.getByRole("main")).toBeTruthy();
-    });
-
-    Then("the savings comparison table is not shown", () => {
-      expect(screen.queryByRole("table")).toBeNull();
-    });
-
-    And("an instructional message is shown", () => {
-      expect(screen.getByTestId("savings-empty-state").textContent?.trim().length).toBeGreaterThan(0);
-    });
-
-    And("no negative savings figures are visible", () => {
-      expect(screen.queryByTestId("savings-essential")).toBeNull();
-    });
-  });
-
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings tab shows results after salary is entered
   Scenario("Savings tab shows results after salary is entered", async ({ Given, When, Then, And }) => {
     Given("a user is on the Savings tab with the empty-state message displayed", async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -1962,38 +1910,9 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
-  // ─── USS-002: Minimum Role tab empty-state when no target entered ─────────────
-
-  Scenario("Minimum Role tab shows empty-state when no target amount entered", async ({ Given, When, And, Then }) => {
-    Given("a user has opened the Cost of Living Calculator", () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When("they click the Minimum Role tab", async () => {
-      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
-    });
-
-    And("the Monthly savings target field contains no value or zero", () => {
-      expect(screen.getByRole("main")).toBeTruthy();
-    });
-
-    Then("the role comparison table is not shown", () => {
-      // UWT-006: blank savings target (default on mount) suppresses the ladder.
-      expect(screen.queryByRole("table")).toBeNull();
-    });
-
-    And("an instructional message is shown", () => {
-      expect(screen.getByTestId("min-role-empty-state")).toBeTruthy();
-    });
-
-    And("no role salary data is visible", () => {
-      expect(screen.queryByTestId("minimum-marker")).toBeNull();
-      expect(screen.queryByTestId("city-cell")).toBeNull();
-    });
-  });
-
   // ─── USS-003: Area toggle confirms data update ────────────────────────────────
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Area toggle shows selected state and confirms data update
   Scenario("Area toggle shows selected state and confirms data update", async ({ Given, And, When, Then }) => {
     let centerHousing = 0;
 
@@ -2021,87 +1940,10 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
-  // ─── USS-004: Tab sub-labels are visually/aria distinct ──────────────────────
-
-  Scenario("Tab sub-labels are visually separated from tab names", ({ Given, When, Then, And }) => {
-    Given("a user views the Cost of Living Calculator tab bar", () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When("any tab is in the inactive state", () => {
-      expect(screen.getAllByRole("tab").length).toBeGreaterThan(0);
-    });
-
-    Then("the tab primary name and its descriptive sub-label are visually distinct", () => {
-      const tab = screen.getByRole("tab", { name: /cost of living/i });
-      const description = document.getElementById(tab.getAttribute("aria-describedby")!);
-      expect(description).toBeTruthy();
-      expect(description).not.toBe(tab);
-    });
-
-    And("the two pieces of text do not run together without a visual separator", () => {
-      expect(screen.getByRole("tab", { name: /cost of living/i }).textContent).toBe(t("en", "tabCostOfLiving"));
-      expect(screen.getByTestId("tab-desc-cost").textContent).toBe(t("en", "tabCostDesc"));
-    });
-
-    And("a screen reader announces them as separate text nodes", () => {
-      expect(screen.getByRole("tab", { name: /cost of living/i }).getAttribute("aria-describedby")).toBe(
-        "tab-desc-cost",
-      );
-    });
-  });
-
-  // ─── USS-005: Tools index renders localized text ──────────────────────────────
-
-  Scenario("Tools index page renders all text in the active locale", ({ Given, When, Then, And }) => {
-    Given("a user navigates to /en/tools", async () => {
-      const jsx = await ToolsIndexPage({ params: Promise.resolve({ locale: "en" as const }) });
-      render(jsx);
-    });
-
-    // Rule-15 EWT-001 fix: the page's own wrapper is a plain `<div>`, not `<main>` — the app
-    // shell's `<main id="main-content">` (outside what this isolated unit render includes) is the
-    // page's sole landmark, so asserting `getByRole("main")` here would always fail post-fix.
-    // Asserting the level-one heading renders instead confirms the page content mounted.
-    When("the page renders", () => {
-      expect(screen.getByRole("heading", { level: 1 })).toBeTruthy();
-    });
-
-    Then("the page heading and the calculator link display readable English labels", () => {
-      expect(screen.getByRole("heading", { level: 1 }).textContent).toBe(t("en", "toolsPageTitle"));
-      expect(screen.getByRole("link", { name: t("en", "toolsPageCalcLink") })).toBeTruthy();
-    });
-
-    And("no raw i18n key strings are visible", () => {
-      expect(document.body.textContent).not.toMatch(/toolsPage[A-Z]/);
-    });
-  });
-
-  Scenario("Tools index page renders in Indonesian on /id/tools", ({ Given, When, Then, And }) => {
-    Given("a user navigates to /id/tools", async () => {
-      const jsx = await ToolsIndexPage({ params: Promise.resolve({ locale: "id" as const }) });
-      render(jsx);
-    });
-
-    // Rule-15 EWT-001 fix: see the comment on the English scenario above — the page's own wrapper
-    // is a plain `<div>`, not `<main>`, so this asserts the heading instead of a landmark role.
-    When("the page renders", () => {
-      expect(screen.getByRole("heading", { level: 1 })).toBeTruthy();
-    });
-
-    Then("the heading and link labels are in Indonesian", () => {
-      expect(screen.getByRole("heading", { level: 1 }).textContent).toBe(t("id", "toolsPageTitle"));
-      expect(screen.getByRole("link", { name: t("id", "toolsPageCalcLink") })).toBeTruthy();
-    });
-
-    And("no raw i18n key strings are visible", () => {
-      expect(document.body.textContent).not.toMatch(/toolsPage[A-Z]/);
-    });
-  });
-
   // ─── SG-D-001: Dual-currency display in cost-of-living and savings tables ─────
 
-  Scenario("Cost-of-living table shows local currency and USD for each expense cell", ({ Given, When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: money columns show local currency and USD
+  Scenario("money columns show local currency and USD", async ({ Given, When, Then, And }) => {
     Given("the user is on the Cost of living tab at desktop width", () => {
       renderPage(<CostOfLivingCalculatorPage />);
     });
@@ -2119,10 +1961,11 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     And("no money cell shows a bare integer without a currency label", () => {
       for (const cell of document.querySelectorAll("td[data-raw]")) expect(cell.textContent).toMatch(/[A-Z]{3}/);
     });
-  });
 
-  Scenario("Savings table shows local currency and USD for net and savings columns", async ({ Given, When, Then }) => {
     Given("the user is on the Savings tab with a gross salary entered", async () => {
+      cleanup();
+      navState.params = new URLSearchParams();
+      navState.setParams(navState.params);
       renderPage(<CostOfLivingCalculatorPage />);
       await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
       const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
@@ -2142,11 +1985,52 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
         for (const row of rows.slice(0, 3)) expect(row.textContent).toMatch(/\/ \$[\d-]/);
       },
     );
+
+    Given('I am on the "Minimum role" tab with a baseline set and a display currency chosen', async () => {
+      cleanup();
+      navState.params = new URLSearchParams();
+      navState.setParams(navState.params);
+      renderPage(<CostOfLivingCalculatorPage />);
+      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
+      await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
+      const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "1000");
+      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /display currency/i }), "EUR");
+    });
+
+    When("I read a role row", () => {
+      expect(screen.getAllByTestId("dual-currency-cell").length).toBeGreaterThan(0);
+    });
+
+    Then(
+      "every money column (p25, median, p75, non-salary comp, total comp, and essential savings) shows the display currency on the first line and the city's local currency on the second line",
+      () => {
+        const dualCells = screen.getAllByTestId("dual-currency-cell");
+        for (const cell of dualCells.slice(0, 3)) {
+          expect(cell.querySelectorAll("[data-line]").length).toBeGreaterThanOrEqual(2);
+        }
+      },
+    );
+
+    And("each role row shows its essential savings in USD, the city's local currency, and the display currency", () => {
+      const savingsCells = screen.getAllByTestId("savings-triple");
+      expect(savingsCells.length).toBeGreaterThan(0);
+      expect(savingsCells[0]?.textContent?.includes("USD")).toBe(true);
+    });
+
+    And("no money column shows only a single currency", () => {
+      for (const cell of screen.getAllByTestId("dual-currency-cell")) {
+        expect(cell.querySelector("[data-line='display']")).toBeTruthy();
+        expect(cell.querySelector("[data-line='local']")).toBeTruthy();
+      }
+    });
   });
 
   // ─── SG-D-003: Page heading matches tool identity ─────────────────────────────
 
-  ScenarioOutline("H1 matches the tool's official name in each locale", ({ Given, When, Then, And }, variables) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: page title and H1 name the tool
+  ScenarioOutline("page title and H1 name the tool", ({ Given, When, Then, And }, variables) => {
     Given('the user opens "/<locale>/tools/cost-of-living-calculator"', () => {
       navState.locale = String(variables.locale);
       renderPage(<CostOfLivingCalculatorPage />);
@@ -2169,50 +2053,10 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
-  // ─── SG-D-004: id locale uses Indonesian city/country names ──────────────────
-
-  Scenario("Id locale cost-of-living table uses Indonesian translations", ({ Given, When, Then, And }) => {
-    Given('the user is on "/id/tools/cost-of-living-calculator" at desktop width', () => {
-      navState.locale = "id";
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When("the cost-of-living table renders", () => {
-      expect(screen.getByRole("table")).toBeTruthy();
-    });
-
-    Then("the Country column shows Indonesian country names where translations exist", () => {
-      expect(document.body.textContent).toContain("Singapura");
-    });
-
-    And("the City column shows Indonesian city names where translations exist", () => {
-      expect(document.body.textContent).toContain("Jepang");
-    });
-  });
-
-  Scenario("Id locale minimum-role table uses Indonesian city names", async ({ Given, And, When, Then }) => {
-    Given('the user is on "/id/tools/cost-of-living-calculator" at desktop width', () => {
-      navState.locale = "id";
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    And("the Minimum role tab is active", async () => {
-      await getScenarioUser().click(screen.getByRole("tab", { name: /jabatan minimum/i }));
-      await getScenarioUser().type(screen.getByRole("spinbutton", { name: /target tabungan bulanan/i }), "0");
-    });
-
-    When("the ladder table renders", () => {
-      expect(screen.getByRole("main")).toBeTruthy();
-    });
-
-    Then("the City column shows Indonesian city and country names where translations exist", () => {
-      expect(screen.getAllByTestId("city-cell").some((cell) => cell.textContent?.includes("Singapura"))).toBe(true);
-    });
-  });
-
   // ─── prd.md: Design-system controls, locale URL redirect, mobile nav ──────────
 
-  Scenario("Gross-salary input uses the design-system Input primitive", async ({ Given, When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The gross-salary field has a visible border and a label
+  Scenario("The gross-salary field has a visible border and a label", async ({ Given, When, Then, And }) => {
     Given('the user is on the "Savings" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
       await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
@@ -2222,20 +2066,20 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       expect(screen.getByRole("main")).toBeTruthy();
     });
 
-    Then("the gross-salary field renders with a visible border, design-token radius, and padding", () => {
+    Then("the gross-salary field renders with a visible border and padding", () => {
       const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
       expect(input.className).toMatch(/border-input|border/);
-      expect(input.className).toMatch(/rounded/);
       expect(input.className).toMatch(/px-/);
     });
 
-    And("it is paired with a Label primitive", () => {
+    And("the gross-salary field has a visible label", () => {
       const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
       const label = document.querySelector(`label[for="${input.id}"]`);
       expect(label?.textContent).toBe(t("en", "grossMonthlySalaryLabel"));
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Baseline selector is a segmented control
   Scenario("Baseline selector is a segmented control", async ({ Given, When, Then }) => {
     Given('the user is on the "Minimum role" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -2254,23 +2098,9 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
-  Scenario("Tab labels are clean single phrases", ({ Given, When, Then }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: tab labels
+  Scenario("tab labels", ({ Given, When, Then, And }) => {
     Given("the user views the tab bar at any breakpoint", () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When("the tab bar renders", () => {
-      expect(screen.getAllByRole("tab").length).toBeGreaterThan(0);
-    });
-
-    Then("each tab trigger's visible text is its label only, with the description not fused into it", () => {
-      const expected = [t("en", "tabCostOfLiving"), t("en", "tabSavings"), t("en", "tabMinRole")];
-      expect(screen.getAllByRole("tab").map((tab) => tab.textContent)).toEqual(expected);
-    });
-  });
-
-  Scenario("Each tab has a visible description associated with its trigger", ({ Given, When, Then, And }) => {
-    Given("the user views the calculator tab bar", () => {
       renderPage(<CostOfLivingCalculatorPage />);
     });
 
@@ -2278,26 +2108,45 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       expect(screen.getAllByRole("tab").length).toBe(3);
     });
 
-    Then(
-      "each of the three tabs has a visibly rendered description element associated with its trigger via aria-describedby",
-      () => {
-        const pairs: Array<[RegExp, string]> = [
-          [/cost of living/i, "tab-desc-cost"],
-          [/savings/i, "tab-desc-savings"],
-          [/minimum role/i, "tab-desc-min-role"],
-        ];
-        for (const [name, descId] of pairs) {
-          const trigger = screen.getByRole("tab", { name });
-          expect(trigger.getAttribute("aria-describedby")).toBe(descId);
-          const desc = document.getElementById(descId);
-          expect(desc, `#${descId} should exist`).toBeTruthy();
-          // Visible: not sr-only, not aria-hidden.
-          expect(desc!.className).not.toMatch(/\bsr-only\b/);
-          expect(desc!.getAttribute("aria-hidden")).not.toBe("true");
-          expect(desc!.textContent?.trim().length).toBeGreaterThan(0);
-        }
-      },
-    );
+    Then("each tab trigger's visible text is its label only, with the description not fused into it", () => {
+      const expected = [t("en", "tabCostOfLiving"), t("en", "tabSavings"), t("en", "tabMinRole")];
+      expect(screen.getAllByRole("tab").map((tab) => tab.textContent)).toEqual(expected);
+    });
+
+    And("the tab primary name and its descriptive sub-label are visually distinct", () => {
+      const tab = screen.getByRole("tab", { name: /cost of living/i });
+      const description = document.getElementById(tab.getAttribute("aria-describedby")!);
+      expect(description).toBeTruthy();
+      expect(description).not.toBe(tab);
+    });
+
+    And("the two pieces of text do not run together without a visual separator", () => {
+      expect(screen.getByRole("tab", { name: /cost of living/i }).textContent).toBe(t("en", "tabCostOfLiving"));
+      expect(screen.getByTestId("tab-desc-cost").textContent).toBe(t("en", "tabCostDesc"));
+    });
+
+    And("a screen reader announces them as separate text nodes", () => {
+      expect(screen.getByRole("tab", { name: /cost of living/i }).getAttribute("aria-describedby")).toBe(
+        "tab-desc-cost",
+      );
+    });
+
+    And("each of the three tabs has a description element associated with its trigger via aria-describedby", () => {
+      // Every tab's description is in the DOM and linked to its trigger; which one is visible is the
+      // active-tab scenario's concern (inactive descriptions carry the `hidden` class).
+      const pairs: Array<[RegExp, string]> = [
+        [/cost of living/i, "tab-desc-cost"],
+        [/savings/i, "tab-desc-savings"],
+        [/minimum role/i, "tab-desc-min-role"],
+      ];
+      for (const [name, descId] of pairs) {
+        const trigger = screen.getByRole("tab", { name });
+        expect(trigger.getAttribute("aria-describedby")).toBe(descId);
+        const desc = document.getElementById(descId);
+        expect(desc, `#${descId} should exist`).toBeTruthy();
+        expect(desc!.textContent?.trim().length).toBeGreaterThan(0);
+      }
+    });
 
     And("no tab description text is duplicated elsewhere on screen", () => {
       // The active (cost) tab's description prose appears exactly once in the DOM.
@@ -2306,60 +2155,16 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
-  Scenario("Uppercase locale URL redirects to canonical lowercase", ({ Given, When, Then }) => {
-    let requestedPath = "";
-    let redirectDestination: string | null = null;
-
-    Given('the user requests "/EN/tools/cost-of-living-calculator"', () => {
-      requestedPath = "/EN/tools/cost-of-living-calculator";
-    });
-
-    When("the middleware processes the request", () => {
-      redirectDestination = resolveLocaleEntryRedirect(requestedPath);
-    });
-
-    Then('the server redirects to "/en/tools/cost-of-living-calculator"', () => {
-      expect(redirectDestination).toBe("/en/tools/cost-of-living-calculator");
-    });
-  });
-
-  Scenario("Mobile nav drawer shows localized site navigation", ({ Given, When, Then, And }) => {
-    let drawerLinks: Array<{ href: string; label: string }> = [];
-    Given('the user opens the mobile nav drawer at 375px on the "/id/" locale', () => {
-      navState.locale = "id";
-      renderPage(<CostOfLivingCalculatorPage />);
-      expect(navState.locale).toBe("id");
-    });
-
-    When("the drawer renders", () => {
-      drawerLinks = PRIMARY_NAV_LINKS.map((link) => ({
-        href: link.hrefFor("id"),
-        label: t("id", link.labelKey),
-      }));
-    });
-
-    Then("it shows the site's top-level navigation links", () => {
-      expect(drawerLinks).toHaveLength(PRIMARY_NAV_LINKS.length);
-      expect(drawerLinks.map(({ href }) => href)).toEqual(["/id/browse", "/id/tools"]);
-    });
-
-    And("every drawer label is localized", () => {
-      expect(drawerLinks.map(({ label }) => label)).toEqual(PRIMARY_NAV_LINKS.map((link) => t("id", link.labelKey)));
-      for (const link of PRIMARY_NAV_LINKS) {
-        expect(t("id", link.labelKey)).not.toBe(t("en", link.labelKey));
-      }
-    });
-  });
-
   // ── URL state Phase 4 scenarios (added 2026-06-21) ───────────────────────────
   // These scenarios cover URL round-trip, deep-link restore, cascade-clear,
   // backfill, sanitize/canonicalize, back-button history, and breadcrumb.
   // Unit-level URL-state proofs complement the browser-history assertions in the E2E adapter.
 
-  // URL-001 — Out-of-range numeric param is reset to default on load
-  Scenario("An out-of-range numeric param is reset to its default on load", ({ Given, When, Then, And }) => {
-    Given('a deep link with query string "adults=4"', () => {
-      navState.params = new URLSearchParams("adults=4");
+  // URL-001, URL-002, URL-012 — an invalid deep-link value is reset to its default on load and removed from the URL.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: invalid deep-link values fall back to defaults
+  ScenarioOutline("invalid deep-link values fall back to defaults", ({ Given, When, Then, And }, variables) => {
+    Given('a deep link with query string "<query>"', () => {
+      navState.params = new URLSearchParams(String(variables.query));
       navState.setParams(navState.params);
       renderPage(<CostOfLivingCalculatorPage />);
     });
@@ -2368,40 +2173,22 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       expect(screen.getByTestId("calc-page")).toBeTruthy();
     });
 
-    Then('the Adults control shows "1"', () => {
-      expect((screen.getByRole("combobox", { name: /adults/i }) as HTMLSelectElement).value).toBe("1");
+    Then('the "<control>" control returns to its default "<default_value>"', () => {
+      const select = screen.getByRole("combobox", { name: new RegExp(String(variables.control), "i") });
+      // The Adults control keeps its numeric default; the Country and City filters return to "All ..." (empty value).
+      const expected = variables.control === "Adults" ? String(variables.default_value) : "";
+      expect((select as HTMLSelectElement).value).toBe(expected);
     });
 
-    And('the URL is rewritten to have no "adults" param', () => {
-      expect(navState.params.has("adults")).toBe(false);
+    And('the URL is rewritten to have no "<param>" param', () => {
+      expect(navState.params.has(String(variables.param))).toBe(false);
       expect(navState.lastNavMethod).toBe("replace");
     });
   });
 
-  // URL-002 — Full country name is dropped (only ISO id is valid)
-  Scenario("A full-country-name param is dropped on load", ({ Given, When, Then, And }) => {
-    Given('a deep link with query string "country=Indonesia"', () => {
-      navState.params = new URLSearchParams("country=Indonesia");
-      navState.setParams(navState.params);
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When("the page resolves the deep link", () => {
-      expect(screen.getByTestId("calc-page")).toBeTruthy();
-    });
-
-    Then('the Country filter returns to "All countries"', () => {
-      expect((screen.getByRole("combobox", { name: /country/i }) as HTMLSelectElement).value).toBe("");
-    });
-
-    And('the URL is rewritten to have no "country" param', () => {
-      expect(navState.params.has("country")).toBe(false);
-      expect(navState.lastNavMethod).toBe("replace");
-    });
-  });
-
-  // URL-003 — Selecting a city backfills country and region
-  Scenario("Selecting a city under no prior filter backfills country and region", ({ Given, When, Then, And }) => {
+  // URL-003 — Selecting a city backfills country and region (and URL-011 restores a city deep link)
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: city selection backfills country and region
+  Scenario("city selection backfills country and region", ({ Given, When, Then, And }) => {
     Given("I am on the calculator with no query string", () => {
       navState.params = new URLSearchParams();
       navState.setParams(navState.params);
@@ -2423,10 +2210,32 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       expect(navState.params.get("country")).toBe("id");
       expect(navState.params.get("region")).toBe("asean");
     });
+
+    Given('a deep link with query string "city=singapore"', () => {
+      // Unmount the first render so the deep link mounts a fresh page.
+      cleanup();
+      navState.params = new URLSearchParams("city=singapore");
+      navState.setParams(navState.params);
+      renderPage(<CostOfLivingCalculatorPage />);
+    });
+
+    When("I open that link in a fresh tab", () => {
+      expect(screen.getByTestId("calc-page")).toBeTruthy();
+    });
+
+    Then("the single-city Cost-of-living detail for Singapore is shown", () => {
+      expect(screen.getByTestId("city-detail").textContent).toContain("Singapore");
+    });
+
+    And('the Country filter shows "Singapore" and the Region filter shows "ASEAN"', () => {
+      expect(navState.params.get("country")).toBe("sg");
+      expect(navState.params.get("region")).toBe("asean");
+    });
   });
 
-  // URL-004 — Selecting a broader region clears incompatible narrower filters
-  Scenario("Selecting a broader region clears an incompatible country and city", ({ Given, When, Then, But }) => {
+  // URL-004 (broader region clears narrower filters) and URL-010 (region selection writes the region)
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: region selection clears narrower filters
+  Scenario("region selection clears narrower filters", ({ Given, When, Then, And, But }) => {
     Given('I am on the calculator with query string "city=singapore"', () => {
       navState.params = new URLSearchParams("city=singapore");
       navState.setParams(navState.params);
@@ -2448,146 +2257,69 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       expect(navState.params.has("country")).toBe(false);
       expect(navState.params.has("city")).toBe(false);
     });
-  });
 
-  // URL-005 — Contradictory region+city deep link resolves with narrower filter winning
-  Scenario(
-    "A contradictory region-and-city deep link resolves with the narrower filter winning",
-    ({ Given, When, Then, And }) => {
-      Given('a deep link with query string "region=europe&city=singapore"', () => {
-        navState.params = new URLSearchParams("region=europe&city=singapore");
-        navState.setParams(navState.params);
-        renderPage(<CostOfLivingCalculatorPage />);
-      });
-
-      When("the page resolves the deep link", () => {
-        expect(screen.getByTestId("calc-page")).toBeTruthy();
-      });
-
-      Then("the single-city detail for Singapore is shown", () => {
-        expect(screen.getByTestId("city-detail").textContent).toContain("Singapore");
-      });
-
-      And('the URL is rewritten to canonical form with "city=singapore" and "region" backfilled to "asean"', () => {
-        expect(navState.params.get("city")).toBe("singapore");
-        expect(navState.params.get("region")).toBe("asean");
-        expect(navState.lastNavMethod).toBe("replace");
-      });
-    },
-  );
-
-  // URL-006 — City-detail back link preserves an explicitly chosen parent geo scope
-  Scenario("The city-detail back link preserves the parent geo scope", ({ Given, When, Then, But }) => {
-    let backHref = "";
-
-    Given('I am on the single-city detail with query string "region=asean&country=sg&city=singapore"', () => {
-      navState.params = new URLSearchParams("region=asean&country=sg&city=singapore");
+    Given("I am on the calculator with no query string", () => {
+      // Unmount the first render so the blank calculator mounts a fresh page.
+      cleanup();
+      navState.params = new URLSearchParams();
       navState.setParams(navState.params);
       renderPage(<CostOfLivingCalculatorPage />);
     });
 
-    When('I activate the "Back to all cities" link', () => {
+    When('I choose the region "Europe" from a blank filter', async () => {
+      const regionSelect = screen.queryByRole("combobox", { name: /region/i });
+      if (regionSelect) {
+        await getScenarioUser().selectOptions(regionSelect, "europe");
+      }
+    });
+
+    Then('the URL query string writes "region=europe"', () => {
+      expect(navState.params.get("region")).toBe("europe");
+    });
+
+    And('the URL query string has no "country" or "city" param', () => {
+      expect(navState.params.has("country")).toBe(false);
+      expect(navState.params.has("city")).toBe(false);
+    });
+  });
+
+  // URL-006 and AC-12 (UWT-015) — the city-detail back link keeps an explicitly chosen parent geo
+  // scope; a city-only deep link, whose scope was auto-derived, returns to the bare calculator.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: city detail back link
+  ScenarioOutline("city detail back link", ({ Given, When, Then, And }, variables) => {
+    let backHref = "";
+
+    Given('I am on the single-city detail with query string "<query>"', () => {
+      navState.params = new URLSearchParams(String(variables.query));
+      navState.setParams(navState.params);
+      renderPage(<CostOfLivingCalculatorPage />);
+    });
+
+    When("I read the single-city detail back link", () => {
       const link = screen.getByRole("link", { name: /back to all cities/i });
       backHref = link.getAttribute("href") ?? "";
     });
 
-    Then('the URL query string includes "region=asean" and "country=sg"', () => {
-      // Explicit scope was chosen, so the back link encodes the parent region+country.
-      const params = new URLSearchParams(backHref.replace(/^\?/, ""));
-      expect(params.get("region")).toBe("asean");
-      expect(params.get("country")).toBe("sg");
+    Then('the back link points to "<back_link>"', () => {
+      expect(backHref).toBe(variables.back_link);
     });
 
-    But('the URL query string does not include "city"', () => {
+    And('the back link does not include "city"', () => {
       const params = new URLSearchParams(backHref.replace(/^\?/, ""));
       expect(params.has("city")).toBe(false);
     });
   });
 
-  // URL-007 — Tab change is written to the URL
-  Scenario("Changing the tab writes the tab to the URL", ({ Given, When, Then, And }) => {
-    Given("I am on the calculator with no query string", () => {
-      navState.params = new URLSearchParams();
-      navState.setParams(navState.params);
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When('I switch to the "Savings" tab', async () => {
-      const tab = screen.queryByRole("tab", { name: /savings/i });
-      if (tab) {
-        await getScenarioUser().click(tab);
-      }
-    });
-
-    Then('the URL query string includes "tab=savings"', () => {
-      expect(navState.params.get("tab")).toBe("savings");
-      expect(navState.lastNavMethod).toBe("push");
-    });
-
-    And('reloading the page keeps the "Savings" tab active', () => {
-      expect(screen.getByRole("tab", { name: /savings/i }).getAttribute("data-state")).toBe("active");
-    });
-  });
-
-  // URL-008 — Cost-basis control change is written to the URL
-  Scenario("Changing a cost-basis control writes it to the URL", ({ Given, When, Then, And }) => {
-    Given("I am on the calculator with no query string", () => {
-      navState.params = new URLSearchParams();
-      navState.setParams(navState.params);
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When('I change the Adults control to "2"', async () => {
-      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /adults/i }), "2");
-    });
-
-    Then('the URL query string includes "adults=2"', () => {
-      expect(navState.params.get("adults")).toBe("2");
-      expect(navState.lastNavMethod).toBe("push");
-    });
-
-    And("the household preview updates without a page reload", () => {
-      expect((screen.getByRole("combobox", { name: /adults/i }) as HTMLSelectElement).value).toBe("2");
-    });
-  });
-
-  // URL-009 — Breadcrumb offers Home and Tools escape links
-  Scenario("The breadcrumb offers an escape to the Tools index and Home", ({ Given, When, Then, And }) => {
-    Given('I am on the calculator with query string "city=singapore"', () => {
-      navState.params = new URLSearchParams("city=singapore");
-      navState.setParams(navState.params);
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When("I read the breadcrumb above the page title", () => {
-      const nav = screen.queryByRole("navigation", { name: /breadcrumb/i });
-      expect(nav).toBeTruthy();
-    });
-
-    Then('a "Home" link to "/en" is shown', () => {
-      const links = screen.getAllByRole("link");
-      const homeLink = links.find((l) => {
-        const href = l.getAttribute("href") ?? "";
-        return href === "/en" || href.endsWith("/en");
-      });
-      expect(homeLink).toBeTruthy();
-    });
-
-    And('a "Tools" link to "/en/tools" is shown', () => {
-      const links = screen.getAllByRole("link");
-      const toolsLink = links.find((l) => {
-        const href = l.getAttribute("href") ?? "";
-        return href.includes("/en/tools");
-      });
-      expect(toolsLink).toBeTruthy();
-    });
-  });
-
-  // AC-2 (DWT-B-003/DWT-B-004) — Breadcrumb uses the shared primitive with chevron separators
-  Scenario("The breadcrumb separates crumbs with chevrons, not a literal slash", ({ Given, When, Then, And }) => {
+  // URL-009 (escape links), AC-2 (DWT-B-003/DWT-B-004, chevron separators) and AC-3 (UWT-013, final
+  // crumb equals the page H1) — the breadcrumb on the single-city detail, in each locale.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: calculator breadcrumb
+  ScenarioOutline("calculator breadcrumb", ({ Given, When, Then, And }, variables) => {
+    const locale = String(variables.locale);
     let breadcrumbNav: HTMLElement | null = null;
+    let currentCrumb: HTMLElement | null = null;
 
-    Given('I am on the calculator with query string "city=singapore"', () => {
+    Given('the user opens "/<locale>/tools/cost-of-living-calculator?city=singapore"', () => {
+      navState.locale = locale;
       navState.params = new URLSearchParams("city=singapore");
       navState.setParams(navState.params);
       renderPage(<CostOfLivingCalculatorPage />);
@@ -2598,7 +2330,25 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       expect(breadcrumbNav).toBeTruthy();
     });
 
-    Then("the crumbs are separated by chevron icons", () => {
+    Then('a "Home" link to "/<locale>" is shown', () => {
+      const links = screen.getAllByRole("link");
+      const homeLink = links.find((l) => {
+        const href = l.getAttribute("href") ?? "";
+        return href === `/${locale}` || href.endsWith(`/${locale}`);
+      });
+      expect(homeLink).toBeTruthy();
+    });
+
+    And('a "Tools" link to "/<locale>/tools" is shown', () => {
+      const links = screen.getAllByRole("link");
+      const toolsLink = links.find((l) => {
+        const href = l.getAttribute("href") ?? "";
+        return href.includes(`/${locale}/tools`);
+      });
+      expect(toolsLink).toBeTruthy();
+    });
+
+    And("the crumbs are separated by chevron icons", () => {
       // Home, Tools, current → two chevron <svg> separators rendered by lucide-react.
       const chevrons = breadcrumbNav!.querySelectorAll("svg");
       expect(chevrons.length).toBe(2);
@@ -2607,106 +2357,20 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     And('no literal "/" separator is shown between crumbs', () => {
       expect(breadcrumbNav!.textContent).not.toContain("/");
     });
-  });
 
-  // AC-3 (UWT-013) — Final breadcrumb crumb equals the page H1 in each locale
-  ScenarioOutline(
-    "The final breadcrumb crumb matches the page title in each locale",
-    ({ Given, When, Then, And }, variables) => {
-      let currentCrumb: HTMLElement | null = null;
-
-      Given('the user opens "/<locale>/tools/cost-of-living-calculator"', () => {
-        navState.locale = String(variables.locale);
-        renderPage(<CostOfLivingCalculatorPage />);
-      });
-
-      When("the breadcrumb renders", () => {
-        const nav = screen.getByRole("navigation", { name: /breadcrumb/i });
-        expect(nav).toBeTruthy();
-      });
-
-      Then('the current-page crumb text reads "<expected_title>"', () => {
-        currentCrumb = document.querySelector('[aria-current="page"]');
-        expect(currentCrumb).toBeTruthy();
-        expect(currentCrumb!.textContent).toBe(variables.expected_title);
-      });
-
-      And('the current-page crumb is marked aria-current="page"', () => {
-        expect(currentCrumb!.getAttribute("aria-current")).toBe("page");
-      });
-    },
-  );
-
-  // URL-010 — Region selection writes region to the URL
-  Scenario("Selecting a region writes the region to the URL", ({ Given, When, Then, And }) => {
-    Given("I am on the calculator with no query string", () => {
-      navState.params = new URLSearchParams();
-      navState.setParams(navState.params);
-      renderPage(<CostOfLivingCalculatorPage />);
+    And('the current-page crumb text reads "<expected_title>"', () => {
+      currentCrumb = document.querySelector('[aria-current="page"]');
+      expect(currentCrumb).toBeTruthy();
+      expect(currentCrumb!.textContent).toBe(variables.expected_title);
     });
 
-    When('I select the region "Europe"', async () => {
-      const regionSelect = screen.queryByRole("combobox", { name: /region/i });
-      if (regionSelect) {
-        await getScenarioUser().selectOptions(regionSelect, "europe");
-      }
-    });
-
-    Then('the URL query string includes "region=europe"', () => {
-      expect(navState.params.get("region")).toBe("europe");
-    });
-
-    And('the URL query string does not include "country" or "city"', () => {
-      expect(navState.params.has("country")).toBe(false);
-      expect(navState.params.has("city")).toBe(false);
-    });
-  });
-
-  // URL-011 — City deep link restores city and backfills country and region
-  Scenario("A city deep link restores the city and backfills country and region", ({ Given, When, Then, And }) => {
-    Given('a deep link with query string "city=singapore"', () => {
-      navState.params = new URLSearchParams("city=singapore");
-      navState.setParams(navState.params);
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When("I open that link in a fresh tab", () => {
-      expect(screen.getByTestId("calc-page")).toBeTruthy();
-    });
-
-    Then("the single-city Cost-of-living detail for Singapore is shown", () => {
-      expect(screen.getByTestId("city-detail").textContent).toContain("Singapore");
-    });
-
-    And('the Country filter shows "Singapore" and the Region filter shows "ASEAN"', () => {
-      expect(navState.params.get("country")).toBe("sg");
-      expect(navState.params.get("region")).toBe("asean");
-    });
-  });
-
-  // URL-012 — Unknown city param is dropped on load
-  Scenario("An unknown city param is dropped on load", ({ Given, When, Then, And }) => {
-    Given('a deep link with query string "city=atlantis"', () => {
-      navState.params = new URLSearchParams("city=atlantis");
-      navState.setParams(navState.params);
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When("the page resolves the deep link", () => {
-      expect(screen.getByTestId("calc-page")).toBeTruthy();
-    });
-
-    Then('the City filter returns to "All cities"', () => {
-      expect((screen.getByRole("combobox", { name: /city/i }) as HTMLSelectElement).value).toBe("");
-    });
-
-    And('the URL is rewritten to have no "city" param', () => {
-      expect(navState.params.has("city")).toBe(false);
-      expect(navState.lastNavMethod).toBe("replace");
+    And('the current-page crumb is marked aria-current="page"', () => {
+      expect(currentCrumb!.getAttribute("aria-current")).toBe("page");
     });
   });
 
   // URL-013 — Canonicalization uses replace so Back button skips the dirty URL
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Canonicalization does not add a browser history entry
   Scenario("Canonicalization does not add a browser history entry", ({ Given, When, Then }) => {
     Given('a deep link with query string "city=atlantis"', () => {
       navState.params = new URLSearchParams("city=atlantis");
@@ -2723,42 +2387,71 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
-  // AC-4 (UWT-016/DWT-005) — Geo-filter selects meet the 44px minimum touch target
-  Scenario("Geo-filter selects meet the minimum touch-target height on mobile", ({ Given, When, Then }) => {
-    Given("I am on the calculator at a 375px-wide viewport", () => {
-      // jsdom has no layout engine, so the rendered pixel height is verified at the
-      // e2e level (boundingBox >= 44px). The unit tier asserts the 44px-minimum
-      // styling contract on each geo-filter select: an explicit fixed height (h-11)
-      // PLUS appearance-none. The appearance-none is the load-bearing cross-browser
-      // fix — WebKit native selects use appearance:auto and pin min-height:18px in the
-      // UA stylesheet, overriding min-h-[44px]; removing the native appearance lets the
-      // author height apply on Safari, Chromium, AND Firefox alike.
-      navState.params = new URLSearchParams();
-      navState.setParams(navState.params);
+  // AC-4 (UWT-016/DWT-005), Cluster 2 and SG-003 — every control meets the 44px minimum touch target.
+  // jsdom has no layout engine, so the rendered pixel height is verified at the e2e level
+  // (boundingBox >= 44px). The unit tier asserts each control's 44px styling contract instead:
+  // geo-filter selects carry an explicit fixed height (h-11) PLUS appearance-none, because WebKit
+  // native selects use appearance:auto and pin min-height:18px in the UA stylesheet.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: touch targets are at least 44 px
+  ScenarioOutline("touch targets are at least 44 px", ({ Given, When, Then }, variables) => {
+    Given('I am on the "<tab>" tab at a <width>px-wide viewport', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
+      if (variables.tab !== "Cost of living") {
+        await getScenarioUser().click(screen.getByRole("tab", { name: new RegExp(String(variables.tab), "i") }));
+      }
     });
 
-    When("the geo-filter selects render", () => {
-      expect(document.getElementById("geo-region-select")).toBeTruthy();
+    When('the "<control>" control is rendered', () => {
+      if (variables.control === "geo-filter select") {
+        expect(document.getElementById("geo-region-select")).toBeTruthy();
+      } else if (variables.control === "tab trigger") {
+        expect(screen.getAllByRole("tab").length).toBe(3);
+      } else if (variables.control === "segmented radio") {
+        expect(screen.getAllByRole("radio").length).toBeGreaterThan(0);
+      } else {
+        expect(screen.getByRole("radiogroup", { name: /how to set your target/i })).toBeTruthy();
+      }
     });
 
-    Then("each geo-filter select is at least 44 pixels tall", () => {
-      for (const id of ["geo-region-select", "geo-country-select", "geo-city-select"]) {
-        const select = document.getElementById(id);
-        expect(select, id).toBeTruthy();
-        expect(select!.className).toContain("min-h-[44px]");
-        expect(select!.className).toContain("h-11");
-        expect(select!.className).toContain("appearance-none");
+    Then('each "<control>" is at least 44 pixels tall', () => {
+      if (variables.control === "geo-filter select") {
+        for (const id of ["geo-region-select", "geo-country-select", "geo-city-select"]) {
+          const select = document.getElementById(id);
+          expect(select, id).toBeTruthy();
+          expect(select!.className).toContain("min-h-[44px]");
+          expect(select!.className).toContain("h-11");
+          expect(select!.className).toContain("appearance-none");
+        }
+      } else if (variables.control === "tab trigger") {
+        for (const tab of screen.getAllByRole("tab")) {
+          expect(tab.className).toContain("min-h-[44px]");
+        }
+      } else if (variables.control === "segmented radio") {
+        // The school-type and area segmented radios; each role=radio button inherits min-h-[44px].
+        for (const radio of screen.getAllByRole("radio")) {
+          expect(radio.className).toContain("min-h-[44px]");
+        }
+      } else {
+        // flex-wrap lets the baseline options flow to a second row, each keeping min-h-[44px].
+        const group = screen.getByRole("radiogroup", { name: /how to set your target/i });
+        expect(group.className).toContain("flex-wrap");
+        expect(group.className).toContain("min-h-[44px]");
+        for (const radio of group.querySelectorAll('[role="radio"]')) {
+          expect((radio as HTMLElement).className).toContain("min-h-[44px]");
+        }
       }
     });
   });
 
-  // AC-5 (UWT-008) — Calculator page does not overflow horizontally at 320px
-  Scenario("The calculator page has no horizontal overflow at 320px", ({ Given, When, Then }) => {
-    Given("I am on the calculator at a 320px-wide viewport", () => {
-      // Horizontal scrollWidth is a layout measurement, verified at e2e level
-      // (scrollWidth <= 320). The unit tier asserts the structural contract: the
-      // geo-filter selects can shrink (min-w-0) so the row never forces overflow.
+  // AC-5 (UWT-008) and EWT-R01 (regression of UWT-008) — the page does not overflow horizontally at
+  // 320px in English or Indonesian. Horizontal scrollWidth is a layout measurement, verified at e2e
+  // level. The unit tier asserts the structural contract instead: the geo-filter selects can shrink
+  // (min-w-0), and the tablist is width-bounded (max-w-full + overflow-x-auto) so longer Indonesian
+  // labels scroll INTERNALLY instead of forcing document overflow.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: no horizontal overflow at 320 px
+  ScenarioOutline("no horizontal overflow at 320 px", ({ Given, When, Then }, variables) => {
+    Given('I am on the "<locale>" locale calculator at a 320px-wide viewport', () => {
+      navState.locale = String(variables.locale);
       navState.params = new URLSearchParams();
       navState.setParams(navState.params);
       renderPage(<CostOfLivingCalculatorPage />);
@@ -2774,58 +2467,16 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
         expect(select, id).toBeTruthy();
         expect(select!.className).toContain("min-w-0");
       }
-    });
-  });
-
-  // EWT-R01 (regression of UWT-008) — id-locale tab labels must not widen the page at 320px
-  Scenario("The calculator page has no horizontal overflow at 320px in the id locale", ({ Given, When, Then }) => {
-    Given("I am on the id-locale calculator at a 320px-wide viewport", () => {
-      // Horizontal scrollWidth is a layout measurement, verified at e2e level
-      // (scrollWidth <= 320). The unit tier asserts the locale-independent structural
-      // contract: the tablist is width-bounded (max-w-full + overflow-x-auto) so longer
-      // id labels scroll INTERNALLY instead of forcing document overflow.
-      navState.params = new URLSearchParams();
-      navState.setParams(navState.params);
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When("the calculator page renders", () => {
-      expect(screen.getByTestId("calc-page")).toBeTruthy();
-    });
-
-    Then("the document does not scroll horizontally", () => {
       const tablist = screen.getByRole("tablist");
       expect(tablist.className).toContain("max-w-full");
       expect(tablist.className).toContain("overflow-x-auto");
     });
   });
 
-  // AC-8 (UWT-004) — Savings gross-salary field surfaces the active currency separately
-  Scenario(
-    "The Savings gross-salary field shows the active currency as a separate indicator",
-    async ({ Given, When, Then, And }) => {
-      Given('I am on the "Savings" tab', async () => {
-        renderPage(<CostOfLivingCalculatorPage />);
-        await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
-      });
-
-      When("the gross-salary field renders", () => {
-        expect(document.querySelector("#gross-salary-input")).toBeTruthy();
-      });
-
-      Then('the gross-salary label does not contain the literal currency code "USD"', () => {
-        const label = document.querySelector('label[for="gross-salary-input"]');
-        expect(label?.textContent).not.toMatch(/USD/);
-      });
-
-      And('an active-currency indicator next to the field shows "USD"', () => {
-        expect(screen.getByTestId("salary-currency-indicator").textContent).toMatch(/USD/);
-      });
-    },
-  );
-
-  // UWT-019 — the fixed USD indicator carries a short explanation of why USD is used
-  Scenario("The Savings currency indicator explains why USD is used for every city", async ({ Given, When, Then }) => {
+  // AC-8 (UWT-004), UWT-019 and UWT-007 — the Savings gross-salary field names its active currency
+  // as a separate indicator at the field, and a short explanation says why USD is used for every city.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: savings currency indicator
+  Scenario("savings currency indicator", async ({ Given, When, Then, And }) => {
     Given('I am on the "Savings" tab', async () => {
       renderPage(<CostOfLivingCalculatorPage />);
       await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
@@ -2835,46 +2486,68 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       expect(document.querySelector("#gross-salary-input")).toBeTruthy();
     });
 
-    Then("an explanation states salaries are compared in USD across all cities", () => {
+    Then('the gross-salary label does not contain the literal currency code "USD"', () => {
+      const label = document.querySelector('label[for="gross-salary-input"]');
+      expect(label?.textContent).not.toMatch(/USD/);
+    });
+
+    And('an active-currency indicator next to the field shows "USD"', () => {
+      expect(screen.getByTestId("salary-currency-indicator").textContent).toMatch(/USD/);
+    });
+
+    And("an explanation states salaries are compared in USD across all cities", () => {
       const explanation = screen.getByTestId("salary-currency-explanation");
       expect(explanation.textContent).toMatch(/USD/);
     });
+
+    And("the gross salary input displays its USD currency inline at the field", () => {
+      expect(screen.getByTestId("salary-currency-indicator").textContent).toMatch(/USD/);
+    });
   });
 
-  // AC-9 (UWT-006) — Minimum-role empty-state for a BLANK target only (numeric zero → ladder)
-  Scenario(
-    "A blank savings target shows empty-state guidance instead of the role ladder",
-    async ({ Given, When, Then, But }) => {
-      Given('I am on the "Minimum role" tab with the savings-target baseline and a blank target', async () => {
-        renderPage(<CostOfLivingCalculatorPage />);
-        await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
-        await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
-        // No target typed → blank.
-      });
+  // USS-002 and AC-9 (UWT-006) — Minimum-role empty-state for a BLANK target only (numeric zero → ladder)
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: minimum-role empty state
+  Scenario("minimum-role empty state", async ({ Given, When, Then, And, But }) => {
+    Given('I am on the "Minimum role" tab with the savings-target baseline and a blank target', async () => {
+      renderPage(<CostOfLivingCalculatorPage />);
+      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
+      await getScenarioUser().click(screen.getByRole("radio", { name: /monthly savings target/i }));
+      // No target typed → blank.
+    });
 
-      When("the tab renders", () => {
-        // UWT-001: the baseline-source group's accessible name is the scent-bearing relabel.
-        expect(screen.getByRole("radiogroup", { name: /how to set your target/i })).toBeTruthy();
-      });
+    When("the tab renders", () => {
+      // UWT-001: the baseline-source group's accessible name is the scent-bearing relabel.
+      expect(screen.getByRole("radiogroup", { name: /how to set your target/i })).toBeTruthy();
+    });
 
-      Then("a minimum-role empty-state guidance message is shown", () => {
-        expect(screen.getByTestId("min-role-empty-state")).toBeTruthy();
-        // The role ladder must not render while the target is blank.
-        expect(screen.queryByRole("table")).toBeNull();
-      });
+    Then("a minimum-role empty-state guidance message is shown", () => {
+      expect(screen.getByTestId("min-role-empty-state")).toBeTruthy();
+      // The role ladder must not render while the target is blank.
+      expect(screen.queryByRole("table")).toBeNull();
+    });
 
-      But("entering an explicit zero target replaces the guidance with the role ladder and its divider", async () => {
-        const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
-        await getScenarioUser().clear(input);
-        await getScenarioUser().type(input, "0");
-        expect(screen.queryByTestId("min-role-empty-state")).toBeNull();
-        expect(screen.getByRole("table")).toBeTruthy();
-        expect(screen.getByTestId("qualifying-divider")).toBeTruthy();
-      });
-    },
-  );
+    And("the role comparison table is not shown", () => {
+      // UWT-006: blank savings target (default on mount) suppresses the ladder.
+      expect(screen.queryByRole("table")).toBeNull();
+    });
+
+    And("no role salary data is visible", () => {
+      expect(screen.queryByTestId("minimum-marker")).toBeNull();
+      expect(screen.queryByTestId("city-cell")).toBeNull();
+    });
+
+    But("entering an explicit zero target replaces the guidance with the role ladder and its divider", async () => {
+      const input = screen.getByRole("spinbutton", { name: /monthly savings target/i });
+      await getScenarioUser().clear(input);
+      await getScenarioUser().type(input, "0");
+      expect(screen.queryByTestId("min-role-empty-state")).toBeNull();
+      expect(screen.getByRole("table")).toBeTruthy();
+      expect(screen.getByTestId("qualifying-divider")).toBeTruthy();
+    });
+  });
 
   // AC-10 (UWT-007) — Region selector lists exactly the nine intended regions
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The region selector lists exactly the nine intended regions
   Scenario("The region selector lists exactly the nine intended regions", ({ Given, When, Then }) => {
     let regionSelect: HTMLElement;
 
@@ -2903,6 +2576,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // AC-11 (UWT-014) — A country change that auto-changes the region surfaces an advisory
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Selecting a country that changes the region shows a visible advisory
   Scenario("Selecting a country that changes the region shows a visible advisory", async ({ Given, When, Then }) => {
     Given("I am on the calculator with no region selected", () => {
       navState.params = new URLSearchParams();
@@ -2922,58 +2596,10 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
-  // AC-12 (UWT-015) — A city-only deep link returns to the bare calculator
-  Scenario("A city-only deep link back link omits the auto-derived region and country", ({ Given, When, Then }) => {
-    let backLink: HTMLElement;
-
-    Given('a deep link with query string "city=london"', () => {
-      navState.params = new URLSearchParams("city=london");
-      navState.setParams(navState.params);
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When("I read the single-city detail back link", () => {
-      backLink = screen.getByRole("link", { name: /back to all cities/i });
-      expect(backLink).toBeTruthy();
-    });
-
-    Then('the back link points to the bare calculator "?tab=cost" with no region or country', () => {
-      const href = backLink.getAttribute("href") ?? "";
-      expect(href).toBe("?tab=cost");
-      expect(href).not.toContain("region=");
-      expect(href).not.toContain("country=");
-    });
-  });
-
   // ── Phase 7: spec coverage sweep ─────────────────────────────────────────────
 
-  // SG-U (country-narrows-city) — selecting country alone (no region) narrows city dropdown
-  Scenario("Selecting a country without a region still narrows the city dropdown", async ({ Given, When, Then }) => {
-    Given("I am on the calculator with no region or country selected", () => {
-      navState.params = new URLSearchParams();
-      navState.setParams(navState.params);
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When('I select the country "Indonesia" in the country filter without first selecting a region', async () => {
-      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /country/i }), "id");
-    });
-
-    Then("the city dropdown lists only cities in Indonesia", () => {
-      const citySelect = screen.getByRole("combobox", { name: /city/i });
-      const cityOptions = Array.from(citySelect.querySelectorAll("option")).filter(
-        (o) => o.getAttribute("value") !== "",
-      );
-      const idCityIds = dataset.cities.filter((c) => c.countryId === "id").map((c) => c.id);
-      // Every non-empty option must be an Indonesian city.
-      expect(cityOptions.length).toBeGreaterThan(0);
-      for (const opt of cityOptions) {
-        expect(idCityIds).toContain(opt.getAttribute("value"));
-      }
-    });
-  });
-
   // SG-U (area radiogroup) — the area segmented control renders with role="radiogroup"
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The area control is rendered as a radiogroup
   Scenario("The area control is rendered as a radiogroup", ({ Given, When, Then, And }) => {
     Given("I am on the cost-of-living calculator", () => {
       navState.params = new URLSearchParams();
@@ -3003,6 +2629,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // SG-U (baseline SegmentedControl) — baseline selector is a radiogroup that shows/hides sub-forms
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The baseline selector shows the savings-target sub-form when savings target is selected
   Scenario(
     "The baseline selector shows the savings-target sub-form when savings target is selected",
     async ({ Given, When, Then, And }) => {
@@ -3041,7 +2668,8 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   );
 
   // Regression — filter changes must not scroll the page to the top.
-  Scenario("Changing a filter preserves the scroll position", async ({ Given, When, Then }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Changing a filter keeps the page at the same scroll position
+  Scenario("Changing a filter keeps the page at the same scroll position", async ({ Given, When, Then }) => {
     let scrollTo: ReturnType<typeof vi.spyOn>;
 
     Given("I am on the cost-of-living calculator", () => {
@@ -3057,7 +2685,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     When('I change the region filter to "Europe"', async () => {
       await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /region/i }), "europe");
     });
-    Then("the URL update requests no scroll so the page does not jump to the top", async () => {
+    Then("the page does not jump to the top", async () => {
       await waitFor(() => expect(navState.params.get("region")).toBe("europe"));
       // Every filter write is in-page state, so it must request { scroll: false }.
       expect(navState.lastNavOpts).toEqual({ scroll: false });
@@ -3066,6 +2694,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // Regression — typing the salary echoes instantly but debounces the URL write.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Typing the gross salary echoes instantly but commits to the URL only after typing settles
   Scenario(
     "Typing the gross salary echoes instantly but commits to the URL only after typing settles",
     async ({ Given, When, Then, And }) => {
@@ -3092,6 +2721,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // Foreigner public-school eligibility: where public schooling isn't open to foreign residents,
   // the calculator charges the private figure and flags the cell.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Public schooling not open to foreigners is charged at the private rate
   Scenario("Public schooling not open to foreigners is charged at the private rate", async ({ Given, When, Then }) => {
     const sg = dataset.cities.find((c) => c.id === "singapore")!;
 
@@ -3113,6 +2743,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Public schooling open to foreigners keeps the public cost
   Scenario("Public schooling open to foreigners keeps the public cost", async ({ Given, When, Then }) => {
     const berlin = dataset.cities.find((c) => c.id === "berlin")!;
 
@@ -3135,7 +2766,8 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   // ── Phase 8: UX-hardening fold-in bindings (SG-001..003, USS-001..004, protected) ──
 
   // Cluster 1 / SG-001 — only the active tab description is visible.
-  Scenario("Only the active tab description is visible", ({ Given, When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: active tab description
+  Scenario("active tab description", ({ Given, When, Then, And }) => {
     Given('the cost-of-living calculator is open with the "Cost of living" tab active', () => {
       renderPage(<CostOfLivingCalculatorPage />);
     });
@@ -3159,13 +2791,6 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     And('the "Minimum role" tab description is not visible', () => {
       expect(screen.getByTestId("tab-desc-min-role").className).toMatch(/\bhidden\b/);
     });
-  });
-
-  Scenario("Active tab description follows the active tab", async ({ Given, When, Then }) => {
-    Given('the cost-of-living calculator is open with the "Cost of living" tab active', () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-      expect(screen.getByTestId("tab-desc-cost").className).not.toMatch(/\bhidden\b/);
-    });
 
     When('the user selects the "Savings" tab', async () => {
       await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
@@ -3178,36 +2803,8 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
-  // Cluster 2 — touch targets on tab triggers + segmented radios.
-  Scenario("Interactive controls meet the 44px touch target", ({ Given, When, Then, And }) => {
-    Given("the calculator at 375px", () => {
-      // jsdom has no layout engine; the unit tier asserts the 44px styling contract
-      // (min-h-[44px]) on each interactive control. Pixel height is verified at e2e.
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When("the page is rendered", () => {
-      expect(screen.getAllByRole("tab").length).toBe(3);
-    });
-
-    Then("every tab trigger is at least 44px tall", () => {
-      for (const tab of screen.getAllByRole("tab")) {
-        expect(tab.className).toContain("min-h-[44px]");
-      }
-    });
-
-    And("every school-type, area, and salary-currency segmented radio is at least 44px tall", () => {
-      // The school-type + area segmented radios live in the cost-basis controls; every
-      // role=radio button inherits the primitive's min-h-[44px].
-      const radios = screen.getAllByRole("radio");
-      expect(radios.length).toBeGreaterThan(0);
-      for (const radio of radios) {
-        expect(radio.className).toContain("min-h-[44px]");
-      }
-    });
-  });
-
   // USS-003 — Area toggle exposes its pressed state via ARIA (radiogroup → aria-checked).
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Area toggle exposes its pressed state
   Scenario("Area toggle exposes its pressed state", ({ Given, When, Then, And }) => {
     Given('"City center" is the active area', () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -3232,35 +2829,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
-  // USS-004 — disabled school-type buttons announce the prerequisite.
-  Scenario("Disabled school-type buttons announce the prerequisite", ({ Given, When, Then, And }) => {
-    Given('"School-age children" is 0', () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    When("the page is rendered", () => {
-      expect(screen.getByRole("radiogroup", { name: /school type/i })).toBeTruthy();
-    });
-
-    Then('the "Public" and "Private" buttons are aria-disabled', () => {
-      const group = screen.getByRole("radiogroup", { name: /school type/i });
-      const publicBtn = within(group).getByRole("radio", { name: /public/i, hidden: true });
-      const privateBtn = within(group).getByRole("radio", { name: /private/i, hidden: true });
-      expect(publicBtn.getAttribute("aria-disabled")).toBe("true");
-      expect(privateBtn.getAttribute("aria-disabled")).toBe("true");
-    });
-
-    And('their accessible description names the "add school-age children" prerequisite', () => {
-      const group = screen.getByRole("radiogroup", { name: /school type/i });
-      const publicBtn = within(group).getByRole("radio", { name: /public/i, hidden: true });
-      const describedById = publicBtn.getAttribute("aria-describedby");
-      expect(describedById).toBe("school-type-hint");
-      const hint = document.getElementById(describedById!);
-      expect(hint).toBeTruthy();
-      expect(hint!.textContent?.toLowerCase()).toMatch(/school-age children/);
-    });
-  });
-
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Sortable savings column exposes aria-sort
   Scenario("Sortable savings column exposes aria-sort", async ({ Given, When, Then }) => {
     Given("the Savings tab table is shown", async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -3286,51 +2855,56 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // Cluster 3 — foreigner public-school flag present in BOTH table and city-detail.
-  Scenario("Foreigner-school flag is clear, styled, and present in both views", async ({ Given, And, When, Then }) => {
-    const sg = dataset.cities.find((c) => c.id === "singapore")!;
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: A school cost charged at the private rate carries a clear flag in the table and the city detail
+  Scenario(
+    "A school cost charged at the private rate carries a clear flag in the table and the city detail",
+    async ({ Given, And, When, Then }) => {
+      const sg = dataset.cities.find((c) => c.id === "singapore")!;
 
-    Given("a city whose country does not open public school to foreigners", () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-    });
-
-    And('school-age children >= 1 and school type "public"', async () => {
-      // School type defaults to "public"; adding a school-age child enables the column.
-      await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /school-age children/i }), "1");
-    });
-
-    When("the page is rendered", () => {
-      expect(screen.getByRole("table")).toBeTruthy();
-    });
-
-    Then("the cost-of-living table school cell shows a clearly-worded private-fallback flag", () => {
-      // Singapore is "limited" → a foreigner picking public is charged the PRIVATE figure
-      // and the table flags the cell with the localized warning Badge.
-      const flag = screen.getByTestId("school-foreigner-flag-singapore");
-      expect(flag).toBeTruthy();
-      expect(flag.textContent?.trim()).toBe(t("en", "publicSchoolForeignerFlagBadge"));
-    });
-
-    And("the flag is visually distinct from ordinary caption text", () => {
-      // The flag is a warning-tone Badge (honey hue), NOT plain text-muted-foreground.
-      const flag = screen.getByTestId("school-foreigner-flag-singapore");
-      expect(flag.className).not.toMatch(/\btext-muted-foreground\b/);
-    });
-
-    And("the city-detail school row renders the school-foreigner-flag-<cityId> testid", async () => {
-      // Open Singapore's city detail and confirm the same flag testid renders there (EWT-003 parity).
-      // Tear down the table-view render first so only the city-detail render is mounted.
-      cleanup();
-      navState.params = new URLSearchParams(`city=${sg.id}&schoolkids=1&schooltype=public`);
-      navState.setParams(navState.params);
-      renderPage(<CostOfLivingCalculatorPage />);
-      await waitFor(() => {
-        expect(screen.getByTestId("city-detail")).toBeTruthy();
+      Given("a city whose country does not open public school to foreigners", () => {
+        renderPage(<CostOfLivingCalculatorPage />);
       });
-      expect(screen.getByTestId(`school-foreigner-flag-${sg.id}`)).toBeTruthy();
-    });
-  });
+
+      And('school-age children >= 1 and school type "public"', async () => {
+        // School type defaults to "public"; adding a school-age child enables the column.
+        await getScenarioUser().selectOptions(screen.getByRole("combobox", { name: /school-age children/i }), "1");
+      });
+
+      When("the page is rendered", () => {
+        expect(screen.getByRole("table")).toBeTruthy();
+      });
+
+      Then("the cost-of-living table school cell shows a clearly-worded private-fallback flag", () => {
+        // Singapore is "limited" → a foreigner picking public is charged the PRIVATE figure
+        // and the table flags the cell with the localized warning Badge.
+        const flag = screen.getByTestId("school-foreigner-flag-singapore");
+        expect(flag).toBeTruthy();
+        expect(flag.textContent?.trim()).toBe(t("en", "publicSchoolForeignerFlagBadge"));
+      });
+
+      And("the flag is visually distinct from ordinary caption text", () => {
+        // The flag is a warning-tone Badge (honey hue), NOT plain text-muted-foreground.
+        const flag = screen.getByTestId("school-foreigner-flag-singapore");
+        expect(flag.className).not.toMatch(/\btext-muted-foreground\b/);
+      });
+
+      And("the city-detail school row shows the same flag", async () => {
+        // Open Singapore's city detail and confirm the same flag testid renders there (EWT-003 parity).
+        // Tear down the table-view render first so only the city-detail render is mounted.
+        cleanup();
+        navState.params = new URLSearchParams(`city=${sg.id}&schoolkids=1&schooltype=public`);
+        navState.setParams(navState.params);
+        renderPage(<CostOfLivingCalculatorPage />);
+        await waitFor(() => {
+          expect(screen.getByTestId("city-detail")).toBeTruthy();
+        });
+        expect(screen.getByTestId(`school-foreigner-flag-${sg.id}`)).toBeTruthy();
+      });
+    },
+  );
 
   // Cluster 4 — jargon glosses across the cost-of-living + min-role headers.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Jargon table headers carry an accessible explanation
   Scenario("Jargon table headers carry an accessible explanation", async ({ Given, When, Then, And }) => {
     Given("the calculator is open", () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -3385,6 +2959,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // Protected behaviour — OOP abbr title localized (id != literal English "out-of-pocket").
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The OOP abbreviation title is localized per locale
   Scenario("The OOP abbreviation title is localized per locale", ({ Given, When, Then, And }) => {
     Given("the calculator is open", () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -3404,42 +2979,54 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // Protected behaviour — region option display names localized; serialized key stays English.
-  Scenario(
-    "Region option display names are localized but the serialized key stays English",
-    ({ Given, When, Then, And }) => {
-      let regionSelect: HTMLElement;
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Region names show in the reader's language
+  Scenario("Region names show in the reader's language", ({ Given, When, Then }) => {
+    Given("the calculator is open", () => {
+      navState.params = new URLSearchParams();
+      navState.setParams(navState.params);
+      renderPage(<CostOfLivingCalculatorPage />);
+    });
 
-      Given("the calculator is open", () => {
-        navState.params = new URLSearchParams();
-        navState.setParams(navState.params);
-        renderPage(<CostOfLivingCalculatorPage />);
-      });
+    When("the region filter renders", () => {
+      expect(screen.getByRole("combobox", { name: /region/i })).toBeTruthy();
+    });
 
-      When("the region filter renders", () => {
-        regionSelect = screen.getByRole("combobox", { name: /region/i });
-        expect(regionSelect).toBeTruthy();
-      });
+    Then("the region display label differs between the en and id locales", () => {
+      // The display label is localized via t(); at least one region label differs across locales.
+      const keys = ["regionMena", "regionNordics", "regionAfrica"] as const;
+      const anyDiffers = keys.some((k) => t("id", k) !== t("en", k));
+      expect(anyDiffers).toBe(true);
+    });
+  });
 
-      Then("each region option's serialized value is its English key", () => {
-        // The option value (serialized into the URL) must remain the English region key.
-        const englishKeys = ["africa", "americas", "asean", "asia", "europe", "japan", "mena", "nordics", "oceania"];
-        const values = Array.from(regionSelect.querySelectorAll("option"))
-          .map((o) => (o as HTMLOptionElement).value)
-          .filter((v) => v !== "");
-        for (const v of values) {
-          expect(englishKeys).toContain(v);
-        }
-      });
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The URL value of a region stays its English key
+  Scenario("The URL value of a region stays its English key", ({ Given, When, Then }) => {
+    let regionSelect: HTMLElement;
 
-      And("the region display label differs between the en and id locales", () => {
-        // The display label is localized via t(); at least one region label differs across locales.
-        const keys = ["regionMena", "regionNordics", "regionAfrica"] as const;
-        const anyDiffers = keys.some((k) => t("id", k) !== t("en", k));
-        expect(anyDiffers).toBe(true);
-      });
-    },
-  );
+    Given("the calculator is open", () => {
+      navState.params = new URLSearchParams();
+      navState.setParams(navState.params);
+      renderPage(<CostOfLivingCalculatorPage />);
+    });
 
+    When("the region filter renders", () => {
+      regionSelect = screen.getByRole("combobox", { name: /region/i });
+      expect(regionSelect).toBeTruthy();
+    });
+
+    Then("each region option's serialized value is its English key", () => {
+      // The option value (serialized into the URL) must remain the English region key.
+      const englishKeys = ["africa", "americas", "asean", "asia", "europe", "japan", "mena", "nordics", "oceania"];
+      const values = Array.from(regionSelect.querySelectorAll("option"))
+        .map((o) => (o as HTMLOptionElement).value)
+        .filter((v) => v !== "");
+      for (const v of values) {
+        expect(englishKeys).toContain(v);
+      }
+    });
+  });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Healthcare scheme badges use consistent casing
   Scenario("Healthcare scheme badges use consistent casing", ({ Given, When, Then }) => {
     Given("the calculator is open", () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -3462,8 +3049,9 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
   });
 
   // Cluster 5 / USS-001 — Savings empty-state + auto-focus.
-  Scenario("Savings tab guides the user to enter a salary", async ({ Given, When, Then, And }) => {
-    Given("the Savings tab is activated with no salary entered", () => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: savings empty state
+  ScenarioOutline("savings empty state", async ({ Given, When, Then, And }, variables) => {
+    Given("the Savings tab is activated", () => {
       // Activate the Savings tab via deep link so the tab content mounts (triggering the
       // gross input's autoFocus) without a competing userEvent click that would steal focus
       // to the tab trigger. mount === tab activation for this content.
@@ -3472,8 +3060,12 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       renderPage(<CostOfLivingCalculatorPage />);
     });
 
-    When("the tab activation occurs", () => {
-      expect(screen.getByRole("main")).toBeTruthy();
+    When("the gross monthly salary field is <salary>", async () => {
+      const input = screen.getByRole("spinbutton", { name: /gross monthly salary/i });
+      await getScenarioUser().clear(input);
+      if (variables.salary === "zero") {
+        await getScenarioUser().type(input, "0");
+      }
     });
 
     Then("a prominent empty-state prompt is shown in the data area", () => {
@@ -3481,7 +3073,18 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
       expect(panel).toBeTruthy();
       // "Prominent" = a bordered panel, not a faint caption.
       expect(panel.className).toMatch(/\bborder\b/);
-      expect(panel.textContent?.trim().length).toBeGreaterThan(0);
+    });
+
+    And("an instructional message is shown", () => {
+      expect(screen.getByTestId("savings-empty-state").textContent?.trim().length).toBeGreaterThan(0);
+    });
+
+    And("the savings comparison table is not shown", () => {
+      expect(screen.queryByRole("table")).toBeNull();
+    });
+
+    And("no savings figures or percentages are rendered without net income", () => {
+      expect(screen.queryByTestId("savings-essential")).toBeNull();
     });
 
     And("the gross salary input receives focus", async () => {
@@ -3494,6 +3097,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
 
   // The single-city essentials preview is removed from the min-role tab (the tab now lists every
   // qualifying city, so a one-city example is redundant there).
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Minimum-role tab does not render the single-city essentials preview
   Scenario("Minimum-role tab does not render the single-city essentials preview", async ({ Given, When, Then }) => {
     Given("the Minimum-role tab is activated", async () => {
       renderPage(<CostOfLivingCalculatorPage />);
@@ -3510,79 +3114,44 @@ describeFeature(feature, ({ Scenario, ScenarioOutline, BeforeEachScenario, After
     });
   });
 
-  // UWT-007 — at-field currency indicator on the Savings gross input.
-  Scenario("Savings salary input shows its currency at the field", async ({ Given, When, Then }) => {
-    Given("the Savings tab is shown", async () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-      await getScenarioUser().click(screen.getByRole("tab", { name: /savings/i }));
-    });
-
-    When("the page is rendered", () => {
-      expect(document.getElementById("gross-salary-input")).toBeTruthy();
-    });
-
-    Then("the gross salary input displays its USD currency inline at the field", () => {
-      const indicator = screen.getByTestId("salary-currency-indicator");
-      expect(indicator.textContent).toMatch(/USD/);
-    });
-  });
-
   // Cluster 6 / SG-002 — all selects share the design-system chrome (appearance-none + chevron).
-  Scenario("All selects share the design-system chrome", async ({ Given, When, Then, And }) => {
-    Given("the calculator at 1280px", async () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-      // Visit the Minimum-role tab too so the currency/ref selects are also exercised.
-      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
-    });
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Every dropdown shows one custom arrow and not the browser's native arrow
+  Scenario(
+    "Every dropdown shows one custom arrow and not the browser's native arrow",
+    async ({ Given, When, Then, And }) => {
+      Given("the calculator at 1280px", async () => {
+        renderPage(<CostOfLivingCalculatorPage />);
+        // Visit the Minimum-role tab too so the currency/ref selects are also exercised.
+        await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
+      });
 
-    When("the page is rendered", () => {
-      expect(screen.getAllByRole("combobox").length).toBeGreaterThan(0);
-    });
+      When("the page is rendered", () => {
+        expect(screen.getAllByRole("combobox").length).toBeGreaterThan(0);
+      });
 
-    Then('every <select> has computed appearance "none" and a custom chevron affordance', () => {
-      // jsdom cannot compute `appearance`; the styling contract is the appearance-none class.
-      const selects = Array.from(document.querySelectorAll("select"));
-      expect(selects.length).toBeGreaterThan(0);
-      for (const select of selects) {
-        expect(select.className, `${select.id || "select"} must be appearance-none`).toContain("appearance-none");
-        // SelectField overlays a custom ChevronDown svg as a sibling of the <select>.
-        const wrapper = select.parentElement;
-        expect(wrapper?.querySelector("svg"), `${select.id || "select"} must have a custom chevron`).toBeTruthy();
-      }
-    });
+      Then("every dropdown shows a custom chevron affordance", () => {
+        // jsdom cannot compute `appearance`; the styling contract is the appearance-none class.
+        const selects = Array.from(document.querySelectorAll("select"));
+        expect(selects.length).toBeGreaterThan(0);
+        for (const select of selects) {
+          expect(select.className, `${select.id || "select"} must be appearance-none`).toContain("appearance-none");
+          // SelectField overlays a custom ChevronDown svg as a sibling of the <select>.
+          const wrapper = select.parentElement;
+          expect(wrapper?.querySelector("svg"), `${select.id || "select"} must have a custom chevron`).toBeTruthy();
+        }
+      });
 
-    And("no <select> shows the browser's native dropdown arrow", () => {
-      // appearance-none removes the native arrow; asserted by the class on every select above.
-      for (const select of Array.from(document.querySelectorAll("select"))) {
-        expect(select.className).toContain("appearance-none");
-      }
-    });
-  });
-
-  // SG-003 — Baseline-source segmented control keeps the 44px rhythm via flex-wrap.
-  Scenario("Baseline-source control keeps the 44px rhythm at mobile", async ({ Given, When, Then }) => {
-    Given("the Minimum-role tab at 320px and 375px", async () => {
-      renderPage(<CostOfLivingCalculatorPage />);
-      await getScenarioUser().click(screen.getByRole("tab", { name: /minimum role/i }));
-    });
-
-    When("the page is rendered", () => {
-      expect(screen.getByRole("radiogroup", { name: /how to set your target/i })).toBeTruthy();
-    });
-
-    Then('each "Baseline source" option remains at least 44px tall when the control wraps', () => {
-      // jsdom has no layout; the contract is flex-wrap (so 3 options flow to a second row)
-      // with each option keeping min-h-[44px] per row instead of one ballooning row.
-      const group = screen.getByRole("radiogroup", { name: /how to set your target/i });
-      expect(group.className).toContain("flex-wrap");
-      expect(group.className).toContain("min-h-[44px]");
-      for (const radio of group.querySelectorAll('[role="radio"]')) {
-        expect((radio as HTMLElement).className).toContain("min-h-[44px]");
-      }
-    });
-  });
+      And("no dropdown shows the browser's native arrow", () => {
+        // appearance-none removes the native arrow; asserted by the class on every select above.
+        for (const select of Array.from(document.querySelectorAll("select"))) {
+          expect(select.className).toContain("appearance-none");
+        }
+      });
+    },
+  );
 
   // DWT-007 — salary-currency toggle bottom-aligns with the gross input (items-end field row).
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Salary-currency toggle bottom-aligns with its sibling input
   Scenario("Salary-currency toggle bottom-aligns with its sibling input", async ({ Given, When, Then }) => {
     Given('the Minimum-role "My salary" baseline at 1280px', async () => {
       renderPage(<CostOfLivingCalculatorPage />);

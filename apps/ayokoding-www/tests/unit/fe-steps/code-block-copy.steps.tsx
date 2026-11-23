@@ -41,6 +41,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/code-block-copy.feature: A non-mermaid code block renders a copy button
   Scenario("A non-mermaid code block renders a copy button", ({ Given, When, Then }) => {
     Given("a visitor opens an English content page containing a fenced Lua code block", () => {
       expect(luaHtml).toContain('data-language="lua"');
@@ -57,6 +58,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/code-block-copy.feature: A mermaid block renders no copy button
   Scenario("A mermaid block renders no copy button", ({ Given, When, Then }) => {
     Given("a visitor opens a content page containing a mermaid fenced block", () => {
       expect(mermaidFigureHtml).toContain('data-language="mermaid"');
@@ -76,6 +78,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/code-block-copy.feature: The copy button is labelled in Indonesian on the Indonesian site
   Scenario("The copy button is labelled in Indonesian on the Indonesian site", ({ Given, When, Then }) => {
     Given("a visitor opens an Indonesian content page containing a fenced code block", () => {
       expect(t("id", "copy")).toBe("Salin");
@@ -93,6 +96,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/code-block-copy.feature: Clicking copy places the verbatim annotated source on the clipboard
   Scenario("Clicking copy places the verbatim annotated source on the clipboard", ({ Given, When, Then }) => {
     let writeText: ReturnType<typeof vi.fn>;
 
@@ -113,6 +117,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/code-block-copy.feature: The copy button confirms success to the visitor
   Scenario("The copy button confirms success to the visitor", ({ Given, When, Then }) => {
     Given("a visitor has clicked a code block's copy button", () => {
       cleanup();
@@ -144,6 +149,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/code-block-copy.feature: The copy button is reachable on a touch viewport without hovering
   Scenario("The copy button is reachable on a touch viewport without hovering", ({ Given, When, Then }) => {
     Given("a visitor loads a content page on a touch (no-hover) viewport", () => {
       cleanup();

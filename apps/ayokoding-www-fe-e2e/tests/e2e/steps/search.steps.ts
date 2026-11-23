@@ -1,3 +1,11 @@
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/search/search.feature: Cmd+K keyboard shortcut opens the search dialog
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/search/search.feature: Typing a query shows matching results that update as the query changes
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/search/search.feature: Clicking a search result navigates to that page
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/search/search.feature: Escape key closes the search dialog
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/search/search.feature: Search results show title, section path, and excerpt
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/search/search.feature: Global search surfaces the Tools pages
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/search/search.feature: Ctrl+K opens the search dialog on non-Mac platforms
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/search/search.feature: A query with no match shows a no-results message
 import { createBdd } from "playwright-bdd";
 import { expect, type Locator } from "@playwright/test";
 
@@ -142,4 +150,22 @@ Then("a result linking to the AI Model Benchmark tool page is shown", async ({ p
   const searchDialog = page.getByRole("dialog");
   const benchmarkResult = searchDialog.getByRole("option", { name: /AI Model Benchmark/i });
   await expect(benchmarkResult).toBeVisible({ timeout: 15000 });
+});
+
+// AYW-019: the handler accepts Control as well as Meta, so the same shortcut works on Windows and Linux.
+When("a visitor presses Ctrl+K on the page", async ({ page }) => {
+  await page.goto("/en");
+  await page.keyboard.press("Control+k");
+});
+
+When("the visitor types a query that matches no page", async ({ page }) => {
+  const searchDialog = page.getByRole("dialog");
+  const searchInput = searchDialog.getByRole("combobox");
+  await searchInput.fill("zzqxqwerty");
+});
+
+// AYW-022: the empty-state line the dialog renders when a finished query returns no result.
+Then("the search dialog should show a no-results message", async ({ page }) => {
+  const searchDialog = page.getByRole("dialog");
+  await expect(searchDialog).toContainText("No results found", { timeout: 15000 });
 });

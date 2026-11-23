@@ -7,42 +7,44 @@ Feature: Index file generation
   Background:
     Given a temporary content directory
 
-  # Exemption(e2e): the scenario exercises a local filesystem or process boundary rather than a public browser or HTTP boundary; alternative-proof: ayokoding-www:test:integration / Section _index.md lists direct children sorted by weight
+  # Exemption(e2e): the build-time script writes repository files and is not part of the served site, so no end-to-end boundary exists for it; alternative-proof: ayokoding-www:test:unit / Section _index.md lists direct children sorted by weight
   @e2e-exempt
+  # Behaviour: AYW-078
   Scenario: Section _index.md lists direct children sorted by weight
     Given a section "tools" with children weighted 300, 100, and 200
     When the index generator runs in generate mode
     Then the tools _index.md should list children in weight order 100, 200, 300
 
-  # Exemption(e2e): the scenario exercises a local filesystem or process boundary rather than a public browser or HTTP boundary; alternative-proof: ayokoding-www:test:integration / Nested sections render with indentation
+  # Exemption(e2e): the build-time script writes repository files and is not part of the served site, so no end-to-end boundary exists for it; alternative-proof: ayokoding-www:test:unit / Nested sections render with indentation
   @e2e-exempt
   Scenario: Nested sections render with indentation
     Given a section "tools" containing a child section "react" with leaf page "overview"
     When the index generator runs in generate mode
     Then the tools _index.md should show "overview" indented under "react"
 
-  # Exemption(e2e): the scenario exercises a local filesystem or process boundary rather than a public browser or HTTP boundary; alternative-proof: ayokoding-www:test:integration / Existing frontmatter is preserved during generation
+  # Exemption(e2e): the build-time script writes repository files and is not part of the served site, so no end-to-end boundary exists for it; alternative-proof: ayokoding-www:test:unit / Existing frontmatter is preserved during generation
   @e2e-exempt
   Scenario: Existing frontmatter is preserved during generation
     Given a _index.md with frontmatter title "My Tools" and weight 500
     When the index generator runs in generate mode
     Then the frontmatter should contain title "My Tools" and weight 500
 
-  # Exemption(e2e): the scenario exercises a local filesystem or process boundary rather than a public browser or HTTP boundary; alternative-proof: ayokoding-www:test:integration / Validate mode detects stale _index.md
+  # Exemption(e2e): the build-time script writes repository files and is not part of the served site, so no end-to-end boundary exists for it; alternative-proof: ayokoding-www:test:unit / Validate mode detects stale _index.md
   @e2e-exempt
+  # Behaviour: AYW-079
   Scenario: Validate mode detects stale _index.md
     Given a section with a child page not listed in its _index.md
     When the index generator runs in validate mode
     Then it should report the _index.md as out of date
 
-  # Exemption(e2e): the scenario exercises a local filesystem or process boundary rather than a public browser or HTTP boundary; alternative-proof: ayokoding-www:test:integration / Generate mode is idempotent
+  # Exemption(e2e): the build-time script writes repository files and is not part of the served site, so no end-to-end boundary exists for it; alternative-proof: ayokoding-www:test:unit / Generate mode is idempotent
   @e2e-exempt
   Scenario: Generate mode is idempotent
     Given a section with up-to-date _index.md files
     When the index generator runs in generate mode
     Then no files should be reported as changed
 
-  # Exemption(e2e): the scenario exercises a local filesystem or process boundary rather than a public browser or HTTP boundary; alternative-proof: ayokoding-www:test:integration / Missing frontmatter fields are added
+  # Exemption(e2e): the build-time script writes repository files and is not part of the served site, so no end-to-end boundary exists for it; alternative-proof: ayokoding-www:test:unit / Missing frontmatter fields are added
   @e2e-exempt
   Scenario: Missing frontmatter fields are added
     Given a _index.md without date or draft fields
@@ -50,10 +52,27 @@ Feature: Index file generation
     Then the _index.md should contain a date field
     And the _index.md should contain draft set to false
 
-  # Exemption(e2e): the scenario exercises a local filesystem or process boundary rather than a public browser or HTTP boundary; alternative-proof: ayokoding-www:test:integration / The course catalog section keeps a frontmatter-only index
+  # Exemption(e2e): the build-time script writes repository files and is not part of the served site, so no end-to-end boundary exists for it; alternative-proof: ayokoding-www:test:unit / The course catalog index holds only its frontmatter
   @e2e-exempt
-  Scenario: The course catalog section keeps a frontmatter-only index
+  Scenario: The course catalog index holds only its frontmatter
     Given a "learn/courses" section in locale "en" with two course sections
     When the index generator runs in generate mode
     Then the learn/courses _index.md contains only its frontmatter
-    And each course _index.md still lists its own children
+
+  # Exemption(e2e): the build-time script writes repository files and is not part of the served site, so no end-to-end boundary exists for it; alternative-proof: ayokoding-www:test:unit / Each course index lists its own pages
+  @e2e-exempt
+  Scenario: Each course index lists its own pages
+    Given a "learn/courses" section in locale "en" with two course sections
+    When the index generator runs in generate mode
+    Then each course _index.md still lists its own children
+
+  # Exemption(integration): the only error path is an operating-system refusal to write a file, and the integration project has no seam that makes the host filesystem refuse a write without changing permissions the test run may not own; alternative-proof: ayokoding-www:test:unit / A section whose index cannot be written is listed as an error and the other sections still generate
+  @integration-exempt
+  # Exemption(e2e): the build-time script writes repository files and is not part of the served site, so no end-to-end boundary exists for it; alternative-proof: ayokoding-www:test:unit / A section whose index cannot be written is listed as an error and the other sections still generate
+  @e2e-exempt
+  # Behaviour: AYW-080
+  Scenario: A section whose index cannot be written is listed as an error and the other sections still generate
+    Given two sections "tools" and "react" in locale "en" with one child page each, and the write to the tools index is refused
+    When the index generator runs in generate mode
+    Then the tools index is listed as an error with the reason it was refused
+    And the react index still lists its child page

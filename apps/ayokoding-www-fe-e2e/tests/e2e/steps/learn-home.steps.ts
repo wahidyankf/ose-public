@@ -1,3 +1,10 @@
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/learn-home.feature: The Learn home is a landing page, not a list of courses
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/learn-home.feature: A returning reader sees a Continue learning card
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/learn-home.feature: A new reader sees a Start learning card in the same place
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/learn-home.feature: Path cards show who it is for, the goal, size, time, and progress
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/learn-home.feature: The old Learn overview address redirects to the Learn home
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/learn-home.feature: A deeper address under the old overview is not redirected
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/learn-home.feature: Path hubs use the same path cards
 import { createBdd } from "playwright-bdd";
 import { expect, type APIResponse, type Page } from "@playwright/test";
 import { buildTrpcUrl, extractTrpcData } from "./backend-helpers";

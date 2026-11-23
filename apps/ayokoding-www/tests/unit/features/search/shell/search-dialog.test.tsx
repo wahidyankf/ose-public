@@ -93,4 +93,34 @@ describe("SearchDialog", () => {
     const btn = screen.getByRole("button", { name: /Software Engineering/i });
     expect(btn.getAttribute("data-value")).toBe("Software Engineering learn/software-engineering");
   });
+
+  it("shows no results when the query fails", async () => {
+    const { trpcClient } = await import("@/lib/trpc/client");
+    const query = trpcClient.search.query.query as unknown as {
+      mockRejectedValueOnce: (error: unknown) => void;
+    };
+    query.mockRejectedValueOnce(new Error("down"));
+    render(<SearchDialog />);
+
+    fireEvent.change(screen.getByTestId("search-input"), { target: { value: "soft" } });
+
+    await act(async () => {
+      vi.advanceTimersByTime(300);
+      await Promise.resolve();
+    });
+
+    expect(screen.queryByRole("button", { name: /Software Engineering/i })).toBeNull();
+  });
+});
+
+describe("formatSectionPath", () => {
+  it("returns empty for a top-level slug", async () => {
+    const { formatSectionPath } = await import("../../../../../src/features/search/shell/search-dialog");
+    expect(formatSectionPath("learn")).toBe("");
+  });
+
+  it("title-cases each ancestor segment", async () => {
+    const { formatSectionPath } = await import("../../../../../src/features/search/shell/search-dialog");
+    expect(formatSectionPath("learn/my-topic/deep-dive")).toBe("Learn / My Topic");
+  });
 });

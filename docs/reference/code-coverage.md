@@ -1,6 +1,6 @@
 ---
 title: "Test Coverage Reference"
-description: "Runtime code-coverage ownership and static Gherkin coverage targets"
+description: "Runtime code-coverage ownership and the static Gherkin coverage check"
 category: reference
 tags: [coverage, testing, quality, gherkin]
 created: 2026-03-22
@@ -33,17 +33,16 @@ The `ayokoding-cli` Go project holds a 99% line floor over its deterministic cor
 
 ## Static Test Coverage
 
-| Target                      | Static proof                                                                                  |
-| --------------------------- | --------------------------------------------------------------------------------------------- |
-| `test:coverage:unit`        | Every active expanded scenario has exactly one Unit implementation                            |
-| `test:coverage:integration` | Every applicable scenario has exactly one Integration implementation or valid exemption       |
-| `test:coverage:e2e`         | Every applicable scenario has exactly one E2E implementation or valid exemption               |
-| `test:coverage:behaviour`   | Exact recursive corpus, valid scenarios, bindings, adapter completeness, and exemption syntax |
-| `test:coverage`             | Aggregate of every applicable static validator                                                |
+| Target                    | Static proof                                                                                  |
+| ------------------------- | --------------------------------------------------------------------------------------------- |
+| `test:behaviour:coverage` | Exact recursive corpus, valid scenarios, bindings, adapter completeness, and exemption syntax |
 
-These targets inspect source, tests, Gherkin, and configuration without executing tests directly or
-transitively. Every applicable validator is mandatory in `test:quick`. Static success proves
-coverage shape, not semantic implementation; material Gherkin or adapter changes also require the
+`test:behaviour:coverage` runs the shared check `./rhino behaviour coverage validate`. It scans each
+`@scenario` reference in the test files against the corpus under `specs/`. A scenario needs a unit
+reference, and an integration or e2e reference or an exemption with a stated reason at that level. The
+check inspects source, tests, Gherkin, and configuration without executing tests directly or
+transitively, and it is mandatory in `test:quick`. Static success proves coverage shape, not semantic
+implementation; material Gherkin or adapter changes also require the
 [Gherkin implementation review](../../repo-governance/workflows/quality/gherkin-implementation-review.md).
 
 ## Failure Interpretation

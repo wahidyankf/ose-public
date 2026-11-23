@@ -31,7 +31,7 @@ canonical `compat:min-version` is the one established entry whose work part name
 property instead of an operation. Do not invent `validate:*` prefixes — use the canonical list above
 or follow the `{domain}:{work}` pattern.
 
-Project-local static `test:coverage` and `test:coverage:*` belong to the testing lifecycle family,
+Project-local static `test:behaviour:coverage` belongs to the testing lifecycle family,
 not this governance target list.
 
 See [nx-target-naming.md](../nx-target-naming.md) for the full derivation rule and examples.

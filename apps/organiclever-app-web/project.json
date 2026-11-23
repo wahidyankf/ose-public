@@ -75,6 +75,20 @@
       "dependsOn": [],
       "outputs": ["{projectRoot}/coverage"]
     },
+    "test:integration": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/tests/integration/**/*",
+        "{projectRoot}/src/app/system/**/*",
+        "{projectRoot}/vitest.integration.config.ts"
+      ],
+      "options": {
+        "command": "npx vitest run --config vitest.integration.config.ts",
+        "cwd": "apps/organiclever-app-web"
+      },
+      "dependsOn": []
+    },
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
@@ -92,7 +106,7 @@
             "forwardAllArgs": false
           },
           {
-            "command": "npm exec -- nx run organiclever-app-web:test:coverage",
+            "command": "npm exec -- nx run organiclever-app-web:test:behaviour:coverage",
             "forwardAllArgs": false
           }
         ],
@@ -102,14 +116,20 @@
       "cache": true,
       "inputs": [
         "default",
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/organiclever-app-web/behaviour-coverage.json",
         "{workspaceRoot}/package-lock.json",
         "{workspaceRoot}/specs/apps/organiclever/app-web/behaviours/**/*.feature",
         "{workspaceRoot}/apps/organiclever-app-web/tests/unit/**/*.{ts,tsx,fs}",
         "{workspaceRoot}/apps/organiclever-app-web/vitest.config.ts",
         "{workspaceRoot}/apps/organiclever-app-web-e2e/steps/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/organiclever-app-web-e2e/playwright.config.ts"
+        "{workspaceRoot}/apps/organiclever-app-web-e2e/playwright.config.ts",
+        "{workspaceRoot}/repo-config.yml",
+        "{workspaceRoot}/rhino.lock",
+        "{workspaceRoot}/specs/**/*",
+        "{workspaceRoot}/apps/ayokoding-www/content/**/*.feature",
+        "{workspaceRoot}/apps/*/tests/**/*",
+        "{workspaceRoot}/apps/*-e2e/steps/**/*",
+        "{workspaceRoot}/apps/*-e2e/src/**/*",
+        "{workspaceRoot}/libs/*/tests/**/*"
       ]
     },
     "storybook": {
@@ -135,87 +155,22 @@
       },
       "cache": false
     },
-    "test:coverage:unit": {
+    "test:behaviour:coverage": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config apps/organiclever-app-web/behaviour-coverage.json --adapter unit"
+        "command": "./rhino behaviour coverage validate",
+        "cwd": "{workspaceRoot}"
       },
       "cache": true,
       "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/organiclever-app-web/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/apps/organiclever/app-web/behaviours/**/*.feature",
-        "{workspaceRoot}/apps/organiclever-app-web/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/organiclever-app-web/vitest.config.ts",
-        "{workspaceRoot}/apps/organiclever-app-web-e2e/steps/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/organiclever-app-web-e2e/playwright.config.ts"
-      ]
-    },
-    "test:coverage:e2e": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config apps/organiclever-app-web/behaviour-coverage.json --adapter e2e"
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/organiclever-app-web/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/apps/organiclever/app-web/behaviours/**/*.feature",
-        "{workspaceRoot}/apps/organiclever-app-web/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/organiclever-app-web/vitest.config.ts",
-        "{workspaceRoot}/apps/organiclever-app-web-e2e/steps/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/organiclever-app-web-e2e/playwright.config.ts"
-      ]
-    },
-    "test:coverage:behaviour": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config apps/organiclever-app-web/behaviour-coverage.json --adapter behaviour"
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/organiclever-app-web/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/apps/organiclever/app-web/behaviours/**/*.feature",
-        "{workspaceRoot}/apps/organiclever-app-web/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/organiclever-app-web/vitest.config.ts",
-        "{workspaceRoot}/apps/organiclever-app-web-e2e/steps/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/organiclever-app-web-e2e/playwright.config.ts"
-      ]
-    },
-    "test:coverage": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          {
-            "command": "npm exec -- nx run organiclever-app-web:test:coverage:unit",
-            "forwardAllArgs": false
-          },
-          {
-            "command": "npm exec -- nx run organiclever-app-web:test:coverage:e2e",
-            "forwardAllArgs": false
-          },
-          {
-            "command": "npm exec -- nx run organiclever-app-web:test:coverage:behaviour",
-            "forwardAllArgs": false
-          }
-        ],
-        "parallel": false,
-        "forwardAllArgs": false
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/organiclever-app-web/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/apps/organiclever/app-web/behaviours/**/*.feature",
-        "{workspaceRoot}/apps/organiclever-app-web/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/organiclever-app-web/vitest.config.ts",
-        "{workspaceRoot}/apps/organiclever-app-web-e2e/steps/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/organiclever-app-web-e2e/playwright.config.ts"
+        "{workspaceRoot}/repo-config.yml",
+        "{workspaceRoot}/rhino.lock",
+        "{workspaceRoot}/specs/**/*",
+        "{workspaceRoot}/apps/ayokoding-www/content/**/*.feature",
+        "{workspaceRoot}/apps/*/tests/**/*",
+        "{workspaceRoot}/apps/*-e2e/steps/**/*",
+        "{workspaceRoot}/apps/*-e2e/src/**/*",
+        "{workspaceRoot}/libs/*/tests/**/*"
       ]
     }
   },

@@ -3,6 +3,9 @@
 // real spawned binaries on free loopback ports; the 3101 origin is a
 // suite-owned stub, and the 3191 acceptance server is the Playwright-owned
 // webServer. The suite never kills or reuses a developer's listener.
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import { createBdd } from "playwright-bdd";
 import { expect, type Page } from "@playwright/test";
 import { bodyOf, fetchText, gotoPage, statusOf } from "../support/http";
@@ -12,14 +15,47 @@ import { stateFor, trackOwned } from "../support/state";
 
 const { Given, When, Then } = createBdd();
 
+// Behaviour corpus binding (contract C13). The Playwright home runs the whole
+// local-development feature; no scenario here is exempt.
+// @scenario specs/apps/ayokoding/web/behaviours/local-development/local-development.feature: *
+
+// corpusFiles mirrors the Go unit corpus: one lesson, one course, one path.
+const corpusFiles: Record<string, string> = {
+  "content/en/learn/courses/go-basics/learning/hello-world.md":
+    "---\ntitle: Hello World\ndescription: First program\nweight: 1\n---\n\n# Hello\n\nServed from disk.\n",
+  "content/en/learn/courses/go-basics/_index.md":
+    "---\ntitle: Go Basics\ndescription: Learn Go\ncategory: fundamentals\nformat: course\nestimatedHours: 4\n---\n\nCourse index.\n",
+  "manifests/careers/backend.json":
+    '{\n  "pathId": "careers/backend",\n  "title": "Backend",\n  "phases": [{"id": "fundamentals", "title": "Fundamentals", "courses": ["go-basics"]}]\n}',
+};
+
+// The htmx fragment targets the fragment scenario requests.
+const htmxFragments = ["/htmx/search?q=hello", "/htmx/benchmark", "/htmx/calculator"];
+
 async function ensureOldOrigin(page: Page): Promise<void> {
   if (!(await portAnswers(3101))) {
     trackOwned(page, await startExternalStub(3101));
   }
 }
 
+// flagValue reads the effective --port flag value (either spelling) from the
+// args the binary actually started with.
+function flagValue(args: string[]): string | undefined {
+  for (let index = 0; index < args.length; index += 1) {
+    if (args[index] === "--port" && index + 1 < args.length) {
+      return args[index + 1];
+    }
+    if (args[index]?.startsWith("--port=") === true) {
+      return args[index]?.slice("--port=".length);
+    }
+  }
+  return undefined;
+}
+
 // launch starts one rewrite binary for the scenario mode the Given steps
-// recorded, and remembers its address for the Then steps.
+// recorded, and remembers its address for the Then steps. A bind-collision
+// retry changes the effective port, so the effective env/flag values are
+// written back into state before the Then steps assert against them.
 async function launch(page: Page): Promise<void> {
   const state = stateFor(page);
   if (state.mode === "invalid") {
@@ -28,11 +64,22 @@ async function launch(page: Page): Promise<void> {
     state.status = outcome.code;
     return;
   }
+  if (state.mode === "corpus") {
+    const spawned = await spawnBinary({ ...(state.corpusEnv ?? {}), AYOKODING_WEB_PORT: state.envPort ?? "0" });
+    trackOwned(page, spawned);
+    state.spawnedUrl = spawned.url;
+    state.spawnedPort = spawned.port;
+    if (spawned.env["AYOKODING_WEB_PORT"] !== undefined) state.envPort = spawned.env["AYOKODING_WEB_PORT"];
+    return;
+  }
   if (state.mode === "flag") {
     const spawned = await spawnBinary({ AYOKODING_WEB_PORT: state.envPort ?? "0" }, ["--port", state.flagPort ?? "0"]);
     trackOwned(page, spawned);
     state.spawnedUrl = spawned.url;
     state.spawnedPort = spawned.port;
+    const effectiveFlag = flagValue(spawned.args);
+    if (effectiveFlag !== undefined) state.flagPort = effectiveFlag;
+    if (spawned.env["AYOKODING_WEB_PORT"] !== undefined) state.envPort = spawned.env["AYOKODING_WEB_PORT"];
     return;
   }
   if (state.mode === "prefixed") {
@@ -40,6 +87,7 @@ async function launch(page: Page): Promise<void> {
     trackOwned(page, spawned);
     state.spawnedUrl = spawned.url;
     state.spawnedPort = spawned.port;
+    if (spawned.env["AYOKODING_WEB_PORT"] !== undefined) state.envPort = spawned.env["AYOKODING_WEB_PORT"];
     return;
   }
   if (state.mode === "generic") {
@@ -55,10 +103,6 @@ async function launch(page: Page): Promise<void> {
   state.spawnedPort = spawned.port;
 }
 
-Given("the existing learning site is running on port 3101", async ({ page }) => {
-  await ensureOldOrigin(page);
-});
-
 When("the rewrite starts without a port override", async ({ page }) => {
   stateFor(page).mode = "default";
   await launch(page);
@@ -71,10 +115,6 @@ Then("the rewrite serves its bilingual entry pages on port 3102", async ({ page 
   expect(bodyOf(page)).toContain('lang="en"');
   await fetchText(page, `${stateFor(page).spawnedUrl ?? ""}/id`);
   expect(bodyOf(page)).toContain('lang="id"');
-});
-
-Then("the existing site still answers requests on port 3101", async () => {
-  expect(await portAnswers(3101)).toBe(true);
 });
 
 Given("AYOKODING_WEB_PORT is set to an available valid port", async ({ page }) => {
@@ -106,7 +146,11 @@ Given("AYOKODING_WEB_PORT contains one valid port", async ({ page }) => {
 });
 
 Given("the rewrite launcher receives a different valid port through its explicit port flag", async ({ page }) => {
-  const other = (await freePort()) + 1;
+  const taken = Number(stateFor(page).envPort ?? "0");
+  let other = await freePort();
+  while (other === taken) {
+    other = await freePort();
+  }
   stateFor(page).flagPort = String(other);
 });
 
@@ -154,29 +198,6 @@ Then("no rewrite listener starts on a fallback port", async ({ page }) => {
   expect(stateFor(page).spawnedUrl).toBeUndefined();
 });
 
-Given("the existing site and the rewrite development server are running", async ({ page }) => {
-  await ensureOldOrigin(page);
-  if (!(await portAnswers(3102))) {
-    trackOwned(page, await startExternalStub(3102));
-  }
-});
-
-When("the rewrite browser acceptance suite starts", async ({ page }) => {
-  await gotoPage(page, "/en");
-  expect(statusOf(page)).toBe(200);
-});
-
-Then("it starts its own Go server on port 3191", async ({ page }) => {
-  expect(page.url()).toContain("3191");
-  await gotoPage(page, "/en");
-  expect(statusOf(page)).toBe(200);
-});
-
-Then("it leaves both development servers running after the suite finishes", async () => {
-  expect(await portAnswers(3101)).toBe(true);
-  expect(await portAnswers(3102)).toBe(true);
-});
-
 Given("the shared Markdown and manifests have recorded byte hashes", async ({ page }) => {
   stateFor(page).hashes = hashSources();
   expect(Object.keys(stateFor(page).hashes ?? {}).length).toBeGreaterThan(0);
@@ -193,31 +214,93 @@ Then("the Markdown and manifest byte hashes remain unchanged", async ({ page }) 
   expect(hashSources()).toEqual(stateFor(page).hashes ?? {});
 });
 
-Then("the rewrite does not run a content-index generator implicitly", async ({ page }) => {
-  await gotoPage(page, "/en/learn/courses/go-basics/learning/hello-world");
-  expect(statusOf(page)).toBe(200);
+Given("AYOKODING_WEB_CONTENT_DIR and AYOKODING_WEB_MANIFESTS_DIR name another corpus root", async ({ page }) => {
+  const root = mkdtempSync(path.join(os.tmpdir(), "ayokoding-web-corpus-"));
+  trackOwned(page, {
+    port: 0,
+    close: async () => rmSync(root, { recursive: true, force: true }),
+  });
+  for (const [relative, body] of Object.entries(corpusFiles)) {
+    const target = path.join(root, relative);
+    mkdirSync(path.dirname(target), { recursive: true });
+    writeFileSync(target, body);
+  }
+  stateFor(page).mode = "corpus";
+  stateFor(page).corpusEnv = {
+    AYOKODING_WEB_CONTENT_DIR: path.join(root, "content"),
+    AYOKODING_WEB_MANIFESTS_DIR: path.join(root, "manifests"),
+  };
+  stateFor(page).envPort = String(await freePort());
 });
 
-Given("other learning-content plans are unfinished", async () => {
-  // The suite reads only committed sources and starts no plan output.
+Then("the rewrite serves its pages and course paths from that corpus", async ({ page }) => {
+  const base = stateFor(page).spawnedUrl ?? "";
+  await fetchText(page, `${base}/en/learn/courses/go-basics/learning/hello-world`);
+  expect(statusOf(page)).toBe(200);
+  expect(bodyOf(page)).toContain("Served from disk.");
+  await fetchText(page, `${base}/en/learn/paths/careers/backend`);
+  expect(statusOf(page)).toBe(200);
+  expect(bodyOf(page)).toContain("Backend");
 });
 
-Given("the current shared corpus has a valid committed state", async () => {
-  // The served binary reads the committed corpus through its file adapters.
+When("a reader requests the search, benchmark, and calculator fragments", async ({ page }) => {
+  const replies: { target: string; status: number; body: string }[] = [];
+  for (const target of htmxFragments) {
+    await fetchText(page, target);
+    replies.push({ target, status: statusOf(page), body: bodyOf(page) });
+  }
+  stateFor(page).fragments = replies;
 });
 
-When("the rewrite loads that committed corpus", async ({ page }) => {
-  await gotoPage(page, "/en/learn/courses/go-basics/learning/hello-world");
-  expect(statusOf(page)).toBe(200);
+Then("each fragment returns results without the page layout", async ({ page }) => {
+  const replies = stateFor(page).fragments ?? [];
+  expect(replies.length).toBe(htmxFragments.length);
+  for (const reply of replies) {
+    expect(reply.status, reply.target).toBe(200);
+    expect(reply.body, reply.target).not.toContain("<html");
+    expect(reply.body.trim(), reply.target).not.toBe("");
+  }
 });
 
-Then("it serves the available content and manifests from that state", async ({ page }) => {
-  await gotoPage(page, "/en/learn/courses/go-basics/learning/hello-world");
-  expect(statusOf(page)).toBe(200);
-  await gotoPage(page, "/en/learn/paths/backend-id");
-  expect(statusOf(page)).toBe(200);
+When("a reader requests the asset {string}", async ({ page }, assetPath: string) => {
+  await fetchText(page, assetPath);
 });
 
-Then("it does not wait for another plan to finish", async ({ page }) => {
-  expect(statusOf(page)).toBe(200);
+Then("the asset responds with status {string}", async ({ page }, status: string) => {
+  expect(statusOf(page)).toBe(Number(status));
+});
+
+When("the rewrite starts with the argument {string}", async ({ page }, argument: string) => {
+  const outcome = await spawnExpectExit([argument], {});
+  stateFor(page).status = outcome.code;
+  stateFor(page).diagnostic = outcome.stderr;
+});
+
+Then("startup fails with a message naming {string}", async ({ page }, naming: string) => {
+  expect(stateFor(page).status).not.toBe(0);
+  expect(stateFor(page).diagnostic ?? "").toContain(naming);
+});
+
+When(
+  "the rewrite starts with the {string} fixture set by {string}",
+  async ({ page }, fixture: string, channel: string) => {
+    const env: Record<string, string> = { AYOKODING_WEB_PORT: String(await freePort()) };
+    let args: string[] = [];
+    if (channel === "--fixture flag") {
+      args = ["--fixture", fixture];
+    } else if (channel === "AYOKODING_WEB_FIXTURE") {
+      env["AYOKODING_WEB_FIXTURE"] = fixture;
+    } else {
+      throw new Error(`unknown fixture channel ${channel}`);
+    }
+    const spawned = await spawnBinary(env, args);
+    trackOwned(page, spawned);
+    stateFor(page).spawnedUrl = spawned.url;
+    stateFor(page).spawnedPort = spawned.port;
+  },
+);
+
+Then("the course catalog answers with status {string}", async ({ page }, status: string) => {
+  await fetchText(page, `${stateFor(page).spawnedUrl ?? ""}/en/learn/courses`);
+  expect(statusOf(page)).toBe(Number(status));
 });

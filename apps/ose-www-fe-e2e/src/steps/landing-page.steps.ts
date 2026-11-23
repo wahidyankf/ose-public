@@ -1,7 +1,16 @@
 import { expect } from "@playwright/test";
 import { createBdd } from "playwright-bdd";
 
+// @scenario specs/apps/ose/www/behaviours/frontend/landing/landing-page.feature: The landing page is served at / with the site title
+// @scenario specs/apps/ose/www/behaviours/frontend/landing/landing-page.feature: Hero shows the title and mission description
+// @scenario specs/apps/ose/www/behaviours/frontend/landing/landing-page.feature: Hero links to About and to GitHub
+// @scenario specs/apps/ose/www/behaviours/frontend/landing/landing-page.feature: Social icons are displayed
+
 const { When, Then } = createBdd();
+
+Then("the page title is {string}", async ({ page }, title: string) => {
+  await expect(page).toHaveTitle(title);
+});
 
 When("the landing page is rendered", async ({ page }) => {
   await page.goto("/");

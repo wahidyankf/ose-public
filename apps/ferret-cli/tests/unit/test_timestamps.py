@@ -28,7 +28,8 @@ def test_a_moment_in_another_zone_is_converted_to_utc() -> None:
 
 
 def test_a_naive_moment_is_refused() -> None:
-    assert re.search("time zone", fault_of(format_timestamp(datetime(2026, 9, 18, 8, 15, 30))))
+    naive = datetime(2026, 9, 18, 8, 15, 30, tzinfo=UTC).replace(tzinfo=None)
+    assert re.search("time zone", fault_of(format_timestamp(naive)))
 
 
 def test_a_canonical_timestamp_round_trips() -> None:

@@ -92,3 +92,44 @@ let ``the report filename contains "([^"]*)" followed by a new 6-hex UUID`` (pre
 let ``the report filename contains only the new 6-hex UUID .no "([^"]*)".`` (uuid: string) =
     let filename = lastReportPath.Split('/') |> Array.last
     Assert.DoesNotContain(uuid, filename)
+
+// ---- BDD finalize steps (CRN-018) ----
+
+let mutable private finalizedPath: string = ""
+
+[<Given>]
+let ``an audit report in progress for scope "([^"]*)"`` (scope: string) =
+    reset ()
+    finalizedPath <- $"local-tmp/pdf-to-md/{scope}__abc123__2026-09-05--12-30__audit.md"
+    writeAllText finalizedPath $"# Audit Report\n\nScope: {scope}\nStatus: IN_PROGRESS\n"
+
+[<When>]
+let ``I run "crane report finalize" with status "([^"]*)"`` (status: string) =
+    RunWithWriter(fun w ->
+        match finalizeReportWith reportDependencies finalizedPath status with
+        | Ok() ->
+            let opts = System.Text.Json.JsonSerializerOptions()
+            opts.DefaultIgnoreCondition <- System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+
+            w.WriteLine(
+                System.Text.Json.JsonSerializer.Serialize(
+                    {| status = status
+                       path = finalizedPath |},
+                    opts
+                )
+            )
+
+            0
+        | Error msg ->
+            eprintfn "Error: %s" msg
+            1)
+
+[<Then>]
+let ``the report file says "([^"]*)"`` (text: string) =
+    Assert.Contains(text, readAllText finalizedPath)
+
+[<Then>]
+let ``the JSON output names the status "([^"]*)" and the report path`` (status: string) =
+    let doc = System.Text.Json.JsonDocument.Parse(LastOutput)
+    Assert.Equal(status, doc.RootElement.GetProperty("status").GetString())
+    Assert.NotEmpty(doc.RootElement.GetProperty("path").GetString())

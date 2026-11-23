@@ -2,6 +2,111 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page } from "@playwright/test";
 import { createBdd } from "playwright-bdd";
 
+// Scenario bindings: every web-ui scenario runs in this file (integration and e2e levels, repo-config.yml).
+// @scenario specs/libs/web-ui/behaviours/alert/alert.feature: Renders default alert with title and description
+// @scenario specs/libs/web-ui/behaviours/alert/alert.feature: A destructive alert shows its content in the destructive colour
+// @scenario specs/libs/web-ui/behaviours/alert/alert.feature: Has no accessibility violations
+// @scenario specs/libs/web-ui/behaviours/alert/alert.feature: Each alert variant is marked with its name
+// @scenario specs/libs/web-ui/behaviours/alert/alert.feature: AlertTitle and AlertDescription are announced with the alert
+// @scenario specs/libs/web-ui/behaviours/app-header/app-header.feature: Renders title
+// @scenario specs/libs/web-ui/behaviours/app-header/app-header.feature: The back button is shown only when onBack is provided
+// @scenario specs/libs/web-ui/behaviours/app-header/app-header.feature: Back button click triggers onBack
+// @scenario specs/libs/web-ui/behaviours/app-header/app-header.feature: Renders subtitle when provided
+// @scenario specs/libs/web-ui/behaviours/badge/badge.feature: A default badge shows its text on the solid hue colour
+// @scenario specs/libs/web-ui/behaviours/badge/badge.feature: An outline badge shows the honey wash and honey border
+// @scenario specs/libs/web-ui/behaviours/badge/badge.feature: A secondary badge uses the secondary colour
+// @scenario specs/libs/web-ui/behaviours/badge/badge.feature: A destructive badge uses the destructive colour
+// @scenario specs/libs/web-ui/behaviours/badge/badge.feature: An md badge has 13px text and wider padding than sm
+// @scenario specs/libs/web-ui/behaviours/button/button.feature: Renders with default variant and size
+// @scenario specs/libs/web-ui/behaviours/button/button.feature: Each button variant is marked with its name
+// @scenario specs/libs/web-ui/behaviours/button/button.feature: Each button size is marked with its name
+// @scenario specs/libs/web-ui/behaviours/button/button.feature: Supports disabled state
+// @scenario specs/libs/web-ui/behaviours/button/button.feature: Renders as child element when asChild is true
+// @scenario specs/libs/web-ui/behaviours/button/button.feature: Has no accessibility violations
+// @scenario specs/libs/web-ui/behaviours/card/card.feature: A card shows its title, description, content, and footer
+// @scenario specs/libs/web-ui/behaviours/card/card.feature: Has no accessibility violations
+// @scenario specs/libs/web-ui/behaviours/code-block/code-block.feature: The code block renders its highlighted children and a copy button
+// @scenario specs/libs/web-ui/behaviours/code-block/code-block.feature: Copying from the code block yields the verbatim multi-line source
+// @scenario specs/libs/web-ui/behaviours/code-block/code-block.feature: The copy button sits at the block corner, outside the scrolling code
+// @scenario specs/libs/web-ui/behaviours/code-block/code-block.feature: The copy button is discoverable at rest and reveals fully on hover or focus
+// @scenario specs/libs/web-ui/behaviours/code-block/code-block.feature: Jumping to a code block leaves it clear of a sticky header
+// @scenario specs/libs/web-ui/behaviours/code-block/code-block.feature: The code block renders correctly in light and dark themes
+// @scenario specs/libs/web-ui/behaviours/code-block/copy-button.feature: Clicking the copy button writes its value to the clipboard
+// @scenario specs/libs/web-ui/behaviours/code-block/copy-button.feature: A successful copy swaps to the success icon and announces via a live region
+// @scenario specs/libs/web-ui/behaviours/code-block/copy-button.feature: The success state reverts to the resting state after the timeout
+// @scenario specs/libs/web-ui/behaviours/code-block/copy-button.feature: A failed copy shows no success and an error cue that is announced
+// @scenario specs/libs/web-ui/behaviours/code-block/copy-button.feature: The copy button is operable by keyboard
+// @scenario specs/libs/web-ui/behaviours/code-block/copy-button.feature: The copy button has an accessible name that follows its label
+// @scenario specs/libs/web-ui/behaviours/code-block/copy-button.feature: The copy button has no accessibility violations
+// @scenario specs/libs/web-ui/behaviours/code-block/copy-button.feature: The copy button meets the minimum target size
+// @scenario specs/libs/web-ui/behaviours/code-block/copy-button.feature: Re-clicking during the success window resets the revert timer
+// @scenario specs/libs/web-ui/behaviours/code-block/copy-button.feature: A retry after a failed clipboard write succeeds normally
+// @scenario specs/libs/web-ui/behaviours/code-block/copy-button.feature: The copy button exposes a native tooltip title
+// @scenario specs/libs/web-ui/behaviours/dialog/dialog.feature: Activating the trigger opens a dialog showing its title
+// @scenario specs/libs/web-ui/behaviours/dialog/dialog.feature: Has no accessibility violations
+// @scenario specs/libs/web-ui/behaviours/dialog/dialog.feature: A dialog closes with its close button and with Escape
+// @scenario specs/libs/web-ui/behaviours/dialog/dialog.feature: DialogContent omits the close button when showCloseButton is false
+// @scenario specs/libs/web-ui/behaviours/hue-picker/hue-picker.feature: Renders 6 swatches
+// @scenario specs/libs/web-ui/behaviours/hue-picker/hue-picker.feature: Click calls onChange
+// @scenario specs/libs/web-ui/behaviours/hue-picker/hue-picker.feature: aria-pressed reflects selection
+// @scenario specs/libs/web-ui/behaviours/hue-picker/hue-picker.feature: HUES lists the six hues terracotta, honey, sage, teal, sky, plum in that order
+// @scenario specs/libs/web-ui/behaviours/icon/icon.feature: Known icon renders SVG
+// @scenario specs/libs/web-ui/behaviours/icon/icon.feature: Unknown name renders fallback circle
+// @scenario specs/libs/web-ui/behaviours/icon/icon.feature: Decorative icon has aria-hidden
+// @scenario specs/libs/web-ui/behaviours/icon/icon.feature: Icon with aria-label has accessible name
+// @scenario specs/libs/web-ui/behaviours/icon/icon.feature: Every name in IconName draws an icon, not the fallback circle
+// @scenario specs/libs/web-ui/behaviours/info-tip/info-tip.feature: Trigger button renders
+// @scenario specs/libs/web-ui/behaviours/info-tip/info-tip.feature: Click trigger opens Sheet
+// @scenario specs/libs/web-ui/behaviours/info-tip/info-tip.feature: Sheet close button closes Sheet
+// @scenario specs/libs/web-ui/behaviours/input/input.feature: An input is a focusable textbox
+// @scenario specs/libs/web-ui/behaviours/input/input.feature: Supports disabled state
+// @scenario specs/libs/web-ui/behaviours/input/input.feature: An input is at least 44 pixels tall (touch target)
+// @scenario specs/libs/web-ui/behaviours/input/input.feature: Has no accessibility violations
+// @scenario specs/libs/web-ui/behaviours/input/input.feature: An input with aria-invalid shows its invalid state
+// @scenario specs/libs/web-ui/behaviours/input/input.feature: Typing in an input reports each change to onChange
+// @scenario specs/libs/web-ui/behaviours/label/label.feature: A label shows its text
+// @scenario specs/libs/web-ui/behaviours/label/label.feature: A label names its form control and focuses it when clicked
+// @scenario specs/libs/web-ui/behaviours/progress-ring/progress-ring.feature: The progress ring reports its value as a percentage
+// @scenario specs/libs/web-ui/behaviours/progress-ring/progress-ring.feature: Has correct aria attributes
+// @scenario specs/libs/web-ui/behaviours/progress-ring/progress-ring.feature: Progress below 0 or above 1 is clamped to 0 or 100
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: Widen the panel by dragging the handle right
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: Dragging past the maximum stops at the maximum
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: Dragging past the minimum stops at the minimum
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: Dragging updates the width as the pointer moves
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: Releasing the drag persists the final width to localStorage
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: ArrowRight widens the panel by the keyboard step
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: The handle reports the new width through aria-valuenow
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: ArrowLeft narrows the panel by the keyboard step
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: The handle is a vertical separator
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: Dragging the handle does not select text
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: The handle's accessible label can be localized
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: Reset the panel to its default width by double-clicking the handle
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: Home and End jump the panel to the edges of the band
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: Re-clamp a persisted width that falls outside the band on load
+// @scenario specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature: A saved width inside the band is restored on load
+// @scenario specs/libs/web-ui/behaviours/sheet/sheet.feature: Title renders
+// @scenario specs/libs/web-ui/behaviours/sheet/sheet.feature: Close button closes sheet
+// @scenario specs/libs/web-ui/behaviours/sheet/sheet.feature: Has accessible title
+// @scenario specs/libs/web-ui/behaviours/sheet/sheet.feature: Pressing Escape or clicking the overlay closes the sheet
+// @scenario specs/libs/web-ui/behaviours/side-nav/side-nav.feature: The side nav shows its brand and every tab
+// @scenario specs/libs/web-ui/behaviours/side-nav/side-nav.feature: Tab click triggers onChange with tab id
+// @scenario specs/libs/web-ui/behaviours/side-nav/side-nav.feature: The current tab is marked as current
+// @scenario specs/libs/web-ui/behaviours/side-nav/side-nav.feature: Brand row click always calls onChange with home
+// @scenario specs/libs/web-ui/behaviours/stat-card/stat-card.feature: Renders label and value
+// @scenario specs/libs/web-ui/behaviours/stat-card/stat-card.feature: A stat card shows an info tip only when it has info
+// @scenario specs/libs/web-ui/behaviours/tab-bar/tab-bar.feature: Renders tabs
+// @scenario specs/libs/web-ui/behaviours/tab-bar/tab-bar.feature: Click triggers onChange
+// @scenario specs/libs/web-ui/behaviours/tab-bar/tab-bar.feature: Each tab reports whether it is the selected tab
+// @scenario specs/libs/web-ui/behaviours/textarea/textarea.feature: Renders with placeholder
+// @scenario specs/libs/web-ui/behaviours/textarea/textarea.feature: Accepts input
+// @scenario specs/libs/web-ui/behaviours/textarea/textarea.feature: Disabled state
+// @scenario specs/libs/web-ui/behaviours/textarea/textarea.feature: Focus ring visible on keyboard focus
+// @scenario specs/libs/web-ui/behaviours/toggle/toggle.feature: A toggle reports its on or off state
+// @scenario specs/libs/web-ui/behaviours/toggle/toggle.feature: Click triggers onChange
+// @scenario specs/libs/web-ui/behaviours/toggle/toggle.feature: Disabled toggle does not trigger onChange
+// @scenario specs/libs/web-ui/behaviours/toggle/toggle.feature: Renders with label
+// @scenario specs/libs/web-ui/behaviours/toggle/toggle.feature: A toggle is operable with the Space key
+
 const { Given, When, Then } = createBdd();
 const STORYBOOK_ROOT = "#storybook-root";
 const HARNESS_ID = "verification-bddharness--default";
@@ -33,16 +138,16 @@ async function installClipboard(page: Page, rejectWrites = false): Promise<void>
   await page.addInitScript(
     ({ reject }) => {
       const state = globalThis as typeof globalThis & {
-        __bddClipboardText?: string;
-        __bddClipboardReject?: boolean;
+        bddClipboardText?: string;
+        bddClipboardReject?: boolean;
       };
-      state.__bddClipboardReject = reject;
+      state.bddClipboardReject = reject;
       Object.defineProperty(navigator, "clipboard", {
         configurable: true,
         value: {
           writeText: async (text: string) => {
-            if (state.__bddClipboardReject) throw new Error("BDD clipboard rejection");
-            state.__bddClipboardText = text;
+            if (state.bddClipboardReject) throw new Error("BDD clipboard rejection");
+            state.bddClipboardText = text;
           },
         },
       });
@@ -52,7 +157,7 @@ async function installClipboard(page: Page, rejectWrites = false): Promise<void>
 }
 
 async function clipboardText(page: Page): Promise<string | undefined> {
-  return page.evaluate(() => (globalThis as typeof globalThis & { __bddClipboardText?: string }).__bddClipboardText);
+  return page.evaluate(() => (globalThis as typeof globalThis & { bddClipboardText?: string }).bddClipboardText);
 }
 
 async function runAxe(page: Page): Promise<void> {
@@ -72,6 +177,24 @@ async function dragHandle(page: Page, delta: number, release = true): Promise<vo
   await page.mouse.down();
   await page.mouse.move(startX + delta, y);
   if (release) await page.mouse.up();
+}
+
+let typedText = "";
+
+// Reads the colour a token class resolves to, so computed colours are compared with the design token itself.
+async function computedColourOfClass(page: Page, className: string): Promise<string> {
+  return page.evaluate((name) => {
+    const probe = document.createElement("span");
+    probe.className = name;
+    document.body.append(probe);
+    const colour = getComputedStyle(probe).color;
+    probe.remove();
+    return colour;
+  }, className);
+}
+
+async function badgePaddingLeft(page: Page): Promise<number> {
+  return page.locator('[data-slot="badge"]').evaluate((element) => parseFloat(getComputedStyle(element).paddingLeft));
 }
 
 When(
@@ -320,6 +443,14 @@ Given("I render a HuePicker with value {string}", async ({ page }, value: string
 
 When("the user clicks the {string} swatch", async ({ page }, swatch: string) => {
   await page.getByRole("button", { name: swatch }).click();
+});
+
+When("I read the HUES list", async ({ page }) => {
+  await loadHarness(page, "hues");
+});
+
+Then("the list should be {string}", async ({ page }, list: string) => {
+  await expect(page.getByTestId("hues")).toHaveText(list);
 });
 
 Then("the component should have 6 swatch buttons", async ({ page }) => {
@@ -732,7 +863,7 @@ When("the user clicks the button again before the revert timeout elapses", async
 
 When("the user clicks the button again and the clipboard write resolves", async ({ page }) => {
   await page.evaluate(() => {
-    (globalThis as typeof globalThis & { __bddClipboardReject?: boolean }).__bddClipboardReject = false;
+    (globalThis as typeof globalThis & { bddClipboardReject?: boolean }).bddClipboardReject = false;
   });
   await page.locator(COPY_BUTTON).click();
 });
@@ -776,6 +907,10 @@ Then("no copied confirmation is announced", async ({ page }) => {
 
 Then("the button has an accessible name of {string}", async ({ page }, name: string) => {
   await expect(page.getByRole("button", { name })).toBeVisible();
+});
+
+Then(/^the button has an accessible name of ([A-Za-z]+)$/, async ({ page }, name: string) => {
+  await expect(page.getByRole("button", { name, exact: true })).toBeVisible();
 });
 
 Then("no accessibility violations are reported", async ({ page }) => {
@@ -922,7 +1057,7 @@ Then("each screenshot matches its committed visual baseline", async () => {
 });
 
 Given(
-  /^a resizable panel rendered at (250|340) pixels with a 150 to 350 pixel band$/,
+  /^a resizable panel rendered at (160|250|340) pixels with a 150 to 350 pixel band$/,
   async ({ page }, width: string) => {
     await loadHarness(page, "resizable-panel", { width });
   },
@@ -957,15 +1092,31 @@ Given("a corrupted localStorage value of 999999 pixels for the panel width", asy
   await page.evaluate(() => localStorage.setItem("bdd-resizable-panel", "999999"));
 });
 
-When(/^the user drags the separator handle (60|100) pixels to the right$/, async ({ page }, delta: string) => {
-  await dragHandle(page, Number(delta));
+Given(
+  "the separator handle is focused on a panel at 250 pixels with a keyboard step of 20 pixels",
+  async ({ page }) => {
+    await loadHarness(page, "resizable-panel", { width: "250", keyboardStep: "20" });
+    await page.locator(PANEL_HANDLE).focus();
+  },
+);
+
+Given("a saved localStorage value of 300 pixels for the panel width", async ({ page }) => {
+  await loadHarness(page, "empty");
+  await page.evaluate(() => localStorage.setItem("bdd-resizable-panel", "300"));
 });
+
+When(
+  /^the user drags the separator handle (\d+) pixels to the (right|left)$/,
+  async ({ page }, delta: string, direction: string) => {
+    await dragHandle(page, direction === "left" ? -Number(delta) : Number(delta));
+  },
+);
 
 When("the user drags the separator handle 60 pixels to the right without releasing", async ({ page }) => {
   await dragHandle(page, 60, false);
 });
 
-When(/^the user presses (ArrowRight|Home|End)$/, async ({ page }, key: string) => {
+When(/^the user presses (ArrowLeft|ArrowRight|Home|End)$/, async ({ page }, key: string) => {
   await page.keyboard.press(key);
 });
 
@@ -977,26 +1128,21 @@ When("a resizable panel with a 150 to 350 pixel band is rendered", async ({ page
   await loadHarness(page, "resizable-panel", { width: "250" });
 });
 
-Then(/^the panel width (?:becomes|stops at|returns to) (150|250|310|350) pixels$/, async ({ page }, width: string) => {
+Then(/^the panel width (?:becomes|stops at|returns to) (\d+) pixels$/, async ({ page }, width: string) => {
   await expect(page.locator(PANEL)).toHaveCSS("width", `${width}px`);
-});
-
-Then("the panel width becomes 310 pixels but nothing is yet persisted to localStorage", async ({ page }) => {
-  await expect(page.locator(PANEL)).toHaveCSS("width", "310px");
-  expect(await page.evaluate(() => localStorage.getItem("bdd-resizable-panel"))).toBeNull();
-  await page.mouse.up();
 });
 
 Then("the width 310 pixels is persisted to localStorage", async ({ page }) => {
   await expect.poll(() => page.evaluate(() => localStorage.getItem("bdd-resizable-panel"))).toBe("310");
 });
 
-Then("the panel width increases by the keyboard step", async ({ page }) => {
-  await expect(page.locator(PANEL)).toHaveCSS("width", "260px");
+Then("the handle reports 260 as its aria-valuenow", async ({ page }) => {
+  await expect(page.locator(PANEL_HANDLE)).toHaveAttribute("aria-valuenow", "260");
 });
 
-Then("the handle exposes the new width via aria-valuenow", async ({ page }) => {
-  await expect(page.locator(PANEL_HANDLE)).toHaveAttribute("aria-valuenow", "260");
+Then("no page text is selected", async ({ page }) => {
+  const selected = await page.evaluate(() => window.getSelection()?.toString() ?? "");
+  expect(selected).toBe("");
 });
 
 Then("the handle has role {string}", async ({ page }, role: string) => {
@@ -1007,14 +1153,164 @@ Then("the handle has aria-orientation {string}", async ({ page }, orientation: s
   await expect(page.locator(PANEL_HANDLE)).toHaveAttribute("aria-orientation", orientation);
 });
 
-Then("the handle prevents native text selection", async ({ page }) => {
-  await expect(page.locator(PANEL_HANDLE)).toHaveCSS("user-select", "none");
-});
-
 Then("the handle has aria-label {string}", async ({ page }, label: string) => {
   await expect(page.locator(PANEL_HANDLE)).toHaveAttribute("aria-label", label);
 });
 
 Then("the panel width renders at the maximum band width, not the corrupted value", async ({ page }) => {
   await expect(page.locator(PANEL)).toHaveCSS("width", "350px");
+});
+
+Then("clicking the label focuses its input and names it", async ({ page }) => {
+  await page.locator("label").click();
+  await expect(page.getByRole("textbox", { name: "Email" })).toBeFocused();
+});
+
+When("the user presses Escape", async ({ page }) => {
+  await page.keyboard.press("Escape");
+});
+
+When("the user clicks the overlay", async ({ page }) => {
+  await page.locator('div.fixed.inset-0[data-state="open"]').click({ position: { x: 4, y: 4 } });
+});
+
+Then(/^the InfoTip trigger should be (visible|absent)$/, async ({ page }, presence: string) => {
+  const trigger = page.getByRole("button", { name: "Steps" });
+  if (presence === "visible") await expect(trigger).toBeVisible();
+  else await expect(trigger).toHaveCount(0);
+});
+
+Then("the card shows its title, description, content, and footer in that order", async ({ page }) => {
+  const text = (await page.locator(STORYBOOK_ROOT).textContent()) ?? "";
+  const positions = ["Card Title", "Card description text", "Card content here", "Card footer here"].map((part) =>
+    text.indexOf(part),
+  );
+  expect(positions.every((position) => position >= 0)).toBe(true);
+  expect(positions.every((position, index) => index === 0 || positions[index - 1] <= position)).toBe(true);
+});
+
+When("the user presses Space on the toggle", async ({ page }) => {
+  await page.getByRole("switch").focus();
+  await page.keyboard.press("Space");
+});
+
+Then("a focusable textbox element should be present", async ({ page }) => {
+  const textbox = page.getByRole("textbox");
+  await expect(textbox).toBeVisible();
+  await textbox.focus();
+  await expect(textbox).toBeFocused();
+});
+
+Then("the input should be at least 44 pixels tall", async ({ page }) => {
+  const bounds = await page.getByRole("textbox").boundingBox();
+  expect(bounds).not.toBeNull();
+  expect(bounds?.height ?? 0).toBeGreaterThanOrEqual(44);
+});
+
+When("I render an Input with aria-invalid set", async ({ page }) => {
+  await loadHarness(page, "input", { ariaLabel: "Input", invalid: "true" });
+});
+
+Then("the input should be marked invalid", async ({ page }) => {
+  const textbox = page.getByRole("textbox");
+  await expect(textbox).toHaveAttribute("aria-invalid", "true");
+  const destructive = await computedColourOfClass(page, "text-destructive");
+  await expect.poll(() => textbox.evaluate((element) => getComputedStyle(element).borderTopColor)).toBe(destructive);
+});
+
+When("I render an Input with an onChange handler", async ({ page }) => {
+  await loadHarness(page, "input", { changes: "true" });
+});
+
+When("the user types {string}", async ({ page }, text: string) => {
+  typedText = text;
+  await page.getByRole("textbox").click();
+  await page.keyboard.type(text);
+});
+
+Then("onChange should be called once per keystroke with the value so far", async ({ page }) => {
+  const expected = Array.from(typedText, (_, index) => typedText.slice(0, index + 1)).join(",");
+  await expect(page.getByTestId("event-probe")).toHaveText(expected);
+});
+
+Then(/^the back button should be (shown|absent)$/, async ({ page }, presence: string) => {
+  const backButton = page.getByRole("button", { name: "Go back" });
+  if (presence === "shown") await expect(backButton).toBeVisible();
+  else await expect(backButton).toHaveCount(0);
+});
+
+When("I render an Icon for every name in the IconName set", async ({ page }) => {
+  await loadHarness(page, "icon-set");
+});
+
+Then("each name draws its own icon instead of the fallback circle", async ({ page }) => {
+  const count = Number(await page.locator(`${STORYBOOK_ROOT} [data-icon-count]`).getAttribute("data-icon-count"));
+  const drawings = await page.locator(`${STORYBOOK_ROOT} svg`).evaluateAll((svgs) => svgs.map((svg) => svg.innerHTML));
+  expect(drawings).toHaveLength(count);
+  expect(drawings.filter((markup) => markup === '<circle cx="12" cy="12" r="8"></circle>')).toHaveLength(0);
+});
+
+Then(/^the "([^"]+)" tab should be marked as current$/, async ({ page }, tab: string) => {
+  await expect(page.getByRole("button", { name: tab })).toHaveAttribute("aria-current", "page");
+});
+
+Then(/^the "([^"]+)" tab should not be marked as current$/, async ({ page }, tab: string) => {
+  await expect(page.getByRole("button", { name: tab })).not.toHaveAttribute("aria-current", "page");
+});
+
+Then("the alert text should be drawn in the destructive colour", async ({ page }) => {
+  const actual = await page.getByRole("alert").evaluate((element) => getComputedStyle(element).color);
+  expect(actual).toBe(await computedColourOfClass(page, "text-destructive"));
+});
+
+Then("the alert should announce its title and description", async ({ page }) => {
+  const alert = page.getByRole("alert");
+  await expect(alert).toHaveAttribute("role", "alert");
+  await expect(alert.locator('[data-slot="alert-title"]')).not.toBeEmpty();
+  await expect(alert.locator('[data-slot="alert-description"]')).not.toBeEmpty();
+});
+
+Then("the badge has wider padding than an sm badge", async ({ page }) => {
+  const medium = await badgePaddingLeft(page);
+  await loadHarness(page, "badge", { size: "sm" });
+  const small = await badgePaddingLeft(page);
+  expect(medium).toBeGreaterThan(small);
+});
+
+When(
+  "the Dialog is rendered with a trigger labeled {string} and a title {string}",
+  async ({ page }, label: string, title: string) => {
+    expect(label).toBe("Open");
+    expect(title).toBe("Test Dialog");
+    await loadHarness(page, "dialog-trigger");
+  },
+);
+
+When("the user activates the trigger labeled {string}", async ({ page }, label: string) => {
+  await page.getByRole("button", { name: label }).click();
+});
+
+Then("the dialog titled {string} should be visible", async ({ page }, title: string) => {
+  await expect(page.getByRole("dialog", { name: title })).toBeVisible();
+});
+
+When("the Dialog is open with title {string}", async ({ page }, title: string) => {
+  expect(title).toBe("Test Dialog");
+  await loadHarness(page, "dialog-open");
+});
+
+Then("the dialog should be closed", async ({ page }) => {
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+});
+
+When("the Dialog content is rendered with showCloseButton false", async ({ page }) => {
+  await loadHarness(page, "dialog-open", { showCloseButton: "false" });
+});
+
+Then("the dialog should have no close button", async ({ page }) => {
+  await expect(page.getByRole("dialog").getByRole("button", { name: "Close" })).toHaveCount(0);
+});
+
+Then("the block lands clear of a sticky header when it is jumped to", async ({ page }) => {
+  await expect(page.locator('[data-slot="code-block"]')).toHaveCSS("scroll-margin-top", "64px");
 });

@@ -41,6 +41,7 @@ let ``checkTables returns empty for matching tables`` () =
     Assert.Empty(result)
 
 [<Fact>]
+// @scenario specs/libs/fsharp-crane-core/behaviours/checks/checks.feature: A table missing from the Markdown is CRITICAL
 let ``checkTables returns CRITICAL finding for missing table`` () =
     let pdfText = makeTable 3 1
     let mdText = "No table here"

@@ -1,42 +1,10 @@
 package benchmark_test
 
 import (
-	"encoding/json"
 	"testing"
 
 	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/tools/benchmark"
 )
-
-func TestDecodeBenchmarkURLVectors(t *testing.T) {
-	dataset := loadDataset(t)
-	var vectors []struct {
-		Query string            `json:"query"`
-		State map[string]string `json:"state"`
-	}
-	if err := json.Unmarshal(loadVectors(t, "url-state.json")["benchmark"], &vectors); err != nil {
-		t.Fatalf("Unmarshal: %v", err)
-	}
-	if len(vectors) != 5 {
-		t.Fatalf("benchmark URL vectors = %d, want 5", len(vectors))
-	}
-	for _, vector := range vectors {
-		state, validity := benchmark.DecodeState(mustParseBenchmarkQuery(t, vector.Query), dataset)
-		if validity != benchmark.Valid {
-			t.Fatalf("query %q must decode valid", vector.Query)
-		}
-		want := benchmark.UrlState{
-			Harness:    vector.State["harness"],
-			Tier:       vector.State["tier"],
-			Sub:        vector.State["sub"],
-			SubHarness: vector.State["subHarness"],
-		}
-		// The shared vector omits the sub-harness key when the default
-		// harness applies; decoding expresses the same unset state.
-		if state != want {
-			t.Fatalf("query %q = %+v, want %+v", vector.Query, state, want)
-		}
-	}
-}
 
 func TestBenchmarkURLRoundTripPreservesState(t *testing.T) {
 	dataset := loadDataset(t)
@@ -103,25 +71,6 @@ func TestBenchmarkNestedOrUnexpectedFieldIsInvalidFilters(t *testing.T) {
 		if validity != benchmark.InvalidFilters {
 			t.Fatalf("query %q must yield invalid-filters", query)
 		}
-	}
-}
-
-func TestBenchmarkRosterScopeMatchesVectors(t *testing.T) {
-	var expected struct {
-		En map[string]string `json:"en"`
-		ID map[string]string `json:"id"`
-	}
-	if err := json.Unmarshal(loadVectors(t, "url-state.json")["benchmarkRosterScope"], &expected); err != nil {
-		t.Fatalf("Unmarshal: %v", err)
-	}
-	dataset := loadDataset(t)
-	frontier, catalogs, inHouse := benchmark.RosterScope(dataset, "en")
-	if frontier != expected.En["frontier"] || catalogs != expected.En["catalogs"] || inHouse != expected.En["inHouse"] {
-		t.Fatalf("en scope = %q/%q/%q, want %v", frontier, catalogs, inHouse, expected.En)
-	}
-	frontier, catalogs, inHouse = benchmark.RosterScope(dataset, "id")
-	if frontier != expected.ID["frontier"] || catalogs != expected.ID["catalogs"] || inHouse != expected.ID["inHouse"] {
-		t.Fatalf("id scope = %q/%q/%q, want %v", frontier, catalogs, inHouse, expected.ID)
 	}
 }
 

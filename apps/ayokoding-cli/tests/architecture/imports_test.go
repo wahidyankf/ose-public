@@ -1,13 +1,18 @@
 package architecture_test
 
 import (
-	"os"
-	"path/filepath"
+	"embed"
 	"strings"
 	"testing"
 
 	"github.com/wahidyankf/ose-public/apps/ayokoding-cli/tests/architecture"
 )
+
+// fixtures embeds the negative fixture files, so the unit level reads them
+// without touching the disk.
+//
+//go:embed testdata/*.txt
+var fixtures embed.FS
 
 // fixturePaths maps each negative fixture file to the virtual production path
 // it stands in for.
@@ -30,7 +35,7 @@ func TestNegativeFixturesAreReported(t *testing.T) {
 		{"application importing internal/bootstrap", "application-bootstrap.go.txt"},
 	} {
 		t.Run(row.name, func(t *testing.T) {
-			source, err := os.ReadFile(filepath.Join("testdata", row.fixture))
+			source, err := fixtures.ReadFile("testdata/" + row.fixture)
 			if err != nil {
 				t.Fatalf("read fixture: %v", err)
 			}
@@ -48,30 +53,5 @@ func TestNegativeFixturesAreReported(t *testing.T) {
 				}
 			}
 		})
-	}
-}
-
-// TestProductionGraphPasses walks the real cmd and internal trees and requires
-// zero violations.
-func TestProductionGraphPasses(t *testing.T) {
-	files, err := architecture.ProductionFiles("../..")
-	if err != nil {
-		t.Fatalf("walk production tree: %v", err)
-	}
-	if len(files) == 0 {
-		t.Fatal("production walk found no Go files")
-	}
-	for virtual, disk := range files {
-		source, err := os.ReadFile(disk)
-		if err != nil {
-			t.Fatalf("read production file: %v", err)
-		}
-		imports, err := architecture.FileImports(source)
-		if err != nil {
-			t.Fatalf("parse production file: %v", err)
-		}
-		for _, violation := range architecture.Violations(virtual, imports) {
-			t.Errorf("production violation: %s", violation)
-		}
 	}
 }

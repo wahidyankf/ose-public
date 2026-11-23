@@ -68,14 +68,34 @@ func (w *World) StepDraftViewingDisabled() error {
 	return nil
 }
 
-func (w *World) StepReaderRequestsLessonSearchesCorpus() error {
-	if err := w.get("/en/learn/courses/go-basics/learning/draft-note"); err != nil {
-		return err
-	}
-	if err := w.mustStatus(http.StatusNotFound); err != nil {
-		return err
-	}
+// StepReaderRequestsDraftLessonRoute requests the draft lesson's own route.
+// The Then step checks the status, because the answer depends on the setting.
+func (w *World) StepReaderRequestsDraftLessonRoute() error {
+	return w.get("/en/learn/courses/go-basics/learning/draft-note")
+}
+
+// StepReaderSearchesCorpus searches the corpus for the draft lesson's title.
+func (w *World) StepReaderSearchesCorpus() error {
 	return w.get("/en/search?q=draft")
+}
+
+// StepShowDraftsSetForApp starts the app with draft viewing on. The scenario
+// server takes a free port so it never collides with a development server.
+func (w *World) StepShowDraftsSetForApp() error {
+	port, err := w.freePort()
+	if err != nil {
+		return err
+	}
+	w.env = map[string]string{"AYOKODING_WEB_SHOW_DRAFTS": "true", "AYOKODING_WEB_PORT": itoa(port)}
+	return w.launch()
+}
+
+// StepDraftLessonPageShowsTitleBody checks the draft lesson renders its title and body.
+func (w *World) StepDraftLessonPageShowsTitleBody() error {
+	if err := w.mustStatus(http.StatusOK); err != nil {
+		return err
+	}
+	return w.mustContain("<h1>Draft</h1>")
 }
 
 func (w *World) StepLessonAbsentFromPublicResults() error {

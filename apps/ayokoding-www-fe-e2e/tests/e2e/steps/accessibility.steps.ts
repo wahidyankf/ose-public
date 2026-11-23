@@ -1,3 +1,8 @@
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/accessibility.feature: Keyboard navigation moves through all interactive elements
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/accessibility.feature: Buttons and interactive elements have ARIA labels
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/accessibility.feature: Skip to content link is present
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/accessibility.feature: Text color contrast meets WCAG AA standard
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/app-shell/accessibility.feature: Focus indicators are visible on interactive elements
 import { createBdd } from "playwright-bdd";
 import { expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";

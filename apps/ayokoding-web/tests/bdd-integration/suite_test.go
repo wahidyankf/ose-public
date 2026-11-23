@@ -1,12 +1,10 @@
 // Package bddintegration runs the web-contract corpus through the
-// integration driver. It binds every step except the @integration-exempt
-// browser scenarios, which the static gate excuses only when no binding
-// references them; their alternative proof is the future Playwright suite.
+// integration driver against a real binary. browser-progress is not in this
+// driver's corpus: the Playwright home runs it and binds it by name.
 package bddintegration
 
 import (
 	"context"
-	"os"
 	"testing"
 
 	"github.com/cucumber/godog"
@@ -14,15 +12,35 @@ import (
 	"github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/internal/glue"
 )
 
+// Behaviour corpus bindings (contract C13). Every feature this driver runs
+// has no exemption at this level, so it is referenced whole. browser-progress
+// is bound by name in the Playwright home (an integration-level file).
+//
+// @scenario specs/apps/ayokoding/web/behaviours/content/content-rendering.feature: *
+// @scenario specs/apps/ayokoding/web/behaviours/courses/course-catalog-and-paths.feature: *
+// @scenario specs/apps/ayokoding/web/behaviours/discovery/discovery-documents.feature: *
+// @scenario specs/apps/ayokoding/web/behaviours/local-development/local-development.feature: *
+// @scenario specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation.feature: *
+// @scenario specs/apps/ayokoding/web/behaviours/search/search.feature: *
+// @scenario specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature: *
+// @scenario specs/apps/ayokoding/web/behaviours/tools/ai-benchmark.feature: *
+// @scenario specs/apps/ayokoding/web/behaviours/tools/cost-of-living-calculator.feature: *
+
 // TestContract runs the non-exempt web-contract corpus against real listeners
 // and fixture roots.
 func TestContract(t *testing.T) {
-	if adapter := os.Getenv("AYOKODING_BDD_ADAPTER"); adapter != "" && adapter != "integration" {
-		t.Skipf("bdd-integration suite owns the integration adapter, got %q", adapter)
+	// The integration suite runs under the integration adapter or with no
+	// adapter named; any other adapter must not reach this suite silently.
+	if adapter, _ := glue.RequestedAdapter(); adapter != "" && adapter != "integration" {
+		t.Fatalf("bdd-integration suite owns the integration adapter, got %q", adapter)
 	}
 	binary, err := glue.BuildBinary(t)
 	if err != nil {
-		t.Skipf("integration binary unavailable: %v", err)
+		t.Fatalf("integration binary must build: %v", err)
+	}
+	features, err := glue.IntegrationCorpus()
+	if err != nil {
+		t.Fatal(err)
 	}
 	glue.SuiteBinary = binary
 	driver := &glue.BinaryDriver{Binary: binary}
@@ -51,9 +69,8 @@ func TestContract(t *testing.T) {
 		},
 		Options: &godog.Options{
 			Format: "pretty",
-			Paths:  glue.Corpus,
+			Paths:  features,
 			Strict: true,
-			Tags:   "~@integration-exempt",
 		},
 	}
 	if status := suite.Run(); status != glue.Success {

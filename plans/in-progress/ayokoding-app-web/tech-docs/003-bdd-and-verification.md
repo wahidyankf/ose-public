@@ -12,8 +12,8 @@ godog is a regular module dependency, and `scripts/behaviour-coverage.mjs` alrea
 bindings (`BINDING_FILE` covers `.go`). No JavaScript-side Elixir expression parser or native
 verifier adaptation is needed.
 
-The [specs/libs/ex-bdd corpus](../../../../specs/libs/ex-bdd/README.md) stays untouched: it
-describes BeaverNest's Elixir engine, which this plan does not import. This plan adds no
+The `specs/libs/ex-bdd` corpus was removed from ose-public in the standardize-gates Phase 6 review: it
+described BeaverNest's Elixir engine, which no library in this repository holds, and this plan does not import it. This plan adds no
 `libs/ex-bdd` subtree, no `UPSTREAM.md` import record, and no licensing-notice change for a
 vendored engine.
 

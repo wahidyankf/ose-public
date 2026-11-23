@@ -44,6 +44,7 @@ const feature = await loadFeature(
 );
 
 describeFeature(feature, ({ Scenario }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/category-landing-arc-chooser.feature: The careers category landing groups path cards by arc
   Scenario("The careers category landing groups path cards by arc", ({ Given, When, Then, And }) => {
     Given("a fixture careers manifest set with three arcs is loaded", () => {
       const arcs = new Set([interviewReady, immediatelyA, immediatelyB, fundamentallyStrong].map(({ arc }) => arc));

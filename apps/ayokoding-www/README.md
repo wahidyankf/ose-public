@@ -65,7 +65,7 @@ npm exec -- nx run ayokoding-www:typecheck
 npm exec -- nx run ayokoding-www:lint
 npm exec -- nx run ayokoding-www:test:unit
 npm exec -- nx run ayokoding-www:test:integration
-npm exec -- nx run ayokoding-www:test:coverage
+npm exec -- nx run ayokoding-www:test:behaviour:coverage
 npm exec -- nx run ayokoding-www:test:quick
 npm exec -- nx run ayokoding-www:examples:check
 ```
@@ -73,8 +73,8 @@ npm exec -- nx run ayokoding-www:examples:check
 The canonical corpus is `specs/apps/ayokoding/www/behaviours/`. This owner runs mandatory Unit
 proof through `test:unit` and real isolated build-tool/local-resource proof through
 `test:integration`; Integration runs manually or in the scheduled delivery workflow, never inside
-`test:quick` or a Git hook. The static `test:coverage:*` targets validate Unit, Integration, and E2E
-bindings without running tests. Dedicated `ayokoding-www-fe-e2e` and `ayokoding-www-be-e2e`
+`test:quick` or a Git hook. The static `test:behaviour:coverage` target validates Unit, Integration,
+and E2E bindings without running tests. Dedicated `ayokoding-www-fe-e2e` and `ayokoding-www-be-e2e`
 projects own the public browser/HTTP runtime, so only the owner-level `test:e2e` target is omitted.
 See [the AyoKoding specs](../../specs/apps/ayokoding/README.md).
 
@@ -82,6 +82,14 @@ Course code examples run through `examples:check`, built on
 [ayokoding-cli](../../apps/ayokoding-cli/README.md): the default run covers courses changed
 since the merge base for the PR gate, and `--configuration=full` covers every opted-in course
 for the monthly run. The harness contract lives in the CLI README linked above.
+
+## Unit coverage
+
+`test:unit` holds the 99% line floor read from the unit run only (contract C15): plain unit
+tests plus the BDD unit bindings, never merged with integration or end-to-end coverage. The
+only coverage exclusions are non-production code (category N): the test doubles and fixtures
+under `src/test/**` and the test files themselves. Every production file is measured, including
+the app shell, the app router pages, the tRPC routers, the content adapters, and the scripts.
 
 ## Delivery boundary
 

@@ -5,6 +5,14 @@ const { Given, When, Then } = createBdd();
 
 // Plan ayokoding-learn-revamp-03 — course landing header (course-landing-header.feature).
 
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-landing-header.feature: The header shows description, format, time, and category
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-landing-header.feature: The header lists the paths that use the course
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-landing-header.feature: Start course opens the best first page
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-landing-header.feature: The course contents list follows the header
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-landing-header.feature: A course page shows its prerequisites list and its paths list at most once
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-landing-header.feature: An outline course header says it is an outline
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-landing-header.feature: Pages inside a course have no header
+
 Given("a course with a description, a format, an estimated time, a category, and prerequisites", async ({ page }) => {
   await page.goto("/en/learn/courses/sql-essentials");
 });
@@ -30,16 +38,13 @@ Then("the header shows the format, the estimated time, and the category", async 
   await expect(header).toContainText("Data and databases");
 });
 
-Then("the header lists the prerequisites as links", async ({ page }) => {
-  await expect(page.getByRole("navigation", { name: "Prerequisites" })).toBeVisible();
-});
-
 Then("the header lists the paths that use the course as links", async ({ page }) => {
   await expect(page.locator('header[aria-label="Course summary"]')).toBeVisible();
 });
 
-Given("a course has a learning overview page", async ({ page }) => {
-  await page.goto("/en/learn/courses/sql-essentials");
+// Start course: one Outline, one row per starting point. The course slug in each row is opened first.
+Given(/^the course (\S+) is open on its landing page$/, async ({ page }, course: string) => {
+  await page.goto(`/en/learn/courses/${course}`);
   await expect(page.getByRole("link", { name: "Start course" })).toBeVisible();
 });
 
@@ -47,28 +52,13 @@ When('a reader activates "Start course" on the course landing page', async ({ pa
   await page.getByRole("link", { name: "Start course" }).click();
 });
 
-Then("the learning overview page of that course opens", async ({ page }) => {
-  await expect(page).toHaveURL(/\/en\/learn\/courses\/sql-essentials\/learning\/overview/);
-});
-
-Given("a course has a learning folder without an overview page", async ({ page }) => {
-  await page.goto("/en/learn/courses/capstone-data-pipeline");
-});
-
-Then("the first learning page in reading order opens", async ({ page }) => {
-  await expect(page).toHaveURL(/\/en\/learn\/courses\/capstone-data-pipeline\/learning\/capstone\/overview/);
+Then(/^the page (\/\S+) opens$/, async ({ page }, expectedPath: string) => {
+  const escaped = expectedPath.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  await expect(page).toHaveURL(new RegExp(`${escaped}$`));
 });
 
 Then("that page is not inside a folder that has no index page", async ({ page }) => {
   await expect(page).not.toHaveURL(/artifacts/);
-});
-
-Given("a course has no learning folder but has a top-level overview page", async ({ page }) => {
-  await page.goto("/en/learn/courses/capstone-first-working-software");
-});
-
-Then("the course's overview page opens", async ({ page }) => {
-  await expect(page).toHaveURL(/\/en\/learn\/courses\/capstone-first-working-software\/overview/);
 });
 
 Then('the "Course contents" heading and the list of course pages appear after the header', async ({ page }) => {

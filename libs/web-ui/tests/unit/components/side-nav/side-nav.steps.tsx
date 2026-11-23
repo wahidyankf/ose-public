@@ -18,34 +18,34 @@ const feature = await loadFeature(
 );
 
 describeFeature(feature, ({ Scenario }) => {
-  Scenario("Renders brand name", ({ When, Then }) => {
+  // @scenario specs/libs/web-ui/behaviours/side-nav/side-nav.feature: The side nav shows its brand and every tab
+  Scenario("The side nav shows its brand and every tab", ({ When, Then, And }) => {
     let brandName: HTMLElement;
+    let homeTab: HTMLElement;
+    let historyTab: HTMLElement;
 
     When('I render a SideNav with brand "OrganicLever" and tabs', () => {
       cleanup();
       render(<SideNav brand={brand} tabs={tabs} current="home" onChange={vi.fn()} />);
       brandName = screen.getByText("OrganicLever");
+      homeTab = screen.getByText("Home");
+      historyTab = screen.getByText("History");
     });
 
     Then('the text "OrganicLever" should be visible', () => {
       expect(brandName.textContent).toBe("OrganicLever");
     });
-  });
 
-  Scenario("Renders tabs", ({ When, Then }) => {
-    let homeTab: HTMLElement;
-
-    When('I render a SideNav with brand "OrganicLever" and tabs', () => {
-      cleanup();
-      render(<SideNav brand={brand} tabs={tabs} current="home" onChange={vi.fn()} />);
-      homeTab = screen.getByText("Home");
-    });
-
-    Then('the tab "Home" should be visible', () => {
+    And('the tab "Home" should be visible', () => {
       expect(homeTab.textContent).toBe("Home");
     });
+
+    And('the tab "History" should be visible', () => {
+      expect(historyTab.textContent).toBe("History");
+    });
   });
 
+  // @scenario specs/libs/web-ui/behaviours/side-nav/side-nav.feature: Tab click triggers onChange with tab id
   Scenario("Tab click triggers onChange with tab id", ({ Given, When, Then }) => {
     const onChangeMock = vi.fn();
 
@@ -66,20 +66,28 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
-  Scenario("Active tab has active background", ({ When, Then }) => {
+  // @scenario specs/libs/web-ui/behaviours/side-nav/side-nav.feature: The current tab is marked as current
+  Scenario("The current tab is marked as current", ({ When, Then, And }) => {
     let homeButton: HTMLButtonElement | null;
+    let historyButton: HTMLButtonElement | null;
 
     When('I render a SideNav with brand "OrganicLever" current "home" and tabs', () => {
       cleanup();
       render(<SideNav brand={brand} tabs={tabs} current="home" onChange={vi.fn()} />);
       homeButton = screen.getByText("Home").closest("button");
+      historyButton = screen.getByText("History").closest("button");
     });
 
-    Then('the "Home" button should have the active class', () => {
-      expect(homeButton?.className).toContain("bg-[var(--hue-teal-wash)]");
+    Then('the "Home" tab should be marked as current', () => {
+      expect(homeButton?.getAttribute("aria-current")).toBe("page");
+    });
+
+    And('the "History" tab should not be marked as current', () => {
+      expect(historyButton?.hasAttribute("aria-current")).toBe(false);
     });
   });
 
+  // @scenario specs/libs/web-ui/behaviours/side-nav/side-nav.feature: Brand row click always calls onChange with home
   Scenario("Brand row click always calls onChange with home", ({ Given, When, Then }) => {
     const onChangeMock = vi.fn();
 

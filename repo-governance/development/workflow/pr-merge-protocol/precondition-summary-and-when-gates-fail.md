@@ -13,7 +13,7 @@ When all preconditions hold, the agent presents a clear summary, then merges:
 PR #42: feat(auth): add email validation
 
 Quality gates:
-  Quality gate:  PASSED (current head/base)
+  quality-gate:  PASSED (current head/base)
   leak-review:   PASSED (harness verdict, current head)
   surface gates: PASSED / explicitly exempt
 
@@ -41,7 +41,7 @@ If any quality gate fails, the agent must:
 PR #42: feat(auth): add email validation
 
 Quality gates:
-  Quality gate:  FAILED (lint errors in auth-validator.ts)
+  quality-gate:  FAILED (lint errors in auth-validator.ts)
   surface gates: PENDING
 
 I will investigate and fix the lint errors before merging.

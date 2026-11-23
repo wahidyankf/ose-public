@@ -73,8 +73,8 @@ npm exec nx -- run ose-www:test:integration
 ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-www-fe-e2e:test:e2e
 ```
 
-The Unit runtime enforces 99% line coverage. Static `test:coverage:*` targets check the Gherkin
-scenario-to-adapter mapping without running tests and are mandatory in `test:quick`.
+The Unit runtime enforces 99% line coverage. The static `test:behaviour:coverage` target checks the
+Gherkin scenario-to-adapter mapping without running tests and is mandatory in `test:quick`.
 `ose-www:test:integration` exercises the real content filesystem and prebuilt search-index paths
 with isolated synthetic fixtures; it remains manual-impacted and scheduled-full, never part of
 hooks or PR CI.
@@ -118,6 +118,6 @@ delivery path.
 The canonical corpus is `specs/apps/ose/www/behaviours/`. This project owns mandatory Unit proof
 through `test:unit` and deterministic local-resource proof through `test:integration`.
 `ose-www-fe-e2e:test:e2e` and `ose-www-be-e2e:test:e2e` own the public browser and HTTP boundaries.
-Matching `test:coverage:*` targets validate every applicable adapter or explicit boundary exemption
+`test:behaviour:coverage` validates every applicable adapter or explicit boundary exemption
 statically. The owner omits only a local `test:e2e` runtime because dedicated projects own that
 public-boundary execution.

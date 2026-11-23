@@ -3,6 +3,10 @@ import { expect } from "@playwright/test";
 
 const { Given, When, Then } = createBdd();
 
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/accessibility.feature: Path navigation surfaces are labelled landmarks
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/accessibility.feature: Path navigation works by keyboard with visible focus
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/accessibility.feature: The page language matches the locale
+
 // course-paths plan (ayokoding-learning-path-03-navigation-ui), Cycle 3.3 — accessibility contract
 // for the path-aware navigation surfaces (rail, banner, breadcrumb, prerequisite list, prev/next).
 // Runs against the same fixture manifest set as `course-paths.steps.ts` (see
@@ -33,7 +37,14 @@ When("they navigate the path rail, banner, breadcrumb, prerequisite list, and pr
   }
 });
 
-Then("each is a labelled landmark reachable and operable by keyboard with visible focus", async ({ page }) => {
+Then("each is a labelled landmark", async ({ page }) => {
+  await expect(page.getByRole("navigation", { name: FIXTURE_RAIL_LABEL })).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "Breadcrumb" })).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "Prerequisites" })).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "Page navigation" })).toBeVisible();
+});
+
+Then("each is reachable and operable by keyboard with visible focus", async ({ page }) => {
   // Path rail — desktop viewport (Playwright's default project runs at >= md width).
   const rail = page.getByRole("navigation", { name: FIXTURE_RAIL_LABEL });
   await expect(rail).toBeVisible();

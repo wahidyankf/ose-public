@@ -7,12 +7,13 @@ export default defineConfig({
     environment: "node",
     include: ["tests/unit/**/*.test.{ts,tsx}"],
     coverage: {
+      include: ["src/**/*.ts"],
       reportsDirectory: "coverage/unit",
     },
   },
   resolve: {
     alias: {
-      "@open-sharia-enterprise/ayokoding-data": path.resolve(__dirname, "."),
+      "@open-sharia-enterprise/ayokoding-data": path.resolve(__dirname, "src"),
     },
   },
 });

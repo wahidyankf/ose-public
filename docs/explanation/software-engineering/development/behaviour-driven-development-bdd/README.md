@@ -222,8 +222,8 @@ specs/
 
 - Unit proof for every active scenario, with no Unit exemption and a 99% minimum line gate in
   `test:unit`
-- Exact static bindings for every applicable layer through `test:coverage:*`, aggregated by
-  `test:coverage` and included in `test:quick`
+- Exact static bindings for every applicable layer through `test:behaviour:coverage`, included in
+  `test:quick`
 - Happy path scenarios for all user-facing features
 - Critical error scenarios (validation failures, permission denied)
 - Edge cases identified during Three Amigos sessions

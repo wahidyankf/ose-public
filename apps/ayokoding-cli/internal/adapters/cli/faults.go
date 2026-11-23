@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"encoding/json"
 	"fmt"
 	"strconv"
 
@@ -74,10 +73,7 @@ func renderFailures(cmd *cobra.Command, color bool, mode string) error {
 				Message: run.message,
 			})
 		}
-		body, err := json.Marshal(document)
-		if err != nil {
-			return fmt.Errorf("cli: marshal failing runs: %w", err)
-		}
+		body := marshalReport(document)
 		if _, err := fmt.Fprintln(out, string(body)); err != nil {
 			return &finding.PipeError{}
 		}
@@ -96,10 +92,7 @@ func renderFailures(cmd *cobra.Command, color bool, mode string) error {
 func hang(cmd *cobra.Command) error {
 	_, _ = fmt.Fprintln(cmd.ErrOrStderr(), "waiting for interrupt")
 	<-cmd.Context().Done()
-	if err := cmd.Context().Err(); err != nil {
-		return fmt.Errorf("cli: interrupted: %w", err)
-	}
-	return nil
+	return fmt.Errorf("cli: interrupted: %w", cmd.Context().Err())
 }
 
 // spam writes a large payload so a reader that closes early always lands a

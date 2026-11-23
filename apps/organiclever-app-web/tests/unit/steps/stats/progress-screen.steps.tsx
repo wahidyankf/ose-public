@@ -32,6 +32,7 @@ function renderProgress() {
 describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
   AfterEachScenario(() => cleanup());
 
+  // @scenario specs/apps/organiclever/app-web/behaviours/stats/progress-screen.feature: Progress screen shows workout module by default
   Scenario("Progress screen shows workout module by default", ({ When, Then }) => {
     When("the progress screen is loaded", () => renderProgress());
     Then("the workout module is active", () => {
@@ -39,6 +40,7 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/organiclever/app-web/behaviours/stats/progress-screen.feature: Switch to reading module
   Scenario("Switch to reading module", ({ Given, When, Then }) => {
     Given("the progress screen is loaded", () => renderProgress());
     When("the user selects the Reading module", () => {
@@ -50,7 +52,8 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
     });
   });
 
-  Scenario("Exercise progress card expands", ({ Given, When, Then }) => {
+  // @scenario specs/apps/organiclever/app-web/behaviours/stats/progress-screen.feature: Tapping an exercise card shows its progress chart
+  Scenario("Tapping an exercise card shows its progress chart", ({ Given, When, Then }) => {
     Given("there is exercise progress data", async () => {
       renderProgress();
       await screen.findByRole("button", { name: "Squat progress" });
@@ -58,7 +61,7 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
     When("the user taps an exercise card", () => {
       fireEvent.click(screen.getByRole("button", { name: "Squat progress" }));
     });
-    Then("the SVG chart is visible", () => {
+    Then("the progress chart is visible", () => {
       expect(screen.getByLabelText("Weight progression chart for Squat")).toBeVisible();
     });
   });

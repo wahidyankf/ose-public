@@ -5,7 +5,7 @@ from dataclasses import dataclass, field, replace
 from typing import Any
 
 import pytest
-from pytest_bdd import given, scenario, then, when
+from pytest_bdd import given, parsers, scenario, then, when
 
 from ferret.domain.space import MIB, StorageFacts
 from support.fakes import FIXED_NOW, FakeMonotonic, World
@@ -32,7 +32,6 @@ class Session:
     read: Ran | None = None
     operations: list[Ran] = field(default_factory=lambda: list[Ran]())
     removed: list[int] = field(default_factory=lambda: list[int]())
-    still_expired: int = 0
     status_before: dict[str, Any] | None = None
     maintenance: dict[str, Any] | None = None
     status: dict[str, Any] | None = None
@@ -61,13 +60,8 @@ def session() -> Session:
     return Session(world=world_with())
 
 
-@scenario(FEATURE, "Hide then prune every expired usage-derived record")
-def test_hide_then_prune_every_expired_usage_derived_record() -> None:
-    """Bound to the feature scenario; the steps below carry the assertions."""
-
-
-@given("the database contains rows captured before and after the thirty-day cutoff")
-def given_rows_around_the_cutoff(session: Session) -> None:
+def rows_around_the_cutoff(session: Session) -> None:
+    """Rows captured before and after the thirty-day cutoff, with the status taken before any operation runs."""
     exactly_at_the_cutoff, just_inside = edge_events(FIXED_NOW)
     newer = [just_inside, *fresh_events(NEWER, now=FIXED_NOW)]
     session.world = world_with(*expired_events(BEYOND_CUTOFF, now=FIXED_NOW), exactly_at_the_cutoff, *newer)
@@ -77,6 +71,17 @@ def given_rows_around_the_cutoff(session: Session) -> None:
     session.world.telemetry.marker = stamp(FIXED_NOW)
     session.status_before = status_of(session.world)
     assert expired_held(session.world) == BEYOND_CUTOFF + 1
+
+
+# @scenario specs/apps/ferret/cli/behaviours/storage/retention-and-space.feature: Events older than thirty days are never returned
+@scenario(FEATURE, "Events older than thirty days are never returned")
+def test_events_older_than_thirty_days_are_never_returned() -> None:
+    """Bound to the feature scenario; the steps below carry the assertions."""
+
+
+@given("the database contains rows captured before and after the thirty-day cutoff")
+def given_rows_around_the_cutoff(session: Session) -> None:
+    rows_around_the_cutoff(session)
 
 
 @when("a read runs before physical pruning and then the next two FERRET operations run")
@@ -92,7 +97,6 @@ def when_a_read_then_the_next_operations_run(session: Session) -> None:
         after = expired_held(world)
         session.removed.append(before - after)
         before = after
-    session.still_expired = before
 
 
 @then("no row at or beyond the cutoff is returned by the read")
@@ -104,14 +108,6 @@ def then_no_expired_row_is_returned(session: Session) -> None:
     assert all(item["capturedAt"] > cutoff_stamp(FIXED_NOW) for item in json.loads(session.read.stdout)["items"])
 
 
-@then("each of those operations stops physical pruning at the first of 100 rows or 100 monotonic milliseconds")
-def then_each_prune_stops_at_its_first_limit(session: Session) -> None:
-    # The first stops at 100 rows. The second reads its clock once to start its budget, once to size the wait for the
-    # write lock, and once before each row; at 10 ms a reading the eighth row is the last started inside 100 ms.
-    assert session.removed == [100, 8]
-    assert session.still_expired == BEYOND_CUTOFF + 1 - 108 > 0
-
-
 @then("every newer row remains queryable")
 def then_every_newer_row_remains_queryable(session: Session) -> None:
     for operation in session.operations:
@@ -119,29 +115,24 @@ def then_every_newer_row_remains_queryable(session: Session) -> None:
     assert session.newer <= {held.event_id for held in session.world.events.stored}
 
 
-@then("status increments expiredLocalTotal for locally expired rows")
-def then_the_local_counter_grows_by_what_was_pruned(session: Session) -> None:
+# @scenario specs/apps/ferret/cli/behaviours/storage/retention-and-space.feature: status reports how many events expired
+@scenario(FEATURE, "status reports how many events expired")
+def test_status_reports_how_many_events_expired() -> None:
+    """Bound to the feature scenario; the steps below carry the assertions."""
+
+
+@then("status reports as many locally expired events as the operations pruned")
+def then_the_local_counter_matches_what_was_pruned(session: Session) -> None:
     assert session.status_before is not None
     session.status = status_of(session.world)
     assert session.status_before["expiredLocalTotal"] == 0
-    assert session.status["expiredLocalTotal"] == sum(session.removed) == 108
+    assert sum(session.removed) > 0
+    assert session.status["expiredLocalTotal"] == sum(session.removed)
 
 
-@then("expiredBeforeAckTotal remains zero")
-def then_the_before_ack_counter_stays_zero(session: Session) -> None:
-    assert session.status_before is not None
-    assert session.status is not None
-    assert session.status_before["expiredBeforeAckTotal"] == session.status["expiredBeforeAckTotal"] == 0
-
-
-# What the measurement scenario starts from: a database with a live log and a free list worth compacting.
+# What the measurement scenarios start from: a database with a live log and a free list worth compacting.
 POPULATED = StorageFacts(database_bytes=64 * MIB, wal_bytes=8 * MIB, freelist_bytes=16 * MIB)
 MEASURED_EXPIRED = 130
-
-
-@scenario(FEATURE, "Measure storage before and after retention")
-def test_measure_storage_before_and_after_retention() -> None:
-    """Bound to the feature scenario; the steps below carry the assertions."""
 
 
 @given("a representative event fixture has populated the database and WAL")
@@ -156,6 +147,12 @@ def when_maintenance_reclaims_space(session: Session) -> None:
     assert (ran.code, ran.stderr) == (0, "")
     session.maintenance = json.loads(ran.stdout)
     session.status = status_of(session.world)
+
+
+# @scenario specs/apps/ferret/cli/behaviours/storage/retention-and-space.feature: maintenance reports database bytes before and after and the largest footprint
+@scenario(FEATURE, "maintenance reports database bytes before and after and the largest footprint")
+def test_maintenance_reports_database_bytes_before_and_after_and_the_largest_footprint() -> None:
+    """Bound to the feature scenario; the steps below carry the assertions."""
 
 
 @then("maintenance reports the database bytes before and after it and the largest footprint it measured")
@@ -174,6 +171,12 @@ def then_maintenance_reports_its_before_after_and_peak(session: Session) -> None
     assert report["highWaterBytes"] == 96 * MIB
 
 
+# @scenario specs/apps/ferret/cli/behaviours/storage/retention-and-space.feature: status reports database, WAL, and free-list bytes with a total
+@scenario(FEATURE, "status reports database, WAL, and free-list bytes with a total")
+def test_status_reports_database_wal_and_free_list_bytes_with_a_total() -> None:
+    """Bound to the feature scenario; the steps below carry the assertions."""
+
+
 @then("status reports the database, WAL, and free-list bytes on disk separately with their current total")
 def then_status_reports_the_files_as_they_stand(session: Session) -> None:
     assert session.status is not None
@@ -182,3 +185,36 @@ def then_status_reports_the_files_as_they_stand(session: Session) -> None:
     assert (on_disk.database_bytes, on_disk.wal_bytes, on_disk.freelist_bytes) == (48 * MIB, 0, 0)
     assert status["highWaterBytes"] == 48 * MIB
     assert status["eventCount"] == NEWER
+
+
+# @scenario specs/apps/ferret/cli/behaviours/storage/retention-and-space.feature: maintenance --if-due does nothing unless maintenance is due
+@scenario(FEATURE, "maintenance --if-due does nothing unless maintenance is due")
+def test_maintenance_if_due_does_nothing_unless_maintenance_is_due() -> None:
+    """Bound to the feature outline; each example expands independently."""
+
+
+@given(parsers.parse("the database holds expired events and maintenance {state}"))
+def given_expired_events_and_maintenance_state(session: Session, state: str) -> None:
+    session.world = world_with(*expired_events(BEYOND_CUTOFF, now=FIXED_NOW), *fresh_events(NEWER, now=FIXED_NOW))
+    if state == "ran a moment ago":
+        session.world.telemetry.marker = stamp(FIXED_NOW)
+    else:
+        assert state == "has never run"
+    assert expired_held(session.world) == BEYOND_CUTOFF
+
+
+@when("the user runs maintenance with --if-due")
+def when_maintenance_runs_if_due(session: Session) -> None:
+    ran = run_cli(session.world, ["maintenance", "--if-due", "--json"])
+    assert (ran.code, ran.stderr) == (0, "")
+    session.maintenance = json.loads(ran.stdout)
+
+
+@then(parsers.parse("the expired events are {pruned}"))
+def then_the_expired_events_are(session: Session, pruned: str) -> None:
+    held = expired_held(session.world)
+    if pruned == "pruned":
+        assert held == 0
+    else:
+        assert pruned == "left in place"
+        assert held == BEYOND_CUTOFF

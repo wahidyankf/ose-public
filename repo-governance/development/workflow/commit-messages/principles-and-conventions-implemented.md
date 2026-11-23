@@ -11,7 +11,7 @@ This practice respects the following core principles:
 
 - **[Explicit Over Implicit](../../../principles/software-engineering/explicit-over-implicit.md)**: Commit format (`type(scope): description`) explicitly states the nature of change. No guessing from cryptic messages like "fix stuff" or "updates". Commit type, scope, and description are all explicit.
 
-- **[Automation Over Manual](../../../principles/software-engineering/automation-over-manual.md)**: Automation is partial here. `commitlint.config.js` encodes the format so a message can be checked mechanically on demand, but no hook or CI step runs it, so review catches format drift. The commit-msg hook automates only the public-safety screen.
+- **[Automation Over Manual](../../../principles/software-engineering/automation-over-manual.md)**: Automation covers the format. The commit-msg hook and the pull-request gate run Commitlint on every message, so format drift fails mechanically. Review still judges whether each commit is cohesive.
 
 ## Conventions Implemented/Respected
 
@@ -19,6 +19,6 @@ This practice respects the following core principles:
 
 This practice implements/respects the following conventions:
 
-- **[Code Quality Convention](../../quality/code.md)**: The commit-msg hook in that toolchain runs only the public-safety screen; commit-message format is checked by review, with Commitlint available on demand.
+- **[Code Quality Convention](../../quality/code.md)**: The commit-msg hook in that toolchain runs Commitlint on the message; review checks the commit's composition.
 
 - **[Content Quality Principles](../../../conventions/writing/quality.md)**: Commit messages use active voice (imperative mood) and clear, concise descriptions - aligning with content quality standards for communication.

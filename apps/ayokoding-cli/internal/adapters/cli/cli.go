@@ -21,6 +21,11 @@ type Options struct {
 	NoColor     bool
 	Fault       string
 	OnInterrupt func()
+	// ContainerCLI is the container binary. Empty means the default
+	// podman. It is the only entry point for the AYOKODING_CONTAINER_CLI
+	// override: bootstrap reads the variable once and wires it here, so
+	// commands below never touch the process environment.
+	ContainerCLI string
 }
 
 // pipeWriter records a broken standard output: any write error means the

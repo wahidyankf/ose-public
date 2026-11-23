@@ -27,7 +27,7 @@ jobs:
       has-python: ${{ steps.detect.outputs.has-python }}
       has-ayokoding-examples: ${{ steps.detect.outputs.has-ayokoding-examples }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
@@ -48,13 +48,13 @@ jobs:
           # must still run. set -e keeps the step failing, so every other language behaves as before.
           trap 'echo "has-python=true" >> "$GITHUB_OUTPUT"' ERR
 
-          affected=$(npx nx show projects --affected)
+          affected=$(./hippo run --class ephemeral --resource-tier light --disk-path . -- npx nx show projects --affected)
           for project in $affected; do
             case "$project" in
               ayokoding-www) echo "has-ayokoding-examples=true" >> "$GITHUB_OUTPUT" ;;
               ayokoding-cli) echo "has-ayokoding-examples=true" >> "$GITHUB_OUTPUT" ;;
             esac
-            tags=$(npx nx show project "$project" --json | jq -r '.tags[]?')
+            tags=$(./hippo run --class ephemeral --resource-tier light --disk-path . -- npx nx show project "$project" --json | jq -r '.tags[]?')
             for tag in $tags; do
               case "$tag" in
                 lang:ts) echo "has-ts=true" >> "$GITHUB_OUTPUT" ;;
@@ -70,13 +70,13 @@ jobs:
     name: Repository policy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-dotnet
       - uses: ./.github/actions/setup-rust
-      - uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
         with:
           channel: stable
           flutter-version-file: .fvmrc
@@ -103,17 +103,21 @@ jobs:
           PATH="node_modules/.bin:apps/ferret-cli/.venv/bin:$PATH" ./hippo run --class ephemeral --resource-tier standard --disk-path . -- \
             ./rhino gate run --surface pull-request --base "$RHINO_BASE" --head "$RHINO_HEAD"
 
+  # Every language lane below always runs and reports success when nothing is affected: the affected
+  # condition sits on each step, not on the job, so a needed job is never skipped (contract C8).
   typescript:
     name: TypeScript quality gate
     needs: detect
-    if: needs.detect.outputs.has-ts == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        if: needs.detect.outputs.has-ts == 'true'
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
-      - run: >-
+        if: needs.detect.outputs.has-ts == 'true'
+      - if: needs.detect.outputs.has-ts == 'true'
+        run: >-
           ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
           npx nx affected -t typecheck,lint,test:quick,compat:min-version
           --exclude='tag:lang:python,tag:lang:fsharp,tag:lang:rust,tag:lang:dart,tag:lang:go'
@@ -122,20 +126,24 @@ jobs:
   dotnet:
     name: .NET quality gate
     needs: detect
-    if: needs.detect.outputs.has-dotnet-projects == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        if: needs.detect.outputs.has-dotnet-projects == 'true'
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
+        if: needs.detect.outputs.has-dotnet-projects == 'true'
       - uses: ./.github/actions/setup-dotnet
-      - run: >-
+        if: needs.detect.outputs.has-dotnet-projects == 'true'
+      - if: needs.detect.outputs.has-dotnet-projects == 'true'
+        run: >-
           ./hippo run --class transactional --resource-tier standard --disk-path . --
           npx nx affected -t install
           --exclude='tag:lang:python,tag:lang:ts,tag:lang:dart,tag:lang:go'
           --parallel=1
-      - run: >-
+      - if: needs.detect.outputs.has-dotnet-projects == 'true'
+        run: >-
           ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
           npx nx affected -t typecheck,lint,test:quick,compat:min-version
           --exclude='tag:lang:python,tag:lang:ts,tag:lang:dart,tag:lang:go'
@@ -144,23 +152,28 @@ jobs:
   flutter:
     name: Flutter quality gate
     needs: detect
-    if: needs.detect.outputs.has-dart == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        if: needs.detect.outputs.has-dart == 'true'
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
-      - uses: subosito/flutter-action@v2
+        if: needs.detect.outputs.has-dart == 'true'
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
+        if: needs.detect.outputs.has-dart == 'true'
         with:
           channel: stable
           flutter-version-file: .fvmrc
       - name: Install Flutter Version Management
+        if: needs.detect.outputs.has-dart == 'true'
         run: |
           dart pub global activate fvm 4.0.5
           echo "$HOME/.pub-cache/bin" >> "$GITHUB_PATH"
-      - run: fvm install
-      - run: >-
+      - if: needs.detect.outputs.has-dart == 'true'
+        run: fvm install
+      - if: needs.detect.outputs.has-dart == 'true'
+        run: >-
           ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
           npx nx affected -t typecheck,lint,test:quick
           --exclude='tag:lang:python,tag:lang:ts,tag:lang:fsharp,tag:lang:rust,tag:lang:go'
@@ -169,15 +182,18 @@ jobs:
   go:
     name: Go quality gate
     needs: detect
-    if: needs.detect.outputs.has-go == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        if: needs.detect.outputs.has-go == 'true'
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
+        if: needs.detect.outputs.has-go == 'true'
       - uses: ./.github/actions/setup-go
-      - run: >-
+        if: needs.detect.outputs.has-go == 'true'
+      - if: needs.detect.outputs.has-go == 'true'
+        run: >-
           ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
           npx nx affected -t typecheck,lint,test:quick,compat:min-version
           --exclude='tag:lang:python,tag:lang:ts,tag:lang:fsharp,tag:lang:rust,tag:lang:dart'
@@ -186,48 +202,176 @@ jobs:
   python:
     name: Python quality gate
     needs: detect
-    # Fail closed: run when Python is affected, and also whenever detect did not succeed, because an
-    # undeterminable change set must never skip this gate. !cancelled() (not always()) keeps a
-    # superseded run from starting it. The expression form is required: a plain `!` would be a YAML tag.
-    if: ${{ !cancelled() && (needs.detect.result != 'success' || needs.detect.outputs.has-python == 'true') }}
+    # Fail closed: the job runs whenever detect did not succeed, because an undeterminable change set must never
+    # skip this gate. !cancelled() (not always()) keeps a superseded run from starting it. Each step repeats the
+    # same fail-closed condition, so the steps run when Python is affected or detect did not succeed. The
+    # expression form is required: a plain `!` would be a YAML tag.
+    if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        if: ${{ needs.detect.result != 'success' || needs.detect.outputs.has-python == 'true' }}
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
+        if: ${{ needs.detect.result != 'success' || needs.detect.outputs.has-python == 'true' }}
       - uses: ./.github/actions/setup-python
+        if: ${{ needs.detect.result != 'success' || needs.detect.outputs.has-python == 'true' }}
       - name: Install locked Python dependencies
+        if: ${{ needs.detect.result != 'success' || needs.detect.outputs.has-python == 'true' }}
         run: >-
           ./hippo run --class transactional --resource-tier standard --disk-path . --
           npx nx affected -t install
           --exclude='tag:lang:ts,tag:lang:fsharp,tag:lang:rust,tag:lang:dart,tag:lang:go'
           --parallel=1
-      - run: >-
+      - if: ${{ needs.detect.result != 'success' || needs.detect.outputs.has-python == 'true' }}
+        run: >-
           ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
           npx nx affected -t typecheck lint test:quick
           --exclude='tag:lang:ts,tag:lang:fsharp,tag:lang:rust,tag:lang:dart,tag:lang:go'
           --parallel=1
 
+  typescript-integration:
+    name: TypeScript integration
+    needs: detect
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        if: needs.detect.outputs.has-ts == 'true'
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/setup-node
+        if: needs.detect.outputs.has-ts == 'true'
+      # The browser integration targets (ayokoding-web-e2e, ose-www-*, and the other *-e2e homes) run a local
+      # server or binary. ayokoding-web and the be-e2e homes build with Go, .NET, or Podman, so each toolchain
+      # is installed here, and Playwright installs the browsers its suites drive.
+      - uses: ./.github/actions/setup-go
+        if: needs.detect.outputs.has-ts == 'true'
+      - uses: ./.github/actions/setup-dotnet
+        if: needs.detect.outputs.has-ts == 'true'
+      - uses: ./.github/actions/setup-podman
+        if: needs.detect.outputs.has-ts == 'true'
+      - uses: ./.github/actions/setup-playwright
+        if: needs.detect.outputs.has-ts == 'true'
+      # --parallel=1: several homes share a local port (3101, 3190), so two browser suites must not
+      # start a server at the same time.
+      - if: needs.detect.outputs.has-ts == 'true'
+        run: >-
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
+          npx nx affected -t test:integration
+          --exclude='tag:lang:python,tag:lang:fsharp,tag:lang:rust,tag:lang:dart,tag:lang:go'
+          --parallel=1
+
+  dotnet-integration:
+    name: .NET integration
+    needs: detect
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        if: needs.detect.outputs.has-dotnet-projects == 'true'
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/setup-node
+        if: needs.detect.outputs.has-dotnet-projects == 'true'
+      - uses: ./.github/actions/setup-dotnet
+        if: needs.detect.outputs.has-dotnet-projects == 'true'
+      - if: needs.detect.outputs.has-dotnet-projects == 'true'
+        run: >-
+          ./hippo run --class transactional --resource-tier standard --disk-path . --
+          npx nx affected -t install
+          --exclude='tag:lang:python,tag:lang:ts,tag:lang:dart,tag:lang:go'
+          --parallel=1
+      - if: needs.detect.outputs.has-dotnet-projects == 'true'
+        run: >-
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
+          npx nx affected -t test:integration
+          --exclude='tag:lang:python,tag:lang:ts,tag:lang:dart,tag:lang:go'
+          --parallel=1
+
+  go-integration:
+    name: Go integration
+    needs: detect
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        if: needs.detect.outputs.has-go == 'true'
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/setup-node
+        if: needs.detect.outputs.has-go == 'true'
+      - uses: ./.github/actions/setup-go
+        if: needs.detect.outputs.has-go == 'true'
+      - if: needs.detect.outputs.has-go == 'true'
+        run: >-
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
+          npx nx affected -t test:integration
+          --exclude='tag:lang:python,tag:lang:ts,tag:lang:fsharp,tag:lang:rust,tag:lang:dart'
+          --parallel=1
+
+  python-integration:
+    name: Python integration
+    needs: detect
+    # Fail closed, as the Python quality gate is: the job runs whenever detect did not succeed, and each step applies
+    # the same condition. The expression form is required: a plain `!` would be a YAML tag.
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        if: ${{ needs.detect.result != 'success' || needs.detect.outputs.has-python == 'true' }}
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/setup-node
+        if: ${{ needs.detect.result != 'success' || needs.detect.outputs.has-python == 'true' }}
+      - uses: ./.github/actions/setup-python
+        if: ${{ needs.detect.result != 'success' || needs.detect.outputs.has-python == 'true' }}
+      - name: Install locked Python dependencies
+        if: ${{ needs.detect.result != 'success' || needs.detect.outputs.has-python == 'true' }}
+        run: >-
+          ./hippo run --class transactional --resource-tier standard --disk-path . --
+          npx nx affected -t install
+          --exclude='tag:lang:ts,tag:lang:fsharp,tag:lang:rust,tag:lang:dart,tag:lang:go'
+          --parallel=1
+      # The ferret-cli-e2e integration target builds the CLI artifact with ferret-cli's own venv. The affected install
+      # above installs that venv only when ferret-cli itself changed, so install it explicitly, as
+      # repository-policy does.
+      - name: Install the ferret CLI venv for the integration build
+        if: ${{ needs.detect.result != 'success' || needs.detect.outputs.has-python == 'true' }}
+        run: >-
+          ./hippo run --class transactional --resource-tier standard --disk-path . --
+          npx nx run ferret-cli:install
+      - if: ${{ needs.detect.result != 'success' || needs.detect.outputs.has-python == 'true' }}
+        run: >-
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
+          npx nx affected -t test:integration
+          --exclude='tag:lang:ts,tag:lang:fsharp,tag:lang:rust,tag:lang:dart,tag:lang:go'
+          --parallel=1
+
+  # The examples chain. The reusable-workflow call job cannot carry step conditions, so it stays behind a job-level
+  # condition and is skipped when no examples are affected. examples-result always runs and gives the aggregate
+  # a success, so the aggregate never depends on a skipped job.
   examples-plan:
     name: Plan AyoKoding examples check
     needs: detect
-    if: needs.detect.outputs.has-ayokoding-examples == 'true'
     runs-on: ubuntu-latest
     outputs:
       shards: ${{ steps.plan.outputs.shards }}
       shard-total: ${{ steps.plan.outputs.shard-total }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        if: needs.detect.outputs.has-ayokoding-examples == 'true'
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
+        if: needs.detect.outputs.has-ayokoding-examples == 'true'
       - uses: ./.github/actions/setup-go
+        if: needs.detect.outputs.has-ayokoding-examples == 'true'
       - name: Build the CLI
+        if: needs.detect.outputs.has-ayokoding-examples == 'true'
         run: >-
           ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
           npx nx run ayokoding-cli:build
       - id: plan
+        if: needs.detect.outputs.has-ayokoding-examples == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -244,8 +388,8 @@ jobs:
 
   examples:
     name: AyoKoding examples check
-    needs: examples-plan
-    if: needs.examples-plan.result == 'success'
+    needs: [detect, examples-plan]
+    if: needs.detect.outputs.has-ayokoding-examples == 'true'
     uses: ./.github/workflows/_reusable-ayokoding-www-examples-check.yml
     with:
       selection: since
@@ -253,16 +397,97 @@ jobs:
       shards: ${{ needs.examples-plan.outputs.shards }}
       shard-total: ${{ needs.examples-plan.outputs.shard-total }}
 
-  quality-gate:
-    name: Quality gate
-    needs: [repository-policy, typescript, dotnet, flutter, go, python, examples-plan, examples]
+  examples-result:
+    name: AyoKoding examples result
+    needs: [detect, examples-plan, examples]
     if: always()
     runs-on: ubuntu-latest
     steps:
-      - name: Check all gates
+      - name: Require the examples chain when AyoKoding examples are affected
+        env:
+          DETECT_RESULT: ${{ needs.detect.result }}
+          EXAMPLES_AFFECTED: ${{ needs.detect.outputs.has-ayokoding-examples }}
+          PLAN_RESULT: ${{ needs.examples-plan.result }}
+          EXAMPLES_RESULT: ${{ needs.examples.result }}
+        shell: bash
         run: |
-          if [ "${{ contains(needs.*.result, 'failure') }}" = "true" ]; then
-            echo "One or more quality gate jobs failed" >&2
+          set -uo pipefail
+          if [ "$DETECT_RESULT" != "success" ]; then
+            echo "Detect affected languages finished $DETECT_RESULT, so the examples result cannot be proven" >&2
+            exit 1
+          fi
+          if [ "$EXAMPLES_AFFECTED" != "true" ]; then
+            echo "No AyoKoding examples are affected; the examples chain is not required"
+            exit 0
+          fi
+          if [ "$PLAN_RESULT" != "success" ] || [ "$EXAMPLES_RESULT" != "success" ]; then
+            echo "AyoKoding examples finished plan=$PLAN_RESULT examples=$EXAMPLES_RESULT" >&2
+            exit 1
+          fi
+          echo "AyoKoding examples check passed"
+
+  quality-gate:
+    name: Quality gate
+    needs:
+      [
+        detect,
+        repository-policy,
+        typescript,
+        typescript-integration,
+        dotnet,
+        dotnet-integration,
+        flutter,
+        go,
+        go-integration,
+        python,
+        python-integration,
+        examples-result,
+      ]
+    # always() lets this job read every result, including a skipped or failed one. It passes only when each
+    # needed job finished success: skipped, cancelled, and failure all fail it (contract C8).
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check every needed gate finished success
+        env:
+          NEEDS_DETECT: ${{ needs.detect.result }}
+          NEEDS_REPOSITORY_POLICY: ${{ needs.repository-policy.result }}
+          NEEDS_TYPESCRIPT: ${{ needs.typescript.result }}
+          NEEDS_TYPESCRIPT_INTEGRATION: ${{ needs.typescript-integration.result }}
+          NEEDS_DOTNET: ${{ needs.dotnet.result }}
+          NEEDS_DOTNET_INTEGRATION: ${{ needs.dotnet-integration.result }}
+          NEEDS_FLUTTER: ${{ needs.flutter.result }}
+          NEEDS_GO: ${{ needs.go.result }}
+          NEEDS_GO_INTEGRATION: ${{ needs.go-integration.result }}
+          NEEDS_PYTHON: ${{ needs.python.result }}
+          NEEDS_PYTHON_INTEGRATION: ${{ needs.python-integration.result }}
+          NEEDS_EXAMPLES_RESULT: ${{ needs.examples-result.result }}
+        shell: bash
+        run: |
+          set -uo pipefail
+          status=0
+          require_success() {
+            if [ "$2" = "success" ]; then
+              echo "$1: success"
+            else
+              echo "$1: $2 (a needed gate must finish success)" >&2
+              status=1
+            fi
+          }
+          require_success detect "$NEEDS_DETECT"
+          require_success repository-policy "$NEEDS_REPOSITORY_POLICY"
+          require_success typescript "$NEEDS_TYPESCRIPT"
+          require_success typescript-integration "$NEEDS_TYPESCRIPT_INTEGRATION"
+          require_success dotnet "$NEEDS_DOTNET"
+          require_success dotnet-integration "$NEEDS_DOTNET_INTEGRATION"
+          require_success flutter "$NEEDS_FLUTTER"
+          require_success go "$NEEDS_GO"
+          require_success go-integration "$NEEDS_GO_INTEGRATION"
+          require_success python "$NEEDS_PYTHON"
+          require_success python-integration "$NEEDS_PYTHON_INTEGRATION"
+          require_success examples-result "$NEEDS_EXAMPLES_RESULT"
+          if [ "$status" -ne 0 ]; then
+            echo "One or more quality gate jobs did not finish success" >&2
             exit 1
           fi
           echo "All quality gates passed"

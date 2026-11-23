@@ -11,30 +11,7 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       include: ["src/**/*.{ts,tsx}"],
-      exclude: [
-        "src/app/**",
-        "src/lib/trpc/client.ts",
-        "src/lib/trpc/provider.tsx",
-        "src/lib/trpc/server.ts",
-        "src/features/content/core/types.ts",
-        "src/features/content/core/reader.ts",
-        "src/features/content/core/repository.ts",
-        "src/features/content/shell/repository-fs.ts",
-        "src/features/rss-feed/shell/feed-builder.ts",
-        "src/features/seo/shell/sitemap-builder.ts",
-        "src/features/seo/shell/metadata.ts",
-        "src/features/health/shell/status-page.tsx",
-        "src/features/landing/shell/*.tsx",
-        "src/features/app-shell/shell/*.tsx",
-        "src/features/content/shell/*.tsx",
-        "src/features/search/shell/service.ts",
-        "src/features/search/shell/search-dialog.tsx",
-        "src/features/search/shell/search-provider.tsx",
-        "src/features/search/shell/use-search.ts",
-        "src/scripts/**",
-        "src/test/**",
-        "**/*.{test,spec}.{ts,tsx}",
-      ],
+      exclude: ["src/scripts/**", "src/test/**", "**/*.{test,spec}.{ts,tsx}"],
       thresholds: {
         // Only line coverage is a repository-enforced floor (AC-COVERAGE-01);
         // the `test:unit` Nx target's `--coverage.thresholds.lines=99`

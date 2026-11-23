@@ -1,3 +1,11 @@
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/architecture-cases-routes.feature: architecture case pages are reachable
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/navigation.feature: Sidebar shows section tree with collapsible nodes
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/navigation.feature: breadcrumb trail
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/navigation.feature: Table of contents shows heading links for H2 to H4
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/navigation.feature: Previous and Next links navigate between siblings
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/navigation.feature: Active page is highlighted in the sidebar
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/navigation.feature: In-body relative markdown links resolve to real site routes
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/navigation.feature: The Learn sidebar lists Paths, Courses, and Legacy in that order
 import { createBdd } from "playwright-bdd";
 import { expect, type Locator, type Page, type Response } from "@playwright/test";
 

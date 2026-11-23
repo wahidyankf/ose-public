@@ -14,6 +14,7 @@ let ``ai-orchestration reports ready to wrap LLM calls via OpenRouter`` () =
     Assert.Equal(ContextReadiness.Ready, readiness.State)
     Assert.Contains("OpenRouter", readiness.Capability)
 
+// @scenario specs/apps/ose/be/behaviours/ai-orchestration/ai-orchestration.feature: GET /api/v1/ai-orchestration/status reports the context ready
 [<Fact>]
 let ``ai-orchestration status endpoint reports the context readiness`` () =
     let client = buildClient routes

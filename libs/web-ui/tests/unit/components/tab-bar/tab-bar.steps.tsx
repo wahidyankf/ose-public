@@ -15,7 +15,8 @@ const feature = await loadFeature(
   path.resolve(__dirname, "../../../../../../specs/libs/web-ui/behaviours/tab-bar/tab-bar.feature"),
 );
 
-describeFeature(feature, ({ Scenario }) => {
+describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
+  // @scenario specs/libs/web-ui/behaviours/tab-bar/tab-bar.feature: Renders tabs
   Scenario("Renders tabs", ({ When, Then }) => {
     let renderedTabs: HTMLElement[];
 
@@ -30,6 +31,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
+  // @scenario specs/libs/web-ui/behaviours/tab-bar/tab-bar.feature: Click triggers onChange
   Scenario("Click triggers onChange", ({ Given, When, Then }) => {
     const onChangeMock = vi.fn();
 
@@ -50,31 +52,19 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
-  Scenario("Active tab has aria-selected true", ({ When, Then }) => {
-    let homeTab: HTMLElement;
+  // @scenario specs/libs/web-ui/behaviours/tab-bar/tab-bar.feature: Each tab reports whether it is the selected tab
+  ScenarioOutline("Each tab reports whether it is the selected tab", ({ When, Then }, examples) => {
+    const tabName = String(examples["tab"] ?? "");
+    let selectedValue: string | null = null;
 
     When('I render a TabBar with tabs "Home,History,Settings" and current "home"', () => {
       cleanup();
       render(<TabBar tabs={tabs} current="home" onChange={vi.fn()} />);
-      homeTab = screen.getByRole("tab", { name: /home/i });
+      selectedValue = screen.getByRole("tab", { name: new RegExp(tabName, "i") }).getAttribute("aria-selected");
     });
 
-    Then('the "Home" tab should have aria-selected "true"', () => {
-      expect(homeTab?.getAttribute("aria-selected")).toBe("true");
-    });
-  });
-
-  Scenario("Inactive tab has aria-selected false", ({ When, Then }) => {
-    let historyTab: HTMLElement;
-
-    When('I render a TabBar with tabs "Home,History,Settings" and current "home"', () => {
-      cleanup();
-      render(<TabBar tabs={tabs} current="home" onChange={vi.fn()} />);
-      historyTab = screen.getByRole("tab", { name: /history/i });
-    });
-
-    Then('the "History" tab should have aria-selected "false"', () => {
-      expect(historyTab?.getAttribute("aria-selected")).toBe("false");
+    Then('the "<tab>" tab should have aria-selected "<selected>"', () => {
+      expect(selectedValue).toBe(String(examples["selected"]));
     });
   });
 });

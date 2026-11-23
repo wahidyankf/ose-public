@@ -38,7 +38,7 @@
             "forwardAllArgs": false
           },
           {
-            "command": "npm exec -- nx run ayokoding-www-fe-e2e:test:coverage",
+            "command": "npm exec -- nx run ayokoding-www-fe-e2e:test:behaviour:coverage",
             "forwardAllArgs": false
           }
         ],
@@ -48,15 +48,29 @@
       "cache": true,
       "inputs": [
         "default",
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/ayokoding-www-fe-e2e/behaviour-coverage.json",
         "{workspaceRoot}/package-lock.json",
         "{workspaceRoot}/specs/apps/ayokoding/www/behaviours/**/*.feature",
         "{workspaceRoot}/apps/ayokoding-www/tests/unit/**/*.{ts,tsx,fs}",
         "{workspaceRoot}/apps/ayokoding-www/vitest.config.ts",
         "{workspaceRoot}/apps/ayokoding-www-fe-e2e/tests/e2e/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/ayokoding-www-fe-e2e/playwright.config.ts"
+        "{workspaceRoot}/apps/ayokoding-www-fe-e2e/playwright.config.ts",
+        "{workspaceRoot}/repo-config.yml",
+        "{workspaceRoot}/rhino.lock",
+        "{workspaceRoot}/specs/**/*",
+        "{workspaceRoot}/apps/ayokoding-www/content/**/*.feature",
+        "{workspaceRoot}/apps/*/tests/**/*",
+        "{workspaceRoot}/apps/*-e2e/steps/**/*",
+        "{workspaceRoot}/apps/*-e2e/src/**/*",
+        "{workspaceRoot}/libs/*/tests/**/*"
       ]
+    },
+    "test:integration": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "if grep -rn -E --include='*.ts' --exclude-dir=node_modules --exclude-dir=.features-gen --exclude-dir=test-results --exclude-dir=playwright-report '\\$?test\\.skip\\([^,)]*\\)' .; then echo 'ERROR: unconditional test.skip() found in test files above - use test.skip(condition, reason) for legitimate environment guards, or remove'; exit 1; fi && AYOKODING_WEB_MANIFESTS_DIR=\"$PWD/fixtures/manifests\" AYOKODING_WEB_SHOW_DRAFTS=true npm exec -- nx run ayokoding-www:build && npx bddgen && env -u BASE_URL npx playwright test",
+        "cwd": "apps/ayokoding-www-fe-e2e"
+      },
+      "cache": false
     },
     "test:e2e": {
       "executor": "nx:run-commands",
@@ -87,66 +101,22 @@
       },
       "cache": false
     },
-    "test:coverage:e2e": {
+    "test:behaviour:coverage": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config apps/ayokoding-www-fe-e2e/behaviour-coverage.json --adapter e2e"
+        "command": "./rhino behaviour coverage validate",
+        "cwd": "{workspaceRoot}"
       },
       "cache": true,
       "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/ayokoding-www-fe-e2e/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/apps/ayokoding/www/behaviours/**/*.feature",
-        "{workspaceRoot}/apps/ayokoding-www/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/ayokoding-www/vitest.config.ts",
-        "{workspaceRoot}/apps/ayokoding-www-fe-e2e/tests/e2e/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/ayokoding-www-fe-e2e/playwright.config.ts"
-      ]
-    },
-    "test:coverage:behaviour": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config apps/ayokoding-www-fe-e2e/behaviour-coverage.json --adapter behaviour"
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/ayokoding-www-fe-e2e/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/apps/ayokoding/www/behaviours/**/*.feature",
-        "{workspaceRoot}/apps/ayokoding-www/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/ayokoding-www/vitest.config.ts",
-        "{workspaceRoot}/apps/ayokoding-www-fe-e2e/tests/e2e/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/ayokoding-www-fe-e2e/playwright.config.ts"
-      ]
-    },
-    "test:coverage": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          {
-            "command": "npm exec -- nx run ayokoding-www-fe-e2e:test:coverage:e2e",
-            "forwardAllArgs": false
-          },
-          {
-            "command": "npm exec -- nx run ayokoding-www-fe-e2e:test:coverage:behaviour",
-            "forwardAllArgs": false
-          }
-        ],
-        "parallel": false,
-        "forwardAllArgs": false
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/ayokoding-www-fe-e2e/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/apps/ayokoding/www/behaviours/**/*.feature",
-        "{workspaceRoot}/apps/ayokoding-www/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/ayokoding-www/vitest.config.ts",
-        "{workspaceRoot}/apps/ayokoding-www-fe-e2e/tests/e2e/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/ayokoding-www-fe-e2e/playwright.config.ts"
+        "{workspaceRoot}/repo-config.yml",
+        "{workspaceRoot}/rhino.lock",
+        "{workspaceRoot}/specs/**/*",
+        "{workspaceRoot}/apps/ayokoding-www/content/**/*.feature",
+        "{workspaceRoot}/apps/*/tests/**/*",
+        "{workspaceRoot}/apps/*-e2e/steps/**/*",
+        "{workspaceRoot}/apps/*-e2e/src/**/*",
+        "{workspaceRoot}/libs/*/tests/**/*"
       ]
     }
   },

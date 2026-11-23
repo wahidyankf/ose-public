@@ -11,12 +11,13 @@ from typekit import Ok
 
 from ferret import cli
 from ferret.application.initialization import initialize_store
-from ferret.application.privacy import RAW_LIMIT_BYTES
+from ferret.application.privacy import CANONICAL_LIMIT_BYTES, RAW_LIMIT_BYTES
 from ferret.commands import build_handlers
 from support.events import VECTOR_DOCUMENT, VECTOR_HASH, encode, event_document
 from support.fakes import World, make_world
 from support.hook_payloads import CANARIES, IMAGE_CANARY, claude_tool, codex_view_image
 from support.hook_payloads import encode as encode_payload
+from support.invoke import run_cli
 
 FEATURE = "../../../../../specs/apps/ferret/cli/behaviours/privacy/metadata-envelope.feature"
 CANARY = "canary-value-that-must-never-be-echoed"
@@ -28,6 +29,15 @@ RAW_VALUES = {
 # A property the closed schema does not define: its name and its value are both canaries, so neither may be echoed.
 UNKNOWN_KEY = "canary_unknown_property_4d7e"
 UNKNOWN_VALUE = "canary-unknown-value-a19f"
+# Each raw payload the outline names, built here, with the canaries it carries.
+PAYLOADS = {
+    "claude_code": lambda: claude_tool("PostToolUse", duration_ms=27, tool_response={"content": CANARIES[2]}),
+    "codex": codex_view_image,
+}
+CONTENT_CANARIES = {
+    "prompt text, tool arguments, and environment values": CANARIES,
+    "a 1 MiB base64 image": (IMAGE_CANARY,),
+}
 
 
 @dataclass(slots=True)
@@ -46,6 +56,8 @@ class Session:
     category: str | None = None
     raw: str = ""
     harness: str = "claude_code"
+    canaries: tuple[str, ...] = ()
+    tool: str = ""
 
 
 @pytest.fixture
@@ -55,31 +67,21 @@ def session() -> Session:
     return Session(world=world)
 
 
-def submit(session: Session, document: dict[str, object]) -> None:
-    session.world.input.data = encode(document)
+def submit_raw(session: Session, raw: bytes) -> None:
+    session.world.input.data = raw
     stdout, stderr = io.StringIO(), io.StringIO()
     handlers = build_handlers(lambda: Ok(session.world.runtime))
     code = cli.main(["capture", "--json"], stdout=stdout, stderr=stderr, handlers=handlers)
     session.outcome = Outcome(code, stdout.getvalue(), stderr.getvalue())
 
 
-@scenario(FEATURE, "Capture a valid lifecycle event")
-def test_capture_a_valid_lifecycle_event() -> None:
-    """Bound to the feature scenario; the steps below carry the assertions."""
+def submit(session: Session, document: dict[str, object]) -> None:
+    submit_raw(session, encode(document))
 
 
-@scenario(FEATURE, "Refuse a raw value in place of an opaque identifier")
-def test_refuse_a_raw_value_in_place_of_an_opaque_identifier() -> None:
-    """Bound to the feature outline; each example expands independently."""
-
-
-@scenario(FEATURE, "Reject a forbidden capture field")
-def test_reject_a_forbidden_capture_field() -> None:
-    """Bound to the feature outline; each example expands independently."""
-
-
-@scenario(FEATURE, "Reject an unknown capture field")
-def test_reject_an_unknown_capture_field() -> None:
+# @scenario specs/apps/ferret/cli/behaviours/privacy/metadata-envelope.feature: A valid lifecycle event is captured and appears in events list
+@scenario(FEATURE, "A valid lifecycle event is captured and appears in events list")
+def test_a_valid_lifecycle_event_is_captured_and_appears_in_events_list() -> None:
     """Bound to the feature scenario; the steps below carry the assertions."""
 
 
@@ -113,27 +115,26 @@ def when_submit_event_with_unknown_property(session: Session) -> None:
     submit(session, {**VECTOR_DOCUMENT, UNKNOWN_KEY: UNKNOWN_VALUE})
 
 
-@then("the CLI stores one event with its canonical hash and opaque identifiers")
-def then_stores_one_event(session: Session) -> None:
-    [event] = session.world.events.stored
-    assert event.event_hash == VECTOR_HASH
-    assert re.fullmatch(r"ws_[0-9a-f]{32}", event.workspace_id)
-    assert re.fullmatch(r"ss_[0-9a-f]{32}", event.session_id)
-    assert re.fullmatch(r"[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}", event.installation_id)
+@when("an adapter submits an event of 16 KiB plus one byte")
+def when_submit_event_over_the_canonical_limit(session: Session) -> None:
+    # A valid event padded with spaces to one byte past the canonical limit, so only the size is wrong.
+    submit_raw(session, encode(VECTOR_DOCUMENT).ljust(CANONICAL_LIMIT_BYTES + 1, b" "))
 
 
-@then("the stored record holds only the opaque workspace and session identifiers it was given")
-def then_only_the_given_opaque_identifiers(session: Session) -> None:
-    [event] = session.world.events.stored
-    document = event.to_document()
-    assert (document["workspaceId"], document["sessionId"], document["parentSessionId"]) == (
+@then("events list shows that one event with its opaque workspace and session identifiers")
+def then_events_list_shows_the_event(session: Session) -> None:
+    ran = run_cli(session.world, ["events", "list", "--all-time", "--json"])
+    assert (ran.code, ran.stderr) == (0, "")
+    document = json.loads(ran.stdout)
+    [item] = document["items"]
+    assert item["eventId"] == VECTOR_DOCUMENT["eventId"]
+    assert (item["workspaceId"], item["sessionId"], item["parentSessionId"]) == (
         "ws_327b250d010590da40f0f76d18da910a",
         "ss_d0de260ca18a8379984031556b2d43ac",
         None,
     )
-    assert set(document) == set(VECTOR_DOCUMENT)
-    # No stored value is a path, so no directory the capture ran in can have been kept under another name.
-    assert [name for name, value in document.items() if isinstance(value, str) and "/" in value] == []
+    # No listed value is a path, so no directory the capture ran in can have been kept under another name.
+    assert [name for name, value in item.items() if isinstance(value, str) and "/" in value] == []
     # Direct capture takes its identifiers as given: it never resolves a workspace from a directory of its own.
     assert session.world.workspaces.asked == []
 
@@ -205,16 +206,44 @@ def then_names_no_field(session: Session) -> None:
     assert UNKNOWN_VALUE not in session.outcome.stderr
 
 
-@scenario(FEATURE, "Project raw hook JSON without retaining content")
-def test_project_raw_hook_json_without_retaining_content() -> None:
+@then("the diagnostic names no field and echoes no part of the input")
+def then_names_no_field_and_echoes_nothing(session: Session) -> None:
+    assert diagnostic(session)["field"] is None
+    assert session.outcome is not None
+    assert VECTOR_DOCUMENT["eventId"] not in session.outcome.stderr
+
+
+# @scenario specs/apps/ferret/cli/behaviours/privacy/metadata-envelope.feature: ferret capture refuses input over 16 KiB
+@scenario(FEATURE, "ferret capture refuses input over 16 KiB")
+def test_ferret_capture_refuses_input_over_16_kib() -> None:
     """Bound to the feature scenario; the steps below carry the assertions."""
 
 
-@given("a raw harness payload carrying prompt text, tool arguments, and environment values")
-def given_a_raw_payload_with_content(session: Session) -> None:
-    session.world.input.data = encode_payload(
-        claude_tool("PostToolUse", duration_ms=27, tool_response={"content": CANARIES[2]})
-    )
+# @scenario specs/apps/ferret/cli/behaviours/privacy/metadata-envelope.feature: Refuse a raw value in place of an opaque identifier
+@scenario(FEATURE, "Refuse a raw value in place of an opaque identifier")
+def test_refuse_a_raw_value_in_place_of_an_opaque_identifier() -> None:
+    """Bound to the feature outline; each example expands independently."""
+
+
+# @scenario specs/apps/ferret/cli/behaviours/privacy/metadata-envelope.feature: Reject a forbidden capture field
+@scenario(FEATURE, "Reject a forbidden capture field")
+def test_reject_a_forbidden_capture_field() -> None:
+    """Bound to the feature outline; each example expands independently."""
+
+
+# @scenario specs/apps/ferret/cli/behaviours/privacy/metadata-envelope.feature: Reject an unknown capture field
+@scenario(FEATURE, "Reject an unknown capture field")
+def test_reject_an_unknown_capture_field() -> None:
+    """Bound to the feature scenario; the steps below carry the assertions."""
+
+
+@given(parsers.parse("a raw {harness} {event} payload for the {tool} tool carrying {content}"))
+def given_a_raw_payload_for_a_tool(session: Session, harness: str, event: str, tool: str, content: str) -> None:
+    assert event == "tool.completed"
+    session.harness = harness
+    session.canaries = CONTENT_CANARIES[content]
+    session.world.input.data = encode_payload(PAYLOADS[harness]())
+    session.tool = tool
 
 
 @when("capture-hook maps it through that harness's allowlist mapper")
@@ -226,28 +255,25 @@ def when_capture_hook_maps_the_payload(session: Session) -> None:
     session.outcome = Outcome(code, stdout.getvalue(), stderr.getvalue())
 
 
-@then("only allowlisted metadata reaches the canonical envelope")
-def then_only_allowlisted_metadata_is_kept(session: Session) -> None:
-    [event] = session.world.events.stored
-    document = event.to_document()
-    assert (document["harness"], document["eventType"], document["toolName"], document["durationMs"]) == (
-        "claude_code",
-        "tool.completed",
-        "Read",
-        27,
-    )
+@then(parsers.parse("one {event} event naming {tool} is stored with only allowlisted metadata"))
+def then_one_event_with_only_allowlisted_metadata(session: Session, event: str, tool: str) -> None:
+    [stored] = session.world.events.stored
+    document = stored.to_document()
+    assert (document["harness"], document["eventType"], document["toolName"]) == (session.harness, event, tool)
     assert re.fullmatch(r"ws_[0-9a-f]{32}", document["workspaceId"])
     assert re.fullmatch(r"ss_[0-9a-f]{32}", document["sessionId"])
-    assert not any(canary in json.dumps(document) for canary in CANARIES)
+    assert not any(canary in json.dumps(document) for canary in (*CANARIES, IMAGE_CANARY))
+    assert session.world.input.reads == [RAW_LIMIT_BYTES + 1]
 
 
-@then("the raw bytes stay in memory and are never spooled, logged, or written to SQLite")
-def then_the_raw_bytes_are_never_written(session: Session) -> None:
+@then(parsers.parse("no part of the {content} reaches the store"))
+def then_no_part_of_the_content_reaches_the_store(session: Session, content: str) -> None:
     world = session.world
+    stored = json.dumps([event.to_document() for event in world.events.stored])
     written = b"".join(entry.content for entry in world.files.files.values())
-    assert not any(canary.encode() in written for canary in CANARIES)
-    assert world.input.reads == [RAW_LIMIT_BYTES + 1]
-    assert [event for event in world.events.stored if any(c in json.dumps(event.to_document()) for c in CANARIES)] == []
+    for canary in session.canaries:
+        assert canary not in stored
+        assert canary.encode() not in written
 
 
 @then("any diagnostic about the payload names no value taken from it")
@@ -256,37 +282,26 @@ def then_no_diagnostic_names_a_value(session: Session) -> None:
     assert (session.outcome.code, session.outcome.stdout, session.outcome.stderr) == (0, "", "")
 
 
-@scenario(FEATURE, "Record a tool completion whose result is a large image")
-def test_record_a_tool_completion_whose_result_is_a_large_image() -> None:
+# @scenario specs/apps/ferret/cli/behaviours/privacy/metadata-envelope.feature: A raw harness payload yields only allowlisted metadata and no diagnostic echoes its content
+@scenario(FEATURE, "A raw harness payload yields only allowlisted metadata and no diagnostic echoes its content")
+def test_a_raw_harness_payload_yields_only_allowlisted_metadata() -> None:
+    """Bound to the feature outline; each example expands independently."""
+
+
+@given("an initialized store and a raw harness payload larger than 64 MiB")
+def given_an_oversized_payload(session: Session) -> None:
+    session.harness = "claude_code"
+    session.world.input.data = b"x" * (RAW_LIMIT_BYTES + 1)
+
+
+@then("it stores no event and writes nothing to either stream and exits 0")
+def then_oversized_payload_stores_nothing(session: Session) -> None:
+    assert session.outcome is not None
+    assert (session.outcome.code, session.outcome.stdout, session.outcome.stderr) == (0, "", "")
+    assert session.world.events.stored == []
+
+
+# @scenario specs/apps/ferret/cli/behaviours/privacy/metadata-envelope.feature: A payload over 64 MiB is refused and the hook still exits 0
+@scenario(FEATURE, "A payload over 64 MiB is refused and the hook still exits 0")
+def test_a_payload_over_64_mib_is_refused_and_the_hook_still_exits_zero() -> None:
     """Bound to the feature scenario; the steps below carry the assertions."""
-
-
-@given("a raw Codex view_image completion whose result is a 1 MiB base64 image")
-def given_a_codex_view_image_completion(session: Session) -> None:
-    session.harness = "codex"
-    session.world.input.data = encode_payload(codex_view_image())
-    assert len(session.world.input.data) > 1024 * 1024
-
-
-@then("one tool-completed event naming view_image is stored")
-def then_one_view_image_completion_is_stored(session: Session) -> None:
-    [event] = session.world.events.stored
-    document = event.to_document()
-    assert (document["harness"], document["eventType"], document["toolName"]) == (
-        "codex",
-        "tool.completed",
-        "view_image",
-    )
-    assert (document["outcome"], document["outcomeVisibility"]) == ("success", "derived")
-    assert (document["durationMs"], document["durationVisibility"]) == (None, "unknown")
-
-
-@then("no part of the image or of the other content reaches the store")
-def then_no_image_or_content_is_stored(session: Session) -> None:
-    world = session.world
-    stored = json.dumps([event.to_document() for event in world.events.stored])
-    written = b"".join(entry.content for entry in world.files.files.values())
-    for canary in (IMAGE_CANARY, *CANARIES):
-        assert canary not in stored
-        assert canary.encode() not in written
-    assert world.input.reads == [RAW_LIMIT_BYTES + 1]

@@ -1,3 +1,5 @@
+// @scenario specs/apps/organiclever/be/behaviours/messaging/nats-config.feature: organiclever-be fails fast when its NATS URL is missing
+
 import { spawnSync, type SpawnSyncReturns } from "node:child_process";
 import { expect } from "@playwright/test";
 import { createBdd } from "playwright-bdd";

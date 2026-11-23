@@ -10,7 +10,7 @@ import (
 )
 
 func legacyDeps() web.Deps {
-	deps := web.SeedFixtureDeps("parity")
+	deps := web.SeedFixtureDeps("parity", web.CannedSources)
 	pages := append(deps.Content.Published("en"), content.Page{
 		Locale: "en", Course: "legacy", Slug: "software-engineering/testing/tools/vitest/by-example/intermediate",
 		Title: "Intermediate", Description: "Legacy leaf", Weight: 1, BodyHTML: "<h1>Intermediate</h1><p>Legacy body.</p>",
@@ -64,7 +64,7 @@ func TestLegacyMissingPageIsLocalizedNotFound(t *testing.T) {
 }
 
 func TestLegacyUnavailableCatalogIsNotFound(t *testing.T) {
-	deps := web.SeedFixtureDeps("unavailable-catalog")
+	deps := web.SeedFixtureDeps("unavailable-catalog", web.CannedSources)
 	handler := web.NewServer(web.Config{Port: 3102}, deps).Handler()
 	recorder := request(t, handler, http.MethodGet, "/en/learn/legacy/software-engineering/testing")
 	if recorder.Code != http.StatusNotFound {

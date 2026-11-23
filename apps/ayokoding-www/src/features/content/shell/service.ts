@@ -17,9 +17,22 @@ export interface SearchDoc {
   locale: string;
 }
 
+/**
+ * The store the pre-built search data is read from. The default reads the real file; unit tests pass
+ * an in-memory double. A failed read means no pre-built data, and the service scans the files instead.
+ */
+export interface SearchDataFileSystem {
+  readFile(filePath: string): Promise<string>;
+}
+
+export const nodeSearchDataFileSystem: SearchDataFileSystem = {
+  readFile: (filePath) => fs.readFile(filePath, "utf-8"),
+};
+
 export class ContentService {
   private readonly repository: ContentRepository;
   private readonly searchDataPath: string | null;
+  private readonly searchDataStore: SearchDataFileSystem;
   private contentIndex: ContentIndex | null = null;
   // Course-paths plan, Phase 3 — regression fix: `getIndex()`'s lazy-build guard used to be a
   // synchronous-check / asynchronous-fill (`if (!this.contentIndex) { this.contentIndex = await
@@ -32,9 +45,14 @@ export class ContentService {
   private docStore = new Map<string, SearchDoc>();
   private readonly getBySlugCached: ContentService["getBySlugUncached"];
 
-  constructor(repository: ContentRepository, searchDataPath?: string) {
+  constructor(
+    repository: ContentRepository,
+    searchDataPath?: string,
+    searchDataStore: SearchDataFileSystem = nodeSearchDataFileSystem,
+  ) {
     this.repository = repository;
     this.searchDataPath = searchDataPath ?? null;
+    this.searchDataStore = searchDataStore;
     // React.cache scopes this memoization to one Server Component render/request and keys it by
     // `(locale, slug)`. It avoids duplicate Markdown reads/parses when metadata and page rendering
     // resolve the same content simultaneously, without turning file content into a process-global
@@ -193,7 +211,7 @@ export class ContentService {
   private async tryLoadPreBuiltSearchData(): Promise<SearchDoc[] | null> {
     if (!this.searchDataPath) return null;
     try {
-      const raw = await fs.readFile(this.searchDataPath, "utf-8");
+      const raw = await this.searchDataStore.readFile(this.searchDataPath);
       return JSON.parse(raw) as SearchDoc[];
     } catch {
       return null;

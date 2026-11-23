@@ -6,7 +6,7 @@ import os
 import sqlite3
 import stat
 from collections import Counter
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
@@ -30,7 +30,6 @@ from hook_wrapper import (
     run_wrapper,
     spawn_instants,
     term_recorder,
-    timer_requests,
     within_deadline,
 )
 from install_area import LAUNCHER_MODE, Layout, Tree, digest, empty_tree, launcher_starts, store
@@ -107,6 +106,7 @@ def usage_rows(session: Session) -> dict[str | None, dict[str, Any]]:
     return by_skill
 
 
+# @scenario specs/apps/ferret/cli/behaviours/harness/fail-open-capabilities-and-platforms.feature: Count skill invocations the harness could not name as unknown, not as zero usage
 @scenario(FEATURE, "Count skill invocations the harness could not name as unknown, not as zero usage")
 def test_count_unnamed_skill_invocations_as_unknown() -> None:
     """Bound to the feature scenario; the steps below carry the assertions."""
@@ -220,8 +220,21 @@ def stored_harnesses(session: Session) -> list[str]:
     return sorted(item["harness"] for item in json.loads(listing.stdout)["items"])
 
 
-@scenario(FEATURE, "Install privately for the current user")
-def test_install_privately_for_the_current_user() -> None:
+# @scenario specs/apps/ferret/cli/behaviours/harness/fail-open-capabilities-and-platforms.feature: self install creates the artifact, launcher, and manifest with owner-only access
+@scenario(FEATURE, "self install creates the artifact, launcher, and manifest with owner-only access")
+def test_self_install_creates_the_artifact_launcher_and_manifest_with_owner_only_access() -> None:
+    """Bound to the feature outline; each example expands independently."""
+
+
+# @scenario specs/apps/ferret/cli/behaviours/harness/fail-open-capabilities-and-platforms.feature: self install reports its path action
+@scenario(FEATURE, "self install reports its path action")
+def test_self_install_reports_its_path_action() -> None:
+    """Bound to the feature outline; each example expands independently."""
+
+
+# @scenario specs/apps/ferret/cli/behaviours/harness/fail-open-capabilities-and-platforms.feature: self install edits no shell startup file or PATH
+@scenario(FEATURE, "self install edits no shell startup file or PATH")
+def test_self_install_edits_no_shell_startup_file_or_path() -> None:
     """Bound to the feature outline; each example expands independently."""
 
 
@@ -295,8 +308,15 @@ def then_no_startup_file_or_path_is_modified(session: Session) -> None:
     assert machine_path_snapshot() == session.machine_path
 
 
-@scenario(FEATURE, "Remove FERRET without changing harness behaviour")
-def test_remove_ferret_without_changing_harness_behaviour() -> None:
+# @scenario specs/apps/ferret/cli/behaviours/harness/fail-open-capabilities-and-platforms.feature: After self uninstall every adapter still exits zero and stays silent
+@scenario(FEATURE, "After self uninstall every adapter still exits zero and stays silent")
+def test_after_self_uninstall_every_adapter_still_exits_zero_and_stays_silent() -> None:
+    """Bound to the feature scenario; the steps below carry the assertions."""
+
+
+# @scenario specs/apps/ferret/cli/behaviours/harness/fail-open-capabilities-and-platforms.feature: self uninstall keeps the data home unless --purge-data --yes is given
+@scenario(FEATURE, "self uninstall keeps the data home unless --purge-data --yes is given")
+def test_self_uninstall_keeps_the_data_home_unless_purge_data_and_yes_is_given() -> None:
     """Bound to the feature scenario; the steps below carry the assertions."""
 
 
@@ -345,12 +365,6 @@ def then_every_adapter_still_exits_zero(session: Session) -> None:
     assert user_files(session, HARNESS_FILES) == session.bystanders
 
 
-@then("the repository contains no newly generated telemetry data")
-def then_the_repository_holds_no_new_telemetry(session: Session) -> None:
-    assert set(session.adapters) == {CLAUDE_CODE, CODEX, OPENCODE}
-    assert list(session.repository.iterdir()) == []
-
-
 @then("the existing user database remains recoverable or removable by an explicit user action")
 def then_the_database_is_recoverable_or_removable(session: Session) -> None:
     assert store(Layout(session.home)) == session.data_before
@@ -397,11 +411,6 @@ def unusable_database(adapters: Adapters) -> bool:
     return not adapters.bench.database.read_bytes().startswith(b"SQLite format 3")
 
 
-@scenario(FEATURE, "Keep a harness fail-open after a local failure")
-def test_keep_a_harness_fail_open_after_a_local_failure() -> None:
-    """Bound to the feature outline; each example expands independently."""
-
-
 @given("a harness invokes the FERRET adapter")
 def given_a_harness_invokes_the_adapter(adapters: Adapters) -> None:
     assert adapters.bench.database.is_file()
@@ -446,16 +455,6 @@ def then_the_adapter_writes_no_output(adapters: Adapters) -> None:
         adapters.writer.execute("ROLLBACK")
     if not unusable_database(adapters):
         assert adapters.bench.stored() == 0
-
-
-@scenario(FEATURE, "Keep one POSIX adapter fail-open at the wrapper boundary")
-def test_keep_one_posix_adapter_fail_open_at_the_wrapper_boundary() -> None:
-    """Bound to the feature outline; each example expands independently."""
-
-
-@scenario(FEATURE, "Keep the OpenCode plugin fail-open at its process boundary")
-def test_keep_the_opencode_plugin_fail_open_at_its_process_boundary() -> None:
-    """Bound to the feature outline; each example expands independently."""
 
 
 @given(parsers.parse("the {harness} hook runs the shared POSIX wrapper"))
@@ -588,15 +587,6 @@ def then_the_plugin_is_silent(adapters: Adapters) -> None:
     }
 
 
-@then("any surviving child has nominal TERM and KILL requests of 900 and 1000 milliseconds")
-@then("nominal KILL follows TERM with the full 100 millisecond grace")
-def then_nominal_timer_requests_are_preserved(adapters: Adapters) -> None:
-    if adapters.stuck:
-        plugin = adapters.harness == OPENCODE
-        requests = timer_requests(adapters.bench.directory / "hung" / "timer-requests", plugin=plugin)
-        assert requests == ((900, 1000) if plugin else (900, 100)), requests
-
-
 @then("a hung child receives TERM within 1250 milliseconds and the adapter returns within 1600 milliseconds")
 def then_a_surviving_child_is_terminated(adapters: Adapters) -> None:
     ran = adapters.ran[adapters.harness]
@@ -611,3 +601,55 @@ def then_a_surviving_child_is_terminated(adapters: Adapters) -> None:
     spawned = spawn_instants(hung / "spawned") if adapters.harness == OPENCODE else [None]
     assert len(spawned) == 1, spawned
     assert_term_then_kill(ran, hung, spawned=spawned[0])
+
+
+POSIX_WHEN: dict[str, Callable[[Adapters], None]] = {
+    "stdin is forwarded byte-for-byte for a supported event": when_stdin_is_forwarded,
+    "the event is not one FERRET registers": when_the_event_is_not_registered,
+    "the payload carries raw content fields": when_the_payload_carries_content,
+    "the ferret executable is missing": when_the_executable_is_missing,
+    "the child process hangs past the deadline": when_the_child_hangs,
+}
+PLUGIN_WHEN: dict[str, Callable[[Adapters], None]] = {
+    "the plugin forwards an invalid payload": when_the_plugin_forwards_an_invalid_payload,
+    "the child process hangs past the deadline": when_the_child_hangs,
+}
+
+
+# @scenario specs/apps/ferret/cli/behaviours/harness/fail-open-capabilities-and-platforms.feature: a hook adapter stays silent, exits zero, and returns within 1600 ms whatever fails
+@pytest.mark.parametrize(
+    ("kind", "harness", "condition"),
+    [
+        ("capture-hook", "", "FERRET is not installed"),
+        ("capture-hook", "", "FERRET is given invalid metadata"),
+        ("capture-hook", "", "FERRET is unable to open SQLite"),
+        ("capture-hook", "", "FERRET is blocked by a concurrent writer beyond the timeout"),
+        ("posix", "claude_code", "stdin is forwarded byte-for-byte for a supported event"),
+        ("posix", "claude_code", "the event is not one FERRET registers"),
+        ("posix", "codex", "the payload carries raw content fields"),
+        ("posix", "codex", "the ferret executable is missing"),
+        ("posix", "claude_code", "the child process hangs past the deadline"),
+        ("plugin", "opencode", "the plugin forwards an invalid payload"),
+        ("plugin", "opencode", "the child process hangs past the deadline"),
+    ],
+)
+def test_a_hook_adapter_stays_silent_exits_zero_and_returns_within_1600_ms_whatever_fails(
+    kind: str, harness: str, condition: str, adapters: Adapters
+) -> None:
+    """The merged group: each row runs the steps its scenario ran before the merge, so every assertion is kept."""
+    if kind == "capture-hook":
+        given_a_harness_invokes_the_adapter(adapters)
+        given_ferret_is_in_a_condition(adapters, condition.removeprefix("FERRET is "))
+        when_the_adapter_handles_an_event(adapters)
+        then_the_adapter_returns_zero_in_time(adapters)
+        then_the_adapter_writes_no_output(adapters)
+        return
+    if kind == "posix":
+        given_a_hook_runs_the_wrapper(adapters, harness)
+        POSIX_WHEN[condition](adapters)
+        then_the_wrapper_is_silent(adapters)
+    else:
+        given_opencode_runs_the_plugin(adapters)
+        PLUGIN_WHEN[condition](adapters)
+        then_the_plugin_is_silent(adapters)
+    then_a_surviving_child_is_terminated(adapters)

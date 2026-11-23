@@ -6,6 +6,7 @@ Feature: Search
   Background:
     Given the API is running
 
+  # Behaviour: OSW-011
   Scenario: Search returns matching results
     Given the search index contains pages about "enterprise" and "compliance"
     When a search query "enterprise" is executed

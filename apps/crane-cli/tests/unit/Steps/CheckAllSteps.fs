@@ -1,5 +1,7 @@
 module CraneCli.Tests.Unit.Steps.CheckAllSteps
 
+open System
+open System.IO
 open TickSpec
 open Xunit
 open CraneCore.Ports
@@ -56,3 +58,59 @@ let ``I run "crane check-all" on the pair`` () =
         | Error msg ->
             eprintfn "Error: %s" msg
             1)
+
+[<Then>]
+let ``every finding names its category`` () =
+    let doc = System.Text.Json.JsonDocument.Parse(LastOutput)
+    let findings = doc.RootElement.EnumerateArray() |> Seq.toList
+    Assert.NotEmpty(findings)
+
+    for finding in findings do
+        Assert.False(System.String.IsNullOrWhiteSpace(finding.GetProperty("category").GetString()))
+
+// ---- BDD cache steps (CRN-023) ----
+
+let mutable private sampleCalls: int = 0
+let mutable private cacheDirectory: string = ""
+
+/// Counts the SampleText calls that reach the real extraction, behind the cache.
+let private countingPort (text: string) : IPdfPort =
+    let inner = FakePdfAdapter(text, 1, 1024L) :> IPdfPort
+
+    { new IPdfPort with
+        member _.GetMetadata(path) = inner.GetMetadata(path)
+
+        member _.SampleText(path, pages) =
+            sampleCalls <- sampleCalls + 1
+            inner.SampleText(path, pages)
+
+        member _.ExtractPages(path, first, last) = inner.ExtractPages(path, first, last) }
+
+[<When>]
+let ``I run "crane check-all" twice with the same cache directory`` () =
+    let root =
+        Path.Combine(Path.GetTempPath(), "crane-unit-" + Guid.NewGuid().ToString("N"))
+
+    Directory.CreateDirectory(root) |> ignore
+    let pdfFile = Path.Combine(root, "fixture.pdf")
+    File.WriteAllText(pdfFile, pdfText)
+    cacheDirectory <- Path.Combine(root, "cache")
+    sampleCalls <- 0
+    let cached = PdfExtractionCache.wrap (countingPort pdfText) cacheDirectory
+
+    RunWithWriter(fun w ->
+        for _ in 1..2 do
+            cached.SampleText(pdfFile, 999) |> ignore
+
+        w.WriteLine("checked twice")
+        0)
+
+[<Then>]
+let ``the cache directory holds (\d+) extraction entry`` (count: int) =
+    let root = Path.GetDirectoryName(cacheDirectory)
+
+    try
+        Assert.Equal(1, sampleCalls)
+        Assert.Equal(count, Directory.GetFiles(cacheDirectory, "*.json", SearchOption.AllDirectories).Length)
+    finally
+        Directory.Delete(root, true)

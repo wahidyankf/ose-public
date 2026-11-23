@@ -22,7 +22,8 @@ function getButton(): HTMLButtonElement {
   return screen.getByRole("button") as HTMLButtonElement;
 }
 
-describeFeature(feature, ({ Scenario }) => {
+describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
+  // @scenario specs/libs/web-ui/behaviours/code-block/copy-button.feature: Clicking the copy button writes its value to the clipboard
   Scenario("Clicking the copy button writes its value to the clipboard", ({ Given, When, Then }) => {
     let writeText: ReturnType<typeof vi.fn>;
 
@@ -45,6 +46,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
+  // @scenario specs/libs/web-ui/behaviours/code-block/copy-button.feature: A successful copy swaps to the success icon and announces via a live region
   Scenario(
     "A successful copy swaps to the success icon and announces via a live region",
     ({ Given, When, Then, And }) => {
@@ -79,6 +81,7 @@ describeFeature(feature, ({ Scenario }) => {
     },
   );
 
+  // @scenario specs/libs/web-ui/behaviours/code-block/copy-button.feature: The success state reverts to the resting state after the timeout
   Scenario("The success state reverts to the resting state after the timeout", ({ Given, When, Then, And }) => {
     let showsCopy = false;
     let announced = "unset";
@@ -124,14 +127,16 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
-  Scenario("A failed clipboard write does not show a false success state", ({ Given, When, Then, And }) => {
+  // @scenario specs/libs/web-ui/behaviours/code-block/copy-button.feature: A failed copy shows no success and an error cue that is announced
+  Scenario("A failed copy shows no success and an error cue that is announced", ({ Given, When, Then, And }) => {
     let showsCheck = false;
-    let announced = "unset";
+    let showsX = false;
+    let announced = "";
 
     Given("a CopyButton rendered with a stubbed clipboard that rejects", () => {
       cleanup();
       const writeText = stubClipboard(false);
-      render(<CopyButton value="npm install" copiedLabel="Copied" />);
+      render(<CopyButton value="npm install" copiedLabel="Copied" errorLabel="Copy failed" />);
       expect(writeText).not.toHaveBeenCalled();
       expect(getButton().isConnected).toBe(true);
     });
@@ -139,28 +144,31 @@ describeFeature(feature, ({ Scenario }) => {
     When("the user clicks the button", async () => {
       cleanup();
       stubClipboard(false);
-      render(<CopyButton value="npm install" copiedLabel="Copied" />);
+      render(<CopyButton value="npm install" copiedLabel="Copied" errorLabel="Copy failed" />);
       fireEvent.click(getButton());
-      await act(async () => {
-        await Promise.resolve();
-      });
+      await waitFor(() => expect(getButton().querySelector(".lucide-x")).not.toBeNull());
       showsCheck = getButton().querySelector(".lucide-check") !== null;
+      showsX = getButton().querySelector(".lucide-x") !== null;
       announced = screen.getByRole("status").textContent ?? "";
     });
 
     Then("the button does not show the success (Check) icon", () => {
-      // No false success: the rejected write never flips to the Check icon (it shows the error cue
-      // instead — asserted by the dedicated error scenario).
       expect(showsCheck).toBe(false);
     });
 
-    And("no copied confirmation is announced", () => {
-      // The live region may carry the error label, but never the copied confirmation.
+    And("the button shows the error (X) icon", () => {
+      expect(showsX).toBe(true);
+    });
+
+    And("a polite live region announces the error label", () => {
+      expect(announced).toBe("Copy failed");
       expect(announced).not.toBe("Copied");
     });
   });
 
-  Scenario("The copy button is operable by keyboard", ({ Given, When, Then }) => {
+  // @scenario specs/libs/web-ui/behaviours/code-block/copy-button.feature: The copy button is operable by keyboard
+  ScenarioOutline("The copy button is operable by keyboard", ({ Given, When, Then }, examples) => {
+    const key = String(examples["key"] ?? "");
     let writeText: ReturnType<typeof vi.fn>;
 
     Given("a CopyButton is focused", () => {
@@ -171,7 +179,7 @@ describeFeature(feature, ({ Scenario }) => {
       expect(document.activeElement).toBe(getButton());
     });
 
-    When("the user presses Enter", async () => {
+    When("the user presses <key>", async () => {
       cleanup();
       // create the user session before installing our spy so `userEvent`'s own clipboard stub
       // doesn't shadow the spy the button calls
@@ -179,7 +187,7 @@ describeFeature(feature, ({ Scenario }) => {
       writeText = stubClipboard(true);
       render(<CopyButton value="npm install" />);
       getButton().focus();
-      await user.keyboard("{Enter}");
+      await user.keyboard(key === "Enter" ? "{Enter}" : " ");
     });
 
     Then("the clipboard receives the button's value", () => {
@@ -187,50 +195,46 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
-  Scenario("The copy button exposes an accessible name", ({ Given, When, Then }) => {
-    let accessibleName: string | null = null;
+  // @scenario specs/libs/web-ui/behaviours/code-block/copy-button.feature: The copy button has an accessible name that follows its label
+  ScenarioOutline(
+    "The copy button has an accessible name that follows its label",
+    ({ Given, When, Then }, examples) => {
+      const setup = String(examples["setup"] ?? "");
+      let accessibleName: string | null = null;
 
-    Given("a CopyButton rendered with the default labels", () => {
-      cleanup();
-      stubClipboard(true);
-      render(<CopyButton value="npm install" />);
-      expect(getButton().getAttribute("aria-label")).toBe("Copy");
-    });
+      Given("a CopyButton rendered with <setup>", () => {
+        cleanup();
+        stubClipboard(true);
+        render(
+          setup === "the default labels" ? (
+            <CopyButton value="npm install" />
+          ) : (
+            <CopyButton value="npm install" copyLabel="Salin" />
+          ),
+        );
+        expect(getButton().getAttribute("aria-label")).toBeTruthy();
+      });
 
-    When("the accessibility tree is inspected", () => {
-      cleanup();
-      stubClipboard(true);
-      render(<CopyButton value="npm install" />);
-      accessibleName = getButton().getAttribute("aria-label");
-    });
+      When("the accessibility tree is inspected", () => {
+        cleanup();
+        stubClipboard(true);
+        render(
+          setup === "the default labels" ? (
+            <CopyButton value="npm install" />
+          ) : (
+            <CopyButton value="npm install" copyLabel="Salin" />
+          ),
+        );
+        accessibleName = getButton().getAttribute("aria-label");
+      });
 
-    Then('the button has an accessible name of "Copy"', () => {
-      expect(accessibleName).toBe("Copy");
-    });
-  });
+      Then("the button has an accessible name of <name>", () => {
+        expect(accessibleName).toBe(String(examples["name"]));
+      });
+    },
+  );
 
-  Scenario("The copy button's accessible name can be localized", ({ Given, When, Then }) => {
-    let accessibleName: string | null = null;
-
-    Given('a CopyButton rendered with copyLabel "Salin"', () => {
-      cleanup();
-      stubClipboard(true);
-      render(<CopyButton value="npm install" copyLabel="Salin" />);
-      expect(getButton().getAttribute("aria-label")).toBe("Salin");
-    });
-
-    When("the accessibility tree is inspected", () => {
-      cleanup();
-      stubClipboard(true);
-      render(<CopyButton value="npm install" copyLabel="Salin" />);
-      accessibleName = getButton().getAttribute("aria-label");
-    });
-
-    Then('the button has an accessible name of "Salin"', () => {
-      expect(accessibleName).toBe("Salin");
-    });
-  });
-
+  // @scenario specs/libs/web-ui/behaviours/code-block/copy-button.feature: The copy button has no accessibility violations
   Scenario("The copy button has no accessibility violations", ({ Given, When, Then }) => {
     let results: Awaited<ReturnType<typeof axe>>;
 
@@ -253,6 +257,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
+  // @scenario specs/libs/web-ui/behaviours/code-block/copy-button.feature: The copy button meets the minimum target size
   Scenario("The copy button meets the minimum target size", ({ Given, When, Then }) => {
     let dataSize: string | null = null;
     let className = "";
@@ -280,6 +285,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
+  // @scenario specs/libs/web-ui/behaviours/code-block/copy-button.feature: Re-clicking during the success window resets the revert timer
   Scenario("Re-clicking during the success window resets the revert timer", ({ Given, When, Then, And }) => {
     let stillSuccessPastFirstWindow = false;
     let revertedAfterSecondWindow = false;
@@ -337,6 +343,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
+  // @scenario specs/libs/web-ui/behaviours/code-block/copy-button.feature: A retry after a failed clipboard write succeeds normally
   Scenario("A retry after a failed clipboard write succeeds normally", ({ Given, When, Then, And }) => {
     let showsCheck = false;
     let announced = "";
@@ -375,64 +382,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
-  Scenario("The copy button is operable by keyboard via the Space key", ({ Given, When, Then }) => {
-    let writeText: ReturnType<typeof vi.fn>;
-
-    Given("a CopyButton is focused", () => {
-      cleanup();
-      stubClipboard(true);
-      render(<CopyButton value="npm install" />);
-      getButton().focus();
-      expect(document.activeElement).toBe(getButton());
-    });
-
-    When("the user presses Space", async () => {
-      cleanup();
-      // create the user session before installing our spy so `userEvent`'s own clipboard stub
-      // doesn't shadow the spy the button calls
-      const user = userEvent.setup();
-      writeText = stubClipboard(true);
-      render(<CopyButton value="npm install" />);
-      getButton().focus();
-      await user.keyboard(" ");
-    });
-
-    Then("the clipboard receives the button's value", () => {
-      expect(writeText).toHaveBeenCalledWith("npm install");
-    });
-  });
-
-  Scenario("A failed clipboard write shows an error cue and announces it", ({ Given, When, Then, And }) => {
-    let showsX = false;
-    let announced = "";
-
-    Given("a CopyButton rendered with a stubbed clipboard that rejects", () => {
-      cleanup();
-      const writeText = stubClipboard(false);
-      render(<CopyButton value="npm install" errorLabel="Copy failed" />);
-      expect(writeText).not.toHaveBeenCalled();
-      expect(getButton().isConnected).toBe(true);
-    });
-
-    When("the user clicks the button", async () => {
-      cleanup();
-      stubClipboard(false);
-      render(<CopyButton value="npm install" errorLabel="Copy failed" />);
-      fireEvent.click(getButton());
-      await waitFor(() => expect(getButton().querySelector(".lucide-x")).not.toBeNull());
-      showsX = getButton().querySelector(".lucide-x") !== null;
-      announced = screen.getByRole("status").textContent ?? "";
-    });
-
-    Then("the button shows the error (X) icon", () => {
-      expect(showsX).toBe(true);
-    });
-
-    And("a polite live region announces the error label", () => {
-      expect(announced).toBe("Copy failed");
-    });
-  });
-
+  // @scenario specs/libs/web-ui/behaviours/code-block/copy-button.feature: The copy button exposes a native tooltip title
   Scenario("The copy button exposes a native tooltip title", ({ Given, When, Then }) => {
     let title: string | null = null;
     let accessibleName: string | null = null;

@@ -79,8 +79,8 @@ implementation, or unfinished work cannot justify exemption.
 **Agent**: [`swe-reviewer`](../../../agents/swe-reviewer.md)
 
 Run affected `test:unit`, then manually select impacted `test:integration` and `test:e2e` scenarios.
-For `full`, run complete applicable suites. Never route Integration/E2E through hooks, PR,
-`test:quick`, or `test:coverage:*`.
+For `full`, run complete applicable suites. Never route Integration/E2E through hooks or
+`test:quick`; the PR gate runs `test:integration` for affected projects, and E2E never runs per pull request.
 
 **Success criteria**: Every selected runtime target exits zero and the report records its exact Nx
 command and result.

@@ -27,6 +27,6 @@ Run without flags to scan the whole declared surface; the legacy corpus reports 
 there. Pass `--file <path>` (repeatable) to check only the files you touched, which is what
 the gate does.
 
-**Gate location**: the declared `md-mermaid` registry gate runs at **pre-commit (staged `.md` files
-only)** and on the pull-request surface in `pr-quality-gate.yml` (changed `.md` files), through
-`scripts/validate-mermaid-files`. It does not run at pre-push and has no standalone CI workflow.
+**Gate location**: the declared `md-mermaid` registry gate runs on the pull-request surface in
+`pr-quality-gate.yml` (changed `.md` files), through `scripts/validate-mermaid-files`. The `md-mermaid-repository`
+gate checks every live diagram there. No local hook runs either gate, and there is no standalone CI workflow.

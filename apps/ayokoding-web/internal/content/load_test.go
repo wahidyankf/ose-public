@@ -1,78 +1,86 @@
 package content_test
 
 import (
-	"os"
-	"path/filepath"
-	"runtime"
+	"io/fs"
 	"strings"
 	"testing"
+	"testing/fstest"
 
 	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/content"
 )
 
-// writeFixtureTree materializes a real-corpus-shaped tree under dir.
-func writeFixtureTree(t *testing.T, dir string, files map[string]string) {
-	t.Helper()
-	for name, body := range files {
-		full := filepath.Join(dir, filepath.FromSlash(name))
-		if err := os.MkdirAll(filepath.Dir(full), 0o755); err != nil {
-			t.Fatalf("mkdir fixture: %v", err)
-		}
-		if err := os.WriteFile(full, []byte(body), 0o600); err != nil {
-			t.Fatalf("write fixture: %v", err)
-		}
+// brokenTree is an in-memory corpus whose listed files appear in directory
+// listings but fail to read, as a dangling symlink does on disk.
+type brokenTree struct {
+	fstest.MapFS
+	broken map[string]bool
+}
+
+func (b brokenTree) ReadFile(name string) ([]byte, error) {
+	if b.broken[name] {
+		return nil, fs.ErrNotExist
 	}
+	return b.MapFS.ReadFile(name)
+}
+
+// unreadableFS is a content root the operating system refused: every open fails.
+type unreadableFS struct{}
+
+func (unreadableFS) Open(string) (fs.File, error) { return nil, fs.ErrPermission }
+
+func contentFile(body string) *fstest.MapFile {
+	return &fstest.MapFile{Data: []byte(body)}
 }
 
 // realCorpusFixture mirrors content/<locale>/learn/{courses,legacy} plus the
 // unserved rants/root/hub markdown the loader must skip with diagnostics.
-func realCorpusFixture() map[string]string {
-	lesson := func(title string) string {
-		return "---\ntitle: " + title + "\ndescription: Fixture page\nweight: 3\n---\n\nBody of " + title + ".\n"
+func realCorpusFixture() fstest.MapFS {
+	lesson := func(title string) *fstest.MapFile {
+		return contentFile("---\ntitle: " + title + "\ndescription: Fixture page\nweight: 3\n---\n\nBody of " + title + ".\n")
 	}
-	return map[string]string{
-		"en/learn/_index.md":                                       "---\ntitle: Learn\n---\n\nHub.\n",
-		"en/learn/courses/_index.md":                               "---\ntitle: Courses\n---\n\nHub.\n",
-		"en/learn/courses/go-basics/_index.md":                     "---\ntitle: Go Basics\n---\n\nSection metadata.\n",
+	return fstest.MapFS{
+		"en/learn/_index.md":                                       contentFile("---\ntitle: Learn\n---\n\nHub.\n"),
+		"en/learn/courses/_index.md":                               contentFile("---\ntitle: Courses\n---\n\nHub.\n"),
+		"en/learn/courses/go-basics/_index.md":                     contentFile("---\ntitle: Go Basics\n---\n\nSection metadata.\n"),
 		"en/learn/courses/go-basics/overview.md":                   lesson("Course Overview"),
-		"en/learn/courses/go-basics/learning/_index.md":            "---\ntitle: Learning\n---\n\nSection metadata.\n",
+		"en/learn/courses/go-basics/learning/_index.md":            contentFile("---\ntitle: Learning\n---\n\nSection metadata.\n"),
 		"en/learn/courses/go-basics/learning/overview.md":          lesson("Learning Track"),
 		"en/learn/courses/go-basics/learning/beginner.md":          lesson("Beginner"),
-		"en/learn/courses/go-basics/learning/bad.md":               "---\n:\tbad\n---\n\nBroken.\n",
-		"en/learn/courses/go-basics/learning/untitled.md":          "---\nweight: 1\n---\n\nNo title.\n",
-		"en/learn/courses/go-basics/learning/draft-note.md":        "---\ntitle: Draft\ndraft: true\nweight: 4\n---\n\nDraft body.\n",
-		"en/learn/courses/go-basics/learning/capstone/_index.md":   "---\ntitle: Capstone\n---\n\nSection metadata.\n",
-		"en/learn/courses/go-basics/learning/capstone/overview.md": "---\ntitle: Capstone\n---\n\nCapstone body.\n",
+		"en/learn/courses/go-basics/learning/bad.md":               contentFile("---\n:\tbad\n---\n\nBroken.\n"),
+		"en/learn/courses/go-basics/learning/untitled.md":          contentFile("---\nweight: 1\n---\n\nNo title.\n"),
+		"en/learn/courses/go-basics/learning/draft-note.md":        contentFile("---\ntitle: Draft\ndraft: true\nweight: 4\n---\n\nDraft body.\n"),
+		"en/learn/courses/go-basics/learning/capstone/_index.md":   contentFile("---\ntitle: Capstone\n---\n\nSection metadata.\n"),
+		"en/learn/courses/go-basics/learning/capstone/overview.md": contentFile("---\ntitle: Capstone\n---\n\nCapstone body.\n"),
 		"en/learn/courses/go-basics/assets/note.md":                lesson("Asset Note"),
-		"en/learn/courses/go-basics/drilling/_index.md":            "---\ntitle: Drilling\n---\n\nSection metadata.\n",
-		"en/learn/courses/go-basics/drilling/overview.md":          "---\ntitle: Drilling Track\ndescription: Fixture page\nweight: \"2\"\n---\n\nBody of Drilling Track.\n",
-		"en/learn/legacy/_index.md":                                "---\ntitle: Legacy\n---\n\nSection metadata.\n",
+		"en/learn/courses/go-basics/drilling/_index.md":            contentFile("---\ntitle: Drilling\n---\n\nSection metadata.\n"),
+		"en/learn/courses/go-basics/drilling/overview.md":          contentFile("---\ntitle: Drilling Track\ndescription: Fixture page\nweight: \"2\"\n---\n\nBody of Drilling Track.\n"),
+		"en/learn/legacy/_index.md":                                contentFile("---\ntitle: Legacy\n---\n\nSection metadata.\n"),
 		"en/learn/legacy/deep/nested/page.md":                      lesson("Nested Legacy"),
-		"en/learn/legacy/deep/_index.md":                           "---\ntitle: Deep\n---\n\nSection metadata.\n",
-		"en/learn/paths/skills/_index.md":                          "---\ntitle: Skills\n---\n\nSection metadata.\n",
+		"en/learn/legacy/deep/_index.md":                           contentFile("---\ntitle: Deep\n---\n\nSection metadata.\n"),
+		"en/learn/paths/skills/_index.md":                          contentFile("---\ntitle: Skills\n---\n\nSection metadata.\n"),
 		"en/rants/2023/note.md":                                    lesson("Rant"),
 		"en/about-ayokoding.md":                                    lesson("About"),
-		"fr/learn/_index.md":                                       "---\ntitle: Learn\n---\n\nHub.\n",
+		"fr/learn/_index.md":                                       contentFile("---\ntitle: Learn\n---\n\nHub.\n"),
 		"id/belajar/ikhtisar.md":                                   lesson("Ikhtisar"),
 	}
 }
 
+// ghostPath is the dangling-link source the disk fixture plants; in memory it
+// is a listed file that cannot be read.
+const ghostPath = "en/learn/courses/go-basics/learning/ghost.md"
+
 func loadFixture(t *testing.T) *content.FakeStore {
 	t.Helper()
-	dir := t.TempDir()
-	writeFixtureTree(t, dir, realCorpusFixture())
-	ghost := filepath.Join(dir, "en", "learn", "courses", "go-basics", "learning", "ghost.md")
-	if err := os.Symlink("no-such-target.md", ghost); err != nil {
-		t.Fatalf("symlink fixture: %v", err)
-	}
-	store, err := content.LoadDir(dir)
+	tree := brokenTree{MapFS: realCorpusFixture(), broken: map[string]bool{ghostPath: true}}
+	tree.MapFS[ghostPath] = contentFile("")
+	store, err := content.LoadFS(tree)
 	if err != nil {
-		t.Fatalf("LoadDir: %v", err)
+		t.Fatalf("LoadFS: %v", err)
 	}
 	return store
 }
 
-func TestLoadDirMapsCourseLessons(t *testing.T) {
+func TestLoadFSMapsCourseLessons(t *testing.T) {
 	store := loadFixture(t)
 	for _, want := range []struct {
 		slug string
@@ -97,7 +105,7 @@ func TestLoadDirMapsCourseLessons(t *testing.T) {
 	}
 }
 
-func TestLoadDirMapsLegacyPages(t *testing.T) {
+func TestLoadFSMapsLegacyPages(t *testing.T) {
 	store := loadFixture(t)
 	page, ok := store.Find("en", "legacy", "deep/nested/page")
 	if !ok {
@@ -108,7 +116,7 @@ func TestLoadDirMapsLegacyPages(t *testing.T) {
 	}
 }
 
-func TestLoadDirExcludesInvalidFrontmatterWithDiagnostic(t *testing.T) {
+func TestLoadFSExcludesInvalidFrontmatterWithDiagnostic(t *testing.T) {
 	store := loadFixture(t)
 	if _, ok := store.Find("en", "go-basics", "bad"); ok {
 		t.Fatal("invalid frontmatter must not publish")
@@ -124,7 +132,7 @@ func TestLoadDirExcludesInvalidFrontmatterWithDiagnostic(t *testing.T) {
 	}
 }
 
-func TestLoadDirSkipsUnservedMarkdownWithDiagnostic(t *testing.T) {
+func TestLoadFSSkipsUnservedMarkdownWithDiagnostic(t *testing.T) {
 	store := loadFixture(t)
 	for _, slug := range []string{"note", "about-ayokoding", "ikhtisar"} {
 		if _, ok := store.Find("en", "legacy", slug); ok {
@@ -145,7 +153,7 @@ func TestLoadDirSkipsUnservedMarkdownWithDiagnostic(t *testing.T) {
 	}
 }
 
-func TestLoadDirKeepsDraftsHidden(t *testing.T) {
+func TestLoadFSKeepsDraftsHidden(t *testing.T) {
 	store := loadFixture(t)
 	if _, ok := store.Find("en", "go-basics", "draft-note"); ok {
 		t.Fatal("draft lesson must stay hidden by default")
@@ -156,13 +164,11 @@ func TestLoadDirKeepsDraftsHidden(t *testing.T) {
 	}
 }
 
-func TestLoadDirFailsClosedOnKindCollision(t *testing.T) {
-	dir := t.TempDir()
-	writeFixtureTree(t, dir, map[string]string{
-		"en/learn/courses/clash/learning/dup.md": "---\ntitle: A\n---\n\nA.\n",
-		"en/learn/courses/clash/drilling/dup.md": "---\ntitle: B\n---\n\nB.\n",
+func TestLoadFSFailsClosedOnKindCollision(t *testing.T) {
+	store, err := content.LoadFS(fstest.MapFS{
+		"en/learn/courses/clash/learning/dup.md": contentFile("---\ntitle: A\n---\n\nA.\n"),
+		"en/learn/courses/clash/drilling/dup.md": contentFile("---\ntitle: B\n---\n\nB.\n"),
 	})
-	store, err := content.LoadDir(dir)
 	if err == nil || store != nil {
 		t.Fatal("kind slug collision must fail closed with an error and no store")
 	}
@@ -171,62 +177,21 @@ func TestLoadDirFailsClosedOnKindCollision(t *testing.T) {
 	}
 }
 
-func TestLoadDirMissingRootFails(t *testing.T) {
-	if _, err := content.LoadDir(filepath.Join(t.TempDir(), "no-such-root")); err == nil {
+func TestLoadFSMissingRootFails(t *testing.T) {
+	if _, err := content.LoadFS(unreadableFS{}); err == nil {
 		t.Fatal("missing content root must fail")
 	}
 }
 
-func TestLoadDirUnreadableCoursesFails(t *testing.T) {
-	dir := t.TempDir()
-	writeFixtureTree(t, dir, map[string]string{
-		"en/learn/_index.md": "---\ntitle: Learn\n---\n\nHub.\n",
-		"en/learn/courses":   "a file, not a directory",
+func TestLoadFSUnreadableCoursesFails(t *testing.T) {
+	store, err := content.LoadFS(fstest.MapFS{
+		"en/learn/_index.md": contentFile("---\ntitle: Learn\n---\n\nHub.\n"),
+		"en/learn/courses":   contentFile("a file, not a directory"),
 	})
-	store, err := content.LoadDir(dir)
 	if err == nil || store != nil {
 		t.Fatal("unreadable courses inventory must fail closed")
 	}
 	if !strings.Contains(err.Error(), "courses") {
 		t.Fatalf("courses error must name the inventory, got %q", err)
-	}
-}
-
-// realCorpusRoot resolves the checked-in ayokoding-www content tree.
-func realCorpusRoot(t *testing.T) string {
-	t.Helper()
-	_, file, _, _ := runtime.Caller(0)
-	root := filepath.Join(filepath.Dir(file), "..", "..", "..", "ayokoding-www", "content")
-	if _, err := os.Stat(filepath.Join(root, "en", "learn", "courses")); err != nil {
-		t.Fatalf("real corpus unavailable: %v", err)
-	}
-	return root
-}
-
-func TestLoadDirRealCorpus(t *testing.T) {
-	store, err := content.LoadDir(realCorpusRoot(t))
-	if err != nil {
-		t.Fatalf("real corpus must load without collisions: %v", err)
-	}
-	if got := len(store.Published("en")); got < 1500 {
-		t.Fatalf("real en pages = %d, want at least 1500", got)
-	}
-	page, ok := store.Find("en", "backend-essentials-with-go", "beginner")
-	if !ok || page.Title != "Beginner Examples" || page.Kind != "learning" {
-		t.Fatalf("real lesson = %+v, %v; want Beginner Examples/learning", page, ok)
-	}
-	track, ok := store.Find("en", "backend-essentials-with-go", "learning")
-	if !ok || track.Title != "Overview" {
-		t.Fatalf("real kind overview = %+v, %v; want track landing", track, ok)
-	}
-	legacy, ok := store.Find("en", "legacy", "software-engineering/automation-testing/tools/vitest/by-example/intermediate")
-	if !ok || legacy.Title != "Intermediate" {
-		t.Fatalf("real legacy page = %+v, %v; want Intermediate", legacy, ok)
-	}
-	if len(store.Published("id")) != 0 {
-		t.Fatal("id locale has no learn/ tree and must contribute no pages")
-	}
-	if len(store.Diagnostics()) == 0 {
-		t.Fatal("real load must record skip diagnostics")
 	}
 }

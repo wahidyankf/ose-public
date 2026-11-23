@@ -25,19 +25,7 @@
     "test:e2e": {
       "cache": false
     },
-    "test:coverage": {
-      "cache": true
-    },
-    "test:coverage:unit": {
-      "cache": true
-    },
-    "test:coverage:integration": {
-      "cache": true
-    },
-    "test:coverage:e2e": {
-      "cache": true
-    },
-    "test:coverage:behaviour": {
+    "test:behaviour:coverage": {
       "cache": true
     }
   },

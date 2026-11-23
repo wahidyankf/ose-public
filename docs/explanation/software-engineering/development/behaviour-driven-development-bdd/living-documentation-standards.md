@@ -30,9 +30,9 @@ Every active scenario has mandatory Unit proof and must not use `@pending` or `@
 
 ## REQUIRED: Scenario Proof Runs on the Correct CI Surface
 
-**REQUIRED**: The pull-request gate runs affected `test:quick`: Unit runtime with its 99% line
-gate plus every applicable static `test:coverage:*` validator. Complete Integration and E2E runtime
-stay outside this fast gate and run only in scheduled or manually dispatched full-quality CI.
+**REQUIRED**: The pull-request gate runs affected `test:quick`, Unit runtime with its 99% line gate and
+`test:behaviour:coverage`, and affected `test:integration`. `test:e2e` runs in scheduled or `main` CI,
+never per pull request.
 
 **REQUIRED**: A failing Unit scenario or static binding validator blocks merge to main. A failing
 Integration or E2E scenario fails its scheduled/manual full-quality run and blocks any downstream
@@ -91,7 +91,7 @@ Scenario: Wealth exceeds Nisab
 **Evidence sources:**
 
 - Native Unit, Integration, and E2E reporters owned by each project's Nx runtime targets
-- Static `test:coverage:*` validators and their aggregate `test:coverage` target
+- The static `test:behaviour:coverage` check
 - The fail-closed Gherkin implementation-review matrix
 
 **Dashboard MUST show:**

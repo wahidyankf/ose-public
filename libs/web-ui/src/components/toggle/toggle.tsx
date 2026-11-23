@@ -14,6 +14,7 @@ export function Toggle({ value, onChange, label, disabled = false }: ToggleProps
     <button
       type="button"
       role="switch"
+      aria-label={label}
       aria-checked={value}
       disabled={disabled}
       onClick={() => onChange(!value)}

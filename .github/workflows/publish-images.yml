@@ -19,7 +19,7 @@ jobs:
       NX_BASE: ${{ github.event.before }}
       NX_HEAD: ${{ github.sha }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
@@ -31,7 +31,7 @@ jobs:
             BASE=$(git rev-parse HEAD~1 2>/dev/null || git rev-parse HEAD)
           fi
           export NX_BASE="$BASE"
-          AFFECTED=$(npx nx show projects --affected 2>/dev/null || echo "")
+          AFFECTED=$(./hippo run --class ephemeral --resource-tier light --disk-path . -- npx nx show projects --affected 2>/dev/null || echo "")
           {
             echo "build-organiclever-be=false"
             echo "build-ose-be=false"
@@ -49,11 +49,11 @@ jobs:
     if: needs.detect.outputs.build-organiclever-be == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-podman
       - name: Generate OpenAPI contract types
-        run: npx nx run organiclever-be:codegen
+        run: ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npx nx run organiclever-be:codegen
       - name: Log in to GHCR with an ephemeral auth file
         env:
           REGISTRY_ACTOR: ${{ github.actor }}
@@ -82,11 +82,11 @@ jobs:
     if: needs.detect.outputs.build-ose-be == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-podman
       - name: Generate OpenAPI contract types
-        run: npx nx run ose-be:codegen
+        run: ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npx nx run ose-be:codegen
       - name: Log in to GHCR with an ephemeral auth file
         env:
           REGISTRY_ACTOR: ${{ github.actor }}

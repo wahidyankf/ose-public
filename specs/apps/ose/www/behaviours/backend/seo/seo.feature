@@ -6,6 +6,7 @@ Feature: SEO
   Background:
     Given the API is running
 
+  # Behaviour: OSW-008
   Scenario: Sitemap contains all public pages
     Given the content repository contains public pages
     When the sitemap is generated
@@ -14,8 +15,7 @@ Feature: SEO
     And the sitemap contains URLs for all update pages
     And every sitemap URL is on the canonical host "www.oseplatform.com"
 
-  # Exemption(integration): the robots contract has no local resource boundary and is observable only through the public HTTP response; alternative-proof: ose-www-be-e2e:test:e2e / Robots.txt allows all crawlers
-  @integration-exempt
+  # Behaviour: OSW-007
   Scenario: Robots.txt allows all crawlers
     When the robots.txt is generated
     Then it allows all user agents

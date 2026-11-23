@@ -15,7 +15,7 @@ Determine which projects are affected:
 
 ```bash
 # See which projects are affected by your changes (test:quick internally chains
-# types/lint -> test:unit -> every applicable static test:coverage:*; see Nx Target Standards)
+# types/lint -> test:unit -> test:behaviour:coverage; see Nx Target Standards)
 npx nx affected -t test:quick --dry-run
 ```
 
@@ -30,7 +30,7 @@ Reproduce the failure in isolation to confirm it is preexisting:
 npx nx run <project>:typecheck
 npx nx run <project>:lint
 npx nx run <project>:test:quick
-npx nx run <project>:test:coverage:behaviour
+npx nx run <project>:test:behaviour:coverage
 ```
 
 ## Step 4: Trace to Root Cause

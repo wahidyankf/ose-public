@@ -1,8 +1,8 @@
 namespace FsharpEnvLoader
 
 open System
-open System.IO
 open System.Diagnostics.CodeAnalysis
+open System.IO
 
 /// Shared tiered `.env.<APP_ENV>` env-file loader for this repo's F# backends
 /// (`ose-be`, `organiclever-be`) — see the

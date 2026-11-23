@@ -9,7 +9,8 @@ const feature = await loadFeature(
   path.resolve(__dirname, "../../../../../../specs/libs/web-ui/behaviours/app-header/app-header.feature"),
 );
 
-describeFeature(feature, ({ Scenario }) => {
+describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
+  // @scenario specs/libs/web-ui/behaviours/app-header/app-header.feature: Renders title
   Scenario("Renders title", ({ When, Then }) => {
     let header: HTMLElement;
 
@@ -24,34 +25,28 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
-  Scenario("Back button appears when onBack provided", ({ When, Then }) => {
-    let backButton: HTMLElement;
+  // @scenario specs/libs/web-ui/behaviours/app-header/app-header.feature: The back button is shown only when onBack is provided
+  ScenarioOutline("The back button is shown only when onBack is provided", ({ When, Then }, examples) => {
+    const setup = String(examples["setup"] ?? "");
+    let backButton: HTMLElement | null = null;
 
-    When('I render an AppHeader with title "Details" and an onBack handler', () => {
+    When('I render an AppHeader with title "Details" <setup>', () => {
       cleanup();
-      render(<AppHeader title="Details" onBack={vi.fn()} />);
-      backButton = screen.getByRole("button", { name: /go back/i });
-    });
-
-    Then('a button with aria-label "Go back" should be visible', () => {
-      expect(backButton.getAttribute("aria-label")).toBe("Go back");
-    });
-  });
-
-  Scenario("Back button absent when onBack not provided", ({ When, Then }) => {
-    let backButton: HTMLElement | null;
-
-    When('I render an AppHeader with title "Home" without onBack', () => {
-      cleanup();
-      render(<AppHeader title="Home" />);
+      const withHandler = setup === "and an onBack handler";
+      render(withHandler ? <AppHeader title="Details" onBack={vi.fn()} /> : <AppHeader title="Details" />);
       backButton = screen.queryByRole("button", { name: /go back/i });
     });
 
-    Then('no button with aria-label "Go back" should be present', () => {
-      expect(backButton).toBeNull();
+    Then("the back button should be <presence>", () => {
+      if (examples["presence"] === "shown") {
+        expect(backButton?.getAttribute("aria-label")).toBe("Go back");
+      } else {
+        expect(backButton).toBeNull();
+      }
     });
   });
 
+  // @scenario specs/libs/web-ui/behaviours/app-header/app-header.feature: Back button click triggers onBack
   Scenario("Back button click triggers onBack", ({ Given, When, Then }) => {
     const onBackMock = vi.fn();
 
@@ -72,6 +67,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
+  // @scenario specs/libs/web-ui/behaviours/app-header/app-header.feature: Renders subtitle when provided
   Scenario("Renders subtitle when provided", ({ When, Then }) => {
     let subtitle: HTMLElement;
 

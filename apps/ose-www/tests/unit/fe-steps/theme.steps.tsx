@@ -5,9 +5,9 @@ import { render, screen, fireEvent, cleanup } from "@testing-library/react";
 import React, { useState } from "react";
 
 const { observedTheme, themeObserver } = vi.hoisted(() => {
-  const observedTheme = { selected: "light" };
-  const themeObserver = { update: (_theme: string) => {} };
-  return { observedTheme, themeObserver };
+  const theme = { selected: "light" };
+  const observer = { update: (_theme: string) => {} };
+  return { observedTheme: theme, themeObserver: observer };
 });
 
 // Mock lucide-react icons
@@ -70,13 +70,37 @@ function ThemeHarness() {
   );
 }
 
+// The reload scenario uses the real next-themes provider, so the storage it writes is the library's own.
+// next-themes reads matchMedia on mount even with system detection off, and jsdom does not provide it.
+Object.defineProperty(window, "matchMedia", {
+  writable: true,
+  value: (query: string) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: () => {},
+    removeListener: () => {},
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    dispatchEvent: () => false,
+  }),
+});
+const actualThemes = await vi.importActual<typeof import("next-themes")>("next-themes");
+
+function PersistenceHarness() {
+  const { setTheme } = actualThemes.useTheme();
+  return <button onClick={() => setTheme("dark")}>Dark</button>;
+}
+
 const feature = await loadFeature(
-  path.resolve(process.cwd(), "../../specs/apps/ose/www/behaviours/frontend/app-shell/theme.feature"),
+  path.resolve(__dirname, "../../../../../specs/apps/ose/www/behaviours/frontend/app-shell/theme.feature"),
 );
 
 describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
   AfterEachScenario(() => {
     cleanup();
+    localStorage.clear();
+    document.documentElement.className = "";
   });
 
   Background(({ Given }) => {
@@ -85,6 +109,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ose/www/behaviours/frontend/app-shell/theme.feature: Default theme is light mode
   Scenario("Default theme is light mode", ({ When, Then }) => {
     When("the site loads without a stored theme preference", () => {
       render(<ThemeHarness />);
@@ -97,6 +122,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ose/www/behaviours/frontend/app-shell/theme.feature: Theme toggle switches between modes
   Scenario("Theme toggle switches between modes", ({ Given, When, Then }) => {
     Given("the site is in light mode", () => {
       render(<ThemeHarness />);
@@ -111,6 +137,35 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
 
     Then("the site switches to dark mode", () => {
       expect(observedTheme.selected).toBe("dark");
+    });
+  });
+
+  // @scenario specs/apps/ose/www/behaviours/frontend/app-shell/theme.feature: The chosen theme is kept when the visitor reloads the page
+  Scenario("The chosen theme is kept when the visitor reloads the page", ({ Given, When, And, Then }) => {
+    const themedPage = (
+      <actualThemes.ThemeProvider attribute="class" defaultTheme={DEFAULT_THEME} enableSystem={false}>
+        <PersistenceHarness />
+      </actualThemes.ThemeProvider>
+    );
+
+    Given("the site is in light mode", () => {
+      render(themedPage);
+      expect(document.documentElement).not.toHaveClass("dark");
+    });
+
+    When("the user clicks the theme toggle and selects dark mode", () => {
+      fireEvent.click(screen.getByRole("button", { name: "Dark" }));
+      expect(localStorage.getItem("theme")).toBe("dark");
+    });
+
+    And("the visitor reloads the page", () => {
+      cleanup();
+      document.documentElement.classList.remove("dark");
+      render(themedPage);
+    });
+
+    Then("the site switches to dark mode", () => {
+      expect(document.documentElement).toHaveClass("dark");
     });
   });
 });

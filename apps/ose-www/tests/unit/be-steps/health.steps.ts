@@ -4,7 +4,7 @@ import { expect } from "vitest";
 import { testCaller } from "./helpers/test-caller";
 
 const feature = await loadFeature(
-  path.resolve(process.cwd(), "../../specs/apps/ose/www/behaviours/backend/health/health.feature"),
+  path.resolve(__dirname, "../../../../../specs/apps/ose/www/behaviours/backend/health/health.feature"),
 );
 
 describeFeature(feature, ({ Scenario, Background }) => {
@@ -14,6 +14,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ose/www/behaviours/backend/health/health.feature: Health endpoint returns ok status
   Scenario("Health endpoint returns ok status", ({ When, Then }) => {
     let result: { status: string };
 

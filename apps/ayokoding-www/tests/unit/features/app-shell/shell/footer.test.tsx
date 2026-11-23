@@ -9,7 +9,10 @@ vi.mock("next/link", () => ({
   ),
 }));
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  vi.useRealTimers();
+});
 
 // Phase 3 — footer multi-column nav (Learn · Tools · About) matching chrome-1280 mockup
 describe("Phase 3 — Footer multi-column nav", () => {
@@ -61,9 +64,11 @@ describe("Phase 3 — Footer multi-column nav", () => {
 
   it("keeps the copyright row with the MIT license link", async () => {
     const { Footer } = await import("../../../../../src/features/app-shell/shell/footer");
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-06-15T00:00:00Z"));
     render(<Footer locale="en" />);
 
-    const year = new Date().getFullYear();
+    const year = 2026;
     expect(screen.getByText(new RegExp(`${year} AyoKoding`))).toBeTruthy();
     const license = screen.getByRole("link", { name: "MIT" });
     expect(license.getAttribute("href")).toContain("/LICENSE");

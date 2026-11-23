@@ -1,6 +1,5 @@
 // Gherkin (underpins): "Progress screens pass automated accessibility checks";
-// "Mermaid diagram renders as an SVG"; "Mermaid source stays keyboard reachable while its diagram is pending";
-// "Mermaid source stays keyboard reachable when its diagram fails to render";
+// "Mermaid diagram renders as an SVG"; "Mermaid source is keyboard reachable until a diagram shows";
 // "The Mermaid source leaves keyboard focus order once the diagram renders".
 import { act, cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";

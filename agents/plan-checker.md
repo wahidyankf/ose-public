@@ -60,7 +60,7 @@ acting.
 - **Rule impact.** Detect it independently from scope and file effects. Each affected repository needs the complete
   repository-local `rules-propagation` runbook, enforcement dispositions, generated-binding proof, manifest,
   and `rules-quality-gate` in the rule-changing delivery unit; a generic workflow checkbox is a HIGH finding.
-- **Evidence and scope.** Treat project-local `test:coverage:behaviour` as delivery evidence for corpus, adapter,
+- **Evidence and scope.** Treat project-local `test:behaviour:coverage` as delivery evidence for corpus, adapter,
   exemption, and journey-shape checks; semantic Gherkin journey review stays in scope. Reject archival steps that
   hardcode or predict a completion date. Raise no migration findings against `plans/done/` or the existing Rhino plan.
 

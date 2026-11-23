@@ -9,8 +9,8 @@ Every active scenario has substantive Unit proof in `apps/ayokoding-www/tests/un
 Playwright proof in `apps/ayokoding-www-fe-e2e/tests/e2e/`. Progress and lesson navigation are
 observable at the public browser boundary and own no separate local resource, so each scenario
 carries its own canonical `@integration-exempt` comment and tag instead of an Integration binding.
-The corpus uses no positive layer-selection tags and no `@wip` deferral. Static `test:coverage:*`
-targets validate recursive corpus and adapter closure without executing tests.
+The corpus uses no positive layer-selection tags and no `@wip` deferral. The static
+`test:behaviour:coverage` target validates recursive corpus and adapter closure without executing tests.
 
 A scenario joins this folder in the phase that renders the screen it describes, so each feature file
 holds only the scenarios whose surfaces already exist. The folder now covers the whole

@@ -1,9 +1,9 @@
 import path from "node:path";
-import fs from "node:fs/promises";
 import matter from "gray-matter";
 import { frontmatterSchema } from "@/features/content/core/schemas";
 import type { ContentMeta } from "../core/types";
 import type { ContentRepository } from "../core/repository";
+import { nodeContentFs, type ContentFs } from "./content-fs";
 import { env } from "../../../env";
 
 const DEFAULT_CONTENT_DIR = env.OSE_WEB_CONTENT_DIR ?? path.resolve(process.cwd(), "content");
@@ -11,10 +11,16 @@ const DEFAULT_CONTENT_DIR = env.OSE_WEB_CONTENT_DIR ?? path.resolve(process.cwd(
 export class FileSystemContentRepository implements ContentRepository {
   private readonly contentDir: string;
   private readonly showDrafts: boolean;
+  private readonly fileSystem: ContentFs;
 
-  constructor(contentDir?: string, showDrafts: boolean = env.OSE_WEB_SHOW_DRAFTS === "true") {
+  constructor(
+    contentDir?: string,
+    showDrafts: boolean = env.OSE_WEB_SHOW_DRAFTS === "true",
+    fileSystem: ContentFs = nodeContentFs,
+  ) {
     this.contentDir = contentDir ?? DEFAULT_CONTENT_DIR;
     this.showDrafts = showDrafts;
+    this.fileSystem = fileSystem;
   }
 
   async readAllContent(): Promise<ContentMeta[]> {
@@ -23,7 +29,7 @@ export class FileSystemContentRepository implements ContentRepository {
 
     for (const filePath of files) {
       try {
-        const raw = await fs.readFile(filePath, "utf-8");
+        const raw = await this.fileSystem.readFile(filePath);
         const { data, content } = matter(raw);
         const parsed = frontmatterSchema.safeParse(data);
 
@@ -60,7 +66,7 @@ export class FileSystemContentRepository implements ContentRepository {
   }
 
   async readFileContent(filePath: string): Promise<{ content: string; frontmatter: Record<string, unknown> }> {
-    const raw = await fs.readFile(filePath, "utf-8");
+    const raw = await this.fileSystem.readFile(filePath);
     const { content, data } = matter(raw);
     return { content, frontmatter: data as Record<string, unknown> };
   }
@@ -76,7 +82,7 @@ export class FileSystemContentRepository implements ContentRepository {
 
   private async globMarkdownFiles(dir: string): Promise<string[]> {
     const files: string[] = [];
-    const entries = await fs.readdir(dir, { withFileTypes: true });
+    const entries = await this.fileSystem.readDirectory(dir);
     for (const entry of entries) {
       const fullPath = path.join(dir, entry.name);
       if (entry.isDirectory()) {

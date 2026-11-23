@@ -236,6 +236,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/learn-home.feature: The Learn home is a landing page, not a list of courses
   Scenario("The Learn home is a landing page, not a list of courses", ({ When, Then, And }) => {
     When("a reader opens /en/learn", () => {
       openLearnHome();
@@ -262,6 +263,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/learn-home.feature: A returning reader sees a Continue learning card
   Scenario("A returning reader sees a Continue learning card", ({ Given, When, Then, And }) => {
     Given("a reader completed some learning pages while following a path", () => {
       learningProgressStore.update((state) =>
@@ -291,6 +293,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/learn-home.feature: A new reader sees a Start learning card in the same place
   Scenario("A new reader sees a Start learning card in the same place", ({ Given, When, Then }) => {
     Given("a reader has no saved progress", () => {
       learningProgressStore.reset();
@@ -308,6 +311,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/learn-home.feature: Path cards show who it is for, the goal, size, time, and progress
   Scenario("Path cards show who it is for, the goal, size, time, and progress", ({ When, Then, And }) => {
     When("a reader opens /en/learn", () => {
       openLearnHome();
@@ -355,6 +359,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/learn-home.feature: The old Learn overview address redirects to the Learn home
   Scenario("The old Learn overview address redirects to the Learn home", ({ When, Then }) => {
     let requested = "";
 
@@ -374,6 +379,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/learn-home.feature: A deeper address under the old overview is not redirected
   Scenario("A deeper address under the old overview is not redirected", ({ When, Then }) => {
     let requested = "";
 
@@ -390,6 +396,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/learn-home.feature: Path hubs use the same path cards
   Scenario("Path hubs use the same path cards", ({ When, Then, And }) => {
     // The four screens S32 names, each with the paths it must show as cards. The hub renders every
     // published path; the careers landing its career paths; the arc page that arc's one role; the

@@ -42,6 +42,8 @@ let private buildScenarioData (namePart: string) : seq<obj[]> =
         feature.Scenarios |> Seq.map (fun scenario -> [| scenario :> obj |])
     | None -> failwithf "embedded Gherkin resource not found: %s" namePart
 
+// @scenario specs/libs/fsharp-crane-core/behaviours/convert/pdf-to-markdown-routing.feature: A PDF with a real text layer converts to its extracted page text
+// @scenario specs/libs/fsharp-crane-core/behaviours/convert/pdf-to-markdown-routing.feature: A PDF with no usable text layer converts to its OCR text
 type ConvertFeatureTests() =
     static member Scenarios() : seq<obj[]> =
         buildScenarioData "pdf-to-markdown-routing" |> Seq.toList :> seq<_>

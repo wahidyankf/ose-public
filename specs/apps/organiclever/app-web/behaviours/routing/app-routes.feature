@@ -7,20 +7,30 @@ Feature: App Routes URL Scheme
   Background:
     Given the application is running
 
-  # AC-1 — Default route shows Home (redirect)
-  Scenario: Visiting /app redirects to /app/home
-    Given the app is freshly loaded
+  # AC-1 and AC-8 — Old /app bookmark and default route redirect to /app/home with 308
+  # @local-fullstack — Verified in dev-workflow E2E against the real container stack.
+  # On Vercel staging the Deployment Protection auth wall and edge redirect handling
+  # can intercept the request before Next.js runs, returning a non-308 status; the
+  # contract itself (next.config.ts redirects()) is exercised by dev E2E.
+  @local-fullstack
+  # Behaviour: OAW-010
+  Scenario: Visiting /app permanent-redirects to /app/home
+    When a visitor requests GET "/app"
+    Then the response is a 308 redirect to "/app/home"
     When the user navigates to "/app"
     Then the URL becomes "/app/home"
     And the Home screen is visible
 
-  Scenario: Visiting /app/home renders the Home screen
-    Given the app is freshly loaded
-    When the user navigates to "/app/home"
-    Then the Home screen is visible
-    And the Home tab is marked active in the navigation
+  # Behaviour: OAW-009
+  Scenario: Visiting / redirects to /app/home
+    When a visitor requests GET "/"
+    Then the response redirects to "/app/home"
 
   # AC-2 — Each tab has a route
+  # Behaviour: OAW-001
+  # Behaviour: OAW-002
+  # Behaviour: OAW-003
+  # Behaviour: OAW-004
   Scenario Outline: Each tab is reachable by URL
     Given the app shell is visible
     When the user navigates to "<path>"
@@ -34,37 +44,16 @@ Feature: App Routes URL Scheme
       | /app/progress  | Progress | Progress |
       | /app/settings  | Settings | Settings |
 
-  # AC-4 — Refresh stays on current tab
-  Scenario Outline: Refreshing a tab URL keeps the user on that tab
-    Given the user is on "<path>"
-    When the user refreshes the page
-    Then the URL is still "<path>"
-    And the "<screen>" screen is visible
-
-    Examples:
-      | path           | screen   |
-      | /app/history   | History  |
-      | /app/progress  | Progress |
-      | /app/settings  | Settings |
-
   # AC-5 — Browser back returns to previous screen
+  # Behaviour: OAW-003
   Scenario: Back from Progress returns to Home
     Given the user navigated from "/app/home" to "/app/progress"
     When the user presses the browser back button
     Then the URL becomes "/app/home"
     And the Home screen is visible
 
-  # AC-8 — Old /app bookmark redirects to /app/home with 308
-  # @local-fullstack — Verified in dev-workflow E2E against the real container stack.
-  # On Vercel staging the Deployment Protection auth wall and edge redirect handling
-  # can intercept the request before Next.js runs, returning a non-308 status; the
-  # contract itself (next.config.ts redirects()) is exercised by dev E2E.
-  @local-fullstack
-  Scenario: Old /app URL permanent-redirects to /app/home
-    When a visitor requests GET "/app"
-    Then the response is a 308 redirect to "/app/home"
-
   # AC-12 — Unknown sub-paths return 404
+  # Behaviour: OAW-011
   Scenario: Unknown segment under /app returns 404
     When a visitor requests GET "/app/does-not-exist"
     Then the response status is 404

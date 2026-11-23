@@ -6,16 +6,14 @@ Feature: Responsive Design
   Background:
     Given the app is running
 
-  # Exemption(integration): the local-resource boundary cannot apply a browser viewport and inspect responsive layout without crossing the public browser boundary; alternative-proof: ose-www-fe-e2e:test:e2e / Mobile viewport shows hamburger navigation
-  @integration-exempt
+  # Behaviour: OSW-016
   Scenario: Mobile viewport shows hamburger navigation
     Given the viewport width is less than 640 pixels
     When the header is rendered
     Then the hamburger menu button is visible
     And the desktop navigation links are hidden
 
-  # Exemption(integration): the local-resource boundary cannot apply a browser viewport and inspect responsive layout without crossing the public browser boundary; alternative-proof: ose-www-fe-e2e:test:e2e / Desktop viewport shows full navigation
-  @integration-exempt
+  # Behaviour: OSW-016
   Scenario: Desktop viewport shows full navigation
     Given the viewport width is greater than 1024 pixels
     When the header is rendered

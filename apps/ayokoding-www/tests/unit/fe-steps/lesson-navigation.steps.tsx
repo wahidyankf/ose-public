@@ -42,13 +42,14 @@ const feature = await loadFeature(
 const PATH_HREF = "/en/learn/paths/careers/immediately-effective/backend-track";
 const PATH_ID = BACKEND_TRACK.pathId;
 
-describeFeature(feature, ({ Scenario, Background }) => {
+describeFeature(feature, ({ Scenario, ScenarioOutline, Background }) => {
   Background(({ Given }) => {
     Given("the app is running", () => {
       noSavedProgress();
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/lesson-navigation.feature: The context bar shows where the reader is in a path
   Scenario("The context bar shows where the reader is in a path", ({ When, Then, And }) => {
     When("a reader opens a learning page of a course in path context", () => {
       openLessonPage({ pagePath: "learning/beginner" });
@@ -76,6 +77,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/lesson-navigation.feature: The context bar works without a path
   Scenario("The context bar works without a path", ({ When, Then, And }) => {
     When("a reader opens a learning page with no path context and no remembered path for that course", () => {
       noSavedProgress();
@@ -97,6 +99,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/lesson-navigation.feature: Mark complete and continue opens the next learning page
   Scenario("Mark complete and continue opens the next learning page", ({ Given, When, Then, And }) => {
     let activated = { href: "", text: "" };
 
@@ -119,62 +122,55 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
-  Scenario("The last page of a course leads to the next course in the path", ({ Given, When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/lesson-navigation.feature: The last page of a course leads to the next destination
+  ScenarioOutline("The last page of a course leads to the next destination", ({ Given, When, Then }, variables) => {
     let activated = { href: "", text: "" };
 
-    Given("a reader is on the last learning page of a course in path context", () => {
-      openLessonPage({ pagePath: "learning/advanced" });
-    });
-
-    And("the path has a course after it", () => {
-      expect(BACKEND_TRACK.courseOrder.indexOf("just-enough-bash")).toBeLessThan(BACKEND_TRACK.courseOrder.length - 1);
+    Given('a reader is on the last learning page "<position>"', () => {
+      switch (variables.position) {
+        case "of a course in path context with a course after it":
+          openLessonPage({ pagePath: "learning/advanced" });
+          expect(BACKEND_TRACK.courseOrder.indexOf("just-enough-bash")).toBeLessThan(
+            BACKEND_TRACK.courseOrder.length - 1,
+          );
+          break;
+        case "of the path's last course in path context":
+          openLessonPage({ courseId: "sql-essentials", pagePath: "learning/advanced" });
+          break;
+        case "of a course with no path context":
+          noSavedProgress();
+          openLessonPage({ pagePath: "learning/advanced", pathParam: null });
+          break;
+        default:
+          throw new Error(`unknown last-page position: ${String(variables.position)}`);
+      }
     });
 
     When('the reader activates "Mark complete & continue"', () => {
       activated = activatePrimary();
     });
 
-    Then("the next course's landing page opens in the same path context", () => {
-      expect(activated.href).toBe(`/en/learn/courses/backend-essentials?path=${PATH_ID}`);
-      expect(activated.text).toContain("Next course: Backend Essentials");
+    Then('the primary action opens "<destination>"', () => {
+      switch (variables.destination) {
+        case "the next course's landing page in the same path context":
+          expect(activated.href).toBe(`/en/learn/courses/backend-essentials?path=${PATH_ID}`);
+          expect(activated.text).toContain("Next course: Backend Essentials");
+          break;
+        case "the path page":
+          expect(activated.href).toBe(PATH_HREF);
+          expect(activated.text).toContain("Back to the path");
+          break;
+        case "the course landing page":
+          expect(activated.href).toBe("/en/learn/courses/just-enough-bash");
+          expect(activated.text).toContain("Back to the course");
+          break;
+        default:
+          throw new Error(`unknown last-page destination: ${String(variables.destination)}`);
+      }
     });
   });
 
-  Scenario("The last page of the path leads back to the path page", ({ Given, When, Then }) => {
-    let activated = { href: "", text: "" };
-
-    Given("a reader is on the last learning page of the path's last course in path context", () => {
-      openLessonPage({ courseId: "sql-essentials", pagePath: "learning/advanced" });
-    });
-
-    When('the reader activates "Mark complete & continue"', () => {
-      activated = activatePrimary();
-    });
-
-    Then("the path page opens", () => {
-      expect(activated.href).toBe(PATH_HREF);
-      expect(activated.text).toContain("Back to the path");
-    });
-  });
-
-  Scenario("Without a path, the last page leads back to the course landing page", ({ Given, When, Then }) => {
-    let activated = { href: "", text: "" };
-
-    Given("a reader is on a course's last learning page with no path context", () => {
-      noSavedProgress();
-      openLessonPage({ pagePath: "learning/advanced", pathParam: null });
-    });
-
-    When('the reader activates "Mark complete & continue"', () => {
-      activated = activatePrimary();
-    });
-
-    Then("the course landing page opens", () => {
-      expect(activated.href).toBe("/en/learn/courses/just-enough-bash");
-      expect(activated.text).toContain("Back to the course");
-    });
-  });
-
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/lesson-navigation.feature: Previous goes back one page, then to the course landing page
   Scenario("Previous goes back one page, then to the course landing page", ({ Given, When, Then }) => {
     Given("a reader is on the first learning page of a course", () => {
       openLessonPage({ pagePath: "learning/overview" });
@@ -201,6 +197,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/lesson-navigation.feature: The path context is remembered inside the same course
   Scenario("The path context is remembered inside the same course", ({ Given, When, Then, And }) => {
     Given("a reader opened a course's learning page in path context", () => {
       noSavedProgress();
@@ -225,6 +222,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/lesson-navigation.feature: Opening or scrolling a page never marks it complete
   Scenario("Opening or scrolling a page never marks it complete", ({ Given, When, Then }) => {
     Given("a reader has no saved progress", () => {
       noSavedProgress();

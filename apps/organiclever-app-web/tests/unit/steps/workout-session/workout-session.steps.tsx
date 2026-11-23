@@ -15,6 +15,29 @@ import type { AppSettings } from "@/contexts/settings/application";
 import type { Routine } from "@/contexts/routine/application";
 import type { JournalRuntime } from "@/contexts/journal/application";
 import type { Actor } from "xstate";
+import { cleanup, render, screen } from "@testing-library/react";
+import FinishPage from "@/app/app/workout/finish/page";
+
+// The finish page is a React route; its router and runtime context are stood in here.
+const finishPageDouble = vi.hoisted(() => ({
+  replace: vi.fn<(...args: unknown[]) => unknown>(),
+  completedSession: null as unknown,
+}));
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({
+    replace: finishPageDouble.replace,
+    push: vi.fn<(...args: unknown[]) => unknown>(),
+    back: vi.fn<(...args: unknown[]) => unknown>(),
+  }),
+}));
+
+vi.mock("@/contexts/app-shell/presentation/app-runtime-context", () => ({
+  useAppRuntime: () => ({
+    completedSession: finishPageDouble.completedSession,
+    setCompletedSession: vi.fn<(...args: unknown[]) => unknown>(),
+  }),
+}));
 
 // ---------------------------------------------------------------------------
 // Shared fixtures
@@ -28,7 +51,7 @@ const mockSettings: AppSettings = {
 };
 
 const mockRuntime = {
-  runPromise: vi.fn().mockResolvedValue([]),
+  runPromise: vi.fn<(...args: unknown[]) => unknown>().mockResolvedValue([]),
 } as unknown as JournalRuntime;
 
 const routineWithRest: Routine = {
@@ -81,7 +104,8 @@ describeFeature(feature, ({ Scenario }) => {
   // Shared actor reference across scenarios
   let actor: Actor<typeof workoutSessionMachine>;
 
-  Scenario("Opening a blank workout starts the session", ({ Given, When, Then }) => {
+  // @scenario specs/apps/organiclever/app-web/behaviours/workout-session/workout-session.feature: Starting a blank workout lets the user begin logging sets
+  Scenario("Starting a blank workout lets the user begin logging sets", ({ Given, When, Then }) => {
     Given("the app shell has no selected routine", () => {
       actor = makeActor(null);
     });
@@ -91,12 +115,13 @@ describeFeature(feature, ({ Scenario }) => {
       actor.send({ type: "START" });
     });
 
-    Then("the workout is in active exercising state", () => {
+    Then("the user can log sets", () => {
       expect(actor.getSnapshot().matches("active.exercising")).toBe(true);
       actor.stop();
     });
   });
 
+  // @scenario specs/apps/organiclever/app-web/behaviours/workout-session/workout-session.feature: Log a set triggers rest timer
   Scenario("Log a set triggers rest timer", ({ Given, When, Then }) => {
     Given("an active workout with one exercise with rest", () => {
       actor = makeActor(routineWithRest);
@@ -120,7 +145,8 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
-  Scenario("Skip rest returns to exercising", ({ Given, When, Then }) => {
+  // @scenario specs/apps/organiclever/app-web/behaviours/workout-session/workout-session.feature: Skipping rest hides the rest timer
+  Scenario("Skipping rest hides the rest timer", ({ Given, When, Then }) => {
     Given("the rest timer is active", () => {
       actor = makeActor(routineWithRest);
       actor.start();
@@ -137,12 +163,13 @@ describeFeature(feature, ({ Scenario }) => {
       actor.send({ type: "SKIP_REST" });
     });
 
-    Then("the workout returns to exercising state", () => {
+    Then("the rest timer is hidden", () => {
       expect(actor.getSnapshot().matches("active.exercising")).toBe(true);
       actor.stop();
     });
   });
 
+  // @scenario specs/apps/organiclever/app-web/behaviours/workout-session/workout-session.feature: End workout shows confirmation sheet
   Scenario("End workout shows confirmation sheet", ({ Given, When, Then }) => {
     Given("an active workout", () => {
       actor = makeActor(null);
@@ -160,7 +187,8 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
-  Scenario("Discard workout returns to idle", ({ Given, When, Then }) => {
+  // @scenario specs/apps/organiclever/app-web/behaviours/workout-session/workout-session.feature: Discarding the workout ends it
+  Scenario("Discarding the workout ends it", ({ Given, When, Then }) => {
     Given("the user has opened the confirmation sheet", () => {
       actor = makeActor(null);
       actor.start();
@@ -173,13 +201,14 @@ describeFeature(feature, ({ Scenario }) => {
       actor.send({ type: "DISCARD" });
     });
 
-    Then("the workout is in idle state", () => {
+    Then("no workout is in progress", () => {
       expect(actor.getSnapshot().value).toBe("idle");
       actor.stop();
     });
   });
 
-  Scenario("Keep going continues exercising", ({ Given, When, Then }) => {
+  // @scenario specs/apps/organiclever/app-web/behaviours/workout-session/workout-session.feature: Keep going closes the confirmation sheet and the workout continues
+  Scenario("Keep going closes the confirmation sheet and the workout continues", ({ Given, When, Then }) => {
     Given("the user has opened the confirmation sheet", () => {
       actor = makeActor(null);
       actor.start();
@@ -192,9 +221,51 @@ describeFeature(feature, ({ Scenario }) => {
       actor.send({ type: "KEEP_GOING" });
     });
 
-    Then("the workout returns to exercising state", () => {
+    Then("the workout continues", () => {
       expect(actor.getSnapshot().matches("active.exercising")).toBe(true);
       actor.stop();
+    });
+  });
+
+  // @scenario specs/apps/organiclever/app-web/behaviours/workout-session/workout-session.feature: Opening /app/workout/finish without a finished workout returns to /app/home
+  Scenario("Opening /app/workout/finish without a finished workout returns to /app/home", ({ Given, When, Then }) => {
+    Given("no workout has been finished", () => {
+      finishPageDouble.completedSession = null;
+      finishPageDouble.replace.mockReset();
+    });
+
+    When("the user opens the workout finish page", () => {
+      render(<FinishPage />);
+    });
+
+    Then("the Home screen is visible", () => {
+      expect(finishPageDouble.replace).toHaveBeenCalledWith("/app/home");
+      cleanup();
+    });
+  });
+
+  // @scenario specs/apps/organiclever/app-web/behaviours/workout-session/workout-session.feature: Finishing a workout shows the workout summary
+  Scenario("Finishing a workout shows the workout summary", ({ Given, When, Then }) => {
+    Given("the user has finished a workout with one logged set", () => {
+      finishPageDouble.completedSession = {
+        durationSecs: 1800,
+        exercises: [{ name: "Push-up", sets: 1 }],
+        routineName: null,
+      };
+      finishPageDouble.replace.mockReset();
+    });
+
+    When("the user saves and finishes the workout", () => {
+      render(<FinishPage />);
+    });
+
+    Then("the workout summary is shown", () => {
+      expect(screen.getByText("Nice work.")).toBeTruthy();
+      expect(screen.getByText("Workout complete")).toBeTruthy();
+      expect(screen.getByText("Quick workout")).toBeTruthy();
+      expect(screen.getByText("Exercise breakdown")).toBeTruthy();
+      expect(finishPageDouble.replace).not.toHaveBeenCalled();
+      cleanup();
     });
   });
 });

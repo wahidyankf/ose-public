@@ -40,10 +40,9 @@ rm old-doc-1.md old-doc-2.md old-doc-3.md
 ## Practice 5: Run Affected Tests in the PR Gate Using Canonical Target Names
 
 **Principle**: The PR workflow's language jobs run affected `test:quick` for fast, consistent
-feedback; no git hook runs tests. Quick contains Unit runtime plus all applicable static
-`test:coverage:*` validators. Integration and E2E runtime never belongs in hooks or PR gates;
-developers may run impacted higher-layer tests manually, and scheduled full-quality workflows run
-the complete higher layers.
+feedback; no git hook runs tests. Quick contains Unit runtime and `test:behaviour:coverage`.
+Integration runtime runs in the PR gate for affected projects, E2E runtime runs on a schedule or on
+`main`, and neither runs in a git hook. Developers may run impacted higher-layer tests manually.
 
 **See**: [Behaviour-Driven Development](../../behaviour-driven-development.md) for what belongs at each test level.
 

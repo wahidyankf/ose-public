@@ -48,9 +48,10 @@ vi.mock("@open-sharia-enterprise/web-ui", () => ({
 
 import { Hero } from "@/features/landing/shell/hero";
 import { SocialIcons } from "@/features/landing/shell/social-icons";
+import { metadata } from "@/app/layout";
 
 const feature = await loadFeature(
-  path.resolve(process.cwd(), "../../specs/apps/ose/www/behaviours/frontend/landing/landing-page.feature"),
+  path.resolve(__dirname, "../../../../../specs/apps/ose/www/behaviours/frontend/landing/landing-page.feature"),
 );
 
 describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
@@ -64,7 +65,20 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
-  Scenario("Hero section displays platform information", ({ When, Then, And }) => {
+  // @scenario specs/apps/ose/www/behaviours/frontend/landing/landing-page.feature: The landing page is served at / with the site title
+  Scenario("The landing page is served at / with the site title", ({ When, Then }) => {
+    When("the landing page is rendered", () => {
+      render(<Hero />);
+    });
+
+    Then('the page title is "OSE Platform"', () => {
+      // The root layout's metadata is the title the home page is served with.
+      expect(metadata.title).toEqual({ default: "OSE Platform", template: "%s | OSE Platform" });
+    });
+  });
+
+  // @scenario specs/apps/ose/www/behaviours/frontend/landing/landing-page.feature: Hero shows the title and mission description
+  Scenario("Hero shows the title and mission description", ({ When, Then, And }) => {
     When("the landing page is rendered", () => {
       render(<Hero />);
     });
@@ -77,8 +91,15 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
       // The mission text "Built in the Open · Sharia-Compliant · Enterprise-Ready" is in a <strong>
       expect(screen.getByText(/Built in the Open/i)).toBeInTheDocument();
     });
+  });
 
-    And('the hero section contains a "Learn More" link to "/about/"', () => {
+  // @scenario specs/apps/ose/www/behaviours/frontend/landing/landing-page.feature: Hero links to About and to GitHub
+  Scenario("Hero links to About and to GitHub", ({ When, Then, And }) => {
+    When("the landing page is rendered", () => {
+      render(<Hero />);
+    });
+
+    Then('the hero section contains a "Learn More" link to "/about/"', () => {
       const link = screen.getByRole("link", { name: /Learn More/i });
       expect(link).toBeInTheDocument();
       expect(link).toHaveAttribute("href", "/about/");
@@ -90,6 +111,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ose/www/behaviours/frontend/landing/landing-page.feature: Social icons are displayed
   Scenario("Social icons are displayed", ({ When, Then, And }) => {
     When("the landing page is rendered", () => {
       render(<SocialIcons />);

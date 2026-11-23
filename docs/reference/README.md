@@ -33,6 +33,8 @@ platform, the Nx workspace, and the engineering systems that support an early pr
   workspace projects.
 - [Repository Adapter](../../repo-governance/development/quality/stacks/repository-adapter.md) — find which
   stack packs each project uses, the decisions they record, and each project's README.
+- [Gate Inventory](./gate-inventory.md) — find every check, its surface, scope, command, and the level
+  placement of its tests.
 - [SDLC Gate Standard](./sdlc-gate-standard.md) — understand the current gate contract and the
   historical 2026-07 standardization record.
 

@@ -336,14 +336,14 @@ and `unavailable` or `probe-failed`; install it from the step above or the
 
 ### Test git hooks
 
-**Pre-commit** (runs on every commit — the declared pre-commit gates, including `format-staged` and `markdownlint`):
+**Pre-commit** (runs on every commit — the declared pre-commit gate, `format-staged`):
 
 ```bash
 # Run the staged-file gate without creating a throwaway commit
 ./rhino gate run --surface pre-commit
 ```
 
-**Pre-push** (delegates to the same gate registry as pre-commit):
+**Pre-push** (runs the declared pre-push gate, the leak scan over the pushed range):
 
 ```bash
 # Run the pre-push gate set without creating a push
@@ -379,13 +379,12 @@ names, then run `npm run doctor` again.
 
 ### Pre-push hook times out
 
-The pre-push hook runs only its registry-declared gates (today the public-safety tree and range
-screens and environment validation) and no Nx target. If it is slow, the range
-screen is reading many outgoing commits: run `./rhino gate run --surface pre-push` to see which gate is
-slow, and push fewer commits at once.
+The pre-push hook runs only its registry-declared gate (today the leak scan over the pushed range) and no Nx
+target. If it is slow, the scan is reading many outgoing commits: run `./rhino gate run --surface pre-push` to see
+which gate is slow, and push fewer commits at once.
 
 The slow half of the local quality loop is the PR quality gate's Nx targets: `test:quick` (which itself
-composes types/lint, `test:unit`, and every applicable static `test:coverage:*` per project) and
+composes types/lint, `test:unit`, and the static `test:behaviour:coverage` per project) and
 `compat:min-version`. On a cold cache this takes a while. Warm them before opening the pull request:
 
 ```bash

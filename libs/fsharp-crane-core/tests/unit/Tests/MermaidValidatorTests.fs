@@ -44,6 +44,7 @@ let ``validateMd returns empty for valid mermaid`` () =
     Assert.Empty(result)
 
 [<Fact>]
+// @scenario specs/libs/fsharp-crane-core/behaviours/checks/checks.feature: An invalid Mermaid block is reported as a finding
 let ``validateMd returns finding for invalid mermaid`` () =
     let mdText = "```mermaid\nunknownType\n A-->B\n```"
     let result = validateMd mdText

@@ -22,26 +22,6 @@ let ``a Markdown fixture with a Mermaid block starting with "([^"]*)"`` (keyword
 let ``a Markdown fixture with a Mermaid block containing unbalanced "\["`` () =
     mdFixture <- "```mermaid\ngraph TD\n A[ unclosed\n```"
 
-[<Given>]
-let ``a Markdown fixture with one block per known diagram type`` () =
-    let blocks =
-        [ "graph"
-          "flowchart"
-          "sequenceDiagram"
-          "stateDiagram"
-          "classDiagram"
-          "gantt"
-          "pie"
-          "erDiagram"
-          "journey"
-          "gitGraph"
-          "mindmap"
-          "timeline" ]
-        |> List.map (fun t -> sprintf "```mermaid\n%s\n```" t)
-        |> String.concat "\n\n"
-
-    mdFixture <- blocks
-
 // ---- BDD When steps ----
 
 [<When>]

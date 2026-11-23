@@ -39,3 +39,10 @@ describe("TabBar", () => {
     expect(screen.getByText("History")).toBeTruthy();
   });
 });
+
+describe("TabBar structure", () => {
+  it("keeps the tablist role on a div, with no navigation tag", () => {
+    render(<TabBar tabs={tabs} current="home" onChange={() => {}} />);
+    expect(screen.getByRole("tablist").tagName).toBe("DIV");
+  });
+});

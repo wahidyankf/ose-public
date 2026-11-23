@@ -245,9 +245,7 @@ function openLearnHome(): void {
 
 /** Let Radix's portal mount, its focus scope run, and its close-focus restore settle. */
 async function settle(): Promise<void> {
-  await act(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 0));
-  });
+  await act(async () => {});
 }
 
 /** Save progress a reader can lose: every page of the path's first course, through its own control. */
@@ -269,11 +267,11 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
-  Scenario("Marking a page complete is saved in this browser only", ({ Given, When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: A completed page stays completed after a reload
+  Scenario("A completed page stays completed after a reload", ({ Given, When, Then, And }) => {
     Given("a reader has no saved progress", () => {
       noSavedProgress();
       expect(window.localStorage.getItem(PROGRESS_STORAGE_KEY)).toBeNull();
-      watchNetwork();
     });
 
     When("the reader marks a learning page as complete", () => {
@@ -291,14 +289,29 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(completionToggle().getAttribute("aria-pressed")).toBe("true");
       expect(completedPages()).toEqual(["learning/beginner"]);
     });
+  });
 
-    And("no network request sent while marking carries the progress data", () => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: Marking a page complete is saved in this browser only
+  Scenario("Marking a page complete is saved in this browser only", ({ Given, When, Then }) => {
+    Given("a reader has no saved progress", () => {
+      noSavedProgress();
+      expect(window.localStorage.getItem(PROGRESS_STORAGE_KEY)).toBeNull();
+      watchNetwork();
+    });
+
+    When("the reader marks a learning page as complete", () => {
+      openLessonPage({ pagePath: "learning/beginner", pathParam: PATH_ID });
+      fireEvent.click(completionToggle());
+    });
+
+    Then("no network request sent while marking carries the progress data", () => {
       expect(networkCalls).toEqual([]);
       expect(JSON.stringify(storedRecord())).toContain("learning/beginner");
       stopWatchingNetwork();
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: A completed page can be un-checked
   Scenario("A completed page can be un-checked", ({ Given, When, Then, And }) => {
     Given("a reader has marked a learning page as complete", () => {
       noSavedProgress();
@@ -329,6 +342,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
   // below reads the shared key, or re-reads it on a `storage` event.
   // -------------------------------------------------------------------------
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: Progress is shared by every path that contains the course
   Scenario("Progress is shared by every path that contains the course", ({ Given, When, Then, And }) => {
     let secondPath: PathManifest;
 
@@ -361,6 +375,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: Unreadable saved progress is ignored and replaced
   Scenario("Unreadable saved progress is ignored and replaced", ({ Given, When, Then, And }) => {
     Given("the saved progress record cannot be read as valid progress", () => {
       window.localStorage.setItem(PROGRESS_STORAGE_KEY, "not json");
@@ -398,6 +413,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: Progress updates in another open tab
   Scenario("Progress updates in another open tab", ({ Given, When, Then }) => {
     let container: HTMLElement;
     let firstHeadline: HTMLElement;
@@ -436,6 +452,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: Resetting progress clears it after confirmation
   Scenario("Resetting progress clears it after confirmation", ({ Given, When, Then, And }) => {
     Given("a reader has saved progress", () => {
       saveProgress();
@@ -467,6 +484,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: Cancelling a reset keeps progress
   Scenario("Cancelling a reset keeps progress", ({ Given, When, Then, And }) => {
     let savedRecord = "";
 
@@ -492,8 +510,12 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByText("1 of 3 core courses done")).toBeTruthy();
     });
 
-    And('focus returns to the "Reset progress" button', () => {
-      expect(document.activeElement).toBe(screen.getByRole("button", { name: "Reset progress…" }));
+    And('focus returns to the "Reset progress" button', async () => {
+      const trigger = screen.getByRole("button", { name: "Reset progress…" });
+      // Radix restores focus in a deferred task; wait on the condition itself, not a fixed delay.
+      await vi.waitFor(() => {
+        expect(document.activeElement).toBe(trigger);
+      });
     });
   });
 
@@ -509,7 +531,8 @@ describeFeature(feature, ({ Scenario, Background }) => {
   // the E2E binding's proof (tech-docs/006 E2E Techniques, S8).
   // -------------------------------------------------------------------------
 
-  Scenario("Progress appears without moving the page", ({ Given, When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: Progress appears without the page layout shifting
+  Scenario("Progress appears without the page layout shifting", ({ Given, When, Then, And }) => {
     /** The order the feature names the screens in, which is the order they are walked here. */
     const S8_SCREENS = ["a path page", "a learning page", "a course landing page", "the Learn home"] as const;
 
@@ -582,6 +605,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature: The site still works when browser storage is blocked
   Scenario("The site still works when browser storage is blocked", ({ Given, When, Then, And }) => {
     Given("the browser refuses to read or write site storage", () => {
       noSavedProgress();

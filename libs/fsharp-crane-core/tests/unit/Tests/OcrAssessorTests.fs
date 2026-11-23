@@ -38,6 +38,7 @@ let ``checkOCRQuality returns empty for clean OCR`` () =
     Assert.Empty(result)
 
 [<Fact>]
+// @scenario specs/libs/fsharp-crane-core/behaviours/checks/checks.feature: OCR text with a high error rate is CRITICAL
 let ``checkOCRQuality returns CRITICAL for high error rate`` () =
     // 20 non-ASCII + 80 digits = 20% > 10% -> CRITICAL
     let nonAscii = System.String('é', 20)

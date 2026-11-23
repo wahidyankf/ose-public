@@ -54,3 +54,25 @@ let ``the finding includes the OCR page number`` () =
     let locationMd = first.GetProperty("location_md")
     Assert.Equal(System.Text.Json.JsonValueKind.String, locationMd.ValueKind)
     Assert.NotEmpty(locationMd.GetString())
+
+[<Then>]
+let ``the JSON output names (\d+) OCR sections?`` (count: int) =
+    let doc = System.Text.Json.JsonDocument.Parse(LastOutput)
+    Assert.Equal(count, doc.RootElement.GetArrayLength())
+
+// ---- BDD PDF steps for crane ocr extract ----
+
+let mutable private pdfFixture: string = ""
+
+[<Given>]
+let ``a PDF fixture with one OCR-tagged section`` () =
+    pdfFixture <- "<!-- OCR: Scanned page text is readable enough -->"
+
+[<When>]
+let ``I run "crane ocr extract" on the PDF fixture`` () =
+    RunWithWriter(fun w ->
+        let sections = extractOCRSections pdfFixture
+        let opts = System.Text.Json.JsonSerializerOptions()
+        opts.DefaultIgnoreCondition <- System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+        w.WriteLine(System.Text.Json.JsonSerializer.Serialize(sections, opts))
+        0)

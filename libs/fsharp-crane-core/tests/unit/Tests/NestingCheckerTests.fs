@@ -22,6 +22,7 @@ let ``checkNesting returns empty for matching single-level lists`` () =
     Assert.Empty(result)
 
 [<Fact>]
+// @scenario specs/libs/fsharp-crane-core/behaviours/checks/checks.feature: Inverted list nesting is a HIGH finding
 let ``checkNesting detects inverted nesting as HIGH`` () =
     let pdfText = "- parent\n  - child"
     let mdText = "- child\n- parent"

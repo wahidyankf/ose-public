@@ -1,9 +1,9 @@
 import path from "node:path";
-import fs from "node:fs/promises";
 import matter from "gray-matter";
 import { frontmatterSchema } from "@/features/content/core/schemas";
 import type { ContentMeta } from "../core/types";
 import { env } from "../../../env";
+import { nodeContentFileSystem, type ContentFileSystem } from "./repository-fs";
 
 const CONTENT_DIR = env.AYOKODING_WEB_CONTENT_DIR ?? path.resolve(process.cwd(), "content");
 
@@ -25,13 +25,13 @@ export function deriveSlug(filePath: string, contentDir: string): { locale: stri
   return { locale, slug, isSection };
 }
 
-async function globMarkdownFiles(dir: string): Promise<string[]> {
+async function globMarkdownFiles(dir: string, io: ContentFileSystem): Promise<string[]> {
   const files: string[] = [];
-  const entries = await fs.readdir(dir, { withFileTypes: true });
+  const entries = await io.readdir(dir);
   for (const entry of entries) {
     const fullPath = path.join(dir, entry.name);
     if (entry.isDirectory()) {
-      const subFiles = await globMarkdownFiles(fullPath);
+      const subFiles = await globMarkdownFiles(fullPath, io);
       files.push(...subFiles);
     } else if (entry.name.endsWith(".md")) {
       files.push(fullPath);
@@ -40,14 +40,17 @@ async function globMarkdownFiles(dir: string): Promise<string[]> {
   return files;
 }
 
-export async function readAllContent(contentDir?: string): Promise<ContentMeta[]> {
+export async function readAllContent(
+  contentDir?: string,
+  io: ContentFileSystem = nodeContentFileSystem,
+): Promise<ContentMeta[]> {
   const dir = contentDir ?? CONTENT_DIR;
-  const files = await globMarkdownFiles(dir);
+  const files = await globMarkdownFiles(dir, io);
   const results: ContentMeta[] = [];
 
   for (const filePath of files) {
     try {
-      const raw = await fs.readFile(filePath, "utf-8");
+      const raw = await io.readFile(filePath);
       const { data } = matter(raw);
       const parsed = frontmatterSchema.safeParse(data);
 
@@ -85,8 +88,9 @@ export async function readAllContent(contentDir?: string): Promise<ContentMeta[]
 
 export async function readFileContent(
   filePath: string,
+  io: ContentFileSystem = nodeContentFileSystem,
 ): Promise<{ content: string; frontmatter: Record<string, unknown> }> {
-  const raw = await fs.readFile(filePath, "utf-8");
+  const raw = await io.readFile(filePath);
   const { content, data } = matter(raw);
   return { content, frontmatter: data as Record<string, unknown> };
 }

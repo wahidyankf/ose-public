@@ -39,12 +39,12 @@ did not start is E2E, because the test observes a public boundary it does not ow
 ## Gherkin and Targets
 
 Every applicable Integration scenario maps the owner's canonical `behaviours/` corpus to substantive
-`test:integration` proof. `test:coverage:integration` validates that mapping statically and never
+`test:integration` proof. `test:behaviour:coverage` validates that mapping statically and never
 executes tests. A genuine boundary mismatch may use `@integration-exempt` only under the canonical
 [coverage and exemption contract](../../../../../repo-governance/development/behaviour-driven-development/coverage-exemptions-and-execution.md).
 
-Run impacted Integration tests manually during development and review. Never place Integration
-runtime in pre-commit, pre-push, PR quality gates, `test:quick`, or `test:coverage:*`.
+Run impacted Integration tests during development and review. Integration runtime runs in the pull-request
+gate as `test:integration` for affected projects. Never place it in pre-commit, pre-push, or `test:quick`.
 Scheduled/manual full-quality CI runs the complete Integration suite before complete E2E.
 
 ## Review Checklist
@@ -53,4 +53,4 @@ Scheduled/manual full-quality CI runs the complete Integration suite before comp
 - [ ] Setup, subject, and assertions stay within the Integration boundary.
 - [ ] Resources and synthetic data are isolated and cleaned deterministically.
 - [ ] The scenario has mandatory Unit proof and an exact Integration binding or valid exemption.
-- [ ] The runtime target is absent from fast hooks and PR gates.
+- [ ] The runtime target is absent from hooks and `test:quick`, and present in the pull-request gate.

@@ -58,6 +58,5 @@ AyoKoding course content under `apps/ayokoding-www/content/`, so `csharpier`, `p
 | `actionlint` | every workflow, when a workflow or local composite action path changes | `actionlint`                           |
 
 These are **not** Nx targets. Targets such as `shell:lint`, `dockerfiles:lint`, and `actions:lint`
-**must not exist** as Nx targets — the gates run over the staged paths at pre-commit and the
-changed paths on the pull-request surface, through `scripts/lint-shell`,
+**must not exist** as Nx targets — the gates run over the changed paths on the pull-request surface, through `scripts/lint-shell`,
 `scripts/lint-dockerfiles`, and `scripts/lint-workflows`.

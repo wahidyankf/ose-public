@@ -7,7 +7,7 @@ gaps; judge them from the listed folders (Categories 1, 2, 8, and 9), per the
 [Specs Quality Gate](../../../../repo-governance/workflows/quality/specs-quality-gate.md).
 Use `./rhino md internal-link validate` for missing Markdown link targets (it does not check
 `#fragment` anchors) and
-the project `test:coverage:behaviour` target for explicit When/Then and corpus structure (it checks
+the project `test:behaviour:coverage` target for explicit When/Then and corpus structure (it checks
 the Gherkin corpus only, not the layout).
 
 In a quality-gate invocation, skip a command and any LLM substitute when the gate's Deterministic Boundary lists

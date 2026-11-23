@@ -20,7 +20,7 @@ and is re-run whenever `AGENTS.md` changes.
 ## Rule 5 — Deterministic Parity Guard (AD7)
 
 A deterministic, agent-free CLI check, `./rhino harness adapters validate`, runs as the
-`harness-adapters` gate on the pre-commit and pull-request surfaces. It performs two assertions:
+`harness-adapters` gate on the pull-request surface. It performs two assertions:
 
 1. **Byte-equality**: for each generated binding file, re-derive it from `AGENTS.md` in memory and
    assert it matches the committed file exactly (a sync no-op, analogous to the existing agent-sync

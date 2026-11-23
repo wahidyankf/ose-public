@@ -36,6 +36,7 @@ const feature = await loadFeature(
 describeFeature(feature, ({ Scenario }) => {
   let actor: Actor<typeof appMachine>;
 
+  // @scenario specs/apps/organiclever/app-web/behaviours/settings/dark-mode.feature: Toggle dark mode on
   Scenario("Toggle dark mode on", ({ Given, When, Then }) => {
     Given("the settings screen shows dark mode is off", () => {
       actor = makeActor(false);
@@ -52,6 +53,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
+  // @scenario specs/apps/organiclever/app-web/behaviours/settings/dark-mode.feature: Toggle dark mode off
   Scenario("Toggle dark mode off", ({ Given, When, Then }) => {
     Given("the user has enabled dark mode", () => {
       actor = makeActor(true);

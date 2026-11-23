@@ -1,7 +1,9 @@
+/* oxlint-disable vitest/no-standalone-expect -- @effect/vitest it.effect blocks inside layer() are not recognised as test blocks */
 import { layer } from "@effect/vitest";
 import { Effect, Layer } from "effect";
 import { PGlite } from "@electric-sql/pglite";
-import { expect } from "vitest";
+import { afterEach, beforeEach, expect } from "vitest";
+import { FIXED_MS, freezeClock, restoreClock } from "../../../support/doubles";
 import { PgliteService, StorageUnavailable } from "@/contexts/journal/application";
 import { runMigrations } from "@/contexts/journal/application";
 import {
@@ -10,6 +12,9 @@ import {
   getVolume,
   getExerciseProgress,
 } from "../../../../../src/contexts/stats/application/stats";
+
+beforeEach(() => freezeClock());
+afterEach(() => restoreClock());
 
 // ---------------------------------------------------------------------------
 // A PGlite handle whose `query` returns a pre-scripted sequence of
@@ -58,7 +63,7 @@ const TestPgliteLayer = Layer.scoped(
 // ---------------------------------------------------------------------------
 
 function daysAgo(n: number): string {
-  const d = new Date();
+  const d = new Date(FIXED_MS);
   d.setDate(d.getDate() - n);
   d.setHours(10, 0, 0, 0);
   return d.toISOString();
@@ -152,7 +157,7 @@ layer(TestPgliteLayer)("stats - getLast7Days", (it) => {
       yield* Effect.promise(() => seedFixture(db));
 
       const days = yield* getLast7Days();
-      const today = new Date();
+      const today = new Date(FIXED_MS);
       today.setHours(0, 0, 0, 0);
       const lastDay = days[days.length - 1];
       expect(lastDay).toBeDefined();

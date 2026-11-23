@@ -1,6 +1,7 @@
 import path from "path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
 import { render, screen, cleanup } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { axe } from "vitest-axe";
 import { expect } from "vitest";
 
@@ -20,7 +21,8 @@ function renderLabelWithInput() {
 }
 
 describeFeature(feature, ({ Scenario }) => {
-  Scenario("Renders with text content", ({ When, Then, And }) => {
+  // @scenario specs/libs/web-ui/behaviours/label/label.feature: A label shows its text
+  Scenario("A label shows its text", ({ When, Then }) => {
     let label: HTMLElement;
 
     When('the Label is rendered with text "Email"', () => {
@@ -32,38 +34,29 @@ describeFeature(feature, ({ Scenario }) => {
     Then('the label element with text "Email" should be present', () => {
       expect(label.textContent).toBe("Email");
     });
-
-    And('the label should have data-slot "label"', () => {
-      expect(label.getAttribute("data-slot")).toBe("label");
-    });
   });
 
-  Scenario("Associates with form control via htmlFor", ({ When, Then }) => {
-    let container: HTMLElement;
-
+  // @scenario specs/libs/web-ui/behaviours/label/label.feature: A label names its form control and focuses it when clicked
+  Scenario("A label names its form control and focuses it when clicked", ({ When, Then, And }) => {
     When('the Label is rendered with text "Email" associated to input "email-input"', () => {
       cleanup();
-      container = renderLabelWithInput().container;
+      renderLabelWithInput();
       expect(screen.getByLabelText("Email").getAttribute("id")).toBe("email-input");
     });
 
-    Then("the label and input association should have no accessibility violations", async () => {
-      const results = await axe(container);
-      expect(results).toHaveNoViolations();
-    });
-  });
-
-  Scenario("Has no accessibility violations", ({ When, Then }) => {
-    let container: HTMLElement;
-
-    When('the Label is rendered with text "Email" associated to input "email-input"', () => {
+    // The DOM is cleaned between steps, so the click is performed in the step that asserts it.
+    Then("clicking the label focuses its input and names it", async () => {
       cleanup();
-      container = renderLabelWithInput().container;
-      expect(screen.getByLabelText("Email")).toBeDefined();
+      renderLabelWithInput();
+      const user = userEvent.setup();
+      await user.click(screen.getByText("Email"));
+      expect(document.activeElement).toBe(screen.getByLabelText("Email"));
     });
 
-    Then("the label and input association should have no accessibility violations", async () => {
-      const results = await axe(container);
+    And("the label and input association should have no accessibility violations", async () => {
+      cleanup();
+      const rendered = renderLabelWithInput().container;
+      const results = await axe(rendered);
       expect(results).toHaveNoViolations();
     });
   });

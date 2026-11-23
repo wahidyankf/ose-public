@@ -1,9 +1,10 @@
 """E2E bindings for the interpreter guard: the published artifact started by an interpreter that cannot run it.
 
 The process here is the real one — the built zipapp, its own generated entry point, a real ``PATH`` search, and a
-real restart. The older interpreter is a real one too: the system ``python3`` of every supported host predates 3.14,
-so the archive is parsed and run by an interpreter that genuinely cannot run FERRET, and a construct it cannot parse
-would surface as the traceback the last step rules out. One thing is injected, in a driver that runs before the
+real restart. The older interpreter is a real one too: the system ``python3`` of a host that still ships one predates
+3.14, so the archive is parsed and run by an interpreter that genuinely cannot run FERRET, and a construct it cannot
+parse would surface as the traceback the last step rules out. A 3.14-only host has no such interpreter, so its three
+examples skip instead of failing. One thing is injected, in a driver that runs before the
 archive's entry point: an empty list of fallback directories, so the host the guard searches is exactly the ``PATH``
 each example builds rather than whatever this machine has installed.
 
@@ -24,7 +25,7 @@ from pytest_bdd import given, parsers, scenario, then, when
 
 FEATURE = "../../../../specs/apps/ferret/cli/behaviours/harness/fail-open-capabilities-and-platforms.feature"
 
-#: Where a host keeps the interpreter it ships, which every supported host has and none yet ships at 3.14.
+#: Where a host keeps the interpreter it ships; 3.14-only hosts have none of these below 3.14 and skip.
 SYSTEM_INTERPRETERS = ("/usr/bin/python3", *(f"/usr/bin/python3.{minor}" for minor in range(13, 7, -1)))
 REQUIRED_LINE = "ferret: requires Python 3.14 or newer, running {running}; set FERRET_PYTHON to a suitable interpreter"
 
@@ -69,10 +70,11 @@ def older_interpreters() -> Iterator[OlderInterpreter]:
 
 @pytest.fixture(scope="module")
 def older_interpreter() -> OlderInterpreter:
-    """The host's own older interpreter; a host without one cannot answer these examples, so that fails loudly."""
+    """The host's own older interpreter; a host without one cannot answer these examples, so they skip."""
     found = next(older_interpreters(), None)
     if found is None:
-        pytest.fail(f"no interpreter older than 3.14 at any of {SYSTEM_INTERPRETERS}", pytrace=False)
+        pytest.skip(f"no interpreter older than 3.14 at any of {SYSTEM_INTERPRETERS}")
+    assert found is not None  # Narrowed by the skip above; kept for pyright strict.
     return found
 
 
@@ -106,6 +108,7 @@ def reachable_supported_interpreter(started: Started, interpreters: Path) -> Non
     shim.chmod(0o755)
 
 
+# @scenario specs/apps/ferret/cli/behaviours/harness/fail-open-capabilities-and-platforms.feature: Run on a host whose default interpreter is older than FERRET requires
 @scenario(FEATURE, "Run on a host whose default interpreter is older than FERRET requires")
 def test_run_on_a_host_whose_default_interpreter_is_older_than_ferret_requires() -> None:
     """Bound to the feature outline; each example expands independently."""

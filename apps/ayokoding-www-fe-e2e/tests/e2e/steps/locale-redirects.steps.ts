@@ -1,3 +1,5 @@
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/i18n/locale-redirects.feature: The root URL enters the default locale
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/i18n/locale-redirects.feature: Uppercase locale URLs redirect to lowercase canonical URLs
 import { expect } from "@playwright/test";
 import { createBdd } from "playwright-bdd";
 import type { Page, Response } from "@playwright/test";

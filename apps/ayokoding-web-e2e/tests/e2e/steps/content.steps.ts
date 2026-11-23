@@ -4,9 +4,14 @@
 import { createBdd } from "playwright-bdd";
 import { expect } from "@playwright/test";
 import { bodyOf, fetchText, gotoPage, statusOf } from "../support/http";
-import { stateFor } from "../support/state";
+import { freePort, spawnBinary } from "../support/servers";
+import { stateFor, trackOwned } from "../support/state";
 
 const { Given, When, Then } = createBdd();
+
+// Behaviour corpus binding (contract C13). The Playwright home runs the whole
+// content-rendering feature; no scenario here is exempt.
+// @scenario specs/apps/ayokoding/web/behaviours/content/content-rendering.feature: *
 
 Given("a published Markdown lesson exists in the shared corpus", async ({ page }) => {
   await gotoPage(page, "/en/learn/courses/go-basics/learning/hello-world");
@@ -22,7 +27,7 @@ Then("the response contains the lesson title and readable article body", async (
   expect(bodyOf(page)).toContain("article-body");
 });
 
-Then("the response does not depend on a Next.js build artifact", async ({ page }) => {
+Then("the response does not depend on a client-side build artifact", async ({ page }) => {
   for (const marker of ["_next/", "next/dist", "__NEXT_DATA__"]) {
     expect(bodyOf(page)).not.toContain(marker);
   }
@@ -59,10 +64,30 @@ Given("draft viewing is disabled", async () => {
   // The suite server runs without AYOKODING_WEB_SHOW_DRAFTS.
 });
 
-When("a reader requests the lesson or searches the corpus", async ({ page }) => {
-  await fetchText(page, "/en/learn/courses/go-basics/learning/draft-note");
-  expect(statusOf(page)).toBe(404);
+// The draft route is requested on the scenario's own server when a Given
+// started one (draft viewing on); otherwise on the Playwright suite server.
+When("a reader requests the draft lesson's route", async ({ page }) => {
+  const base = stateFor(page).spawnedUrl ?? "";
+  await fetchText(page, `${base}/en/learn/courses/go-basics/learning/draft-note`);
+});
+
+When("a reader searches the corpus", async ({ page }) => {
   await fetchText(page, "/en/search?q=draft");
+});
+
+Given("AYOKODING_WEB_SHOW_DRAFTS is set to true for the app", async ({ page }) => {
+  const spawned = await spawnBinary({
+    AYOKODING_WEB_FIXTURE: "parity",
+    AYOKODING_WEB_SHOW_DRAFTS: "true",
+    AYOKODING_WEB_PORT: String(await freePort()),
+  });
+  trackOwned(page, spawned);
+  stateFor(page).spawnedUrl = spawned.url;
+});
+
+Then("the draft lesson's page shows its title and body", async ({ page }) => {
+  expect(statusOf(page)).toBe(200);
+  expect(bodyOf(page)).toContain("<h1>Draft</h1>");
 });
 
 Then("the lesson is absent from the public results", async ({ page }) => {

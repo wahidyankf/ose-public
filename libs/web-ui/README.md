@@ -47,6 +47,13 @@ nx run web-ui:test:unit        # Unit tests with vitest-axe
 nx run web-ui:test:quick       # Unit + static coverage (Unit lines >=99%)
 ```
 
+### Coverage Exclusions
+
+The unit run measures every file under `src/**/*.{ts,tsx}` except these two categories, kept in `vitest.config.ts`:
+
+- `src/**/*.stories.{ts,tsx}` (category N): Storybook stories, non-production code.
+- `src/types/**` (category N): `vitest-axe.d.ts`, a type declaration for test-support matchers.
+
 ## Storybook
 
 ```bash
@@ -82,6 +89,5 @@ All components follow the patterns in [Component Patterns Convention](../../repo
 
 The canonical corpus is `specs/libs/web-ui/behaviours/`. `test:unit` runs component adapters in
 process, while `test:e2e` drives Chromium against Storybook as the library's genuine public browser
-boundary. Matching `test:coverage:unit`, `test:coverage:e2e`, `test:coverage:behaviour`, and
-aggregate `test:coverage` validate both adapters statically. Integration is omitted because the
+boundary. `test:behaviour:coverage` validates both adapters statically. Integration is omitted because the
 library owns no non-networked local-resource boundary.

@@ -6,7 +6,7 @@ runs:
     # The patch version is a literal so CI runs the interpreter the projects pin. It must equal
     # apps/ferret-cli/.python-version and apps/ferret-cli-e2e/.python-version.
     - name: Setup Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
       with:
         python-version: "3.14.7"
 

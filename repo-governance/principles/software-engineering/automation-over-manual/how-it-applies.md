@@ -40,9 +40,9 @@ exec ./hippo run --class transactional --resource-tier standard --disk-path . --
 
 ## Commit Message Validation
 
-**Context**: Keeping commit messages safe to publish and in the agreed format.
+**Context**: Keeping commit messages in the agreed format.
 
-**Automation**: `.husky/commit-msg` hook + the `public-safety-commit-message` gate
+**Automation**: `.husky/commit-msg` hook + the `commit-message` gate (Commitlint)
 
 ```sh
 #!/usr/bin/env sh
@@ -55,9 +55,9 @@ exec ./hippo run --class ephemeral --resource-tier light --disk-path . -- \
 
 **What it automates**:
 
-- Screens every commit message for public-safety shapes
-- Blocks the commit on a finding
+- Checks every commit message against the Conventional Commits format in `commitlint.config.js`
+- Blocks the commit on a violation
+- Checks each commit of a pull request's range in the pull-request gate
 
-**What it does not automate**: the Conventional Commits format. `commitlint.config.js` is kept so a
-message can be checked on demand, but no hook or CI step runs it, so review catches format drift
-today — the manual path this principle would otherwise avoid.
+**What it does not automate**: whether a commit is cohesive and independently revertible. Review checks that, the
+manual path this principle would otherwise avoid.

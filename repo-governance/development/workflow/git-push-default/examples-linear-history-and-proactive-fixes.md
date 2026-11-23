@@ -38,5 +38,5 @@ finds:
 ```
 
 Correct behaviour: retag the step `[AI]`, route it through the default `worktree-to-pr` flow (branch,
-PR, exact-current-head/base `Quality gate`, `[AI]` merge once the hardened preconditions hold), and
+PR, exact-current-head/base `quality-gate`, `[AI]` merge once the hardened preconditions hold), and
 include the fix in the same commit as the plan work.

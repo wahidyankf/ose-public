@@ -46,7 +46,7 @@
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npx oxlint --jsx-a11y-plugin . && npx eslint .",
+        "command": "npx oxlint -c oxlint.json --jsx-a11y-plugin --deny-warnings . && npx eslint --max-warnings 0 .",
         "cwd": "{projectRoot}"
       },
       "inputs": [
@@ -89,7 +89,7 @@
             "forwardAllArgs": false
           },
           {
-            "command": "npm exec -- nx run ose-app-web:test:coverage",
+            "command": "npm exec -- nx run ose-app-web:test:behaviour:coverage",
             "forwardAllArgs": false
           }
         ],
@@ -99,14 +99,20 @@
       "cache": true,
       "inputs": [
         "default",
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/ose-app-web/behaviour-coverage.json",
         "{workspaceRoot}/package-lock.json",
         "{workspaceRoot}/specs/apps/ose/app-web/behaviours/**/*.feature",
         "{workspaceRoot}/apps/ose-app-web/tests/unit/**/*.{ts,tsx,fs}",
         "{workspaceRoot}/apps/ose-app-web/vitest.config.ts",
         "{workspaceRoot}/apps/ose-app-web-e2e/steps/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/ose-app-web-e2e/playwright.config.ts"
+        "{workspaceRoot}/apps/ose-app-web-e2e/playwright.config.ts",
+        "{workspaceRoot}/repo-config.yml",
+        "{workspaceRoot}/rhino.lock",
+        "{workspaceRoot}/specs/**/*",
+        "{workspaceRoot}/apps/ayokoding-www/content/**/*.feature",
+        "{workspaceRoot}/apps/*/tests/**/*",
+        "{workspaceRoot}/apps/*-e2e/steps/**/*",
+        "{workspaceRoot}/apps/*-e2e/src/**/*",
+        "{workspaceRoot}/libs/*/tests/**/*"
       ]
     },
     "storybook": {
@@ -132,87 +138,22 @@
       },
       "cache": false
     },
-    "test:coverage:unit": {
+    "test:behaviour:coverage": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config apps/ose-app-web/behaviour-coverage.json --adapter unit"
+        "command": "./rhino behaviour coverage validate",
+        "cwd": "{workspaceRoot}"
       },
       "cache": true,
       "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/ose-app-web/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/apps/ose/app-web/behaviours/**/*.feature",
-        "{workspaceRoot}/apps/ose-app-web/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/ose-app-web/vitest.config.ts",
-        "{workspaceRoot}/apps/ose-app-web-e2e/steps/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/ose-app-web-e2e/playwright.config.ts"
-      ]
-    },
-    "test:coverage:e2e": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config apps/ose-app-web/behaviour-coverage.json --adapter e2e"
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/ose-app-web/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/apps/ose/app-web/behaviours/**/*.feature",
-        "{workspaceRoot}/apps/ose-app-web/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/ose-app-web/vitest.config.ts",
-        "{workspaceRoot}/apps/ose-app-web-e2e/steps/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/ose-app-web-e2e/playwright.config.ts"
-      ]
-    },
-    "test:coverage:behaviour": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config apps/ose-app-web/behaviour-coverage.json --adapter behaviour"
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/ose-app-web/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/apps/ose/app-web/behaviours/**/*.feature",
-        "{workspaceRoot}/apps/ose-app-web/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/ose-app-web/vitest.config.ts",
-        "{workspaceRoot}/apps/ose-app-web-e2e/steps/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/ose-app-web-e2e/playwright.config.ts"
-      ]
-    },
-    "test:coverage": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          {
-            "command": "npm exec -- nx run ose-app-web:test:coverage:unit",
-            "forwardAllArgs": false
-          },
-          {
-            "command": "npm exec -- nx run ose-app-web:test:coverage:e2e",
-            "forwardAllArgs": false
-          },
-          {
-            "command": "npm exec -- nx run ose-app-web:test:coverage:behaviour",
-            "forwardAllArgs": false
-          }
-        ],
-        "parallel": false,
-        "forwardAllArgs": false
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/ose-app-web/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/apps/ose/app-web/behaviours/**/*.feature",
-        "{workspaceRoot}/apps/ose-app-web/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/ose-app-web/vitest.config.ts",
-        "{workspaceRoot}/apps/ose-app-web-e2e/steps/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/ose-app-web-e2e/playwright.config.ts"
+        "{workspaceRoot}/repo-config.yml",
+        "{workspaceRoot}/rhino.lock",
+        "{workspaceRoot}/specs/**/*",
+        "{workspaceRoot}/apps/ayokoding-www/content/**/*.feature",
+        "{workspaceRoot}/apps/*/tests/**/*",
+        "{workspaceRoot}/apps/*-e2e/steps/**/*",
+        "{workspaceRoot}/apps/*-e2e/src/**/*",
+        "{workspaceRoot}/libs/*/tests/**/*"
       ]
     }
   },

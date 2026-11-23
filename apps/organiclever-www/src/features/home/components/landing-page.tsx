@@ -67,11 +67,12 @@ function AlphaBanner() {
   );
 }
 
-export function LandingPage() {
-  const goApp = () => {
-    window.location.href = "/app/home";
-  };
+// Module scope: the handler captures nothing from the component, so each render need not rebuild it.
+const goApp = () => {
+  window.location.href = "/app/home";
+};
 
+export function LandingPage() {
   return (
     <div
       data-testid="landing-surface"

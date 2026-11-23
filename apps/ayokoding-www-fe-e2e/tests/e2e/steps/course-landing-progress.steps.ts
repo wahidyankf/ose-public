@@ -1,3 +1,5 @@
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/course-landing-progress.feature: A started course shows its progress and a Continue button
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/course-landing-progress.feature: A finished course offers a review
 import { createBdd } from "playwright-bdd";
 import { expect, type Page } from "@playwright/test";
 import { completeCourseThroughUi } from "./support/complete-course";

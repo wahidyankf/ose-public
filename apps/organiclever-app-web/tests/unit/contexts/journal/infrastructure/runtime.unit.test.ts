@@ -11,7 +11,7 @@ import { StorageUnavailable } from "../../../../../src/contexts/journal/domain/e
 
 describe("runtime - makeJournalRuntime", () => {
   it("acquires and releases the PGlite handle", async () => {
-    const closeSpy = vi.fn().mockResolvedValue(undefined);
+    const closeSpy = vi.fn<(...args: unknown[]) => unknown>().mockResolvedValue(undefined);
 
     const spyLayer = Layer.scoped(
       PgliteService,

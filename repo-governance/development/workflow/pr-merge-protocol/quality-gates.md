@@ -5,7 +5,7 @@ when_to_use: Use when confirming which gates a PR must pass before merge, or whe
 
 # Quality Gates
 
-Every PR requires the `Quality gate` check emitted by
+Every PR requires the `quality-gate` check emitted by
 `.github/workflows/pr-quality-gate.yml`. Verify that GitHub associates the successful run with the
 PR's exact current head SHA and current base branch; stale evidence never authorizes merge. This is
 the sole default automated PR gate. Do not rerun locally or imitate predicates already owned by

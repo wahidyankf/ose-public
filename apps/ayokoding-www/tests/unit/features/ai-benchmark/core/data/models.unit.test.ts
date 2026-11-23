@@ -3,6 +3,7 @@ import {
   ANCHORED_TIERS,
   BENCHMARK_SPECS,
   BENCHMARK_TIER_ANCHORS,
+  HARNESS_IN_HOUSE_LINES,
   MIN_SCORED_BENCHMARKS,
   TIER_ANCHORS,
   benchmarkSpec,
@@ -195,6 +196,18 @@ describe("per-benchmark tier anchor invariants", () => {
       const floors = ANCHORED_TIERS.map((tier) => benchmarkScore(models.find((m) => m.id === tiers[tier])!, spec.id)!);
       expect(floors[0]).toBeGreaterThan(floors[1]!);
       expect(floors[1]).toBeGreaterThan(floors[2]!);
+    });
+  }
+});
+
+describe("in-house model lines of the listed harnesses", () => {
+  for (const { harness, vendor, line } of HARNESS_IN_HOUSE_LINES) {
+    it(`${harness}: the ${vendor} ${line} line has roster models, each offered in ${harness}`, () => {
+      const lineModels = models.filter((m) => m.vendor === vendor && m.line === line);
+      expect(lineModels.length, `${vendor} ${line} roster models`).toBeGreaterThan(0);
+      for (const m of lineModels) {
+        expect(m.harnesses, `${m.id} offered in ${harness}`).toContain(harness);
+      }
     });
   }
 });

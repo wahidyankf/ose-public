@@ -1,4 +1,4 @@
-import { act, cleanup, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 const getRouteDataMock = vi.hoisted(() => vi.fn());
@@ -69,5 +69,17 @@ describe("Phase 3 — Header primary nav", () => {
     });
 
     expect(getRouteDataMock).not.toHaveBeenCalled();
+  });
+
+  it("opens search from both the desktop and the mobile buttons", async () => {
+    const { Header } = await import("../../../../../src/features/app-shell/shell/header");
+    render(<Header locale="en" />);
+
+    const buttons = screen.getAllByRole("button", { name: "Search" });
+    expect(buttons).toHaveLength(2);
+    for (const button of buttons) {
+      fireEvent.click(button);
+    }
+    expect(screen.getAllByRole("button", { name: "Search" })).toHaveLength(2);
   });
 });

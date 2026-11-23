@@ -33,49 +33,49 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - uses: ./.github/actions/setup-node
-      - run: npx nx run ${{ inputs.app-name }}:lint
+      - run: ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run ${{ inputs.app-name }}:lint
 
   unit:
     name: Quick gate (Unit + static coverage)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - uses: ./.github/actions/setup-node
-      - run: npx nx run ${{ inputs.app-name }}:test:quick
+      - run: ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run ${{ inputs.app-name }}:test:quick
 
   specs-coverage:
     name: Static behaviour coverage
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - uses: ./.github/actions/setup-node
       - name: Validate app and E2E behaviour coverage without running tests
         run: |
-          npx nx run ${{ inputs.app-name }}:test:coverage
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run ${{ inputs.app-name }}:test:behaviour:coverage
           be_project="${{ inputs.app-name }}-be-e2e"
-          if npx nx show project "$be_project" --json > /dev/null 2>&1; then
-            npx nx run "${be_project}:test:coverage"
+          if ./hippo run --class ephemeral --resource-tier light --disk-path . -- npx nx show project "$be_project" --json > /dev/null 2>&1; then
+            ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run "${be_project}:test:behaviour:coverage"
           fi
-          npx nx run ${{ inputs.app-name }}-fe-e2e:test:coverage
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run ${{ inputs.app-name }}-fe-e2e:test:behaviour:coverage
 
   integration:
     name: Integration tests
     needs: [unit, specs-coverage]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - uses: ./.github/actions/setup-node
       - name: Run the app Integration target when the project owns one
-        run: npx nx run-many -t test:integration --projects=${{ inputs.app-name }}
+        run: ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run-many -t test:integration --projects=${{ inputs.app-name }}
 
   e2e:
     name: E2E tests
     needs: [unit, specs-coverage, integration]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-podman
       - uses: ./.github/actions/setup-playwright
@@ -111,13 +111,13 @@ jobs:
       # Run E2E
       - run: |
           be_project="${{ inputs.app-name }}-be-e2e"
-          if npx nx show project "$be_project" --json > /dev/null 2>&1; then
-            npx nx run "${be_project}:test:e2e"
+          if ./hippo run --class ephemeral --resource-tier light --disk-path . -- npx nx show project "$be_project" --json > /dev/null 2>&1; then
+            ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run "${be_project}:test:e2e"
           fi
           if [ "${{ inputs.stop-containers-before-fe-e2e }}" = "true" ]; then
             podman compose -f infra/dev/${{ inputs.app-name }}/docker-compose.yml down
           fi
-          npx nx run ${{ inputs.app-name }}-fe-e2e:test:e2e
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run ${{ inputs.app-name }}-fe-e2e:test:e2e
       - if: always()
         run: podman compose -f infra/dev/${{ inputs.app-name }}/docker-compose.yml down
 
@@ -127,7 +127,7 @@ jobs:
     outputs:
       has-changes: ${{ steps.check.outputs.has-changes }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 2
       - id: check
@@ -148,7 +148,7 @@ jobs:
     if: needs.detect-changes.outputs.has-changes == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
       - run: |

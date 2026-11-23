@@ -24,7 +24,7 @@ This document explains the commit message convention used in the open-sharia-ent
 - [Scope Examples](./commit-messages/scope-examples.md) — Common scope names and usage.
 - [Real-World Examples](./commit-messages/real-world-examples.md) — Good and bad commit messages.
 - [Why We Use This Convention](./commit-messages/why-we-use-this-convention.md) — Benefits for developers, teams, project, users.
-- [How It's Checked](./commit-messages/how-its-enforced.md) — Review, the on-demand Commitlint config, and what the commit-msg hook actually runs.
+- [How It's Checked](./commit-messages/how-its-enforced.md) — The commit-msg Commitlint hook, the pull-request lint, the on-demand config, and review.
 - [Common Errors and Fixes](./commit-messages/common-errors-and-fixes.md) — Fixing the most common errors an on-demand Commitlint run reports.
 - [Best Practices](./commit-messages/best-practices.md) — Habits beyond the mechanical format rules.
 - [Thematic Commit Composition and Boundaries](./commit-messages/commit-granularity-and-when-to-split-commits.md) — Authorization and the fewest build-valid, reviewable, revertible boundaries.
@@ -44,13 +44,10 @@ This document explains the commit message convention used in the open-sharia-ent
 
 ## Enforcement Disposition
 
-**Unenforced by decision; checked by review.** No hook or CI step checks commit-message format: the
-`commit-msg` surface runs only the `public-safety-commit-message` gate, and the `pull-request`
-surface runs that same public-safety screen over the PR's commits. Reviewers check the Conventional
-Commits format, and assess composition against the thematic boundary test. Commitlint
-(`commitlint.config.js`) can check the format on demand, but it validates message syntax, not
-whether a commit is semantically cohesive, independently revertible, or the fewest valid partition
-of an authorized change set.
+**Format enforced by Commitlint; composition checked by review.** The `commit-msg` hook runs Commitlint on each
+message, and the `pull-request` surface lints each of the PR's commits. Reviewers assess composition
+against the thematic boundary test. Commitlint (`commitlint.config.js`) validates message syntax, not whether a commit
+is semantically cohesive, independently revertible, or the fewest valid partition of an authorized change set.
 
 ## External Resources
 

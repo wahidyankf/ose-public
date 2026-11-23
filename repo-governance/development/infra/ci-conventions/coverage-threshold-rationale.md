@@ -8,14 +8,15 @@ when_to_use: "Use when assigning coverage work to a test or coverage target."
 `test:unit`, `test:integration`, and `test:e2e` execute tests. When a runtime layer measures code
 coverage, its native instrumentation and threshold belong to that same runtime target.
 
-`test:coverage:*` has a different meaning: it statically validates whether tests cover the
+`test:behaviour:coverage` has a different meaning: it statically validates whether tests cover the
 canonical scenario/adapter contract. It must not start a test runner, invoke another runtime target,
-or require a prior runtime report. `test:coverage` only aggregates these static validators, and
-every applicable validator is mandatory in `test:quick`.
+or require a prior runtime report. It runs in `test:quick`, and only the real runs of the runtime
+targets prove that a binding passes.
 
 Never satisfy either responsibility with a no-op, hardcoded count, stale report, or exclusion that
 leaves behaviour without an owning proof.
 
-A Unit numeric exclusion must enumerate a whole boundary file or a narrow boundary function and
-name the Integration or E2E runtime proof that exercises it. Broad path globs, mixed core-logic
-exclusions, and unproved boundary code are coverage gaming.
+A Unit numeric exclusion is allowed only for a category: generated output, declarative configuration,
+vendored code, or non-production code, named with its reason in the gating run's configuration. Code a
+unit test cannot reach moves behind a port instead of being excluded. Broad path globs, mixed
+core-logic exclusions, and code left to a higher layer without proof are coverage gaming.

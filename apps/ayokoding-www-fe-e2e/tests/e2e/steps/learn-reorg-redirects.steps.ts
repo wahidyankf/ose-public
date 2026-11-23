@@ -1,3 +1,4 @@
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/learn-reorg-redirects.feature: platform-web redirects to platforms/web under its legacy bucket address
 import { createBdd } from "playwright-bdd";
 import { expect } from "@playwright/test";
 

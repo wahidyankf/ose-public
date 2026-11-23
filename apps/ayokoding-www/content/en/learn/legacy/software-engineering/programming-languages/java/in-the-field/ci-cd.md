@@ -1402,16 +1402,21 @@ Run two identical production environments and switch traffic between them.
 
 **Pattern**:
 
-```
-Blue Environment (current production)
-  ↓
-Deploy new version to Green Environment
-  ↓
-Test Green Environment
-  ↓
-Switch traffic from Blue to Green
-  ↓
-Green becomes production, Blue becomes standby
+```mermaid
+flowchart TD
+    accTitle: Blue-green deployment flow
+    accDescr {
+        Blue is the current production environment.
+        A new version deploys to Green, which is then tested.
+        Traffic switches from Blue to Green, which becomes production, and Blue becomes standby.
+    }
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
+    b1["Blue Environment<br/>(current production)"]
+    b2["Deploy new version<br/>to Green Environment"]
+    b3["Test Green<br/>Environment"]
+    b4["Switch traffic from<br/>Blue to Green"]
+    b5["Green becomes<br/>production,<br/>Blue becomes standby"]
+    b1 --> b2 --> b3 --> b4 --> b5
 ```
 
 **Implementation**:
@@ -1446,16 +1451,20 @@ Gradually roll out changes to subset of users.
 
 **Pattern**:
 
-```
-Route 5% of traffic to new version
-  ↓
-Monitor metrics (error rate, latency)
-  ↓
-If healthy: increase to 25%
-  ↓
-If healthy: increase to 50%
-  ↓
-If healthy: increase to 100%
+```mermaid
+flowchart TD
+    accTitle: Canary release flow
+    accDescr {
+        Route 5 percent of traffic to the new version, then monitor error rate and latency.
+        If healthy, increase to 25 percent, then to 50 percent, then to 100 percent.
+    }
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
+    c1["Route 5% of traffic<br/>to new version"]
+    c2["Monitor metrics:<br/>error rate, latency"]
+    c3["If healthy:<br/>increase to 25%"]
+    c4["If healthy:<br/>increase to 50%"]
+    c5["If healthy:<br/>increase to 100%"]
+    c1 --> c2 --> c3 --> c4 --> c5
 ```
 
 **GitHub Actions with Kubernetes**:
@@ -1476,14 +1485,19 @@ Update instances gradually without downtime.
 
 **Pattern**:
 
-```
-3 instances running v1.0
-  ↓
-Update instance 1 to v1.1 (2 instances still v1.0)
-  ↓
-Update instance 2 to v1.1 (1 instance still v1.0)
-  ↓
-Update instance 3 to v1.1 (all instances now v1.1)
+```mermaid
+flowchart TD
+    accTitle: Rolling update flow
+    accDescr {
+        Three instances start on v1.0.
+        Each step updates one instance to v1.1, until all three run v1.1.
+    }
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
+    r1["3 instances<br/>running v1.0"]
+    r2["Update instance 1<br/>to v1.1<br/>(2 still on v1.0)"]
+    r3["Update instance 2<br/>to v1.1<br/>(1 still on v1.0)"]
+    r4["Update instance 3<br/>to v1.1<br/>(all three on v1.1)"]
+    r1 --> r2 --> r3 --> r4
 ```
 
 **Kubernetes rolling update**:

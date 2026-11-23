@@ -9,7 +9,8 @@ const feature = await loadFeature(
   path.resolve(__dirname, "../../../../../../specs/libs/web-ui/behaviours/sheet/sheet.feature"),
 );
 
-describeFeature(feature, ({ Scenario }) => {
+describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
+  // @scenario specs/libs/web-ui/behaviours/sheet/sheet.feature: Title renders
   Scenario("Title renders", ({ When, Then }) => {
     let title: HTMLElement;
 
@@ -24,6 +25,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
+  // @scenario specs/libs/web-ui/behaviours/sheet/sheet.feature: Close button closes sheet
   Scenario("Close button closes sheet", ({ Given, When, Then }) => {
     const onCloseMock = vi.fn();
 
@@ -44,6 +46,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
+  // @scenario specs/libs/web-ui/behaviours/sheet/sheet.feature: Has accessible title
   Scenario("Has accessible title", ({ When, Then }) => {
     let dialog: HTMLElement;
 
@@ -55,6 +58,35 @@ describeFeature(feature, ({ Scenario }) => {
 
     Then('the dialog should have accessible label "My Sheet"', () => {
       expect(dialog.getAttribute("aria-labelledby")).not.toBeNull();
+    });
+  });
+
+  // @scenario specs/libs/web-ui/behaviours/sheet/sheet.feature: Pressing Escape or clicking the overlay closes the sheet
+  ScenarioOutline("Pressing Escape or clicking the overlay closes the sheet", ({ Given, When, Then }, examples) => {
+    const action = String(examples["action"] ?? "");
+    const onCloseMock = vi.fn();
+
+    Given('I render a Sheet with title "Settings" and an onClose handler', () => {
+      cleanup();
+      onCloseMock.mockClear();
+    });
+
+    // The DOM is cleaned between steps, so the open sheet and the action are produced in this step.
+    When("the user <action>", () => {
+      cleanup();
+      render(<Sheet title="Settings" onClose={onCloseMock} />);
+      expect(screen.getByRole("dialog", { name: "Settings" })).toBeDefined();
+      if (action === "presses Escape") {
+        fireEvent.keyDown(document, { key: "Escape" });
+      } else {
+        const overlay = document.querySelector(".fixed.inset-0");
+        expect(overlay).not.toBeNull();
+        fireEvent.click(overlay as Element);
+      }
+    });
+
+    Then("onClose should be called", () => {
+      expect(onCloseMock).toHaveBeenCalled();
     });
   });
 });

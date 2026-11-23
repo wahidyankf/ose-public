@@ -54,9 +54,7 @@ describe("Phase 9O — mobile nav drawer", () => {
       })(),
     );
 
-    await act(async () => {
-      await new Promise((r) => setTimeout(r, 0));
-    });
+    await act(async () => {});
 
     const nav = document.querySelector("nav");
     expect(nav?.textContent).not.toMatch(/English Content/i);
@@ -70,9 +68,7 @@ describe("Phase 9O — mobile nav drawer", () => {
       })(),
     );
 
-    await act(async () => {
-      await new Promise((r) => setTimeout(r, 0));
-    });
+    await act(async () => {});
 
     expect(screen.getByText("By Example")).toBeTruthy();
     expect(screen.getByText("In the Field")).toBeTruthy();
@@ -89,9 +85,7 @@ describe("Phase 3 — mobile nav primary links", () => {
       })(),
     );
 
-    await act(async () => {
-      await new Promise((r) => setTimeout(r, 0));
-    });
+    await act(async () => {});
 
     expect(screen.getByRole("link", { name: "Learn" }).getAttribute("href")).toBe("/en/browse");
     expect(screen.getByRole("link", { name: "Tools" }).getAttribute("href")).toBe("/en/tools");
@@ -105,12 +99,61 @@ describe("Phase 3 — mobile nav primary links", () => {
       })(),
     );
 
-    await act(async () => {
-      await new Promise((r) => setTimeout(r, 0));
-    });
+    await act(async () => {});
 
     expect(screen.getByRole("link", { name: "Belajar" }).getAttribute("href")).toBe("/id/browse");
     expect(screen.getByRole("link", { name: "Alat" }).getAttribute("href")).toBe("/id/tools");
+  });
+});
+
+// Persisted drawer width — a blocked store and a valid preset both render the default chrome.
+describe("mobile nav persisted width", () => {
+  it("falls back to the default preset when storage throws", async () => {
+    const getItem = vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+      throw new Error("blocked");
+    });
+    try {
+      render(
+        await (async () => {
+          const { MobileNav } = await import("../../../../../src/features/app-shell/shell/mobile-nav");
+          return <MobileNav locale="en" open={true} onOpenChange={() => {}} />;
+        })(),
+      );
+      await act(async () => {});
+      expect(screen.getByRole("link", { name: "Learn" })).not.toBeNull();
+    } finally {
+      getItem.mockRestore();
+    }
+  });
+
+  it("applies a valid persisted preset width", async () => {
+    localStorage.setItem("ayokoding-mobilenav-width", "360");
+    try {
+      render(
+        await (async () => {
+          const { MobileNav } = await import("../../../../../src/features/app-shell/shell/mobile-nav");
+          return <MobileNav locale="en" open={true} onOpenChange={() => {}} />;
+        })(),
+      );
+      await act(async () => {});
+      const drawer = document.body.querySelector("#mobile-nav-drawer");
+      expect(drawer?.getAttribute("style")).toContain("360px");
+    } finally {
+      localStorage.removeItem("ayokoding-mobilenav-width");
+    }
+  });
+
+  it("closes the drawer when a primary link is activated", async () => {
+    const onOpenChange = vi.fn();
+    render(
+      await (async () => {
+        const { MobileNav } = await import("../../../../../src/features/app-shell/shell/mobile-nav");
+        return <MobileNav locale="en" open={true} onOpenChange={onOpenChange} />;
+      })(),
+    );
+    await act(async () => {});
+    fireEvent.click(screen.getByRole("link", { name: "Learn" }));
+    expect(onOpenChange).toHaveBeenCalledWith(false);
   });
 });
 
@@ -128,9 +171,7 @@ describe("Cycle 2.9 — MobileNav swaps SidebarTree for PathRail when a path con
     const { MobileNav } = await import("../../../../../src/features/app-shell/shell/mobile-nav");
     render(<MobileNav locale="en" open={true} onOpenChange={() => {}} manifests={[manifest]} courseTitles={{}} />);
 
-    await act(async () => {
-      await new Promise((r) => setTimeout(r, 0));
-    });
+    await act(async () => {});
 
     expect(screen.getByText("By Example")).toBeTruthy();
     expect(screen.queryByRole("navigation", { name: /course list/i })).toBeNull();
@@ -174,9 +215,7 @@ describe("UWT-005 — mobile drawer states a concrete reason to widen it", () =>
     const { MobileNav } = await import("../../../../../src/features/app-shell/shell/mobile-nav");
     render(<MobileNav locale="en" open={true} onOpenChange={() => {}} />);
 
-    await act(async () => {
-      await new Promise((r) => setTimeout(r, 0));
-    });
+    await act(async () => {});
 
     expect(screen.getByText("Widen the drawer to read long path or course titles in full")).toBeTruthy();
   });
@@ -185,9 +224,7 @@ describe("UWT-005 — mobile drawer states a concrete reason to widen it", () =>
     const { MobileNav } = await import("../../../../../src/features/app-shell/shell/mobile-nav");
     render(<MobileNav locale="id" open={true} onOpenChange={() => {}} />);
 
-    await act(async () => {
-      await new Promise((r) => setTimeout(r, 0));
-    });
+    await act(async () => {});
 
     expect(
       screen.getByText("Perlebar drawer untuk membaca judul jalur atau kursus yang panjang secara utuh"),
@@ -231,16 +268,12 @@ describe("Cycle 3.4 — focus returns to the control that opened the drawer when
     const trigger = screen.getByRole("button", { name: /Open path course list/i });
     await user.click(trigger);
 
-    await act(async () => {
-      await new Promise((r) => setTimeout(r, 0));
-    });
+    await act(async () => {});
     expect(document.body.querySelector("#mobile-nav-drawer")).not.toBeNull();
 
     await user.keyboard("{Escape}");
 
-    await act(async () => {
-      await new Promise((r) => setTimeout(r, 0));
-    });
+    await act(async () => {});
     expect(document.activeElement).toBe(trigger);
   });
 
@@ -279,16 +312,14 @@ describe("Cycle 3.4 — focus returns to the control that opened the drawer when
     const trigger = screen.getByRole("button", { name: /Open path course list/i });
     fireEvent.click(trigger);
 
-    await act(async () => {
-      await new Promise((r) => setTimeout(r, 0));
-    });
+    await act(async () => {});
     expect(document.body.querySelector("#mobile-nav-drawer")).not.toBeNull();
 
     fireEvent.keyDown(document.activeElement ?? document.body, { key: "Escape" });
 
-    await act(async () => {
-      await new Promise((r) => setTimeout(r, 0));
+    // Radix restores focus in a deferred task; wait on the condition itself, not a fixed delay.
+    await vi.waitFor(() => {
+      expect(document.activeElement).toBe(trigger);
     });
-    expect(document.activeElement).toBe(trigger);
   });
 });

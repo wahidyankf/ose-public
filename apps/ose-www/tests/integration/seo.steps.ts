@@ -1,6 +1,7 @@
 import path from "node:path";
 import { describeFeature, loadFeature } from "@amiceli/vitest-cucumber";
 import { expect } from "vitest";
+import robots from "@/app/robots";
 import type { ContentMeta } from "@/features/content/core/types";
 import { FileSystemContentRepository } from "@/features/content/shell/repository-fs";
 import { ContentService } from "@/features/content/shell/service";
@@ -51,6 +52,24 @@ describeFeature(
       And('every sitemap URL is on the canonical host "www.oseplatform.com"', () => {
         expect(sitemap.length).toBeGreaterThan(0);
         expect(sitemap.map(({ url }) => new URL(url).host)).toEqual(sitemap.map(() => "www.oseplatform.com"));
+      });
+    });
+
+    // @scenario specs/apps/ose/www/behaviours/backend/seo/seo.feature: Robots.txt allows all crawlers
+    Scenario("Robots.txt allows all crawlers", ({ When, Then, And }) => {
+      let rules: ReturnType<typeof robots>;
+
+      When("the robots.txt is generated", () => {
+        rules = robots();
+      });
+      Then("it allows all user agents", () => {
+        expect(rules.rules).toContainEqual(expect.objectContaining({ userAgent: "*", allow: "/" }));
+      });
+      And("it references the sitemap URL", () => {
+        expect(rules.sitemap).toBe(`${siteUrl}/sitemap.xml`);
+      });
+      And('the sitemap URL is on the canonical host "www.oseplatform.com"', () => {
+        expect(new URL(String(rules.sitemap)).host).toBe("www.oseplatform.com");
       });
     });
   },

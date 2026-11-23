@@ -26,19 +26,19 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-dotnet
       - uses: ./.github/actions/setup-go
       - uses: ./.github/actions/setup-python
       - name: Install locked Python dependencies
         run: >-
-          npx nx run-many -t install
+          ./hippo run --class transactional --resource-tier standard --disk-path . -- npx nx run-many -t install
           --projects=ferret-cli,ferret-cli-e2e
           --parallel=1
       - name: Run complete non-product quick gates serially
         run: >-
-          npx nx run-many -t test:quick
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run-many -t test:quick
           --projects=crane-cli,fsharp-crane-core,fsharp-env-loader,ts-env-loader,web-ui,web-ui-token,ferret-cli,ferret-cli-e2e,ayokoding-cli
           --parallel=1
 
@@ -48,20 +48,20 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-dotnet
       - uses: ./.github/actions/setup-go
       - uses: ./.github/actions/setup-python
       - name: Install locked Python dependencies
         run: >-
-          npx nx run-many -t install
-          --projects=ferret-cli
+          ./hippo run --class transactional --resource-tier standard --disk-path . -- npx nx run-many -t install
+          --projects=ferret-cli,ferret-cli-e2e
           --parallel=1
       - name: Run every applicable non-product Integration target
         run: >-
-          npx nx run-many -t test:integration
-          --projects=fsharp-crane-core,fsharp-env-loader,ts-env-loader,ferret-cli,ayokoding-cli
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run-many -t test:integration
+          --projects=fsharp-crane-core,fsharp-env-loader,ts-env-loader,ferret-cli,ferret-cli-e2e,ayokoding-cli
           --parallel=1
 
   e2e:
@@ -70,7 +70,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-dotnet
       - uses: ./.github/actions/setup-go
@@ -79,11 +79,11 @@ jobs:
       - uses: ./.github/actions/setup-podman
       - name: Install locked Python dependencies
         run: >-
-          npx nx run-many -t install
+          ./hippo run --class transactional --resource-tier standard --disk-path . -- npx nx run-many -t install
           --projects=ferret-cli,ferret-cli-e2e
           --parallel=1
       - name: Run every applicable non-product E2E target
         run: >-
-          npx nx run-many -t test:e2e
-          --projects=crane-cli,ts-env-loader,web-ui,ferret-cli-e2e,ayokoding-cli
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npx nx run-many -t test:e2e
+          --projects=crane-cli,ts-env-loader,web-ui,ferret-cli-e2e,ayokoding-cli,ayokoding-web,ayokoding-web-e2e
           --parallel=1

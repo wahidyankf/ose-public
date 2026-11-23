@@ -11,7 +11,7 @@ import (
 )
 
 func fixtureDeps() web.Deps {
-	return web.SeedFixtureDeps("parity")
+	return web.SeedFixtureDeps("parity", web.CannedSources)
 }
 
 func request(t *testing.T, handler http.Handler, method, target string) *httptest.ResponseRecorder {
@@ -510,7 +510,7 @@ func TestIndonesianLessonOutline(t *testing.T) {
 }
 
 func TestUnavailableCatalogFixture(t *testing.T) {
-	deps := web.SeedFixtureDeps("unavailable-catalog")
+	deps := web.SeedFixtureDeps("unavailable-catalog", web.CannedSources)
 	if len(deps.Content.Published("en")) != 0 {
 		t.Fatal("unavailable-catalog fixture must hide the catalog")
 	}
@@ -704,6 +704,28 @@ func TestPathCategoryWithPaths(t *testing.T) {
 	}
 	if !strings.Contains(recorder.Body.String(), "Backend") {
 		t.Fatal("category page must list its paths")
+	}
+}
+
+func TestPathCategoryFallsBackToIdPrefix(t *testing.T) {
+	deps := fixtureDeps()
+	deps.Paths = coursepaths.NewFakeStore(
+		[]coursepaths.LearningPath{
+			{ID: "tracks/go", Title: "Go Track", Category: "deep"},
+		},
+		nil,
+		nil,
+	)
+	recorder := request(t, web.NewServer(web.Config{Port: 3102}, deps).Handler(), http.MethodGet, "/en/learn/paths/tracks")
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("prefix category status = %d, want 200", recorder.Code)
+	}
+	body := recorder.Body.String()
+	if !strings.Contains(body, "Go Track") {
+		t.Fatal("prefix category page must list the nested path")
+	}
+	if strings.Contains(body, "data-empty-state") {
+		t.Fatal("prefix category with paths must not render the empty state")
 	}
 }
 

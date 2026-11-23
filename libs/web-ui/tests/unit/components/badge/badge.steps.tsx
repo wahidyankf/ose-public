@@ -10,7 +10,8 @@ const feature = await loadFeature(
 );
 
 describeFeature(feature, ({ Scenario }) => {
-  Scenario("Renders default variant", ({ When, Then, And }) => {
+  // @scenario specs/libs/web-ui/behaviours/badge/badge.feature: A default badge shows its text on the solid hue colour
+  Scenario("A default badge shows its text on the solid hue colour", ({ When, Then, And }) => {
     let badge: HTMLElement;
 
     When('I render a Badge with text "workout"', () => {
@@ -28,7 +29,8 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
-  Scenario("Renders outline variant with hue", ({ When, Then, And }) => {
+  // @scenario specs/libs/web-ui/behaviours/badge/badge.feature: An outline badge shows the honey wash and honey border
+  Scenario("An outline badge shows the honey wash and honey border", ({ When, Then, And }) => {
     let badge: HTMLElement;
 
     When('I render a Badge variant "outline" hue "honey"', () => {
@@ -50,7 +52,8 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
-  Scenario("Renders secondary variant", ({ When, Then }) => {
+  // @scenario specs/libs/web-ui/behaviours/badge/badge.feature: A secondary badge uses the secondary colour
+  Scenario("A secondary badge uses the secondary colour", ({ When, Then }) => {
     let badge: HTMLElement;
 
     When('I render a Badge variant "secondary"', () => {
@@ -64,7 +67,8 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
-  Scenario("Renders destructive variant", ({ When, Then }) => {
+  // @scenario specs/libs/web-ui/behaviours/badge/badge.feature: A destructive badge uses the destructive colour
+  Scenario("A destructive badge uses the destructive colour", ({ When, Then }) => {
     let badge: HTMLElement;
 
     When('I render a Badge variant "destructive"', () => {
@@ -78,7 +82,8 @@ describeFeature(feature, ({ Scenario }) => {
     });
   });
 
-  Scenario("Renders md size", ({ When, Then, And }) => {
+  // @scenario specs/libs/web-ui/behaviours/badge/badge.feature: An md badge has 13px text and wider padding than sm
+  Scenario("An md badge has 13px text and wider padding than sm", ({ When, Then, And }) => {
     let badge: HTMLElement;
 
     When('I render a Badge with size "md"', () => {
@@ -91,8 +96,12 @@ describeFeature(feature, ({ Scenario }) => {
       expect(badge.className).toContain("text-[13px]");
     });
 
-    And('the badge has class containing "px-2.5"', () => {
+    And("the badge has wider padding than an sm badge", () => {
+      const { container } = render(<Badge size="sm">sm</Badge>);
+      const small = container.firstElementChild;
       expect(badge.className).toContain("px-2.5");
+      expect(small?.className ?? "").toContain("px-2 ");
+      expect(small?.className ?? "").not.toContain("px-2.5");
     });
   });
 });

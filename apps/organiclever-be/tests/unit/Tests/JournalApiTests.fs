@@ -47,6 +47,7 @@ let private jsonContent (body: string) : StringContent =
 let private validEntryJson =
     "{\"name\":\"reading\",\"payload\":{\"title\":\"Clean Code\"},\"startedAt\":\"2026-06-14T10:00:00Z\",\"finishedAt\":\"2026-06-14T10:30:00Z\",\"labels\":[\"books\"]}"
 
+// @scenario specs/apps/organiclever/be/behaviours/journal/journal-crud.feature: Create a journal entry
 [<Fact>]
 let ``POST journal entries returns 201 with the created entry`` () =
     let client = journalClient ()
@@ -59,6 +60,7 @@ let ``POST journal entries returns 201 with the created entry`` () =
     Assert.Contains("reading", body)
     Assert.Contains("\"id\"", body)
 
+// @scenario specs/apps/organiclever/be/behaviours/journal/journal-crud.feature: Reject a journal entry with a blank name
 [<Fact>]
 let ``POST journal entries with a blank name returns 400`` () =
     let client = journalClient ()
@@ -69,6 +71,18 @@ let ``POST journal entries with a blank name returns 400`` () =
     let resp = client.PostAsync("/api/v1/journal/entries", jsonContent bad).Result
     Assert.Equal(HttpStatusCode.BadRequest, resp.StatusCode)
 
+// @scenario specs/apps/organiclever/be/behaviours/journal/journal-crud.feature: Reject a journal entry whose name is not a lowercase kind slug
+[<Fact>]
+let ``POST journal entries with an uppercase name returns 400`` () =
+    let client = journalClient ()
+
+    let bad =
+        "{\"name\":\"Reading\",\"payload\":{},\"startedAt\":\"2026-06-14T10:00:00Z\",\"finishedAt\":\"2026-06-14T10:30:00Z\",\"labels\":[]}"
+
+    let resp = client.PostAsync("/api/v1/journal/entries", jsonContent bad).Result
+    Assert.Equal(HttpStatusCode.BadRequest, resp.StatusCode)
+
+// @scenario specs/apps/organiclever/be/behaviours/journal/journal-crud.feature: List journal entries
 [<Fact>]
 let ``GET journal entries lists created entries`` () =
     let client = journalClient ()
@@ -81,12 +95,46 @@ let ``GET journal entries lists created entries`` () =
     let body = resp.Content.ReadAsStringAsync().Result
     Assert.Contains("reading", body)
 
+// @scenario specs/apps/organiclever/be/behaviours/journal/journal-crud.feature: List journal entries returns the newest first
+[<Fact>]
+let ``GET journal entries lists the newest entry first`` () =
+    let at (hour: int) =
+        DateTime(2026, 6, 14, hour, 0, 0, DateTimeKind.Utc)
+
+    let older =
+        { rowWithInvalidPayload with
+            Id = "older-entry"
+            Name = "reading"
+            Payload = "{}"
+            CreatedAt = at 10 }
+
+    let newer =
+        { older with
+            Id = "newer-entry"
+            Name = "focus"
+            CreatedAt = at 11 }
+
+    // The repository returns the older row first; the listing must still put the newest entry first.
+    let repo: JournalRepository =
+        { Create = fun row -> Task.FromResult row
+          FindById = fun _ -> Task.FromResult None
+          List = fun () -> Task.FromResult [ older; newer ]
+          Update = fun _ -> Task.FromResult None
+          Delete = fun _ -> Task.FromResult false }
+
+    let body =
+        (buildClient (routes repo)).GetAsync("/api/v1/journal/entries").Result.Content.ReadAsStringAsync().Result
+
+    Assert.True(body.IndexOf("newer-entry") < body.IndexOf("older-entry"), body)
+
+// @scenario specs/apps/organiclever/be/behaviours/journal/journal-crud.feature: Fetch a missing journal entry
 [<Fact>]
 let ``GET a missing journal entry returns 404`` () =
     let client = journalClient ()
     let resp = client.GetAsync("/api/v1/journal/entries/does-not-exist").Result
     Assert.Equal(HttpStatusCode.NotFound, resp.StatusCode)
 
+// @scenario specs/apps/organiclever/be/behaviours/journal/journal-crud.feature: Fetch an existing journal entry by id returns it
 [<Fact>]
 let ``GET a created journal entry by id returns 200`` () =
     let client = journalClient ()
@@ -99,6 +147,22 @@ let ``GET a created journal entry by id returns 200`` () =
     let resp = client.GetAsync(sprintf "/api/v1/journal/entries/%s" id).Result
     Assert.Equal(HttpStatusCode.OK, resp.StatusCode)
 
+// @scenario specs/apps/organiclever/be/behaviours/journal/journal-crud.feature: Fetch an existing journal entry by id returns it
+[<Fact>]
+let ``GET a created journal entry by id returns that entry`` () =
+    let client = journalClient ()
+
+    let created =
+        client.PostAsync("/api/v1/journal/entries", jsonContent validEntryJson).Result
+
+    let id = extractId (created.Content.ReadAsStringAsync().Result)
+    let resp = client.GetAsync(sprintf "/api/v1/journal/entries/%s" id).Result
+    let body = resp.Content.ReadAsStringAsync().Result
+    Assert.Equal(HttpStatusCode.OK, resp.StatusCode)
+    Assert.Contains(id, body)
+    Assert.Contains("reading", body)
+
+// @scenario specs/apps/organiclever/be/behaviours/journal/journal-crud.feature: Update a journal entry
 [<Fact>]
 let ``PUT a created journal entry updates it and returns 200`` () =
     let client = journalClient ()
@@ -116,6 +180,7 @@ let ``PUT a created journal entry updates it and returns 200`` () =
     let body = resp.Content.ReadAsStringAsync().Result
     Assert.Contains("learning", body)
 
+// @scenario specs/apps/organiclever/be/behaviours/journal/journal-crud.feature: Update a missing journal entry returns 404
 [<Fact>]
 let ``PUT a missing journal entry returns 404`` () =
     let client = journalClient ()
@@ -126,6 +191,7 @@ let ``PUT a missing journal entry returns 404`` () =
 
     Assert.Equal(HttpStatusCode.NotFound, resp.StatusCode)
 
+// @scenario specs/apps/organiclever/be/behaviours/journal/journal-crud.feature: Delete a journal entry
 [<Fact>]
 let ``DELETE a created journal entry returns 204 and removes it`` () =
     let client = journalClient ()
@@ -139,6 +205,7 @@ let ``DELETE a created journal entry returns 204 and removes it`` () =
     let after = client.GetAsync(sprintf "/api/v1/journal/entries/%s" id).Result
     Assert.Equal(HttpStatusCode.NotFound, after.StatusCode)
 
+// @scenario specs/apps/organiclever/be/behaviours/journal/journal-crud.feature: Delete a missing journal entry returns 404
 [<Fact>]
 let ``DELETE a missing journal entry returns 404`` () =
     let client = journalClient ()

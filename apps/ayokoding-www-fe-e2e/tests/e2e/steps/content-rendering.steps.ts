@@ -1,3 +1,17 @@
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: Body text, headings, and paragraphs are visually distinct and evenly spaced
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: Code blocks show highlighted tokens, a language label, and a monospace font
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: A callout renders as a labelled box with its icon and text
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: Tabs shortcode renders as tabbed panels
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: Steps shortcode renders as a numbered step list
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: Inline math renders as formatted notation, not raw LaTeX
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: Block math renders as a centred display, not raw LaTeX
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: Mermaid diagram renders as an SVG
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: The Mermaid source leaves keyboard focus order once the diagram renders
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: A details disclosure reveals its answer when opened
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: Section headings render as headings, not as links
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: Inline code renders without literal backticks
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature: Course content never scrolls the document horizontally at 375
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/content/course-content-hygiene.feature: The courses list page shows no course title with a leading catalogue number
 import { createBdd } from "playwright-bdd";
 import { expect } from "@playwright/test";
 

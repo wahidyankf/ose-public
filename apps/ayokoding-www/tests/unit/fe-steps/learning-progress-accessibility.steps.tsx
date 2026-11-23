@@ -208,6 +208,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/learning-progress-accessibility.feature: Status is shown in words, not only colour
   Scenario("Status is shown in words, not only colour", ({ Given, When, Then, And }) => {
     let container: HTMLElement;
 
@@ -256,6 +257,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/learning-progress-accessibility.feature: Progress controls work with the keyboard and announce changes
   Scenario("Progress controls work with the keyboard and announce changes", ({ Given, When, Then, And }) => {
     Given("a reader on a learning page uses only the keyboard", () => {
       noSavedProgress();
@@ -297,6 +299,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/learning-progress-accessibility.feature: Reduced motion turns off progress animations
   Scenario("Reduced motion turns off progress animations", ({ Given, When, Then }) => {
     let container: HTMLElement;
 
@@ -330,7 +333,8 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
-  Scenario("Progress screens fit a phone screen", ({ Given, When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/learning-progress-accessibility.feature: Progress screens fit a phone screen
+  Scenario("Progress screens fit a phone screen", ({ Given, When, Then }) => {
     let opened: ScreenAudit[];
 
     Given("a 375 pixel wide viewport", () => {
@@ -354,8 +358,29 @@ describeFeature(feature, ({ Scenario, Background }) => {
         expect(oversizedWidths, `${name} declares a phone-overflowing width`).toEqual([]);
       }
     });
+  });
 
-    And("every progress control is at least 44 by 44 CSS pixels", () => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/learning-progress-accessibility.feature: Progress controls are at least 44 by 44 CSS pixels on a phone
+  Scenario("Progress controls are at least 44 by 44 CSS pixels on a phone", ({ Given, When, Then }) => {
+    let opened: ScreenAudit[];
+
+    Given("a 375 pixel wide viewport", () => {
+      // jsdom lays nothing out, so the phone's own proof — `scrollWidth <= 375` and real 44 × 44
+      // boxes — is the E2E binding. Here the same contract is asserted on the markup the 375 px
+      // breakpoint switches on: no raw-pixel width that wide, and touch-sized controls.
+      opened = auditScreens();
+    });
+
+    When("the reader opens the Learn home, a path page, a learning page, and a course landing page", () => {
+      expect(opened.map(({ name }) => name)).toEqual([
+        "the Learn home",
+        "a path page",
+        "a learning page",
+        "a course landing page",
+      ]);
+    });
+
+    Then("every progress control is at least 44 by 44 CSS pixels", () => {
       for (const { name, controls } of opened) {
         expect(controls.length, `${name} carries a progress control`).toBeGreaterThan(0);
 
@@ -369,6 +394,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/learning-progress-accessibility.feature: Progress screens pass automated accessibility checks
   Scenario("Progress screens pass automated accessibility checks", ({ Given, When, Then }) => {
     let opened: ScreenAudit[];
 

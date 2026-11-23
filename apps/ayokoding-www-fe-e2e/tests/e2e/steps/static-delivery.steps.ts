@@ -1,3 +1,7 @@
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/content/static-delivery.feature: A repeat request to a content page remains cacheable
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/content/static-delivery.feature: The packaged site answers its navigation, search, and course-path requests successfully
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/content/static-delivery.feature: The document language reflects the localized page locale
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/content/static-delivery.feature: Pages are served with security headers, including frame denial and a content security policy
 import { expect } from "@playwright/test";
 import { createBdd } from "playwright-bdd";
 import { getResilient } from "../support/resilient-request";
@@ -76,4 +80,19 @@ When("the localized page renders", async ({ page }) => {
 
 Then("the html element declares the {string} language code", async ({ page }, languageCode: string) => {
   await expect(page.locator("html")).toHaveAttribute("lang", languageCode);
+});
+
+// AYW-030: the headers come from next.config.ts, so they must reach a real HTTP response from the served site.
+Given("a visitor requests any page of the site", async ({ page }) => {
+  const response = await getResilient(page, lessonUrl);
+  expect(response.ok()).toBe(true);
+  stateFor(page).firstResponse = response;
+});
+
+Then("the response refuses to be framed by other sites", async ({ page }) => {
+  expect(stateFor(page).firstResponse?.headers()["x-frame-options"]).toBe("DENY");
+});
+
+Then("the response declares a content security policy", async ({ page }) => {
+  expect(stateFor(page).firstResponse?.headers()["content-security-policy"]).toContain("default-src 'self'");
 });

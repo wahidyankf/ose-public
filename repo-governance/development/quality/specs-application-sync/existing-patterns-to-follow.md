@@ -33,7 +33,7 @@ Executable tools (`Rhino`, `crane-cli`) use the same project-local enforcement p
 - Applicable local-resource and public-process concerns have exactly one Integration or E2E
   binding; a genuine boundary mismatch uses the canonical explicit exemption plus named
   alternative proof.
-- Each tool's `test:coverage:*` targets validate its own corpus and adapters. The aggregate static
+- Each tool's `test:behaviour:coverage` target validates its own corpus and adapters. The static
   target is part of `test:quick`; runtime Integration and E2E remain manual-impacted and
   scheduled-full.
 

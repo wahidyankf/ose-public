@@ -2,6 +2,11 @@ import { expect } from "@playwright/test";
 import { createBdd } from "playwright-bdd";
 import { state } from "./helpers";
 
+// @scenario specs/apps/ose/www/behaviours/backend/rss-feed/rss-feed.feature: Feed channel is titled OSE Platform Updates and links to the site
+// @scenario specs/apps/ose/www/behaviours/backend/rss-feed/rss-feed.feature: Feed lists an item for every update
+// @scenario specs/apps/ose/www/behaviours/backend/rss-feed/rss-feed.feature: Every feed link is on the canonical host
+// @scenario specs/apps/ose/www/behaviours/backend/rss-feed/rss-feed.feature: RSS feed entries contain required fields
+
 const { When, Then } = createBdd();
 
 When("the RSS feed is generated", async ({ request }) => {

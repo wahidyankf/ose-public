@@ -7,11 +7,13 @@ Feature: Locale-scoped site search
   Background:
     Given the app is running
 
+  # Behaviour: AYB-035
   Scenario: The keyboard shortcut opens search with input focus
     When a reader presses the platform's search shortcut
     Then the search dialog opens
     And the search input receives focus
 
+  # Behaviour: AYB-036
   Scenario: Results stay within the current locale
     Given matching published content exists in both supported locales
     When a reader searches for the matching term in one locale
@@ -34,8 +36,15 @@ Feature: Locale-scoped site search
     When a reader searches for the name of either interactive tool
     Then the matching tool page appears as a result in the current locale
 
+  # Behaviour: AYB-037
   Scenario: Escape returns focus to the search opener
     Given the search dialog is open
     When the reader presses Escape
     Then the search dialog closes
     And focus returns to the control that opened it
+
+  # Behaviour: AYB-023
+  Scenario: The search page route returns results for a query without the dialog
+    Given matching published content exists in both supported locales
+    When a reader opens the search page for the matching term in one locale
+    Then the search page lists the matching results for that locale only

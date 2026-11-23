@@ -2,6 +2,9 @@ import { expect } from "@playwright/test";
 import { createBdd } from "playwright-bdd";
 import { state } from "./helpers";
 
+// @scenario specs/apps/ose/www/behaviours/backend/seo/seo.feature: Sitemap contains all public pages
+// @scenario specs/apps/ose/www/behaviours/backend/seo/seo.feature: Robots.txt allows all crawlers
+
 const { When, Then } = createBdd();
 
 When("the sitemap is generated", async ({ request }) => {

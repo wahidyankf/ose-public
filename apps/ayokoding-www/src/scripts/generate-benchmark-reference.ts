@@ -239,30 +239,56 @@ export function substituteMarkers(input: string, tables: GeneratedTables): strin
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const REF_PATH = path.resolve(SCRIPT_DIR, "../../../../docs/reference/ai-model-benchmarks.md");
 
-async function main(): Promise<void> {
-  const mode = process.argv.includes("--validate") ? "validate" : "generate";
-  const original = await readFile(REF_PATH, "utf8");
-  const tables = renderTables(dataset);
-  const regenerated = substituteMarkers(original, tables);
+export interface BenchmarkReferencePorts {
+  readFile: (path: string) => Promise<string>;
+  writeFile: (path: string, content: string) => Promise<void>;
+}
 
-  if (mode === "validate") {
+export interface SyncBenchmarkReferenceOptions {
+  refPath: string;
+  mode: "generate" | "validate";
+  tables: GeneratedTables;
+  ports?: BenchmarkReferencePorts;
+  log?: (message: string) => void;
+  errorLog?: (message: string) => void;
+}
+
+/** Synchronizes the reference document; returns the process exit code. */
+export async function syncBenchmarkReference(options: SyncBenchmarkReferenceOptions): Promise<number> {
+  const ports = options.ports ?? {
+    readFile: (path) => readFile(path, "utf8"),
+    writeFile: (path, content) => writeFile(path, content, "utf8"),
+  };
+  const log = options.log ?? console.log;
+  const errorLog = options.errorLog ?? console.error;
+  const original = await ports.readFile(options.refPath);
+  const regenerated = substituteMarkers(original, options.tables);
+
+  if (options.mode === "validate") {
     if (regenerated !== original) {
-      console.error(
+      errorLog(
         "generate-benchmark-reference: docs/reference/ai-model-benchmarks.md is out of date with models.ts (drift inside BEGIN/END GENERATED blocks).",
       );
-      console.error("Regenerate with:  npx nx run ayokoding-www:generate-benchmark-reference");
-      process.exit(1);
+      errorLog("Regenerate with:  npx nx run ayokoding-www:generate-benchmark-reference");
+      return 1;
     }
-    console.log("generate-benchmark-reference: reference is up to date.");
-    return;
+    log("generate-benchmark-reference: reference is up to date.");
+    return 0;
   }
 
   if (regenerated !== original) {
-    await writeFile(REF_PATH, regenerated, "utf8");
-    console.log("generate-benchmark-reference: updated docs/reference/ai-model-benchmarks.md.");
+    await ports.writeFile(options.refPath, regenerated);
+    log("generate-benchmark-reference: updated docs/reference/ai-model-benchmarks.md.");
   } else {
-    console.log("generate-benchmark-reference: already up to date.");
+    log("generate-benchmark-reference: already up to date.");
   }
+  return 0;
+}
+
+async function main(): Promise<void> {
+  const mode = process.argv.includes("--validate") ? "validate" : "generate";
+  const tables = renderTables(dataset);
+  process.exit(await syncBenchmarkReference({ refPath: REF_PATH, mode: mode as "generate" | "validate", tables }));
 }
 
 // Run the I/O shell only when invoked directly as a script, never when imported (e.g. by the unit

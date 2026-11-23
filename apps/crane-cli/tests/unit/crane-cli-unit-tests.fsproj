@@ -23,6 +23,7 @@
     <Compile Include="Steps/SkiplistSteps.fs" />
     <Compile Include="Steps/CheckAllSteps.fs" />
     <Compile Include="Steps/VersionSteps.fs" />
+    <Compile Include="Steps/CommandSteps.fs" />
     <Compile Include="Tests/TextCheckerTests.fs" />
     <Compile Include="Tests/HeadingCheckerTests.fs" />
     <Compile Include="Tests/NestingCheckerTests.fs" />

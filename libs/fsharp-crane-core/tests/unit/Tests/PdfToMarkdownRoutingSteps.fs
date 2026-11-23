@@ -63,13 +63,15 @@ let ``I call convertPdfToMarkdown`` (state: ConvertState) =
         Result = Some(convertPdfToMarkdown pdfPort ocrPort "fake.pdf") }
 
 [<Then>]
-let ``the pages should be extracted via the PDF port's ExtractPages`` (state: ConvertState) =
+let ``the returned Markdown is the extracted page text`` (state: ConvertState) =
+    Assert.Equal(Some(Ok "word one two three four five six seven eight nine ten eleven"), state.Result)
     Assert.True(state.PdfPort.Value.ExtractPagesCalled)
     Assert.False(state.OcrPort.ExtractTextCalled)
     state
 
 [<Then>]
-let ``the text should be extracted via the OCR port's ExtractText`` (state: ConvertState) =
+let ``the returned Markdown is the OCR text`` (state: ConvertState) =
+    Assert.Equal(Some(Ok "ocr result"), state.Result)
     Assert.True(state.OcrPort.ExtractTextCalled)
     Assert.False(state.PdfPort.Value.ExtractPagesCalled)
     state

@@ -7,7 +7,7 @@ when_to_use: "Use when applying these three quality best practices."
 
 ## Practice 1: Automate Quality Checks in Git Hooks
 
-**Principle**: Use pre-commit and pre-push hooks to enforce quality automatically.
+**Principle**: Use the thin pre-commit, commit-msg, and pre-push hooks to enforce quality automatically, and let the pull-request gate run the heavier checks.
 
 **Good Example:**
 

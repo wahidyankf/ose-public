@@ -17,7 +17,7 @@ func redirectTarget(t *testing.T, handler http.Handler, target string) (int, str
 }
 
 func TestOrderedRedirectLocaleEntryFirst(t *testing.T) {
-	handler := web.NewServer(web.Config{Port: 3102}, web.SeedFixtureDeps("parity")).Handler()
+	handler := web.NewServer(web.Config{Port: 3102}, web.SeedFixtureDeps("parity", web.CannedSources)).Handler()
 	for source, destination := range map[string]string{
 		"/":                 "/en",
 		"/EN":               "/en",
@@ -35,7 +35,7 @@ func TestOrderedRedirectLocaleEntryFirst(t *testing.T) {
 }
 
 func TestOrderedRedirectContentNamespaceStripsC(t *testing.T) {
-	handler := web.NewServer(web.Config{Port: 3102}, web.SeedFixtureDeps("parity")).Handler()
+	handler := web.NewServer(web.Config{Port: 3102}, web.SeedFixtureDeps("parity", web.CannedSources)).Handler()
 	code, location := redirectTarget(t, handler, "/en/c/learn/software-engineering")
 	if code != http.StatusPermanentRedirect {
 		t.Fatalf("content-namespace status = %d, want 308", code)
@@ -46,7 +46,7 @@ func TestOrderedRedirectContentNamespaceStripsC(t *testing.T) {
 }
 
 func TestOrderedRedirectLearnReorgTemporaryUses307(t *testing.T) {
-	handler := web.NewServer(web.Config{Port: 3102}, web.SeedFixtureDeps("parity")).Handler()
+	handler := web.NewServer(web.Config{Port: 3102}, web.SeedFixtureDeps("parity", web.CannedSources)).Handler()
 	code, location := redirectTarget(t, handler, "/en/learn/software-engineering/software-architecture/by-example")
 	if code != http.StatusTemporaryRedirect {
 		t.Fatalf("learn-reorg temporary status = %d, want 307", code)
@@ -57,7 +57,7 @@ func TestOrderedRedirectLearnReorgTemporaryUses307(t *testing.T) {
 }
 
 func TestOrderedRedirectCourseRehomeWinsOverLegacyBucket(t *testing.T) {
-	handler := web.NewServer(web.Config{Port: 3102}, web.SeedFixtureDeps("parity")).Handler()
+	handler := web.NewServer(web.Config{Port: 3102}, web.SeedFixtureDeps("parity", web.CannedSources)).Handler()
 	code, location := redirectTarget(t, handler, "/en/learn/fundamentally-strong/software-engineer/just-enough-python/learning/beginner")
 	if code != http.StatusPermanentRedirect {
 		t.Fatalf("course-rehome status = %d, want 308", code)
@@ -68,7 +68,7 @@ func TestOrderedRedirectCourseRehomeWinsOverLegacyBucket(t *testing.T) {
 }
 
 func TestOrderedRedirectLearnHomeExactOnly(t *testing.T) {
-	handler := web.NewServer(web.Config{Port: 3102}, web.SeedFixtureDeps("parity")).Handler()
+	handler := web.NewServer(web.Config{Port: 3102}, web.SeedFixtureDeps("parity", web.CannedSources)).Handler()
 	code, location := redirectTarget(t, handler, "/en/learn/overview")
 	if code != http.StatusPermanentRedirect || location != "/en/learn" {
 		t.Fatalf("learn-home = %d %q, want 308 /en/learn", code, location)
@@ -76,7 +76,7 @@ func TestOrderedRedirectLearnHomeExactOnly(t *testing.T) {
 }
 
 func TestOrderedRedirectThreeBucketLast(t *testing.T) {
-	handler := web.NewServer(web.Config{Port: 3102}, web.SeedFixtureDeps("parity")).Handler()
+	handler := web.NewServer(web.Config{Port: 3102}, web.SeedFixtureDeps("parity", web.CannedSources)).Handler()
 	code, location := redirectTarget(t, handler, "/en/learn/software-engineering/overview")
 	if code != http.StatusPermanentRedirect {
 		t.Fatalf("three-bucket status = %d, want 308", code)
@@ -87,7 +87,7 @@ func TestOrderedRedirectThreeBucketLast(t *testing.T) {
 }
 
 func TestOrderedRedirectPreservesQuery(t *testing.T) {
-	handler := web.NewServer(web.Config{Port: 3102}, web.SeedFixtureDeps("parity")).Handler()
+	handler := web.NewServer(web.Config{Port: 3102}, web.SeedFixtureDeps("parity", web.CannedSources)).Handler()
 	code, location := redirectTarget(t, handler, "/en/learn/software-engineering/overview?from=nav")
 	if code != http.StatusPermanentRedirect {
 		t.Fatalf("query status = %d, want 308", code)
@@ -98,7 +98,7 @@ func TestOrderedRedirectPreservesQuery(t *testing.T) {
 }
 
 func TestOrderedRedirectRetiredRootsToCourses(t *testing.T) {
-	handler := web.NewServer(web.Config{Port: 3102}, web.SeedFixtureDeps("parity")).Handler()
+	handler := web.NewServer(web.Config{Port: 3102}, web.SeedFixtureDeps("parity", web.CannedSources)).Handler()
 	for _, source := range []string{
 		"/en/learn/fundamentally-strong",
 		"/en/learn/fundamentally-strong/software-engineer",

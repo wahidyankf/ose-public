@@ -16,16 +16,29 @@ const SEVERITY = "error";
 
 export default [
   {
-    ignores: [
-      ".next/**",
-      "coverage/**",
-      "node_modules/**",
-      "src/generated-contracts/**",
-      "storybook-static/**",
-      "**/*.unit.test.*",
-      "**/*.int.test.*",
-      "tests/**",
-    ],
+    ignores: [".next/**", "coverage/**", "node_modules/**", "src/generated-contracts/**", "storybook-static/**"],
+  },
+  {
+    // Unit tests are hermetic (Test and Gate Contract C21). oxlint bans the clock, environment, and
+    // file-system APIs; a zero-argument `new Date()` needs a syntax selector, which only ESLint offers.
+    files: ["tests/unit/**/*.{ts,tsx}"],
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        ecmaVersion: "latest",
+        sourceType: "module",
+        ecmaFeatures: { jsx: true },
+      },
+    },
+    rules: {
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector: "NewExpression[callee.name='Date'][arguments.length=0]",
+          message: "Unit tests are hermetic: no clock. Pass a fixed Date.",
+        },
+      ],
+    },
   },
   {
     files: ["src/**/*.{ts,tsx}"],

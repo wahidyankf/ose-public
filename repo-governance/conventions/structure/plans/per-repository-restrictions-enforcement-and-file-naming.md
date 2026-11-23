@@ -14,7 +14,7 @@ and the `.md`-only condition of the content restriction above are **retired** he
 disallowed by this rule regardless of file content.
 
 **Why this is a hard rule**: a direct push bypasses the branch-protected PR route and its exact-head
-`Quality gate`. This closes the gap between "convenient" and "actually necessary" that the old
+`quality-gate`. This closes the gap between "convenient" and "actually necessary" that the old
 `.md`-only carve-out left open.
 
 **Enforcement**: `plan-checker` flags any `ose-public` `## Delivery Mode` other than

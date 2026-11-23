@@ -46,6 +46,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/static-delivery.feature: A content page is prerendered at build time
   Scenario("A content page is prerendered at build time", ({ Given, When, Then, And }) => {
     let inspection: ReturnType<typeof inspectPrerenderManifest>;
     let manifest: PrerenderManifestLike;
@@ -72,6 +73,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/static-delivery.feature: A repeat request to a content page remains cacheable
   Scenario("A repeat request to a content page remains cacheable", ({ Given, When, Then }) => {
     let lessonUrl: string;
     let repeatResponseHeaders: Record<string, string>;
@@ -90,29 +92,34 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline }) => {
     });
   });
 
-  Scenario("Runtime tRPC endpoints retain their filesystem assets", ({ Given, When, Then }) => {
-    let endpointResponses: unknown[];
-    Given("the ayokoding-www standalone package is running", async () => {
-      await expect(testCaller.meta.health()).resolves.toEqual({ status: "ok" });
-    });
-    When("navigation search and course-path data are requested through tRPC", async () => {
-      endpointResponses = await Promise.all([
-        testCaller.content.getTree({ locale: "en" }),
-        testCaller.search.query({ query: "programming", locale: "en" }),
-        testCaller.coursePaths.getRouteData("en"),
-      ]);
-    });
-    Then("every runtime data endpoint responds successfully", () => {
-      expect(endpointResponses).toHaveLength(3);
-      expect(endpointResponses.every((response) => response !== undefined)).toBe(true);
-      expect(TRPC_RUNTIME_TRACED_ASSETS).toEqual([
-        "./content/**/*",
-        "./generated/**/*",
-        "./src/features/course-paths/manifests/**/*",
-      ]);
-    });
-  });
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/static-delivery.feature: The packaged site answers its navigation, search, and course-path requests successfully
+  Scenario(
+    "The packaged site answers its navigation, search, and course-path requests successfully",
+    ({ Given, When, Then }) => {
+      let endpointResponses: unknown[];
+      Given("the ayokoding-www standalone package is running", async () => {
+        await expect(testCaller.meta.health()).resolves.toEqual({ status: "ok" });
+      });
+      When("navigation search and course-path data are requested through tRPC", async () => {
+        endpointResponses = await Promise.all([
+          testCaller.content.getTree({ locale: "en" }),
+          testCaller.search.query({ query: "programming", locale: "en" }),
+          testCaller.coursePaths.getRouteData("en"),
+        ]);
+      });
+      Then("every runtime data endpoint responds successfully", () => {
+        expect(endpointResponses).toHaveLength(3);
+        expect(endpointResponses.every((response) => response !== undefined)).toBe(true);
+        expect(TRPC_RUNTIME_TRACED_ASSETS).toEqual([
+          "./content/**/*",
+          "./generated/**/*",
+          "./src/features/course-paths/manifests/**/*",
+        ]);
+      });
+    },
+  );
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/static-delivery.feature: The document language reflects the localized page locale
   ScenarioOutline("The document language reflects the localized page locale", ({ Given, When, Then }, variables) => {
     let locale: "en" | "id";
     let renderedDocument: ReactElement<{ lang: string }>;
@@ -130,4 +137,25 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline }) => {
       expect(renderedDocument.props.lang).toBe(String(variables.language_code));
     });
   });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/content/static-delivery.feature: Pages are served with security headers, including frame denial and a content security policy
+  Scenario(
+    "Pages are served with security headers, including frame denial and a content security policy",
+    ({ Given, Then, And }) => {
+      let pageHeaders: Map<string, string>;
+      Given("a visitor requests any page of the site", async () => {
+        // The headers apply to every route through the one "/(.*)" rule next.config.ts declares.
+        const { default: nextConfig } = await import("../../../next.config");
+        const rules = await nextConfig.headers!();
+        const everyPage = rules.filter((rule) => rule.source === "/(.*)");
+        pageHeaders = new Map(everyPage.flatMap((rule) => rule.headers.map((header) => [header.key, header.value])));
+      });
+      Then("the response refuses to be framed by other sites", () => {
+        expect(pageHeaders.get("X-Frame-Options")).toBe("DENY");
+      });
+      And("the response declares a content security policy", () => {
+        expect(pageHeaders.get("Content-Security-Policy")).toContain("default-src 'self'");
+      });
+    },
+  );
 });

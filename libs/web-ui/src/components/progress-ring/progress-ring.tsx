@@ -17,29 +17,33 @@ export function ProgressRing({
   const circ = 2 * Math.PI * radius;
   const clampedProgress = Math.max(0, Math.min(1, progress));
 
+  const percent = Math.round(clampedProgress * 100);
+
   return (
-    <svg
-      width={size}
-      height={size}
-      style={{ transform: "rotate(-90deg)" }}
-      role="progressbar"
-      aria-valuenow={Math.round(clampedProgress * 100)}
-      aria-valuemin={0}
-      aria-valuemax={100}
-    >
-      <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke={bg} strokeWidth={stroke} />
-      <circle
-        cx={size / 2}
-        cy={size / 2}
-        r={radius}
-        fill="none"
-        stroke={color}
-        strokeWidth={stroke}
-        strokeLinecap="round"
-        strokeDasharray={circ}
-        strokeDashoffset={circ * (1 - clampedProgress)}
-        style={{ transition: "stroke-dashoffset 1s linear, stroke 300ms" }}
+    <>
+      <progress
+        className="sr-only"
+        value={percent}
+        max={100}
+        aria-valuenow={percent}
+        aria-valuemin={0}
+        aria-valuemax={100}
       />
-    </svg>
+      <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }} aria-hidden="true">
+        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke={bg} strokeWidth={stroke} />
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          stroke={color}
+          strokeWidth={stroke}
+          strokeLinecap="round"
+          strokeDasharray={circ}
+          strokeDashoffset={circ * (1 - clampedProgress)}
+          style={{ transition: "stroke-dashoffset 1s linear, stroke 300ms" }}
+        />
+      </svg>
+    </>
   );
 }

@@ -2,10 +2,8 @@ package cli
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"io"
-	"os"
 
 	"github.com/spf13/cobra"
 	"github.com/wahidyankf/ose-public/apps/ayokoding-cli/internal/adapters/containers"
@@ -17,7 +15,7 @@ import (
 
 // runBuild builds the named derived images and prints one id and tag per
 // build. AYOKODING_CONTAINER_CLI overrides the default Podman command.
-func runBuild(ctx context.Context, cmd *cobra.Command) error {
+func runBuild(ctx context.Context, cmd *cobra.Command, opts Options) error {
 	cat, err := loadCatalog(cmd)
 	if err != nil {
 		return err
@@ -32,7 +30,7 @@ func runBuild(ctx context.Context, cmd *cobra.Command) error {
 		IDs:     cmd.Flags().Args(),
 		Builder: containers.Builder{},
 		Settings: containerplan.Settings{
-			ContainerCLI: os.Getenv("AYOKODING_CONTAINER_CLI"),
+			ContainerCLI: opts.ContainerCLI,
 		},
 	})
 	if err != nil {
@@ -64,10 +62,7 @@ func renderBuiltImages(out io.Writer, mode string, built []application.BuiltImag
 		for _, image := range built {
 			document.Images = append(document.Images, builtImagePayload{ID: image.ID, Tag: image.Tag})
 		}
-		body, err := json.Marshal(document)
-		if err != nil {
-			return fmt.Errorf("cli: marshal built images: %w", err)
-		}
+		body := marshalReport(document)
 		if _, err := fmt.Fprintln(out, string(body)); err != nil {
 			return &finding.PipeError{}
 		}

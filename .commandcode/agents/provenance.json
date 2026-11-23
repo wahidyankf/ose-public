@@ -45,7 +45,7 @@
     {
       "id": "skill/ci-standards",
       "path": ".agents/skills/ci-standards/SKILL.md",
-      "digest": "1f173260015302e365e25625fd9323df740659a28f0290f9f17821c532b920f8"
+      "digest": "be928efa0843dff97f1ede6a6afcd6ad08dfb706f0f92acd2d7174bfde0f1f04"
     },
     {
       "id": "skill/developing-applications",
@@ -190,7 +190,7 @@
     {
       "id": "skill/plan-validating-quality",
       "path": ".agents/skills/plan-validating-quality/SKILL.md",
-      "digest": "10ab1fed90d7dd8a071809193537e89a682c18423b6e9376afcda588346c00d8"
+      "digest": "7f73b49cc3cba67e28493ed26cb74e5fc6e04115bd8a2686b0bfa19c6d21ea2d"
     },
     {
       "id": "skill/plan-verifying-execution",
@@ -505,7 +505,7 @@
     {
       "id": "agent/plan-checker",
       "path": "agents/plan-checker.md",
-      "digest": "c6b591daedcc5a8ccc785ec8f5041fc0b44172bf26ce32cc7740f7838f685e6e"
+      "digest": "1e0a0e7d62d2f66326d7484b4a8b06182d3b11da9102a4488f6882dec8111d03"
     },
     {
       "id": "agent/plan-execution-checker",

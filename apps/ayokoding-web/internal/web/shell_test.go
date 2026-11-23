@@ -110,9 +110,7 @@ func TestShellServesBothLocalesWithChrome(t *testing.T) {
 // TestConfigRejectsInvalidFixtureEnv locks the launcher contract: an unknown
 // fixture through the environment fails instead of booting a fallback.
 func TestConfigRejectsInvalidFixtureEnv(t *testing.T) {
-	clearLauncherEnv(t)
-	t.Setenv("AYOKODING_WEB_FIXTURE", "nope")
-	if _, err := web.ResolveConfig(nil); err == nil {
+	if _, err := resolve(nil, map[string]string{"AYOKODING_WEB_FIXTURE": "nope"}); err == nil {
 		t.Fatal("unknown AYOKODING_WEB_FIXTURE must fail")
 	}
 }

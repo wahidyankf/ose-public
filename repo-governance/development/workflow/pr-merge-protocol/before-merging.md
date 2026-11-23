@@ -7,7 +7,7 @@ when_to_use: Use as the final checklist immediately before executing a PR merge.
 
 Before merging, confirm all five preconditions from [The Rule](./the-rule.md#the-rule):
 
-1. **(a)** `Quality gate` is green for the PR's exact current head SHA and current base branch.
+1. **(a)** `quality-gate` is green for the PR's exact current head SHA and current base branch.
 2. **(b)** Every pushed commit passed the push leak review, and the delivery harness holds a `pass`
    verdict from a fresh-context `leak-reviewer` for the exact current head.
 3. **(c)** The branch is non-destructively current with the target and has no merge conflict.

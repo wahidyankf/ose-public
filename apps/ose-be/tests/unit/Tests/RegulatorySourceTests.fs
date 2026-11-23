@@ -13,6 +13,7 @@ let ``regulatory-source reports ready to accept regulatory documents`` () =
     Assert.Equal(ContextReadiness.Ready, readiness.State)
     Assert.Contains("regulatory", readiness.Capability)
 
+// @scenario specs/apps/ose/be/behaviours/regulatory-source/regulatory-source.feature: GET /api/v1/regulatory-source/status reports the context ready
 [<Fact>]
 let ``regulatory-source status endpoint reports the context readiness`` () =
     let client = buildClient routes

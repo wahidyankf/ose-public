@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
-	"os"
 	"os/exec"
 	"strings"
 	"sync"
@@ -76,15 +75,16 @@ func (e *exitError) Error() string {
 
 // Runtime executes planned container invocations and owns the labelled
 // resources they start, so interrupts and sweeps remove the same set.
-// The zero value is ready: it resolves the CLI from the environment and
+// The zero value is ready: it resolves the CLI to the default podman and
 // runs the real CLI with process-group termination.
 type Runtime struct {
-	// CLI is the container binary. Empty resolves through
-	// AYOKODING_CONTAINER_CLI, defaulting to podman.
+	// CLI is the container binary. Empty means the default podman.
+	// Bootstrap owns the single AYOKODING_CONTAINER_CLI read and wires it
+	// here through the CLI options; tests set this field directly.
 	CLI string
 	// Exec runs one container CLI call and returns its combined output.
 	// A nil Exec runs the real CLI through os/exec with process-group
-	// termination. Tests select the fake through AYOKODING_CONTAINER_CLI.
+	// termination. Tests select the fake through the CLI field.
 	// Stdin carries the run input, nil for control-plane calls.
 	Exec func(ctx context.Context, cli string, args []string, stdin []byte) (string, error)
 	// Now reports the current time for the leftover sweep. Nil means
@@ -99,12 +99,9 @@ type Runtime struct {
 	networks   []string
 }
 
-// ResolveCLI returns the container binary: AYOKODING_CONTAINER_CLI wins,
-// then the configured CLI, then podman.
+// ResolveCLI returns the container binary: the configured CLI wins,
+// then the default podman.
 func (r *Runtime) ResolveCLI() string {
-	if cli := os.Getenv("AYOKODING_CONTAINER_CLI"); cli != "" {
-		return cli
-	}
 	if r.CLI != "" {
 		return r.CLI
 	}
@@ -112,11 +109,11 @@ func (r *Runtime) ResolveCLI() string {
 }
 
 // commandFor selects the binary for one planned invocation. The
-// AYOKODING_CONTAINER_CLI override wins so integration tests and local
-// runs replace the runner without replanning; otherwise the plan stands.
+// configured CLI wins so integration tests and local runs replace the
+// runner without replanning; otherwise the plan stands.
 func (r *Runtime) commandFor(invoke containerplan.Invocation) string {
-	if cli := os.Getenv("AYOKODING_CONTAINER_CLI"); cli != "" {
-		return cli
+	if r.CLI != "" {
+		return r.CLI
 	}
 	if invoke.Binary != "" {
 		return invoke.Binary

@@ -1,5 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 import {
+  ensureFrontmatterFields,
+  generateChildList,
+  nodeIndexGeneratorPort,
   processAllIndexFiles,
   type IndexGeneratorPort,
 } from "../../../../../src/features/content/shell/index-generator";
@@ -49,5 +52,56 @@ describe("processAllIndexFiles", () => {
     expect(result.errors).toEqual([]);
     expect(written.value).toContain("[Overview]");
     expect(written.value).not.toContain("Draft Fixture");
+  });
+
+  it("completes frontmatter of a childless section and writes it in generate mode", async () => {
+    const section = contentEntry({ slug: "solo", isSection: true, filePath: "content/en/solo/_index.md" });
+    const written = { value: "" };
+    const result = await processAllIndexFiles("content/en", "generate", portWith([section], written));
+    expect(result.errors).toEqual([]);
+    expect(result.changed).toEqual(["content/en/solo/_index.md"]);
+    expect(written.value).toContain("date: 2026-01-01T00:00:00.000Z");
+  });
+
+  it("reports a childless section as changed without writing in validate mode", async () => {
+    const section = contentEntry({ slug: "solo", isSection: true, filePath: "content/en/solo/_index.md" });
+    const written = { value: "" };
+    const result = await processAllIndexFiles("content/en", "validate", portWith([section], written));
+    expect(result.changed).toEqual(["content/en/solo/_index.md"]);
+    expect(written.value).toBe("");
+  });
+
+  it("fails loudly for a missing content root instead of reporting an empty tree", async () => {
+    await expect(processAllIndexFiles("/virtual/no-such-root", "validate")).rejects.toThrow();
+  });
+
+  it("the node port surfaces missing paths as failures and reads the clock", async () => {
+    const port = nodeIndexGeneratorPort("/virtual/no-such-root");
+    await expect(port.readText("/virtual/no-such-file")).rejects.toThrow();
+    await expect(port.writeText("/virtual/no-such-file", "x")).rejects.toThrow();
+    expect(port.now() instanceof Date).toBe(true);
+  });
+});
+
+describe("generateChildList", () => {
+  it("skips children missing from the known slugs", () => {
+    const lines = generateChildList(
+      "en",
+      [
+        { title: "Known", slug: "known", weight: 0, isSection: false, children: [] },
+        { title: "Ghost", slug: "ghost", weight: 0, isSection: false, children: [] },
+      ],
+      new Set(["en:known"]),
+    );
+    expect(lines).toContain("[Known]");
+    expect(lines).not.toContain("Ghost");
+  });
+});
+
+describe("ensureFrontmatterFields", () => {
+  it("keeps the body when completing frontmatter", () => {
+    const out = ensureFrontmatterFields("---\ntitle: T\n---\n\nBody text.", new Date("2026-01-01T00:00:00Z"));
+    expect(out).toContain("date: 2026-01-01T00:00:00.000Z");
+    expect(out).toContain("Body text.");
   });
 });

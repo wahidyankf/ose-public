@@ -15,7 +15,7 @@ This practice respects the following core principles:
 
 - **[Root Cause Orientation](../../../principles/general/root-cause-orientation.md)**: Stale specs are a symptom of treating spec updates as optional. This convention addresses the root cause by making synchronization a mandatory part of every relevant change, not a periodic cleanup task.
 
-- **[Automation Over Manual](../../../principles/software-engineering/automation-over-manual.md)**: Where synchronization can be enforced automatically—such as Nx cache inputs that include Gherkin specs and project-local static `test:coverage:*` targets—automation is preferred. Manual checking is reserved for semantic and architectural judgments that deterministic validation cannot make.
+- **[Automation Over Manual](../../../principles/software-engineering/automation-over-manual.md)**: Where synchronization can be enforced automatically—such as Nx cache inputs that include Gherkin specs and project-local static `test:behaviour:coverage` target—automation is preferred. Manual checking is reserved for semantic and architectural judgments that deterministic validation cannot make.
 
 ## Conventions Implemented/Respected
 

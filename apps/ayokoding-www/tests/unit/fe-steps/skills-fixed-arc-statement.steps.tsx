@@ -41,6 +41,7 @@ const feature = await loadFeature(
 );
 
 describeFeature(feature, ({ Scenario }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/skills-fixed-arc-statement.feature: The skills category landing states its fixed arc once, with no chooser
   Scenario("The skills category landing states its fixed arc once, with no chooser", ({ Given, When, Then, And }) => {
     Given("a fixture skills manifest set is loaded", () => {
       expect([subjectA, subjectB].every(({ pathId }) => pathId.startsWith("skills/"))).toBe(true);
@@ -60,5 +61,31 @@ describeFeature(feature, ({ Scenario }) => {
       expect(screen.queryByRole("combobox")).toBeNull();
       expect(screen.queryByRole("radiogroup")).toBeNull();
     });
+  });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/skills-fixed-arc-statement.feature: Each skills path card shows the ramp milestone strip
+  Scenario("Each skills path card shows the ramp milestone strip", ({ Given, When, Then }) => {
+    Given("a fixture skills manifest set is loaded", () => {
+      expect([subjectA, subjectB].every(({ pathId }) => pathId.startsWith("skills/"))).toBe(true);
+    });
+
+    When("a reader opens the skills category landing at /en/learn/paths/skills/", () => {
+      cleanup();
+      render(<CategoryLanding locale="en" category="skills" manifests={[subjectA, subjectB]} />);
+    });
+
+    Then(
+      'each skills path card shows the ramp milestones "Dangerous", "Comfortable", and "Confident" in that order',
+      () => {
+        const cards = Array.from(
+          screen.getByRole("navigation", { name: "Skills paths" }).querySelectorAll(":scope > ul > li"),
+        );
+        expect(cards).toHaveLength(2);
+        for (const card of cards) {
+          const milestones = Array.from(card.querySelectorAll("ol > li")).map((item) => item.textContent);
+          expect(milestones).toEqual(["Dangerous", "Comfortable", "Confident"]);
+        }
+      },
+    );
   });
 });

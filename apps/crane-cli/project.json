@@ -62,16 +62,16 @@
         "{workspaceRoot}/specs/apps/crane/cli/behaviours/**/*.feature"
       ]
     },
-    "test:e2e": {
+    "test:integration": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "dotnet test apps/crane-cli/tests/e2e/crane-cli-e2e-tests.fsproj"
+        "command": "dotnet test apps/crane-cli/tests/integration/crane-cli-integration-tests.fsproj"
       },
       "dependsOn": ["build"],
       "cache": true,
       "inputs": [
-        "{projectRoot}/tests/e2e/**/*.fs",
-        "{projectRoot}/tests/e2e/crane-cli-e2e-tests.fsproj",
+        "{projectRoot}/tests/integration/**/*.fs",
+        "{projectRoot}/tests/integration/crane-cli-integration-tests.fsproj",
         "{workspaceRoot}/specs/apps/crane/cli/behaviours/**/*.feature"
       ]
     },
@@ -92,7 +92,7 @@
             "forwardAllArgs": false
           },
           {
-            "command": "npm exec -- nx run crane-cli:test:coverage",
+            "command": "npm exec -- nx run crane-cli:test:behaviour:coverage",
             "forwardAllArgs": false
           }
         ],
@@ -102,14 +102,20 @@
       "cache": true,
       "inputs": [
         "default",
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/crane-cli/behaviour-coverage.json",
         "{workspaceRoot}/package-lock.json",
         "{workspaceRoot}/specs/apps/crane/cli/behaviours/**/*.feature",
         "{workspaceRoot}/apps/crane-cli/tests/unit/**/*.{ts,tsx,fs}",
         "{workspaceRoot}/apps/crane-cli/tests/unit/crane-cli-unit-tests.fsproj",
-        "{workspaceRoot}/apps/crane-cli/tests/e2e/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/crane-cli/tests/e2e/crane-cli-e2e-tests.fsproj"
+        "{workspaceRoot}/apps/crane-cli/tests/integration/**/*.{ts,tsx,fs}",
+        "{workspaceRoot}/apps/crane-cli/tests/integration/crane-cli-integration-tests.fsproj",
+        "{workspaceRoot}/repo-config.yml",
+        "{workspaceRoot}/rhino.lock",
+        "{workspaceRoot}/specs/**/*",
+        "{workspaceRoot}/apps/ayokoding-www/content/**/*.feature",
+        "{workspaceRoot}/apps/*/tests/**/*",
+        "{workspaceRoot}/apps/*-e2e/steps/**/*",
+        "{workspaceRoot}/apps/*-e2e/src/**/*",
+        "{workspaceRoot}/libs/*/tests/**/*"
       ]
     },
     "deps:audit": {
@@ -119,87 +125,22 @@
       },
       "cache": false
     },
-    "test:coverage:unit": {
+    "test:behaviour:coverage": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config apps/crane-cli/behaviour-coverage.json --adapter unit"
+        "command": "./rhino behaviour coverage validate",
+        "cwd": "{workspaceRoot}"
       },
       "cache": true,
       "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/crane-cli/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/apps/crane/cli/behaviours/**/*.feature",
-        "{workspaceRoot}/apps/crane-cli/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/crane-cli/tests/unit/crane-cli-unit-tests.fsproj",
-        "{workspaceRoot}/apps/crane-cli/tests/e2e/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/crane-cli/tests/e2e/crane-cli-e2e-tests.fsproj"
-      ]
-    },
-    "test:coverage:e2e": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config apps/crane-cli/behaviour-coverage.json --adapter e2e"
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/crane-cli/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/apps/crane/cli/behaviours/**/*.feature",
-        "{workspaceRoot}/apps/crane-cli/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/crane-cli/tests/unit/crane-cli-unit-tests.fsproj",
-        "{workspaceRoot}/apps/crane-cli/tests/e2e/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/crane-cli/tests/e2e/crane-cli-e2e-tests.fsproj"
-      ]
-    },
-    "test:coverage:behaviour": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node scripts/behaviour-coverage.mjs --config apps/crane-cli/behaviour-coverage.json --adapter behaviour"
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/crane-cli/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/apps/crane/cli/behaviours/**/*.feature",
-        "{workspaceRoot}/apps/crane-cli/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/crane-cli/tests/unit/crane-cli-unit-tests.fsproj",
-        "{workspaceRoot}/apps/crane-cli/tests/e2e/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/crane-cli/tests/e2e/crane-cli-e2e-tests.fsproj"
-      ]
-    },
-    "test:coverage": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          {
-            "command": "npm exec -- nx run crane-cli:test:coverage:unit",
-            "forwardAllArgs": false
-          },
-          {
-            "command": "npm exec -- nx run crane-cli:test:coverage:e2e",
-            "forwardAllArgs": false
-          },
-          {
-            "command": "npm exec -- nx run crane-cli:test:coverage:behaviour",
-            "forwardAllArgs": false
-          }
-        ],
-        "parallel": false,
-        "forwardAllArgs": false
-      },
-      "cache": true,
-      "inputs": [
-        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
-        "{workspaceRoot}/apps/crane-cli/behaviour-coverage.json",
-        "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/apps/crane/cli/behaviours/**/*.feature",
-        "{workspaceRoot}/apps/crane-cli/tests/unit/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/crane-cli/tests/unit/crane-cli-unit-tests.fsproj",
-        "{workspaceRoot}/apps/crane-cli/tests/e2e/**/*.{ts,tsx,fs}",
-        "{workspaceRoot}/apps/crane-cli/tests/e2e/crane-cli-e2e-tests.fsproj"
+        "{workspaceRoot}/repo-config.yml",
+        "{workspaceRoot}/rhino.lock",
+        "{workspaceRoot}/specs/**/*",
+        "{workspaceRoot}/apps/ayokoding-www/content/**/*.feature",
+        "{workspaceRoot}/apps/*/tests/**/*",
+        "{workspaceRoot}/apps/*-e2e/steps/**/*",
+        "{workspaceRoot}/apps/*-e2e/src/**/*",
+        "{workspaceRoot}/libs/*/tests/**/*"
       ]
     }
   },

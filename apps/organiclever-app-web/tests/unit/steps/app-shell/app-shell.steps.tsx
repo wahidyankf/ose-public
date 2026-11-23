@@ -1,71 +1,30 @@
 import path from "path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
 import { expect } from "vitest";
-import { createActor, type Actor } from "xstate";
-import { appMachine } from "@/contexts/app-shell/presentation/app-machine";
 import { refreshAppRoute, resolveAppRoute, type AppRouteResult } from "@/contexts/routing/application";
 
 const feature = await loadFeature(
   path.resolve(__dirname, "../../../../../../specs/apps/organiclever/app-web/behaviours/app-shell/navigation.feature"),
 );
 
-function makeOverlayActor() {
-  return createActor(appMachine, { input: { initialDarkMode: false } }).start();
-}
-
-describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
+describeFeature(feature, ({ ScenarioOutline }) => {
   let route: AppRouteResult;
-  let overlayActor: Actor<typeof appMachine>;
 
-  Scenario("Default tab is Home on first load", ({ When, Then, And }) => {
-    When("the app is freshly loaded", () => {
-      const redirect = resolveAppRoute("GET", "/app");
-      route = resolveAppRoute("GET", redirect.location ?? "/app");
-    });
-    Then("the Home tab is active", () => expect(route.activeTab).toBe("home"));
-    And("the app shell is visible", () => expect(route).toMatchObject({ status: 200, screen: "Home" }));
-  });
-
-  Scenario("Navigate to History tab", ({ Given, When, Then }) => {
+  // @scenario specs/apps/organiclever/app-web/behaviours/app-shell/navigation.feature: Tapping a tab opens its screen and marks the tab active
+  ScenarioOutline("Tapping a tab opens its screen and marks the tab active", ({ Given, When, Then, And }, examples) => {
+    const tab = String(examples["tab"] ?? "");
+    const screen = String(examples["screen"] ?? "");
     Given("the app shell is visible", () => {
       route = resolveAppRoute("GET", "/app/home");
     });
-    When("the user taps the History tab", () => {
-      route = resolveAppRoute("GET", "/app/history");
+    When('the user taps the "<tab>" tab', () => {
+      route = resolveAppRoute("GET", `/app/${tab.toLowerCase()}`);
     });
-    Then("the History tab is active", () => expect(route.activeTab).toBe("history"));
+    Then('the "<screen>" screen is visible', () => expect(route).toMatchObject({ status: 200, screen }));
+    And('the "<tab>" tab is marked active', () => expect(route.activeTab).toBe(tab.toLowerCase()));
   });
 
-  Scenario("Navigate to Progress tab", ({ Given, When, Then }) => {
-    Given("the app shell is visible", () => {
-      route = resolveAppRoute("GET", "/app/home");
-    });
-    When("the user taps the Progress tab", () => {
-      route = resolveAppRoute("GET", "/app/progress");
-    });
-    Then("the Progress tab is active", () => expect(route.activeTab).toBe("progress"));
-  });
-
-  Scenario("Navigate to Settings tab", ({ Given, When, Then }) => {
-    Given("the app shell is visible", () => {
-      route = resolveAppRoute("GET", "/app/home");
-    });
-    When("the user taps the Settings tab", () => {
-      route = resolveAppRoute("GET", "/app/settings");
-    });
-    Then("the Settings tab is active", () => expect(route.activeTab).toBe("settings"));
-  });
-
-  Scenario("Open and close Add Entry sheet", ({ Given, When, Then, And }) => {
-    Given("the app shell is visible", () => {
-      overlayActor = makeOverlayActor();
-    });
-    When("the user taps the FAB button", () => overlayActor.send({ type: "OPEN_ADD_ENTRY" }));
-    Then("the Add Entry sheet is open", () => expect(overlayActor.getSnapshot().value).toBe("addEntry"));
-    And("the user closes the Add Entry sheet", () => overlayActor.send({ type: "CLOSE_ADD_ENTRY" }));
-    And("the Add Entry sheet is closed", () => expect(overlayActor.getSnapshot().value).toBe("none"));
-  });
-
+  // @scenario specs/apps/organiclever/app-web/behaviours/app-shell/navigation.feature: URL persists across page refresh on each tab
   ScenarioOutline("URL persists across page refresh on each tab", ({ Given, When, Then, And }, examples) => {
     const refreshPath = String(examples["path"] ?? "");
     const expectedScreen = String(examples["screen"] ?? "");

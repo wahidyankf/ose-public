@@ -32,6 +32,16 @@ type errorDetail struct {
 	Message string `json:"message"`
 }
 
+// marshalReport encodes a CLI JSON document built only from strings,
+// numbers, booleans, and slices of them, which encoding/json encodes
+// infallibly; the discarded error is confined here so errchkjson still
+// guards every fallible marshal in the package.
+func marshalReport(document any) []byte {
+	//nolint:errchkjson // report documents hold strings, numbers, and booleans only, which encoding/json encodes infallibly.
+	body, _ := json.Marshal(document)
+	return body
+}
+
 // outputMode scans raw arguments for the persistent --output flag, so error
 // rendering knows the mode even when flag parsing itself failed.
 func outputMode(args []string) string {
@@ -107,10 +117,7 @@ func renderFindings(out io.Writer, mode string, findings []finding.Finding) erro
 				Message: found.Message,
 			})
 		}
-		body, err := json.Marshal(document)
-		if err != nil {
-			return fmt.Errorf("cli: marshal findings: %w", err)
-		}
+		body := marshalReport(document)
 		if _, err := fmt.Fprintln(out, string(body)); err != nil {
 			return &finding.PipeError{}
 		}
@@ -138,10 +145,7 @@ func renderToolchains(out io.Writer, mode string, entries []catalog.Toolchain) e
 				Image:   entry.Image,
 			})
 		}
-		body, err := json.Marshal(document)
-		if err != nil {
-			return fmt.Errorf("cli: marshal toolchains: %w", err)
-		}
+		body := marshalReport(document)
 		if _, err := fmt.Fprintln(out, string(body)); err != nil {
 			return &finding.PipeError{}
 		}
@@ -162,14 +166,10 @@ func renderToolchains(out io.Writer, mode string, entries []catalog.Toolchain) e
 func renderError(stderr io.Writer, cmd *cobra.Command, err error, mode string) {
 	coded := codedError(err)
 	if mode == outputJSON {
-		body, marshalErr := json.Marshal(errorDocument{
+		body := marshalReport(errorDocument{
 			SchemaVersion: 1,
 			Error:         errorDetail{Code: coded.Code, Message: coded.Message},
 		})
-		if marshalErr != nil {
-			_, _ = fmt.Fprintln(stderr, `{"schemaVersion":1,"error":{"code":"`+finding.InternalPanic+`"}}`)
-			return
-		}
 		_, _ = fmt.Fprintln(stderr, string(body))
 		return
 	}

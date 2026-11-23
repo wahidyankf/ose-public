@@ -15,6 +15,8 @@ import { metadata as layoutMetadata } from "@/app/[locale]/layout";
 import sitemap from "@/app/sitemap";
 import { GET as getFeed } from "@/app/feed.xml/route";
 import { generateMetadata } from "@/app/[locale]/(content)/[...slug]/page";
+import robots from "../../../src/app/robots";
+import ContentNotFound from "../../../src/app/[locale]/(content)/not-found";
 
 // Mocks required by Footer (no trpc/navigation needed — Footer is a server component)
 // next/link is already mocked in test-setup.ts
@@ -83,7 +85,7 @@ const rantsSection = {
   children: [],
 };
 
-describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
+describeFeature(feature, ({ Scenario, ScenarioOutline, Background, AfterEachScenario }) => {
   AfterEachScenario(cleanup);
 
   Background(({ Given }) => {
@@ -92,6 +94,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: English content resolves at its bare URL
   Scenario("English content resolves at its bare URL", ({ When, Then, And }) => {
     let requestedUrl = "";
     When('a visitor navigates to "/en/learn/legacy/software-engineering"', () => {
@@ -116,6 +119,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: The browse index lists all content sections
   Scenario("The browse index lists all content sections", ({ When, Then, And }) => {
     When('a visitor navigates to "/en/browse"', () => {
       render(<BrowseIndex locale="en" sections={[learnSection, rantsSection]} />);
@@ -146,6 +150,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: Header shows primary nav links on desktop
   Scenario("Header shows primary nav links on desktop", ({ Given, When, Then, And }) => {
     let links: { label: string; href: string }[] = [];
     Given("the viewport is set to desktop width", () => {
@@ -166,30 +171,42 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
-  Scenario("Mobile navigation mirrors the header links", ({ Given, When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: mobile navigation links
+  ScenarioOutline("mobile navigation links", ({ Given, When, Then, And }, variables) => {
     let links: { label: string; href: string }[] = [];
     Given("the viewport is set to mobile width", () => {
       Object.defineProperty(window, "innerWidth", { configurable: true, value: 375 });
       expect(window.innerWidth).toBeLessThan(768);
     });
 
-    When('a visitor navigates to "/en"', () => {
-      expect(contentUrl("en", "")).toBe("/en");
+    When('a visitor navigates to "<home>"', () => {
+      expect(contentUrl(String(variables.locale) as "en" | "id", "")).toBe(String(variables.home));
     });
 
     And("the visitor opens the mobile navigation menu", () => {
-      links = PRIMARY_NAV_LINKS.map((link) => ({ label: t("en", link.labelKey), href: link.hrefFor("en") }));
+      const locale = String(variables.locale) as "en" | "id";
+      links = PRIMARY_NAV_LINKS.map((link) => ({ label: t(locale, link.labelKey), href: link.hrefFor(locale) }));
     });
 
-    Then('the mobile nav should contain a link to "/en/browse" labelled "Learn"', () => {
-      expect(links).toContainEqual({ label: "Learn", href: "/en/browse" });
+    Then('the mobile nav should contain a link to "<learn_href>" labelled "<learn_label>"', () => {
+      expect(links).toContainEqual({ label: String(variables.learn_label), href: String(variables.learn_href) });
     });
 
-    And('the mobile nav should contain a link to "/en/tools" labelled "Tools"', () => {
-      expect(links).toContainEqual({ label: "Tools", href: "/en/tools" });
+    And('the mobile nav should contain a link to "<tools_href>" labelled "<tools_label>"', () => {
+      expect(links).toContainEqual({ label: String(variables.tools_label), href: String(variables.tools_href) });
+    });
+
+    And('every drawer label is localized to "<locale>"', () => {
+      const locale = String(variables.locale) as "en" | "id";
+      expect(links.map(({ label }) => label)).toEqual(PRIMARY_NAV_LINKS.map((link) => t(locale, link.labelKey)));
+      if (locale === "en") return;
+      for (const link of PRIMARY_NAV_LINKS) {
+        expect(t(locale, link.labelKey)).not.toBe(t("en", link.labelKey));
+      }
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: Footer shows grouped navigation with localized labels
   Scenario("Footer shows grouped navigation with localized labels", ({ When, Then, And }) => {
     When('a visitor navigates to "/id"', () => {
       render(<Footer locale="id" />);
@@ -232,11 +249,14 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
-  Scenario("Landing homepage renders hero, sections, and tools teaser in English", ({ When, Then, And }) => {
-    When('a visitor navigates to "/en"', () => {
-      // Clean up any previous renders to isolate this scenario.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: landing homepage per locale
+  ScenarioOutline("landing homepage per locale", ({ When, Then, And }, variables) => {
+    When('a visitor navigates to "<home>"', () => {
+      // The home path is "/en" or "/id", so the locale is the path without its slash.
+      const locale = String(variables.home).slice(1) as "en" | "id";
+      // Clean up any previous renders to isolate this example.
       cleanup();
-      render(<Landing locale="en" sections={EN_LANDING_SECTIONS} />);
+      render(<Landing locale={locale} sections={locale === "en" ? EN_LANDING_SECTIONS : ID_LANDING_SECTIONS} />);
     });
 
     Then("the hero heading should be visible on the landing page", () => {
@@ -256,51 +276,19 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
       expect((para?.textContent ?? "").length).toBeGreaterThan(0);
     });
 
-    And('the landing section grid should include a card linking to "/en/rants"', () => {
+    And('the landing section grid should include a card linking to "<section_href>"', () => {
       // SectionCard renders as an <a> with href = contentUrl(locale, slug).
-      const link = document.querySelector('a[href="/en/rants"]');
+      const link = document.querySelector(`a[href="${String(variables.section_href)}"]`);
       expect(link).toBeTruthy();
     });
 
-    And('the tools teaser should link to "/en/tools/cost-of-living-calculator"', () => {
-      const link = document.querySelector('a[href="/en/tools/cost-of-living-calculator"]');
-      expect(link).toBeTruthy();
-    });
-  });
-
-  Scenario("Landing homepage renders hero, sections, and tools teaser in Indonesian", ({ When, Then, And }) => {
-    When('a visitor navigates to "/id"', () => {
-      // Clean up any previous renders to isolate this scenario.
-      cleanup();
-      render(<Landing locale="id" sections={ID_LANDING_SECTIONS} />);
-    });
-
-    Then("the hero heading should be visible on the landing page", () => {
-      const h1s = screen.getAllByRole("heading", { level: 1 });
-      expect(h1s).toHaveLength(1);
-      expect(h1s[0]?.textContent).toBeTruthy();
-    });
-
-    And("the hero intro should be visible on the landing page", () => {
-      const sections = document.querySelectorAll("section");
-      const heroSection = sections[0];
-      expect(heroSection).toBeTruthy();
-      const para = heroSection!.querySelector("p");
-      expect(para).toBeTruthy();
-      expect((para?.textContent ?? "").length).toBeGreaterThan(0);
-    });
-
-    And('the landing section grid should include a card linking to "/id/celoteh"', () => {
-      const link = document.querySelector('a[href="/id/celoteh"]');
-      expect(link).toBeTruthy();
-    });
-
-    And('the tools teaser should link to "/id/tools/cost-of-living-calculator"', () => {
-      const link = document.querySelector('a[href="/id/tools/cost-of-living-calculator"]');
+    And('the tools teaser should link to "<tools_href>"', () => {
+      const link = document.querySelector(`a[href="${String(variables.tools_href)}"]`);
       expect(link).toBeTruthy();
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: Breadcrumb segments link to their bare content URLs
   Scenario("Breadcrumb segments link to their bare content URLs", ({ Given, When, Then }) => {
     const contentSegments = [
       { label: "Learn", slug: "learn" },
@@ -330,8 +318,9 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: Sidebar, breadcrumb, previous and next, and search links go straight to their page with no redirect
   Scenario(
-    "Internal content links emit bare URLs directly without relying on redirects",
+    "Sidebar, breadcrumb, previous and next, and search links go straight to their page with no redirect",
     ({ Given, When, Then, And }) => {
       const sourceSlugs = ["learn/software-engineering", "rants", "belajar"] as const;
       let hrefs: string[] = [];
@@ -358,8 +347,9 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     },
   );
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: The sitemap lists every content page by its public URL on www.ayokoding.com
   Scenario(
-    "Sitemap lists every content URL bare, with no distinct content namespace",
+    "The sitemap lists every content page by its public URL on www.ayokoding.com",
     ({ Given, When, Then, And, But }) => {
       let sitemapUrls: string[] = [];
       Given("the sitemap is generated from the content index", () => {
@@ -391,6 +381,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     },
   );
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: RSS feed item links use bare content URLs
   Scenario("RSS feed item links use bare content URLs", ({ Given, When, Then, And }) => {
     let feedXml = "";
     Given("the feed is generated from the content index", () => {
@@ -418,39 +409,74 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
   });
 
-  Scenario("Canonical link for moved content points to its bare URL", ({ Given, When, Then, And }) => {
-    let pageMetadata: Awaited<ReturnType<typeof generateMetadata>>;
-    Given('the content page at "/en/learn/legacy/software-engineering"', () => {
-      getBySlug.mockResolvedValue({ title: "Software Engineering", description: "Legacy overview" });
-    });
-
-    When("its metadata is generated", async () => {
-      pageMetadata = await generateMetadata({
-        params: Promise.resolve({ locale: "en", slug: ["learn", "legacy", "software-engineering"] }),
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: A content page declares its own URL as canonical, with language alternates on www.ayokoding.com
+  Scenario(
+    "A content page declares its own URL as canonical, with language alternates on www.ayokoding.com",
+    ({ Given, When, Then, And }) => {
+      let pageMetadata: Awaited<ReturnType<typeof generateMetadata>>;
+      Given('the content page at "/en/learn/legacy/software-engineering"', () => {
+        getBySlug.mockResolvedValue({ title: "Software Engineering", description: "Legacy overview" });
       });
-    });
 
-    Then('the canonical alternate is "/en/learn/legacy/software-engineering"', () => {
-      expect(pageMetadata.alternates?.canonical).toBe("/en/learn/legacy/software-engineering");
-    });
-
-    And("the language alternates include en and x-default", () => {
-      expect(pageMetadata.alternates?.languages).toEqual({
-        en: "/en/learn/legacy/software-engineering",
-        "x-default": "/en/learn/legacy/software-engineering",
+      When("its metadata is generated", async () => {
+        pageMetadata = await generateMetadata({
+          params: Promise.resolve({ locale: "en", slug: ["learn", "legacy", "software-engineering"] }),
+        });
       });
+
+      Then('the canonical alternate is "/en/learn/legacy/software-engineering"', () => {
+        expect(pageMetadata.alternates?.canonical).toBe("/en/learn/legacy/software-engineering");
+      });
+
+      And("the language alternates include en and x-default", () => {
+        expect(pageMetadata.alternates?.languages).toEqual({
+          en: "/en/learn/legacy/software-engineering",
+          "x-default": "/en/learn/legacy/software-engineering",
+        });
+      });
+
+      And('the canonical link and the language alternates are on the canonical host "www.ayokoding.com"', () => {
+        // Next resolves each relative alternate against the root layout's `metadataBase` when it renders
+        // the `<link>` tags, so that base decides the host every rendered canonical and hreflang carries.
+        const base = layoutMetadata.metadataBase;
+        expect(base).toBeInstanceOf(URL);
+        const { canonical, languages = {} } = pageMetadata.alternates ?? {};
+        const rendered = [canonical, ...Object.values(languages)].map((href) => new URL(String(href), base!));
+        expect(rendered).toHaveLength(3);
+        expect(rendered.map(({ host }) => host)).toEqual(rendered.map(() => "www.ayokoding.com"));
+        expect(rendered[0]?.href).toBe("https://www.ayokoding.com/en/learn/legacy/software-engineering");
+      });
+    },
+  );
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: robots.txt allows crawling and names the sitemap
+  Scenario("robots.txt allows crawling and names the sitemap", ({ When, Then, And }) => {
+    let rules: ReturnType<typeof robots>;
+    When("a search engine requests the robots.txt file", () => {
+      rules = robots();
     });
 
-    And('the canonical link and the language alternates are on the canonical host "www.ayokoding.com"', () => {
-      // Next resolves each relative alternate against the root layout's `metadataBase` when it renders
-      // the `<link>` tags, so that base decides the host every rendered canonical and hreflang carries.
-      const base = layoutMetadata.metadataBase;
-      expect(base).toBeInstanceOf(URL);
-      const { canonical, languages = {} } = pageMetadata.alternates ?? {};
-      const rendered = [canonical, ...Object.values(languages)].map((href) => new URL(String(href), base!));
-      expect(rendered).toHaveLength(3);
-      expect(rendered.map(({ host }) => host)).toEqual(rendered.map(() => "www.ayokoding.com"));
-      expect(rendered[0]?.href).toBe("https://www.ayokoding.com/en/learn/legacy/software-engineering");
+    Then("every page of the site is open to crawling", () => {
+      expect(rules.rules).toEqual([{ userAgent: "*", allow: "/" }]);
+    });
+
+    And("the robots.txt file names the sitemap", () => {
+      expect(rules.sitemap).toBe("https://www.ayokoding.com/sitemap.xml");
+    });
+  });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature: A missing page shows Page Not Found with a Go Home link
+  Scenario("A missing page shows Page Not Found with a Go Home link", ({ When, Then, And }) => {
+    When("a visitor opens a page that does not exist", () => {
+      render(<ContentNotFound />);
+    });
+
+    Then('the reader sees a "Page Not Found" heading', () => {
+      expect(screen.getByRole("heading", { name: "Page Not Found" })).toBeTruthy();
+    });
+
+    And("the page offers a Go Home link to the English home page", () => {
+      expect(screen.getByRole("link", { name: "Go Home" }).getAttribute("href")).toBe("/en");
     });
   });
 });

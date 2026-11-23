@@ -18,36 +18,9 @@ export default defineConfig({
       provider: "v8",
       include: ["src/**/*.{ts,tsx}"],
       exclude: [
-        // App shell presentation (chrome) — passive UI primitives + layout shell
-        "src/features/app-shell/shell/*.tsx",
-        // Per-feature presentation (UI surfaces — exercised via E2E + fe-step Gherkin scenarios)
-        "src/features/content/shell/*.tsx",
-        "src/features/search/shell/*.tsx",
-        "src/features/search/shell/use-search.ts",
-        "src/features/i18n/shell/*.tsx",
-        "src/features/i18n/shell/use-locale.ts",
-        "src/features/navigation/shell/*.tsx",
-        // Re-export shim — pure type re-export, no executable code
-        "src/features/navigation/core/schemas.ts",
-        // Next.js app router pages — covered via E2E
-        "src/app/**",
-        // Cross-cutting tRPC client wiring
-        "src/lib/trpc/client.ts",
-        "src/lib/trpc/provider.tsx",
-        "src/lib/trpc/server.ts",
-        // Content infrastructure adapters + scripts (covered via unit suite with mocked deps)
-        "src/features/content/core/parser.ts",
-        "src/features/content/shell/reader.ts",
-        "src/features/content/core/repository.ts",
-        "src/features/content/shell/repository-fs.ts",
-        "src/features/content/core/types.ts",
-        "src/features/content/shell/index-generator.ts",
-        "src/features/search/shell/generate-search-data.ts",
-        "src/scripts/**",
-        // tRPC routers — composition-only; behaviour is exercised via BE-E2E
-        "src/features/*/shell/router.ts",
-        "src/features/app-shell/shell/root-router.ts",
-        // Test infra
+        // Non-production code only (contract C15, category N): test doubles and
+        // fixtures under src/test, and the test files themselves. Every other
+        // production file is measured and held to the 99% floor.
         "src/test/**",
         "**/*.{test,spec}.{ts,tsx}",
       ],
@@ -106,6 +79,9 @@ export default defineConfig({
           exclude: ["node_modules", "**/*.unit.test.{ts,tsx}"],
           environment: "jsdom",
           setupFiles: ["./src/test/setup.ts"],
+          // Vitest blanks every CSS import unless it is listed here. The AI benchmark steps read the
+          // token stylesheet with `?raw` and check its text, so that file must pass through unchanged.
+          css: { include: [/ayokoding\.css/] },
           testTimeout: 30000,
         },
       },

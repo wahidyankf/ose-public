@@ -29,11 +29,13 @@ second testing contract. In particular:
 - every active scenario requires Unit proof and Unit has no exemption;
 - Integration and E2E apply only when the project role owns their real boundary;
 - inapplicable targets are omitted, never implemented as no-op or echo placeholders;
-- `test:*` executes tests while `test:coverage:*` validates coverage statically without executing
+- `test:*` executes tests while `test:behaviour:coverage` validates the corpus statically, without executing
   tests;
-- every applicable static coverage target runs through `test:quick`; and
-- Integration/E2E runtime stays out of pre-commit, pre-push, PR quality gates, and
-  `test:quick`.
+- `test:quick` runs typecheck, lint, Unit tests, BDD Unit bindings, and `test:behaviour:coverage`;
+- `test:integration` runs in the pull-request gate for affected projects, and `test:e2e` runs on a schedule or on
+  `main`, never per pull request; and
+- no git hook runs a test, a lint, or a document check: pre-commit formats staged files, commit-msg lints the
+  message, and pre-push runs the leak scan.
 
 Use the [coverage, exemption, and execution contract](../behaviour-driven-development/coverage-exemptions-and-execution.md)
 for the canonical higher-layer exemption syntax and runtime-surface rules.

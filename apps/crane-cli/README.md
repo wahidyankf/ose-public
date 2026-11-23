@@ -31,7 +31,7 @@ Point `TESSDATA_PREFIX` at your local Tesseract data directory when your install
 ```bash
 npm exec nx -- run crane-cli:build
 npm exec nx -- run crane-cli:test:quick
-npm exec nx -- run crane-cli:test:e2e
+npm exec nx -- run crane-cli:test:integration
 ```
 
 The executable is written to `apps/crane-cli/dist/` by the build target. Its behaviour specifications
@@ -52,8 +52,6 @@ and OCR integrations remain at the edge.
 ## BDD and Testing
 
 The canonical corpus is `specs/apps/crane/cli/behaviours/`. `test:unit` runs in-process adapters
-with injected boundary doubles, and `test:e2e` exercises the built CLI through its public process
-boundary. Matching `test:coverage:unit`, `test:coverage:e2e`, `test:coverage:behaviour`, and
-aggregate `test:coverage` validate closure statically. Integration is omitted because the CLI owns
-the public process adapter while fsharp-crane-core owns and tests the non-networked local-resource
-boundary separately.
+with injected boundary doubles, and `test:integration` runs the built CLI through its public process
+boundary over local files only. `test:behaviour:coverage` validates closure statically. No end-to-end
+target exists because the CLI has no network, remote service, or credential boundary of its own.

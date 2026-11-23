@@ -273,7 +273,7 @@ tests/
 ## Coverage Requirements
 
 **MUST** achieve >=99% line coverage, measured with Coverlet and enforced during the native
-`test:unit` runtime. Static `test:coverage:*` targets never execute Coverlet or another test runner:
+`test:unit` runtime. The static `test:behaviour:coverage` target never executes Coverlet or another test runner:
 
 ```bash
 # Run tests with coverage collection and threshold enforcement

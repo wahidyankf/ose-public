@@ -31,7 +31,7 @@ const older = makeEntry("older", "reading", "Atomic Habits", "2026-05-01T08:00:0
 
 function renderHistory(entries: ReadonlyArray<JournalEntry>) {
   const runtime = {
-    runPromise: vi.fn().mockResolvedValueOnce([]).mockResolvedValueOnce(entries),
+    runPromise: vi.fn<(...args: unknown[]) => unknown>().mockResolvedValueOnce([]).mockResolvedValueOnce(entries),
   } as unknown as JournalRuntime;
   render(<HistoryScreen runtime={runtime} />);
 }
@@ -39,6 +39,7 @@ function renderHistory(entries: ReadonlyArray<JournalEntry>) {
 describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
   AfterEachScenario(() => cleanup());
 
+  // @scenario specs/apps/organiclever/app-web/behaviours/stats/history-screen.feature: History shows entries in reverse order
   Scenario("History shows entries in reverse order", ({ When, Then }) => {
     When("the history screen has entries", async () => {
       renderHistory([newer, older]);
@@ -52,6 +53,7 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/organiclever/app-web/behaviours/stats/history-screen.feature: Empty history shows empty state
   Scenario("Empty history shows empty state", ({ When, Then }) => {
     When("the history screen has no entries", async () => {
       renderHistory([]);
@@ -60,6 +62,7 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
     Then("the empty state message is shown", () => expect(screen.getByText("No sessions yet.")).toBeVisible());
   });
 
+  // @scenario specs/apps/organiclever/app-web/behaviours/stats/history-screen.feature: Session card expands on click
   Scenario("Session card expands on click", ({ Given, When, Then }) => {
     Given("the history screen shows a workout entry", async () => {
       renderHistory([newer]);

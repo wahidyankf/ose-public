@@ -1,10 +1,8 @@
 # messaging — organiclever-be Gherkin Domain
 
-Scenarios for the OrganicLever backend NATS/JetStream messaging infrastructure. The owner project's
-static coverage discovers this directory and `live/` recursively. Every scenario has in-process
-Unit proof through injected messaging ports. Scenarios whose public boundary requires a real
-NATS/JetStream broker are additionally implemented by `organiclever-be-e2e`; Integration is
-exempt only where its zero-network boundary cannot express the scenario.
+Scenarios for the OrganicLever backend NATS/JetStream messaging infrastructure. Every scenario has a
+Unit reference. Scenarios that need a real NATS/JetStream broker are bound by `organiclever-be-e2e`,
+which runs against a local broker and so also counts at Integration level.
 
 ## Feature Files
 

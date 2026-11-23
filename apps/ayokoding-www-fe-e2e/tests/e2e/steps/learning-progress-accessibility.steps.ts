@@ -1,3 +1,9 @@
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/learning-progress-accessibility.feature: Status is shown in words, not only colour
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/learning-progress-accessibility.feature: Progress controls work with the keyboard and announce changes
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/learning-progress-accessibility.feature: Reduced motion turns off progress animations
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/learning-progress-accessibility.feature: Progress screens fit a phone screen
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/learning-progress-accessibility.feature: Progress controls are at least 44 by 44 CSS pixels on a phone
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/learning-progress/learning-progress-accessibility.feature: Progress screens pass automated accessibility checks
 import { createBdd } from "playwright-bdd";
 import { expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";

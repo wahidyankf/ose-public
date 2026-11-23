@@ -16,7 +16,7 @@ when_to_use: "Use when unsure which companion artifact a feature change must als
 - Removing an endpoint, procedure, or command -- remove or archive scenarios
 - Changing authentication or authorization requirements -- update scenarios
 
-**Automated enforcement**: each owner's project-local `test:coverage:*` targets catch missing,
+**Automated enforcement**: each owner's project-local `test:behaviour:coverage` target catches missing,
 duplicate, or unused scenario bindings and invalid exemptions. Nx cache inputs include Gherkin specs
 so stale specs invalidate test and static-validation caches.
 
@@ -48,9 +48,9 @@ so stale specs invalidate test and static-validation caches.
   isolated synthetic data and no production identity or production data.
 - **Accessibility tests**: UI changes require accessibility verification (static analysis via oxlint jsx-a11y plugin, manual WCAG AA checks).
 
-**Automated enforcement**: `test:unit` in `test:quick` enforces numeric coverage. Static
-`test:coverage:*` targets in the same quick gate enforce exact scenario-to-adapter coverage without
-running tests. Integration and E2E runtime never run in hooks or PR CI.
+**Automated enforcement**: `test:unit` in `test:quick` enforces numeric coverage. The static
+`test:behaviour:coverage` target in the same quick gate enforces exact scenario-to-adapter coverage
+without running tests. Integration and E2E runtime never run in hooks or PR CI.
 
 ## 4. Documentation
 

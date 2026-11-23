@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { afterEach, beforeEach, describe, it, expect } from "vitest";
 import {
   parseWeight,
   brzycki1RM,
@@ -6,6 +6,10 @@ import {
   toDateStr,
   computeStreak,
 } from "../../../../../src/contexts/stats/domain/types";
+import { FIXED_INSTANT, FIXED_MS, freezeClock, restoreClock } from "../../../support/doubles";
+
+beforeEach(() => freezeClock());
+afterEach(() => restoreClock());
 
 describe("parseWeight", () => {
   it("returns 0 for null, undefined, and empty string", () => {
@@ -63,7 +67,7 @@ describe("toNumber", () => {
 describe("toDateStr", () => {
   it("defaults to today's date when null", () => {
     const result = toDateStr(null);
-    const today = new Date().toISOString().slice(0, 10);
+    const today = FIXED_INSTANT.slice(0, 10);
     expect(result).toBe(today);
   });
 
@@ -87,7 +91,7 @@ describe("computeStreak", () => {
   });
 
   function currentMondayWeekStart(): Date {
-    const now = new Date();
+    const now = new Date(FIXED_MS);
     const dayOfWeek = now.getDay();
     const daysSinceMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
     const start = new Date(now);

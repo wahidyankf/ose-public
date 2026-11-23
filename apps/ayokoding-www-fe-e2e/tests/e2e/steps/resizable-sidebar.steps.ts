@@ -1,3 +1,12 @@
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/resizable-sidebar.feature: Persist the chosen width across a reload
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/resizable-sidebar.feature: On a phone the sidebar rail is replaced by the navigation drawer
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/resizable-sidebar.feature: Scroll the sidebar horizontally when a label overflows
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/resizable-sidebar.feature: Overflowing nav labels signal that more content is scrollable
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/resizable-sidebar.feature: Scroll the sidebar vertically when the nav tree is taller than the viewport
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/resizable-sidebar.feature: Apply a preset width to the mobile nav drawer
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/resizable-sidebar.feature: The resize handle's accessible label is localized
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/resizable-sidebar.feature: An invalid persisted preset width falls back to the mobile drawer's default
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/navigation/resizable-sidebar.feature: The drawer's width-preset control shows a visible caption
 import { createBdd } from "playwright-bdd";
 import { expect, type Page } from "@playwright/test";
 

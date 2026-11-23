@@ -70,5 +70,5 @@ Every other formatter in the map accepts bare file-path arguments and is called 
 [Formatting and File-Type Linting](../repo-governance/development/infra/nx-targets/formatting-and-file-type-linting.md)
 for the canonical `extension → formatter` map. Add a wrapper only when the tool itself makes the
 direct call impossible, and say why in a comment at the top of the script, as both files here
-do. Scripts are formatted by `shfmt` and linted by `shellcheck --severity=warning` at
-pre-commit.
+do. Scripts are formatted by `shfmt` at pre-commit and linted by `shellcheck --severity=warning` on the
+pull-request surface.

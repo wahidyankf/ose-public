@@ -7,7 +7,7 @@ when_to_use: Use when determining which delivery mode actually applies to a plan
 
 Continues [Delivery Mode — main-to-origin-main Content Restriction](./delivery-mode-content-restriction.md).
 
-**[AI] merges by default.** Every PR uses one convergent default route: the `Quality gate` check
+**[AI] merges by default.** Every PR uses one convergent default route: the `quality-gate` check
 from `.github/workflows/pr-quality-gate.yml` must be green for the exact current head and base, and
 a `pass` verdict from a fresh-context `leak-reviewer`, held by the delivery harness, must cover that head.
 Semantic review is not inferred from executable content, `plans/**`, risk, or delivery mode. A plan

@@ -20,6 +20,69 @@ vi.mock("next/link", () => ({
 import { PathLanding } from "@/features/course-paths/shell/path-landing";
 import { manifestFixture } from "../features/course-paths/manifest-fixture";
 
+// The page-level steps (the tab title and the paths hub) render the real route page, which needs the
+// same server and content seams the paths hub step file mocks.
+const { MockTRPCError, backendTrack } = vi.hoisted(() => {
+  class MockTRPCError extends Error {
+    code: string;
+    constructor({ code, message }: { code: string; message?: string }) {
+      super(message);
+      this.code = code;
+    }
+  }
+  const backendTrack = {
+    pathId: "careers/immediately-effective/backend-track",
+    arc: "immediately-effective",
+    title: "Backend Track (Immediately-Effective)",
+    description: "E2E fixture: the immediately-effective arc's second role.",
+    assumes: ["just-enough-python"],
+    courseOrder: ["just-enough-bash", "backend-essentials", "sql-essentials"],
+    phases: [
+      {
+        id: "fixture-core",
+        title: "Fixture core",
+        kind: "core",
+        outcome: { can: "complete this fixture path" },
+        courses: ["just-enough-bash", "backend-essentials", "sql-essentials"],
+      },
+    ],
+  };
+  return { MockTRPCError, backendTrack };
+});
+
+vi.mock("@trpc/server", () => ({
+  TRPCError: MockTRPCError,
+}));
+
+vi.mock("@/lib/trpc/server", () => ({
+  serverCaller: {
+    content: {
+      getBySlug: vi.fn(async () => {
+        throw new MockTRPCError({ code: "NOT_FOUND", message: "not found" });
+      }),
+      getTree: vi.fn(async () => []),
+    },
+  },
+}));
+
+vi.mock("@/features/app-shell/shell/trpc-init", () => ({
+  createTRPCContext: () => ({
+    contentService: { getIndex: async () => ({ contentMap: new Map(), trees: {}, prevNext: new Map() }) },
+  }),
+}));
+
+vi.mock("@/features/course-paths/shell/manifest-repository", () => ({
+  loadManifests: vi.fn().mockResolvedValue([backendTrack]),
+  defaultManifestsDir: () => "unused-in-test",
+}));
+
+vi.mock("@/features/navigation/shell/toc", () => ({
+  TableOfContents: () => null,
+}));
+
+// eslint-disable-next-line import/first
+import ContentPage, { generateMetadata } from "@/app/[locale]/(content)/[...slug]/page";
+
 const alpha: PathManifest = manifestFixture({
   pathId: "skills/e2e-fixture-alpha",
   arc: "skills",
@@ -43,6 +106,7 @@ const feature = await loadFeature(
 );
 
 describeFeature(feature, ({ Scenario }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/skills-path-landing-body.feature: A skills path's authored runway-justification content renders on its own landing
   Scenario(
     "A skills path's authored runway-justification content renders on its own landing",
     ({ Given, When, Then, And }) => {
@@ -78,4 +142,97 @@ describeFeature(feature, ({ Scenario }) => {
       });
     },
   );
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/skills-path-landing-body.feature: A path landing page tab title reads as the path title
+  Scenario("A path landing page tab title reads as the path title", ({ When, Then }) => {
+    let tabTitle: unknown;
+
+    When("a reader opens the immediately-effective backend track landing page", async () => {
+      const metadata = await generateMetadata({
+        params: Promise.resolve({
+          locale: "en",
+          slug: ["learn", "paths", "careers", "immediately-effective", "backend-track"],
+        }),
+      });
+      tabTitle = metadata.title;
+    });
+
+    Then('the browser tab title reads "Backend Track (Immediately-Effective)"', () => {
+      expect(tabTitle).toBe("Backend Track (Immediately-Effective)");
+    });
+  });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/skills-path-landing-body.feature: An assumed course with no page in this locale shows a readable title, not a raw slug
+  Scenario(
+    "An assumed course with no page in this locale shows a readable title, not a raw slug",
+    ({ Given, When, Then, And }) => {
+      let manifest: PathManifest;
+
+      Given(
+        'the immediately-effective backend track assumes the course "just-enough-python", which has no page in Indonesian',
+        () => {
+          manifest = manifestFixture({
+            pathId: "careers/immediately-effective/backend-track",
+            arc: "immediately-effective",
+            title: "Backend Track (Immediately-Effective)",
+            description: "desc",
+            courses: ["backend-essentials"],
+            assumes: ["just-enough-python"],
+          });
+          expect(manifest.assumes).toEqual(["just-enough-python"]);
+        },
+      );
+
+      When("a reader opens the backend track landing page in Indonesian", () => {
+        cleanup();
+        render(<PathLanding locale="id" manifest={manifest} courseTitles={{}} bodyHtml="" />);
+      });
+
+      Then('the "Before you start" note links to a course titled "Just Enough Python"', () => {
+        expect(screen.getByRole("link", { name: "Just Enough Python" })).toBeTruthy();
+      });
+
+      And('no link in that note shows the raw slug "just-enough-python"', () => {
+        expect(screen.queryByRole("link", { name: "just-enough-python" })).toBeNull();
+      });
+    },
+  );
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/skills-path-landing-body.feature: The paths hub and path landing read in Indonesian under /id
+  Scenario("The paths hub and path landing read in Indonesian under /id", ({ When, Then }) => {
+    When("a reader opens the paths hub at /id/learn/paths in Indonesian", async () => {
+      const jsx = await ContentPage({
+        params: Promise.resolve({ locale: "id", slug: ["learn", "paths"] }),
+      });
+      cleanup();
+      render(jsx);
+    });
+
+    Then('the hub\'s course library link reads "Jelajahi seluruh pustaka kursus"', () => {
+      expect(screen.getByRole("link", { name: /Jelajahi seluruh pustaka kursus/ })).toBeTruthy();
+    });
+
+    When("a reader opens the backend track landing page in Indonesian", () => {
+      cleanup();
+      render(
+        <PathLanding
+          locale="id"
+          manifest={manifestFixture({
+            pathId: "careers/immediately-effective/backend-track",
+            arc: "immediately-effective",
+            title: "Backend Track (Immediately-Effective)",
+            description: "desc",
+            courses: ["backend-essentials"],
+            assumes: ["just-enough-python"],
+          })}
+          courseTitles={{}}
+          bodyHtml=""
+        />,
+      );
+    });
+
+    Then('the "Before you start" heading reads "Sebelum memulai"', () => {
+      expect(screen.getByRole("heading", { level: 2, name: "Sebelum memulai" })).toBeTruthy();
+    });
+  });
 });

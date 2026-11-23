@@ -58,3 +58,10 @@ describe("Card", () => {
     expect(results).toHaveNoViolations();
   });
 });
+
+describe("CardTitle children", () => {
+  it("renders its children as the heading text", () => {
+    render(<CardTitle>Plan</CardTitle>);
+    expect(screen.getByRole("heading", { name: "Plan" })).toBeTruthy();
+  });
+});

@@ -2,7 +2,6 @@ package cli
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"io"
 	"os"
@@ -95,10 +94,7 @@ func renderCheck(out io.Writer, mode string, report application.CheckReport) err
 				Covered:            course.Covered,
 			})
 		}
-		body, err := json.Marshal(document)
-		if err != nil {
-			return fmt.Errorf("cli: marshal check report: %w", err)
-		}
+		body := marshalReport(document)
 		if _, err := fmt.Fprintln(out, string(body)); err != nil {
 			return &finding.PipeError{}
 		}
@@ -135,7 +131,7 @@ func renderCheck(out io.Writer, mode string, report application.CheckReport) err
 // the green runs with every finding. The captured command context cancels
 // runs, mirroring the runBuild threading. --since resolves through git;
 // --shard slices whatever the other flags selected.
-func runCheck(ctx context.Context, cmd *cobra.Command) error {
+func runCheck(ctx context.Context, cmd *cobra.Command, opts Options) error {
 	cat, err := loadCatalog(cmd)
 	if err != nil {
 		return err
@@ -171,7 +167,7 @@ func runCheck(ctx context.Context, cmd *cobra.Command) error {
 	if err != nil {
 		return err
 	}
-	runtime := runAdapter{inner: &containers.Runtime{CLI: os.Getenv("AYOKODING_CONTAINER_CLI")}}
+	runtime := runAdapter{inner: &containers.Runtime{CLI: opts.ContainerCLI}}
 	report, err := application.Check(ctx, application.CheckRequest{
 		Content:       os.DirFS(content),
 		ContentDir:    content,
@@ -185,7 +181,7 @@ func runCheck(ctx context.Context, cmd *cobra.Command) error {
 		Runtime:       runtime,
 		EnvBuilder:    containers.Builder{},
 		Settings: containerplan.Settings{
-			ContainerCLI: os.Getenv("AYOKODING_CONTAINER_CLI"),
+			ContainerCLI: opts.ContainerCLI,
 		},
 	})
 	if renderErr := renderCheck(cmd.OutOrStdout(), mode, report); renderErr != nil {

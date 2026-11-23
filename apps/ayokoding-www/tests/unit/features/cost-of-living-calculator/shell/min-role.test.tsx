@@ -30,7 +30,7 @@ describe("MinRoleTable", () => {
     cityScope: null as null,
   };
 
-  // Gherkin (binds): "Minimum role for a savings target ranks on essential savings and is reordered"
+  // Gherkin (binds): "Qualifying rows sit above a divider, others dimmed below"; "The lowest qualifying role is marked minimum"
   // NOTE: target 8000 USD genuinely splits the ladder for the default 1-adult household
   // (savings: swe_1≈2950, swe_2≈6150, senior_swe≈8710 → senior_swe is the minimum, swe_1/swe_2
   // fall below). A target of 2000 would clear ALL roles (no split) — the prior 2000 assertion
@@ -548,6 +548,32 @@ describe("MinRoleTable", () => {
     });
   });
 
+  it("changing the target currency commits the new code", () => {
+    const onCommit = vi.fn();
+    function Controlled() {
+      const [inputs, setInputs] = useState<MinRoleInputs>({
+        ...DEFAULT_STATE.minRole,
+        baselineSource: "savings_target",
+        targetRaw: "100",
+        targetCurrency: "USD",
+      });
+      return (
+        <MinRoleTable
+          {...defaultProps}
+          inputs={inputs}
+          onInputsChange={(next) => {
+            setInputs(next);
+            onCommit(next);
+          }}
+        />
+      );
+    }
+    render(<Controlled />);
+    const select = document.querySelector("#target-currency-select") as HTMLSelectElement;
+    fireEvent.change(select, { target: { value: "EUR" } });
+    expect(onCommit).toHaveBeenCalledWith(expect.objectContaining({ targetCurrency: "EUR" }));
+  });
+
   // DWT-003: the min-role currency/ref selects must use the shared SelectField chrome
   // (appearance-none + custom chevron) so they match the geo selects.
   describe("DWT-003 — min-role selects use the shared SelectField chrome", () => {
@@ -708,5 +734,24 @@ describe("MinRoleTable", () => {
       const hasTitle = nsc!.hasAttribute("title") || nsc!.querySelector("[title]") !== null;
       expect(hasTitle).toBe(true);
     });
+  });
+
+  // Baseline failure containment: an unconvertible target currency (no fx rate) must not
+  // crash the tab — the baseline stays disengaged, so no ladder renders, but the controls stay live.
+  it("an unknown target currency disengages the baseline without crashing", () => {
+    render(
+      <MinRoleTable
+        {...defaultProps}
+        inputs={{ ...DEFAULT_STATE.minRole, baselineSource: "savings_target", targetRaw: "100", targetCurrency: "XXX" }}
+        onInputsChange={() => {}}
+      />,
+    );
+    // No baseline engaged: no table, no cards, no divider, no minimum marker…
+    expect(screen.queryByTestId("min-role-table")).toBeNull();
+    expect(screen.queryByTestId("mobile-role-cards")).toBeNull();
+    expect(screen.queryByTestId("qualifying-divider")).toBeNull();
+    expect(screen.queryAllByTestId("minimum-marker").length).toBe(0);
+    // …but the tab stays alive — the savings-target input still accepts a fix.
+    expect(screen.getByRole("spinbutton", { name: /monthly savings target/i })).toBeTruthy();
   });
 });

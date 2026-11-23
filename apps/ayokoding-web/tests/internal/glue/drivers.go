@@ -1,10 +1,7 @@
 package glue
 
 import (
-	"fmt"
-	"os/exec"
 	"path/filepath"
-	"runtime"
 	"testing"
 )
 
@@ -57,20 +54,6 @@ func (d *BinaryDriver) Setup(t *testing.T) (func(), error) {
 		return nil, err
 	}
 	return proc, nil
-}
-
-// BuildBinary compiles the app server for drivers that bind real listeners.
-func BuildBinary(t *testing.T) (string, error) {
-	t.Helper()
-	_, file, _, _ := runtime.Caller(0)
-	appRoot := filepath.Join(filepath.Dir(file), "..", "..", "..")
-	binary := filepath.Join(t.TempDir(), "ayokoding-web-test")
-	cmd := exec.Command("go", "build", "-trimpath", "-o", binary, "./cmd/ayokoding-web")
-	cmd.Dir = appRoot
-	if output, err := cmd.CombinedOutput(); err != nil {
-		return "", fmt.Errorf("bdd: build binary: %w: %s", err, output)
-	}
-	return binary, nil
 }
 
 // Corpus holds the canonical web behaviours, four levels above the suites.

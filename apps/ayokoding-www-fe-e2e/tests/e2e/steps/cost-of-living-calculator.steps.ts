@@ -3,6 +3,95 @@ import { expect, type Locator, type Page } from "@playwright/test";
 
 const { Given, When, Then } = createBdd();
 
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Cost-of-living breakdown lists category expenses per city
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Relocation cost and reserve are shown apart in each city row
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: cascading geographic filters
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: country shown beside city
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Clicking a city name opens its single-city cost-of-living detail
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The single-city detail shows the breakdown, scheme badge, and split relocation in local currency and USD
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Clicking a country opens Cost-of-living filtered to that country
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: city wins in deep links
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Healthcare funding scheme is always shown
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The OOP abbreviation is explained on screen
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Relocation reserve is shown separately from sunk costs
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings tab converts gross salary to net before subtracting expenses
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings tab shows essentials and savings with percentages
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The savings table can be sorted by savings
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings tab honours the active geographic filter
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Gross salary entered monthly shows the derived annual figure
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Non-salary and total compensation are shown as context only
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Sub-national tax lowers net only in federal countries
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Net take-home is lower than the entered gross
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Essentials above net show a deficit
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: calculator in Indonesian
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: No Israeli city is listed in the dataset, any table, or role candidates
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Data snapshot date is clearly shown
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Adding adults and children grows housing and utilities sub-linearly
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Adding adults and children grows food and healthcare near per capita
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Adding school-age children adds schooling costs
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Pre-school children incur childcare, not schooling
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: school type toggle availability
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Private school raises expenses more than public
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: area changes the housing estimate
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Qualifying rows sit above a divider, others dimmed below
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The lowest qualifying role is marked minimum
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Every qualifying city and role within the filter is included
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Roles are labelled as software-engineering roles
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Each role shows its per-country salary distribution
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Geographic filter scopes the candidate cities
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Min-role ranking follows essential savings, not non-salary comp or lifestyle
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Minimum role from a reference city and role
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Minimum role from my own salary
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: My-salary baseline accepts the gross in local currency or USD
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: money columns show local currency and USD
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Household and area changes recalculate minimum-role candidates
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: No role can reach the bar
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Low-confidence cells are flagged on the minimum-role tab
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: savings empty state
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Income exactly at the low-to-mid threshold uses the mid band
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Zero savings target marks the lowest role as the minimum
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: household preview scaling
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: calculator state is kept in the URL
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Negative salary input is clamped to zero
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Very large salary produces valid savings figures
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Savings tab shows results after salary is entered
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: minimum-role empty state
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Area toggle shows selected state and confirms data update
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: page title and H1 name the tool
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The gross-salary field has a visible border and a label
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Baseline selector is a segmented control
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: tab labels
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: invalid deep-link values fall back to defaults
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: city selection backfills country and region
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: region selection clears narrower filters
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: city detail back link
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: calculator breadcrumb
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Canonicalization does not add a browser history entry
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: touch targets are at least 44 px
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: no horizontal overflow at 320 px
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: savings currency indicator
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: minimum-role empty state
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The region selector lists exactly the nine intended regions
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Selecting a country that changes the region shows a visible advisory
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The area control is rendered as a radiogroup
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The baseline selector shows the savings-target sub-form when savings target is selected
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Changing a filter keeps the page at the same scroll position
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Typing the gross salary echoes instantly but commits to the URL only after typing settles
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Public schooling not open to foreigners is charged at the private rate
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Public schooling open to foreigners keeps the public cost
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: active tab description
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Area toggle exposes its pressed state
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Sortable savings column exposes aria-sort
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: A school cost charged at the private rate carries a clear flag in the table and the city detail
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Jargon table headers carry an accessible explanation
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The OOP abbreviation title is localized per locale
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Region names show in the reader's language
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: The URL value of a region stays its English key
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Healthcare scheme badges use consistent casing
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Minimum-role tab does not render the single-city essentials preview
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Every dropdown shows one custom arrow and not the browser's native arrow
+// @scenario specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature: Salary-currency toggle bottom-aligns with its sibling input
+
 const freshTabs = new WeakMap<Page, Page>();
 const activePage = (page: Page): Page => freshTabs.get(page) ?? page;
 
@@ -17,7 +106,7 @@ type CalculatorEvidence = {
   areaAfter?: { housing: number; total: number };
   candidateBefore?: { firstSavings: string; minimumRole: string };
   candidateAfter?: { firstSavings: string; minimumRole: string };
-  fx?: { currencies: string[]; invalidConversions: string[]; displayCurrencies: string[] };
+  selectedArea?: string;
   preschoolBefore?: Record<string, number>;
   preschoolAfter?: Record<string, number>;
   qualifyingOracle?: {
@@ -286,15 +375,6 @@ Then("I see a table of tech-hub cities", async ({ page }) => {
   expect(await rows.count()).toBeGreaterThan(0);
 });
 
-Then("each row shows a Country column immediately to the left of the City column", async ({ page }) => {
-  const headers = page.locator("table thead th");
-  const texts = await headers.allTextContents();
-  const countryIdx = texts.findIndex((h) => h.trim() === "Country");
-  const cityIdx = texts.findIndex((h) => h.trim() === "City");
-  expect(countryIdx).toBeGreaterThanOrEqual(0);
-  expect(cityIdx).toBe(countryIdx + 1);
-});
-
 Then("every row shows a Country column immediately to the left of the City column", async ({ page }) => {
   const headers = page.locator("table thead th");
   const texts = await headers.allTextContents();
@@ -433,10 +513,12 @@ Then(
 );
 
 Then("the City filter is pre-selected to that city", async ({ page }) => {
+  // A city opened from its table name is known by its link; one picked in the City filter is read from the URL.
   const clicked = evidenceFor(page).clickedCity;
-  expect(clicked).toBeDefined();
-  await expect(page.locator("#geo-city-select")).toHaveValue(clicked!.id);
-  expect(await selectedLabel(page.locator("#geo-city-select"))).toBe(clicked!.name);
+  const cityId = clicked?.id ?? new URL(page.url()).searchParams.get("city");
+  expect(cityId).toBeTruthy();
+  await expect(page.locator("#geo-city-select")).toHaveValue(cityId!);
+  if (clicked) expect(await selectedLabel(page.locator("#geo-city-select"))).toBe(clicked.name);
 });
 
 Then(
@@ -737,18 +819,23 @@ Then(
   },
 );
 
-Then("it is not added into the net, the essential savings, or the after-lifestyle savings", async ({ page }) => {
-  for (const row of await page.getByTestId("savings-row").all()) {
-    const net = await numericAttribute(row.getByTestId("net-value"), "data-usd");
-    const essentials = await numericAttribute(row.getByTestId("essentials-value"), "data-usd");
-    const savings = await numericAttribute(row.getByTestId("savings-essential"), "data-usd");
-    const afterLifestyle = await numericAttribute(row.getByTestId("savings-lifestyle"), "data-usd");
-    const nonSalary = await numericAttribute(row.getByTestId("non-salary-value"), "data-usd");
-    expect(savings).toBeCloseTo(net - essentials, 8);
-    expect(savings).not.toBeCloseTo(net + nonSalary - essentials, 3);
-    expect(afterLifestyle).toBeLessThan(savings);
-  }
-});
+Then(
+  "neither figure is added into the net, the essential savings, or the after-lifestyle savings",
+  async ({ page }) => {
+    for (const row of await page.getByTestId("savings-row").all()) {
+      const net = await numericAttribute(row.getByTestId("net-value"), "data-usd");
+      const essentials = await numericAttribute(row.getByTestId("essentials-value"), "data-usd");
+      const savings = await numericAttribute(row.getByTestId("savings-essential"), "data-usd");
+      const afterLifestyle = await numericAttribute(row.getByTestId("savings-lifestyle"), "data-usd");
+      const nonSalary = await numericAttribute(row.getByTestId("non-salary-value"), "data-usd");
+      const totalComp = await numericAttribute(row.getByTestId("total-comp-value"), "data-usd");
+      expect(savings).toBeCloseTo(net - essentials, 8);
+      expect(savings).not.toBeCloseTo(net + nonSalary - essentials, 3);
+      expect(savings).not.toBeCloseTo(totalComp / 12 - essentials, 3);
+      expect(afterLifestyle).toBeLessThan(savings);
+    }
+  },
+);
 
 // ── Total comp informational ──────────────────────────────────────────────────
 
@@ -762,22 +849,6 @@ Then(
       const totalComp = await numericAttribute(row.getByTestId("total-comp-value"), "data-usd");
       expect(totalComp).toBeCloseTo(annualGross + nonSalary, 8);
       await expect(row.getByTestId("total-comp-value")).toContainText(/\$[\d,.-]+/);
-    }
-  },
-);
-
-Then(
-  "the total compensation is not added into the net, the essential savings, or the after-lifestyle savings",
-  async ({ page }) => {
-    for (const row of await page.getByTestId("savings-row").all()) {
-      const net = await numericAttribute(row.getByTestId("net-value"), "data-usd");
-      const essentials = await numericAttribute(row.getByTestId("essentials-value"), "data-usd");
-      const savings = await numericAttribute(row.getByTestId("savings-essential"), "data-usd");
-      const afterLifestyle = await numericAttribute(row.getByTestId("savings-lifestyle"), "data-usd");
-      const totalComp = await numericAttribute(row.getByTestId("total-comp-value"), "data-usd");
-      expect(savings).toBeCloseTo(net - essentials, 8);
-      expect(savings).not.toBeCloseTo(totalComp / 12 - essentials, 3);
-      expect(afterLifestyle).toBeLessThan(savings);
     }
   },
 );
@@ -908,58 +979,6 @@ Then("I see an {string} disclaimer", async ({ page }, text: string) => {
   await expect(el).toBeVisible();
   await expect(el).toHaveText(new RegExp("^" + text + "$", "i"));
 });
-
-// ── FX conversion ─────────────────────────────────────────────────────────────
-
-When("I read any USD figure derived from a local-currency value", async ({ page }) => {
-  const cells = page.locator("[data-testid^='col-housing-']");
-  await cells.first().waitFor({ state: "visible" });
-  const currencies = new Set<string>();
-  const invalidConversions: string[] = [];
-  for (const cell of await cells.all()) {
-    const text = (await cell.textContent())?.trim() ?? "";
-    const match = text.match(/^([A-Z]{3}) [\d,.-]+ \/ \$([\d,.-]+)$/);
-    if (!match) {
-      invalidConversions.push(text);
-      continue;
-    }
-    const currency = match[1]!;
-    currencies.add(currency);
-    const rate = EXPECTED_FX_RATES[currency];
-    const raw = Number(await cell.getAttribute("data-raw"));
-    const displayedUsd = Number(match[2]!.replaceAll(",", ""));
-    if (rate === undefined || displayedUsd !== Math.round(raw * rate)) invalidConversions.push(text);
-  }
-
-  await page.getByRole("tab", { name: "Minimum role" }).click();
-  await page.waitForURL(/tab=min-role/);
-  const displayCurrencies = await page
-    .locator("#display-currency-select option")
-    .evaluateAll((options) => options.map((option) => (option as HTMLOptionElement).value));
-  evidenceFor(page).fx = {
-    currencies: [...currencies].sort(),
-    invalidConversions,
-    displayCurrencies,
-  };
-});
-
-Then("the conversion uses the rate for that currency stored in the in-repo fx.ts table", async ({ page }) => {
-  const fxEvidence = evidenceFor(page).fx;
-  expect(fxEvidence).toBeDefined();
-  expect(fxEvidence!.invalidConversions).toEqual([]);
-});
-
-Then(
-  "every currency referenced by a city, country, role, or display-currency selector has an fx.ts entry",
-  async ({ page }) => {
-    const fxEvidence = evidenceFor(page).fx;
-    expect(fxEvidence).toBeDefined();
-    expect(fxEvidence!.currencies).toEqual(Object.keys(EXPECTED_FX_RATES).sort());
-    for (const currency of fxEvidence!.displayCurrencies) {
-      expect(EXPECTED_FX_RATES[currency], "FX rate for display currency " + currency).toBeDefined();
-    }
-  },
-);
 
 // ── Household composition changes expenses ────────────────────────────────────
 
@@ -1226,7 +1245,7 @@ Then("the row's essential savings is computed from the median salary", async ({ 
 
 // ── Non-salary comp does not affect ranking ───────────────────────────────────
 
-When("I compare candidate order with their essential savings and non-salary comp", async ({ page }) => {
+async function collectNonSalaryRanking(page: Page): Promise<void> {
   const rows = candidateRows(page);
   await rows.first().waitFor({ state: "visible" });
   const comparison: Array<{ savings: number; nonSalary: number }> = [];
@@ -1237,7 +1256,7 @@ When("I compare candidate order with their essential savings and non-salary comp
     });
   }
   evidenceFor(page).nonSalaryRanking = comparison;
-});
+}
 
 Then("rows are ordered by essential savings regardless of non-salary comp", async ({ page }) => {
   const savings = evidenceFor(page).nonSalaryRanking!.map(({ savings }) => savings);
@@ -1256,7 +1275,7 @@ Then("at least one adjacent pair would be ordered differently by non-salary comp
 
 // ── Lifestyle does not affect ranking ─────────────────────────────────────────
 
-When("I compare the ladder with each city's published lifestyle cost", async ({ page }) => {
+async function collectLifestyleRanking(page: Page): Promise<void> {
   const rows = candidateRows(page);
   await rows.first().waitFor({ state: "visible" });
   const baseline = await numericAttribute(page.getByTestId("min-role-table"), "data-baseline-usd");
@@ -1334,7 +1353,15 @@ When("I compare the ladder with each city's published lifestyle cost", async ({ 
     markerRanks,
     expectedMinimumRank,
   };
-});
+}
+
+When(
+  "I compare candidate order with their essential savings, non-salary comp, and each city's lifestyle cost",
+  async ({ page }) => {
+    await collectNonSalaryRanking(page);
+    await collectLifestyleRanking(page);
+  },
+);
 
 Then(
   "candidate order and the minimum marker follow essential savings rather than after-lifestyle savings",
@@ -1401,7 +1428,8 @@ Then("the marked minimum role reaches at least that essential savings in absolut
 
 // ── My salary baseline ────────────────────────────────────────────────────────
 
-When("I enter my gross salary and its city", async ({ page }) => {
+// Shared by the "I enter my gross salary and its city" step and the calculator-state outline.
+async function enterMySalaryAndCity({ page }: { page: Page }): Promise<void> {
   await page.locator("#my-city-select").selectOption("singapore");
   await page.waitForURL(/mysalarycity=singapore/);
   await page
@@ -1437,7 +1465,9 @@ When("I enter my gross salary and its city", async ({ page }) => {
     minimumRank: Math.min(...ranks),
     markerRanks,
   };
-});
+}
+
+When("I enter my gross salary and its city", enterMySalaryAndCity);
 
 Then("the ladder marks the lowest role that meets or beats it", async ({ page }) => {
   const evidence = evidenceFor(page).mySalaryBaseline;
@@ -1447,11 +1477,6 @@ Then("the ladder marks the lowest role that meets or beats it", async ({ page })
 });
 
 // ── Display currency ──────────────────────────────────────────────────────────
-
-When("I choose a display currency", async ({ page }) => {
-  await page.getByLabel("Display currency").selectOption("EUR");
-  await page.waitForURL(/displaycur=EUR/);
-});
 
 Then(
   "each role row shows its essential savings in USD, the city's local currency, and the display currency",
@@ -1549,7 +1574,9 @@ When(
     const areaRadio = page.getByRole("radio", { name: areaLabel });
     await areaRadio.click();
     await expect(areaRadio).toHaveAttribute("aria-checked", "true");
-    if (area === "rural") await page.waitForURL(/area=rural/);
+    // The URL omits defaults (encodeState): only a non-default area appears as a param.
+    if (area !== "center") await page.waitForURL(new RegExp(`area=${area}`));
+    evidence.selectedArea = area;
     await expect(page.locator("[data-testid='savings-triple']").first()).toBeVisible({ timeout: 60000 });
     evidence.candidateAfter = {
       firstSavings:
@@ -1622,12 +1649,13 @@ When("I change the household type or area", async ({ page }) => {
 });
 
 Then("the role candidates' savings and the marked minimum role update accordingly", async ({ page }) => {
-  const { candidateBefore: before, candidateAfter: after } = evidenceFor(page);
+  const { candidateBefore: before, candidateAfter: after, selectedArea } = evidenceFor(page);
   expect(before).toBeDefined();
   expect(after).toBeDefined();
   expect(after!.firstSavings).not.toBe(before!.firstSavings);
   expect(after!.minimumRole).not.toBe("");
-  expect(new URL(page.url()).searchParams.get("area")).toBe("rural");
+  // The URL omits the default area ("center"); compare against the area the When selected.
+  expect(new URL(page.url()).searchParams.get("area") ?? "center").toBe(selectedArea ?? "center");
 });
 
 // ── Low-confidence cells (narrowed to minimum-role tab) ──────────────────────
@@ -1657,12 +1685,19 @@ Then("no Israeli city appears as a candidate city for any role", async ({ page }
 
 // ── SG-001: Zero/empty salary guidance ─────────────────────────────────────────
 
-When("the gross monthly salary field is empty or zero", async ({ page }) => {
+When("the gross monthly salary field is zero", async ({ page }) => {
   const input = page.getByLabel("Gross monthly salary (before tax)");
   await input.click({ clickCount: 3 });
   await page.keyboard.type("0");
-  await page.keyboard.press("Tab");
-  await page.waitForLoadState("networkidle");
+  // No Tab: the scenario ends with the input focused, so focus must stay in the field.
+  await expect(page.getByTestId("savings-empty-state")).toBeVisible();
+});
+
+When("the gross monthly salary field is empty", async ({ page }) => {
+  const input = page.getByLabel("Gross monthly salary (before tax)");
+  await input.fill("");
+  // No Tab: the scenario ends with the input focused, so focus must stay in the field.
+  await expect(page.getByTestId("savings-empty-state")).toBeVisible();
 });
 
 Then("empty-state guidance replaces the city comparison table", async ({ page }) => {
@@ -1670,7 +1705,7 @@ Then("empty-state guidance replaces the city comparison table", async ({ page })
   await expect(page.locator("table")).toHaveCount(0);
 });
 
-Then("no percentage values are rendered without net income", async ({ page }) => {
+Then("no savings figures or percentages are rendered without net income", async ({ page }) => {
   await expect(page.locator("[data-testid='savings-essential']")).toHaveCount(0);
 });
 
@@ -1681,15 +1716,12 @@ Given("I set the household to 2 adults with no children", async ({ page }) => {
   await page.waitForLoadState("networkidle");
 });
 
-Then(
-  "the housing estimate in the expense preview decreases to base times subLinear 2 adults times 0.75",
-  async ({ page }) => {
-    const { areaBefore: center, areaAfter: rural } = evidenceFor(page);
-    expect(center).toBeDefined();
-    expect(rural).toBeDefined();
-    expect(rural!.housing).toBeCloseTo(center!.housing * 0.75);
-  },
-);
+Then("the housing estimate in the expense preview decreases", async ({ page }) => {
+  const { areaBefore: center, areaAfter: rural } = evidenceFor(page);
+  expect(center).toBeDefined();
+  expect(rural).toBeDefined();
+  expect(rural!.housing).toBeCloseTo(center!.housing * 0.75);
+});
 
 Then("the essentials total in the preview decreases accordingly", async ({ page }) => {
   const { areaBefore: center, areaAfter: rural } = evidenceFor(page);
@@ -1703,11 +1735,6 @@ When("I select a city from the City dropdown filter", async ({ page }) => {
   const citySelect = page.getByLabel("City").first();
   await citySelect.selectOption({ index: 1 });
   await page.waitForLoadState("networkidle");
-});
-
-Then("the single-city cost-of-living detail for that city is shown", async ({ page }) => {
-  await expect(page.getByTestId("city-detail")).toBeVisible();
-  expect(new URL(page.url()).searchParams.get("city")).toBeTruthy();
 });
 
 Then("the detail is identical to the one shown when clicking the city name in the table", async ({ page }) => {
@@ -1781,20 +1808,23 @@ When("I enter a monthly savings target of zero USD", async ({ page }) => {
   await page.waitForLoadState("networkidle");
 });
 
-Then("the qualifying divider is shown", async ({ page }) => {
-  // EWT-001: the desktop role-ladder divider is visible even at a numeric zero target, where every
-  // role qualifies. (Baseline IS engaged — savings target selected, target === 0 — distinct from
-  // the blank-target empty-state.) Desktop viewport (md+) shows the table-scoped divider.
-  await expect(page.getByTestId("qualifying-divider")).toBeVisible();
-});
-
-Then("the qualifying divider element is rendered in the role ladder", async ({ page }) => {
-  await expect(page.getByTestId("qualifying-divider")).toBeVisible();
-});
-
-Then("the minimum marker appears on the lowest-ranked role in the ladder", async ({ page }) => {
-  await expect(page.getByTestId("minimum-marker").first()).toBeVisible();
-});
+Then(
+  "the minimum marker appears on the lowest-ranked qualifying role, on each city row where it clears the bar",
+  async ({ page }) => {
+    // min-role.tsx marks every clearing row at the lowest qualifying rank (isMinEntry), so each desktop
+    // row carrying a marker must sit at the minimum rank among the qualifying rows.
+    await expect(page.getByTestId("minimum-marker").first()).toBeVisible();
+    const qualifyingRanks = await page
+      .locator('tr[data-candidate-row="true"]:not([data-testid="non-qualifying-row"])')
+      .evaluateAll((rows) => rows.map((row) => Number(row.getAttribute("data-rank"))));
+    const markedRanks = await page
+      .locator('tr:has([data-testid="minimum-marker"])')
+      .evaluateAll((rows) => rows.map((row) => Number(row.getAttribute("data-rank"))));
+    expect(markedRanks.length).toBeGreaterThan(0);
+    expect(qualifyingRanks.length).toBeGreaterThan(0);
+    for (const rank of markedRanks) expect(rank).toBe(Math.min(...qualifyingRanks));
+  },
+);
 
 // ── SG-007: Expense preview updates in real time ──────────────────────────────
 
@@ -1822,7 +1852,7 @@ When("I change the Adults control to 2", async ({ page }) => {
   };
 });
 
-Then("the Housing preview amount increases to base times subLinear 2 adults", async ({ page }) => {
+Then("the Housing preview amount increases for two adults", async ({ page }) => {
   const { householdBefore: one, householdAfter: two } = evidenceFor(page);
   expect(one).toBeDefined();
   expect(two).toBeDefined();
@@ -1880,17 +1910,155 @@ Then("copying the URL and opening it in a new tab restores the same filter state
 
 // ── USS-005: Descriptive page title ──────────────────────────────────────────
 
-Given("a user navigates to the cost-of-living calculator", async ({ page }) => {
-  await page.goto("/en/tools/cost-of-living-calculator");
+// ── Calculator state kept in the URL (outline over each control) ─────────────
+
+Given("I am on the calculator for the {string} control", async ({ page }, control: string) => {
+  const paths: Record<string, string> = {
+    baseline: "/en/tools/cost-of-living-calculator?tab=min-role",
+    "savings gross": "/en/tools/cost-of-living-calculator?tab=savings",
+  };
+  await page.goto(paths[control] ?? "/en/tools/cost-of-living-calculator");
+  await expect(page.getByTestId("calc-page")).toHaveAttribute("data-hydrated", "true");
+  if (control === "savings gross") {
+    await expect(page.getByTestId("savings-table")).toHaveAttribute("data-hydrated", "true");
+  }
 });
 
-When("the page finishes loading with default filter state", async ({ page }) => {
+When("I change the {string} control", async ({ page }, control: string) => {
+  switch (control) {
+    case "filters":
+      await page.getByLabel("Country").first().selectOption({ label: "Indonesia" });
+      await page.waitForURL(/country=/);
+      await page.getByLabel("City").first().selectOption({ label: "Jakarta" });
+      await page.waitForURL(/city=/);
+      break;
+    case "baseline":
+      await page.getByRole("radio", { name: "My salary" }).click();
+      await expect(page.getByRole("radio", { name: "My salary" })).toHaveAttribute("aria-checked", "true");
+      await enterMySalaryAndCity({ page });
+      break;
+    case "savings gross": {
+      const input = page.getByLabel("Gross monthly salary (before tax)");
+      await input.click();
+      await input.fill("5000");
+      await expect(input).toHaveValue("5000", { timeout: 5000 });
+      // Leaving the field is the public interaction that flushes its documented debounce immediately.
+      await input.press("Tab");
+      break;
+    }
+    case "country": {
+      const select = page.getByLabel("Country").first();
+      await select.selectOption({ label: "Indonesia" });
+      await expect.poll(() => new URL(page.url()).searchParams.get("country")).toBe("id");
+      await expect(select).toHaveValue("id");
+      break;
+    }
+    case "tab":
+      await expect(page.getByTestId("calc-page")).toHaveAttribute("data-hydrated", "true");
+      await page.getByRole("tab", { name: "Savings" }).click();
+      break;
+    case "cost basis":
+      await page.getByLabel("Adults").first().selectOption("2");
+      await page.waitForURL(/adults=2/);
+      break;
+    default:
+      throw new Error(`unknown calculator control: ${control}`);
+  }
+});
+
+Then("the URL query string holds the {string} state", async ({ page, context }, control: string) => {
+  switch (control) {
+    case "filters": {
+      await expect.poll(() => page.url()).toMatch(/country=|city=/);
+      // Copying the URL and opening it in a new tab restores the same filter state.
+      const copied = await context.newPage();
+      await copied.goto(page.url());
+      await expect(copied.getByLabel("Country").first()).toHaveValue("id");
+      await expect(copied.getByLabel("City").first()).toHaveValue("jakarta");
+      await copied.close();
+      break;
+    }
+    case "baseline": {
+      await page.locator("#my-gross-input").blur();
+      await page.waitForURL(/baseline=my_salary/);
+      const params = new URL(page.url()).searchParams;
+      expect(params.get("baseline")).toBe("my_salary");
+      expect(Number(params.get("mygross"))).toBeGreaterThan(0);
+      expect(params.get("mysalarycity")).toBeTruthy();
+      break;
+    }
+    case "savings gross":
+      await page.locator("#gross-salary-input").blur();
+      await page.waitForURL(/gross=5000/);
+      expect(new URL(page.url()).searchParams.get("gross")).toBe("5000");
+      break;
+    case "country": {
+      await expect.poll(() => new URL(page.url()).searchParams.get("country")).toBe("id");
+      const copied = await context.newPage();
+      await copied.goto(page.url());
+      await expect(copied.getByLabel("Country").first()).toHaveValue("id");
+      const rows = copied.locator("table tbody tr");
+      await expect(rows.first()).toBeVisible();
+      expect(await rows.count()).toBeGreaterThan(0);
+      for (const row of await rows.all()) await expect(row.locator("td").first()).toContainText("Indonesia");
+      await copied.close();
+      await expect(page.getByLabel("Country")).toHaveValue("id");
+      await expect(page.getByLabel("Country").locator("option:checked")).toHaveText("Indonesia");
+      break;
+    }
+    case "tab": {
+      await expect.poll(() => new URL(page.url()).searchParams.get("tab")).toBe("savings");
+      await page.reload();
+      await page.waitForLoadState("networkidle");
+      // The active tab has aria-selected="true"
+      const activeTab = page.getByRole("tab", { name: /savings/i });
+      const isSelected = await activeTab
+        .evaluate((el) => el.getAttribute("aria-selected") === "true")
+        .catch(() => false);
+      expect(isSelected).toBe(true);
+      break;
+    }
+    case "cost basis":
+      await expect(page.getByLabel("Adults")).toHaveValue("2");
+      expect(new URL(page.url()).searchParams.get("adults")).toBe("2");
+      expect(
+        Number(await page.locator("[data-testid^='col-essentials-']").first().getAttribute("data-raw")),
+      ).toBeGreaterThan(0);
+      break;
+    default:
+      throw new Error(`unknown calculator control: ${control}`);
+  }
+});
+
+// ── Deep-link fallbacks and region/city narrowing (outline and scenarios) ────
+
+Then("the {string} control returns to its default {string}", async ({ page }, control: string, value: string) => {
+  const select = page.getByLabel(control).first();
+  if (control === "Adults") {
+    await expect(select).toHaveValue(value, { timeout: 5000 });
+    return;
+  }
+  await expect(select).toHaveValue("");
+  expect(await selectedLabel(select)).toBe(value);
+});
+
+When("I choose the region {string} from a blank filter", async ({ page }, region: string) => {
+  await page.getByLabel("Region").selectOption({ label: region });
   await page.waitForLoadState("networkidle");
 });
 
-Then("the browser tab title includes the name of the tool", async ({ page }) => {
-  const title = await page.title();
-  expect(title.toLowerCase()).toMatch(/cost.of.living|calculator|kalkulator/i);
+Then("the URL query string writes {string}", async ({ page }, paramStr: string) => {
+  const [key, val] = paramStr.split("=");
+  await expect.poll(() => new URL(page.url()).searchParams.get(key!)).toBe(val);
+});
+
+Then("the URL query string has no {string} or {string} param", async ({ page }, param1: string, param2: string) => {
+  await expect
+    .poll(() => {
+      const params = new URL(page.url()).searchParams;
+      return params.has(param1) || params.has(param2);
+    })
+    .toBe(false);
 });
 
 // ── SG-001 / SG-002 / SG-003: Salary edge cases ──────────────────────────────
@@ -2008,11 +2176,6 @@ Then("the Transport preview amount is unchanged from the 1-adult amount", async 
 
 // ── USS-001: Savings empty state ──────────────────────────────────────────────
 
-Given("a user has opened the Cost of Living Calculator", async ({ page }) => {
-  await page.goto("/en/tools/cost-of-living-calculator");
-  await page.waitForLoadState("networkidle");
-});
-
 When("they click the Savings tab", async ({ page }) => {
   const tab = page.getByRole("tab", { name: "Savings" });
   await tab.click();
@@ -2065,18 +2228,6 @@ Then("the savings comparison table is shown with computed savings figures", asyn
 
 // ── USS-002: Minimum Role empty state ────────────────────────────────────────
 
-When("they click the Minimum Role tab", async ({ page }) => {
-  const tab = page.getByRole("tab", { name: "Minimum role" });
-  await tab.click();
-  await expect.poll(() => new URL(page.url()).searchParams.get("tab")).toBe("min-role");
-  await expect(tab).toHaveAttribute("data-state", "active");
-  await expect(page.locator("#target-amount-input")).toBeVisible();
-});
-
-When("the Monthly savings target field contains no value or zero", async ({ page }) => {
-  await expect(page.locator("#target-amount-input")).toHaveValue("");
-});
-
 Then("the role comparison table is not shown", async ({ page }) => {
   await expect(page.locator("table")).toHaveCount(0);
 });
@@ -2120,15 +2271,6 @@ Then("a visible signal confirms the table data has been recalculated for rural e
 
 // ── USS-004: Tab sub-label visual separation ──────────────────────────────────
 
-Given("a user views the Cost of Living Calculator tab bar", async ({ page }) => {
-  await page.goto("/en/tools/cost-of-living-calculator");
-  await page.waitForLoadState("networkidle");
-});
-
-When("any tab is in the inactive state", async ({ page }) => {
-  await expect(page.getByRole("tab", { name: "Savings" })).toHaveAttribute("data-state", "inactive");
-});
-
 Then("the tab primary name and its descriptive sub-label are visually distinct", async ({ page }) => {
   const tab = page.getByRole("tab", { name: "Cost of living" });
   const describedBy = await tab.getAttribute("aria-describedby");
@@ -2145,41 +2287,10 @@ Then("a screen reader announces them as separate text nodes", async ({ page }) =
   await expect(page.getByRole("tab", { name: "Cost of living" })).toHaveAttribute("aria-describedby", "tab-desc-cost");
 });
 
-// ── USS-005: Tools index localized text ──────────────────────────────────────
-
-Given(/a user navigates to \/en\/tools/, async ({ page }) => {
-  await page.goto("/en/tools");
-  await page.waitForLoadState("networkidle");
-});
+// ── Shared page-load step (also used by the tools index and other bindings) ──
 
 When("the page renders", async ({ page }) => {
   await page.waitForLoadState("networkidle");
-});
-
-Then("the page heading and the calculator link display readable English labels", async ({ page }) => {
-  await expect(page.getByRole("heading", { level: 1 })).toContainText(/tools/i);
-  // Scope to main content to avoid strict-mode violation with the footer Tools
-  // column which also links to the calculator (footer added in Phase 3).
-  const main = page.locator("#main-content");
-  await expect(main.getByRole("link", { name: /cost of living/i })).toBeVisible();
-});
-
-Then("no raw i18n key strings are visible", async ({ page }) => {
-  const bodyText = await page.locator("body").textContent();
-  expect(bodyText).not.toMatch(/toolsPage[A-Z]/);
-  expect(bodyText).not.toMatch(/calcTitle/);
-});
-
-Given(/a user navigates to \/id\/tools/, async ({ page }) => {
-  await page.goto("/id/tools");
-  await page.waitForLoadState("networkidle");
-});
-
-Then("the heading and link labels are in Indonesian", async ({ page }) => {
-  await expect(page.getByRole("heading", { level: 1 })).toContainText(/alat/i);
-  // Scope to main content — footer also has "Kalkulator Biaya Hidup" (Phase 3).
-  const main = page.locator("#main-content");
-  await expect(main.getByRole("link", { name: /kalkulator/i })).toBeVisible();
 });
 
 // ── SG-D-001: Dual-currency in cost-of-living and savings tables ──────────────
@@ -2246,15 +2357,15 @@ When("the cost-of-living table renders", async ({ page }) => {
   await page.locator("table tbody tr").first().waitFor({ state: "visible" });
 });
 
-Then("the Country column shows Indonesian country names where translations exist", async ({ page }) => {
-  await expect(page.locator("table tbody")).toContainText("Singapura");
-  await expect(page.locator("table tbody")).toContainText("Jepang");
-});
-
-Then("the City column shows Indonesian city names where translations exist", async ({ page }) => {
-  await expect(page.locator("table tbody")).toContainText("Warsawa");
-  await expect(page.locator("table tbody")).toContainText("Praha");
-});
+Then(
+  "the cost-of-living table's Country and City columns show Indonesian names where translations exist",
+  async ({ page }) => {
+    await expect(page.locator("table tbody")).toContainText("Singapura");
+    await expect(page.locator("table tbody")).toContainText("Jepang");
+    await expect(page.locator("table tbody")).toContainText("Warsawa");
+    await expect(page.locator("table tbody")).toContainText("Praha");
+  },
+);
 
 Given("the Minimum role tab is active", async ({ page }) => {
   // Tab is "Minimum role" (en) or "Jabatan minimum" (id)
@@ -2287,7 +2398,7 @@ When("the tab renders", async ({ page }) => {
   await page.waitForLoadState("networkidle");
 });
 
-Then("the gross-salary field renders with a visible border, design-token radius, and padding", async ({ page }) => {
+Then("the gross-salary field renders with a visible border and padding", async ({ page }) => {
   const input = page.locator("#gross-salary-input");
   await expect(input).toBeVisible();
   const style = await input.evaluate((element) => {
@@ -2309,7 +2420,7 @@ Then("the gross-salary field renders with a visible border, design-token radius,
   expect(style.height).toBe(44);
 });
 
-Then("it is paired with a Label primitive", async ({ page }) => {
+Then("the gross-salary field has a visible label", async ({ page }) => {
   const label = page.locator("label[for='gross-salary-input']");
   await expect(label).toBeVisible();
 });
@@ -2342,66 +2453,6 @@ Then("each tab trigger's visible text is its label only, with the description no
     await expect(description).not.toHaveText(expectedLabels[index]!);
     expect((await tab.textContent())?.trim()).not.toContain((await description.textContent())?.trim() ?? "");
   }
-});
-
-Given("the user requests {string}", async ({ page }, path: string) => {
-  await page.goto(path);
-  await page.waitForLoadState("networkidle");
-});
-
-When("the middleware processes the request", async ({ page }) => {
-  await page.waitForLoadState("networkidle");
-});
-
-Then("the server redirects to {string}", async ({ page }, expectedPath: string) => {
-  expect(page.url()).toContain(expectedPath);
-});
-
-Given("the user opens the mobile nav drawer at 375px on the {string} locale", async ({ page }, locale: string) => {
-  await page.setViewportSize({ width: 375, height: 812 });
-  const cleanLocale = locale.replace(/^\/|\/$/g, "");
-  await page.goto(`/${cleanLocale}/`);
-  await page.waitForLoadState("networkidle");
-  // Try to open mobile nav drawer; skip if no trigger found
-  const menuTriggers = [
-    page.getByRole("button", { name: /menu/i }),
-    page.getByRole("button", { name: /navigation/i }),
-    page.getByLabel("Open menu"),
-    page.getByLabel("Toggle menu"),
-    page.getByLabel("Menu"),
-  ];
-  for (const trigger of menuTriggers) {
-    const visible = await trigger
-      .first()
-      .isVisible()
-      .catch(() => false);
-    if (visible) {
-      await trigger.first().click();
-      await page.waitForLoadState("networkidle");
-      break;
-    }
-  }
-});
-
-When("the drawer renders", async ({ page }) => {
-  await page.waitForLoadState("networkidle");
-});
-
-Then("it shows the site's top-level navigation links", async ({ page }) => {
-  const drawer = page.getByRole("dialog");
-  await expect(drawer).toBeVisible();
-  const primaryLinks = drawer
-    .getByRole("navigation", { name: "Mobile navigation", exact: true })
-    .locator(":scope > ul");
-  await expect(primaryLinks).toHaveCount(1);
-  await expect(primaryLinks.getByRole("link", { name: /belajar/i })).toHaveAttribute("href", "/id/browse");
-  await expect(primaryLinks.getByRole("link", { name: /alat/i })).toHaveAttribute("href", "/id/tools");
-});
-
-Then("every drawer label is localized", async ({ page }) => {
-  const drawer = page.getByRole("dialog");
-  await expect(drawer).toContainText(/belajar|alat/i);
-  await expect(drawer).not.toContainText(/^Learn$|^Tools$/);
 });
 
 // ── URL state Phase 4 step definitions (added 2026-06-21) ────────────────────
@@ -2501,12 +2552,8 @@ When("I read the breadcrumb above the page title", async ({ page }) => {
   await expect(page.getByRole("navigation", { name: /breadcrumb/i })).toBeVisible();
 });
 
-When("I activate the {string} link", async ({ page }, linkText: string) => {
-  await page
-    .getByRole("link", { name: new RegExp(linkText, "i") })
-    .first()
-    .click();
-  await page.waitForLoadState("networkidle");
+When("the breadcrumb renders", async ({ page }) => {
+  await expect(page.getByRole("navigation", { name: /breadcrumb/i })).toBeVisible();
 });
 
 Then("the Adults control shows {string}", async ({ page }, value: string) => {
@@ -2572,33 +2619,6 @@ Then("the URL query string includes {string}", async ({ page }, paramStr: string
   }
 });
 
-Then("the URL query string includes {string} and {string}", async ({ page }, paramStr1: string, paramStr2: string) => {
-  const [key1, val1] = paramStr1.split("=");
-  const [key2, val2] = paramStr2.split("=");
-  // Wait for both params to appear in the URL
-  await page.waitForFunction(
-    ([k1, v1, k2, v2]: [string, string | undefined, string, string | undefined]) => {
-      const url = new URL(window.location.href);
-      const p1 = v1 !== undefined ? url.searchParams.get(k1) === v1 : url.searchParams.has(k1);
-      const p2 = v2 !== undefined ? url.searchParams.get(k2) === v2 : url.searchParams.has(k2);
-      return p1 && p2;
-    },
-    [key1, val1, key2!, val2] as [string, string | undefined, string, string | undefined],
-    { timeout: 8000 },
-  );
-  const url = new URL(page.url());
-  if (val1 !== undefined) {
-    expect(url.searchParams.get(key1!)).toBe(val1);
-  } else {
-    expect(url.searchParams.has(key1!)).toBe(true);
-  }
-  if (val2 !== undefined) {
-    expect(url.searchParams.get(key2!)).toBe(val2);
-  } else {
-    expect(url.searchParams.has(key2!)).toBe(true);
-  }
-});
-
 Then("the URL query string does not include {string} or {string}", async ({ page }, param1: string, param2: string) => {
   await page.waitForLoadState("networkidle");
   await page.waitForTimeout(500);
@@ -2607,14 +2627,6 @@ Then("the URL query string does not include {string} or {string}", async ({ page
   const key2 = param2.split("=")[0]!;
   expect(url.searchParams.has(key1)).toBe(false);
   expect(url.searchParams.has(key2)).toBe(false);
-});
-
-Then("the URL query string does not include {string}", async ({ page }, paramStr: string) => {
-  await page.waitForLoadState("networkidle");
-  await page.waitForTimeout(500);
-  const url = new URL(page.url());
-  const key = paramStr.split("=")[0]!;
-  expect(url.searchParams.has(key)).toBe(false);
 });
 
 Then("the single-city detail for Singapore is shown", async ({ page }) => {
@@ -2664,7 +2676,10 @@ Then("the household preview updates without a page reload", async ({ page }) => 
 });
 
 Then("a {string} link to {string} is shown", async ({ page }, linkText: string, href: string) => {
-  const link = page.getByRole("link", { name: new RegExp(linkText, "i") });
+  // The breadcrumb renders in the page locale: Home is "Beranda" and Tools is "Alat" under /id.
+  const localized: Record<string, string> = { Home: "(Home|Beranda)", Tools: "(Tools|Alat)" };
+  const label = localized[linkText] ?? linkText;
+  const link = page.getByRole("link", { name: new RegExp(label, "i") });
   await expect(link.first()).toBeVisible();
   const linkHref = await link.first().getAttribute("href");
   expect(linkHref).toContain(href);
@@ -2685,33 +2700,53 @@ Then("pressing the browser Back button does not return to the {string} URL", asy
 
 // ── AC-4 / AC-5: Touch targets and 320px horizontal overflow ──────────────────
 
-Given("I am on the calculator at a 375px-wide viewport", async ({ page }) => {
-  await page.setViewportSize({ width: 375, height: 812 });
-  await page.goto("/en/tools/cost-of-living-calculator");
+Given("I am on the {string} tab at a {int}px-wide viewport", async ({ page }, tabName: string, width: number) => {
+  const tabParam: Record<string, string> = {
+    "Cost of living": "cost",
+    Savings: "savings",
+    "Minimum role": "min-role",
+  };
+  await page.setViewportSize({ width, height: 812 });
+  await page.goto(`/en/tools/cost-of-living-calculator?tab=${tabParam[tabName] ?? "cost"}`);
   await page.waitForLoadState("networkidle");
+  await expect(page.getByRole("tab", { name: tabName })).toHaveAttribute("data-state", "active");
 });
 
-When("the geo-filter selects render", async ({ page }) => {
-  await expect(page.locator("#geo-region-select")).toBeVisible();
+// The controls the 44px touch-target rule covers, located as the feature names them.
+function touchTargetsOf(page: Page, control: string): Locator {
+  switch (control) {
+    case "geo-filter select":
+      return page.locator("#geo-region-select, #geo-country-select, #geo-city-select");
+    case "tab trigger":
+      return page.getByRole("tab");
+    case "segmented radio":
+      return page.getByRole("radio");
+    case "baseline source option":
+      return page.getByRole("radiogroup", { name: /how to set your target|baseline source/i }).getByRole("radio");
+    default:
+      throw new Error(`no touch-target locator for "${control}"`);
+  }
+}
+
+When("the {string} control is rendered", async ({ page }, control: string) => {
+  await expect(touchTargetsOf(page, control).first()).toBeVisible();
 });
 
-Then("each geo-filter select is at least 44 pixels tall", async ({ page }) => {
-  for (const id of ["#geo-region-select", "#geo-country-select", "#geo-city-select"]) {
-    const box = await page.locator(id).boundingBox();
-    expect(box, `bounding box for ${id}`).not.toBeNull();
-    expect(box!.height, `rendered height for ${id}`).toBeGreaterThanOrEqual(44);
+Then("each {string} is at least 44 pixels tall", async ({ page }, control: string) => {
+  const targets = await touchTargetsOf(page, control).all();
+  expect(targets.length, `count of ${control}`).toBeGreaterThan(0);
+  if (control === "baseline source option") expect(targets.length).toBe(3);
+  for (const target of targets) {
+    if (!(await target.isVisible())) continue;
+    const box = await target.boundingBox();
+    expect(box, `bounding box of a ${control}`).not.toBeNull();
+    expect(box!.height, `rendered height of a ${control}`).toBeGreaterThanOrEqual(44);
   }
 });
 
-Given("I am on the calculator at a 320px-wide viewport", async ({ page }) => {
+Given("I am on the {string} locale calculator at a 320px-wide viewport", async ({ page }, locale: string) => {
   await page.setViewportSize({ width: 320, height: 812 });
-  await page.goto("/en/tools/cost-of-living-calculator");
-  await page.waitForLoadState("networkidle");
-});
-
-Given("I am on the id-locale calculator at a 320px-wide viewport", async ({ page }) => {
-  await page.setViewportSize({ width: 320, height: 812 });
-  await page.goto("/id/tools/cost-of-living-calculator");
+  await page.goto(`/${locale}/tools/cost-of-living-calculator`);
   await page.waitForLoadState("networkidle");
 });
 
@@ -2736,10 +2771,6 @@ Then(/^no literal "\/" separator is shown between crumbs$/, async ({ page }) => 
   const breadcrumb = page.getByRole("navigation", { name: /breadcrumb/i });
   const separatorListItems = breadcrumb.locator("li", { hasText: /^\s*\/\s*$/ });
   expect(await separatorListItems.count()).toBe(0);
-});
-
-When("the breadcrumb renders", async ({ page }) => {
-  await expect(page.getByRole("navigation", { name: /breadcrumb/i })).toBeVisible();
 });
 
 Then("the current-page crumb text reads {string}", async ({ page }, expected: string) => {
@@ -2769,22 +2800,17 @@ Then(
 
 // ── AC-tab-desc: Tab descriptions associated via aria-describedby ─────────────
 
-Given("the user views the calculator tab bar", async ({ page }) => {
-  await page.goto("/en/tools/cost-of-living-calculator");
-  await page.waitForLoadState("networkidle");
-});
-
 Then(
-  "each of the three tabs has a visibly rendered description element associated with its trigger via aria-describedby",
+  "each of the three tabs has a description element associated with its trigger via aria-describedby",
   async ({ page }) => {
-    // The three tab triggers each have aria-describedby pointing to a rendered <p>
+    // The three tab triggers each have aria-describedby pointing to a <p> in the DOM. Which one is
+    // visible is the active-tab scenario's concern (inactive descriptions carry the hidden class).
     const tabTriggers = page.locator('[role="tab"]');
     const count = await tabTriggers.count();
     expect(count).toBeGreaterThanOrEqual(3);
     for (let i = 0; i < Math.min(count, 3); i++) {
       const describedById = await tabTriggers.nth(i).getAttribute("aria-describedby");
       expect(describedById).toBeTruthy();
-      // The element with that id must exist in the DOM (not necessarily visible — hidden class used)
       const descEl = page.locator(`#${describedById}`);
       await expect(descEl).toBeAttached();
     }
@@ -2917,24 +2943,24 @@ Then("a visible region-auto-advisory message is shown", async ({ page }) => {
   await expect(advisory).toBeVisible();
 });
 
-// ── AC-12: City-only deep link back link omits auto-derived region/country ────
+// ── City-detail back link keeps the parent geo scope, or returns to the bare calculator ──
 
 When("I read the single-city detail back link", async ({ page }) => {
   // Ensure city detail is rendered
   await expect(page.locator("[data-testid='city-detail']")).toBeVisible({ timeout: 8000 });
 });
 
-Then(
-  "the back link points to the bare calculator {string} with no region or country",
-  async ({ page }, expectedHref: string) => {
-    const backLink = page.locator("[data-testid='city-detail'] [data-back-link='true']");
-    await expect(backLink).toBeVisible();
-    const href = await backLink.getAttribute("href");
-    expect(href).toBe(expectedHref);
-    expect(href).not.toMatch(/region=/);
-    expect(href).not.toMatch(/country=/);
-  },
-);
+Then("the back link points to {string}", async ({ page }, expectedHref: string) => {
+  const backLink = page.locator("[data-testid='city-detail'] [data-back-link='true']");
+  await expect(backLink).toBeVisible();
+  expect(await backLink.getAttribute("href")).toBe(expectedHref);
+});
+
+Then("the back link does not include {string}", async ({ page }, param: string) => {
+  const backLink = page.locator("[data-testid='city-detail'] [data-back-link='true']");
+  const href = (await backLink.getAttribute("href")) ?? "";
+  expect(new URLSearchParams(href.replace(/^\?/, "")).has(param)).toBe(false);
+});
 
 // ── SG-U: Country-narrows-city (no prior region selected) ───────────────────
 
@@ -3083,13 +3109,9 @@ Then('the sortable "Savings after essentials" column header has an aria-sort val
   expect(["ascending", "descending"]).toContain(await header.getAttribute("aria-sort"));
 });
 
-Given("the Savings tab is activated with no salary entered", async ({ page }) => {
+Given("the Savings tab is activated", async ({ page }) => {
   await page.goto("/en/tools/cost-of-living-calculator?tab=savings");
   await expect(page.getByRole("tab", { name: "Savings" })).toHaveAttribute("data-state", "active");
-});
-
-When("the tab activation occurs", async ({ page }) => {
-  await expect(page.locator("#gross-salary-input")).toBeVisible();
 });
 
 Then("a prominent empty-state prompt is shown in the data area", async ({ page }) => {
@@ -3100,10 +3122,6 @@ Then("a prominent empty-state prompt is shown in the data area", async ({ page }
 
 Then("the gross salary input receives focus", async ({ page }) => {
   await expect(page.locator("#gross-salary-input")).toBeFocused();
-});
-
-Given("the Savings tab is shown", async ({ page }) => {
-  await page.goto("/en/tools/cost-of-living-calculator?tab=savings");
 });
 
 Then("the gross salary input displays its USD currency inline at the field", async ({ page }) => {
@@ -3149,31 +3167,12 @@ Then('only the "Savings" tab description is visible', async ({ page }) => {
   await expect(page.getByTestId("tab-desc-min-role")).toBeHidden();
 });
 
-Given("the calculator at 375px", async ({ page }) => {
-  await page.setViewportSize({ width: 375, height: 812 });
-  await page.goto("/en/tools/cost-of-living-calculator?tab=min-role&baseline=my_salary&mysalarycity=singapore");
-});
-
-Then("every tab trigger is at least 44px tall", async ({ page }) => {
-  for (const tab of await page.getByRole("tab").all()) {
-    expect((await tab.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(44);
-  }
-});
-
-Then("every school-type, area, and salary-currency segmented radio is at least 44px tall", async ({ page }) => {
-  const radios = page.getByRole("radio");
-  expect(await radios.count()).toBeGreaterThan(0);
-  for (const radio of await radios.all()) {
-    if (await radio.isVisible()) expect((await radio.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(44);
-  }
-});
-
 Given("the calculator at 1280px", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto("/en/tools/cost-of-living-calculator");
 });
 
-Then('every <select> has computed appearance "none" and a custom chevron affordance', async ({ page }) => {
+Then("every dropdown shows a custom chevron affordance", async ({ page }) => {
   const selects = page.locator("select");
   expect(await selects.count()).toBeGreaterThan(0);
   for (const select of await selects.all()) {
@@ -3182,25 +3181,9 @@ Then('every <select> has computed appearance "none" and a custom chevron afforda
   }
 });
 
-Then("no <select> shows the browser's native dropdown arrow", async ({ page }) => {
+Then("no dropdown shows the browser's native arrow", async ({ page }) => {
   for (const select of await page.locator("select").all()) {
     expect(await select.evaluate((element) => getComputedStyle(element).appearance)).toBe("none");
-  }
-});
-
-Given("the Minimum-role tab at 320px and 375px", async ({ page }) => {
-  await page.setViewportSize({ width: 320, height: 812 });
-  await page.goto("/en/tools/cost-of-living-calculator?tab=min-role");
-  await expect(page.getByRole("tab", { name: "Minimum role" })).toHaveAttribute("data-state", "active");
-});
-
-Then('each "Baseline source" option remains at least 44px tall when the control wraps', async ({ page }) => {
-  const group = page.getByRole("radiogroup", { name: /how to set your target|baseline source/i });
-  await expect(group).toBeVisible();
-  const options = group.getByRole("radio");
-  await expect(options).toHaveCount(3);
-  for (const option of await options.all()) {
-    expect((await option.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(44);
   }
 });
 
@@ -3230,7 +3213,7 @@ When('I change the region filter to "Europe"', async ({ page }) => {
   evidenceFor(page).scrollPosition = { before, after: await page.evaluate(() => window.scrollY) };
 });
 
-Then("the URL update requests no scroll so the page does not jump to the top", async ({ page }) => {
+Then("the page does not jump to the top", async ({ page }) => {
   const scroll = evidenceFor(page).scrollPosition;
   expect(scroll).toBeDefined();
   expect(scroll!.after).toBeCloseTo(scroll!.before, 0);
@@ -3294,7 +3277,7 @@ Then("the flag is visually distinct from ordinary caption text", async ({ page }
   );
 });
 
-Then("the city-detail school row renders the school-foreigner-flag-<cityId> testid", async ({ page }) => {
+Then("the city-detail school row shows the same flag", async ({ page }) => {
   await page.goto("/en/tools/cost-of-living-calculator?tab=cost&city=singapore&schoolkids=1&schooltype=public");
   await expect(page.getByTestId("city-detail")).toBeVisible();
   await expect(page.getByLabel("School-age children")).toHaveValue("1");
@@ -3641,11 +3624,17 @@ Then(
   },
 );
 
-Then("the City column shows Indonesian city and country names where translations exist", async ({ page }) => {
-  await expect(
-    page
-      .getByTestId("city-cell")
-      .filter({ hasText: /Singapura/ })
-      .first(),
-  ).toBeVisible();
-});
+Then(
+  "the City column of the minimum-role ladder shows Indonesian city and country names where translations exist",
+  async ({ page }) => {
+    await page.getByRole("tab", { name: /minimum role|jabatan minimum/i }).click();
+    await page.locator("#target-amount-input").fill("0");
+    await page.locator("#target-amount-input").blur();
+    await expect(
+      page
+        .getByTestId("city-cell")
+        .filter({ hasText: /Singapura/ })
+        .first(),
+    ).toBeVisible();
+  },
+);

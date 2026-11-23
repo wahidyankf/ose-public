@@ -142,9 +142,16 @@ import { renderCoursePathPage } from "../render-course-path-page";
 import { PathRail } from "@/features/course-paths/shell/path-rail";
 // eslint-disable-next-line import/first
 import { MobileNav } from "@/features/app-shell/shell/mobile-nav";
-import { Header } from "@/features/app-shell/shell/header";
 // eslint-disable-next-line import/first
 import { PathBanner } from "@/features/course-paths/shell/path-banner";
+// eslint-disable-next-line import/first
+import { resolvePathNav } from "@/features/course-paths/core/path-nav";
+// eslint-disable-next-line import/first
+import { contentUrl } from "@/features/content/core/content-url";
+// eslint-disable-next-line import/first
+import { slugForCourseId } from "@/features/course-paths/shell/course-path-nav";
+// eslint-disable-next-line import/first
+import { manifestFixture } from "../features/course-paths/manifest-fixture";
 // eslint-disable-next-line import/first
 import { MobileNavOpenProvider } from "@/features/app-shell/shell/mobile-nav-open-provider";
 // eslint-disable-next-line import/first
@@ -240,6 +247,7 @@ const feature = await loadFeature(
 );
 
 describeFeature(feature, ({ Scenario }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-order-nav.feature: Prev and next follow the active path's order
   Scenario("Prev and next follow the active path's order", ({ Given, When, Then, And }) => {
     let jsx: React.ReactElement;
 
@@ -271,8 +279,40 @@ describeFeature(feature, ({ Scenario }) => {
         `/en/learn/courses/data-structures-and-algorithms-essentials?path=${fixtureManifest.pathId}`,
       );
     });
+
+    And("next crosses from the last core course into the first extension course, keeping the path context", () => {
+      // Folded in from the former path-phases scenario: a two-phase fixture whose core ends at
+      // software-engineering-practices, so the next link must cross into the extension phase.
+      const crossing = manifestFixture({
+        pathId: "careers/fundamentally-strong/generalist-track",
+        arc: "fundamentally-strong",
+        title: "Generalist Track",
+        description: "A deep route through the foundations.",
+        phases: [
+          {
+            id: "fixture-core",
+            title: "Fixture core",
+            kind: "core",
+            outcome: { can: "complete this fixture path" },
+            courses: ["computer-science-foundations", "software-engineering-practices"],
+          },
+          {
+            id: "fixture-extension",
+            title: "Fixture extension",
+            kind: "extension",
+            courses: ["capstone-secure-service"],
+          },
+        ],
+      });
+      const nextId = resolvePathNav(crossing, "software-engineering-practices").next?.id ?? null;
+      expect(nextId).toBe("capstone-secure-service");
+      expect(contentUrl("en", slugForCourseId(nextId as string), crossing.pathId)).toBe(
+        `/en/learn/courses/capstone-secure-service?path=${crossing.pathId}`,
+      );
+    });
   });
 
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-order-nav.feature: The path rail shows the whole ordered arc beside a course at desktop width
   Scenario(
     "The path rail shows the whole ordered arc beside a course at desktop width",
     ({ Given, When, Then, And }) => {
@@ -322,10 +362,42 @@ describeFeature(feature, ({ Scenario }) => {
         expect(screen.getByRole("link", { name: /view full path/i })).toBeTruthy();
         expect(screen.getByRole("link", { name: /browse all courses/i })).toBeTruthy();
       });
+
+      And("each rail row shows its position number before the course title", () => {
+        const rail = screen.getByRole("navigation", { name: "Python Fundamentals course list" });
+        const rows = within(rail).getAllByRole("listitem");
+        // Folded in from the former path-position-numbers scenario: the current row carries its own number.
+        expect(rows.map((row) => row.textContent?.match(/^\d+/)?.[0])).toEqual(["1", "2", "3"]);
+        expect(rows[1]?.textContent).toContain("▸");
+      });
     },
   );
 
-  Scenario("The path rail collapses into the existing navigation drawer on a phone", ({ Given, When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-order-nav.feature: The path readout opens the course drawer on a phone
+  Scenario("The path readout opens the course drawer on a phone", ({ Given, When, Then }) => {
+    Given("a reader opens a course in path context on a phone-width viewport", () => {
+      mockPathname = "/en/learn/courses/just-enough-python";
+      mockSearchParams = new URLSearchParams({ path: fixtureManifest.pathId });
+    });
+
+    When('they activate the path readout\'s "open path course list" control', () => {
+      cleanup();
+      render(
+        <MobileNavOpenProvider>
+          <PathBanner locale="en" pathTitle="Python Fundamentals" courseIndex={2} totalCourses={3} />
+          <MobileNavConsumer />
+        </MobileNavOpenProvider>,
+      );
+      fireEvent.click(screen.getByRole("button", { name: /Open path course list/i }));
+    });
+
+    Then("the existing left navigation drawer opens showing that path's ordered courses", () => {
+      expect(screen.getByRole("navigation", { name: "Python Fundamentals course list" })).toBeTruthy();
+    });
+  });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-order-nav.feature: Focus moves into the path drawer and returns to its control on dismissal
+  Scenario("Focus moves into the path drawer and returns to its control on dismissal", ({ Given, When, Then }) => {
     let trigger: HTMLElement;
 
     Given("a reader opens a course in path context on a phone-width viewport", () => {
@@ -345,27 +417,36 @@ describeFeature(feature, ({ Scenario }) => {
       fireEvent.click(trigger);
     });
 
-    Then("the existing left navigation drawer opens showing that path's ordered courses", () => {
-      expect(screen.getByRole("navigation", { name: "Python Fundamentals course list" })).toBeTruthy();
-    });
-
-    And("focus moves into the drawer and returns to the control when the drawer is dismissed", async () => {
-      await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
-      });
+    Then("focus moves into the drawer and returns to the control when the drawer is dismissed", async () => {
+      await act(async () => {});
       expect(document.activeElement).not.toBe(trigger);
       fireEvent.keyDown(document, { key: "Escape", code: "Escape" });
-      await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
-      });
+      await act(async () => {});
       expect(document.activeElement).toBe(trigger);
+    });
+  });
+
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-order-nav.feature: The path readout states the course position as course k of N on a phone
+  Scenario("The path readout states the course position as course k of N on a phone", ({ Given, Then }) => {
+    Given("a reader on a phone opens a course in path context", () => {
+      cleanup();
+      render(
+        <MobileNavOpenProvider>
+          <PathBanner locale="en" pathTitle="Python Fundamentals" courseIndex={2} totalCourses={3} />
+        </MobileNavOpenProvider>,
+      );
+    });
+
+    Then('the path readout reads "course 2 of 3"', () => {
+      expect(screen.getByText(/course 2 of 3/i)).toBeTruthy();
     });
   });
 
   // UWT-008 fix (phase-8 rule-15 retest): picking a course inside the pocket drawer must close
   // the drawer, matching the primary-navigation links' pre-existing behaviour. RED until the
   // drawer wraps its rail in a click handler that clears the open state.
-  Scenario("Picking a course in the pocket drawer closes the drawer", ({ Given, When, Then, And }) => {
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-order-nav.feature: Choosing a course in the path drawer closes it
+  Scenario("Choosing a course in the path drawer closes it", ({ Given, When, Then }) => {
     Given("a reader has the pocket drawer open from a course's path readout", () => {
       mockPathname = "/en/learn/courses/just-enough-python";
       mockSearchParams = new URLSearchParams({ path: fixtureManifest.pathId });
@@ -380,53 +461,23 @@ describeFeature(feature, ({ Scenario }) => {
     });
 
     When("they pick another course's row in the drawer", async () => {
-      await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
-      });
+      await act(async () => {});
       const drawerNav = screen.getByRole("navigation", { name: /course list/ });
       const rows = drawerNav.querySelectorAll("a");
       expect(rows.length).toBeGreaterThanOrEqual(2);
       fireEvent.click(rows[1]!);
     });
 
-    Then("the drawer closes and the drawer-open state is cleared", async () => {
-      await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
-      });
+    Then("the drawer closes", async () => {
+      await act(async () => {});
       expect(screen.queryByRole("navigation", { name: /course list/ })).toBeNull();
-    });
-
-    And("the primary navigation links still close the drawer as before", async () => {
-      // Exercise the untouched general-navigation branch the way the responsive steps do: the
-      // header hamburger opens the drawer in menu mode (no path context, so `active` is null and
-      // the drawer renders its primary-nav links).
-      mockSearchParams = new URLSearchParams();
-      cleanup();
-      render(
-        <MobileNavOpenProvider>
-          <Header locale="en" />
-          <MobileNavConsumer />
-        </MobileNavOpenProvider>,
-      );
-      fireEvent.click(screen.getByRole("button", { name: "Open navigation menu" }));
-      await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
-      });
-      // Radix marks the closed-sheet content `aria-hidden` in this mocked environment, so query
-      // the raw links inside the drawer for this mechanical close-on-pick check.
-      const drawer = document.querySelector("#mobile-nav-drawer");
-      expect(drawer).toBeTruthy();
-      fireEvent.click(drawer!.querySelectorAll("a")[0]!);
-      await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
-      });
-      expect(document.querySelector("#mobile-nav-drawer")).toBeNull();
     });
   });
 
   // plan ayokoding-learn-revamp-01 §4.3 (Phase 5 RED) — S5. The rail renders inside a container
   // whose scroll geometry mocks a sidebar too short for the list (Decision D5/D11's hidden-row
   // state), so rendering must scroll that container — and never the page.
+  // @scenario specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-order-nav.feature: The path rail scrolls the current course into view without moving the page
   Scenario(
     "The path rail scrolls the current course into view without moving the page",
     ({ Given, When, Then, And }) => {

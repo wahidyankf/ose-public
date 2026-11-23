@@ -1,20 +1,22 @@
-"""Fixtures for the unit tests that run the real artifact from a stand-in repository."""
+"""Fixtures for the unit tests: the network is denied around each one, and a stand-in repository is offered."""
 
+from collections.abc import Iterator
 from pathlib import Path
 
 import pytest
 
-import build_zipapp
-
-SOURCE = Path(__file__).resolve().parents[2] / "src"
+from support.network import deny_network
 
 
-@pytest.fixture(scope="session")
-def artifact(tmp_path_factory: pytest.TempPathFactory) -> Path:
-    """The real FERRET artifact, built once per run from the current sources."""
-    target = tmp_path_factory.mktemp("artifact") / "ferret.pyz"
-    build_zipapp.build(SOURCE, target)
-    return target
+@pytest.fixture(autouse=True)
+def network_denied() -> Iterator[list[str]]:
+    """Deny the network around every unit test (C12, C21), so no unit test can reach it even through a swallowed error.
+
+    The list holds each attempt; an attempt the code under test caught and carried on from still fails the test here.
+    """
+    with deny_network() as attempts:
+        yield attempts
+    assert attempts == [], f"the unit test attempted network access: {attempts}"
 
 
 @pytest.fixture

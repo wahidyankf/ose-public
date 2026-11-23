@@ -1,3 +1,5 @@
+//go:build integration
+
 package cli_test
 
 import (
@@ -25,8 +27,9 @@ type buildImagesDocument struct {
 // fakeContainerCLI writes a shell script that logs its argv to the log file
 // and exits with the status: it stands in for the container runtime, so no
 // test needs Podman. The embedded catalog carries the recipes, so the tests
-// need no --catalog flag.
-func fakeContainerCLI(t *testing.T, status int) string {
+// need no --catalog flag. It returns the script with the log path, so tests
+// wire the script through cli.Options instead of the process environment.
+func fakeContainerCLI(t *testing.T, status int) (string, string) {
 	t.Helper()
 	dir := t.TempDir()
 	log := filepath.Join(dir, "argv.log")
@@ -39,8 +42,7 @@ func fakeContainerCLI(t *testing.T, status int) string {
 	if err := os.WriteFile(script, []byte(body), 0o700); err != nil {
 		t.Fatalf("write fake container CLI: %v", err)
 	}
-	t.Setenv("AYOKODING_CONTAINER_CLI", script)
-	return log
+	return script, log
 }
 
 // builtTag matches one printed id and content-hash tag line.
@@ -53,10 +55,10 @@ const catalogTypescriptTag = "ayokoding-toolchain/typescript:b7c9c03f556ecef1da8
 // TestBuildPrintsIDAndTag requires a derived toolchain to build and print
 // its id and tag.
 func TestBuildPrintsIDAndTag(t *testing.T) {
-	log := fakeContainerCLI(t, 0)
+	script, log := fakeContainerCLI(t, 0)
 	args := []string{"toolchains", "build", "typescript"}
 	var stdout, stderr bytes.Buffer
-	status := cli.Execute(context.Background(), args, cli.Options{Stdout: &stdout, Stderr: &stderr})
+	status := cli.Execute(context.Background(), args, cli.Options{Stdout: &stdout, Stderr: &stderr, ContainerCLI: script})
 	if status != 0 {
 		t.Fatalf("status=%d, want 0 (stdout=%q stderr=%q)", status, stdout.String(), stderr.String())
 	}
@@ -77,10 +79,10 @@ func TestBuildPrintsIDAndTag(t *testing.T) {
 
 // TestBuildUnknownIDIsUsageError requires an unknown toolchain id to exit 2.
 func TestBuildUnknownIDIsUsageError(t *testing.T) {
-	fakeContainerCLI(t, 0)
+	script, _ := fakeContainerCLI(t, 0)
 	args := []string{"toolchains", "build", "zeta"}
 	var stdout, stderr bytes.Buffer
-	status := cli.Execute(context.Background(), args, cli.Options{Stdout: &stdout, Stderr: &stderr})
+	status := cli.Execute(context.Background(), args, cli.Options{Stdout: &stdout, Stderr: &stderr, ContainerCLI: script})
 	if status != 2 {
 		t.Fatalf("status=%d, want 2 (stdout=%q stderr=%q)", status, stdout.String(), stderr.String())
 	}
@@ -92,10 +94,10 @@ func TestBuildUnknownIDIsUsageError(t *testing.T) {
 // TestBuildOfficialImageIsUsageError requires an entry without a Dockerfile
 // recipe to exit 2.
 func TestBuildOfficialImageIsUsageError(t *testing.T) {
-	fakeContainerCLI(t, 0)
+	script, _ := fakeContainerCLI(t, 0)
 	args := []string{"toolchains", "build", "python"}
 	var stdout, stderr bytes.Buffer
-	status := cli.Execute(context.Background(), args, cli.Options{Stdout: &stdout, Stderr: &stderr})
+	status := cli.Execute(context.Background(), args, cli.Options{Stdout: &stdout, Stderr: &stderr, ContainerCLI: script})
 	if status != 2 {
 		t.Fatalf("status=%d, want 2 (stdout=%q stderr=%q)", status, stdout.String(), stderr.String())
 	}
@@ -106,10 +108,10 @@ func TestBuildOfficialImageIsUsageError(t *testing.T) {
 
 // TestBuildWithoutIDsIsUsageError requires a build with no ids to exit 2.
 func TestBuildWithoutIDsIsUsageError(t *testing.T) {
-	fakeContainerCLI(t, 0)
+	script, _ := fakeContainerCLI(t, 0)
 	args := []string{"toolchains", "build"}
 	var stdout, stderr bytes.Buffer
-	status := cli.Execute(context.Background(), args, cli.Options{Stdout: &stdout, Stderr: &stderr})
+	status := cli.Execute(context.Background(), args, cli.Options{Stdout: &stdout, Stderr: &stderr, ContainerCLI: script})
 	if status != 2 {
 		t.Fatalf("status=%d, want 2 (stdout=%q stderr=%q)", status, stdout.String(), stderr.String())
 	}
@@ -121,10 +123,10 @@ func TestBuildWithoutIDsIsUsageError(t *testing.T) {
 // TestBuildFailureRendersCodedError requires a failed build to exit 2
 // naming the closed build code.
 func TestBuildFailureRendersCodedError(t *testing.T) {
-	fakeContainerCLI(t, 1)
+	script, _ := fakeContainerCLI(t, 1)
 	args := []string{"toolchains", "build", "typescript"}
 	var stdout, stderr bytes.Buffer
-	status := cli.Execute(context.Background(), args, cli.Options{Stdout: &stdout, Stderr: &stderr})
+	status := cli.Execute(context.Background(), args, cli.Options{Stdout: &stdout, Stderr: &stderr, ContainerCLI: script})
 	if status != 2 {
 		t.Fatalf("status=%d, want 2 (stdout=%q stderr=%q)", status, stdout.String(), stderr.String())
 	}
@@ -136,10 +138,10 @@ func TestBuildFailureRendersCodedError(t *testing.T) {
 // TestBuildJSONShape requires the JSON payload to carry id and tag per
 // built image.
 func TestBuildJSONShape(t *testing.T) {
-	fakeContainerCLI(t, 0)
+	script, _ := fakeContainerCLI(t, 0)
 	args := []string{"toolchains", "build", "typescript", "--output", "json"}
 	var stdout, stderr bytes.Buffer
-	status := cli.Execute(context.Background(), args, cli.Options{Stdout: &stdout, Stderr: &stderr})
+	status := cli.Execute(context.Background(), args, cli.Options{Stdout: &stdout, Stderr: &stderr, ContainerCLI: script})
 	if status != 0 {
 		t.Fatalf("status=%d, want 0 (stdout=%q stderr=%q)", status, stdout.String(), stderr.String())
 	}

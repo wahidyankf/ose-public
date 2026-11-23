@@ -660,3 +660,40 @@ describe("reset control wiring", () => {
     expect(called).toBe(false);
   });
 });
+
+describe("unit coverage edges", () => {
+  it("rejects non-object records without throwing", () => {
+    expect(isValidRecord("nope")).toBe(false);
+    expect(isValidRecord(null)).toBe(false);
+    expect(isValidRecord(42)).toBe(false);
+  });
+
+  it("falls back to empty for a well-formed but invalid record", () => {
+    const storage = memoryStorage({ [PROGRESS_KEY]: '{"version":2,"completed":[]}' });
+    expect(loadRecord(storage.read)).toEqual(emptyRecord());
+  });
+
+  it("refuses new completions once the record is full", () => {
+    const full = { ...emptyRecord(), completed: new Array(2000).fill("go-basics/x") };
+    const done = markComplete(full, "go-basics/new");
+    expect(done.completed).toHaveLength(2000);
+    expect(done.completed).not.toContain("go-basics/new");
+  });
+
+  it("notices only after the progress key is written", () => {
+    const blocked = createBlockedStore();
+    expect(blocked.notice()).toBe("");
+    blocked.write("other-key", "1");
+    expect(blocked.notice()).toBe("");
+  });
+
+  it("stays put when no tabs exist", () => {
+    expect(nextTabIndex(0, 0, 1)).toBe(0);
+    expect(nextTabIndex(2, -1, -1)).toBe(0);
+  });
+
+  it("rejects zero and unsafe persisted widths", () => {
+    expect(parseSidebarWidth("0")).toBeNull();
+    expect(parseSidebarWidth("9007199254740993")).toBeNull();
+  });
+});

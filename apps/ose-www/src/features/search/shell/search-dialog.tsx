@@ -3,12 +3,17 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import {
-  CommandDialog,
+  Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
   CommandList,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
 } from "@open-sharia-enterprise/web-ui";
 import { useSearchOpen } from "@/features/search/shell/use-search";
 import { trpcClient } from "@/lib/trpc/client";
@@ -60,23 +65,36 @@ export function SearchDialog() {
   );
 
   return (
-    <CommandDialog open={open} onOpenChange={setOpen}>
-      <CommandInput placeholder="Search pages..." value={query} onValueChange={setQuery} />
-      <CommandList>
-        <CommandEmpty>{query.length < 2 ? "Type to search..." : "No results found."}</CommandEmpty>
-        {results.length > 0 && (
-          <CommandGroup heading="Results">
-            {results.map((result) => (
-              <CommandItem key={result.slug} value={result.slug} onSelect={() => handleSelect(result.slug)}>
-                <div>
-                  <div className="font-medium">{result.title}</div>
-                  <div className="line-clamp-1 text-xs text-muted-foreground">{result.excerpt}</div>
-                </div>
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        )}
-      </CommandList>
-    </CommandDialog>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent className="overflow-hidden p-0">
+        <DialogHeader className="sr-only">
+          <DialogTitle>Search</DialogTitle>
+          <DialogDescription>Search for a page...</DialogDescription>
+        </DialogHeader>
+        {/* Server filters via search.query; disable cmdk client-side filtering so
+            results whose slug differs from the query text stay visible. */}
+        <Command
+          shouldFilter={false}
+          className="[&_[cmdk-group]:px-2 **:data-[slot=command-input-wrapper]:h-12 [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:h-5 [&_[cmdk-item]_svg]:w-5"
+        >
+          <CommandInput placeholder="Search pages..." value={query} onValueChange={setQuery} />
+          <CommandList>
+            <CommandEmpty>{query.length < 2 ? "Type to search..." : "No results found."}</CommandEmpty>
+            {results.length > 0 && (
+              <CommandGroup heading="Results">
+                {results.map((result) => (
+                  <CommandItem key={result.slug} value={result.slug} onSelect={() => handleSelect(result.slug)}>
+                    <div>
+                      <div className="font-medium">{result.title}</div>
+                      <div className="line-clamp-1 text-xs text-muted-foreground">{result.excerpt}</div>
+                    </div>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            )}
+          </CommandList>
+        </Command>
+      </DialogContent>
+    </Dialog>
   );
 }

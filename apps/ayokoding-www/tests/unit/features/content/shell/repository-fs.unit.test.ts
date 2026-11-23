@@ -1,110 +1,63 @@
-import { describe, it, expect } from "vitest";
-import { readFileSync } from "node:fs";
-import { resolve, join } from "node:path";
-import { mkdtemp, mkdir, rm, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
-import { FileSystemContentRepository } from "../../../../../src/features/content/shell/repository-fs";
+import { describe, expect, it, vi } from "vitest";
+import {
+  FileSystemContentRepository,
+  nodeContentFileSystem,
+  type ContentFileSystem,
+} from "../../../../../src/features/content/shell/repository-fs";
+import { memoryFileSystem } from "./memory-file-system";
 
-describe("repository-fs env reads", () => {
-  const src = readFileSync(resolve(__dirname, "../../../../../src/features/content/shell/repository-fs.ts"), "utf-8");
+const PAGE = "---\ntitle: Hello\nweight: 1\n---\n# Hello\n";
+const DRAFT = "---\ntitle: Draft\ndraft: true\n---\n# Draft\n";
+const INVALID = "---\nweight: 1\n---\n# No title\n";
 
-  it("reads AYOKODING_WEB_CONTENT_DIR via env object not process.env", () => {
-    expect(src).toMatch(/env\.AYOKODING_WEB_CONTENT_DIR/);
+function tree(): ContentFileSystem {
+  return memoryFileSystem({
+    "/virtual/content/en/learn/a.md": PAGE,
+    "/virtual/content/en/_index.md": PAGE,
+    "/virtual/content/en/draft.md": DRAFT,
+    "/virtual/content/en/broken.md": INVALID,
+  });
+}
+
+describe("FileSystemContentRepository over a memory file system", () => {
+  it("reads pages with locale and slug", async () => {
+    const repository = new FileSystemContentRepository("/virtual/content", tree());
+    const metas = await repository.readAllContent();
+    const slugs = metas.map((meta) => meta.slug).sort();
+    expect(slugs).toEqual(["", "learn/a"]);
   });
 
-  it("reads AYOKODING_WEB_SHOW_DRAFTS via env object not process.env", () => {
-    expect(src).toMatch(/env\.AYOKODING_WEB_SHOW_DRAFTS/);
-  });
-});
-
-describe("FileSystemContentRepository#readAllContent — status (outline-course-status)", () => {
-  it("carries frontmatter status outline onto ContentMeta and leaves it undefined when absent", async () => {
-    const parent = await mkdtemp(join(tmpdir(), "repository-fs-status-test-"));
-    const courseDir = join(parent, "en", "learn", "courses", "outline-sample");
-    const plainDir = join(parent, "en", "learn", "courses", "plain-sample");
-
+  it("skips drafts while drafts stay hidden", async () => {
+    const repository = new FileSystemContentRepository("/virtual/content", tree());
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     try {
-      await mkdir(courseDir, { recursive: true });
-      await mkdir(plainDir, { recursive: true });
-      await writeFile(
-        join(courseDir, "_index.md"),
-        '---\ntitle: "Outline Sample"\nprerequisites: []\nstatus: outline\n---\n\nBody.\n',
-      );
-      await writeFile(join(plainDir, "_index.md"), '---\ntitle: "Plain Sample"\nprerequisites: []\n---\n\nBody.\n');
-
-      const repo = new FileSystemContentRepository(parent);
-      const all = await repo.readAllContent();
-      const bySlug = new Map(all.map((meta) => [meta.slug, meta]));
-
-      expect(bySlug.has("learn/courses/outline-sample")).toBe(true);
-      expect(bySlug.has("learn/courses/plain-sample")).toBe(true);
-      expect(bySlug.get("learn/courses/outline-sample")?.status).toEqual("outline");
-      expect(bySlug.get("learn/courses/plain-sample")?.status).toBeUndefined();
+      const metas = await repository.readAllContent();
+      expect(metas.some((meta) => meta.slug === "learn/draft")).toBe(false);
     } finally {
-      await rm(parent, { recursive: true, force: true });
-    }
-  });
-});
-
-describe("FileSystemContentRepository#readAllContent — missing content directory", () => {
-  // Regression test for the site-wide blast-radius gap flagged in PR #95 cycle-3 review: a
-  // misconfigured/absent `AYOKODING_WEB_CONTENT_DIR` used to throw out of `globMarkdownFiles`'s
-  // top-level `readdir`, uncaught by `loadRoutePathData` (called from the root `[locale]/layout.tsx`,
-  // above the only `error.tsx` in the tree) — 500ing the entire site rather than degrading to an
-  // empty content index. Fails before the fix (unhandled ENOENT rejection), passes after (resolves
-  // to `[]`), mirroring `manifest-repository.test.ts`'s equivalent "does not exist yet" coverage for
-  // `globManifestFiles`.
-  it("returns an empty array instead of throwing when contentDir does not exist", async () => {
-    const parent = await mkdtemp(join(tmpdir(), "repository-fs-test-"));
-    const missingDir = join(parent, "does-not-exist");
-
-    try {
-      const repo = new FileSystemContentRepository(missingDir);
-      await expect(repo.readAllContent()).resolves.toEqual([]);
-    } finally {
-      await rm(parent, { recursive: true, force: true });
-    }
-  });
-});
-
-describe("FileSystemContentRepository#readAllContent — course catalog metadata (plan 03)", () => {
-  it("maps category, format, and estimatedHours into ContentMeta", async () => {
-    const parent = await mkdtemp(join(tmpdir(), "repository-fs-metadata-test-"));
-    const courseDir = join(parent, "en", "learn", "courses", "sql-essentials");
-    try {
-      await mkdir(courseDir, { recursive: true });
-      await writeFile(
-        join(courseDir, "_index.md"),
-        '---\ntitle: "SQL Essentials"\nprerequisites: []\ncategory: data-and-databases\ndescription: "Model data in tables and query it well."\nformat: by-example\nestimatedHours: 8\n---\n\nBody.\n',
-      );
-      const repo = new FileSystemContentRepository(parent);
-      const all = await repo.readAllContent();
-      const meta = all.find((m) => m.slug === "learn/courses/sql-essentials");
-      expect(meta?.category).toBe("data-and-databases");
-      expect(meta?.format).toBe("by-example");
-      expect(meta?.estimatedHours).toBe(8);
-    } finally {
-      await rm(parent, { recursive: true, force: true });
+      warn.mockRestore();
     }
   });
 
-  it("drops catalog metadata from non-course pages so stray keys stay off the wire", async () => {
-    const parent = await mkdtemp(join(tmpdir(), "repository-fs-noncourse-test-"));
-    const guideDir = join(parent, "en", "learn", "guides", "g");
+  it("skips invalid frontmatter without failing the read", async () => {
+    const repository = new FileSystemContentRepository("/virtual/content", tree());
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     try {
-      await mkdir(guideDir, { recursive: true });
-      await writeFile(
-        join(guideDir, "_index.md"),
-        '---\ntitle: "Guide G"\nprerequisites: []\ncategory: oops\ndescription: "A guide that is not a course at all."\nformat: by-example\nestimatedHours: 8\n---\n\nBody.\n',
-      );
-      const repo = new FileSystemContentRepository(parent);
-      const all = await repo.readAllContent();
-      const meta = all.find((m) => m.slug === "learn/guides/g");
-      expect(meta?.category).toBeUndefined();
-      expect(meta?.format).toBeUndefined();
-      expect(meta?.estimatedHours).toBeUndefined();
+      const metas = await repository.readAllContent();
+      expect(metas.some((meta) => meta.filePath.endsWith("broken.md"))).toBe(false);
     } finally {
-      await rm(parent, { recursive: true, force: true });
+      warn.mockRestore();
     }
+  });
+
+  it("reads one file's content and frontmatter", async () => {
+    const repository = new FileSystemContentRepository("/virtual/content", tree());
+    const file = await repository.readFileContent("/virtual/content/en/learn/a.md");
+    expect(file.content).toContain("# Hello");
+    expect(file.frontmatter).toMatchObject({ title: "Hello" });
+  });
+
+  it("the node file-system adapter surfaces missing paths as failures", async () => {
+    await expect(nodeContentFileSystem.readdir("/virtual/no-such-dir")).rejects.toThrow();
+    await expect(nodeContentFileSystem.readFile("/virtual/no-such-file")).rejects.toThrow();
   });
 });

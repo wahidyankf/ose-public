@@ -5,7 +5,7 @@ when_to_use: Use when an on-demand Commitlint run or a reviewer flags a malforme
 
 # Common Errors and Fixes
 
-No hook runs Commitlint; these are the errors it reports when you run it yourself, as described in
+The commit-msg hook runs Commitlint and reports these errors; you can also run it yourself, as described in
 [How It's Checked](./how-its-enforced.md). Reviewers flag the same problems.
 
 ## Error: "type may not be empty"

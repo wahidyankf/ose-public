@@ -8,7 +8,7 @@ when_to_use: Use when naming a lifecycle target such as a build, test, dev, or s
 ## Principles Implemented/Respected
 
 - **[Explicit Over Implicit](../../../principles/software-engineering/explicit-over-implicit.md)**:
-  Target names encode their scope and operation, making `nx affected -t test:coverage:behaviour` more
+  Target names encode their scope and operation, making `nx affected -t test:behaviour:coverage` more
   self-describing than `nx affected -t spec-coverage`.
 
 - **[Simplicity Over Complexity](../../../principles/general/simplicity-over-complexity.md)**:
@@ -26,14 +26,15 @@ Lifecycle targets describe the project's build and test pipeline. Names are shor
 `verb:qualifier` pairs. These are constant across all project types (every project that has
 unit tests uses `test:unit`, not `test-unit`, not `unit`, not `unit_tests`).
 
-| Pattern                 | Examples                                                                                          |
-| ----------------------- | ------------------------------------------------------------------------------------------------- |
-| `{verb}`                | `build`, `lint`, `typecheck`, `dev`, `start`, `run`                                               |
-| `{verb}:{qualifier}`    | `test:quick`, `test:unit`, `test:integration`, `test:e2e`, `test:e2e:ui`                          |
-| `test:coverage:{scope}` | `test:coverage:unit`, `test:coverage:integration`, `test:coverage:e2e`, `test:coverage:behaviour` |
+| Pattern                   | Examples                                                                         |
+| ------------------------- | -------------------------------------------------------------------------------- |
+| `{verb}`                  | `build`, `lint`, `typecheck`, `dev`, `start`, `run`                              |
+| `{verb}:{qualifier}`      | `test:quick`, `test:unit`, `test:integration`, `test:e2e`, `test:e2e:ui`         |
+| `test:behaviour:coverage` | `test:behaviour:coverage` (RHINO's shared static behaviour check, one per owner) |
 
-`test:coverage` aggregates the applicable static coverage targets. These targets are project-local
-testing lifecycle checks, never central governance aliases and never runtime tests.
+`test:behaviour:coverage` is the only static coverage target. It replaces the retired per-layer
+`test:coverage:{scope}` targets and their aggregate `test:coverage`. It is a project-local testing
+lifecycle check, never a central governance alias and never a runtime test.
 
 **Rules**:
 

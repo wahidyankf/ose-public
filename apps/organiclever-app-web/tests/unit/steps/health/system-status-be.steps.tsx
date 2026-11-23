@@ -40,6 +40,7 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
     crawledRobots = undefined;
   });
 
+  // @scenario specs/apps/organiclever/app-web/behaviours/health/system-status-be.feature: BE status page shows Not Configured when env unset
   Scenario("BE status page shows Not Configured when env unset", ({ Given, When, Then, And }) => {
     Given("ORGANICLEVER_BE_URL is unset", () => {
       testEnv.ORGANICLEVER_BE_URL = undefined;
@@ -60,6 +61,7 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/organiclever/app-web/behaviours/health/system-status-be.feature: Backend health-check page is excluded from search indexes
   Scenario("Backend health-check page is excluded from search indexes", ({ When, Then }) => {
     When("a crawler requests GET /system/status/be", () => {
       crawledRobots = metadata.robots;
@@ -70,6 +72,7 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
     });
   });
 
+  // @scenario specs/apps/organiclever/app-web/behaviours/health/system-status-be.feature: BE status page shows UP when backend healthy
   Scenario("BE status page shows UP when backend healthy", ({ Given, When, Then, And }) => {
     Given('ORGANICLEVER_BE_URL is "http://be.example.test"', () => {
       testEnv.ORGANICLEVER_BE_URL = "http://be.example.test";
@@ -78,7 +81,7 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
     And('the backend health endpoint returns 200 with body {"status":"UP"}', () => {
       vi.stubGlobal(
         "fetch",
-        vi.fn().mockResolvedValue({
+        vi.fn<(...args: unknown[]) => unknown>().mockResolvedValue({
           ok: true,
           json: () => Promise.resolve({ status: "UP" }),
         }),
@@ -104,39 +107,74 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
     });
   });
 
-  Scenario("BE status page shows DOWN when backend unreachable", ({ Given, When, Then, And }) => {
-    Given('ORGANICLEVER_BE_URL is "http://be.example.test"', () => {
-      testEnv.ORGANICLEVER_BE_URL = "http://be.example.test";
-    });
+  // @scenario specs/apps/organiclever/app-web/behaviours/health/system-status-be.feature: BE status page shows DOWN with the failure reason when backend unreachable
+  Scenario(
+    "BE status page shows DOWN with the failure reason when backend unreachable",
+    ({ Given, When, Then, And }) => {
+      Given('ORGANICLEVER_BE_URL is "http://be.example.test"', () => {
+        testEnv.ORGANICLEVER_BE_URL = "http://be.example.test";
+      });
 
-    And("the backend health endpoint fails with connection refused", () => {
-      vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new TypeError("fetch failed")));
-    });
+      And("the backend health endpoint fails with connection refused", () => {
+        vi.stubGlobal(
+          "fetch",
+          vi.fn<(...args: unknown[]) => unknown>().mockRejectedValue(new TypeError("fetch failed")),
+        );
+      });
 
-    When("a visitor requests GET /system/status/be", async () => {
-      const jsx = await BeStatusPage();
-      render(jsx);
-      renderedMain = screen.getByRole("main");
-    });
+      When("a visitor requests GET /system/status/be", async () => {
+        const jsx = await BeStatusPage();
+        render(jsx);
+        renderedMain = screen.getByRole("main");
+      });
 
-    Then("the response status is 200", () => {
-      expect(renderedMain).toBeVisible();
-    });
+      Then("the response status is 200", () => {
+        expect(renderedMain).toBeVisible();
+      });
 
-    And('the body contains "DOWN"', () => {
-      expect(screen.getByText(/DOWN/)).toBeInTheDocument();
-    });
+      And('the body contains "DOWN"', () => {
+        expect(screen.getByText(/DOWN/)).toBeInTheDocument();
+      });
 
-    And("the body contains the failure reason", () => {
-      expect(screen.getByText(/fetch failed/i)).toBeInTheDocument();
-    });
+      And("the body contains the failure reason", () => {
+        expect(screen.getByText(/fetch failed/i)).toBeInTheDocument();
+      });
+    },
+  );
 
-    And("no uncaught exception reaches the Next.js error boundary", () => {
-      // Component rendered without throwing — no error boundary triggered
-      expect(screen.getByRole("main")).toBeInTheDocument();
-    });
-  });
+  // @scenario specs/apps/organiclever/app-web/behaviours/health/system-status-be.feature: BE status page shows DOWN with the HTTP status when the backend answers with an error status
+  Scenario(
+    "BE status page shows DOWN with the HTTP status when the backend answers with an error status",
+    ({ Given, When, Then, And }) => {
+      Given('ORGANICLEVER_BE_URL is "http://be.example.test"', () => {
+        testEnv.ORGANICLEVER_BE_URL = "http://be.example.test";
+      });
 
+      And("the backend health endpoint answers with HTTP status 503", () => {
+        vi.stubGlobal("fetch", vi.fn<(...args: unknown[]) => unknown>().mockResolvedValue({ ok: false, status: 503 }));
+      });
+
+      When("a visitor requests GET /system/status/be", async () => {
+        const jsx = await BeStatusPage();
+        render(jsx);
+        renderedMain = screen.getByRole("main");
+      });
+
+      Then("the response status is 200", () => {
+        expect(renderedMain).toBeVisible();
+      });
+
+      And('the body contains "DOWN"', () => {
+        expect(screen.getByText(/DOWN/)).toBeInTheDocument();
+      });
+
+      And('the body contains "HTTP 503"', () => {
+        expect(screen.getByText(/HTTP 503/)).toBeInTheDocument();
+      });
+    },
+  );
+
+  // @scenario specs/apps/organiclever/app-web/behaviours/health/system-status-be.feature: BE status page shows DOWN when backend times out
   Scenario("BE status page shows DOWN when backend times out", ({ Given, When, Then, And }) => {
     Given('ORGANICLEVER_BE_URL is "http://be.example.test"', () => {
       testEnv.ORGANICLEVER_BE_URL = "http://be.example.test";
@@ -146,7 +184,7 @@ describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
       const timeoutError = Object.assign(new Error("TimeoutError: timeout exceeded"), {
         name: "TimeoutError",
       });
-      vi.stubGlobal("fetch", vi.fn().mockRejectedValue(timeoutError));
+      vi.stubGlobal("fetch", vi.fn<(...args: unknown[]) => unknown>().mockRejectedValue(timeoutError));
     });
 
     When("a visitor requests GET /system/status/be", async () => {

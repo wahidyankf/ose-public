@@ -17,7 +17,7 @@ import { cn } from "../../utils/cn";
 
 export function TabBar({ tabs, current, onChange }: TabBarProps) {
   return (
-    <nav
+    <div
       role="tablist"
       className="flex h-[60px] flex-row border-t bg-card"
       style={{ paddingBottom: "env(safe-area-inset-bottom, 0)" }}
@@ -38,6 +38,6 @@ export function TabBar({ tabs, current, onChange }: TabBarProps) {
           <span className="text-[10px]">{tab.label}</span>
         </button>
       ))}
-    </nav>
+    </div>
   );
 }

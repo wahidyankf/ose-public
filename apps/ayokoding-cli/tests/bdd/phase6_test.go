@@ -1,3 +1,5 @@
+//go:build integration || e2e
+
 package bdd_test
 
 import (

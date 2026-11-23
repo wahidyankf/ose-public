@@ -6,6 +6,7 @@ import {
   pageLinkForCourseId,
   derivePathBadges,
   resolveCoursePathRenderData,
+  resolveCoursePathClientRenderData,
   toCoursePathClientData,
   EMPTY_COURSE_PATH_CLIENT_DATA,
   buildCourseTitleIndex,
@@ -386,6 +387,70 @@ describe("courseTitlesFromClientData", () => {
       "just-enough-python": "Just Enough Python",
       "does-not-exist": "Does Not Exist",
     });
+  });
+});
+
+describe("prerequisite links skip courses with no page", () => {
+  it("resolveCoursePathRenderData drops a prerequisite missing from the content map", () => {
+    const result = resolveCoursePathRenderData(
+      new URLSearchParams(),
+      {
+        contentMap: new Map(),
+        manifests: [],
+        prerequisitesByCourse: { "just-enough-python": ["ghost-course"] },
+        libraryCourseIds: ["ghost-course"],
+        outlineCourseIds: [],
+      },
+      "just-enough-python",
+      "en",
+      null,
+      null,
+    );
+    expect(result.prerequisiteLinks).toEqual([]);
+  });
+
+  it("resolveCoursePathClientRenderData drops a prerequisite missing from the course links", () => {
+    const data = toCoursePathClientData(
+      {
+        contentMap: new Map(),
+        manifests: [],
+        prerequisitesByCourse: { "just-enough-python": ["ghost-course"] },
+        libraryCourseIds: ["ghost-course"],
+        outlineCourseIds: [],
+      },
+      "en",
+    );
+    const result = resolveCoursePathClientRenderData(new URLSearchParams(), data, "just-enough-python", null, null);
+    expect(result.prerequisiteLinks).toEqual([]);
+  });
+
+  it("resolveCoursePathClientRenderData tags a found prerequisite with the active path", () => {
+    const searchParams = new URLSearchParams({ path: fixtureManifest.pathId });
+    const pages = new Map<string, ContentMeta>([
+      ["en:learn/courses/version-control-and-git", courseMeta("learn/courses/version-control-and-git", "Git")],
+    ]);
+    const data = toCoursePathClientData(
+      {
+        contentMap: pages,
+        manifests: [fixtureManifest],
+        prerequisitesByCourse: {
+          "data-structures-and-algorithms-essentials": ["version-control-and-git"],
+        },
+        libraryCourseIds: ["version-control-and-git"],
+        outlineCourseIds: [],
+      },
+      "en",
+    );
+    const result = resolveCoursePathClientRenderData(
+      searchParams,
+      data,
+      "data-structures-and-algorithms-essentials",
+      null,
+      null,
+    );
+    expect(result.prerequisiteLinks).toEqual([
+      { title: "Git", slug: "learn/courses/version-control-and-git", pathId: undefined },
+    ]);
   });
 });
 

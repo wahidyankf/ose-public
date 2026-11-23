@@ -61,6 +61,15 @@ vi.mock("@open-sharia-enterprise/web-ui", () => ({
   // Minimal stand-ins for the command palette; the scenarios test the search dialog's own behaviour.
   CommandDialog: ({ open, children }: { open: boolean; children: React.ReactNode }) =>
     open ? <dialog open>{children}</dialog> : null,
+  // The search dialog renders inside Dialog primitives with the command list nested;
+  // each primitive passes its children through so the palette stays queryable.
+  Dialog: ({ open, children }: { open: boolean; children: React.ReactNode }) =>
+    open ? <dialog open>{children}</dialog> : null,
+  DialogContent: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  DialogHeader: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  DialogTitle: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  DialogDescription: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  Command: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   CommandInput: ({
     placeholder,
     value,

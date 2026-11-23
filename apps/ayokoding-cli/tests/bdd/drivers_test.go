@@ -70,6 +70,12 @@ func (unitDriver) Invoke(invocation Invocation) (Result, error) {
 		Commit:  invocation.Commit,
 		NoColor: noColor,
 		Fault:   invocation.Env["AYOKODING_FAULT"],
+		// The fake container CLI staged by useFakeContainerCLI arrives
+		// through the invocation env; bootstrap forwards it the same way
+		// for the binary drivers. Without this the in-process driver
+		// probes the real podman, which fails locally (accidental 125)
+		// and passes wherever a daemon runs (exit 0).
+		ContainerCLI: invocation.Env["AYOKODING_CONTAINER_CLI"],
 	})
 	return Result{Status: status, Stdout: stdout.buffer.String(), Stderr: stderr.String()}, nil
 }

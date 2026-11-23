@@ -243,10 +243,11 @@ func indexExclusions(blocks map[string]coverageBlock, exclusions []exclusionRule
 }
 
 // matchExclusionRule reports whether a rule exempts a profile block: the file
-// suffix plus the block start line both match.
+// suffix matches and the rule line lies within the block's [start,end]
+// range. Blocks never overlap, so at most one block matches a rule.
 func matchExclusionRule(location string, rule exclusionRule) bool {
-	blockPath, start, ok := parseBlockStart(location)
-	return ok && start == rule.line && strings.HasSuffix(blockPath, rule.path)
+	blockPath, start, end, ok := parseBlockRange(location)
+	return ok && start <= rule.line && rule.line <= end && strings.HasSuffix(blockPath, rule.path)
 }
 
 // tallyCoverage sums selected statements, skipping exempted uncovered blocks
@@ -343,23 +344,36 @@ func parseExclusionRules(input io.Reader) ([]exclusionRule, error) {
 	return rules, nil
 }
 
-// parseBlockStart splits a profile location into its file path and block
-// start line.
-func parseBlockStart(location string) (string, int, bool) {
+// parseBlockRange splits a profile location of the form
+// `path:startline.startcol,endline.endcol` into its file path and the
+// block's inclusive [start,end] line range.
+func parseBlockRange(location string) (string, int, int, bool) {
 	colon := strings.LastIndex(location, ":")
 	if colon < 0 {
-		return "", 0, false
+		return "", 0, 0, false
 	}
 	rest := location[colon+1:]
-	head, _, found := strings.Cut(rest, ".")
+	head, tail, found := strings.Cut(rest, ".")
 	if !found {
-		return "", 0, false
+		return "", 0, 0, false
 	}
 	start, err := strconv.Atoi(head)
 	if err != nil || start <= 0 {
-		return "", 0, false
+		return "", 0, 0, false
 	}
-	return location[:colon], start, true
+	_, endTail, foundComma := strings.Cut(tail, ",")
+	if !foundComma {
+		return "", 0, 0, false
+	}
+	endHead, _, found := strings.Cut(endTail, ".")
+	if !found {
+		return "", 0, 0, false
+	}
+	end, err := strconv.Atoi(endHead)
+	if err != nil || end < start {
+		return "", 0, 0, false
+	}
+	return location[:colon], start, end, true
 }
 
 // coverageBlock is one location's union across all measured test packages.

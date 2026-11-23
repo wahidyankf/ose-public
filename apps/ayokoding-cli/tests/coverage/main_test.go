@@ -119,6 +119,45 @@ func TestCoverageParseExclusionRules(t *testing.T) {
 	}
 }
 
+func TestCoverageExclusionMatchesBlockRange(t *testing.T) {
+	rule := func(path string, line int) exclusionRule {
+		return exclusionRule{path: path, line: line, reason: "owner-granted fixture"}
+	}
+	for _, row := range []struct {
+		name                   string
+		profile                string
+		exclusions             []exclusionRule
+		wantCovered, wantTotal int
+		wantExcluded           excludedCoverage
+		wantErr                error
+	}{
+		{"rule matches single-line block", "mode: set\nmod/cmd/ayokoding-cli/main.go:7.12,7.40 1 0\nmod/other.go:2.1,2.10 1 1\n", []exclusionRule{rule("cmd/ayokoding-cli/main.go", 7)}, 1, 1, excludedCoverage{total: 1, blocks: 1}, nil},
+		{"rule inside multi-line block", "mode: set\nmodule/main.go:6.12,8.40 2 0\nmodule/other.go:2.1,2.10 1 1\n", []exclusionRule{rule("main.go", 7)}, 1, 1, excludedCoverage{total: 2, blocks: 1}, nil},
+		{"stale rule matches nothing", "mode: set\nmodule/main.go:6.12,8.40 2 0\n", []exclusionRule{rule("main.go", 99)}, 0, 0, excludedCoverage{}, errCoverageExcludeStale},
+		{"matched covered block", "mode: set\nmodule/main.go:6.12,8.40 2 1\n", []exclusionRule{rule("main.go", 7)}, 0, 0, excludedCoverage{}, errCoverageExcludeCovered},
+	} {
+		t.Run(row.name, func(t *testing.T) {
+			selected := map[string]bool{"main.go": true}
+			if strings.Contains(row.profile, "other.go") {
+				selected["other.go"] = true
+			}
+			counts, excluded, err := countCoverageExcluding(strings.NewReader(row.profile), selected, row.exclusions)
+			if row.wantErr != nil {
+				if !errors.Is(err, row.wantErr) {
+					t.Fatalf("error=%v, want %v", err, row.wantErr)
+				}
+				return
+			}
+			if err != nil {
+				t.Fatal(err)
+			}
+			if counts.covered != row.wantCovered || counts.total != row.wantTotal || excluded != row.wantExcluded {
+				t.Fatalf("covered/total/excluded=%+v/%+v, want %d/%d/%+v", counts, excluded, row.wantCovered, row.wantTotal, row.wantExcluded)
+			}
+		})
+	}
+}
+
 func TestCoverageExcluding(t *testing.T) {
 	profile := "mode: set\n" +
 		"module/body.go:10.20,12.5 2 0\n" +

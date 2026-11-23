@@ -18,7 +18,11 @@ Given("a course with a description, a format, an estimated time, a category, and
 });
 
 When("a reader opens the course landing page", async ({ page }) => {
-  await page.goto("/en/learn/courses/sql-essentials");
+  // The outline scenario's Given already opened its course; stay there so the outline
+  // header is what the Then steps see.
+  if (!page.url().includes("/accounting-foundations")) {
+    await page.goto("/en/learn/courses/sql-essentials");
+  }
   await expect(page.locator('header[aria-label="Course summary"]')).toBeVisible();
 });
 

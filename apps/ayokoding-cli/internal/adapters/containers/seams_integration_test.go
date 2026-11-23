@@ -23,7 +23,7 @@ func realGit(t *testing.T) string {
 	t.Helper()
 	cli, err := exec.LookPath("/usr/bin/git")
 	if err != nil {
-		t.Skip("/usr/bin/git not present")
+		t.Fatal("/usr/bin/git not present")
 	}
 	return cli
 }
@@ -236,7 +236,7 @@ func TestIntegrationBuilderPresentProbesRealBinaries(t *testing.T) {
 		t.Fatal("Present=true, want false for the missing image")
 	}
 	if _, err := exec.LookPath("/bin/true"); err != nil {
-		t.Skip("/bin/true not present")
+		t.Fatal("/bin/true not present")
 	}
 	if !builder.Present(context.Background(), "/bin/true", "img:tag") {
 		t.Fatal("Present=false, want true for the exit-zero binary")

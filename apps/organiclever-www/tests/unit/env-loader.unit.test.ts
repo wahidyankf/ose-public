@@ -1,8 +1,7 @@
 /**
  * Unit tests for the APP_ENV tier env-file loader of organiclever-www.
  *
- * These cover the behaviour the removed env-loader feature used to describe (see the spec
- * review in plans/in-progress/standardize-wkf-projects-test-automation-and-gates). Each test
+ * These cover the behaviour the removed env-loader feature used to describe (see the repository spec review). Each test
  * drives `loadOrganicLeverWwwEnvironment()` with an in-memory file port and an isolated `env`
  * object (a plain record, not the real `process.env`), so this Unit suite never touches the
  * filesystem or ambient process environment.

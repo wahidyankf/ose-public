@@ -66,6 +66,7 @@
       ]
     },
     "test:integration": {
+      "dependsOn": ["organiclever-be:codegen"],
       "executor": "nx:run-commands",
       "options": {
         "command": "env -u API_BASE_URL apps/organiclever-be/scripts/run-e2e.sh"

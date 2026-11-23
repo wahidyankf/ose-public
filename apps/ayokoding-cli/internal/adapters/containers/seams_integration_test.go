@@ -96,8 +96,7 @@ func TestIntegrationRunWithoutExecFeedsStdin(t *testing.T) {
 // runner to invoke the real binary and refuse its non-rootless answer.
 func TestIntegrationProbeWithoutExecReachesTheRealCLI(t *testing.T) {
 	cli := realGit(t)
-	t.Setenv("AYOKODING_CONTAINER_CLI", cli)
-	runtime := &containers.Runtime{}
+	runtime := &containers.Runtime{CLI: cli}
 	err := runtime.Probe(context.Background())
 	if err == nil {
 		t.Fatal("Probe=nil, want the refused runtime")

@@ -1,6 +1,5 @@
-// Integration bindings: the same pure checks as the unit suite, run on the checked-in files. ADA-015 keeps its
-// @integration-exempt tag because the site's decode belongs to apps/ayokoding-www; every other scenario here is
-// bound at this level, so its exemption was removed.
+// Integration bindings: the same pure checks as the unit suite, run on the checked-in files. ADA-015 is bound
+// here too: it imports the site's data adapters to prove they decode the same checked-in files.
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { describeFeature, loadFeature } from "@amiceli/vitest-cucumber";
@@ -28,6 +27,12 @@ import {
   type LivingDataset,
   type UrlStateVector,
 } from "../../src/dataset-checks";
+import { dataset as siteBenchmarkDataset } from "../../../../apps/ayokoding-www/src/features/ai-benchmark/core/data/models";
+import {
+  cities as siteCities,
+  countries as siteCountries,
+} from "../../../../apps/ayokoding-www/src/features/cost-of-living-calculator/core/data/cities";
+import { fx as siteFx } from "../../../../apps/ayokoding-www/src/features/cost-of-living-calculator/core/data/fx";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(here, "..", "..");
@@ -325,6 +330,35 @@ describeFeature(
 
       Then("the mid band is at least the low band and the high band is at least the mid band", () => {
         expect(findings).toEqual([]);
+      });
+    });
+
+    // @scenario specs/libs/ayokoding-data/behaviours/validation/dataset-validation.feature: The site decodes the same dataset values the library publishes
+    Scenario("The site decodes the same dataset values the library publishes", ({ Given, When, Then }) => {
+      let library: { models: unknown; countries: unknown; cities: unknown; rates: unknown } | undefined;
+      let shown: { models: unknown; countries: unknown; cities: unknown; rates: unknown } | undefined;
+
+      Given("the neutral dataset files the library publishes", () => {
+        library = {
+          models: benchmarkData().dataset.models,
+          countries: livingData().countries,
+          cities: livingData().cities,
+          rates: fxData().ratesUsdPerUnit,
+        };
+      });
+
+      When("the site reads its benchmark and cost-of-living data from those files", () => {
+        shown = {
+          models: siteBenchmarkDataset.models,
+          countries: siteCountries,
+          cities: siteCities,
+          rates: siteFx.ratesUsdPerUnit,
+        };
+      });
+
+      Then("the models, countries, cities, and rates it shows equal the library's values", () => {
+        expect(shown).toBeDefined();
+        expect(shown).toEqual(library);
       });
     });
   },

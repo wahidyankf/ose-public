@@ -41,6 +41,37 @@ func TestWriteUpdatesProvesMode(t *testing.T) {
 	}
 }
 
+// TestWriteUpdatesRefusesFolders proves the rewrite refuses a lesson
+// path that holds a folder on disk.
+func TestWriteUpdatesRefusesFolders(t *testing.T) {
+	root := t.TempDir()
+	if err := os.MkdirAll(filepath.Join(root, "sub"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	updates := map[string][]byte{"sub": []byte("fresh\n")}
+	if err := content.WriteUpdates(root, updates); err == nil {
+		t.Fatal("WriteUpdates wrote into a folder, want an error")
+	}
+}
+
+// TestWriteUpdatesRefusesUnreadableFiles proves an unwritable lesson
+// fails the write instead of landing half a repair.
+func TestWriteUpdatesRefusesUnreadableFiles(t *testing.T) {
+	root := t.TempDir()
+	locked := filepath.Join(root, "locked.md")
+	if err := os.WriteFile(locked, []byte("old\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Chmod(locked, 0o444); err != nil {
+		t.Skip("cannot drop write permission")
+	}
+	defer func() { _ = os.Chmod(locked, 0o600) }()
+	updates := map[string][]byte{"locked.md": []byte("new\n")}
+	if err := content.WriteUpdates(root, updates); err == nil {
+		t.Fatal("WriteUpdates overwrote a locked lesson, want an error")
+	}
+}
+
 // TestWriteUpdatesRefusesCreation proves the rewrite repairs lessons only:
 // it creates no files and leaves unknown lessons alone.
 func TestWriteUpdatesRefusesCreation(t *testing.T) {

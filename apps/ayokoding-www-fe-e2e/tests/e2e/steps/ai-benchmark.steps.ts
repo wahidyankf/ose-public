@@ -131,8 +131,17 @@ const fmtDate = (iso: string) =>
   );
 const fill = (template: string, values: Record<string, string | number>) =>
   template.replace(/\{(\w+)\}/g, (m, k: string) => (k in values ? String(values[k]) : m));
-const tierLabel = (tier: Tier, locale = "en") =>
-  t(locale as "en", `aiBenchTier${tier[0]!.toUpperCase()}${tier.slice(1)}`);
+// Mirrors LABEL_KEYS in apps/ayokoding-www/src/features/ai-benchmark/shell/tier-style.tsx:
+// hyphenated tiers do not map to translation keys by simple capitalization.
+const TIER_LABEL_KEYS: Record<Tier, string> = {
+  ultra: "aiBenchTierUltra",
+  planning: "aiBenchTierPlanning",
+  execution: "aiBenchTierExecution",
+  fast: "aiBenchTierFast",
+  "no-consensus": "aiBenchTierNoConsensus",
+  insufficient: "aiBenchTierInsufficient",
+};
+const tierLabel = (tier: Tier, locale = "en") => t(locale as "en", TIER_LABEL_KEYS[tier]);
 
 function priceComparison(ratio: number | undefined): string {
   if (ratio === undefined || ratio === 0) return t("en", "aiBenchPriceUnknown");

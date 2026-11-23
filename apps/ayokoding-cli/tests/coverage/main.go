@@ -9,7 +9,9 @@ import (
 	"go/parser"
 	"go/token"
 	"io"
+	"io/fs"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
@@ -86,7 +88,8 @@ func run() int {
 
 	var exclusions []exclusionRule
 	if strings.TrimSpace(*excludeBlocks) != "" {
-		rules, loadError := loadExclusionRules(*excludeBlocks)
+		fsys, name := exclusionRuleFS(*excludeBlocks)
+		rules, loadError := loadExclusionRules(fsys, name)
 		if loadError != nil {
 			panic(loadError)
 		}
@@ -142,11 +145,25 @@ func countCoverage(input io.Reader, selected map[string]bool) (statementCoverage
 }
 
 func countCoverageExcluding(input io.Reader, selected map[string]bool, exclusions []exclusionRule) (statementCoverage, excludedCoverage, error) {
-	counts := statementCoverage{}
-	excluded := excludedCoverage{}
-	matchedFiles := map[string]bool{}
-	matchedRules := map[int]bool{}
+	blocks, matchedFiles, err := scanProfileBlocks(input, selected)
+	if err != nil {
+		return statementCoverage{}, excludedCoverage{}, err
+	}
+	if err := ensureSelectedMatched(selected, matchedFiles); err != nil {
+		return statementCoverage{}, excludedCoverage{}, err
+	}
+	excludedByBlock, err := indexExclusions(blocks, exclusions)
+	if err != nil {
+		return statementCoverage{}, excludedCoverage{}, err
+	}
+	return tallyCoverage(blocks, excludedByBlock)
+}
+
+// scanProfileBlocks unions per-location blocks across measured test packages,
+// recording which selected files the profile covers.
+func scanProfileBlocks(input io.Reader, selected map[string]bool) (map[string]coverageBlock, map[string]bool, error) {
 	blocks := map[string]coverageBlock{}
+	matchedFiles := map[string]bool{}
 	scanner := bufio.NewScanner(input)
 	for scanner.Scan() {
 		fields := strings.Fields(scanner.Text())
@@ -158,45 +175,59 @@ func countCoverageExcluding(input io.Reader, selected map[string]bool, exclusion
 		if colon < 0 {
 			continue
 		}
-		path := location[:colon]
-		matched := false
-		for file := range selected {
-			if strings.HasSuffix(path, file) {
-				matched = true
-				matchedFiles[file] = true
-				break
-			}
-		}
-		if !matched {
+		if !matchSelectedFile(location[:colon], selected, matchedFiles) {
 			continue
 		}
 		statements, err := strconv.Atoi(fields[1])
 		if err != nil {
-			return statementCoverage{}, excludedCoverage{}, fmt.Errorf("coverage: parse statement count: %w", err)
+			return nil, nil, fmt.Errorf("coverage: parse statement count: %w", err)
 		}
 		count, err := strconv.Atoi(fields[2])
 		if err != nil {
-			return statementCoverage{}, excludedCoverage{}, fmt.Errorf("coverage: parse hit count: %w", err)
+			return nil, nil, fmt.Errorf("coverage: parse hit count: %w", err)
 		}
 		block, exists := blocks[location]
 		if exists && block.statements != statements {
-			return statementCoverage{}, excludedCoverage{}, fmt.Errorf("%w for %s", errCoverageBlockMismatch, location)
+			return nil, nil, fmt.Errorf("%w for %s", errCoverageBlockMismatch, location)
 		}
 		blocks[location] = coverageBlock{statements: statements, covered: block.covered || count > 0}
 	}
 	if err := scanner.Err(); err != nil {
-		return statementCoverage{}, excludedCoverage{}, fmt.Errorf("coverage: scan profile: %w", err)
+		return nil, nil, fmt.Errorf("coverage: scan profile: %w", err)
 	}
+	return blocks, matchedFiles, nil
+}
+
+// matchSelectedFile reports whether path selects a production file, recording
+// the match for fail-closed validation.
+func matchSelectedFile(path string, selected, matchedFiles map[string]bool) bool {
 	for file := range selected {
-		if !matchedFiles[file] {
-			return statementCoverage{}, excludedCoverage{}, fmt.Errorf("%w for %s", errCoverageNoMatch, file)
+		if strings.HasSuffix(path, file) {
+			matchedFiles[file] = true
+			return true
 		}
 	}
+	return false
+}
+
+// ensureSelectedMatched fails closed when a selected file has no profile blocks.
+func ensureSelectedMatched(selected, matchedFiles map[string]bool) error {
+	for file := range selected {
+		if !matchedFiles[file] {
+			return fmt.Errorf("%w for %s", errCoverageNoMatch, file)
+		}
+	}
+	return nil
+}
+
+// indexExclusions maps each exempted block location to its rule index, failing
+// closed on rules that never match.
+func indexExclusions(blocks map[string]coverageBlock, exclusions []exclusionRule) (map[string]int, error) {
 	excludedByBlock := map[string]int{}
+	matchedRules := map[int]bool{}
 	for location := range blocks {
 		for index, rule := range exclusions {
-			blockPath, start, ok := parseBlockStart(location)
-			if !ok || start != rule.line || !strings.HasSuffix(blockPath, rule.path) {
+			if !matchExclusionRule(location, rule) {
 				continue
 			}
 			matchedRules[index] = true
@@ -205,9 +236,24 @@ func countCoverageExcluding(input io.Reader, selected map[string]bool, exclusion
 	}
 	for index, rule := range exclusions {
 		if !matchedRules[index] {
-			return statementCoverage{}, excludedCoverage{}, fmt.Errorf("%w: %s:%d", errCoverageExcludeStale, rule.path, rule.line)
+			return nil, fmt.Errorf("%w: %s:%d", errCoverageExcludeStale, rule.path, rule.line)
 		}
 	}
+	return excludedByBlock, nil
+}
+
+// matchExclusionRule reports whether a rule exempts a profile block: the file
+// suffix plus the block start line both match.
+func matchExclusionRule(location string, rule exclusionRule) bool {
+	blockPath, start, ok := parseBlockStart(location)
+	return ok && start == rule.line && strings.HasSuffix(blockPath, rule.path)
+}
+
+// tallyCoverage sums selected statements, skipping exempted uncovered blocks
+// and failing closed on exempted covered blocks.
+func tallyCoverage(blocks map[string]coverageBlock, excludedByBlock map[string]int) (statementCoverage, excludedCoverage, error) {
+	counts := statementCoverage{}
+	excluded := excludedCoverage{}
 	for location, block := range blocks {
 		if _, skip := excludedByBlock[location]; skip {
 			if block.covered {
@@ -243,10 +289,32 @@ type excludedCoverage struct {
 }
 
 // loadExclusionRules reads one `<repo-relpath>:<startline> # <reason>` rule
-// per line. It fails closed: a missing file, a rule without a reason, and a
-// rule that never matches are all errors, never silent skips.
-func loadExclusionRules(path string) ([]exclusionRule, error) {
-	data, err := os.ReadFile(path)
+// per line from path in fsys. It fails closed: a missing file, a rule
+// without a reason, and a rule that never matches are all errors, never
+// silent skips.
+func loadExclusionRules(fsys fs.FS, path string) ([]exclusionRule, error) {
+	content, err := fs.ReadFile(fsys, path)
+	if err != nil {
+		return nil, fmt.Errorf("coverage: read exclude-blocks: %w", err)
+	}
+	return parseExclusionRules(strings.NewReader(string(content)))
+}
+
+// exclusionRuleFS roots an OS-supplied rule path in an fs.FS so rule loading
+// stays injectable: relative paths resolve from the working directory,
+// absolute paths from the filesystem root.
+func exclusionRuleFS(path string) (fs.FS, string) {
+	if filepath.IsAbs(path) {
+		return os.DirFS("/"), strings.TrimPrefix(filepath.ToSlash(path), "/")
+	}
+	return os.DirFS("."), path
+}
+
+// parseExclusionRules parses one `<repo-relpath>:<startline> # <reason>`
+// rule per line. It fails closed: a rule without a reason is an error,
+// never a silent skip.
+func parseExclusionRules(input io.Reader) ([]exclusionRule, error) {
+	data, err := io.ReadAll(input)
 	if err != nil {
 		return nil, fmt.Errorf("coverage: read exclude-blocks: %w", err)
 	}
@@ -283,11 +351,11 @@ func parseBlockStart(location string) (string, int, bool) {
 		return "", 0, false
 	}
 	rest := location[colon+1:]
-	dot := strings.Index(rest, ".")
-	if dot < 0 {
+	head, _, found := strings.Cut(rest, ".")
+	if !found {
 		return "", 0, false
 	}
-	start, err := strconv.Atoi(rest[:dot])
+	start, err := strconv.Atoi(head)
 	if err != nil || start <= 0 {
 		return "", 0, false
 	}

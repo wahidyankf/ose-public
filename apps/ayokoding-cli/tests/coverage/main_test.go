@@ -1,6 +1,9 @@
 package main
 
 import (
+	"errors"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 )
@@ -63,5 +66,89 @@ func TestCoverageRefusesConflictingBlockStatementCounts(t *testing.T) {
 	profile := "mode: set\nmodule/body.go:2.18,2.30 1 0\nmodule/body.go:2.18,2.30 2 1\n"
 	if _, err := countCoverage(strings.NewReader(profile), map[string]bool{"body.go": true}); err == nil {
 		t.Fatal("conflicting statement counts accepted")
+	}
+}
+
+func TestCoverageLoadExclusionRules(t *testing.T) {
+	directory := t.TempDir()
+	missing := filepath.Join(directory, "missing.txt")
+	valid := filepath.Join(directory, "valid.txt")
+	if err := os.WriteFile(valid, []byte("body.go:10 # real runtime only\n\nother.go:20 # no unit trigger\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	reasonless := filepath.Join(directory, "reasonless.txt")
+	if err := os.WriteFile(reasonless, []byte("body.go:10\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	for _, row := range []struct {
+		name, path string
+		want       int
+		wantErr    error
+	}{
+		{"valid rules", valid, 2, nil},
+		{"missing file", missing, 0, nil}, // any error closes the gate; sentinel asserted below
+		{"missing reason", reasonless, 0, errCoverageExcludeFormat},
+	} {
+		t.Run(row.name, func(t *testing.T) {
+			rules, err := loadExclusionRules(row.path)
+			if row.wantErr != nil {
+				if !errors.Is(err, row.wantErr) {
+					t.Fatalf("error=%v, want %v", err, row.wantErr)
+				}
+				return
+			}
+			if row.path == missing {
+				if err == nil {
+					t.Fatal("missing rule file accepted")
+				}
+				return
+			}
+			if err != nil || len(rules) != row.want {
+				t.Fatalf("rules=%v error=%v, want %d rules", rules, err, row.want)
+			}
+			if rules[0].path != "body.go" || rules[0].line != 10 || rules[0].reason == "" {
+				t.Fatalf("rule parsed wrong: %+v", rules[0])
+			}
+		})
+	}
+}
+
+func TestCoverageExcluding(t *testing.T) {
+	profile := "mode: set\n" +
+		"module/body.go:10.20,12.5 2 0\n" +
+		"module/body.go:14.1,16.9 3 1\n" +
+		"module/other.go:10.3,11.7 1 0\n"
+	selected := map[string]bool{"body.go": true, "other.go": true}
+	rule := func(path string, line int) exclusionRule {
+		return exclusionRule{path: path, line: line, reason: "owner-granted fixture"}
+	}
+	for _, row := range []struct {
+		name                   string
+		exclusions             []exclusionRule
+		wantCovered, wantTotal int
+		wantExcluded           excludedCoverage
+		wantErr                error
+	}{
+		{"no exclusions", nil, 3, 6, excludedCoverage{}, nil},
+		{"skips matched uncovered block", []exclusionRule{rule("body.go", 10)}, 3, 4, excludedCoverage{total: 2, blocks: 1}, nil},
+		{"skips two blocks", []exclusionRule{rule("body.go", 10), rule("other.go", 10)}, 3, 3, excludedCoverage{total: 3, blocks: 2}, nil},
+		{"stale rule", []exclusionRule{rule("gone.go", 99)}, 0, 0, excludedCoverage{}, errCoverageExcludeStale},
+		{"covered block", []exclusionRule{rule("body.go", 14)}, 0, 0, excludedCoverage{}, errCoverageExcludeCovered},
+	} {
+		t.Run(row.name, func(t *testing.T) {
+			counts, excluded, err := countCoverageExcluding(strings.NewReader(profile), selected, row.exclusions)
+			if row.wantErr != nil {
+				if !errors.Is(err, row.wantErr) {
+					t.Fatalf("error=%v, want %v", err, row.wantErr)
+				}
+				return
+			}
+			if err != nil {
+				t.Fatal(err)
+			}
+			if counts.covered != row.wantCovered || counts.total != row.wantTotal || excluded != row.wantExcluded {
+				t.Fatalf("covered/total/excluded=%+v/%+v, want %d/%d/%+v", counts, excluded, row.wantCovered, row.wantTotal, row.wantExcluded)
+			}
+		})
 	}
 }

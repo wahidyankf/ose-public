@@ -28,10 +28,7 @@ func loadCatalog(cmd *cobra.Command) (catalog.Catalog, error) {
 		}
 		return validated, nil
 	}
-	loaded, err := catalog.Load(toolchains.Files())
-	if err != nil {
-		return catalog.Catalog{}, fmt.Errorf("cli: load catalog: %w", err)
-	}
+	loaded, _ := catalog.Load(toolchains.Files())
 	return loaded, nil
 }
 

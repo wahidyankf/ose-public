@@ -135,6 +135,7 @@
       ]
     },
     "test:integration": {
+      "dependsOn": ["codegen"],
       "executor": "nx:run-commands",
       "options": {
         "command": "apps/organiclever-be/scripts/run-integration.sh"

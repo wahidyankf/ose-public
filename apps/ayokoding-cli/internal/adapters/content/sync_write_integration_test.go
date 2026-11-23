@@ -63,7 +63,7 @@ func TestWriteUpdatesRefusesUnreadableFiles(t *testing.T) {
 		t.Fatal(err)
 	}
 	if err := os.Chmod(locked, 0o444); err != nil {
-		t.Skip("cannot drop write permission")
+		t.Fatal("cannot drop write permission")
 	}
 	defer func() { _ = os.Chmod(locked, 0o600) }()
 	updates := map[string][]byte{"locked.md": []byte("new\n")}

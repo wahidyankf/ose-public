@@ -45,6 +45,7 @@
         "{workspaceRoot}/specs/apps/ayokoding/web/behaviours/**/*.feature",
         "{workspaceRoot}/apps/ayokoding-web-fe-e2e/tests/e2e/**/*.{ts,tsx,fs}",
         "{workspaceRoot}/apps/ayokoding-web-fe-e2e/playwright.real-corpus.config.ts",
+        "{workspaceRoot}/apps/ayokoding-web-fe-e2e/playwright.fixture.config.ts",
         "{workspaceRoot}/repo-config.yml",
         "{workspaceRoot}/rhino.lock",
         "{workspaceRoot}/specs/**/*",
@@ -58,7 +59,7 @@
     "test:e2e": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "if grep -rn -E --include='*.ts' --exclude-dir=node_modules --exclude-dir=.features-gen --exclude-dir=test-results --exclude-dir=playwright-report '\\\\$?test\\\\.skip\\\\([^,)]*\\\\)' .; then echo 'ERROR: unconditional test.skip() found in test files above - use test.skip(condition, reason) for legitimate environment guards, or remove'; exit 1; fi && npx bddgen --config=playwright.real-corpus.config.ts && npx playwright test --config=playwright.real-corpus.config.ts",
+        "command": "if grep -rn -E --include='*.ts' --exclude-dir=node_modules --exclude-dir=.features-gen --exclude-dir=test-results --exclude-dir=playwright-report 'test\\\\.skip\\\\([^,)]*\\\\)' .; then echo 'ERROR: unconditional test.skip() found in test files above - use test.skip(condition, reason) for legitimate environment guards, or remove'; exit 1; fi && npx bddgen --config=playwright.real-corpus.config.ts && npx playwright test --config=playwright.real-corpus.config.ts && npx playwright test --config=playwright.fixture.config.ts",
         "cwd": "apps/ayokoding-web-fe-e2e"
       },
       "dependsOn": [{ "target": "build", "projects": "ayokoding-web" }]

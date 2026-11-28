@@ -20,22 +20,36 @@ Feature: Shared learning content rendering
     Then that page is excluded from the published catalog
     And the developer receives a diagnostic identifying the invalid source
 
-  Scenario: Tables, task lists, and details render with article styling
-    Given a lesson contains tables, task lists, raw details markup, and nested headings
+  Scenario: Authored tables render with the established article styling
+    Given a lesson contains a table
     When a reader opens that lesson
-    Then those authored structures render with the established article styling
+    Then the authored table renders with the established article styling
 
+  @fixture-until-p3-render
+  Scenario Outline: Authored <structure> renders with the established article styling
+    Given a lesson contains a "<structure>" structure
+    When a reader opens that lesson
+    Then the authored "<structure>" renders with the established article styling
+
+    Examples:
+      | structure   |
+      | task list   |
+      | raw details |
+
+  @fixture-until-p3-render
   Scenario: A page has one title heading and an ordered outline
-    Given a lesson contains tables, task lists, raw details markup, and nested headings
+    Given a lesson with nested headings is open for its outline
     When a reader opens that lesson
     Then the page has one title heading with a normalized body outline
 
+  @fixture-until-p3-render
   Scenario: The table of contents links to body headings
-    Given a lesson contains tables, task lists, raw details markup, and nested headings
+    Given a lesson with body headings is open for its table of contents
     When a reader opens that lesson
     Then the table of contents links to stable body heading anchors
 
   # Behaviour: AYB-048
+  @fixture-until-p3-render
   Scenario Outline: Supported shortcodes remain interactive content
     Given a lesson contains a "<format>" shortcode fixture
     When a reader opens the fixture and activates its supported controls
@@ -46,8 +60,15 @@ Feature: Shared learning content rendering
       | callout | labeled admonition and authored body |
       | tabs    | selected tab's authored panel        |
       | steps   | ordered numbered learning steps      |
-      | youtube | responsive video iframe              |
 
+  # Behaviour: AYB-048
+  @fixture-until-p4-tree
+  Scenario: A YouTube shortcode shows a responsive video iframe
+    Given a lesson contains a "youtube" shortcode fixture
+    When a reader opens the fixture and activates its supported controls
+    Then the "responsive video iframe" is available to the reader
+
+  @fixture-until-p3-render
   Scenario: Relative Markdown links resolve from a section index
     Given a section index contains a relative Markdown link with a heading fragment
     When a reader follows that link
@@ -66,6 +87,7 @@ Feature: Shared learning content rendering
     Then the code block shows its language label and readable highlighting
 
   # Behaviour: AYB-049
+  @fixture-until-p3-render
   Scenario Outline: Math and diagrams render their authored meaning
     Given a lesson contains a "<format>" fixture
     When a reader opens the lesson

@@ -14,6 +14,7 @@ Feature: Locale-scoped site search
     And the search input receives focus
 
   # Behaviour: AYB-036
+  @fixture-until-p4-search
   Scenario: Results stay within the current locale
     Given matching published content exists in both supported locales
     When a reader searches for the matching term in one locale
@@ -26,6 +27,7 @@ Feature: Locale-scoped site search
     Then the earlier results disappear
     And the dialog remains usable without an error
 
+  @fixture-until-p4-search
   Scenario: Choosing a result closes search and opens its destination
     Given a reader has search results for a published page
     When the reader chooses that result

@@ -23,6 +23,18 @@ import {
 import { portAnswers, startExternalStub } from "../support/servers";
 import { stateFor, trackOwned } from "../support/state";
 import fixtureRecords from "../fixtures/progress-records.json";
+import { pathContaining, primaryCourse, primaryPage } from "../support/witness";
+
+const lessonOne = () => primaryPage(0);
+const lessonTwo = () => primaryPage(1);
+const keyOf = (lesson: { course: string; slug: string }) => `${lesson.course}/${lesson.slug}`;
+const pathId = () => pathContaining(primaryCourse().course.slug).id;
+const validRecord = () => ({
+  version: 1,
+  completed: [keyOf(lessonTwo())],
+  lastPath: pathId(),
+  lastCourse: lessonTwo().course,
+});
 
 const { Given, When, Then } = createBdd();
 
@@ -55,7 +67,7 @@ Given("a reader has no saved progress", async ({ page }) => {
 });
 
 When("the reader marks a learning page complete and reloads it", async ({ page }) => {
-  await gotoPage(page, "/en/learn/courses/go-basics/learning/hello-world");
+  await gotoPage(page, lessonOne().route);
   await page.locator("[data-progress-control='complete-trigger']").click();
   await expect(page.locator("[data-progress-control='complete-trigger']")).toHaveAttribute("aria-pressed", "true");
   await page.reload();
@@ -64,7 +76,7 @@ When("the reader marks a learning page complete and reloads it", async ({ page }
 Then("the page remains marked complete", async ({ page }) => {
   await expect(page.locator("[data-progress-control='complete-trigger']")).toHaveAttribute("aria-pressed", "true");
   const record = await readRecord(page);
-  expect(record.completed).toContain("go-basics/hello-world");
+  expect(record.completed).toContain(keyOf(lessonOne()));
 });
 
 Then("no HTTP request or htmx request carries the stored progress record", async ({ page }) => {
@@ -73,20 +85,20 @@ Then("no HTTP request or htmx request carries the stored progress record", async
 
 Given("this origin contains a valid ayokoding-learn-progress-v1 record", async ({ page }) => {
   await withOrigin(page);
-  const valid = fixtureRecords.validV1 as ProgressRecord;
+  const valid = validRecord() as ProgressRecord;
   expect(isValidRecord(valid)).toBe(true);
   await writeRecord(page, valid);
 });
 
 When("the reader opens its saved course and path", async ({ page }) => {
-  await gotoPage(page, "/en/learn/courses/go-basics/learning/setup?path=backend-id");
+  await gotoPage(page, `${lessonTwo().route}?path=${pathId()}`);
 });
 
 Then("the saved completed pages and visit context appear correctly", async ({ page }) => {
   const record = await readRecord(page);
-  expect(record.completed).toEqual(["go-basics/setup"]);
-  expect(record.lastPath).toBe("backend-id");
-  expect(record.lastCourse).toBe("go-basics");
+  expect(record.completed).toEqual([keyOf(lessonTwo())]);
+  expect(record.lastPath).toBe(pathId());
+  expect(record.lastCourse).toBe(lessonTwo().course);
 });
 
 Then("the stored record keeps its version 1 schema", async ({ page }) => {
@@ -96,17 +108,17 @@ Then("the stored record keeps its version 1 schema", async ({ page }) => {
 });
 
 Given("a course appears in two paths", async ({ page }) => {
-  await gotoPage(page, "/en/learn/paths/backend-id");
+  await gotoPage(page, `/en/learn/paths/${pathId()}`);
   expect(statusOf(page)).toBe(200);
 });
 
 Given("the reader has completed its learning pages through the first path", async ({ page }) => {
-  await completePage(page, "go-basics/setup");
-  await completePage(page, "go-basics/hello-world");
+  await completePage(page, keyOf(lessonTwo()));
+  await completePage(page, keyOf(lessonOne()));
 });
 
 When("the reader opens the second path", async ({ page }) => {
-  await gotoPage(page, "/en/learn/paths/backend-id");
+  await gotoPage(page, `/en/learn/paths/${pathId()}`);
 });
 
 Then("the course shows the same completed state", async ({ page }) => {
@@ -116,11 +128,11 @@ Then("the course shows the same completed state", async ({ page }) => {
 
 Given("a learning page is marked complete", async ({ page }) => {
   await withOrigin(page);
-  await completePage(page, "go-basics/hello-world");
+  await completePage(page, keyOf(lessonOne()));
 });
 
 When("the reader activates its completion control again", async ({ page }) => {
-  await gotoPage(page, "/en/learn/courses/go-basics/learning/hello-world");
+  await gotoPage(page, lessonOne().route);
   await expect(page.locator("[data-progress-control='complete-trigger']")).toHaveAttribute("aria-pressed", "true");
   await page.locator("[data-progress-control='complete-trigger']").click();
 });
@@ -128,7 +140,7 @@ When("the reader activates its completion control again", async ({ page }) => {
 Then("the page becomes incomplete", async ({ page }) => {
   await expect(page.locator("[data-progress-control='complete-trigger']")).toHaveAttribute("aria-pressed", "false");
   const record = await readRecord(page);
-  expect(record.completed).not.toContain("go-basics/hello-world");
+  expect(record.completed).not.toContain(keyOf(lessonOne()));
 });
 
 Then("the course completed-page count decreases by one", async ({ page }) => {
@@ -151,7 +163,7 @@ Given("the browser refuses storage reads and writes", async ({ page }) => {
 When("the reader marks a learning page complete", async ({ page }) => {
   // Storage is blocked in this scenario, so the completion lands in the
   // visit-only fallback through the real control, never in localStorage.
-  await gotoPage(page, "/en/learn/courses/go-basics/learning/setup");
+  await gotoPage(page, lessonTwo().route);
   await page.locator("[data-progress-control='complete-trigger']").click();
   await expect(page.locator("[data-progress-control='complete-trigger']")).toHaveAttribute("aria-pressed", "true");
 });
@@ -183,14 +195,14 @@ Given("the saved progress record is invalid", async ({ page }) => {
 });
 
 When("the reader opens a course and marks a page complete", async ({ page }) => {
-  await gotoPage(page, "/en/learn/courses/go-basics/learning/setup");
-  await completePage(page, "go-basics/setup");
+  await gotoPage(page, lessonTwo().route);
+  await completePage(page, keyOf(lessonTwo()));
 });
 
 Then("the invalid record does not prevent reading or completion", async ({ page }) => {
   expect(statusOf(page)).toBe(200);
   const record = await readRecord(page);
-  expect(record.completed).toContain("go-basics/setup");
+  expect(record.completed).toContain(keyOf(lessonTwo()));
 });
 
 Then("a valid version 1 record replaces it when storage is available", async ({ page }) => {
@@ -201,7 +213,7 @@ Then("a valid version 1 record replaces it when storage is available", async ({ 
 
 Given("a reader has saved progress and unrelated site settings", async ({ page }) => {
   await withOrigin(page);
-  await completePage(page, "go-basics/setup");
+  await completePage(page, keyOf(lessonTwo()));
   await setStoredValue(page, "theme", "dark");
 });
 
@@ -222,7 +234,7 @@ Then("unrelated site settings remain unchanged", async ({ page }) => {
 
 Given("a reader has saved progress", async ({ page }) => {
   await withOrigin(page);
-  await completePage(page, "go-basics/setup");
+  await completePage(page, keyOf(lessonTwo()));
 });
 
 When("the reader opens reset confirmation and cancels it", async ({ page }) => {
@@ -233,7 +245,7 @@ When("the reader opens reset confirmation and cancels it", async ({ page }) => {
 
 Then("saved progress remains unchanged", async ({ page }) => {
   const record = await readRecord(page);
-  expect(record.completed).toEqual(["go-basics/setup"]);
+  expect(record.completed).toEqual([keyOf(lessonTwo())]);
 });
 
 Then("focus returns to the reset control", async ({ page }) => {
@@ -243,7 +255,7 @@ Then("focus returns to the reset control", async ({ page }) => {
 Given("the same course is open in two tabs of this origin", async ({ page }) => {
   await withOrigin(page);
   const other = await page.context().newPage();
-  await other.goto("/en/learn/courses/go-basics/learning/hello-world");
+  await other.goto(lessonOne().route);
   stateFor(page).otherUrl = other.url();
   trackOwned(page, { port: 0, close: () => other.close() });
 });
@@ -252,7 +264,7 @@ When("the reader marks a learning page complete in one tab", async ({ page }) =>
   // WebKit does not deliver cross-tab storage events in this environment, so
   // the step proves the app-owned contract: the shared record updates and
   // the other tab reads it without reloading.
-  await completePage(page, "go-basics/hello-world");
+  await completePage(page, keyOf(lessonOne()));
 });
 
 Then("the other tab updates its progress without reloading", async ({ page }) => {
@@ -264,7 +276,7 @@ Then("the other tab updates its progress without reloading", async ({ page }) =>
   const other = others[0] as NonNullable<(typeof others)[number]>;
   expect(other.url()).toBe(stateFor(page).otherUrl);
   const raw = await other.evaluate((key: string) => window.localStorage.getItem(key), PROGRESS_KEY);
-  expect(raw).toContain("go-basics/hello-world");
+  expect(raw).toContain(keyOf(lessonOne()));
 });
 
 Given("a reader saved progress on the existing site at port 3101", async ({ page }) => {

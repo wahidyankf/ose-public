@@ -242,7 +242,7 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
         if: needs.detect.outputs.has-ts == 'true'
-      # The browser integration targets (ayokoding-web-e2e, ose-www-*, and the other *-e2e homes) run a local
+      # The browser integration targets (ayokoding-web-fe-e2e, ose-www-*, and the other *-e2e homes) run a local
       # server or binary. ayokoding-web and the be-e2e homes build with Go, .NET, or Podman, so each toolchain
       # is installed here, and Playwright installs the browsers its suites drive.
       - uses: ./.github/actions/setup-go

@@ -100,7 +100,8 @@ a valid exemption with a reach reason.
 
 | Item                           | Reason                                                               |
 | ------------------------------ | -------------------------------------------------------------------- |
-| e2e of `ayokoding-web-e2e`     | no deployed variant exists; its integration target runs the suite    |
+| e2e of `ayokoding-web-fe-e2e`  | no deployed variant exists; its integration target runs the suite    |
+| e2e of `ayokoding-web-be-e2e`  | no deployed variant exists; its test:e2e target runs the suite       |
 | e2e of `ferret-cli-e2e`        | a local CLI with no deployed variant; the integration target runs it |
 | e2e of `crane-cli`             | runs the real CLI over local files; no deployed environment          |
 | network denial in `test:quick` | recorded per project in the hermetic proof until the host allows it  |

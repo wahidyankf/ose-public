@@ -1,0 +1,4 @@
+=== RUN   TestCommittedRedirectExportMatchesTheWwwModules
+--- PASS: TestCommittedRedirectExportMatchesTheWwwModules (0.00s)
+PASS
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/web	1.337s

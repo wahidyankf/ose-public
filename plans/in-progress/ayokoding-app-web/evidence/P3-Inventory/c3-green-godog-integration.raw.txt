@@ -1,0 +1,2 @@
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/bdd-integration	14.379s
+exit=0

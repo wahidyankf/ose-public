@@ -33,3 +33,4 @@ silently reduce the existing [`www` behavior corpus](../../www/behaviours/README
   reset, and cross-tab updates.
 - [Tools](./tools/README.md) — benchmark and calculator results, shared data, and URL state.
 - [Discovery documents](./discovery/README.md) — canonical metadata, sitemap, feed, and robots.
+- [Parity tools](./parity-tools/README.md) — the old site's URL inventory and the gap report against the new app.

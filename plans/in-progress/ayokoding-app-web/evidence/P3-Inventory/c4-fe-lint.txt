@@ -1,0 +1,11 @@
+
+> nx run ayokoding-web-fe-e2e:lint
+
+> npx oxlint .
+
+
+
+
+ NX   Successfully ran target lint for project ayokoding-web-fe-e2e
+
+

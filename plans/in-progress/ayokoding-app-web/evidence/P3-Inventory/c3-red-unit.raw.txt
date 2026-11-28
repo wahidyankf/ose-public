@@ -1,0 +1,74 @@
+--- FAIL: TestGapReportClassifiesEachStatusAndFollowsNoRedirect (0.00s)
+    gapreport_test.go:44: results = []parity.Result(nil), want []parity.Result{parity.Result{URL:"/en", Status:200, Location:"", Class:"pass", Cause:"", Unit:""}, parity.Result{URL:"/en/moved", Status:308, Location:"/en", Class:"redirect", Cause:"", Unit:""}, parity.Result{URL:"/en/does-not-exist", Status:404, Location:"", Class:"fail", Cause:"no tree route", Unit:"P4-Tree"}}
+--- FAIL: TestGapReportGroupsEachFailingURLByItsCause (0.00s)
+    --- FAIL: TestGapReportGroupsEachFailingURLByItsCause/a_nested_lesson (0.00s)
+        gapreport_test.go:85: results = 0, want 1
+    --- FAIL: TestGapReportGroupsEachFailingURLByItsCause/a_section_with_no_tree_route (0.00s)
+        gapreport_test.go:85: results = 0, want 1
+    --- FAIL: TestGapReportGroupsEachFailingURLByItsCause/an_Indonesian_tree_page (0.00s)
+        gapreport_test.go:85: results = 0, want 1
+    --- FAIL: TestGapReportGroupsEachFailingURLByItsCause/a_missing_browse_index (0.00s)
+        gapreport_test.go:85: results = 0, want 1
+    --- FAIL: TestGapReportGroupsEachFailingURLByItsCause/a_missing_tools_index (0.00s)
+        gapreport_test.go:85: results = 0, want 1
+    --- FAIL: TestGapReportGroupsEachFailingURLByItsCause/a_search_page (0.00s)
+        gapreport_test.go:85: results = 0, want 1
+    --- FAIL: TestGapReportGroupsEachFailingURLByItsCause/a_discovery_document (0.00s)
+        gapreport_test.go:85: results = 0, want 1
+    --- FAIL: TestGapReportGroupsEachFailingURLByItsCause/a_redirect_source_that_does_not_answer_308 (0.00s)
+        gapreport_test.go:85: results = 0, want 1
+    --- FAIL: TestGapReportGroupsEachFailingURLByItsCause/a_path_outside_both_locales (0.00s)
+        gapreport_test.go:85: results = 0, want 1
+--- FAIL: TestGapReportFailsAnUnreachableURLWithStatusZero (0.00s)
+    gapreport_test.go:104: results = []parity.Result(nil), want []parity.Result{parity.Result{URL:"/en", Status:0, Location:"", Class:"fail", Cause:"other", Unit:"owner triage"}}
+--- FAIL: TestRenderGapReportCountsEachClassAndNamesEachCauseUnit (0.00s)
+    gapreport_test.go:123: report lacks "pass: 1":
+--- FAIL: TestOSHostWiresEveryField (0.00s)
+    host_test.go:27: OSHost leaves a field unwired: {Working: Sub:<nil> ReadFile:<nil> WriteFile:<nil> Fetch:<nil> Stdout:<nil> Stderr:<nil>}
+--- FAIL: TestProbeReportsTheStatusAndNeverFollowsARedirect (0.00s)
+    host_test.go:46: 200 probe = {Status:0 Location:}, <nil>
+--- FAIL: TestBuildInventoryListsEachPageOnceSortedWithNoHost (0.00s)
+    inventory_test.go:27: urls = [], want ["/en" "/en/learn"]
+--- FAIL: TestBuildInventoryKeepsEachRedirectSourceWithTheStatusItsPermanenceSets (0.00s)
+    inventory_test.go:58: redirects = []parity.Redirect(nil), want []parity.Redirect{parity.Redirect{Source:"/a/:path*", Status:308, Location:"/en/:path*"}, parity.Redirect{Source:"/b", Status:307, Location:"/en/b"}}
+--- FAIL: TestBuildInventoryRefusesMalformedInputs (0.00s)
+    --- FAIL: TestBuildInventoryRefusesMalformedInputs/a_malformed_sitemap (0.00s)
+        inventory_test.go:75: BuildInventory accepted the input, want an error
+    --- FAIL: TestBuildInventoryRefusesMalformedInputs/a_malformed_redirect_export (0.00s)
+        inventory_test.go:75: BuildInventory accepted the input, want an error
+    --- FAIL: TestBuildInventoryRefusesMalformedInputs/a_location_that_is_not_a_URL (0.00s)
+        inventory_test.go:75: BuildInventory accepted the input, want an error
+--- FAIL: TestRoutePatternsExpandLocalesAndLeaveOutTheRPCTransportAndTheContentCatchAll (0.00s)
+    inventory_test.go:104: patterns = [], want ["/" "/en" "/en/browse" "/en/tools" "/en/tools/ai-benchmark" "/feed.xml" "/id" "/id/browse" "/id/tools" "/id/tools/ai-benchmark" "/robots.txt" "/sitemap.xml"]
+--- FAIL: TestRoutePatternsReportsAnUnreadableRouteTree (0.00s)
+    inventory_test.go:115: RoutePatterns read an unreadable tree, want an error
+--- FAIL: TestRunRejectsAnUnknownSubcommandAndNamesIt (0.00s)
+    run_test.go:61: exit 0 for an unknown subcommand, want a non-zero code
+--- FAIL: TestRunWithoutASubcommandPrintsUsage (0.00s)
+    run_test.go:71: exit 0 with no subcommand, want a non-zero code
+--- FAIL: TestRunInventoryWritesTheInventoryToTheOutFile (0.00s)
+    run_test.go:90: written inventory is not JSON: unexpected end of JSON input
+--- FAIL: TestRunGapReportPrintsTheReportForTheInventoryFile (0.00s)
+    run_test.go:116: report lacks "pass: 1":
+--- FAIL: TestRunReportsUsageAndIOErrorsWithANonZeroCode (0.00s)
+    --- FAIL: TestRunReportsUsageAndIOErrorsWithANonZeroCode/inventory_without_a_sitemap (0.00s)
+        run_test.go:140: exit 0, want a non-zero code; stderr ""
+    --- FAIL: TestRunReportsUsageAndIOErrorsWithANonZeroCode/inventory_with_an_unreadable_sitemap (0.00s)
+        run_test.go:140: exit 0, want a non-zero code; stderr ""
+    --- FAIL: TestRunReportsUsageAndIOErrorsWithANonZeroCode/gap_report_without_a_base_URL (0.00s)
+        run_test.go:140: exit 0, want a non-zero code; stderr ""
+    --- FAIL: TestRunReportsUsageAndIOErrorsWithANonZeroCode/gap_report_with_a_malformed_inventory (0.00s)
+        run_test.go:140: exit 0, want a non-zero code; stderr ""
+FAIL
+FAIL	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/parity	0.426s
+--- FAIL: TestMainExitsNonZeroForAnUnknownSubcommandAndNamesIt (0.00s)
+    main_test.go:48: exit 0 for an unknown subcommand, want a non-zero code
+--- FAIL: TestMainReachesEachSubcommandThroughTheHost (0.00s)
+    --- FAIL: TestMainReachesEachSubcommandThroughTheHost/inventory_reads_its_sitemap_through_the_host (0.00s)
+        main_test.go:78: exit 0 with an unreadable input, want a non-zero code; stderr ""
+    --- FAIL: TestMainReachesEachSubcommandThroughTheHost/gap-report_reads_its_inventory_through_the_host (0.00s)
+        main_test.go:78: exit 0 with an unreadable input, want a non-zero code; stderr ""
+FAIL
+FAIL	github.com/wahidyankf/ose-public/apps/ayokoding-web/cmd/parity	0.701s
+FAIL
+exit=1

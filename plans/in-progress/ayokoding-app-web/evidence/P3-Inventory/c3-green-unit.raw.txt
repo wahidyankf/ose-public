@@ -1,0 +1,3 @@
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/parity	0.346s	coverage: 97.1% of statements
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/cmd/parity	0.601s	coverage: 100.0% of statements
+exit=0

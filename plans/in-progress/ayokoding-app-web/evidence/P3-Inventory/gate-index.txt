@@ -1,0 +1,52 @@
+P3-Inventory gate index. Each row is one HIPPO job or one direct run, read from the exit line of its sanitized log.
+
+Base a7effa515. Inventory SHA-256 f44364bb9e7bba7532f91a1577ecfcf663c698d6629e8ec626aefd63cfbde930.
+
+RED (each run failed on an assertion, not a build error, unless marked)
+  c3-red-unit.raw.txt                                            exit 1   18 failing tests across internal/parity and cmd/parity
+  c3-red-godog-unit.raw.txt                                      exit 1   unit godog bindings
+  c3-red-godog-integration.raw.txt                               exit 1   integration godog bindings
+  c3-red-fe.raw.txt                                              exit 1   fe E2E bindings
+  c3-refactor-red.txt                                            exit 1   probe fails on a discarded body-close error (assertion)
+
+REFACTOR pass (after the first handback; commit ad993b8ee)
+  c3-refactor-steps-green.txt     parity race, cover, gofmt, vet   exit 0   internal/parity 99.2%, cmd/parity 100.0%
+                                  the direct tests for the extracted steps were written with the split, so they passed on the first run; the split adds no behaviour
+  c4-unit-local-refactor.txt      unit coverage gate, local Go 1.27.1   exit 0   99.0% (min 99%)
+  c4-unit-go1269-refactor.txt     unit coverage gate, GOTOOLCHAIN=go1.26.9   exit 0   99.0% (min 99%)
+  c4-test-quick-refactor.txt      ayokoding-web:test:quick          exit 0   lint and typecheck pass; 74 Vitest tests; 1009 scenarios, no findings
+  c4-integration-refactor.txt     integration godog, verbose        exit 0   99 scenarios (99 passed), 403 steps (403 passed)
+  inventory regenerated after the split: byte-identical (inventory-determinism.txt, fourth generation)
+  fe E2E not rerun: cmd/parity behaviour is unchanged (the integration suite runs the same subcommands through the OS host)
+
+GREEN and guards
+  c3-refactor-green.txt   parity race, cover, and gofmt          exit 0   internal/parity 99.2%, cmd/parity 100.0%
+  c3-guard-export.txt     redirect export guard (post-hoc)       exit 0   87 rules, 3 temporary, no host
+  c3-green-*.raw.txt      GREEN runs before the refactor pass
+  c4-godog-unit-v.txt     unit godog, verbose                    exit 0   110 scenarios (110 passed), 457 steps (457 passed)
+
+C4 gates
+  c4-test-quick.txt                ayokoding-web:test:quick       exit 0   first run, before the redirect export guard was added
+  c4-test-quick-final.txt          ayokoding-web:test:quick       exit 0   final tree: typecheck, lint, unit 99.0% (min 99%), 74 vitest tests, 1009 scenarios checked
+  c4-build.txt                     ayokoding-web:build            exit 0
+  c4-integration-nx.txt            ayokoding-web:test:integration exit 0
+  c4-integration-v.txt             integration, verbose           exit 0   99 scenarios (99 passed), 403 steps (403 passed)
+  c4-unit-go1269-final.txt         unit gate, GOTOOLCHAIN=go1.26.9 exit 0  99.0% (min 99%)
+  c4-fe-typecheck.txt              fe-e2e:typecheck               exit 0
+  c4-fe-lint.txt                   fe-e2e:lint                    exit 0
+  c4-fe-behaviour-coverage.txt     fe-e2e:test:behaviour:coverage exit 0   1009 scenarios, no findings; parity steps scanned
+  c4-fe-e2e-real-corpus.txt        real-corpus config, bddgen first, all browsers exit 0
+                                   252 passed: bdd-chromium 79, bdd-firefox 79, bdd-webkit 79, specs-chromium 5, specs-firefox 5, specs-webkit 5
+  c4-fe-e2e-fixture.txt            fixture config, bddgen first, all browsers exit 0
+                                   25 passed: bdd-fixture-chromium 6, bdd-fixture-firefox 6, bdd-fixture-webkit 6, specs-chromium 7
+  c4-lint-1.raw.txt, c4-lint-2.raw.txt   earlier lint runs (first failed on nilaway, second 0 issues)
+
+Old app (3101) and new app (3102)
+  old-sitemap.xml, old-sitemap.sha256    saved from the running old app, 3,279 loc entries
+  old-app-verification.md, verify-summary.json   3,290 of 3,291 URLs at 200; `/` answers 308 (see inventory-decisions.md); 87 of 87 redirect sources match
+  expanded-200.md                        11 of 12 route-derived URLs at 200; `/` as above
+  gap-report.md                          pass 1782, redirect 1, fail 1508 (sums to 3,291)
+  both services stopped; ports 3101 and 3102 confirmed free
+
+Not run
+  ayokoding-web-be-e2e:test:e2e          no test reads the new be-e2e fixture yet

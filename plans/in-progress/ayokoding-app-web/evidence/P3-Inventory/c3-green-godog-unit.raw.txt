@@ -1,0 +1,2 @@
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/bdd	0.914s
+exit=0

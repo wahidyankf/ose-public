@@ -1,0 +1,8 @@
+C1 start facts for P3-Inventory
+
+- Branch: ayokoding-web-p3-inventory (in the one worktree the plan declares, <repo>/worktrees/ayokoding-app-web)
+- Base: a7effa515 feat(ayokoding-web): render authored page structures from the real corpus (#793) (P3-Render)
+- origin/main at start: a7effa515 (rev-list count a7effa515..origin/main = 0, so no commit landed on main since the last unit)
+- The base is an ancestor of the branch head at the start.
+- Worktrees listed: the main checkout and this one only (one worktree per plan).
+- The Delivery Branch Inventory row for this branch was `planned` at the start; it is updated in the docs(plans) commit.

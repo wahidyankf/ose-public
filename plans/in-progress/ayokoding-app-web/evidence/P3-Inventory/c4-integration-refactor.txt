@@ -1,0 +1,625 @@
+=== RUN   TestContract
+Feature: Shared learning content rendering over HTTP
+  As a learner reading lessons
+  I want the authored content and its interactive formats to remain intact
+  So that changing the application framework does not change the lesson
+
+  Background:
+    Given the app is running                                              # reg_common_test.go:10 -> *World
+
+  Scenario: A lesson page is readable without browser scripts             # ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering-http.feature:11
+    Given a published Markdown lesson exists in the shared corpus         # reg_content_test.go:10 -> *World
+    When a reader requests its route without running browser scripts      # reg_content_test.go:11 -> *World
+    Then the response contains the lesson title and readable article body # reg_content_test.go:12 -> *World
+    And the response does not depend on a client-side build artifact      # reg_content_test.go:13 -> *World
+
+  Scenario: A draft lesson's route returns not found # ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering-http.feature:20
+    Given a lesson is marked as a draft              # reg_content_test.go:18 -> *World
+    And draft viewing is disabled                    # reg_content_test.go:19 -> *World
+    When a reader requests the draft lesson's route  # reg_content_test.go:20 -> *World
+    Then its direct route returns not found          # reg_content_test.go:23 -> *World
+
+  Scenario: A draft lesson is absent from search results # ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering-http.feature:28
+    Given a lesson is marked as a draft                  # reg_content_test.go:18 -> *World
+    And draft viewing is disabled                        # reg_content_test.go:19 -> *World
+    When a reader searches the corpus                    # reg_content_test.go:21 -> *World
+    Then the lesson is absent from the public results    # reg_content_test.go:22 -> *World
+
+  Scenario: A missing page returns the locale's not-found experience         # ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering-http.feature:35
+    When a reader requests a nonexistent content route in a supported locale # reg_content_test.go:58 -> *World
+    Then the response status is 404                                          # reg_content_test.go:59 -> *World
+    And the reader sees a localized not-found page with usable navigation    # reg_content_test.go:60 -> *World
+
+  Scenario: With AYOKODING_WEB_SHOW_DRAFTS set to true a draft lesson is shown # ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering-http.feature:42
+    Given AYOKODING_WEB_SHOW_DRAFTS is set to true for the app                 # reg_content_test.go:44 -> *World
+    And a lesson is marked as a draft                                          # reg_content_test.go:18 -> *World
+    When a reader requests the draft lesson's route                            # reg_content_test.go:20 -> *World
+    Then the draft lesson's page shows its title and body                      # reg_content_test.go:45 -> *World
+
+Feature: Shared learning content rendering
+  As a learner reading lessons
+  I want the authored content and its interactive formats to remain intact
+  So that changing the application framework does not change the lesson
+
+  Background:
+    Given the app is running                                                       # reg_common_test.go:10 -> *World
+
+  Scenario: A section lists its pages by authored title and order                  # ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering.feature:10
+    Given a section contains published pages with valid titles, slugs, and weights # reg_content_test.go:14 -> *World
+    When a reader opens that section                                               # reg_content_test.go:15 -> *World
+    Then page titles and links match their authored metadata                       # reg_content_test.go:16 -> *World
+    And the pages follow the established weight and title ordering                 # reg_content_test.go:17 -> *World
+
+  Scenario: A page with invalid metadata is not published                  # ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering.feature:17
+    Given a Markdown page has invalid required frontmatter                 # reg_content_test.go:24 -> *World
+    When the content corpus is loaded                                      # reg_content_test.go:25 -> *World
+    Then that page is excluded from the published catalog                  # reg_content_test.go:26 -> *World
+    And the developer receives a diagnostic identifying the invalid source # reg_content_test.go:27 -> *World
+
+  Scenario: Authored tables render with the established article styling  # ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering.feature:23
+    Given a lesson contains a table                                      # reg_content_test.go:28 -> *World
+    When a reader opens that lesson                                      # reg_content_test.go:32 -> *World
+    Then the authored table renders with the established article styling # reg_content_test.go:33 -> *World
+
+  Scenario Outline: Authored <structure> renders with the established article styling # ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering.feature:28
+    Given the app is running                                                          # reg_common_test.go:10 -> *World
+    Given a lesson contains a "<structure>" structure                                 # reg_content_test.go:29 -> *World
+    When a reader opens that lesson                                                   # reg_content_test.go:32 -> *World
+    Then the authored "<structure>" renders with the established article styling      # reg_content_test.go:34 -> *World
+
+    Examples:
+      | structure   |
+      | task list   |
+      | raw details |
+
+  Scenario: A page has one title heading and an ordered outline        # ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering.feature:38
+    Given a lesson with nested headings is open for its outline        # reg_content_test.go:30 -> *World
+    When a reader opens that lesson                                    # reg_content_test.go:32 -> *World
+    Then the page has one title heading with a normalized body outline # reg_content_test.go:35 -> *World
+
+  Scenario: The table of contents links to body headings                # ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering.feature:43
+    Given a lesson with body headings is open for its table of contents # reg_content_test.go:31 -> *World
+    When a reader opens that lesson                                     # reg_content_test.go:32 -> *World
+    Then the table of contents links to stable body heading anchors     # reg_content_test.go:36 -> *World
+
+  Scenario Outline: Supported shortcodes remain interactive content      # ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering.feature:49
+    Given the app is running                                             # reg_common_test.go:10 -> *World
+    Given a lesson contains a "<format>" shortcode fixture               # reg_content_test.go:37 -> *World
+    When a reader opens the fixture and activates its supported controls # reg_content_test.go:38 -> *World
+    Then the "<result>" is available to the reader                       # reg_content_test.go:39 -> *World
+
+    Examples:
+      | format  | result                               |
+      | callout | labeled admonition and authored body |
+      | tabs    | selected tab's authored panel        |
+      | steps   | ordered numbered learning steps      |
+
+  Scenario: A YouTube shortcode shows a responsive video iframe          # ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering.feature:62
+    Given a lesson contains a "youtube" shortcode fixture                # reg_content_test.go:37 -> *World
+    When a reader opens the fixture and activates its supported controls # reg_content_test.go:38 -> *World
+    Then the "responsive video iframe" is available to the reader        # reg_content_test.go:39 -> *World
+
+  Scenario: Relative Markdown links resolve from a section index                    # ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering.feature:67
+    Given a section index contains a relative Markdown link with a heading fragment # reg_content_test.go:40 -> *World
+    When a reader follows that link                                                 # reg_content_test.go:41 -> *World
+    Then the destination is resolved relative to that section's directory           # reg_content_test.go:42 -> *World
+    And the reader reaches the intended heading in the same locale                  # reg_content_test.go:43 -> *World
+
+  Scenario: Copying a code block yields its exact source text      # ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering.feature:74
+    Given a lesson contains annotated fenced code                  # reg_content_test.go:46 -> *World
+    When a reader copies that code block                           # reg_content_test.go:47 -> *World
+    Then the clipboard contains its exact source text and newlines # reg_content_test.go:48 -> *World
+
+  Scenario: A code block shows its language label                          # ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering.feature:79
+    Given a lesson contains annotated fenced code                          # reg_content_test.go:46 -> *World
+    When a reader opens that lesson                                        # reg_content_test.go:32 -> *World
+    Then the code block shows its language label and readable highlighting # reg_content_test.go:49 -> *World
+
+  Scenario Outline: Math and diagrams render their authored meaning # ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering.feature:85
+    Given the app is running                                        # reg_common_test.go:10 -> *World
+    Given a lesson contains a "<format>" fixture                    # reg_content_test.go:50 -> *World
+    When a reader opens the lesson                                  # reg_content_test.go:51 -> *World
+    Then the reader sees "<result>"                                 # reg_content_test.go:52 -> *World
+    And the source notation is not presented as the rendered result # reg_content_test.go:53 -> *World
+
+    Examples:
+      | format       | result                        |
+      | inline math  | inline mathematical notation  |
+      | display math | display mathematical notation |
+      | Mermaid      | an accessible SVG diagram     |
+
+  Scenario: Inline code wraps within the article on a phone                  # ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering.feature:97
+    Given a lesson contains a long inline token and a wide fenced code block # reg_content_test.go:54 -> *World
+    When a reader opens it at 375 pixels wide                                # reg_content_test.go:55 -> *World
+    Then inline code wraps within the article                                # reg_content_test.go:56 -> *World
+
+  Scenario: A wide code block scrolls inside the article on a phone          # ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering.feature:103
+    Given a lesson contains a long inline token and a wide fenced code block # reg_content_test.go:54 -> *World
+    When a reader opens it at 375 pixels wide                                # reg_content_test.go:55 -> *World
+    Then the fenced block scrolls internally without widening the document   # reg_content_test.go:57 -> *World
+
+Feature: Course catalog and learning paths
+  As a learner choosing what to study
+  I want clear course metadata and consistent learning paths
+  So that I can understand prerequisites and follow the intended order
+
+  Background:
+    Given the app is running                                                             # reg_common_test.go:10 -> *World
+
+  Scenario: The course catalog lists current courses by category                         # ../../../../specs/apps/ayokoding/web/behaviours/courses/course-catalog-and-paths.feature:11
+    When a learner opens the course catalog                                              # reg_courses_test.go:10 -> *World
+    Then courses are grouped by their authored categories                                # reg_courses_test.go:11 -> *World
+    And each course shows its title, description, format, and applicable effort estimate # reg_courses_test.go:12 -> *World
+    And no catalog count depends on a frozen copy of the shared corpus                   # reg_courses_test.go:13 -> *World
+
+  Scenario: An outline course is not presented as a completed lesson collection # ../../../../specs/apps/ayokoding/web/behaviours/courses/course-catalog-and-paths.feature:18
+    Given a course is currently marked as outline-only                          # reg_courses_test.go:14 -> *World
+    When a learner opens its landing page                                       # reg_courses_test.go:15 -> *World
+    Then the course shows its outline status and available material honestly    # reg_courses_test.go:16 -> *World
+    And it is not presented as fully completed by having no learning pages      # reg_courses_test.go:17 -> *World
+
+  Scenario: A path uses the current manifest's phase order                    # ../../../../specs/apps/ayokoding/web/behaviours/courses/course-catalog-and-paths.feature:25
+    Given a valid path manifest contains ordered phases and course membership # reg_courses_test.go:18 -> *World
+    When a learner opens that path                                            # reg_courses_test.go:19 -> *World
+    Then its roadmap and course controls follow the manifest's phase order    # reg_courses_test.go:20 -> *World
+    And phase labels and course position numbers agree across the page        # reg_courses_test.go:21 -> *World
+
+  Scenario: A course page names each prerequisite with its title and link      # ../../../../specs/apps/ayokoding/web/behaviours/courses/course-catalog-and-paths.feature:32
+    Given a published course declares prerequisites                            # reg_courses_test.go:22 -> *World
+    When a learner opens its course landing page                               # reg_courses_test.go:23 -> *World
+    Then each prerequisite is shown with its current title and canonical route # reg_courses_test.go:24 -> *World
+
+  Scenario: A path never places a prerequisite after its dependent course                # ../../../../specs/apps/ayokoding/web/behaviours/courses/course-catalog-and-paths.feature:37
+    Given a valid path manifest contains ordered phases and course membership            # reg_courses_test.go:18 -> *World
+    When a learner opens that path                                                       # reg_courses_test.go:19 -> *World
+    Then the path does not place a required core prerequisite after its dependent course # reg_courses_test.go:25 -> *World
+
+  Scenario: Invalid path context falls back to canonical course navigation                        # ../../../../specs/apps/ayokoding/web/behaviours/courses/course-catalog-and-paths.feature:42
+    Given a course URL contains a path identifier that is missing or does not contain that course # reg_courses_test.go:26 -> *World
+    When a learner opens that URL                                                                 # reg_courses_test.go:27 -> *World
+    Then the course still renders with canonical navigation                                       # reg_courses_test.go:28 -> *World
+    And no path-specific control claims the invalid path is active                                # reg_courses_test.go:29 -> *World
+
+  Scenario: A malformed path definition is left out and other paths still open   # ../../../../specs/apps/ayokoding/web/behaviours/courses/course-catalog-and-paths.feature:50
+    Given the manifest collection contains one malformed file and one valid path # reg_courses_test.go:30 -> *World
+    When the path collection is loaded                                           # reg_courses_test.go:31 -> *World
+    Then the valid path remains available                                        # reg_courses_test.go:32 -> *World
+    And the malformed file is excluded with a developer diagnostic               # reg_courses_test.go:33 -> *World
+
+  Scenario: An empty path category shows an intentional empty state     # ../../../../specs/apps/ayokoding/web/behaviours/courses/course-catalog-and-paths.feature:59
+    Given a path category currently contains no published paths         # reg_courses_test.go:34 -> *World
+    When a learner opens that category                                  # reg_courses_test.go:35 -> *World
+    Then the page explains that no paths are available in that category # reg_courses_test.go:36 -> *World
+    And the rest of the learning navigation remains usable              # reg_courses_test.go:37 -> *World
+
+Feature: Published-content discovery
+  As a reader or content crawler
+  I want accurate discovery documents
+  So that published pages can be found without exposing drafts or missing routes
+
+  Background:
+    Given the app is running                                                 # reg_common_test.go:10 -> *World
+
+  Scenario: A content page carries its title, description, and canonical URL # ../../../../specs/apps/ayokoding/web/behaviours/discovery/discovery-documents.feature:10
+    When a reader requests a published content page                          # reg_discovery_test.go:10 -> *World
+    Then its HTML contains the current title, description, and canonical URL # reg_discovery_test.go:11 -> *World
+
+  Scenario: Alternate-language links list only available translations  # ../../../../specs/apps/ayokoding/web/behaviours/discovery/discovery-documents.feature:14
+    When a reader requests a published content page                    # reg_discovery_test.go:10 -> *World
+    Then alternate-language links identify only available translations # reg_discovery_test.go:12 -> *World
+
+  Scenario: The sitemap reflects the current published corpus                  # ../../../../specs/apps/ayokoding/web/behaviours/discovery/discovery-documents.feature:19
+    Given the corpus contains published pages, draft pages, and a removed page # reg_discovery_test.go:13 -> *World
+    When a crawler requests the sitemap                                        # reg_discovery_test.go:14 -> *World
+    Then it receives a successful XML sitemap response                         # reg_discovery_test.go:15 -> *World
+    And the sitemap lists canonical published routes                           # reg_discovery_test.go:16 -> *World
+    And draft and removed routes are absent                                    # reg_discovery_test.go:17 -> *World
+
+  Scenario: The feed exposes the current published entries                            # ../../../../specs/apps/ayokoding/web/behaviours/discovery/discovery-documents.feature:27
+    When a reader requests the RSS feed                                               # reg_discovery_test.go:18 -> *World
+    Then it receives a successful XML feed response                                   # reg_discovery_test.go:19 -> *World
+    And feed entries have the existing ordering, metadata, and canonical destinations # reg_discovery_test.go:20 -> *World
+    And draft pages are absent                                                        # reg_discovery_test.go:21 -> *World
+
+  Scenario: Robots instructions retain the current crawling contract                  # ../../../../specs/apps/ayokoding/web/behaviours/discovery/discovery-documents.feature:34
+    When a crawler requests the robots document                                       # reg_discovery_test.go:22 -> *World
+    Then it receives a successful plain-text robots response                          # reg_discovery_test.go:23 -> *World
+    And the crawling directives and sitemap reference match the current site contract # reg_discovery_test.go:24 -> *World
+
+Feature: Independent local development over HTTP
+  As a developer working on the learning site
+  I want the rewrite to run beside the existing site
+  So that both implementations and content work can progress independently
+
+  Scenario Outline: Static assets and the favicon are served; an unknown asset returns 404 # ../../../../specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature:9
+    When a reader requests the asset "<path>"                                              # reg_localdev_test.go:33 -> *World
+    Then the asset responds with status "<status>"                                         # reg_localdev_test.go:34 -> *World
+
+    Examples:
+      | path                       | status |
+      | /favicon.ico               | 200    |
+      | /assets/css/site.css       | 200    |
+      | /assets/js/progress.js     | 200    |
+      | /assets/vendor/htmx.min.js | 200    |
+      | /assets/js/unknown.js      | 404    |
+
+  Scenario: A default start serves the real content corpus                                             # ../../../../specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature:23
+    Given no fixture is selected                                                                       # reg_localdev_test.go:39 -> *World
+    When the rewrite starts with no fixture flag or fixture variable                                   # reg_localdev_test.go:40 -> *World
+    Then the lesson "/en/learn/courses/just-enough-python/learning/beginner" answers with status "200" # reg_localdev_test.go:41 -> *World
+    And the lesson "/en/learn/courses/go-basics/learning/hello-world" answers with status "404"        # reg_localdev_test.go:41 -> *World
+
+  Scenario: A fixture is served only when one is selected                                # ../../../../specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature:31
+    Given the "parity" fixture is selected                                               # reg_localdev_test.go:42 -> *World
+    When a reader requests the lesson "/en/learn/courses/go-basics/learning/hello-world" # reg_localdev_test.go:43 -> *World
+    Then the lesson answers with status "200"                                            # reg_localdev_test.go:44 -> *World
+
+Feature: Independent local development
+  As a developer working on the learning site
+  I want the rewrite to run beside the existing site
+  So that both implementations and content work can progress independently
+
+  Scenario: The web app serves its entry pages on port 3102 by default # ../../../../specs/apps/ayokoding/web/behaviours/local-development/local-development.feature:8
+    When the rewrite starts without a port override                    # reg_localdev_test.go:10 -> *World
+    Then the rewrite serves its bilingual entry pages on port 3102     # reg_localdev_test.go:11 -> *World
+
+  Scenario: A prefixed port override changes only the rewrite listener # ../../../../specs/apps/ayokoding/web/behaviours/local-development/local-development.feature:13
+    Given AYOKODING_WEB_PORT is set to an available valid port         # reg_localdev_test.go:12 -> *World
+    When the rewrite starts                                            # reg_localdev_test.go:13 -> *World
+    Then the rewrite listens on that port                              # reg_localdev_test.go:14 -> *World
+    And the existing site's configured port remains unchanged          # reg_localdev_test.go:15 -> *World
+
+  Scenario: An explicit port flag wins over the prefixed environment value                  # ../../../../specs/apps/ayokoding/web/behaviours/local-development/local-development.feature:20
+    Given AYOKODING_WEB_PORT contains one valid port                                        # reg_localdev_test.go:16 -> *World
+    And the rewrite launcher receives a different valid port through its explicit port flag # reg_localdev_test.go:17 -> *World
+    When the rewrite starts                                                                 # reg_localdev_test.go:13 -> *World
+    Then it listens on the explicit flag's port                                             # reg_localdev_test.go:18 -> *World
+    And it does not listen on the environment value's port                                  # reg_localdev_test.go:19 -> *World
+
+  Scenario: A generic PORT variable does not retarget the rewrite             # ../../../../specs/apps/ayokoding/web/behaviours/local-development/local-development.feature:28
+    Given only the generic PORT variable contains a different valid port      # reg_localdev_test.go:20 -> *World
+    When the rewrite starts without a prefixed override or explicit port flag # reg_localdev_test.go:21 -> *World
+    Then the rewrite listens on port 3102                                     # reg_localdev_test.go:22 -> *World
+
+  Scenario: An invalid port override fails before accepting requests # ../../../../specs/apps/ayokoding/web/behaviours/local-development/local-development.feature:34
+    Given AYOKODING_WEB_PORT is set to an invalid port value         # reg_localdev_test.go:23 -> *World
+    When the rewrite starts                                          # reg_localdev_test.go:13 -> *World
+    Then startup fails with a diagnostic naming AYOKODING_WEB_PORT   # reg_localdev_test.go:24 -> *World
+    And no rewrite listener starts on a fallback port                # reg_localdev_test.go:25 -> *World
+
+  Scenario: Browsing course pages leaves the content files unchanged  # ../../../../specs/apps/ayokoding/web/behaviours/local-development/local-development.feature:40
+    Given the shared Markdown and manifests have recorded byte hashes # reg_localdev_test.go:26 -> *World
+    When a developer starts the rewrite and browses its course pages  # reg_localdev_test.go:27 -> *World
+    Then the Markdown and manifest byte hashes remain unchanged       # reg_localdev_test.go:28 -> *World
+
+  Scenario: AYOKODING_WEB_CONTENT_DIR and AYOKODING_WEB_MANIFESTS_DIR point the app at another corpus # ../../../../specs/apps/ayokoding/web/behaviours/local-development/local-development.feature:47
+    Given AYOKODING_WEB_CONTENT_DIR and AYOKODING_WEB_MANIFESTS_DIR name another corpus root          # reg_localdev_test.go:29 -> *World
+    When the rewrite starts                                                                           # reg_localdev_test.go:13 -> *World
+    Then the rewrite serves its pages and course paths from that corpus                               # reg_localdev_test.go:30 -> *World
+
+  Scenario: An unreadable content directory stops startup before the listener opens # ../../../../specs/apps/ayokoding/web/behaviours/local-development/local-development.feature:53
+    Given AYOKODING_WEB_CONTENT_DIR names a content directory that cannot be read   # reg_localdev_test.go:45 -> *World
+    When the rewrite is launched and fails to start                                 # reg_localdev_test.go:46 -> *World
+    Then startup fails with a diagnostic naming AYOKODING_WEB_CONTENT_DIR           # reg_localdev_test.go:47 -> *World
+    And no rewrite listener starts                                                  # reg_localdev_test.go:48 -> *World
+
+  Scenario: Search, benchmark, and calculator fragments under /htmx update results without a full page load # ../../../../specs/apps/ayokoding/web/behaviours/local-development/local-development.feature:62
+    When a reader requests the search, benchmark, and calculator fragments                                  # reg_localdev_test.go:31 -> *World
+    Then each fragment returns results without the page layout                                              # reg_localdev_test.go:32 -> *World
+
+  Scenario Outline: An unknown flag or fixture value stops startup with a message # ../../../../specs/apps/ayokoding/web/behaviours/local-development/local-development.feature:67
+    When the rewrite starts with the argument "<argument>"                        # reg_localdev_test.go:35 -> *World
+    Then startup fails with a message naming "<naming>"                           # reg_localdev_test.go:36 -> *World
+
+    Examples:
+      | argument        | naming         |
+      | --unknown-flag  | --unknown-flag |
+      | --fixture=bogus | --fixture      |
+
+  Scenario Outline: A fixture setting selects its canned corpus variant     # ../../../../specs/apps/ayokoding/web/behaviours/local-development/local-development.feature:77
+    When the rewrite starts with the "<fixture>" fixture set by "<channel>" # reg_localdev_test.go:37 -> *World
+    Then the course catalog answers with status "<status>"                  # reg_localdev_test.go:38 -> *World
+
+    Examples:
+      | fixture             | channel               | status |
+      | parity              | --fixture flag        | 200    |
+      | unavailable-catalog | AYOKODING_WEB_FIXTURE | 500    |
+
+Feature: Canonical routes and learning navigation over HTTP
+  As a reader following site links
+  I want stable destinations and clear navigation
+  So that existing bookmarks and learning journeys continue to work
+
+  Background:
+    Given the app is running                   # reg_common_test.go:10 -> *World
+
+  Scenario: The root enters the default locale # ../../../../specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation-http.feature:11
+    When a visitor requests the root URL       # reg_routes_test.go:10 -> *World
+    Then the visitor is redirected to "/en"    # reg_routes_test.go:11 -> *World
+    And the redirect does not loop             # reg_routes_test.go:12 -> *World
+
+  Scenario Outline: Uppercase locale entries resolve to lowercase URLs         # ../../../../specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation-http.feature:17
+    Given the app is running                                                   # reg_common_test.go:10 -> *World
+    When a visitor requests "<source>"                                         # reg_routes_test.go:13 -> *World
+    Then the response permanently redirects with status 308 to "<destination>" # reg_routes_test.go:14 -> *World
+
+    Examples:
+      | source            | destination       |
+      | /EN               | /en               |
+      | /ID               | /id               |
+      | /EN/learn/courses | /en/learn/courses |
+
+  Scenario Outline: An old URL redirects 308 to its current page               # ../../../../specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation-http.feature:28
+    Given the app is running                                                   # reg_common_test.go:10 -> *World
+    When a visitor requests "<source>"                                         # reg_routes_test.go:13 -> *World
+    Then the response permanently redirects with status 308 to "<destination>" # reg_routes_test.go:14 -> *World
+    And the query string is preserved                                          # reg_routes_test.go:15 -> *World
+    And the redirect does not depend on the old page still existing            # reg_routes_test.go:16 -> *World
+
+    Examples:
+      | source                                                                                | destination                                            |
+      | /en/learn/fundamentally-strong/software-engineer/just-enough-python/learning/beginner | /en/learn/courses/just-enough-python/learning/beginner |
+
+  Scenario: A fixture-only old URL redirects 308 to its current page                                                         # ../../../../specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation-http.feature:40
+    When a visitor requests "/en/old-guide?from=local"                                                                       # reg_routes_test.go:13 -> *World
+    Then the response permanently redirects with status 308 to "/en/learn/courses/go-basics/learning/hello-world?from=local" # reg_routes_test.go:14 -> *World
+    And the query string is preserved                                                                                        # reg_routes_test.go:15 -> *World
+    And the redirect does not depend on the old page still existing                                                          # reg_routes_test.go:16 -> *World
+
+  Scenario: A legacy archived page URL shows the archived page # ../../../../specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation-http.feature:47
+    When a reader opens a legacy archived page                 # reg_routes_test.go:29 -> *World
+    Then the archived page shows its title and canonical body  # reg_routes_test.go:30 -> *World
+
+Feature: Canonical routes and learning navigation
+  As a reader following site links
+  I want stable destinations and clear navigation
+  So that existing bookmarks and learning journeys continue to work
+
+  Background:
+    Given the app is running                                              # reg_common_test.go:10 -> *World
+
+  Scenario: The sidebar marks the active page and opens its ancestors     # ../../../../specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation.feature:11
+    When a reader opens a nested published lesson                         # reg_routes_test.go:17 -> *World
+    Then the sidebar expands its ancestors and identifies the active page # reg_routes_test.go:18 -> *World
+    And every link stays within the selected locale                       # reg_routes_test.go:20 -> *World
+
+  Scenario: Breadcrumbs link to the section and course ancestors          # ../../../../specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation.feature:17
+    When a reader opens a nested published lesson                         # reg_routes_test.go:17 -> *World
+    Then the breadcrumbs link to its current section and course ancestors # reg_routes_test.go:19 -> *World
+    And every link stays within the selected locale                       # reg_routes_test.go:20 -> *World
+
+  Scenario: A lesson follows the selected path's sequence                  # ../../../../specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation.feature:23
+    Given a reader opened a lesson through a valid learning path           # reg_routes_test.go:21 -> *World
+    When the reader follows the next or previous lesson control            # reg_routes_test.go:22 -> *World
+    Then the destination follows the path's current phase and course order # reg_routes_test.go:23 -> *World
+    And the path context remains in the destination URL                    # reg_routes_test.go:24 -> *World
+
+  Scenario: Browser back restores the previous content location          # ../../../../specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation.feature:29
+    Given a reader has followed an internal link to another content page # reg_routes_test.go:25 -> *World
+    When the reader navigates back                                       # reg_routes_test.go:26 -> *World
+    Then the previous content route and its URL state are restored       # reg_routes_test.go:27 -> *World
+    And navigation controls reflect the restored location                # reg_routes_test.go:28 -> *World
+
+  Scenario Outline: The learn home and learning paths hub pages list their entries in the selected locale # ../../../../specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation.feature:37
+    Given the app is running                                                                              # reg_common_test.go:10 -> *World
+    When a reader opens the "<page>" page in the "<locale>" locale                                        # reg_routes_test.go:31 -> *World
+    Then the page lists its entries in the "<locale>" locale                                              # reg_routes_test.go:32 -> *World
+
+    Examples:
+      | page       | locale |
+      | learn home | en     |
+      | paths hub  | en     |
+
+Feature: Parity tools for the old site's URL inventory
+  As the repository owner checking that the new app serves every URL the old site serves
+  I want a generated inventory of old URLs and a gap report against the new app
+  So that every missing or redirected address is visible and nothing is dropped silently
+
+  Scenario: The URL inventory lists each page once, sorted, with no host            # ../../../../specs/apps/ayokoding/web/behaviours/parity-tools/parity-tools.feature:7
+    Given the old site's sitemap has three entries, one of them a repeat of another # reg_parity_tools_test.go:42 -> *parityIntegration
+    When the URL inventory command runs over the sitemap                            # reg_parity_tools_test.go:43 -> *parityIntegration
+    Then the inventory lists each page address once, in sorted order                # reg_parity_tools_test.go:44 -> *parityIntegration
+    And no inventory entry names a host                                             # reg_parity_tools_test.go:45 -> *parityIntegration
+
+  Scenario: The gap report classifies each URL by its status and follows no redirect   # ../../../../specs/apps/ayokoding/web/behaviours/parity-tools/parity-tools.feature:13
+    Given an inventory lists a page that answers 200 and a page that answers 404       # reg_parity_tools_test.go:46 -> *parityIntegration
+    When the gap report runs against the base address                                  # reg_parity_tools_test.go:47 -> *parityIntegration
+    Then the page that answers 200 is classified as passing                            # reg_parity_tools_test.go:48 -> *parityIntegration
+    And the page that answers 404 is classified as failing and grouped under its cause # reg_parity_tools_test.go:49 -> *parityIntegration
+    And no redirect is followed                                                        # reg_parity_tools_test.go:50 -> *parityIntegration
+
+Feature: Locale-scoped site search over HTTP
+  As a reader looking for a topic
+  I want relevant lessons and tools in the current language
+  So that I can reach the right material quickly
+
+  Background:
+    Given the app is running                                                     # reg_common_test.go:10 -> *World
+
+  Scenario: The search page route returns results for a query without the dialog # ../../../../specs/apps/ayokoding/web/behaviours/search/search-http.feature:11
+    Given matching published content exists in both supported locales            # reg_search_test.go:13 -> *World
+    When a reader opens the search page for the matching term in one locale      # reg_search_test.go:30 -> *World
+    Then the search page lists the matching results for that locale only         # reg_search_test.go:31 -> *World
+
+Feature: Locale-scoped site search
+  As a reader looking for a topic
+  I want relevant lessons and tools in the current language
+  So that I can reach the right material quickly
+
+  Background:
+    Given the app is running                                    # reg_common_test.go:10 -> *World
+
+  Scenario: The keyboard shortcut opens search with input focus # ../../../../specs/apps/ayokoding/web/behaviours/search/search.feature:11
+    When a reader presses the platform's search shortcut        # reg_search_test.go:10 -> *World
+    Then the search dialog opens                                # reg_search_test.go:11 -> *World
+    And the search input receives focus                         # reg_search_test.go:12 -> *World
+
+  Scenario: Results stay within the current locale                    # ../../../../specs/apps/ayokoding/web/behaviours/search/search.feature:18
+    Given matching published content exists in both supported locales # reg_search_test.go:13 -> *World
+    When a reader searches for the matching term in one locale        # reg_search_test.go:14 -> *World
+    Then results link only to that locale's published content         # reg_search_test.go:15 -> *World
+    And each result shows a title, section path, and matching excerpt # reg_search_test.go:16 -> *World
+
+  Scenario: Empty search input does not display stale results # ../../../../specs/apps/ayokoding/web/behaviours/search/search.feature:24
+    Given the search dialog has results for an earlier query  # reg_search_test.go:17 -> *World
+    When the reader clears the query to whitespace            # reg_search_test.go:18 -> *World
+    Then the earlier results disappear                        # reg_search_test.go:19 -> *World
+    And the dialog remains usable without an error            # reg_search_test.go:20 -> *World
+
+  Scenario: Choosing a result closes search and opens its destination # ../../../../specs/apps/ayokoding/web/behaviours/search/search.feature:31
+    Given a reader has search results for a published page            # reg_search_test.go:21 -> *World
+    When the reader chooses that result                               # reg_search_test.go:22 -> *World
+    Then the corresponding content route opens                        # reg_search_test.go:23 -> *World
+    And the search dialog closes                                      # reg_search_test.go:24 -> *World
+
+  Scenario: Search includes both interactive tools                        # ../../../../specs/apps/ayokoding/web/behaviours/search/search.feature:37
+    When a reader searches for the name of either interactive tool        # reg_search_test.go:25 -> *World
+    Then the matching tool page appears as a result in the current locale # reg_search_test.go:26 -> *World
+
+  Scenario: Escape returns focus to the search opener # ../../../../specs/apps/ayokoding/web/behaviours/search/search.feature:42
+    Given the search dialog is open                   # reg_search_test.go:27 -> *World
+    When the reader presses Escape                    # reg_search_test.go:28 -> *World
+    Then the search dialog closes                     # reg_search_test.go:24 -> *World
+    And focus returns to the control that opened it   # reg_search_test.go:29 -> *World
+
+Feature: Bilingual accessible shell
+  As a reader visiting the learning site
+  I want familiar navigation in my chosen language
+  So that I can read comfortably on a phone or computer
+
+  Background:
+    Given the app is running                                       # reg_common_test.go:10 -> *World
+
+  Scenario Outline: The page shell uses the route's language       # ../../../../specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature:11
+    Given the app is running                                       # reg_common_test.go:10 -> *World
+    When a reader opens the "<locale>" home page                   # reg_shell_test.go:10 -> *World
+    Then the document language is "<locale>"                       # reg_shell_test.go:11 -> *World
+    And the header, footer, and primary controls use that language # reg_shell_test.go:12 -> *World
+
+    Examples:
+      | locale |
+      | en     |
+      | id     |
+
+  Scenario: The locale switch preserves an available translated destination      # ../../../../specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature:23
+    Given a reader is on a page with a translation in the other supported locale # reg_shell_test.go:13 -> *World
+    When the reader switches locale                                              # reg_shell_test.go:14 -> *World
+    Then the translated page opens in the other locale                           # reg_shell_test.go:15 -> *World
+    And the active locale control matches the destination                        # reg_shell_test.go:16 -> *World
+
+  Scenario: Keyboard readers can skip the repeated navigation # ../../../../specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature:30
+    When a keyboard reader activates the skip-to-content link # reg_shell_test.go:17 -> *World
+    Then focus moves to the main content                      # reg_shell_test.go:18 -> *World
+    And the page retains a visible focus indicator            # reg_shell_test.go:19 -> *World
+
+  Scenario Outline: The shell fits the viewport without document overflow        # ../../../../specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature:35
+    Given the app is running                                                     # reg_common_test.go:10 -> *World
+    When a reader opens a representative course page at "<width>" pixels wide    # reg_shell_test.go:20 -> *World
+    Then the main content remains readable without horizontal document scrolling # reg_shell_test.go:21 -> *World
+    And the navigation uses the layout intended for that viewport                # reg_shell_test.go:22 -> *World
+
+    Examples:
+      | width |
+      | 375   |
+      | 768   |
+      | 1280  |
+
+  Scenario: Mobile navigation restores focus after dismissal # ../../../../specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature:47
+    Given a reader has opened the mobile navigation panel    # reg_shell_test.go:23 -> *World
+    When the reader dismisses the panel with Escape          # reg_shell_test.go:24 -> *World
+    Then the panel closes                                    # reg_shell_test.go:25 -> *World
+    And focus returns to its opener                          # reg_shell_test.go:26 -> *World
+
+  Scenario: A selected theme survives a reload    # ../../../../specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature:54
+    Given a reader has chosen the dark theme      # reg_shell_test.go:27 -> *World
+    When the reader reloads the page              # reg_shell_test.go:28 -> *World
+    Then the page uses the dark theme             # reg_shell_test.go:29 -> *World
+    And theme text and controls remain accessible # reg_shell_test.go:30 -> *World
+
+  Scenario: A resized sidebar retains its width within supported bounds        # ../../../../specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature:61
+    Given a reader has resized the desktop sidebar within the supported bounds # reg_shell_test.go:31 -> *World
+    When the reader opens another content page                                 # reg_shell_test.go:32 -> *World
+    Then the sidebar uses the saved width                                      # reg_shell_test.go:33 -> *World
+    And the content remains reachable at the current viewport size             # reg_shell_test.go:34 -> *World
+
+Feature: AI model benchmark comparison
+  As a reader comparing AI models
+  I want the existing benchmark results and shareable filters
+  So that I can compare the same evidence in either implementation
+
+  Background:
+    Given the app is running                                                      # reg_common_test.go:10 -> *World
+
+  Scenario: Benchmark figures and ordering match the published reference results  # ../../../../specs/apps/ayokoding/web/behaviours/tools/ai-benchmark.feature:11
+    Given the current shared benchmark data and an established calculation vector # reg_tools_test.go:10 -> *World
+    When the reader applies that vector's filters and comparison options          # reg_tools_test.go:11 -> *World
+    Then the displayed figures, ordering, and value results match the vector      # reg_tools_test.go:12 -> *World
+
+  Scenario: A benchmark URL restores all supported filter state      # ../../../../specs/apps/ayokoding/web/behaviours/tools/ai-benchmark.feature:18
+    Given a benchmark URL encodes supported comparison options       # reg_tools_test.go:14 -> *World
+    When a reader opens that URL                                     # reg_tools_test.go:15 -> *World
+    Then every supported option reflects the encoded state           # reg_tools_test.go:16 -> *World
+    And copying the current URL preserves that state for a new visit # reg_tools_test.go:17 -> *World
+
+  Scenario: Invalid benchmark URL values fall back to the default filters   # ../../../../specs/apps/ayokoding/web/behaviours/tools/ai-benchmark.feature:25
+    Given a benchmark URL contains invalid or unknown filter values         # reg_tools_test.go:18 -> *World
+    When a reader opens that URL                                            # reg_tools_test.go:15 -> *World
+    Then the tool uses the existing codec's valid defaults for those values # reg_tools_test.go:19 -> *World
+    And the comparison remains usable without an error                      # reg_tools_test.go:20 -> *World
+
+  Scenario: Benchmark results show their sources, dates, notes, and methodology           # ../../../../specs/apps/ayokoding/web/behaviours/tools/ai-benchmark.feature:32
+    Given the benchmark data has been extracted into shared JSON                          # reg_tools_test.go:21 -> *World
+    When either implementation reads the data and generates its reference results         # reg_tools_test.go:22 -> *World
+    Then model figures, prices, ordering policies, and reference results remain unchanged # reg_tools_test.go:23 -> *World
+    And the source links, source dates, notes, and methodology remain available           # reg_tools_test.go:24 -> *World
+
+  Scenario: A benchmark filter with no matches shows an empty result # ../../../../specs/apps/ayokoding/web/behaviours/tools/ai-benchmark.feature:39
+    Given a supported filter combination matches no model            # reg_tools_test.go:25 -> *World
+    When the reader applies that combination                         # reg_tools_test.go:26 -> *World
+    Then the tool shows an intentional no-results state              # reg_tools_test.go:27 -> *World
+    And the reader can change or reset the filters                   # reg_tools_test.go:28 -> *World
+
+Feature: Cost-of-living and savings calculation
+  As a reader comparing places to live
+  I want the existing cost and income calculations with shareable inputs
+  So that I can compare consistent estimates across both implementations
+
+  Background:
+    Given the app is running                                                                             # reg_common_test.go:10 -> *World
+
+  Scenario: Calculator costs, savings, and minimum qualifying role match the published reference results # ../../../../specs/apps/ayokoding/web/behaviours/tools/cost-of-living-calculator.feature:11
+    Given the current shared city, role, and foreign-exchange data                                       # reg_tools_test.go:29 -> *World
+    When a reader enters an established calculator vector's inputs                                       # reg_tools_test.go:30 -> *World
+    Then the displayed costs, savings, and minimum qualifying role match that vector                     # reg_tools_test.go:31 -> *World
+    And TypeScript and Go produce the same accepted results                                              # reg_tools_test.go:13 -> *World
+
+  Scenario: A calculator URL restores all supported input state                                  # ../../../../specs/apps/ayokoding/web/behaviours/tools/cost-of-living-calculator.feature:18
+    Given a calculator URL encodes supported geography, household, schooling, and income options # reg_tools_test.go:32 -> *World
+    When a reader opens that URL                                                                 # reg_tools_test.go:15 -> *World
+    Then every supported input reflects the encoded state                                        # reg_tools_test.go:33 -> *World
+    And copying the current URL preserves the inputs for a new visit                             # reg_tools_test.go:34 -> *World
+
+  Scenario: Invalid calculator input shows a recovered value or a message, never a misleading estimate # ../../../../specs/apps/ayokoding/web/behaviours/tools/cost-of-living-calculator.feature:25
+    Given a reader provides an invalid or out-of-range calculator input                                # reg_tools_test.go:35 -> *World
+    When the tool validates that input                                                                 # reg_tools_test.go:36 -> *World
+    Then it applies the existing input codec's accepted recovery or validation result                  # reg_tools_test.go:37 -> *World
+    And the tool does not display a misleading finite estimate from invalid arithmetic                 # reg_tools_test.go:38 -> *World
+
+  Scenario: Changing geography clears a city that no longer applies          # ../../../../specs/apps/ayokoding/web/behaviours/tools/cost-of-living-calculator.feature:32
+    Given a reader has selected a city                                       # reg_tools_test.go:39 -> *World
+    When the reader changes geography so that city is no longer eligible     # reg_tools_test.go:40 -> *World
+    Then the selection follows the current tool's fallback behavior          # reg_tools_test.go:41 -> *World
+    And the visible results match the resulting geography and city selection # reg_tools_test.go:42 -> *World
+
+  Scenario: Currency-converted estimates show the FX snapshot date and each currency's source # ../../../../specs/apps/ayokoding/web/behaviours/tools/cost-of-living-calculator.feature:38
+    Given the city, salary, and currency datasets have their own source dates                 # reg_tools_test.go:43 -> *World
+    When either implementation calculates a currency-converted estimate                       # reg_tools_test.go:44 -> *World
+    Then it uses the shared USD-per-unit rates without refreshing them                        # reg_tools_test.go:45 -> *World
+    And the independent FX snapshot date and per-currency provenance remain available         # reg_tools_test.go:46 -> *World
+
+99 scenarios (99 passed)
+403 steps (403 passed)
+13.0181895s
+--- PASS: TestContract (14.44s)
+PASS
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/bdd-integration	14.755s

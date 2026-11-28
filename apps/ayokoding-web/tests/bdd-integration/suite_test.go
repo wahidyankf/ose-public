@@ -24,6 +24,7 @@ import (
 // @scenario specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature: *
 // @scenario specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation.feature: *
 // @scenario specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation-http.feature: *
+// @scenario specs/apps/ayokoding/web/behaviours/parity-tools/parity-tools.feature: *
 // @scenario specs/apps/ayokoding/web/behaviours/search/search.feature: *
 // @scenario specs/apps/ayokoding/web/behaviours/search/search-http.feature: *
 // @scenario specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature: *
@@ -70,6 +71,7 @@ func TestContract(t *testing.T) {
 			registerDiscoverySteps(ctx, world)
 			registerToolsSteps(ctx, world)
 			registerLocaldevSteps(ctx, world)
+			registerParityToolsSteps(ctx, t)
 		},
 		Options: &godog.Options{
 			Format: "pretty",

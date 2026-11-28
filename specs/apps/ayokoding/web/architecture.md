@@ -19,6 +19,31 @@ The working educational site is still
 Its Markdown, manifests, and public assets remain in their current locations. The rewrite
 reads those sources in place and does not claim ownership of them or stop existing content work.
 
+### Parity tools
+
+`cmd/parity` is the entry and `internal/parity` holds the logic, both in `apps/ayokoding-web`. They
+build the inventory of old-site URLs from a saved sitemap, the committed redirect export, and the old
+route tree, and they request each inventory URL from the new app once to report its gaps. Only the
+owner's command line runs them; no other entry point calls them. Every file read, tree, write, and HTTP request goes through
+`parity.Host`, and `OSHost` is the only operating-system wiring. Their behaviour is bound at Unit,
+Integration, and E2E level by the [parity tools behaviours](./behaviours/parity-tools/README.md).
+
+```mermaid
+%% Color palette: Blue #0173B2, Teal #029E73, Gray #808080. Text is white on blue and black on teal and gray.
+flowchart LR
+    accTitle: Parity tools development boundary
+    accDescr: The repository owner runs the parity tools. The tools read the saved sitemap, the redirect export, and the route tree, and write the URL inventory. They also send one request per inventory URL to the new app on a local port.
+    OWNER(["Repository owner"]) -->|runs both commands| PARITY[["Parity tools<br/>cmd/parity"]]
+    PARITY -->|reads saved inputs| SOURCES[("Saved sitemap,<br/>redirect export,<br/>route tree")]
+    PARITY -->|writes inventory| INVENTORY[("URL inventory<br/>JSON file")]
+    PARITY -->|one request per URL| APP["ayokoding-web<br/>local port"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef gray fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+    class PARITY teal
+    class SOURCES,INVENTORY gray
+```
+
 ## Design location
 
 The [rewrite plan](../../../../plans/in-progress/ayokoding-app-web/README.md) carries the

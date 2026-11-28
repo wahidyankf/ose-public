@@ -3,7 +3,9 @@ package web
 import (
 	"errors"
 	"fmt"
+	"io/fs"
 	"os"
+	"path"
 	"strconv"
 	"strings"
 )
@@ -152,6 +154,74 @@ func ResolveConfig(args []string, environment Environment) (Config, error) {
 // IsSupportedLocale reports whether locale has translated routes.
 func IsSupportedLocale(locale string) bool {
 	return supportedLocales[locale]
+}
+
+// repoMarker names the repository root: the nearest ancestor of the working
+// directory that holds it.
+const repoMarker = "repo-config.yml"
+
+// contentCandidates and manifestsCandidates list the default roots relative to
+// the repository root. The first existing candidate wins, so a move of the
+// content into apps/ayokoding-web needs no code change.
+var (
+	contentCandidates   = []string{"apps/ayokoding-web/content", "apps/ayokoding-www/content"}
+	manifestsCandidates = []string{"apps/ayokoding-web/manifests", "apps/ayokoding-www/src/features/course-paths/manifests"}
+)
+
+// Corpus names the two source roots a default start reads.
+type Corpus struct {
+	ContentDir   string
+	ManifestsDir string
+}
+
+// ResolveCorpus resolves both default source roots. Each root is the variable
+// the launcher names when it is set, else the first existing default candidate
+// under the nearest repository root. Either root must be readable, or startup
+// is refused.
+func ResolveCorpus(sources Sources) (Corpus, error) {
+	content, err := resolveSourceRoot(sources, envContentDir, contentCandidates)
+	if err != nil {
+		return Corpus{}, err
+	}
+	manifests, err := resolveSourceRoot(sources, envManifestsDir, manifestsCandidates)
+	if err != nil {
+		return Corpus{}, err
+	}
+	return Corpus{ContentDir: content, ManifestsDir: manifests}, nil
+}
+
+// resolveSourceRoot is the single place-specific path check behind the default
+// corpus. It returns the root the variable names when that is set. Otherwise it
+// walks up from the working directory to the repository marker, then takes the
+// first candidate that exists under it. Every root it returns must be readable.
+func resolveSourceRoot(sources Sources, variable string, candidates []string) (string, error) {
+	readable := func(dir string) (string, error) {
+		if _, err := fs.ReadDir(sources.Root(dir), "."); err != nil {
+			return "", fmt.Errorf("%s root %q cannot be read: %w", variable, dir, err)
+		}
+		return dir, nil
+	}
+	if named := explicitRoot(sources, variable); named != "" {
+		return readable(named)
+	}
+	if sources.Working == "" {
+		return "", fmt.Errorf("%s is unset and no default root can be found: the working directory is unknown", variable)
+	}
+	repo := ""
+	for dir := sources.Working; repo == ""; dir = path.Dir(dir) {
+		if _, err := fs.Stat(sources.Root(dir), repoMarker); err == nil {
+			repo = dir
+		} else if path.Dir(dir) == dir {
+			return "", fmt.Errorf("%s is unset and no default root can be found: no %s holds or contains %s", variable, repoMarker, sources.Working)
+		}
+	}
+	for _, relative := range candidates {
+		dir := path.Join(repo, relative)
+		if info, err := fs.Stat(sources.Root(dir), "."); err == nil && info.IsDir() {
+			return readable(dir)
+		}
+	}
+	return "", fmt.Errorf("%s is unset and no default root exists under %s (tried %s)", variable, repo, strings.Join(candidates, ", "))
 }
 
 var errNoRedirect = errors.New("no redirect")

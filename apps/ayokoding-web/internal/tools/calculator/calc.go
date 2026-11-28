@@ -96,7 +96,9 @@ func EffectiveRateForCity(grossMonthlyUSD float64, city *City, country *Country)
 // NetUSD returns the net monthly income in USD after combined tax.
 // The gross figure is already in USD when it arrives here.
 func NetUSD(grossMonthlyUSD float64, city *City, country *Country) float64 {
-	return grossMonthlyUSD * (1 - EffectiveRateForCity(grossMonthlyUSD, city, country))
+	// Routed through mulRounded so that an inlined caller cannot fuse this product with its own subtraction (see
+	// SavingsRowFor). The value is the same IEEE product as before.
+	return mulRounded(grossMonthlyUSD, 1-EffectiveRateForCity(grossMonthlyUSD, city, country))
 }
 
 // ScaleAmount applies OECD household scaling to one expense category
@@ -203,6 +205,14 @@ func LiquidityReserveUSD(city *City, fx FxTable) (float64, error) {
 	return LiquidityReserveLocal(city) * rate, nil
 }
 
+// mulRounded returns a*b rounded to float64 as a separate call, so a caller's later subtraction cannot fuse with the
+// product. The noinline directive keeps the call boundary; see SavingsRowFor.
+//
+//go:noinline
+func mulRounded(a, b float64) float64 {
+	return a * b
+}
+
 // SavingsRowFor computes the full savings row for one city and salary:
 // essential savings are net minus essentials in USD, and lifestyle is
 // excluded from the ranking key. Relocation figures never enter savings.
@@ -212,8 +222,11 @@ func SavingsRowFor(grossMonthlyUSD float64, city *City, country *Country, fx FxT
 		return SavingsRow{}, err
 	}
 	net := NetUSD(grossMonthlyUSD, city, country)
-	essentialsUSD := EssentialsLocal(city, country, household, schoolType, area) * rate
-	lifestyleUSD := city.Expenses.Lifestyle.Amount * rate
+	// Each product is rounded by mulRounded before it is subtracted. The Go spec allows the compiler to fuse a multiply
+	// with a later subtraction across statements; on arm64 it fused both here (FMSUBD, then FNMSUBD), which rounds once
+	// and moves the last bit away from the shared savings vectors. An explicit float64 conversion did not stop it.
+	essentialsUSD := mulRounded(EssentialsLocal(city, country, household, schoolType, area), rate)
+	lifestyleUSD := mulRounded(city.Expenses.Lifestyle.Amount, rate)
 	essential := net - essentialsUSD
 	afterLifestyle := essential - lifestyleUSD
 	return SavingsRow{

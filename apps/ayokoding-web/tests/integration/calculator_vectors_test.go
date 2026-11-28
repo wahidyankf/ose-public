@@ -159,6 +159,10 @@ func TestNetUSDMatchesSharedVectors(t *testing.T) {
 	}
 }
 
+// TestSavingsRowMatchesSharedVectors compares exact float64 values, so it guards the arithmetic order as well as the
+// figures. Regression: on arm64 the compiler fused the savings products with their subtractions (FMSUBD/FNMSUBD),
+// moving EssentialSavings one ulp from the vector (846.3808 against 846.3807999999999). The calculator now rounds
+// each product through mulRounded; do not inline it or replace it with a fused expression.
 func TestSavingsRowMatchesSharedVectors(t *testing.T) {
 	dataset, _ := calculatorData(t)
 	var vectors []struct {

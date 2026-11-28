@@ -323,7 +323,7 @@ Phase 0 opens no PR. Its evidence rides the DU-07 PR.
       `__ayokoding-learn-revamp-02-path-model`, `__ayokoding-learn-revamp-03-catalog-and-metadata`,
       `__ayokoding-learn-revamp-04-learning-experience`, `__ayokoding-learn-revamp-05-code-harness`, and
       `__ayokoding-learn-revamp-06-accounting-courses`. Record the six folder names. Other live plans
-      may run in parallel after Phoenix when the DAG permits; do not gate this plan on their status.
+      may run in parallel after the Go rewrite when the DAG permits; do not gate this plan on their status.
 - [ ] [AI] Each earlier plan's product is on `origin/main`. Run each command and record its result in
       `<plan>/evidence/phase-0-contracts.md`:
   - plan 02: `rtk git cat-file -e origin/main:apps/ayokoding-www/src/features/course-paths/core/skills-restructure-allowlist.ts`

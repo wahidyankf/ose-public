@@ -2,7 +2,7 @@
 
 Depends-on: [ayokoding-app-web]
 
-> **Status:** In Progress. Remaining work is blocked until the user authorizes resumption after the Podman migration and Phoenix rewrite complete. Preserve the existing worktree checkpoint and progress.
+> **Status:** In Progress. Remaining work is blocked until the user authorizes resumption after the Podman migration and Go rewrite complete. Preserve the existing worktree checkpoint and progress.
 >
 > **Plan quality gate:** PASS. Three checker cycles cleared all findings (19 + 2 residues +
 > 2 LOW links fixed verbatim); the remaining order deviation (62 outline skeletons belong to
@@ -115,7 +115,7 @@ The live execution blockers are the Depends-on entries at the top of this README
 
 This plan is row 10 of the 14-plan **AyoKoding Learn Revamp** series. Each plan is delivered from its own
 worktree. Live execution follows the plan-order DAG; the "Depends on" column and graph show which live
-predecessors must complete, while plans without an edge may run in parallel after Phoenix. The user resolved the series decisions on 2026-10-09; every
+predecessors must complete, while plans without an edge may run in parallel after the Go rewrite. The user resolved the series decisions on 2026-10-09; every
 decision this plan relies on is copied into
 [brd.md](./brd.md#resolved-series-decisions-this-plan-relies-on).
 
@@ -144,9 +144,9 @@ cycles (the user's cap, 2026-10-09: "semua jadi 2 aja"). A course that still fai
 `local-tmp/ayokoding-learn/execution-ledger.md`, reported, and the batch moves on; the wave gate stays
 open until the user decides. See [tech-docs/006](./tech-docs/006-execution-model-waves-and-ledger.md).
 
-## Phoenix Prerequisite
+## Go Rewrite Prerequisite
 
-The [AyoKoding Phoenix LiveView rewrite](../ayokoding-app-web/README.md) must complete before the remaining work in this plan resumes. Keep its current worktree checkpoint and completed evidence intact. This plan retains ownership of course authoring and its mapping; do not inspect or consume unmerged work from the Phoenix worktree. After Phoenix, follow the live DAG: this plan may run alongside other AyoKoding plans that are not its declared predecessors, and it reconciles all shared content against merged `main` at each delivery boundary.
+The [AyoKoding Go and htmx rewrite](../ayokoding-app-web/README.md) must complete before the remaining work in this plan resumes. Keep its current worktree checkpoint and completed evidence intact. This plan retains ownership of course authoring and its mapping; do not inspect or consume unmerged work from the Go rewrite worktree. After the Go rewrite, follow the live DAG: this plan may run alongside other AyoKoding plans that are not its declared predecessors, and it reconciles all shared content against merged `main` at each delivery boundary.
 
 ## Navigation
 

@@ -2,7 +2,7 @@
 
 Depends-on: [ayokoding-app-web]
 
-> **Status:** Backlog. Do not execute until the user gives an explicit execution command and every predecessor declared in this README has completed, including the Podman migration and Phoenix rewrite.
+> **Status:** Backlog. Do not execute until the user gives an explicit execution command and every predecessor declared in this README has completed, including the Podman migration and Go rewrite.
 >
 > **Plan quality gate:** not run yet, so no verdict exists. By the user's decision of 2026-10-09 it
 > was not run while the plan was written; it runs at the start of execution, as the first item of
@@ -106,9 +106,9 @@ Quality Gate → harness green → filler guard, and every loop stops after 2 cy
 for the user before the end-state steps. The guard and its baseline are built first, test-first, so every
 course is measured against it as it lands. See [tech-docs/006](./tech-docs/006-execution-model.md).
 
-## Phoenix Prerequisite
+## Go Rewrite Prerequisite
 
-The [AyoKoding Phoenix LiveView rewrite](../../in-progress/ayokoding-app-web/README.md) must complete before this plan starts. This plan retains ownership of its AyoKoding content and source files. Phoenix may reconcile the merged results at its own delivery boundaries after this plan completes.
+The [AyoKoding Go and htmx rewrite](../../in-progress/ayokoding-app-web/README.md) must complete before this plan starts. This plan retains ownership of its AyoKoding content and source files. The Go rewrite may reconcile the merged results at its own delivery boundaries after this plan completes.
 
 ## Navigation
 

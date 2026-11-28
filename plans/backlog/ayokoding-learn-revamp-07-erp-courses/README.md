@@ -2,7 +2,7 @@
 
 Depends-on: [ayokoding-app-web, ayokoding-learn-revamp-06-accounting-courses]
 
-> **Status:** Backlog. Do not execute until the user gives an explicit execution command and every predecessor declared in this README has completed, including the Podman migration and Phoenix rewrite.
+> **Status:** Backlog. Do not execute until the user gives an explicit execution command and every predecessor declared in this README has completed, including the Podman migration and Go rewrite.
 >
 > **Plan quality gate:** not run yet, so no verdict exists. By the user's decision of 2026-10-09 it
 > was not run while the plan was written; it runs at the start of execution, as the first item of
@@ -63,7 +63,7 @@ The live execution blockers are the Depends-on entries at the top of this README
 
 This plan is row 07 of the 14-plan **AyoKoding Learn Revamp** series. Each plan is delivered from its own
 worktree. Live execution follows the plan-order DAG; the "Depends on" column and graph show which live
-predecessors must complete, while plans without an edge may run in parallel after Phoenix. The user resolved the series decisions on 2026-10-09; every decision this plan relies on is
+predecessors must complete, while plans without an edge may run in parallel after the Go rewrite. The user resolved the series decisions on 2026-10-09; every decision this plan relies on is
 copied into [brd.md](./brd.md#resolved-series-decisions-this-plan-relies-on).
 
 | NN  | Plan suffix                   | Scope                                                                                         | Series inputs    |
@@ -94,9 +94,9 @@ the two ERP paths are restructured and the pending mechanism is deleted, test fi
 AAOIFI link in a browser before the PR is marked ready. See
 [tech-docs/007](./tech-docs/007-execution-batching-and-ledger.md).
 
-## Phoenix Prerequisite
+## Go Rewrite Prerequisite
 
-The [AyoKoding Phoenix LiveView rewrite](../../in-progress/ayokoding-app-web/README.md) must complete before this plan starts. This plan retains ownership of its AyoKoding content and source files. Phoenix may reconcile the merged results at its own delivery boundaries after this plan completes.
+The [AyoKoding Go and htmx rewrite](../../in-progress/ayokoding-app-web/README.md) must complete before this plan starts. This plan retains ownership of its AyoKoding content and source files. The Go rewrite may reconcile the merged results at its own delivery boundaries after this plan completes.
 
 ## Navigation
 

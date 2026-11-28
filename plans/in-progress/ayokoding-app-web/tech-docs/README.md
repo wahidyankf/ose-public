@@ -16,6 +16,13 @@ architecture documents remain honest about what currently exists.
    fragment endpoints, retained old tRPC boundary, and attributable wire recipes.
 5. [Decisions and file impact](./005-decisions-and-file-impact.md) — alternatives, annotated file
    tree, concrete rule/docs impacts, and rollback.
+6. [Parity program design](./006-parity-program-design.md) — the audit behind the 2026-11-28
+   amendment, the real-corpus, content-tree, URL-compatibility, discovery, caching, and
+   design-parity contracts.
+7. [E2E suites](./007-e2e-suites.md) — the two
+   rebuilt e2e homes and the retry-free rules.
+8. [BDD delta map](./008-bdd-delta-map.md) — every new or changed scenario, its durable title, tags,
+   and layer ownership.
 
 The [File-Impact Analysis](./005-decisions-and-file-impact.md#file-impact-analysis) is the primary
 scope view. The [delivery checklist](../delivery.md) owns execution actions and their dependency

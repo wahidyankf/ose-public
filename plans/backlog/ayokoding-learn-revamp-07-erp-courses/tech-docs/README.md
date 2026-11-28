@@ -59,7 +59,7 @@ The annotated, root-relative file tree is owned by [010-file-impact.md](./010-fi
   inside the PostgreSQL courses that use it from Python, never installed in the repository
   ([004](./004-code-runtime-and-run-yaml.md#postgresql-example-shape)).
   Plans 01 to 06 provide source context when this plan starts. Plan 07 waits for its declared
-  predecessors, including plan 06; other live AyoKoding plans may proceed in parallel after Phoenix
+  predecessors, including plan 06; other live AyoKoding plans may proceed in parallel after the Go rewrite
   when their declared dependencies are complete.
 
 - **Plan 02** (merged first): the `phases`/`assumes` manifest model, `status: outline`, the integrity rules

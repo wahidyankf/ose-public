@@ -289,7 +289,7 @@ Phase 0 opens no PR. Its evidence rides the delivery PR.
 - [ ] [AI] **Capstone source baseline:** list the eight capstone `_index.md` files named in this
       plan's syllabus and inspect each current `status`. Record which remain outlines and any that
       changed on merged `main`; do not use the repository-wide outline count as a gate because other
-      AyoKoding plans may run independently after Phoenix. Preserve the scope and test only the
+      AyoKoding plans may run independently after the Go rewrite. Preserve the scope and test only the
       eight capstones this plan owns.
 - [ ] [AI] **Name reconciliation:** for each name below, run `rtk git grep -n "<name>" origin/main -- apps specs`
       and record the merged file and spelling in a name map in the baseline evidence:

@@ -5,20 +5,28 @@
 All ADD operations belong to the new loopback Go origin; they do not replace an operation on
 the existing server. `APP` below is `http://localhost:3102` for development and
 `http://localhost:3191` for the owned test server. Canonical/discovery URLs use that configured
-origin, never an arbitrary request Host header. These are browser HTML and htmx fragment
-interfaces, not a new REST/GraphQL API. No OpenAPI/AsyncAPI/client generation is required.
+origin, never an arbitrary request Host header. The configured origin is `AYOKODING_WEB_SITE_URL`
+(default `https://www.ayokoding.com`, see [006](./006-parity-program-design.md#discovery-documents-and-origin-g6));
+the `localhost` examples below assume local and test runs set it to the server's own origin. These are
+browser HTML and htmx fragment interfaces, not a new REST/GraphQL API. No OpenAPI/AsyncAPI/client
+generation is required.
 
-| Action | Operation                                                                     | Packet                                      |
-| ------ | ----------------------------------------------------------------------------- | ------------------------------------------- |
-| ADD    | Canonical pages under `/{locale}/learn/...` (courses, lessons, paths, legacy) | [Page navigation](#page-navigation)         |
-| ADD    | `GET /`, uppercase-locale entries, and the ordered legacy redirect table      | [Permanent redirects](#permanent-redirects) |
-| ADD    | `GET /sitemap.xml`                                                            | [Sitemap](#sitemap)                         |
-| ADD    | `GET /feed.xml`                                                               | [RSS](#rss)                                 |
-| ADD    | `GET /robots.txt`                                                             | [Robots](#robots)                           |
-| ADD    | `GET /htmx/search` fragment                                                   | [Search fragment](#search-fragment)         |
-| ADD    | `GET /htmx/benchmark` fragment                                                | [Benchmark fragment](#benchmark-fragment)   |
-| ADD    | `GET /htmx/calculator` fragment                                               | [Calculator fragment](#calculator-fragment) |
-| RETAIN | Existing origin's `GET /api/trpc/{procedures}`                                | [Old tRPC boundary](#old-trpc-boundary)     |
+| Action | Operation                                                                                     | Packet                                            |
+| ------ | --------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| ADD    | Canonical pages under `/{locale}/learn/...` (courses, lessons, paths, legacy)                 | [Page navigation](#page-navigation)               |
+| ADD    | Every other authored page and section: `GET /{locale}/{slug...}`; nested lessons at any depth | [Generic content pages](#generic-content-pages)   |
+| ADD    | `GET /{locale}/browse` and `GET /{locale}/tools`                                              | [Browse and tools index](#browse-and-tools-index) |
+| ADD    | Cache validators and cache policy on every response                                           | [Production caching](#production-caching)         |
+| ADD    | Crawl contract over the previous site's URLs                                                  | [URL compatibility](#url-compatibility)           |
+| ADD    | `GET /`, uppercase-locale entries, and the ordered legacy redirect table                      | [Permanent redirects](#permanent-redirects)       |
+| ADD    | `GET /sitemap.xml`                                                                            | [Sitemap](#sitemap)                               |
+| ADD    | `GET /feed.xml`                                                                               | [RSS](#rss)                                       |
+| ADD    | `GET /robots.txt`                                                                             | [Robots](#robots)                                 |
+| ADD    | `GET /htmx/search` fragment                                                                   | [Search fragment](#search-fragment)               |
+| ADD    | `GET /htmx/benchmark` fragment                                                                | [Benchmark fragment](#benchmark-fragment)         |
+| ADD    | `GET /htmx/calculator` fragment                                                               | [Calculator fragment](#calculator-fragment)       |
+| RETAIN | Existing origin's `GET /api/trpc/{procedures}`                                                | [Old tRPC boundary](#old-trpc-boundary)           |
+| ABSENT | `GET /api/trpc/*` on the new origin answers the ordinary 404                                  | [Old tRPC boundary](#old-trpc-boundary)           |
 
 ## Common constraints
 
@@ -27,9 +35,10 @@ fragment handlers derive it from the mounted page route, never from a client-sup
 field. Source roots and dataset locations come from server configuration. Requests cannot select
 arbitrary files.
 
-HTML and discovery responses use `Cache-Control: no-store` locally so authoring reloads are
-observable; no CDN/hosting cache contract is designed. Generated assets use normal Go static
-file handling. Server errors disclose no source path, stack trace, environment value,
+Cache headers follow [Production caching](#production-caching): pages and discovery documents
+revalidate on every request with a strong `ETag`, fingerprinted assets are immutable, and fragments,
+errors, and fixture-mode responses are `no-store`. The fixture mode keeps `no-store` everywhere so
+authoring reloads stay observable. Server errors disclose no source path, stack trace, environment value,
 or browser storage. Log only sanitized operation identity and an error category; no progress
 record or salary query/fragment values. No endpoint persists browser state. HTTP reads are
 idempotent and share immutable catalog snapshots. A reload rebuilds public state from the
@@ -47,16 +56,18 @@ crawler. Method: GET, no body, `Accept: text/html`. Canonical routes follow the 
 exactly (bookmarks keep working); do not invent untranslated course destinations or new
 top-level sections:
 
-| Screen                            | Canonical route                                                                                |
-| --------------------------------- | ---------------------------------------------------------------------------------------------- |
-| Learn hub                         | `/{locale}/learn`                                                                              |
-| Course catalog                    | `/{locale}/learn/courses`                                                                      |
-| Course landing                    | `/{locale}/learn/courses/{course}`                                                             |
-| Lesson (`learning` or `drilling`) | `/{locale}/learn/courses/{course}/{learning\|drilling}/{lesson}`                               |
-| Paths hub and categories          | `/{locale}/learn/paths`, `/{locale}/learn/paths/{careers\|skills}`                             |
-| Path landing (variable depth)     | `/{locale}/learn/paths/{path-id...}`                                                           |
-| Legacy content                    | `/{locale}/learn/legacy/{rest...}`                                                             |
-| Tool pages                        | `/{locale}/tools`, `/{locale}/tools/ai-benchmark`, `/{locale}/tools/cost-of-living-calculator` |
+| Screen                            | Canonical route                                                                                   |
+| --------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Learn hub                         | `/{locale}/learn`                                                                                 |
+| Course catalog                    | `/{locale}/learn/courses`                                                                         |
+| Course landing                    | `/{locale}/learn/courses/{course}`                                                                |
+| Lesson (`learning` or `drilling`) | `/{locale}/learn/courses/{course}/{learning\|drilling}/{lesson...}` (the lesson may be nested)    |
+| Paths hub and categories          | `/{locale}/learn/paths`, `/{locale}/learn/paths/{careers\|skills}`                                |
+| Path landing (variable depth)     | `/{locale}/learn/paths/{path-id...}`                                                              |
+| Legacy content                    | `/{locale}/learn/legacy/{rest...}`                                                                |
+| Tool pages                        | `/{locale}/tools`, `/{locale}/tools/ai-benchmark`, `/{locale}/tools/cost-of-living-calculator`    |
+| Browse index                      | `/{locale}/browse`                                                                                |
+| Any other authored page           | `/{locale}/{slug...}`, for example `/en/rants/2023/...`, `/id/belajar/...`, `/en/about-ayokoding` |
 
 Locale is validated as `en|id`. Path, course, lesson, and kind segments are validated;
 unsafe segments and unknown identities return the locale's missing-page result.
@@ -81,17 +92,14 @@ Accept: text/html
 ```http
 HTTP/1.1 200 OK
 Content-Type: text/html; charset=utf-8
-Cache-Control: no-store
+Cache-Control: public, max-age=0, must-revalidate
 
 <!DOCTYPE html>
 <html lang="en"><head><title>AyoKoding</title></head><body>...</body></html>
 ```
 
 The body example is schematic; assert semantic elements and source content, not a fabricated exact
-whole document. Compatibility: old origin remains live; rollback stops only the new app. Proof:
-`content/content-rendering.feature`, titles “An ordinary content request contains readable
-server-rendered HTML”, “Draft content stays hidden unless draft viewing is enabled”, and “A
-missing page returns the locale's not-found experience”; Unit, Integration, E2E all apply.
+whole document. Compatibility: old origin remains live; rollback stops only the new app. Proof: `content/content-rendering-http.feature`, titles “A lesson page is readable without browser scripts”, “A draft lesson's route returns not found” (fixture), and “A missing page returns the locale's not-found experience”; Unit, Integration, E2E all apply.
 
 ### Page navigation detailed scenarios
 
@@ -152,13 +160,11 @@ Host: localhost:3102
 ```http
 HTTP/1.1 308 Permanent Redirect
 Location: /en?from=local
-Cache-Control: no-store
+Cache-Control: public, max-age=3600
 ```
 
 Compatibility: old server rules remain untouched; new rules follow current merged behavior.
-Proof: `navigation/routes-and-navigation.feature`, “The root enters the default locale”,
-“Uppercase locale entries resolve to lowercase URLs”, and “An established redirect preserves its
-current destination and query”; Unit, Integration, and E2E apply.
+Proof: `navigation/routes-and-navigation-http.feature`, “The root enters the default locale”, “Uppercase locale entries resolve to lowercase URLs”, and “An old URL redirects 308 to its current page”; Unit, Integration, and E2E apply.
 
 ### Redirect detailed scenarios
 
@@ -176,12 +182,153 @@ Scenario: Leave an unmatched missing route as missing
   And no source path or private browser value is disclosed
 ```
 
+## Generic content pages
+
+Owner: `internal/web` generic route and the content tree (`P4-Tree`); caller: browser or crawler.
+Method GET, no body, `Accept: text/html`. Route `GET /{locale}/{slug...}` registered after every
+specific route. `slug` is the slash-joined path below the locale root and may be any depth. It is
+validated with `SafePath`: each segment is non-empty ASCII letters, digits, `-`, `_`, or `.` inside a
+name, and `.`, `..`, empty segments, separators, whitespace, NUL, and percent-encoded separators are
+refused. A slug that names an `_index.md` directory returns that section page; a slug that names a
+Markdown file returns that page; the locale root `/en` and `/id` keep their own route. Nested lessons
+under `/{locale}/learn/courses/{course}/{learning|drilling}/{lesson...}` use the same resolver and keep
+their path context behaviour.
+
+Success: 200, `text/html; charset=utf-8`, one h1, title, description, canonical and alternate links
+under the configured origin, sidebar, breadcrumbs, table of contents, and previous and next links
+where the existing content rules produce them. Failure: an unknown locale, unknown or unsafe slug, or
+hidden draft returns the localized 404 HTML; an unavailable catalog returns the generic 500. No
+authentication, pagination, version field, or generated client applies; reads are replay-safe over one
+snapshot.
+
+```http
+GET /id/belajar/manusia HTTP/1.1
+Host: localhost:3102
+Accept: text/html
+```
+
+```http
+HTTP/1.1 200 OK
+Content-Type: text/html; charset=utf-8
+Cache-Control: public, max-age=0, must-revalidate
+ETag: "g12-id-belajar-manusia"
+```
+
+The `ETag` value is schematic; assert its presence, strength, and per-page uniqueness, not a literal.
+Compatibility: every slug the old `[...slug]` route served keeps its path; rollback reverts the
+route registration and the loader extension together. Proof titles in
+`content/content-tree-routes.feature` (see [008](./008-bdd-delta-map.md)); Unit, Integration, E2E apply.
+
+### Generic content detailed scenarios
+
+These expand the canonical titles in [008](./008-bdd-delta-map.md). The Examples rows of the authored-page outline are the ten kinds listed in the [product requirements](../prd.md).
+
+```gherkin
+Scenario Outline: Every kind of authored page is served at its canonical path
+  Given the corpus contains a <kind> page
+  When a visitor requests its canonical path
+  Then the response is successful HTML for that page in its locale
+
+  Examples:
+    | kind                                   |
+    | nested lesson several folders deep     |
+    | section index                          |
+    | course overview                        |
+    | legacy                                 |
+    | English rant                           |
+    | English about and terms                |
+    | Indonesian belajar                     |
+    | Indonesian celoteh                     |
+    | Indonesian konten-video                |
+    | Indonesian about and terms             |
+
+Scenario: A nested lesson requested with its folders collapsed is not found
+  Given a course holds a lesson inside a sub-folder of its learning track
+  When a visitor requests the same lesson with its folders collapsed
+  Then the response is the not-found page
+
+Scenario: A section path lists its children by authored title and order
+  Given a section holds child pages with authored titles and an authored order
+  When a visitor requests the section path
+  Then the response lists each child by its authored title in the authored order
+
+Scenario: A path with traversal or encoded separators returns the not-found page
+  Given a request path contains traversal segments or encoded separators
+  When a visitor requests it
+  Then the response is the not-found page
+  And no filesystem path appears in the body or headers
+
+Scenario: A specific route wins over the generic content route
+  Given the generic route is registered
+  When a visitor requests the course catalog and a path landing
+  Then each response comes from its specific handler, not the generic page
+
+Scenario: A content page carries its title, description, and canonical URL
+  Given a content page with an authored title and description
+  When a visitor requests the page
+  Then the head carries the title, the description, and a canonical link under the configured origin
+```
+
+## Browse and tools index
+
+Owner: `internal/web` entry-page handlers (`P5-Surfaces`); caller: browser or crawler. GET
+`/{locale}/browse` and `/{locale}/tools`, `Accept: text/html`, no parameters. `/browse` lists the
+locale's top-level section nodes (English: `learn`, `rants`; Indonesian: `belajar`, `celoteh`,
+`konten-video`) from the tree, in tree order, matching `BrowseIndex` in the old app. `/tools` lists the
+two tools with their localized link text and description, matching `tools/page.tsx`. `/en` and `/id`
+render the old landing's content: section cards and the path cards from loaded manifests
+(`[locale]/page.tsx`, `LANDING_SECTION_OVERRIDES`, `mergeLandingSections`), replacing the stub
+`templates/home.html`. Success 200 HTML. An unsupported locale returns the 404. No private state is
+embedded.
+
+```http
+GET /en/tools HTTP/1.1
+Host: localhost:3102
+Accept: text/html
+```
+
+```http
+HTTP/1.1 200 OK
+Content-Type: text/html; charset=utf-8
+Cache-Control: public, max-age=0, must-revalidate
+```
+
+Compatibility: new routes on the new origin; no old route changes. Proof: `navigation/entry-pages.feature`, “The locale landing page lists the sections and paths that exist”, and `navigation/entry-pages-http.feature`, “The browse page lists every top-level section of the locale” and “The tools index lists both tools with their descriptions in the locale”; all three layers.
+
+### Browse and tools detailed scenarios
+
+These expand the canonical titles in [008](./008-bdd-delta-map.md).
+
+```gherkin
+Scenario: The browse page lists every top-level section of the locale
+  Given the English tree has two top-level sections and the Indonesian tree has three
+  When a reader requests the browse page of each locale
+  Then each page lists exactly its locale's sections with links in that locale
+
+Scenario: The tools index lists both tools with their descriptions in the locale
+  When a reader requests the tools index in a locale
+  Then both tools appear with that locale's link text and description
+  And each link opens its tool page
+
+Scenario: The locale landing page lists the sections and paths that exist
+  Given the corpus has sections and the manifests define paths
+  When a reader requests a locale landing page
+  Then the page shows a card for each top-level section and for each landing path
+  And no card names an item that the corpus or manifests do not contain
+```
+
 ## Sitemap
 
 Owner: discovery handler, crawler caller. GET `/sitemap.xml`, no parameters/body,
-`Accept: application/xml`. Success 200, XML sitemap media type and namespace, one current canonical
-published route per existing sitemap contract, with current dates/frequency/priority semantics.
-Draft and removed routes are absent. Failure: generic 500 on unavailable catalog; malformed query
+`Accept: application/xml`. Success 200, XML sitemap media type and namespace, with absolute `<loc>`
+values under the configured origin. The set is the union of each locale root, `/{locale}/browse`,
+`/{locale}/tools` with both tool pages, every published content node including section pages, the
+course catalog and course landings, and every path landing; it is a superset of the old site's
+sitemap, and every listed URL answers 200 directly (see [URL compatibility](#url-compatibility)).
+`lastmod`, frequency, and priority follow `sitemap.ts` (frontmatter date, `weekly`, 0.8 for sections
+and 0.6 for pages). The file lists at most 50,000 URLs, the
+[sitemaps.org](https://www.sitemaps.org/protocol.html) limit; a larger corpus fails the sitemap
+scenario rather than serving an invalid file. Draft and removed routes are absent. Failure: generic 500 on unavailable catalog; malformed query
 fields are ignored because none are part of this operation. Repeat/concurrent reads use complete
 snapshots and create no state; no private fields, auth, pagination, or codegen.
 
@@ -198,13 +345,15 @@ Accept: application/xml
 </urlset>
 ```
 
-Compatibility and rollback: new origin only, old document unchanged. Proof title “The sitemap
-reflects the current published corpus” in `discovery/discovery-documents.feature`; all three layers.
+Compatibility and rollback: new origin only, old document unchanged. Proof titles “The sitemap
+reflects the current published corpus”, “The sitemap lists every canonical route class under the
+configured origin”, and “A sitemap stays within the protocol's size limit” in
+`discovery/discovery-documents.feature`; all three layers.
 
 ### Sitemap detailed scenarios
 
 ```gherkin
-Scenario: Publish only allowed canonical sitemap routes
+Scenario: The sitemap lists every canonical route class under the configured origin
   Given the configured corpus contains published, draft, and removed page identities
   When a crawler requests the sitemap repeatedly
   Then each successful response lists only canonical published routes
@@ -215,6 +364,12 @@ Scenario: Report an unavailable catalog without exposing its location
   When a crawler requests the sitemap
   Then the server returns a generic server error
   And the response contains no filesystem path
+
+Scenario: A sitemap stays within the protocol's size limit
+  Given the configured corpus holds more canonical routes than one sitemap file may list
+  When a crawler requests the sitemap
+  Then every sitemap file stays within the sitemap protocol's URL and byte limits
+  And the sitemap index lists each file under the configured origin
 ```
 
 ## RSS
@@ -222,7 +377,9 @@ Scenario: Report an unavailable catalog without exposing its location
 Owner: discovery handler, feed-reader caller. GET `/feed.xml`, no body/query,
 `Accept: application/rss+xml`. Success 200, `application/rss+xml; charset=utf-8`, RSS 2.0 channel,
 current title/link/description/language/Atom self-link, and published English non-section items
-with existing title/link/guid/date/description semantics. Preserve current traversal/order behavior
+with existing title/link/guid/pubDate/description semantics (`feed.xml/route.ts`: CDATA-wrapped
+title and description, `pubDate` from the frontmatter date, absolute links under the configured
+origin). Preserve current traversal/order behavior
 using the captured corpus; do not introduce a new sorting policy. Failure: generic 500 on
 unavailable catalog. Unknown query fields are ignored. All common privacy, snapshot, repeat-read,
 compatibility and rollback constraints apply; no auth/pagination/generated client.
@@ -243,7 +400,7 @@ Proof title “The feed exposes the current published entries” in the discover
 ### RSS detailed scenarios
 
 ```gherkin
-Scenario: Read the published feed without private or draft entries
+Scenario: The feed exposes the current published entries
   Given the corpus contains published English articles and draft or non-English pages
   When a reader reads the feed twice
   Then the successful feed retains the existing eligible entries and ordering
@@ -259,7 +416,7 @@ Scenario: Fail a feed request when its catalog is unavailable
 
 Owner: discovery handler, crawler caller. GET `/robots.txt`, no parameters/body,
 `Accept: text/plain`. Success 200, `text/plain; charset=utf-8`, existing `User-agent: *`,
-`Allow: /`, and sitemap reference using the configured local origin. No user-provided values,
+`Allow: /`, and an absolute sitemap reference using the configured origin. No user-provided values,
 private state, auth, pagination, concurrency/version, or generated client. This static response
 does not depend on catalog availability; missing arbitrary `.txt` routes return normal 404 HTML.
 Compatibility/rollback: new origin only.
@@ -282,7 +439,7 @@ all layers.
 ### Robots detailed scenarios
 
 ```gherkin
-Scenario: Read stable local robots instructions
+Scenario: Robots instructions retain the current crawling contract
   Given the server has its configured local origin
   When a crawler reads the robots document repeatedly
   Then the response is successful plain text allowing the existing crawl scope
@@ -322,7 +479,12 @@ in that feature as part of implementation.
 ### Search detailed scenarios
 
 ```gherkin
-Scenario: Search within the mounted locale
+Scenario: Search finds a page that exists only in the real corpus
+  Given a page exists in the real corpus and in no fixture
+  When a reader searches for a term from that page
+  Then the search fragment lists that page
+
+Scenario: Search covers the Indonesian trees and stays within the locale
   Given matching published content exists in both locales
   When a reader submits a valid query in one locale
   Then only that locale's published content and tools appear
@@ -434,6 +596,159 @@ Scenario: Reject a structured calculator input
   Then an inline invalid-filters state appears without exposing source details
 ```
 
+## URL compatibility
+
+Owner: the redirect middleware, the generic route, and the crawl suites (`P4-Redirects`,
+`P7-Crawl`); caller: a crawler, the parity suites, and the read-only proof against a configurable `BASE_URL`. The
+contract is defined in [006](./006-parity-program-design.md#url-compatibility-contract-and-the-parity-crawl-g9-owner-decision-2):
+a URL is compatible when `GET` answers 200, or a chain of at most five permanent 308 responses that
+ends in 200. The committed inventory is `apps/ayokoding-web-be-e2e/fixtures/www-url-inventory.json`
+(_New_), with the shape below; the inventory may be regenerated from a running old site, as `P7-Crawl` does, with the generator's own documented inputs.
+
+```json
+{
+  "sourceRevision": "40-character ose-public commit of the old app",
+  "urls": ["/en", "/en/learn/courses/just-enough-python"],
+  "redirects": [{ "source": "/EN", "status": 308, "location": "/en" }]
+}
+```
+
+The three old temporary redirects (`/en/learn/software-engineering/software-architecture/by-example`,
+`/en/learn/software-engineering/system-design/by-example`,
+`/en/learn/information-security/by-example`) are recorded with `"status": 307` in the inventory because
+that is what the old app answered; the new app answers 308 with the same `Location`, and the crawler
+accepts a 308 where the inventory says 307 only for those three rows. `/api/trpc/*` is not in the
+inventory.
+
+```http
+GET /en/learn/information-security/by-example HTTP/1.1
+Host: localhost:3102
+```
+
+```http
+HTTP/1.1 308 Permanent Redirect
+Location: /en/learn/information-security/by-example/foundations
+Cache-Control: public, max-age=3600
+```
+
+Errors: any 404, 5xx, 307, loop, or sixth hop is a crawl failure that lists the URL, each hop, and
+the first response status. No authentication applies; the crawl is read-only and sends one request per
+URL with at most eight in flight. Compatibility: additive; rollback removes the suite, not behaviour.
+
+### URL compatibility detailed scenarios
+
+These five scenarios are durable product scenarios: they are the five `navigation/url-compatibility.feature` rows of
+[008](./008-bdd-delta-map.md). The crawl function and the Go chain-follower are test tools, proved by ordinary tests
+beside each implementation (Go chain-follower in `P4-Redirects`, TypeScript crawler adapter in `P7-Crawl`); the
+scenarios run against them.
+
+```gherkin
+Scenario: Every URL of the previous site still answers
+  Given the inventory of the previous site's URLs and redirect sources
+  When a crawler requests each one
+  Then each answers 200, or a chain of at most five permanent 308 responses that ends in 200
+  And none answers 404
+
+Scenario: Every sitemap entry of this site answers directly
+  Given the new site's sitemap lists its canonical URLs
+  When a crawler requests each listed URL
+  Then each answers 200 without a redirect
+
+Scenario Outline: A temporary redirect of the previous site becomes permanent
+  When a visitor requests "<source>"
+  Then the response permanently redirects with status 308 to "<destination>"
+
+  Examples:
+    | source                                                              | destination                                                             |
+    | /en/learn/software-engineering/software-architecture/by-example     | /en/learn/software-engineering/software-architecture/by-example/overview |
+    | /en/learn/software-engineering/system-design/by-example             | /en/learn/software-engineering/system-design/by-example/overview        |
+    | /en/learn/information-security/by-example                           | /en/learn/information-security/by-example/foundations                   |
+
+Scenario: A redirect chain ends in a successful page within five hops
+  Given a redirect chain of five permanent 308 responses that ends in a page
+  When a crawler follows it
+  Then the crawl passes and no request is made after the fifth hop
+
+Scenario: The retired RPC interface is not served
+  When a visitor requests "/api/trpc/meta.health"
+  Then the response is the ordinary not-found page without internals
+```
+
+## Production caching
+
+Owner: a single response-header helper in `internal/web` (`P5-Cache`), replacing the thirteen
+`Cache-Control: no-store` call sites; caller: browser, a caching reverse proxy or CDN in front, crawler. Policy by response class is
+the table in [006](./006-parity-program-design.md#production-caching-g7). Conditional requests: a `GET`
+with `If-None-Match` equal to the current strong `ETag` returns 304 with no body and the same
+`Cache-Control` and `ETag`. The `ETag` is derived from the snapshot generation and the route, so two
+routes never share one and a reload changes all of them. Assets are served under a content-hashed URL
+(`?v=<hash>` on the link emitted by the layout). A request whose `v` matches the file's hash is
+`public, max-age=31536000, immutable`; a request without `v`, or with a stale one, is still served and
+revalidates like a page. The allowlist of served names does not change: unknown names stay 404. Fragments, the 404 and 500 pages, and every
+response in fixture mode keep `no-store`. Permanent redirects carry `public, max-age=3600`.
+
+```http
+GET /en HTTP/1.1
+Host: localhost:3102
+If-None-Match: "g12-en"
+```
+
+```http
+HTTP/1.1 304 Not Modified
+Cache-Control: public, max-age=0, must-revalidate
+ETag: "g12-en"
+```
+
+Compatibility: the old app sent `public, max-age=0, must-revalidate` for locale content, so pages keep
+their revalidation behaviour. Rollback: revert the helper; no data changes. Proof titles in
+`discovery/http-caching.feature`; all three layers.
+
+### Production caching detailed scenarios
+
+These expand the canonical titles of [008](./008-bdd-delta-map.md) for AC-19.
+
+```gherkin
+Scenario: A page can be revalidated without a body
+  Given a reader holds a page response and its validator
+  When the reader requests the same page with that validator
+  Then the response is 304 with no body
+  And its cache headers equal the original response's
+
+Scenario Outline: Responses that must not be stored say so
+  When a reader requests a <case>
+  Then the response carries Cache-Control no-store
+
+  Examples:
+    | case            |
+    | search fragment |
+    | missing page    |
+
+Scenario: A catalog failure response is not stored
+  Given the catalog is unavailable
+  When a reader requests a page
+  Then the response carries Cache-Control no-store
+
+Scenario: Two different pages never share a validator
+  Given two different pages with the same locale
+  When a reader requests each page
+  Then the two ETag values differ
+
+Scenario: Fingerprinted assets are cached for a year
+  Given a fingerprinted asset
+  When a reader requests it
+  Then the response carries Cache-Control public, max-age=31536000, immutable
+
+Scenario: An asset requested without its fingerprint is revalidated
+  Given the same asset requested without its fingerprint
+  When a reader requests it
+  Then the response carries Cache-Control public, max-age=0, must-revalidate and an ETag
+
+Scenario: A permanent redirect may be cached briefly
+  Given a permanent redirect
+  When a reader requests it
+  Then the response carries Cache-Control public, max-age=3600
+```
+
 ## Old tRPC boundary
 
 The retained origin is `http://localhost:3101`, not APP. It continues serving the existing
@@ -443,12 +758,14 @@ The retained origin is `http://localhost:3101`, not APP. It continues serving th
 schemas, tRPC encoding/error behavior, locale constraints, authentication posture, and cache
 behavior remain authoritative there. No operation is deleted or moved. Neighboring old-app
 changes are typed tool-data adapters only, with unchanged public behavior. Existing old-app Unit
-and E2E tests prove that no wire contract changed; no Go tRPC compatibility layer is created.
+and E2E tests prove that no wire contract changed; no Go tRPC compatibility layer is created. On the
+new origin `GET /api/trpc/{anything}` is not a route: it answers the ordinary 404
+HTML with no internals, and the durable scenario “The retired RPC interface is not served” in the URL compatibility section pins that decision.
 
 ## Manual wire recipe registry
 
-Use the literal commands in [delivery](../delivery.md#manual-http-and-fragment-verification).
-Each changed HTTP operation has success and failure proof. The discovery-handler failure
+Use the literal commands in the [manual HTTP recipe registry](../delivery.md#manual-http-recipe-registry), which
+holds one success and one failure recipe for each new HTTP operation; the Phase 8 block is the pre-amendment capture. The discovery-handler failure
 fixture is enabled only by the owned `test` bootstrap with a fixture source adapter;
 ordinary dev configuration cannot select it. Fragment endpoints are exercised with plain HTTP
 requests carrying `HX-Request: true` plus real-browser htmx swaps, with sanitized browser

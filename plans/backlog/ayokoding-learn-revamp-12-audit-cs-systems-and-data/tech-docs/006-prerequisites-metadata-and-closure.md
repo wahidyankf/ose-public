@@ -53,7 +53,7 @@ Twelve prerequisites point outside the 34 courses. Six are language primers or t
 (`just-enough-python`, `just-enough-go`, `just-enough-c`, `just-enough-bash`, `just-enough-elixir`,
 `just-enough-rust`) and one is `software-engineering-practices` (also plan 11). The other five
 (`backend-essentials`, `backend-at-scale`, `capstone-first-working-software`, `engineering-management`,
-`software-product-engineering`) belong to plan 13. These plans may execute in parallel after Phoenix; revalidate
+`software-product-engineering`) belong to plan 13. These plans may execute in parallel after the Go rewrite; revalidate
 the merged course state and prerequisite graph at each delivery boundary rather than treating their status as a gate.
 
 ## Order Inside the Plan

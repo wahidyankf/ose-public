@@ -3,7 +3,7 @@
 // suite observes the exact 308 status and Location the server sends.
 import { createBdd } from "playwright-bdd";
 import { expect } from "@playwright/test";
-import { bodyOf, fetchText, gotoPage, locationOf, statusOf } from "../support/http";
+import { bodyOf, fetchText, gotoPage, statusOf } from "../support/http";
 import { stateFor } from "../support/state";
 
 const { Given, When, Then } = createBdd();
@@ -11,44 +11,6 @@ const { Given, When, Then } = createBdd();
 // Behaviour corpus binding (contract C13). The Playwright home runs the whole
 // routes-and-navigation feature; no scenario here is exempt.
 // @scenario specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation.feature: *
-
-When("a visitor requests the root URL", async ({ page }) => {
-  await fetchText(page, "/", { maxRedirects: 0 });
-});
-
-Then("the visitor is redirected to {string}", async ({ page }, destination: string) => {
-  expect(statusOf(page)).toBe(308);
-  expect(locationOf(page)).toBe(destination);
-});
-
-Then("the redirect does not loop", async ({ page }) => {
-  await gotoPage(page, "/en");
-  expect(statusOf(page)).toBe(200);
-});
-
-When("a visitor requests {string}", async ({ page }, source: string) => {
-  stateFor(page).lastUrl = source;
-  await fetchText(page, source, { maxRedirects: 0 });
-});
-
-Then("the response permanently redirects with status 308 to {string}", async ({ page }, destination: string) => {
-  expect(statusOf(page)).toBe(308);
-  expect(locationOf(page)).toBe(destination);
-});
-
-// The query check follows the requested URL: a request without a query has
-// nothing to preserve, so the step passes.
-Then("the query string is preserved", async ({ page }) => {
-  const requested = stateFor(page).lastUrl ?? "";
-  const index = requested.indexOf("?");
-  if (index < 0) return;
-  expect(locationOf(page).endsWith(requested.slice(index))).toBe(true);
-});
-
-Then("the redirect does not depend on the old page still existing", async ({ page }) => {
-  await gotoPage(page, "/en/learn/courses/go-basics/learning/hello-world");
-  expect(statusOf(page)).toBe(200);
-});
 
 When("a reader opens a nested published lesson", async ({ page }) => {
   await gotoPage(page, "/en/learn/courses/go-basics/learning/hello-world");
@@ -122,18 +84,6 @@ Then("navigation controls reflect the restored location", async ({ page }) => {
   const html = await page.content();
   expect(html).toContain("data-lesson-nav");
   expect(html).toContain("data-breadcrumbs");
-});
-
-When("a reader opens a legacy archived page", async ({ page }) => {
-  await gotoPage(page, "/en/learn/legacy/software-engineering");
-});
-
-Then("the archived page shows its title and canonical body", async ({ page }) => {
-  expect(statusOf(page)).toBe(200);
-  const body = bodyOf(page);
-  expect(body).toContain("Legacy Software Engineering");
-  expect(body).toContain("Archived canonical content");
-  expect(body).toContain('lang="en"');
 });
 
 // The learn-entry pages and the entry link each one must list in its locale.

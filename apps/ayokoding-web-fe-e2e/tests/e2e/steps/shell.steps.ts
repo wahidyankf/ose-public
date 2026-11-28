@@ -9,6 +9,14 @@ import { storedValue, THEME_KEY } from "../support/storage";
 import { stateFor } from "../support/state";
 
 const { Given, When, Then } = createBdd();
+
+// Focus-next-link key for the browser under test. WebKit on macOS does not move focus to links on plain Tab unless the
+// system "Press Tab to highlight each item" setting is on; Option+Tab (Playwright "Alt+Tab") focuses them. Chromium,
+// Firefox, and WebKit on other platforms focus links on Tab. Verified on this host: WebKit Tab leaves focus on BODY,
+// Alt+Tab focuses the skip link.
+function focusNextLinkKey(browserName: string): string {
+  return browserName === "webkit" && process.platform === "darwin" ? "Alt+Tab" : "Tab";
+}
 // Behaviour corpus binding (contract C13). The Playwright home runs the whole feature; no scenario is exempt.
 // @scenario specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature: *
 
@@ -54,9 +62,9 @@ Then("the active locale control matches the destination", async ({ page }) => {
   await expect(page.locator("[data-locale-active]")).toContainText("Indonesia");
 });
 
-When("a keyboard reader activates the skip-to-content link", async ({ page }) => {
+When("a keyboard reader activates the skip-to-content link", async ({ page, browserName }) => {
   await gotoPage(page, "/en");
-  await page.keyboard.press("Tab");
+  await page.keyboard.press(focusNextLinkKey(browserName));
   const active = await page.evaluate(() => document.activeElement?.className ?? "");
   expect(active).toContain("skip-link");
   stateFor(page).focus = "skip-link";

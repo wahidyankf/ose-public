@@ -4,7 +4,7 @@
 // after the suite finishes. The proof reads the configuration the suite runs
 // with; it starts no server and no browser.
 import { expect, test } from "@playwright/test";
-import config from "../../playwright.config";
+import config from "../../playwright.real-corpus.config";
 
 type OwnedServer = {
   command: string;

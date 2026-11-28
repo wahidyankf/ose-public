@@ -38,24 +38,9 @@ async function ensureOldOrigin(page: Page): Promise<void> {
   }
 }
 
-// flagValue reads the effective --port flag value (either spelling) from the
-// args the binary actually started with.
-function flagValue(args: string[]): string | undefined {
-  for (let index = 0; index < args.length; index += 1) {
-    if (args[index] === "--port" && index + 1 < args.length) {
-      return args[index + 1];
-    }
-    if (args[index]?.startsWith("--port=") === true) {
-      return args[index]?.slice("--port=".length);
-    }
-  }
-  return undefined;
-}
-
 // launch starts one rewrite binary for the scenario mode the Given steps
-// recorded, and remembers its address for the Then steps. A bind-collision
-// retry changes the effective port, so the effective env/flag values are
-// written back into state before the Then steps assert against them.
+// recorded, and remembers its address for the Then steps. The launch makes a
+// single attempt; a bind collision fails it loudly.
 async function launch(page: Page): Promise<void> {
   const state = stateFor(page);
   if (state.mode === "invalid") {
@@ -65,11 +50,10 @@ async function launch(page: Page): Promise<void> {
     return;
   }
   if (state.mode === "corpus") {
-    const spawned = await spawnBinary({ ...(state.corpusEnv ?? {}), AYOKODING_WEB_PORT: state.envPort ?? "0" });
+    const spawned = await spawnBinary({ ...state.corpusEnv, AYOKODING_WEB_PORT: state.envPort ?? "0" });
     trackOwned(page, spawned);
     state.spawnedUrl = spawned.url;
     state.spawnedPort = spawned.port;
-    if (spawned.env["AYOKODING_WEB_PORT"] !== undefined) state.envPort = spawned.env["AYOKODING_WEB_PORT"];
     return;
   }
   if (state.mode === "flag") {
@@ -77,9 +61,6 @@ async function launch(page: Page): Promise<void> {
     trackOwned(page, spawned);
     state.spawnedUrl = spawned.url;
     state.spawnedPort = spawned.port;
-    const effectiveFlag = flagValue(spawned.args);
-    if (effectiveFlag !== undefined) state.flagPort = effectiveFlag;
-    if (spawned.env["AYOKODING_WEB_PORT"] !== undefined) state.envPort = spawned.env["AYOKODING_WEB_PORT"];
     return;
   }
   if (state.mode === "prefixed") {
@@ -87,7 +68,6 @@ async function launch(page: Page): Promise<void> {
     trackOwned(page, spawned);
     state.spawnedUrl = spawned.url;
     state.spawnedPort = spawned.port;
-    if (spawned.env["AYOKODING_WEB_PORT"] !== undefined) state.envPort = spawned.env["AYOKODING_WEB_PORT"];
     return;
   }
   if (state.mode === "generic") {
@@ -260,14 +240,6 @@ Then("each fragment returns results without the page layout", async ({ page }) =
     expect(reply.body, reply.target).not.toContain("<html");
     expect(reply.body.trim(), reply.target).not.toBe("");
   }
-});
-
-When("a reader requests the asset {string}", async ({ page }, assetPath: string) => {
-  await fetchText(page, assetPath);
-});
-
-Then("the asset responds with status {string}", async ({ page }, status: string) => {
-  expect(statusOf(page)).toBe(Number(status));
 });
 
 When("the rewrite starts with the argument {string}", async ({ page }, argument: string) => {

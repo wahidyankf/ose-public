@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
-  "name": "ayokoding-web-e2e",
+  "name": "ayokoding-web-fe-e2e",
   "version": "0.1.0",
   "private": true,
   "volta": {

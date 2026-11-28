@@ -7,6 +7,6 @@
     "lib": ["ES2022", "DOM"],
     "resolveJsonModule": true
   },
-  "include": ["tests/**/*.ts", "playwright.config.ts", "playwright.focused.config.ts"],
+  "include": ["tests/**/*.ts", "playwright.real-corpus.config.ts"],
   "exclude": ["node_modules", "dist", "test-results", "playwright-report", ".features-gen"]
 }

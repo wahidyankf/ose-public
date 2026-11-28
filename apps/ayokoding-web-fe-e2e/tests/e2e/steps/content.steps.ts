@@ -14,6 +14,7 @@ import {
   primaryCourse,
   primaryPage,
   servedLearnPageWhere,
+  trackOverviewWhere,
 } from "../support/witness";
 
 const { Given, When, Then } = createBdd();
@@ -65,17 +66,17 @@ Then("the developer receives a diagnostic identifying the invalid source", async
   expect(stateFor(page).diagnostic).toContain("broken.md");
 });
 
+// Opens the lesson the Given recorded, so each scenario reads its own witness.
+When("a reader opens that lesson", async ({ page }) => {
+  const route = stateFor(page).lessonRoute;
+  if (route === undefined) throw new Error("the Given step recorded no lesson");
+  await gotoPage(page, route);
+});
+
 // The table witness is a served learn page whose prose (outside fenced code) carries a GFM table.
 Given("a lesson contains a table", async ({ page }) => {
   const route = servedLearnPageWhere((text) => /^\|.*\|\s*\n\|[-| :]+\|/m.test(outsideFences(text)), "a table").route;
   stateFor(page).lessonRoute = route;
-  await gotoPage(page, route);
-});
-
-// The shared When opens the lesson the Given recorded, so each scenario reads its own witness.
-When("a reader opens that lesson", async ({ page }) => {
-  const route = stateFor(page).lessonRoute;
-  if (route === undefined) throw new Error("the Given step recorded no lesson");
   await gotoPage(page, route);
 });
 
@@ -84,96 +85,175 @@ Then("the authored table renders with the established article styling", async ({
   await expect(page.locator(".article-body table").first()).toBeVisible();
 });
 
-// Fixture-owned: the real pipeline does not yet render task-list checkboxes (the sanitizer strips them) or raw
-// details blocks (the renderer omits raw HTML), so these rows run on the parity fixture (@fixture-until-p3-render).
-// Their real witnesses are the rules recorded in witness-rewrites-fe.md, applied when P3-Render removes the tag.
-Given("a lesson contains a {string} structure", async ({ page }, _structure: string) => {
-  const route = "/en/learn/courses/go-basics/learning/hello-world";
+// Witness rules for each authored structure. A task list is a served page with a checkbox item outside code; raw
+// details is a served page with a details block outside code.
+const structureWitnesses: Record<string, (text: string) => boolean> = {
+  "task list": (text) => /^\s*[-*] \[[ xX]\] /m.test(outsideFences(text)),
+  "raw details": (text) => /^<details[\s>]/m.test(outsideFences(text)),
+};
+
+Given("a lesson contains a {string} structure", async ({ page }, structure: string) => {
+  const rule = structureWitnesses[structure];
+  if (rule === undefined) throw new Error(`no real-corpus witness rule for ${structure}`);
+  const route = servedLearnPageWhere(rule, `a ${structure}`).route;
   stateFor(page).lessonRoute = route;
   await gotoPage(page, route);
 });
 
 Then("the authored {string} renders with the established article styling", async ({ page }, structure: string) => {
-  const markers: Record<string, string> = { "task list": "task-list", "raw details": "<details>" };
-  const marker = markers[structure];
-  if (marker === undefined) throw new Error(`no fixture marker for ${structure}`);
   expect(statusOf(page)).toBe(200);
-  expect(bodyOf(page)).toContain(marker);
-  expect(bodyOf(page)).toContain("article-body");
+  await expect(page.locator(".article-body").first()).toBeVisible();
+  if (structure === "task list") {
+    await expect(page.locator('.article-body input[type="checkbox"]').first()).toBeAttached();
+  } else if (structure === "raw details") {
+    await expect(page.locator(".article-body details").first()).toBeAttached();
+  } else {
+    throw new Error(`no rendered-result check for ${structure}`);
+  }
 });
 
-// Fixture-owned: the real lesson template emits no h1 for the page title yet, so this scenario runs only on the
-// parity fixture (@fixture-until-p3-render). Its real witness rule is recorded in witness-rewrites-fe.md.
+// The outline witness has a level-two and a level-three heading outside code, so the normalization has nesting to
+// order.
 Given("a lesson with nested headings is open for its outline", async ({ page }) => {
-  const route = "/en/learn/courses/go-basics/learning/hello-world";
+  const route = servedLearnPageWhere(
+    (text) => /^## /m.test(outsideFences(text)) && /^### /m.test(outsideFences(text)),
+    "nested level-two and level-three headings",
+  ).route;
   stateFor(page).lessonRoute = route;
   await gotoPage(page, route);
 });
 
 Then("the page has one title heading with a normalized body outline", async ({ page }) => {
-  const ones = bodyOf(page).split("<h1>").length - 1;
-  expect(ones).toBe(1);
-  expect(bodyOf(page)).toContain("<h2>");
+  expect(statusOf(page)).toBe(200);
+  // The title is the only h1: the lesson template emits it, and the body's headings are normalized below it.
+  await expect(page.locator(".article-body h1")).toHaveCount(1);
+  await expect(page.locator(".article-body h2").first()).toBeVisible();
 });
 
-// Fixture-owned: the table of contents is not emitted by the real pipeline yet, so this row runs only on the parity
-// fixture (@fixture-until-p3-render) with the seeded go-basics lesson.
+// The table of contents witness has at least two level-two headings outside code, so the outline has entries to link.
 Given("a lesson with body headings is open for its table of contents", async ({ page }) => {
-  const route = "/en/learn/courses/go-basics/learning/hello-world";
+  const route = servedLearnPageWhere(
+    (text) => (outsideFences(text).match(/^## /gm) ?? []).length >= 2,
+    "two level-two headings",
+  ).route;
   stateFor(page).lessonRoute = route;
   await gotoPage(page, route);
 });
 
 Then("the table of contents links to stable body heading anchors", async ({ page }) => {
-  expect(bodyOf(page)).toContain("data-toc");
-  expect(bodyOf(page)).toContain('href="#setup"');
-});
-
-// Fixture-owned shortcode and relative-link steps: the parity fixture seeds these pages, and their product
-// behaviour is not real yet (@fixture-until-p3-render). Their real witnesses are recorded in witness-rewrites-fe.md.
-Given("a lesson contains a {string} shortcode fixture", async ({ page }, format: string) => {
-  stateFor(page).diagnostic = format;
-  await gotoPage(page, "/en/learn/courses/go-basics/learning/hello-world");
-});
-
-When("a reader opens the fixture and activates its supported controls", async ({ page }) => {
-  await gotoPage(page, "/en/learn/courses/go-basics/learning/hello-world");
-});
-
-Then("the {string} is available to the reader", async ({ page }, result: string) => {
-  expect(bodyOf(page)).toContain(result);
-  if (result === "selected tab's authored panel") {
-    // Tabs gain tablist semantics with keyboard travel in both locales.
-    for (const locale of ["en", "id"]) {
-      await gotoPage(page, `/${locale}/learn/courses/go-basics/learning/hello-world`);
-      await expect(page.locator('[role="tablist"]').first()).toBeVisible();
-      const selected = page.locator('[role="tab"][aria-selected="true"]').first();
-      await expect(selected).toBeVisible();
-      await selected.focus();
-      await page.keyboard.press("ArrowRight");
-      await expect(page.locator('[role="tab"][aria-selected="true"]').first()).toBeFocused();
-    }
-    await gotoPage(page, "/en/learn/courses/go-basics/learning/hello-world");
+  const hrefs = await page
+    .locator('[data-toc] a[href^="#"]')
+    .evaluateAll((links) => links.map((link) => link.getAttribute("href") ?? ""));
+  expect(hrefs.length).toBeGreaterThan(0);
+  for (const href of hrefs) {
+    const anchored = await page.evaluate((id) => document.getElementById(id) !== null, href.slice(1));
+    expect(anchored, `table of contents link ${href} has no body anchor`).toBe(true);
   }
 });
 
+// Shortcode witnesses: a served page whose prose (outside code) uses the shortcode. The steps shortcode is the
+// Hugo-style {{% steps %}} pair; callouts and tabs use their named forms.
+const shortcodeWitnesses: Record<string, (text: string) => boolean> = {
+  callout: (text) => /\{\{<\s*callout\s+type="(warning|info|tip)"/.test(outsideFences(text)),
+  tabs: (text) => /\{\{<\s*tabs\s+items=/.test(outsideFences(text)),
+  steps: (text) => /\{\{%\s*steps\s*%\}\}/.test(outsideFences(text)),
+};
+
+// The YouTube row stays on the parity fixture until P4-Tree delivers the shortcode (@fixture-until-p4-tree).
+const fixtureShortcodeRoute = "/en/learn/courses/go-basics/learning/hello-world";
+
+Given("a lesson contains a {string} shortcode fixture", async ({ page }, format: string) => {
+  stateFor(page).shortcode = format;
+  let route: string;
+  if (format === "youtube") {
+    route = fixtureShortcodeRoute;
+  } else {
+    const rule = shortcodeWitnesses[format];
+    if (rule === undefined) throw new Error(`no real-corpus witness rule for ${format}`);
+    route = servedLearnPageWhere(rule, `a ${format} shortcode`).route;
+  }
+  stateFor(page).lessonRoute = route;
+  await gotoPage(page, route);
+});
+
+When("a reader opens the fixture and activates its supported controls", async ({ page }) => {
+  const route = stateFor(page).lessonRoute;
+  if (route === undefined) throw new Error("the Given step recorded no lesson");
+  await gotoPage(page, route);
+});
+
+Then("the {string} is available to the reader", async ({ page }, result: string) => {
+  expect(statusOf(page)).toBe(200);
+  const format = stateFor(page).shortcode;
+  if (format === "youtube") {
+    expect(bodyOf(page)).toContain(result);
+    return;
+  }
+  if (format === "callout") {
+    const callout = page.locator(".article-body [data-callout]").first();
+    await expect(callout).toBeVisible();
+    await expect(callout).toHaveText(/\S/);
+    return;
+  }
+  if (format === "steps") {
+    // The steps container is bordered and its authored headings carry the numbering ("Step 1: ..."), as in www.
+    const first = page.locator(".article-body [data-steps] h3").first();
+    await expect(first).toBeVisible();
+    await expect(first).toContainText("Step 1");
+    return;
+  }
+  if (format === "tabs") {
+    // progress.js gives the authored tabs tablist semantics; the arrow key moves the selection and focus.
+    const list = page.locator('[role="tablist"]').first();
+    await expect(list).toBeVisible();
+    await list.locator('[role="tab"][aria-selected="true"]').focus();
+    await page.keyboard.press("ArrowRight");
+    await expect(list.locator('[role="tab"][aria-selected="true"]')).toBeFocused();
+    return;
+  }
+  throw new Error(`no rendered-result check for ${format} ${result}`);
+});
+
+// The relative-link witness is a track overview whose body links to a lesson by a relative path with a fragment.
 Given("a section index contains a relative Markdown link with a heading fragment", async ({ page }) => {
-  await gotoPage(page, "/en/learn/courses/web/learning/section-index");
+  // A sibling link (./name.md#fragment) resolves inside the track's own directory; a ../ link leaves it, so it is not
+  // the witness for a section-directory rule.
+  const overview = trackOverviewWhere(
+    (text) => /\]\(\.\/[^)\s]*\.md#[^)\s]+\)/.test(outsideFences(text)),
+    "a sibling Markdown link with a heading fragment",
+  );
+  stateFor(page).lessonRoute = overview.route;
+  await gotoPage(page, overview.route);
 });
 
 When("a reader follows that link", async ({ page }) => {
-  // Fragments never reach the server; the browser scrolls client-side.
-  await gotoPage(page, "/en/learn/courses/web/learning/leaf");
+  // The overview's relative link resolves to its served route with the fragment; the click follows it.
+  const link = page.locator('.article-body a[href^="/en/learn/"][href*="#"]').first();
+  const href = await link.getAttribute("href");
+  if (href === null) throw new Error("the overview has no resolved relative link with a fragment");
+  stateFor(page).linkHref = href;
+  const target = href.split("#")[0] ?? href;
+  await Promise.all([page.waitForURL((url) => url.pathname === target), link.click()]);
 });
 
 Then("the destination is resolved relative to that section's directory", async ({ page }) => {
   expect(statusOf(page)).toBe(200);
-  expect(bodyOf(page)).toContain("Leaf");
+  // The overview is served at learning/learning, so the section directory is its learning/ route.
+  const overviewRoute = stateFor(page).lessonRoute ?? "";
+  const directory = overviewRoute.replace(/\/[^/]+$/, "/");
+  const path = new URL(page.url()).pathname;
+  expect(path.startsWith(directory)).toBe(true);
+  expect(path).toBe((stateFor(page).linkHref ?? "").split("#")[0]);
 });
 
 Then("the reader reaches the intended heading in the same locale", async ({ page }) => {
-  expect(bodyOf(page)).toContain('id="part"');
-  expect(bodyOf(page)).toContain('lang="en"');
+  const url = new URL(page.url());
+  expect(url.pathname.startsWith("/en/")).toBe(true);
+  expect(await page.locator("html").getAttribute("lang")).toBe("en");
+  const fragment = url.hash.slice(1);
+  expect(fragment).not.toBe("");
+  const anchored = await page.evaluate((id) => document.getElementById(id) !== null, fragment);
+  expect(anchored, `no heading with id ${fragment} on the destination`).toBe(true);
 });
 
 // The fenced-code witness is a learning page with a Go fence, so the label and the copy text are real.
@@ -216,45 +296,49 @@ Then("the code block shows its language label and readable highlighting", async 
   expect(bodyOf(page)).toContain("data-copy");
 });
 
+// Math and diagram witnesses: a served learn page whose prose holds the notation outside code, or a Mermaid fence.
+const notationWitnesses: Record<string, (text: string) => boolean> = {
+  // A TeX span holds a named math macro (\frac, \beta) between its dollar signs. The allowlist keeps shell escapes such as
+  // \r or \x00 from matching as math.
+  "inline math": (text) =>
+    /\$[^$\n]*\\(frac|times|cdot|alpha|beta|gamma|delta|sigma|sum|sqrt|text|mathbf|approx|leq|geq|pi|mu|lambda|theta)\b[^$\n]*\$/.test(
+      outsideFences(text),
+    ),
+  "display math": (text) => /^\$\$\s*$/m.test(outsideFences(text)),
+  Mermaid: (text) => fenceLanguages(text).includes("mermaid"),
+};
+
 Given("a lesson contains a {string} fixture", async ({ page }, format: string) => {
-  stateFor(page).diagnostic = format;
-  await gotoPage(page, "/en/learn/courses/go-basics/learning/hello-world");
+  const rule = notationWitnesses[format];
+  if (rule === undefined) throw new Error(`no real-corpus witness rule for ${format}`);
+  const route = servedLearnPageWhere(rule, `a ${format} notation`).route;
+  stateFor(page).lessonRoute = route;
+  await gotoPage(page, route);
 });
 
 When("a reader opens the lesson", async ({ page }) => {
-  await gotoPage(page, "/en/learn/courses/go-basics/learning/hello-world");
+  const route = stateFor(page).lessonRoute;
+  if (route === undefined) throw new Error("the Given step recorded no lesson");
+  await gotoPage(page, route);
 });
 
 Then("the reader sees {string}", async ({ page }, result: string) => {
-  if (result === "an accessible SVG diagram") {
-    // Mermaid replaces the authored source with a rendered SVG in both
-    // locales; the accessible name stays on the container.
-    for (const locale of ["en", "id"]) {
-      await gotoPage(page, `/${locale}/learn/courses/go-basics/learning/hello-world`);
-      await expect(page.locator(".mermaid svg").first()).toBeVisible();
-      await expect(page.locator('.mermaid[role="img"][aria-label="diagram"]').first()).toBeVisible();
-    }
-    await gotoPage(page, "/en/learn/courses/go-basics/learning/hello-world");
-    return;
-  }
-  if (result === "inline mathematical notation" || result === "display mathematical notation") {
-    // KaTeX typesets the authored notation in place in both locales; the
-    // words survive inside the rendered output.
-    for (const locale of ["en", "id"]) {
-      await gotoPage(page, `/${locale}/learn/courses/go-basics/learning/hello-world`);
-      expect(bodyOf(page)).toContain(result);
-      await expect(page.locator(".math-inline .katex").first()).toBeVisible();
-      await expect(page.locator(".math-display .katex").first()).toBeVisible();
-    }
-    await gotoPage(page, "/en/learn/courses/go-basics/learning/hello-world");
-    return;
-  }
-  expect(bodyOf(page)).toContain(result);
+  expect(statusOf(page)).toBe(200);
+  const selectors: Record<string, string> = {
+    "inline mathematical notation": ".math-inline .katex",
+    "display mathematical notation": ".math-display .katex",
+    "an accessible SVG diagram": ".mermaid svg",
+  };
+  const selector = selectors[result];
+  if (selector === undefined) throw new Error(`no rendered-result check for ${result}`);
+  // KaTeX and mermaid load their vendor scripts only when the page carries the hooks, so the result appears after load.
+  await expect(page.locator(selector).first()).toBeVisible();
 });
 
 Then("the source notation is not presented as the rendered result", async ({ page }) => {
+  const rendered = await page.locator(".article-body").innerText();
   for (const marker of ["$$", "\\begin", "```mermaid"]) {
-    expect(bodyOf(page)).not.toContain(marker);
+    expect(rendered).not.toContain(marker);
   }
 });
 

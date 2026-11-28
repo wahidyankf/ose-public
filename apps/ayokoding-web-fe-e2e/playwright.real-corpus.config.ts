@@ -28,9 +28,9 @@ const testDir = defineBddConfig({
   featuresRoot: workspaceRoot,
   features: [path.join(behaviours, "**/*.feature"), ...httpOnlyFeatures],
   // Fixture-owned scenarios run only on the parity fixture (playwright.fixture.config.ts). Each carries the unit that
-  // moves it: @fixture (no real witness), @fixture-until-p3-render (product defect), @fixture-until-p4-search and
-  // @fixture-until-p4-tree (behaviour delivered by a later unit).
-  tags: "not @fixture and not @fixture-until-p3-render and not @fixture-until-p4-search and not @fixture-until-p4-tree",
+  // moves it: @fixture (no real witness), @fixture-until-p4-search and @fixture-until-p4-tree (behaviour delivered by a
+  // later unit). P3-Render's rows run here on real-corpus witnesses.
+  tags: "not @fixture and not @fixture-until-p4-search and not @fixture-until-p4-tree",
   steps: "./tests/e2e/steps/**/*.steps.ts",
   outputDir: ".features-gen/fe-real-corpus",
 });

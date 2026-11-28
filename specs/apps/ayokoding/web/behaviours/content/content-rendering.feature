@@ -25,7 +25,6 @@ Feature: Shared learning content rendering
     When a reader opens that lesson
     Then the authored table renders with the established article styling
 
-  @fixture-until-p3-render
   Scenario Outline: Authored <structure> renders with the established article styling
     Given a lesson contains a "<structure>" structure
     When a reader opens that lesson
@@ -36,20 +35,17 @@ Feature: Shared learning content rendering
       | task list   |
       | raw details |
 
-  @fixture-until-p3-render
   Scenario: A page has one title heading and an ordered outline
     Given a lesson with nested headings is open for its outline
     When a reader opens that lesson
     Then the page has one title heading with a normalized body outline
 
-  @fixture-until-p3-render
   Scenario: The table of contents links to body headings
     Given a lesson with body headings is open for its table of contents
     When a reader opens that lesson
     Then the table of contents links to stable body heading anchors
 
   # Behaviour: AYB-048
-  @fixture-until-p3-render
   Scenario Outline: Supported shortcodes remain interactive content
     Given a lesson contains a "<format>" shortcode fixture
     When a reader opens the fixture and activates its supported controls
@@ -68,7 +64,6 @@ Feature: Shared learning content rendering
     When a reader opens the fixture and activates its supported controls
     Then the "responsive video iframe" is available to the reader
 
-  @fixture-until-p3-render
   Scenario: Relative Markdown links resolve from a section index
     Given a section index contains a relative Markdown link with a heading fragment
     When a reader follows that link
@@ -87,7 +82,6 @@ Feature: Shared learning content rendering
     Then the code block shows its language label and readable highlighting
 
   # Behaviour: AYB-049
-  @fixture-until-p3-render
   Scenario Outline: Math and diagrams render their authored meaning
     Given a lesson contains a "<format>" fixture
     When a reader opens the lesson

@@ -5,9 +5,9 @@ import { defineBddConfig } from "playwright-bdd";
 // Fixture config for the browser boundary. It runs three things that need the parity fixture: the htmx spec over
 // go-basics/learning/hello-world (data-count 109, SGD 4,718); the browser scenarios tagged @fixture, which have no
 // real-corpus witness (an empty path category, a malformed manifest); and the scenarios tagged
-// @fixture-until-p3-render, @fixture-until-p4-search, and @fixture-until-p4-tree, whose product behaviour is not real
-// yet. The real-corpus config excludes all four tags, so each of these runs exactly once, on the fixture. It starts its own server on 3191 with the parity
-// fixture and never reuses a listener.
+// @fixture-until-p4-search and @fixture-until-p4-tree, whose product behaviour is not real yet. The real-corpus config
+// excludes these tags, so each of these runs exactly once, on the fixture. It starts its own server on 3191 with the
+// parity fixture and never reuses a listener.
 const workspaceRoot = path.resolve(__dirname, "../..");
 const behaviours = path.join(workspaceRoot, "specs/apps/ayokoding/web/behaviours");
 const fixtureSpecs = ["htmx-fragments.spec.ts"];
@@ -29,7 +29,7 @@ const httpOnlyFeatures = [
 const bddTestDir = defineBddConfig({
   featuresRoot: workspaceRoot,
   features: [path.join(behaviours, "**/*.feature"), ...httpOnlyFeatures],
-  tags: "@fixture or @fixture-until-p3-render or @fixture-until-p4-search or @fixture-until-p4-tree",
+  tags: "@fixture or @fixture-until-p4-search or @fixture-until-p4-tree",
   steps: "./tests/e2e/steps/**/*.steps.ts",
   outputDir: ".features-gen/fe-fixture",
 });

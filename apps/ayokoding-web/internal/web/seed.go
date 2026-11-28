@@ -48,14 +48,14 @@ var CannedSources = Sources{Environment: noEnvironment}
 func SeedFixtureDeps(fixture string, sources Sources) Deps {
 	empty := fixture == FixtureUnavailableCatalog
 	pages := []content.Page{
-		{Locale: "en", Course: "go-basics", Slug: "hello-world", Title: "Hello World", Description: "First program", Section: "start", SectionTitle: "Start", Weight: 1, BodyHTML: lessonBodyHTML},
-		{Locale: "en", Course: "legacy", Slug: "software-engineering", Title: "Legacy Software Engineering", Description: "Archived canonical content", Section: "legacy", SectionTitle: "Legacy", Weight: 0, BodyHTML: "<h1>Legacy Software Engineering</h1><p>Archived canonical content.</p>"},
-		{Locale: "en", Course: "go-basics", Slug: "setup", Title: "Setup", Description: "Prepare tools", Section: "start", SectionTitle: "Start", Weight: 0, BodyHTML: "<h1>Setup</h1><p>Prepare.</p>"},
-		{Locale: "en", Course: "go-basics", Slug: "draft-note", Title: "Draft", Description: "Unpublished", Weight: 2, Draft: true, BodyHTML: "<h1>Draft</h1>"},
-		{Locale: "en", Course: "web", Slug: "section-index", Title: "Section Index", Description: "Index", Section: "web", SectionTitle: "Web", Weight: 0, BodyHTML: "<h1>Section Index</h1><a href=\"leaf#part\">relative link</a>"},
-		{Locale: "en", Course: "web", Slug: "leaf", Title: "Leaf", Description: "Leaf page", Section: "web", SectionTitle: "Web", Weight: 1, BodyHTML: "<h1>Leaf</h1><h2 id=\"part\">Part</h2>"},
-		{Locale: "id", Course: "go-basics", Slug: "hello-world", Title: "Halo Dunia", Description: "Program pertama", Section: "start", SectionTitle: "Mulai", Weight: 1, BodyHTML: "<h1>Halo Dunia</h1><h2>Persiapan</h2><p>Halo.</p>" + idLessonHooksHTML},
-		{Locale: "id", Course: "go-basics", Slug: "setup", Title: "Persiapan", Description: "Siapkan alat", Section: "start", SectionTitle: "Mulai", Weight: 0, BodyHTML: "<h1>Persiapan</h1>"},
+		{Locale: "en", Course: "go-basics", Slug: "hello-world", Title: "Hello World", Description: "First program", Section: "start", SectionTitle: "Start", Weight: 1, BodyHTML: lessonBodyHTML, TOC: []content.Heading{{ID: "setup", Text: "Setup", Level: 2}}},
+		{Locale: "en", Course: "legacy", Slug: "software-engineering", Title: "Legacy Software Engineering", Description: "Archived canonical content", Section: "legacy", SectionTitle: "Legacy", Weight: 0, BodyHTML: "<p>Archived canonical content.</p>"},
+		{Locale: "en", Course: "go-basics", Slug: "setup", Title: "Setup", Description: "Prepare tools", Section: "start", SectionTitle: "Start", Weight: 0, BodyHTML: "<p>Prepare.</p>"},
+		{Locale: "en", Course: "go-basics", Slug: "draft-note", Title: "Draft", Description: "Unpublished", Weight: 2, Draft: true, BodyHTML: "<p>Draft.</p>"},
+		{Locale: "en", Course: "web", Slug: "section-index", Title: "Section Index", Description: "Index", Section: "web", SectionTitle: "Web", Weight: 0, BodyHTML: "<a href=\"leaf#part\">relative link</a>"},
+		{Locale: "en", Course: "web", Slug: "leaf", Title: "Leaf", Description: "Leaf page", Section: "web", SectionTitle: "Web", Weight: 1, BodyHTML: "<h2 id=\"part\">Part</h2>"},
+		{Locale: "id", Course: "go-basics", Slug: "hello-world", Title: "Halo Dunia", Description: "Program pertama", Section: "start", SectionTitle: "Mulai", Weight: 1, BodyHTML: "<h2 id=\"persiapan\">Persiapan</h2><p>Halo.</p>" + idLessonHooksHTML, TOC: []content.Heading{{ID: "persiapan", Text: "Persiapan", Level: 2}}},
+		{Locale: "id", Course: "go-basics", Slug: "setup", Title: "Persiapan", Description: "Siapkan alat", Section: "start", SectionTitle: "Mulai", Weight: 0, BodyHTML: "<p>Persiapan.</p>"},
 	}
 	if empty {
 		pages = nil
@@ -354,8 +354,8 @@ const idLessonHooksHTML = `<div class="tabs"><div class="tab-panel">panel author
 
 // lessonBodyHTML is the canned rich lesson used by rendering scenarios. P2
 // generates it through the goldmark pipeline; the markers are the contract.
-const lessonBodyHTML = `<h1>Hello World</h1>` +
-	`<h2>Setup</h2><p>Hello.</p>` +
+const lessonBodyHTML = `` +
+	`<h2 id="setup">Setup</h2><p>Hello.</p>` +
 	`<table><tr><td>cell</td></tr></table>` +
 	`<ul class="task-list"><li>step</li></ul>` +
 	`<details><summary>more</summary><p>raw details</p></details>` +

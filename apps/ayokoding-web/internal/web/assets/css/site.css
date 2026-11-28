@@ -298,6 +298,30 @@ article.article-body .callout {
   color: inherit;
 }
 
+/* Authored callouts show their type as a label; authored steps sit on a rule that marks the sequence. */
+article.article-body [data-callout] {
+  border: 1px solid var(--ayk-border);
+  border-inline-start: 4px solid var(--ayk-primary);
+  border-radius: var(--ayk-radius);
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+  background: var(--ayk-card);
+}
+
+article.article-body [data-callout]::before {
+  content: attr(data-callout);
+  display: block;
+  font-weight: 600;
+  text-transform: capitalize;
+  margin-bottom: 0.25rem;
+}
+
+article.article-body [data-steps] {
+  border-inline-start: 2px solid var(--ayk-border);
+  padding-inline-start: 1rem;
+  margin: 1rem 0;
+}
+
 /* Tabs: the selected tab carries the primary underline. */
 [role="tablist"] {
   display: flex;

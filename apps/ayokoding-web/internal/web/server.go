@@ -343,34 +343,16 @@ func (s *Server) handleLesson(writer http.ResponseWriter, request *http.Request)
 		"Shell":       s.baseShell(locale, page.Title, page.Description, "/"+locale+"/learn/courses/"+course+"/"+kind+"/"+lesson),
 		"Page":        page,
 		"Kind":        kind,
-		"BodyHTML":    template.HTML(page.BodyHTML), // canned fixture markup; P2 sanitizes pipeline output
+		"BodyHTML":    template.HTML(page.BodyHTML), // sanitized by the page pipeline
 		"PathID":      pathID,
 		"PathActive":  pathActive,
-		"TOC":         lessonTOC(locale, lesson),
+		"TOC":         page.TOC,
 		"PrevURL":     prevURL,
 		"NextURL":     nextURL,
 		"MarkLabel":   markLabel(locale, true),
 		"UnmarkLabel": markLabel(locale, false),
 	}
 	s.render(writer, "lesson", data)
-}
-
-// tocEntry is one stable body heading anchor for the lesson outline.
-type tocEntry struct {
-	ID   string
-	Text string
-}
-
-// lessonTOC returns the canned outline for fixture lessons. P2 derives this
-// from parsed headings; the anchor contract stays.
-func lessonTOC(locale, lesson string) []tocEntry {
-	if lesson != "hello-world" {
-		return nil
-	}
-	if locale == "id" {
-		return []tocEntry{{ID: "persiapan", Text: "Persiapan"}}
-	}
-	return []tocEntry{{ID: "setup", Text: "Setup"}}
 }
 
 // neighbors resolves the previous/next lesson controls, preserving valid
@@ -613,7 +595,7 @@ func (s *Server) handleLegacy(writer http.ResponseWriter, request *http.Request)
 		"BodyHTML":   template.HTML(page.BodyHTML),
 		"PathID":     "",
 		"PathActive": false,
-		"TOC":        lessonTOC(locale, rest),
+		"TOC":        page.TOC,
 		"PrevURL":    "",
 		"NextURL":    "",
 	}

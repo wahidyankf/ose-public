@@ -122,8 +122,8 @@ self-match, foreign-content reds, shed-vs-failure ambiguity).
   The branch has no diff under `apps/ayokoding-cli`, and the PR's Linux CI passes. Owner action: resolve `true` from PATH
   (for example `exec.LookPath("true")`) instead of a fixed path. Evidence: `evidence/P3-Corpus/ayokoding-cli-containers-check.raw.txt`.
 - Unit coverage: new code needs tests for its error branches. The corpus resolution error paths (manifests missing, unknown
-  working directory) reached the 99% gate only after dedicated tests. The `SeedDeps` error branch in `main.go` is not
-  forced; it is a deep path, and a fake to reach it would test the fake.
+  working directory) reached the 99% gate only after dedicated tests. The `SeedDeps` error branch in `main.go` was left
+  uncovered here, and the CI gate then failed on it; see the toolchain entry in the next section.
 
 ## 2026-11-28 — P3-Corpus refactor, C4, and RED accounting
 
@@ -144,3 +144,12 @@ self-match, foreign-content reds, shed-vs-failure ambiguity).
   not as a RED of its own.
 - The refactor collapsed the three path checks into `resolveSourceRoot`. The unused-code gate found no seed helper that
   became unused, so none was deleted.
+- The CI-only `unit coverage total 98.9% (minimum 99%)` failure was a Go toolchain difference, not a platform one. The
+  local host ran Go 1.27.1, which instruments fewer, larger blocks (2558 statements, 2532 covered, 99.0%). CI follows the
+  `toolchain go1.26.9` line of `go.mod` (2450 statements, 2424 covered, 98.94%). The same 26 statements were uncovered
+  under both toolchains. Go 1.26.9 on macOS arm64 and Go 1.26.11 on Linux amd64, run as a non-root user in a container,
+  produced identical profiles, so no GOOS, GOARCH, permission, or filesystem path differed. Rule: reproduce a coverage
+  gate under the toolchain `go.mod` pins (`GOTOOLCHAIN=go1.26.9`), not the newest local one, because the statement count
+  depends on the compiler. At 2424 of 2450 the gate sat 0.01 point under its floor, so the two statements of the
+  `SeedDeps` error branch in `run` (a refused named root with a fixture selected) decided it. The fix is a unit test
+  that injects the refusal through the existing `root` seam, with no file permissions involved.

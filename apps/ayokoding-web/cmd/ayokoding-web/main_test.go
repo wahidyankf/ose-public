@@ -195,6 +195,37 @@ func TestRunRefusesADefaultStartWithoutAReadableCorpus(t *testing.T) {
 	}
 }
 
+// TestRunRefusesAFixtureStartWithAnUnreadableNamedRoot pins the other half of
+// the fail-fast rule: a selected fixture still reads an explicitly named root,
+// and a root the operating system refuses stops startup before any listener
+// opens, instead of serving the fixture over it. The refusal is injected
+// through the root seam, so it holds on every platform and for every user.
+func TestRunRefusesAFixtureStartWithAnUnreadableNamedRoot(t *testing.T) {
+	var stderr bytes.Buffer
+	listened := false
+	process := testHost(&stderr, func(string) (net.Listener, error) {
+		listened = true
+		return nil, errors.New("must not listen")
+	}, quietNotify)
+	process.environment = func(name string) (string, bool) {
+		if name == "AYOKODING_WEB_CONTENT_DIR" {
+			return "refused-content", true
+		}
+		return "", false
+	}
+	if status := run([]string{"--fixture", "parity"}, process); status != 1 {
+		t.Fatalf("status = %d, want 1 when the named content root is refused", status)
+	}
+	if listened {
+		t.Fatal("a refused named root must not open a listener")
+	}
+	for _, want := range []string{"AYOKODING_WEB_CONTENT_DIR", `"refused-content"`, "cannot be read"} {
+		if !strings.Contains(stderr.String(), want) {
+			t.Fatalf("stderr = %q, want it to contain %q", stderr.String(), want)
+		}
+	}
+}
+
 // TestRunServesTheDefaultCorpusFromTheRepository starts the default corpus
 // over a temporary repository: the launcher logs the roots it chose, then
 // serves until shutdown.

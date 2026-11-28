@@ -104,39 +104,67 @@ func runInventory(args []string, process Host) int {
 	if err != nil {
 		return reportError(process, err)
 	}
-	sitemapData, err := process.ReadFile(resolve(root, *sitemap))
+	inputs, err := readInventoryInputs(process, root, *sitemap, *export)
 	if err != nil {
 		return reportError(process, err)
 	}
-	exportData, err := process.ReadFile(resolve(root, *export))
+	patterns, err := expandRoutes(process, root, *routes)
 	if err != nil {
 		return reportError(process, err)
 	}
-	patterns, err := RoutePatterns(process.Sub(resolve(root, *routes)))
+	inventory, err := BuildInventory(inputs.sitemap, inputs.export, patterns, *revision)
 	if err != nil {
 		return reportError(process, err)
 	}
-	inventory, err := BuildInventory(sitemapData, exportData, patterns, *revision)
-	if err != nil {
+	if err := emitInventory(process, root, *out, encodeInventory(inventory)); err != nil {
 		return reportError(process, err)
 	}
-	// Inventory holds only strings and integers, so a marshal failure would be a
-	// programming error; it fails loudly rather than writing an empty inventory.
+	return 0
+}
+
+// inventoryInputs holds the two files the inventory is built from.
+type inventoryInputs struct {
+	sitemap []byte
+	export  []byte
+}
+
+// readInventoryInputs reads the saved sitemap and the committed redirect export.
+func readInventoryInputs(process Host, root, sitemap, export string) (inventoryInputs, error) {
+	sitemapData, err := process.ReadFile(resolve(root, sitemap))
+	if err != nil {
+		return inventoryInputs{}, err
+	}
+	exportData, err := process.ReadFile(resolve(root, export))
+	if err != nil {
+		return inventoryInputs{}, err
+	}
+	return inventoryInputs{sitemap: sitemapData, export: exportData}, nil
+}
+
+// expandRoutes lists the route patterns of the old app's route tree.
+func expandRoutes(process Host, root, routes string) ([]string, error) {
+	return RoutePatterns(process.Sub(resolve(root, routes)))
+}
+
+// encodeInventory renders the inventory as indented JSON with a final newline.
+// Inventory holds only strings and integers, so a marshal failure would be a
+// programming error; it fails loudly rather than writing an empty inventory.
+func encodeInventory(inventory Inventory) []byte {
 	data, err := json.MarshalIndent(inventory, "", "  ")
 	if err != nil {
 		panic(fmt.Sprintf("parity: marshal inventory: %v", err))
 	}
-	data = append(data, '\n')
-	if *out == "" {
-		if _, err := process.Stdout.Write(data); err != nil {
-			return reportError(process, err)
-		}
-		return 0
+	return append(data, '\n')
+}
+
+// emitInventory writes the encoded inventory to stdout, or to the out file
+// resolved against the repository root.
+func emitInventory(process Host, root, out string, data []byte) error {
+	if out == "" {
+		_, err := process.Stdout.Write(data)
+		return err
 	}
-	if err := process.WriteFile(resolve(root, *out), data, 0o644); err != nil {
-		return reportError(process, err)
-	}
-	return 0
+	return process.WriteFile(resolve(root, out), data, 0o644)
 }
 
 func runGapReport(args []string, process Host) int {

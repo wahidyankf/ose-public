@@ -26,35 +26,59 @@ func GapReport(inv Inventory, baseURL string, fetch func(url string) (Reply, err
 	if _, err := url.Parse(baseURL); err != nil {
 		return nil, fmt.Errorf("base URL %q: %w", baseURL, err)
 	}
-	redirectSources := map[string]bool{}
-	for _, redirect := range inv.Redirects {
-		redirectSources[redirect.Source] = true
-	}
+	redirectSources := redirectSourceSet(inv.Redirects)
 	results := make([]Result, 0, len(inv.URLs))
 	for _, page := range inv.URLs {
-		reply, err := fetch(baseURL + page)
-		if err != nil {
-			cause, unit := "other", "owner triage"
-			results = append(results, Result{URL: page, Class: "fail", Cause: cause, Unit: unit})
-			continue
-		}
-		results = append(results, classify(page, reply, redirectSources))
+		results = append(results, probePage(page, baseURL, fetch, redirectSources))
 	}
 	return results, nil
 }
 
+// redirectSourceSet names every source the redirect table declares, so a failing
+// URL can be grouped as a redirect gap.
+func redirectSourceSet(redirects []Redirect) map[string]bool {
+	sources := make(map[string]bool, len(redirects))
+	for _, redirect := range redirects {
+		sources[redirect.Source] = true
+	}
+	return sources
+}
+
+// probePage makes the one request for an inventory URL and classifies its reply.
+// A request that cannot be made is an unreachable page, not an error of the run.
+func probePage(page, baseURL string, fetch func(url string) (Reply, error), redirectSources map[string]bool) Result {
+	reply, err := fetch(baseURL + page)
+	if err != nil {
+		return unreachable(page)
+	}
+	return classify(page, reply, redirectSources)
+}
+
+// unreachable is the result for a page whose request failed: it has no status,
+// and its cause is left for the owner to triage.
+func unreachable(page string) Result {
+	return Result{URL: page, Class: "fail", Cause: "other", Unit: "owner triage"}
+}
+
 func classify(page string, reply Reply, redirectSources map[string]bool) Result {
-	result := Result{URL: page, Status: reply.Status, Location: reply.Location}
-	switch reply.Status {
-	case 200:
-		result.Class = "pass"
-	case 308:
-		result.Class = "redirect"
-	default:
-		result.Class = "fail"
+	result := Result{URL: page, Status: reply.Status, Location: reply.Location, Class: classOf(reply.Status)}
+	if result.Class == "fail" {
 		result.Cause, result.Unit = causeOf(page, redirectSources)
 	}
 	return result
+}
+
+// classOf maps a status to its class: 200 passes, 308 is a redirect, and every
+// other status fails.
+func classOf(status int) string {
+	switch status {
+	case 200:
+		return "pass"
+	case 308:
+		return "redirect"
+	default:
+		return "fail"
+	}
 }
 
 // causeOf names the group a failing URL belongs to, and the unit that closes

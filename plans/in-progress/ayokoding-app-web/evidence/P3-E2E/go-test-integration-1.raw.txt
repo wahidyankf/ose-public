@@ -1,0 +1,35 @@
+
+ NX   Running target test:integration for project ayokoding-web and 1 task it depends on:
+
+
+
+> nx run ayokoding-web:"build:assets"  [existing outputs match the cache, left as is]
+
+> mkdir -p internal/tools/shareddata/data && cp ../../libs/ayokoding-data/data/ai-benchmark.json ../../libs/ayokoding-data/data/cost-of-living.json ../../libs/ayokoding-data/data/fx.json internal/tools/shareddata/data/ && ../../node_modules/.bin/esbuild assets/js/progress.ts --bundle --minify --format=iife --outfile=internal/web/assets/dist/progress.js
+
+
+  internal/web/assets/dist/progress.js  9.2kb
+
+⚡ Done in 8ms
+
+> nx run ayokoding-web:"test:integration"
+
+> AYOKODING_BDD_ADAPTER=integration go test -count=1 ./tests/bdd-integration ./tests/integration/...
+
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/bdd-integration	5.678s
+--- FAIL: TestSavingsRowMatchesSharedVectors (0.00s)
+    calculator_vectors_test.go:208: savings(singapore) = {CityID:singapore Currency:SGD GrossMonthlyUSD:5000 NetUSD:4500 EssentialsUSD:3653.6192 LifestyleUSD:201.344 EssentialSavings:846.3808000000001 AfterLifestyleSavings:645.0368000000001}, want {CityID:singapore Currency:SGD GrossMonthlyUSD:5000 NetUSD:4500 EssentialsUSD:3653.6192 LifestyleUSD:201.344 EssentialSavings:846.3807999999999 AfterLifestyleSavings:645.0367999999999}
+FAIL
+FAIL	github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/integration	3.407s
+FAIL
+Warning: command "AYOKODING_BDD_ADAPTER=integration go test -count=1 ./tests/bdd-integration ./tests/integration/..." exited with non-zero status code
+
+
+ NX   Running target test:integration for project ayokoding-web and 1 task it depends on failed
+
+Failed tasks:
+
+- ayokoding-web:test:integration
+
+Hint: run the command with --verbose for more details.
+

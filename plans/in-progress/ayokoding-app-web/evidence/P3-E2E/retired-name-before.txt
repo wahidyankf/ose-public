@@ -1,0 +1,154 @@
+./repo-config.yml:1617:      ayokoding-web-e2e:
+./repo-config.yml:1618:        path: apps/ayokoding-web-e2e
+./docs/reference/monorepo-structure.md:92:- `ayokoding-web-e2e` - Playwright E2E tests for ayokoding-web (lands in plan Phase 2)
+./docs/reference/gate-inventory.md:103:| e2e of `ayokoding-web-e2e`     | no deployed variant exists; its integration target runs the suite    |
+./docs/reference/web-sites.md:104:| 3191 | `ayokoding-web-e2e`                | The `ayokoding-web` server Playwright starts for the E2E suite |
+./package-lock.json:56:    "apps/ayokoding-web-e2e": {
+./package-lock.json:10581:    "node_modules/ayokoding-web-e2e": {
+./package-lock.json:10582:      "resolved": "apps/ayokoding-web-e2e",
+./.github/workflows/pr-quality-gate.yml:245:      # The browser integration targets (ayokoding-web-e2e, ose-www-*, and the other *-e2e homes) run a local
+./.github/workflows/non-product-full-quality.yml:88:          --projects=crane-cli,ts-env-loader,web-ui,ferret-cli-e2e,ayokoding-cli,ayokoding-web,ayokoding-web-e2e
+./.nx/workspace-data/source-maps.json:2:  "apps/ayokoding-web-e2e": {
+./.nx/workspace-data/source-maps.json:4:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:8:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:12:      "apps/ayokoding-web-e2e/package.json",
+./.nx/workspace-data/source-maps.json:16:      "apps/ayokoding-web-e2e/package.json",
+./.nx/workspace-data/source-maps.json:20:      "apps/ayokoding-web-e2e/package.json",
+./.nx/workspace-data/source-maps.json:24:      "apps/ayokoding-web-e2e/package.json",
+./.nx/workspace-data/source-maps.json:28:      "apps/ayokoding-web-e2e/package.json",
+./.nx/workspace-data/source-maps.json:32:      "apps/ayokoding-web-e2e/package.json",
+./.nx/workspace-data/source-maps.json:36:      "apps/ayokoding-web-e2e/package.json",
+./.nx/workspace-data/source-maps.json:40:      "apps/ayokoding-web-e2e/package.json",
+./.nx/workspace-data/source-maps.json:44:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:48:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:52:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:56:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:60:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:64:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:68:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:72:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:76:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:80:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:84:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:88:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:92:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:96:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:100:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:104:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:108:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:112:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:116:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:120:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:124:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:128:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:132:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:136:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:140:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:144:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:148:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:152:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:156:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:160:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:164:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:168:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:172:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:176:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:180:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:184:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:188:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:192:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:196:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:200:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:204:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:208:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:212:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:216:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:220:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:224:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:228:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:232:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:236:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:240:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:244:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:248:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:252:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:256:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:260:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:264:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:268:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:272:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/source-maps.json:276:      "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/file-map.json:49734:      "ayokoding-web-e2e": [
+./.nx/workspace-data/file-map.json:49736:          "file": "apps/ayokoding-web-e2e/.gitignore",
+./.nx/workspace-data/file-map.json:49740:          "file": "apps/ayokoding-web-e2e/oxlint.json",
+./.nx/workspace-data/file-map.json:49744:          "file": "apps/ayokoding-web-e2e/package.json",
+./.nx/workspace-data/file-map.json:49753:          "file": "apps/ayokoding-web-e2e/playwright.config.ts",
+./.nx/workspace-data/file-map.json:49757:          "file": "apps/ayokoding-web-e2e/playwright.focused.config.ts",
+./.nx/workspace-data/file-map.json:49761:          "file": "apps/ayokoding-web-e2e/project.json",
+./.nx/workspace-data/file-map.json:49765:          "file": "apps/ayokoding-web-e2e/tests/e2e/browser-progress.spec.ts",
+./.nx/workspace-data/file-map.json:49769:          "file": "apps/ayokoding-web-e2e/tests/e2e/fixtures/progress-records.json",
+./.nx/workspace-data/file-map.json:49773:          "file": "apps/ayokoding-web-e2e/tests/e2e/htmx-fragments.spec.ts",
+./.nx/workspace-data/file-map.json:49777:          "file": "apps/ayokoding-web-e2e/tests/e2e/playwright-owned-server.spec.ts",
+./.nx/workspace-data/file-map.json:49781:          "file": "apps/ayokoding-web-e2e/tests/e2e/steps/common.steps.ts",
+./.nx/workspace-data/file-map.json:49785:          "file": "apps/ayokoding-web-e2e/tests/e2e/steps/content.steps.ts",
+./.nx/workspace-data/file-map.json:49789:          "file": "apps/ayokoding-web-e2e/tests/e2e/steps/courses.steps.ts",
+./.nx/workspace-data/file-map.json:49793:          "file": "apps/ayokoding-web-e2e/tests/e2e/steps/discovery.steps.ts",
+./.nx/workspace-data/file-map.json:49797:          "file": "apps/ayokoding-web-e2e/tests/e2e/steps/lifecycle.steps.ts",
+./.nx/workspace-data/file-map.json:49801:          "file": "apps/ayokoding-web-e2e/tests/e2e/steps/localdev.steps.ts",
+./.nx/workspace-data/file-map.json:49805:          "file": "apps/ayokoding-web-e2e/tests/e2e/steps/progress.steps.ts",
+./.nx/workspace-data/file-map.json:49809:          "file": "apps/ayokoding-web-e2e/tests/e2e/steps/routes.steps.ts",
+./.nx/workspace-data/file-map.json:49813:          "file": "apps/ayokoding-web-e2e/tests/e2e/steps/search.steps.ts",
+./.nx/workspace-data/file-map.json:49817:          "file": "apps/ayokoding-web-e2e/tests/e2e/steps/shell.steps.ts",
+./.nx/workspace-data/file-map.json:49821:          "file": "apps/ayokoding-web-e2e/tests/e2e/steps/tools.steps.ts",
+./.nx/workspace-data/file-map.json:49825:          "file": "apps/ayokoding-web-e2e/tests/e2e/support/hashes.ts",
+./.nx/workspace-data/file-map.json:49829:          "file": "apps/ayokoding-web-e2e/tests/e2e/support/http.ts",
+./.nx/workspace-data/file-map.json:49833:          "file": "apps/ayokoding-web-e2e/tests/e2e/support/network.ts",
+./.nx/workspace-data/file-map.json:49837:          "file": "apps/ayokoding-web-e2e/tests/e2e/support/servers.ts",
+./.nx/workspace-data/file-map.json:49841:          "file": "apps/ayokoding-web-e2e/tests/e2e/support/state.ts",
+./.nx/workspace-data/file-map.json:49845:          "file": "apps/ayokoding-web-e2e/tests/e2e/support/storage.ts",
+./.nx/workspace-data/file-map.json:49849:          "file": "apps/ayokoding-web-e2e/tsconfig.json",
+./.nx/workspace-data/project-graph.json:1592:    "ayokoding-web-e2e": {
+./.nx/workspace-data/project-graph.json:1593:      "name": "ayokoding-web-e2e",
+./.nx/workspace-data/project-graph.json:1596:        "root": "apps/ayokoding-web-e2e",
+./.nx/workspace-data/project-graph.json:1597:        "name": "ayokoding-web-e2e",
+./.nx/workspace-data/project-graph.json:1608:            "packageName": "ayokoding-web-e2e",
+./.nx/workspace-data/project-graph.json:1618:              "cwd": "apps/ayokoding-web-e2e"
+./.nx/workspace-data/project-graph.json:1628:              "cwd": "apps/ayokoding-web-e2e"
+./.nx/workspace-data/project-graph.json:1639:                  "command": "npm exec -- nx run ayokoding-web-e2e:typecheck",
+./.nx/workspace-data/project-graph.json:1643:                  "command": "npm exec -- nx run ayokoding-web-e2e:lint",
+./.nx/workspace-data/project-graph.json:1647:                  "command": "npm exec -- nx run ayokoding-web-e2e:test:behaviour:coverage",
+./.nx/workspace-data/project-graph.json:1659:              "{workspaceRoot}/apps/ayokoding-web-e2e/tests/e2e/**/*.{ts,tsx,fs}",
+./.nx/workspace-data/project-graph.json:1660:              "{workspaceRoot}/apps/ayokoding-web-e2e/playwright.config.ts",
+./.nx/workspace-data/project-graph.json:1661:              "{workspaceRoot}/apps/ayokoding-web-e2e/playwright.focused.config.ts",
+./.nx/workspace-data/project-graph.json:1678:              "cwd": "apps/ayokoding-web-e2e"
+./.nx/workspace-data/project-graph.json:1694:              "cwd": "apps/ayokoding-web-e2e"
+./.nx/workspace-data/project-graph.json:1704:              "cwd": "apps/ayokoding-web-e2e"
+./.nx/workspace-data/project-graph.json:1713:              "cwd": "apps/ayokoding-web-e2e"
+./.nx/workspace-data/project-graph.json:1749:        "sourceRoot": "apps/ayokoding-web-e2e/tests",
+./.nx/workspace-data/project-graph.json:20916:    "ayokoding-web-e2e": [
+./.nx/workspace-data/project-graph.json:20918:        "source": "ayokoding-web-e2e",
+./.nx/workspace-data/project-graph.json:20923:        "source": "ayokoding-web-e2e",
+./.nx/workspace-data/project-graph.json:20928:        "source": "ayokoding-web-e2e",
+Binary file ./.nx/workspace-data/nx_files.nxt matches
+./apps/ayokoding-web/README.md:27:proof lives in the dedicated `ayokoding-web-e2e` owner
+./apps/ayokoding-web/README.md:28:(`ayokoding-web-e2e:test:e2e`); the `e2e` adapter reference checked by
+./apps/README.md:33:| AyoKoding (Go rewrite)      | `ayokoding-web-e2e` (lands in P2 with the Playwright suite)      | Not applicable; the Go surface is exercised over HTTP/browser only |
+./apps/ayokoding-web-e2e/project.json:3:  "name": "ayokoding-web-e2e",
+./apps/ayokoding-web-e2e/project.json:4:  "sourceRoot": "apps/ayokoding-web-e2e/tests",
+./apps/ayokoding-web-e2e/project.json:11:        "cwd": "apps/ayokoding-web-e2e"
+./apps/ayokoding-web-e2e/project.json:18:        "cwd": "apps/ayokoding-web-e2e"
+./apps/ayokoding-web-e2e/project.json:26:            "command": "npm exec -- nx run ayokoding-web-e2e:typecheck",
+./apps/ayokoding-web-e2e/project.json:30:            "command": "npm exec -- nx run ayokoding-web-e2e:lint",
+./apps/ayokoding-web-e2e/project.json:34:            "command": "npm exec -- nx run ayokoding-web-e2e:test:behaviour:coverage",
+./apps/ayokoding-web-e2e/project.json:46:        "{workspaceRoot}/apps/ayokoding-web-e2e/tests/e2e/**/*.{ts,tsx,fs}",
+./apps/ayokoding-web-e2e/project.json:47:        "{workspaceRoot}/apps/ayokoding-web-e2e/playwright.config.ts",
+./apps/ayokoding-web-e2e/project.json:48:        "{workspaceRoot}/apps/ayokoding-web-e2e/playwright.focused.config.ts",
+./apps/ayokoding-web-e2e/project.json:63:        "cwd": "apps/ayokoding-web-e2e"
+./apps/ayokoding-web-e2e/project.json:72:        "cwd": "apps/ayokoding-web-e2e"
+./apps/ayokoding-web-e2e/project.json:79:        "cwd": "apps/ayokoding-web-e2e"
+./apps/ayokoding-web-e2e/project.json:86:        "cwd": "apps/ayokoding-web-e2e"
+./apps/ayokoding-web-e2e/README.md:1:# ayokoding-web-e2e
+./apps/ayokoding-web-e2e/README.md:18:Run `npm exec nx -- run ayokoding-web-e2e:test:quick` for static checks or
+./apps/ayokoding-web-e2e/README.md:19:`npm exec nx -- run ayokoding-web-e2e:test:e2e` for the complete runtime suite.
+./apps/ayokoding-web-e2e/package.json:3:  "name": "ayokoding-web-e2e",
+./apps/ayokoding-web-e2e/playwright.config.ts:8:// test is built by `ayokoding-web-e2e:test:e2e` before Playwright starts, and

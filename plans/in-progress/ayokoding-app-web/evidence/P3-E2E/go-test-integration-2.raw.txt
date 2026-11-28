@@ -1,0 +1,27 @@
+
+ NX   Running target test:integration for project ayokoding-web and 1 task it depends on:
+
+
+
+> nx run ayokoding-web:"build:assets"  [existing outputs match the cache, left as is]
+
+> mkdir -p internal/tools/shareddata/data && cp ../../libs/ayokoding-data/data/ai-benchmark.json ../../libs/ayokoding-data/data/cost-of-living.json ../../libs/ayokoding-data/data/fx.json internal/tools/shareddata/data/ && ../../node_modules/.bin/esbuild assets/js/progress.ts --bundle --minify --format=iife --outfile=internal/web/assets/dist/progress.js
+
+
+  internal/web/assets/dist/progress.js  9.2kb
+
+⚡ Done in 8ms
+
+> nx run ayokoding-web:"test:integration"
+
+> AYOKODING_BDD_ADAPTER=integration go test -count=1 ./tests/bdd-integration ./tests/integration/...
+
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/bdd-integration	5.279s
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/integration	3.335s
+
+
+
+ NX   Successfully ran target test:integration for project ayokoding-web and 1 task it depends on
+
+Nx read the output from the cache instead of running the command for 1 out of 2 tasks.
+

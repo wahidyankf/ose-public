@@ -1,0 +1,20 @@
+
+> nx run ayokoding-web-fe-e2e:typecheck
+
+> npx tsc --noEmit
+
+tests/e2e/steps/content.steps.ts(6,18): error TS6133: 'fetchText' is declared but its value is never read.
+tests/e2e/steps/content.steps.ts(7,1): error TS6192: All imports in import declaration are unused.
+tests/e2e/steps/content.steps.ts(8,20): error TS6133: 'trackOwned' is declared but its value is never read.
+tests/e2e/steps/routes.steps.ts(6,39): error TS6133: 'locationOf' is declared but its value is never read.
+Warning: command "npx tsc --noEmit" exited with non-zero status code
+
+
+ NX   Running target typecheck for project ayokoding-web-fe-e2e failed
+
+Failed tasks:
+
+- ayokoding-web-fe-e2e:typecheck
+
+Hint: run the command with --verbose for more details.
+

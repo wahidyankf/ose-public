@@ -1,0 +1,6 @@
+
+Running 1 test using 1 worker
+
+  ✓  1 [bdd-webkit] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature.spec.js:33:7 › Bilingual accessible shell › Keyboard readers can skip the repeated navigation (694ms)
+
+  1 passed (1.9s)

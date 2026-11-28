@@ -1,0 +1,43 @@
+
+Running 1 test using 1 worker
+
+  ✘  1 [bdd-webkit] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature.spec.js:33:7 › Bilingual accessible shell › Keyboard readers can skip the repeated navigation (657ms)
+
+
+  1) [bdd-webkit] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature.spec.js:33:7 › Bilingual accessible shell › Keyboard readers can skip the repeated navigation › When a keyboard reader activates the skip-to-content link 
+
+    Error: expect(received).toContain(expected) // indexOf
+
+    Expected substring: "skip-link"
+    Received string:    ""
+
+       at tests/e2e/steps/shell.steps.ts:61
+
+      59 |   await page.keyboard.press("Tab");
+      60 |   const active = await page.evaluate(() => document.activeElement?.className ?? "");
+    > 61 |   expect(active).toContain("skip-link");
+         |                  ^
+      62 |   stateFor(page).focus = "skip-link";
+      63 |   await page.keyboard.press("Enter");
+      64 | });
+        at Object.<anonymous> (<repo>/apps/ayokoding-web-fe-e2e/tests/e2e/steps/shell.steps.ts:61:18)
+        at BddStepInvoker.runWithAfterStepHooks (<repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:82:16)
+        at BddStepInvoker.invoke (<repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:55:5)
+        at <repo>/apps/ayokoding-web-fe-e2e/.features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature.spec.js:34:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/specs-apps-ayokoding-web-b-c6fc9-kip-the-repeated-navigation-bdd-webkit/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/specs-apps-ayokoding-web-b-c6fc9-kip-the-repeated-navigation-bdd-webkit/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/specs-apps-ayokoding-web-b-c6fc9-kip-the-repeated-navigation-bdd-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/specs-apps-ayokoding-web-b-c6fc9-kip-the-repeated-navigation-bdd-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [bdd-webkit] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature.spec.js:33:7 › Bilingual accessible shell › Keyboard readers can skip the repeated navigation 

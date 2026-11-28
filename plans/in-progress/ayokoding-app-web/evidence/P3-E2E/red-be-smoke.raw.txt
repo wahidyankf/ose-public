@@ -1,0 +1,191 @@
+
+Running 5 tests using 1 worker
+
+  ✘  1 [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:8:9 › Independent local development over HTTP › Static assets and the favicon are served; an unknown asset returns 404 › Example #1 (33ms)
+  ✘  2 [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:13:9 › Independent local development over HTTP › Static assets and the favicon are served; an unknown asset returns 404 › Example #2 (33ms)
+  ✘  3 [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:18:9 › Independent local development over HTTP › Static assets and the favicon are served; an unknown asset returns 404 › Example #3 (35ms)
+  ✘  4 [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:23:9 › Independent local development over HTTP › Static assets and the favicon are served; an unknown asset returns 404 › Example #4 (30ms)
+  ✘  5 [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:28:9 › Independent local development over HTTP › Static assets and the favicon are served; an unknown asset returns 404 › Example #5 (29ms)
+
+
+  1) [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:8:9 › Independent local development over HTTP › Static assets and the favicon are served; an unknown asset returns 404 › Example #1 › Then the asset responds with status "200" 
+
+    Error: no recorded response status
+
+    expect(received).toBeDefined()
+
+    Received: undefined
+
+       at ../../tests/e2e/support/http.ts:34
+
+      32 | export function statusOf(request: APIRequestContext): number {
+      33 |   const status = stateFor(request).status;
+    > 34 |   expect(status, "no recorded response status").toBeDefined();
+         |                                                 ^
+      35 |   return status as number;
+      36 | }
+      37 |
+        at statusOf (<repo>/apps/ayokoding-web-be-e2e/tests/e2e/support/http.ts:34:49)
+        at Object.<anonymous> (<repo>/apps/ayokoding-web-be-e2e/tests/e2e/steps/local-development-http.steps.ts:17:18)
+        at <repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:58:48
+        at BddStepInvoker.runWithAfterStepHooks (<repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:82:22)
+        at <repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:57:19
+        at BddStepInvoker.invoke (<repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:55:5)
+        at <repo>/apps/ayokoding-web-be-e2e/.features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:10:7
+
+    Error Context: test-results/specs-apps-ayokoding-web-b-09a64-asset-returns-404-Example-1-bdd-http/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/specs-apps-ayokoding-web-b-09a64-asset-returns-404-Example-1-bdd-http/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/specs-apps-ayokoding-web-b-09a64-asset-returns-404-Example-1-bdd-http/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:13:9 › Independent local development over HTTP › Static assets and the favicon are served; an unknown asset returns 404 › Example #2 › Then the asset responds with status "200" 
+
+    Error: no recorded response status
+
+    expect(received).toBeDefined()
+
+    Received: undefined
+
+       at ../../tests/e2e/support/http.ts:34
+
+      32 | export function statusOf(request: APIRequestContext): number {
+      33 |   const status = stateFor(request).status;
+    > 34 |   expect(status, "no recorded response status").toBeDefined();
+         |                                                 ^
+      35 |   return status as number;
+      36 | }
+      37 |
+        at statusOf (<repo>/apps/ayokoding-web-be-e2e/tests/e2e/support/http.ts:34:49)
+        at Object.<anonymous> (<repo>/apps/ayokoding-web-be-e2e/tests/e2e/steps/local-development-http.steps.ts:17:18)
+        at <repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:58:48
+        at BddStepInvoker.runWithAfterStepHooks (<repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:82:22)
+        at <repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:57:19
+        at BddStepInvoker.invoke (<repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:55:5)
+        at <repo>/apps/ayokoding-web-be-e2e/.features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:15:7
+
+    Error Context: test-results/specs-apps-ayokoding-web-b-0ac60-asset-returns-404-Example-2-bdd-http/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/specs-apps-ayokoding-web-b-0ac60-asset-returns-404-Example-2-bdd-http/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/specs-apps-ayokoding-web-b-0ac60-asset-returns-404-Example-2-bdd-http/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:18:9 › Independent local development over HTTP › Static assets and the favicon are served; an unknown asset returns 404 › Example #3 › Then the asset responds with status "200" 
+
+    Error: no recorded response status
+
+    expect(received).toBeDefined()
+
+    Received: undefined
+
+       at ../../tests/e2e/support/http.ts:34
+
+      32 | export function statusOf(request: APIRequestContext): number {
+      33 |   const status = stateFor(request).status;
+    > 34 |   expect(status, "no recorded response status").toBeDefined();
+         |                                                 ^
+      35 |   return status as number;
+      36 | }
+      37 |
+        at statusOf (<repo>/apps/ayokoding-web-be-e2e/tests/e2e/support/http.ts:34:49)
+        at Object.<anonymous> (<repo>/apps/ayokoding-web-be-e2e/tests/e2e/steps/local-development-http.steps.ts:17:18)
+        at <repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:58:48
+        at BddStepInvoker.runWithAfterStepHooks (<repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:82:22)
+        at <repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:57:19
+        at BddStepInvoker.invoke (<repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:55:5)
+        at <repo>/apps/ayokoding-web-be-e2e/.features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:20:7
+
+    Error Context: test-results/specs-apps-ayokoding-web-b-4a361-asset-returns-404-Example-3-bdd-http/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/specs-apps-ayokoding-web-b-4a361-asset-returns-404-Example-3-bdd-http/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/specs-apps-ayokoding-web-b-4a361-asset-returns-404-Example-3-bdd-http/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:23:9 › Independent local development over HTTP › Static assets and the favicon are served; an unknown asset returns 404 › Example #4 › Then the asset responds with status "200" 
+
+    Error: no recorded response status
+
+    expect(received).toBeDefined()
+
+    Received: undefined
+
+       at ../../tests/e2e/support/http.ts:34
+
+      32 | export function statusOf(request: APIRequestContext): number {
+      33 |   const status = stateFor(request).status;
+    > 34 |   expect(status, "no recorded response status").toBeDefined();
+         |                                                 ^
+      35 |   return status as number;
+      36 | }
+      37 |
+        at statusOf (<repo>/apps/ayokoding-web-be-e2e/tests/e2e/support/http.ts:34:49)
+        at Object.<anonymous> (<repo>/apps/ayokoding-web-be-e2e/tests/e2e/steps/local-development-http.steps.ts:17:18)
+        at <repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:58:48
+        at BddStepInvoker.runWithAfterStepHooks (<repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:82:22)
+        at <repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:57:19
+        at BddStepInvoker.invoke (<repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:55:5)
+        at <repo>/apps/ayokoding-web-be-e2e/.features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:25:7
+
+    Error Context: test-results/specs-apps-ayokoding-web-b-1324e-asset-returns-404-Example-4-bdd-http/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/specs-apps-ayokoding-web-b-1324e-asset-returns-404-Example-4-bdd-http/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/specs-apps-ayokoding-web-b-1324e-asset-returns-404-Example-4-bdd-http/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:28:9 › Independent local development over HTTP › Static assets and the favicon are served; an unknown asset returns 404 › Example #5 › Then the asset responds with status "404" 
+
+    Error: no recorded response status
+
+    expect(received).toBeDefined()
+
+    Received: undefined
+
+       at ../../tests/e2e/support/http.ts:34
+
+      32 | export function statusOf(request: APIRequestContext): number {
+      33 |   const status = stateFor(request).status;
+    > 34 |   expect(status, "no recorded response status").toBeDefined();
+         |                                                 ^
+      35 |   return status as number;
+      36 | }
+      37 |
+        at statusOf (<repo>/apps/ayokoding-web-be-e2e/tests/e2e/support/http.ts:34:49)
+        at Object.<anonymous> (<repo>/apps/ayokoding-web-be-e2e/tests/e2e/steps/local-development-http.steps.ts:17:18)
+        at <repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:58:48
+        at BddStepInvoker.runWithAfterStepHooks (<repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:82:22)
+        at <repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:57:19
+        at BddStepInvoker.invoke (<repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:55:5)
+        at <repo>/apps/ayokoding-web-be-e2e/.features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:30:7
+
+    Error Context: test-results/specs-apps-ayokoding-web-b-ea589-asset-returns-404-Example-5-bdd-http/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/specs-apps-ayokoding-web-b-ea589-asset-returns-404-Example-5-bdd-http/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/specs-apps-ayokoding-web-b-ea589-asset-returns-404-Example-5-bdd-http/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5 failed
+    [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:8:9 › Independent local development over HTTP › Static assets and the favicon are served; an unknown asset returns 404 › Example #1 
+    [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:13:9 › Independent local development over HTTP › Static assets and the favicon are served; an unknown asset returns 404 › Example #2 
+    [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:18:9 › Independent local development over HTTP › Static assets and the favicon are served; an unknown asset returns 404 › Example #3 
+    [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:23:9 › Independent local development over HTTP › Static assets and the favicon are served; an unknown asset returns 404 › Example #4 
+    [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:28:9 › Independent local development over HTTP › Static assets and the favicon are served; an unknown asset returns 404 › Example #5 

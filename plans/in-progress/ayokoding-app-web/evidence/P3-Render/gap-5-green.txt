@@ -1,0 +1,57 @@
+=== RUN   TestRenderPageGap5BodyHeadingsStartAtH2
+--- PASS: TestRenderPageGap5BodyHeadingsStartAtH2 (0.00s)
+PASS
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/content	0.174s
+=== RUN   TestRenderGap5ServedLessonHasOneTitleHeading
+--- PASS: TestRenderGap5ServedLessonHasOneTitleHeading (4.67s)
+PASS
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/integration	4.973s
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/web	0.757s
+--- FAIL: TestRenderPageGap6TaskListKeepsCheckboxes (0.00s)
+    render_page_test.go:122: task list checkboxes = 0, want 2 in "<ul>\n<li> Done step</li>\n<li> Open step</li>\n</ul>\n"
+--- FAIL: TestRenderPageGap7RawDetailsBlockSurvives (0.00s)
+    render_page_test.go:141: raw details lacks "<details>" in "\n<p>Hidden text.</p>\n\n"
+FAIL
+FAIL	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/content	0.204s
+FAIL
+
+  [1;37mScenario:[0m A calculator URL restores all supported input state                                  [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/tools/cost-of-living-calculator.feature:18[0m
+    [32mGiven[0m [32ma calculator URL encodes supported geography, household, schooling, and income options[0m [1;30m# reg_tools_test.go:32 -> *World[0m
+    [32mWhen[0m [32ma reader opens that URL[0m                                                                 [1;30m# reg_tools_test.go:15 -> *World[0m
+    [32mThen[0m [32mevery supported input reflects the encoded state[0m                                        [1;30m# reg_tools_test.go:33 -> *World[0m
+    [32mAnd[0m [32mcopying the current URL preserves the inputs for a new visit[0m                             [1;30m# reg_tools_test.go:34 -> *World[0m
+
+  [1;37mScenario:[0m Invalid calculator input shows a recovered value or a message, never a misleading estimate [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/tools/cost-of-living-calculator.feature:25[0m
+    [32mGiven[0m [32ma reader provides an invalid or out-of-range calculator input[0m                                [1;30m# reg_tools_test.go:35 -> *World[0m
+    [32mWhen[0m [32mthe tool validates that input[0m                                                                 [1;30m# reg_tools_test.go:36 -> *World[0m
+    [32mThen[0m [32mit applies the existing input codec's accepted recovery or validation result[0m                  [1;30m# reg_tools_test.go:37 -> *World[0m
+    [32mAnd[0m [32mthe tool does not display a misleading finite estimate from invalid arithmetic[0m                 [1;30m# reg_tools_test.go:38 -> *World[0m
+
+  [1;37mScenario:[0m Changing geography clears a city that no longer applies          [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/tools/cost-of-living-calculator.feature:32[0m
+    [32mGiven[0m [32ma reader has selected a city[0m                                       [1;30m# reg_tools_test.go:39 -> *World[0m
+    [32mWhen[0m [32mthe reader changes geography so that city is no longer eligible[0m     [1;30m# reg_tools_test.go:40 -> *World[0m
+    [32mThen[0m [32mthe selection follows the current tool's fallback behavior[0m          [1;30m# reg_tools_test.go:41 -> *World[0m
+    [32mAnd[0m [32mthe visible results match the resulting geography and city selection[0m [1;30m# reg_tools_test.go:42 -> *World[0m
+
+  [1;37mScenario:[0m Currency-converted estimates show the FX snapshot date and each currency's source [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/tools/cost-of-living-calculator.feature:38[0m
+    [32mGiven[0m [32mthe city, salary, and currency datasets have their own source dates[0m                 [1;30m# reg_tools_test.go:43 -> *World[0m
+    [32mWhen[0m [32meither implementation calculates a currency-converted estimate[0m                       [1;30m# reg_tools_test.go:44 -> *World[0m
+    [32mThen[0m [32mit uses the shared USD-per-unit rates without refreshing them[0m                        [1;30m# reg_tools_test.go:45 -> *World[0m
+    [32mAnd[0m [32mthe independent FX snapshot date and per-currency provenance remain available[0m         [1;30m# reg_tools_test.go:46 -> *World[0m
+
+--- [31mFailed steps:[0m
+
+  [31mScenario: A page has one title heading and an ordered outline[0m [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering.feature:40[0m
+    [31mThen the page has one title heading with a normalized body outline[0m [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering.feature:43[0m
+      [31mError: [0m[1;31mstep assertion failed: body misses "<h2>" (body "<!doctype html>\n<html lang=\"en\" data-theme-hook data-sidebar style=\"--sidebar-width: 240px\">\n  <head>\n    <meta charset=\"utf-8\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<title>Hello World</title>\n<meta name=\"description\" content=\"First program\" />\n<link rel=\"canonica")[0m
+
+
+108 scenarios ([32m107 passed[0m, [31m1 failed[0m)
+448 steps ([32m447 passed[0m, [31m1 failed[0m)
+573.205709ms
+--- FAIL: TestContract (0.58s)
+    suite_test.go:85: godog suite exited 1
+FAIL
+FAIL	github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/bdd	0.892s
+FAIL
+exit=0

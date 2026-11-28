@@ -1,0 +1,12 @@
+=== RUN   TestRenderPageGap5BodyHeadingsStartAtH2
+    render_page_test.go:113: normalized outline lacks "<h2 id=\"title-in-body\">Title in body</h2>" in ""
+--- FAIL: TestRenderPageGap5BodyHeadingsStartAtH2 (0.00s)
+FAIL
+FAIL	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/content	0.179s
+=== RUN   TestRenderGap5ServedLessonHasOneTitleHeading
+    render_gaps_test.go:121: served lesson has 0 h1 elements, want 1
+--- FAIL: TestRenderGap5ServedLessonHasOneTitleHeading (2.83s)
+FAIL
+FAIL	github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/integration	3.176s
+FAIL
+exit=1

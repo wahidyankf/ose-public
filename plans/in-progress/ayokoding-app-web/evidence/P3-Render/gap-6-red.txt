@@ -1,0 +1,14 @@
+=== RUN   TestRenderPageGap6TaskListKeepsCheckboxes
+    render_page_test.go:122: task list checkboxes = 0, want 2 in ""
+--- FAIL: TestRenderPageGap6TaskListKeepsCheckboxes (0.00s)
+=== RUN   TestRenderPageGap6AuthoredInputOutsideAListIsOmitted
+--- PASS: TestRenderPageGap6AuthoredInputOutsideAListIsOmitted (0.00s)
+FAIL
+FAIL	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/content	0.179s
+=== RUN   TestRenderGap6ServedTaskListKeepsCheckboxes
+    render_gaps_test.go:132: served task list lost its checkboxes
+--- FAIL: TestRenderGap6ServedTaskListKeepsCheckboxes (2.77s)
+FAIL
+FAIL	github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/integration	3.118s
+FAIL
+exit=1

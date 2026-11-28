@@ -1,0 +1,15 @@
+=== RUN   TestRenderPageGap2RelativeMarkdownLinkBecomesRoute
+    render_page_test.go:41: sibling link was not rewritten to its route: ""
+--- FAIL: TestRenderPageGap2RelativeMarkdownLinkBecomesRoute (0.00s)
+=== RUN   TestRenderPageGap2TrackOverviewLinkTargetsTheRouteThatServesIt
+    render_page_test.go:48: overview link does not target the served track route: ""
+--- FAIL: TestRenderPageGap2TrackOverviewLinkTargetsTheRouteThatServesIt (0.00s)
+FAIL
+FAIL	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/content	0.181s
+=== RUN   TestRenderGap2ServedOverviewLinksToSiblingLesson
+    render_gaps_test.go:78: served overview still carries a literal relative .md link
+--- FAIL: TestRenderGap2ServedOverviewLinksToSiblingLesson (2.76s)
+FAIL
+FAIL	github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/integration	3.100s
+FAIL
+exit=1

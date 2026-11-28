@@ -1,0 +1,50 @@
+=== RUN   TestFencedCodeShowsLanguageLabelAndPreLanguage
+--- PASS: TestFencedCodeShowsLanguageLabelAndPreLanguage (0.00s)
+=== RUN   TestFencedCodeCarriesCopyControlWithLabels
+--- PASS: TestFencedCodeCarriesCopyControlWithLabels (0.00s)
+=== RUN   TestFencedCodeKeepsVerbatimSourceInsidePre
+--- PASS: TestFencedCodeKeepsVerbatimSourceInsidePre (0.00s)
+=== RUN   TestFencedCodeWithoutLanguageStillGetsCopyControl
+--- PASS: TestFencedCodeWithoutLanguageStillGetsCopyControl (0.00s)
+=== RUN   TestMermaidFenceIsNotWrappedAsCode
+--- PASS: TestMermaidFenceIsNotWrappedAsCode (0.00s)
+=== RUN   TestInlineCodeGetsNoCopyControl
+--- PASS: TestInlineCodeGetsNoCopyControl (0.00s)
+=== RUN   TestRenderPageGap1ShortcodesBecomeComponentMarkup
+--- PASS: TestRenderPageGap1ShortcodesBecomeComponentMarkup (0.00s)
+=== RUN   TestRenderPageGap2RelativeMarkdownLinkBecomesRoute
+--- PASS: TestRenderPageGap2RelativeMarkdownLinkBecomesRoute (0.00s)
+=== RUN   TestRenderPageGap2TrackOverviewLinkTargetsTheRouteThatServesIt
+--- PASS: TestRenderPageGap2TrackOverviewLinkTargetsTheRouteThatServesIt (0.00s)
+=== RUN   TestRenderPageGap3MermaidFenceKeepsItsDiagramHook
+--- PASS: TestRenderPageGap3MermaidFenceKeepsItsDiagramHook (0.00s)
+=== RUN   TestRenderPageGap3MathKeepsItsKatexHooks
+--- PASS: TestRenderPageGap3MathKeepsItsKatexHooks (0.00s)
+=== RUN   TestRenderPageGap3DollarAmountsStayText
+--- PASS: TestRenderPageGap3DollarAmountsStayText (0.00s)
+=== RUN   TestRenderPageGap4TableOfContentsLinksBodyHeadings
+    render_page_test.go:91: TOC = [], want [{ID:setup Text:Setup Level:2} {ID:details Text:Details Level:3} {ID:deep Text:Deep Level:4}]
+--- FAIL: TestRenderPageGap4TableOfContentsLinksBodyHeadings (0.00s)
+=== RUN   TestRenderPageGap5BodyHeadingsStartAtH2
+    render_page_test.go:109: body must not carry an h1, the page title owns it: "<h1>Title in body</h1>\n<h2>Part</h2>\n<h3>Sub</h3>\n"
+--- FAIL: TestRenderPageGap5BodyHeadingsStartAtH2 (0.00s)
+=== RUN   TestRenderPageGap6TaskListKeepsCheckboxes
+    render_page_test.go:122: task list checkboxes = 0, want 2 in "<ul>\n<li> Done step</li>\n<li> Open step</li>\n</ul>\n"
+--- FAIL: TestRenderPageGap6TaskListKeepsCheckboxes (0.00s)
+=== RUN   TestRenderPageGap6AuthoredInputOutsideAListIsOmitted
+--- PASS: TestRenderPageGap6AuthoredInputOutsideAListIsOmitted (0.00s)
+=== RUN   TestRenderPageGap7RawDetailsBlockSurvives
+    render_page_test.go:141: raw details lacks "<details>" in "\n<p>Hidden text.</p>\n\n"
+--- FAIL: TestRenderPageGap7RawDetailsBlockSurvives (0.00s)
+=== RUN   TestRenderPageGap7OtherRawHTMLStaysOmitted
+--- PASS: TestRenderPageGap7OtherRawHTMLStaysOmitted (0.00s)
+FAIL
+FAIL	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/content	0.362s
+FAIL
+=== RUN   TestRenderGap3ServedMermaidKeepsDiagramHook
+--- PASS: TestRenderGap3ServedMermaidKeepsDiagramHook (4.58s)
+=== RUN   TestRenderGap3ServedMathKeepsKatexHooks
+--- PASS: TestRenderGap3ServedMathKeepsKatexHooks (4.44s)
+PASS
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/integration	9.390s
+exit=0

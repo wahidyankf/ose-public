@@ -1,0 +1,21 @@
+=== RUN   TestRenderPageGap3MermaidFenceKeepsItsDiagramHook
+    render_page_test.go:56: mermaid fence lost its diagram hook: ""
+--- FAIL: TestRenderPageGap3MermaidFenceKeepsItsDiagramHook (0.00s)
+=== RUN   TestRenderPageGap3MathKeepsItsKatexHooks
+    render_page_test.go:67: math render lacks "class=\"math-inline\"" in ""
+--- FAIL: TestRenderPageGap3MathKeepsItsKatexHooks (0.00s)
+=== RUN   TestRenderPageGap3DollarAmountsStayText
+    render_page_test.go:78: currency amounts were read as math: ""
+--- FAIL: TestRenderPageGap3DollarAmountsStayText (0.00s)
+FAIL
+FAIL	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/content	0.171s
+=== RUN   TestRenderGap3ServedMermaidKeepsDiagramHook
+    render_gaps_test.go:92: served mermaid fence lost its diagram hook
+--- FAIL: TestRenderGap3ServedMermaidKeepsDiagramHook (2.78s)
+=== RUN   TestRenderGap3ServedMathKeepsKatexHooks
+    render_gaps_test.go:102: served display math lost its KaTeX hook
+--- FAIL: TestRenderGap3ServedMathKeepsKatexHooks (2.72s)
+FAIL
+FAIL	github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/integration	5.829s
+FAIL
+exit=1

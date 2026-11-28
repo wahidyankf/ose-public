@@ -1,0 +1,53 @@
+=== RUN   TestResolveContentHref
+=== RUN   TestResolveContentHref/external_unchanged
+=== RUN   TestResolveContentHref/leaf_sibling
+=== RUN   TestResolveContentHref/leaf_parent
+=== RUN   TestResolveContentHref/query_only_anchor_passthrough
+=== RUN   TestResolveContentHref/mailto_unchanged
+=== RUN   TestResolveContentHref/site_root_unchanged
+=== RUN   TestResolveContentHref/asset_unchanged
+=== RUN   TestResolveContentHref/section_index_target
+=== RUN   TestResolveContentHref/current_dir
+=== RUN   TestResolveContentHref/nil_context_unchanged
+=== RUN   TestResolveContentHref/anchor_unchanged
+=== RUN   TestResolveContentHref/leaf_sibling_with_fragment
+=== RUN   TestResolveContentHref/section_child_with_fragment
+=== RUN   TestResolveContentHref/section_parent_section
+=== RUN   TestResolveContentHref/dotdot_file
+=== RUN   TestResolveContentHref/section_child
+=== RUN   TestResolveContentHref/home_index_target
+=== RUN   TestResolveContentHref/section_dir_itself
+--- PASS: TestResolveContentHref (0.00s)
+    --- PASS: TestResolveContentHref/external_unchanged (0.00s)
+    --- PASS: TestResolveContentHref/leaf_sibling (0.00s)
+    --- PASS: TestResolveContentHref/leaf_parent (0.00s)
+    --- PASS: TestResolveContentHref/query_only_anchor_passthrough (0.00s)
+    --- PASS: TestResolveContentHref/mailto_unchanged (0.00s)
+    --- PASS: TestResolveContentHref/site_root_unchanged (0.00s)
+    --- PASS: TestResolveContentHref/asset_unchanged (0.00s)
+    --- PASS: TestResolveContentHref/section_index_target (0.00s)
+    --- PASS: TestResolveContentHref/current_dir (0.00s)
+    --- PASS: TestResolveContentHref/nil_context_unchanged (0.00s)
+    --- PASS: TestResolveContentHref/anchor_unchanged (0.00s)
+    --- PASS: TestResolveContentHref/leaf_sibling_with_fragment (0.00s)
+    --- PASS: TestResolveContentHref/section_child_with_fragment (0.00s)
+    --- PASS: TestResolveContentHref/section_parent_section (0.00s)
+    --- PASS: TestResolveContentHref/dotdot_file (0.00s)
+    --- PASS: TestResolveContentHref/section_child (0.00s)
+    --- PASS: TestResolveContentHref/home_index_target (0.00s)
+    --- PASS: TestResolveContentHref/section_dir_itself (0.00s)
+=== RUN   TestRenderPageGap1ShortcodesBecomeComponentMarkup
+--- PASS: TestRenderPageGap1ShortcodesBecomeComponentMarkup (0.00s)
+=== RUN   TestRenderPageGap2RelativeMarkdownLinkBecomesRoute
+--- PASS: TestRenderPageGap2RelativeMarkdownLinkBecomesRoute (0.00s)
+=== RUN   TestRenderPageGap2TrackOverviewLinkTargetsTheRouteThatServesIt
+--- PASS: TestRenderPageGap2TrackOverviewLinkTargetsTheRouteThatServesIt (0.00s)
+PASS
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/content	0.340s
+=== RUN   TestRenderGap1ServedLessonRendersShortcodes
+--- PASS: TestRenderGap1ServedLessonRendersShortcodes (4.54s)
+=== RUN   TestRenderGap2ServedOverviewLinksToSiblingLesson
+--- PASS: TestRenderGap2ServedOverviewLinksToSiblingLesson (4.41s)
+PASS
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/integration	9.275s
+exit=0

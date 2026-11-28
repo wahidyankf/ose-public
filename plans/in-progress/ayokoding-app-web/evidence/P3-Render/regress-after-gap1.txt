@@ -1,0 +1,36 @@
+--- FAIL: TestRenderPageGap2RelativeMarkdownLinkBecomesRoute (0.00s)
+    render_page_test.go:41: sibling link was not rewritten to its route: "<p>See <a href=\"./beginner.md#part\" rel=\"nofollow\">the beginner lesson</a>.</p>\n"
+--- FAIL: TestRenderPageGap2TrackOverviewLinkTargetsTheRouteThatServesIt (0.00s)
+    render_page_test.go:48: overview link does not target the served track route: "<p>Prior: <a href=\"../../other/learning/overview.md\" rel=\"nofollow\">Other track</a>.</p>\n"
+--- FAIL: TestRenderPageGap3MermaidFenceKeepsItsDiagramHook (0.00s)
+    render_page_test.go:56: mermaid fence lost its diagram hook: "<pre><code>graph TD; A--&gt;B\n</code></pre>\n"
+--- FAIL: TestRenderPageGap3MathKeepsItsKatexHooks (0.00s)
+    render_page_test.go:67: math render lacks "class=\"math-inline\"" in "<p>Inline $x^2$ here.</p>\n<p>$$\ny = mx + b\n$$</p>\n"
+--- FAIL: TestRenderPageGap4TableOfContentsLinksBodyHeadings (0.00s)
+    render_page_test.go:91: TOC = [], want [{ID:setup Text:Setup Level:2} {ID:details Text:Details Level:3} {ID:deep Text:Deep Level:4}]
+--- FAIL: TestRenderPageGap5BodyHeadingsStartAtH2 (0.00s)
+    render_page_test.go:109: body must not carry an h1, the page title owns it: "<h1>Title in body</h1>\n<h2>Part</h2>\n<h3>Sub</h3>\n"
+--- FAIL: TestRenderPageGap6TaskListKeepsCheckboxes (0.00s)
+    render_page_test.go:122: task list checkboxes = 0, want 2 in "<ul>\n<li> Done step</li>\n<li> Open step</li>\n</ul>\n"
+--- FAIL: TestRenderPageGap7RawDetailsBlockSurvives (0.00s)
+    render_page_test.go:141: raw details lacks "<details>" in "\n<p>Hidden text.</p>\n\n"
+FAIL
+FAIL	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/content	0.198s
+--- FAIL: TestRenderGap2ServedOverviewLinksToSiblingLesson (4.48s)
+    render_gaps_test.go:78: served overview still carries a literal relative .md link
+--- FAIL: TestRenderGap3ServedMermaidKeepsDiagramHook (4.41s)
+    render_gaps_test.go:92: served mermaid fence lost its diagram hook
+--- FAIL: TestRenderGap3ServedMathKeepsKatexHooks (4.48s)
+    render_gaps_test.go:102: served display math lost its KaTeX hook
+--- FAIL: TestRenderGap4ServedLessonHasTableOfContents (4.47s)
+    render_gaps_test.go:110: served lesson has no table of contents
+--- FAIL: TestRenderGap5ServedLessonHasOneTitleHeading (4.45s)
+    render_gaps_test.go:121: served lesson has 0 h1 elements, want 1
+--- FAIL: TestRenderGap6ServedTaskListKeepsCheckboxes (4.49s)
+    render_gaps_test.go:132: served task list lost its checkboxes
+--- FAIL: TestRenderGap7ServedRawDetailsSurvives (4.49s)
+    render_gaps_test.go:140: served raw details block was dropped
+FAIL
+FAIL	github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/integration	49.357s
+FAIL
+exit=1

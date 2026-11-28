@@ -1,0 +1,10 @@
+=== RUN   TestRenderPageGap4TableOfContentsLinksBodyHeadings
+--- PASS: TestRenderPageGap4TableOfContentsLinksBodyHeadings (0.00s)
+PASS
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/content	0.457s
+=== RUN   TestRenderGap4ServedLessonHasTableOfContents
+--- PASS: TestRenderGap4ServedLessonHasTableOfContents (4.66s)
+PASS
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/integration	5.142s
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/web	0.563s
+exit=0

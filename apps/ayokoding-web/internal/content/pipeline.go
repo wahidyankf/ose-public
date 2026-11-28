@@ -98,7 +98,7 @@ func SlugifyHeading(text string) string {
 // It returns the shifted levels in document order.
 func NormalizeHeadingLevels(levels []int) []int {
 	if len(levels) == 0 {
-		return nil
+		return []int{}
 	}
 	delta := 2 - levels[0]
 	shifted := make([]int, len(levels))
@@ -111,7 +111,7 @@ func NormalizeHeadingLevels(levels []int) []int {
 // ExtractTOC returns the h2-h4 entries (already normalized) with slugified
 // stable IDs. Duplicate texts take -1, -2 suffixes so anchors stay unique.
 func ExtractTOC(levels []int, texts []string) []Heading {
-	var entries []Heading
+	entries := []Heading{}
 	seen := map[string]int{}
 	for index, level := range levels {
 		if index >= len(texts) {
@@ -205,11 +205,26 @@ func ResolveContentHref(href string, context *LinkContext) string {
 	} else {
 		slug = strings.TrimSuffix(slug, "/_index")
 	}
-	url := ContentURL(context.Locale, slug)
+	url := ContentURL(context.Locale, routeSlug(slug))
 	if hash != "" {
 		return url + hash
 	}
 	return url
+}
+
+// routeSlug maps an on-disk slug to the slug the app serves it under, the way LoadFS names pages. A track overview
+// (learn/courses/<course>/<kind>/overview) is served as the lesson named after its kind, and a course overview
+// (learn/courses/<course>/overview) is served at the course route. Every other slug is unchanged.
+func routeSlug(slug string) string {
+	parts := strings.Split(slug, "/")
+	switch {
+	case len(parts) == 5 && parts[0] == "learn" && parts[1] == "courses" && parts[4] == "overview" &&
+		(parts[3] == KindLearning || parts[3] == KindDrilling):
+		return strings.Join([]string{parts[0], parts[1], parts[2], parts[3], parts[3]}, "/")
+	case len(parts) == 4 && parts[0] == "learn" && parts[1] == "courses" && parts[3] == "overview":
+		return strings.Join(parts[:3], "/")
+	}
+	return slug
 }
 
 // splitHash separates one href into its path and its heading fragment.

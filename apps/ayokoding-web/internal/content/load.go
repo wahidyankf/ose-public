@@ -213,6 +213,9 @@ func (s *FakeStore) loadPage(fsys fs.FS, locale, course, kind, slug, full, displ
 		s.Report(fmt.Sprintf("content: excluded %q: missing title", display))
 		return
 	}
+	// The render context is the locale-relative source path, so relative links resolve from the file's own directory.
+	diskSlug := strings.TrimSuffix(strings.TrimPrefix(full, locale+"/"), ".md")
+	rendered := RenderPage(body, RenderContext{Locale: locale, Slug: diskSlug})
 	s.pages = append(s.pages, Page{
 		Locale:      locale,
 		Course:      course,
@@ -220,7 +223,8 @@ func (s *FakeStore) loadPage(fsys fs.FS, locale, course, kind, slug, full, displ
 		Kind:        kind,
 		Title:       title,
 		Description: frontString(meta["description"]),
-		BodyHTML:    SanitizeHTML(RenderMarkdown(body)),
+		BodyHTML:    rendered.HTML,
+		TOC:         rendered.TOC,
 		Draft:       frontBool(meta["draft"]),
 		Weight:      frontInt(meta["weight"]),
 	})

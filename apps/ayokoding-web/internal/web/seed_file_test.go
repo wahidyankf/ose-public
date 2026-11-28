@@ -36,6 +36,21 @@ type unreadableFS struct{}
 
 func (unreadableFS) Open(string) (fs.File, error) { return nil, fs.ErrPermission }
 
+// seedParity builds the parity fixture's Deps over the recorded sources
+// through the launcher's seed, failing the test on a refused start.
+func seedParity(t *testing.T, sources web.Sources) web.Deps {
+	t.Helper()
+	cfg, err := web.ResolveConfig([]string{"--fixture", "parity"}, noLauncher)
+	if err != nil {
+		t.Fatalf("ResolveConfig: %v", err)
+	}
+	deps, err := web.SeedDeps(cfg, sources)
+	if err != nil {
+		t.Fatalf("SeedDeps: %v", err)
+	}
+	return deps
+}
+
 func seedFile(body string) *fstest.MapFile {
 	return &fstest.MapFile{Data: []byte(body)}
 }
@@ -91,7 +106,7 @@ func TestSeedFixtureDepsKeepsCannedCorpusWithoutSourceRoots(t *testing.T) {
 }
 
 func TestSeedFileDepsServesFileBackedSources(t *testing.T) {
-	deps := web.SeedFixtureDeps("parity", fileBacked("/content", "/manifests", "").sources())
+	deps := seedParity(t, fileBacked("/content", "/manifests", "").sources())
 	page, ok := deps.Content.Find("en", "go-basics", "hello-world")
 	if !ok || page.Title != "Hello World" {
 		t.Fatalf("file lesson = %+v, %v; want Hello World", page, ok)
@@ -122,7 +137,7 @@ func TestSeedFileDepsServesFileBackedSources(t *testing.T) {
 }
 
 func TestSeedFileDepsHonorsShowDrafts(t *testing.T) {
-	deps := web.SeedFixtureDeps("parity", fileBacked("/content", "", "true").sources())
+	deps := seedParity(t, fileBacked("/content", "", "true").sources())
 	if _, ok := deps.Content.Find("en", "go-basics", "draft-note"); !ok {
 		t.Fatal("draft must resolve with AYOKODING_WEB_SHOW_DRAFTS=true")
 	}
@@ -139,15 +154,20 @@ func TestSeedFixtureDepsHonorsShowDraftsWithoutSourceRoot(t *testing.T) {
 	}
 }
 
-func TestSeedFileDepsFallsBackToCannedOnUnreadableRoot(t *testing.T) {
-	deps := web.SeedFixtureDeps("parity", fileBacked("/missing-root", "", "").sources())
-	if _, ok := deps.Content.Find("en", "go-basics", "hello-world"); !ok {
-		t.Fatal("unreadable source root must fall back to the canned fixture")
+// TestSeedFileDepsRefusesAnUnreadableNamedRoot pins the fail-fast rule: an
+// unreadable content root stops startup and never falls back to the fixture.
+func TestSeedFileDepsRefusesAnUnreadableNamedRoot(t *testing.T) {
+	cfg, err := web.ResolveConfig([]string{"--fixture", "parity"}, noLauncher)
+	if err != nil {
+		t.Fatalf("ResolveConfig: %v", err)
+	}
+	if _, err := web.SeedDeps(cfg, fileBacked("/missing-root", "", "").sources()); err == nil {
+		t.Fatal("an unreadable source root must refuse startup, not serve the canned fixture")
 	}
 }
 
 func TestSeedFileDepsComposesCourseMetadataVariants(t *testing.T) {
-	deps := web.SeedFixtureDeps("parity", fileBacked("/content", "/manifests", "").sources())
+	deps := seedParity(t, fileBacked("/content", "/manifests", "").sources())
 	outline, ok := deps.Paths.Course("outline-course")
 	if !ok {
 		t.Fatal("outline course must compose")
@@ -196,26 +216,28 @@ func TestSeedFileDepsComposesCourseMetadataVariants(t *testing.T) {
 	}
 }
 
-func TestSeedFileDepsManifestRootFileServesNoFilePaths(t *testing.T) {
+// TestSeedFileDepsRefusesAnUnreadableManifestsRoot pins the fail-fast rule for
+// the manifests root: an unreadable root stops startup and names its setting.
+func TestSeedFileDepsRefusesAnUnreadableManifestsRoot(t *testing.T) {
+	cfg, err := web.ResolveConfig([]string{"--fixture", "parity"}, noLauncher)
+	if err != nil {
+		t.Fatalf("ResolveConfig: %v", err)
+	}
 	sources := fileBacked("/content", "/manifest-file", "")
 	sources.trees["/manifest-file"] = unreadableFS{}
-	deps := web.SeedFixtureDeps("parity", sources.sources())
-	if _, ok := deps.Content.Find("en", "go-basics", "hello-world"); !ok {
-		t.Fatal("file content must still serve when manifests are unreadable")
+	if _, err := web.SeedDeps(cfg, sources.sources()); err == nil || !strings.Contains(err.Error(), "AYOKODING_WEB_MANIFESTS_DIR") {
+		t.Fatalf("unreadable manifests root must refuse startup naming AYOKODING_WEB_MANIFESTS_DIR, got %v", err)
 	}
-	if len(deps.Paths.Paths()) != 0 {
-		t.Fatalf("manifest file must yield no file paths, got %d", len(deps.Paths.Paths()))
-	}
+}
+
+// TestSeedFileDepsRecordsMalformedCourseDiagnostics pins the course diagnostics
+// that a readable corpus still records for malformed manifests.
+func TestSeedFileDepsRecordsMalformedCourseDiagnostics(t *testing.T) {
+	deps := seedParity(t, fileBacked("/content", "/manifests", "").sources())
 	diagnostics := deps.Paths.Diagnostics()
-	if len(diagnostics) != 3 {
-		t.Fatalf("manifest failure must record root plus malformed-course diagnostics, got %q", diagnostics)
-	}
-	if !strings.Contains(diagnostics[0], "manifests root") || !strings.Contains(diagnostics[0], "unreadable") {
-		t.Fatalf("first diagnostic must name the unreadable manifests root, got %q", diagnostics)
-	}
 	for _, want := range []string{"bare-course/_index.md", "broken-course/_index.md"} {
 		found := false
-		for _, diagnostic := range diagnostics[1:] {
+		for _, diagnostic := range diagnostics {
 			if diagnostic == want {
 				found = true
 				break
@@ -227,15 +249,18 @@ func TestSeedFileDepsManifestRootFileServesNoFilePaths(t *testing.T) {
 	}
 }
 
-func TestSeedFileDepsContentRootFileFallsBackToCanned(t *testing.T) {
+// TestSeedFileDepsRefusesAnUnreadableContentRootFile pins the fail-fast rule for
+// the content root: a root that cannot be read stops startup and never falls
+// back to the canned fixture.
+func TestSeedFileDepsRefusesAnUnreadableContentRootFile(t *testing.T) {
+	cfg, err := web.ResolveConfig([]string{"--fixture", "parity"}, noLauncher)
+	if err != nil {
+		t.Fatalf("ResolveConfig: %v", err)
+	}
 	sources := fileBacked("/content/en/learn/courses/go-basics/learning/hello-world.md", "", "")
 	sources.trees["/content/en/learn/courses/go-basics/learning/hello-world.md"] = unreadableFS{}
-	deps := web.SeedFixtureDeps("parity", sources.sources())
-	if _, ok := deps.Content.Find("en", "go-basics", "hello-world"); !ok {
-		t.Fatal("file content root must fall back to the canned fixture")
-	}
-	if len(deps.Content.Diagnostics()) != 1 {
-		t.Fatalf("content failure must record one diagnostic, got %q", deps.Content.Diagnostics())
+	if _, err := web.SeedDeps(cfg, sources.sources()); err == nil || !strings.Contains(err.Error(), "AYOKODING_WEB_CONTENT_DIR") {
+		t.Fatalf("unreadable content root must refuse startup naming AYOKODING_WEB_CONTENT_DIR, got %v", err)
 	}
 }
 

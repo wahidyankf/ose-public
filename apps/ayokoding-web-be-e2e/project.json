@@ -58,7 +58,7 @@
     "test:e2e": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "if grep -rn -E --include='*.ts' --exclude-dir=node_modules --exclude-dir=.features-gen --exclude-dir=test-results --exclude-dir=playwright-report '\\\\$?test\\\\.skip\\\\([^,)]*\\\\)' .; then echo 'ERROR: unconditional test.skip() found in test files above - use test.skip(condition, reason) for legitimate environment guards, or remove'; exit 1; fi && if [ -n \"$BASE_URL\" ]; then npx bddgen --config=playwright.real-corpus.config.ts && npx playwright test --config=playwright.real-corpus.config.ts; else npx bddgen --config=playwright.fixture.config.ts && npx playwright test --config=playwright.fixture.config.ts && npx bddgen --config=playwright.real-corpus.config.ts && npx playwright test --config=playwright.real-corpus.config.ts; fi",
+        "command": "if grep -rn -E --include='*.ts' --exclude-dir=node_modules --exclude-dir=.features-gen --exclude-dir=test-results --exclude-dir=playwright-report 'test\\\\.skip\\\\([^,)]*\\\\)' .; then echo 'ERROR: unconditional test.skip() found in test files above - use test.skip(condition, reason) for legitimate environment guards, or remove'; exit 1; fi && if [ -n \"$BASE_URL\" ]; then npx bddgen --config=playwright.real-corpus.config.ts && npx playwright test --config=playwright.real-corpus.config.ts; else npx bddgen --config=playwright.fixture.config.ts && npx playwright test --config=playwright.fixture.config.ts && npx bddgen --config=playwright.real-corpus.config.ts && npx playwright test --config=playwright.real-corpus.config.ts; fi",
         "cwd": "apps/ayokoding-web-be-e2e"
       },
       "dependsOn": [{ "target": "build", "projects": "ayokoding-web" }]

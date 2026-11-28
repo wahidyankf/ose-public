@@ -17,10 +17,9 @@ import (
 	"github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/tools/shareddata"
 )
 
-// Read-only source roots honored by the file-backed seed. They mirror the
-// documented .env.example settings; when AYOKODING_WEB_CONTENT_DIR is unset
-// the canned parity fixture serves instead so unit and behaviour tests stay
-// deterministic.
+// Read-only source roots the launcher honors. They mirror the documented
+// .env.example settings. When unset, the default corpus is discovered from the
+// repository root (see ResolveCorpus).
 const (
 	envContentDir   = "AYOKODING_WEB_CONTENT_DIR"
 	envManifestsDir = "AYOKODING_WEB_MANIFESTS_DIR"
@@ -33,18 +32,19 @@ const (
 type Sources struct {
 	Environment Environment
 	Root        func(dir string) fs.FS
+	// Working is the launcher's working directory, the start of the walk up to
+	// repo-config.yml that discovers the default corpus roots.
+	Working string
 }
 
 // CannedSources reads nothing: no launcher variables and no source roots, so
 // the canned parity corpus serves.
 var CannedSources = Sources{Environment: noEnvironment}
 
-// SeedFixtureDeps builds the canned P1H corpus shared by the served binary,
-// handler unit tests, and the BDD unit driver. The "unavailable-catalog"
-// fixture empties the catalog for the E2E unavailable mode. When
-// AYOKODING_WEB_CONTENT_DIR names a source root, content and learning paths
-// load through the file-backed adapters while tools, search, and redirects
-// keep their canned parity slices; the Deps shape stays.
+// SeedFixtureDeps builds the canned fixture corpus that handler unit tests and
+// the BDD unit driver serve, and that a selected fixture serves in the binary.
+// The "unavailable-catalog" fixture empties the catalog for the E2E unavailable
+// mode. It reads no source roots; SeedDeps overlays the file-backed roots.
 func SeedFixtureDeps(fixture string, sources Sources) Deps {
 	empty := fixture == FixtureUnavailableCatalog
 	pages := []content.Page{
@@ -99,7 +99,37 @@ func SeedFixtureDeps(fixture string, sources Sources) Deps {
 		deps.CatalogErr = errUnavailableCatalog
 		return deps
 	}
-	return withFileBackedSources(deps, sources)
+	return deps
+}
+
+// SeedDeps builds the Deps a configuration serves. A selected fixture serves
+// the canned corpus; the unavailable-catalog fixture serves an empty catalog
+// and reads no roots. With no fixture selected, the default corpus is served.
+// In either mode an explicitly named root is read, and an unreadable root is
+// refused: startup never falls back to the fixture.
+func SeedDeps(cfg Config, sources Sources) (Deps, error) {
+	if cfg.Fixture == FixtureUnavailableCatalog {
+		return SeedFixtureDeps(cfg.Fixture, sources), nil
+	}
+	if cfg.Fixture != "" {
+		return overlayFiles(SeedFixtureDeps(cfg.Fixture, sources), sources,
+			explicitRoot(sources, envContentDir), explicitRoot(sources, envManifestsDir))
+	}
+	corpus, err := ResolveCorpus(sources)
+	if err != nil {
+		return Deps{}, err
+	}
+	return overlayFiles(SeedFixtureDeps(cfg.Fixture, sources), sources, corpus.ContentDir, corpus.ManifestsDir)
+}
+
+// explicitRoot returns the trimmed value of a source-root variable, or "" when
+// the variable is unset or blank.
+func explicitRoot(sources Sources, variable string) string {
+	value, ok := sources.Environment(variable)
+	if !ok {
+		return ""
+	}
+	return strings.TrimSpace(value)
 }
 
 // mustSharedBenchmark loads the shared benchmark dataset from the embedded
@@ -138,37 +168,33 @@ func mustSharedCalculator() (calculator.Dataset, calculator.RoleMatrix) {
 	return dataset, matrix
 }
 
-// withFileBackedSources replaces the canned content and path stores with
-// file-backed adapters when AYOKODING_WEB_CONTENT_DIR is configured. Tools,
-// search, and redirects keep their canned parity slices until their own
-// adapters land. An unreadable root falls back to the canned fixture with a
-// stderr warning and a recorded store diagnostic; it never serves a 200
-// empty page to mask the failure.
-func withFileBackedSources(fallback Deps, sources Sources) Deps {
-	contentRoot, ok := sources.Environment(envContentDir)
-	if !ok || strings.TrimSpace(contentRoot) == "" {
-		return fallback
+// overlayFiles replaces the canned content and path stores with the
+// file-backed stores the named roots hold. An empty content root keeps the
+// canned fixture. A root that cannot be read is an error, which stops startup.
+func overlayFiles(fallback Deps, sources Sources, contentDir, manifestsDir string) (Deps, error) {
+	if contentDir == "" {
+		return fallback, nil
 	}
-	locales := supportedLocaleList()
-	store, err := content.LoadFS(sources.Root(contentRoot))
+	store, err := content.LoadFS(sources.Root(contentDir))
 	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "ayokoding-web: content root %q: %v; serving canned fixture\n", contentRoot, err)
-		fallback.Content.Report("content: file-backed root " + contentRoot + " unreadable; serving canned fixture")
-		return fallback
+		return Deps{}, fmt.Errorf("%s root %q cannot be read: %w", envContentDir, contentDir, err)
 	}
 	store.ShowDrafts(showDraftsEnabled(sources.Environment))
 	fallback.Content = store
 	var courses []coursepaths.Course
 	var malformed []string
-	for _, locale := range locales {
-		listed, bad := ComposeCourses(sources.Root(contentRoot), locale)
+	for _, locale := range supportedLocaleList() {
+		listed, bad := ComposeCourses(sources.Root(contentDir), locale)
 		courses = append(courses, listed...)
 		malformed = append(malformed, bad...)
 	}
-	manifests := loadFilePaths(fallback.Paths, sources)
+	manifests, err := loadFilePaths(fallback.Paths, sources, manifestsDir)
+	if err != nil {
+		return Deps{}, err
+	}
 	diagnostics := append(manifests.Diagnostics(), malformed...)
 	fallback.Paths = coursepaths.NewFakeStore(manifests.Paths(), courses, diagnostics)
-	return fallback
+	return fallback, nil
 }
 
 // supportedLocaleList lists the served locales in stable order.
@@ -188,21 +214,18 @@ func showDraftsEnabled(environment Environment) bool {
 	return strings.EqualFold(strings.TrimSpace(value), "true")
 }
 
-// loadFilePaths builds the path store from AYOKODING_WEB_MANIFESTS_DIR when
-// configured, keeping the canned paths untouched otherwise. An unreadable
-// manifests root yields an empty path catalog with a diagnostic instead of
-// mixing canned paths with file-backed content.
-func loadFilePaths(fallback *coursepaths.FakeStore, sources Sources) *coursepaths.FakeStore {
-	manifestsRoot, ok := sources.Environment(envManifestsDir)
-	if !ok || strings.TrimSpace(manifestsRoot) == "" {
-		return fallback
+// loadFilePaths builds the path store from the manifests root when one is
+// named, keeping the canned paths otherwise. An unreadable manifests root is an
+// error, which stops startup.
+func loadFilePaths(fallback *coursepaths.FakeStore, sources Sources, manifestsDir string) (*coursepaths.FakeStore, error) {
+	if manifestsDir == "" {
+		return fallback, nil
 	}
-	loaded, err := coursepaths.LoadFS(sources.Root(manifestsRoot))
+	loaded, err := coursepaths.LoadFS(sources.Root(manifestsDir))
 	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "ayokoding-web: manifests root %q: %v; serving no file paths\n", manifestsRoot, err)
-		return coursepaths.NewFakeStore(nil, nil, []string{"coursepaths: manifests root " + manifestsRoot + " unreadable"})
+		return nil, fmt.Errorf("%s root %q cannot be read: %w", envManifestsDir, manifestsDir, err)
 	}
-	return loaded
+	return loaded, nil
 }
 
 // ComposeCourses scans the real corpus under fsys for the locale's

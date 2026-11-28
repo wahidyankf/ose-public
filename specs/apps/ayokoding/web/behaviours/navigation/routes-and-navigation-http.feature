@@ -33,7 +33,7 @@ Feature: Canonical routes and learning navigation over HTTP
 
     Examples:
       | source                                                                            | destination                                         |
-      | /en/learn/fundamentally-strong/software-engineer/just-enough-python/learning/intro | /en/learn/courses/just-enough-python/learning/intro |
+      | /en/learn/fundamentally-strong/software-engineer/just-enough-python/learning/beginner | /en/learn/courses/just-enough-python/learning/beginner |
 
   # Behaviour: AYB-022
   @fixture

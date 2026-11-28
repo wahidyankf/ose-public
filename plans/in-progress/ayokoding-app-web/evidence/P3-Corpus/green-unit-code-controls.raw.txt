@@ -1,0 +1,134 @@
+=== RUN   TestPublishedHidesDraftsAndOrdersByWeight
+--- PASS: TestPublishedHidesDraftsAndOrdersByWeight (0.00s)
+=== RUN   TestFindResolvesLesson
+--- PASS: TestFindResolvesLesson (0.00s)
+=== RUN   TestFindHidesDraftRoute
+--- PASS: TestFindHidesDraftRoute (0.00s)
+=== RUN   TestFindMissingReturnsFalse
+--- PASS: TestFindMissingReturnsFalse (0.00s)
+=== RUN   TestShowDraftsRevealsDraftsForFixtures
+--- PASS: TestShowDraftsRevealsDraftsForFixtures (0.00s)
+=== RUN   TestDiagnosticsRoundTrip
+--- PASS: TestDiagnosticsRoundTrip (0.00s)
+=== RUN   TestSplitFrontmatterVariants
+--- PASS: TestSplitFrontmatterVariants (0.00s)
+=== RUN   TestParseFrontmatterEmptyAndInvalid
+--- PASS: TestParseFrontmatterEmptyAndInvalid (0.00s)
+=== RUN   TestSplitFrontmatter
+--- PASS: TestSplitFrontmatter (0.00s)
+=== RUN   TestParseFrontmatter
+--- PASS: TestParseFrontmatter (0.00s)
+=== RUN   TestRenderMarkdownKeepsStructure
+--- PASS: TestRenderMarkdownKeepsStructure (0.00s)
+=== RUN   TestSanitizeRemovesEventHandlers
+--- PASS: TestSanitizeRemovesEventHandlers (0.00s)
+=== RUN   TestLoadFSMapsCourseLessons
+--- PASS: TestLoadFSMapsCourseLessons (0.00s)
+=== RUN   TestLoadFSMapsLegacyPages
+--- PASS: TestLoadFSMapsLegacyPages (0.00s)
+=== RUN   TestLoadFSExcludesInvalidFrontmatterWithDiagnostic
+--- PASS: TestLoadFSExcludesInvalidFrontmatterWithDiagnostic (0.00s)
+=== RUN   TestLoadFSSkipsUnservedMarkdownWithDiagnostic
+--- PASS: TestLoadFSSkipsUnservedMarkdownWithDiagnostic (0.00s)
+=== RUN   TestLoadFSKeepsDraftsHidden
+--- PASS: TestLoadFSKeepsDraftsHidden (0.00s)
+=== RUN   TestLoadFSFailsClosedOnKindCollision
+--- PASS: TestLoadFSFailsClosedOnKindCollision (0.00s)
+=== RUN   TestLoadFSMissingRootFails
+--- PASS: TestLoadFSMissingRootFails (0.00s)
+=== RUN   TestLoadFSUnreadableCoursesFails
+--- PASS: TestLoadFSUnreadableCoursesFails (0.00s)
+=== RUN   TestSafeSlugAcceptsIdentities
+--- PASS: TestSafeSlugAcceptsIdentities (0.00s)
+=== RUN   TestSafeSlugRejectsUnsafeIdentities
+--- PASS: TestSafeSlugRejectsUnsafeIdentities (0.00s)
+=== RUN   TestSlugifyHeading
+--- PASS: TestSlugifyHeading (0.00s)
+=== RUN   TestNormalizeHeadingLevels
+=== RUN   TestNormalizeHeadingLevels/title-first_body_shifts_up
+=== RUN   TestNormalizeHeadingLevels/already_h2_stays
+=== RUN   TestNormalizeHeadingLevels/deep_first_shifts_down
+=== RUN   TestNormalizeHeadingLevels/clamps_at_h6
+=== RUN   TestNormalizeHeadingLevels/clamps_at_h2
+=== RUN   TestNormalizeHeadingLevels/single_title
+=== RUN   TestNormalizeHeadingLevels/later_h2_after_h3_normalizes
+--- PASS: TestNormalizeHeadingLevels (0.00s)
+    --- PASS: TestNormalizeHeadingLevels/title-first_body_shifts_up (0.00s)
+    --- PASS: TestNormalizeHeadingLevels/already_h2_stays (0.00s)
+    --- PASS: TestNormalizeHeadingLevels/deep_first_shifts_down (0.00s)
+    --- PASS: TestNormalizeHeadingLevels/clamps_at_h6 (0.00s)
+    --- PASS: TestNormalizeHeadingLevels/clamps_at_h2 (0.00s)
+    --- PASS: TestNormalizeHeadingLevels/single_title (0.00s)
+    --- PASS: TestNormalizeHeadingLevels/later_h2_after_h3_normalizes (0.00s)
+=== RUN   TestExtractTOC
+--- PASS: TestExtractTOC (0.00s)
+=== RUN   TestTransformShortcodes
+--- PASS: TestTransformShortcodes (0.00s)
+=== RUN   TestTransformShortcodesNeverEmitsTemplateDirectives
+--- PASS: TestTransformShortcodesNeverEmitsTemplateDirectives (0.00s)
+=== RUN   TestResolveContentHref
+=== RUN   TestResolveContentHref/leaf_sibling_with_fragment
+=== RUN   TestResolveContentHref/section_child_with_fragment
+=== RUN   TestResolveContentHref/section_index_target
+=== RUN   TestResolveContentHref/current_dir
+=== RUN   TestResolveContentHref/section_dir_itself
+=== RUN   TestResolveContentHref/home_index_target
+=== RUN   TestResolveContentHref/section_parent_section
+=== RUN   TestResolveContentHref/nil_context_unchanged
+=== RUN   TestResolveContentHref/external_unchanged
+=== RUN   TestResolveContentHref/mailto_unchanged
+=== RUN   TestResolveContentHref/site_root_unchanged
+=== RUN   TestResolveContentHref/leaf_sibling
+=== RUN   TestResolveContentHref/leaf_parent
+=== RUN   TestResolveContentHref/dotdot_file
+=== RUN   TestResolveContentHref/query_only_anchor_passthrough
+=== RUN   TestResolveContentHref/anchor_unchanged
+=== RUN   TestResolveContentHref/asset_unchanged
+=== RUN   TestResolveContentHref/section_child
+--- PASS: TestResolveContentHref (0.00s)
+    --- PASS: TestResolveContentHref/leaf_sibling_with_fragment (0.00s)
+    --- PASS: TestResolveContentHref/section_child_with_fragment (0.00s)
+    --- PASS: TestResolveContentHref/section_index_target (0.00s)
+    --- PASS: TestResolveContentHref/current_dir (0.00s)
+    --- PASS: TestResolveContentHref/section_dir_itself (0.00s)
+    --- PASS: TestResolveContentHref/home_index_target (0.00s)
+    --- PASS: TestResolveContentHref/section_parent_section (0.00s)
+    --- PASS: TestResolveContentHref/nil_context_unchanged (0.00s)
+    --- PASS: TestResolveContentHref/external_unchanged (0.00s)
+    --- PASS: TestResolveContentHref/mailto_unchanged (0.00s)
+    --- PASS: TestResolveContentHref/site_root_unchanged (0.00s)
+    --- PASS: TestResolveContentHref/leaf_sibling (0.00s)
+    --- PASS: TestResolveContentHref/leaf_parent (0.00s)
+    --- PASS: TestResolveContentHref/dotdot_file (0.00s)
+    --- PASS: TestResolveContentHref/query_only_anchor_passthrough (0.00s)
+    --- PASS: TestResolveContentHref/anchor_unchanged (0.00s)
+    --- PASS: TestResolveContentHref/asset_unchanged (0.00s)
+    --- PASS: TestResolveContentHref/section_child (0.00s)
+=== RUN   TestContentURL
+=== RUN   TestContentURL/locale_home
+=== RUN   TestContentURL/index_is_home
+=== RUN   TestContentURL/lesson
+=== RUN   TestContentURL/indonesian
+=== RUN   TestContentURL/trims_slashes
+=== RUN   TestContentURL/with_path_context
+--- PASS: TestContentURL (0.00s)
+    --- PASS: TestContentURL/locale_home (0.00s)
+    --- PASS: TestContentURL/index_is_home (0.00s)
+    --- PASS: TestContentURL/lesson (0.00s)
+    --- PASS: TestContentURL/indonesian (0.00s)
+    --- PASS: TestContentURL/trims_slashes (0.00s)
+    --- PASS: TestContentURL/with_path_context (0.00s)
+=== RUN   TestFencedCodeShowsLanguageLabelAndPreLanguage
+--- PASS: TestFencedCodeShowsLanguageLabelAndPreLanguage (0.00s)
+=== RUN   TestFencedCodeCarriesCopyControlWithLabels
+--- PASS: TestFencedCodeCarriesCopyControlWithLabels (0.00s)
+=== RUN   TestFencedCodeKeepsVerbatimSourceInsidePre
+--- PASS: TestFencedCodeKeepsVerbatimSourceInsidePre (0.00s)
+=== RUN   TestFencedCodeWithoutLanguageStillGetsCopyControl
+--- PASS: TestFencedCodeWithoutLanguageStillGetsCopyControl (0.00s)
+=== RUN   TestMermaidFenceIsNotWrappedAsCode
+--- PASS: TestMermaidFenceIsNotWrappedAsCode (0.00s)
+=== RUN   TestInlineCodeGetsNoCopyControl
+--- PASS: TestInlineCodeGetsNoCopyControl (0.00s)
+PASS
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/content	0.334s

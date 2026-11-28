@@ -1,0 +1,8 @@
+[gate] format-staged passed
+[gate] commit-message passed
+[ayokoding-web-p3-corpus 3fc676715] feat(ayokoding-web): render fenced code controls in the real pipeline
+ 10 files changed, 286 insertions(+), 8 deletions(-)
+ create mode 100644 apps/ayokoding-web/assets/js/copy.dom.test.ts
+ create mode 100644 apps/ayokoding-web/assets/js/copy.ts
+ create mode 100644 apps/ayokoding-web/internal/content/code_block.go
+ create mode 100644 apps/ayokoding-web/internal/content/render_code_test.go

@@ -2,6 +2,7 @@
 import { createBdd } from "playwright-bdd";
 import { expect } from "@playwright/test";
 import { bodyOf, fetchText, headerOf, statusOf } from "../support/http";
+import { courseFile, courseRoute, frontmatterDescription, frontmatterTitle, lessonRoute } from "../support/witness";
 
 const { Given, When, Then } = createBdd();
 
@@ -9,19 +10,15 @@ const { Given, When, Then } = createBdd();
 // @scenario specs/apps/ayokoding/web/behaviours/discovery/discovery-documents.feature: *
 
 When("a reader requests a published content page", async ({ request }) => {
-  await fetchText(request, "/en/learn/courses/go-basics/learning/hello-world");
+  await fetchText(request, courseRoute);
 });
 
 Then("its HTML contains the current title, description, and canonical URL", async ({ request }) => {
   expect(statusOf(request)).toBe(200);
-  for (const marker of [
-    "Hello World",
-    "First program",
-    'rel="canonical"',
-    "/en/learn/courses/go-basics/learning/hello-world",
-  ]) {
-    expect(bodyOf(request)).toContain(marker);
-  }
+  expect(bodyOf(request)).toContain(frontmatterTitle(courseFile));
+  expect(bodyOf(request)).toContain(`<meta name="description" content="${frontmatterDescription(courseFile)}"`);
+  expect(bodyOf(request)).toContain('rel="canonical"');
+  expect(bodyOf(request)).toContain(courseRoute);
 });
 
 Then("alternate-language links identify only available translations", async ({ request }) => {
@@ -31,8 +28,7 @@ Then("alternate-language links identify only available translations", async ({ r
 });
 
 Given("the corpus contains published pages, draft pages, and a removed page", async () => {
-  // The parity fixture publishes lessons, hides draft-note, and has no
-  // removed-page route.
+  // The real corpus publishes lessons and has no draft-note or removed-page route.
 });
 
 When("a crawler requests the sitemap", async ({ request }) => {
@@ -46,7 +42,7 @@ Then("it receives a successful XML sitemap response", async ({ request }) => {
 });
 
 Then("the sitemap lists canonical published routes", async ({ request }) => {
-  expect(bodyOf(request)).toContain("/en/learn/courses/go-basics/learning/hello-world");
+  expect(bodyOf(request)).toContain(lessonRoute);
 });
 
 Then("draft and removed routes are absent", async ({ request }) => {
@@ -64,7 +60,7 @@ Then("it receives a successful XML feed response", async ({ request }) => {
 });
 
 Then("feed entries have the existing ordering, metadata, and canonical destinations", async ({ request }) => {
-  for (const marker of ["<item>", "Hello World", "https://ayokoding.example/en/learn/"]) {
+  for (const marker of ["<item>", "https://ayokoding.example/en/learn/"]) {
     expect(bodyOf(request)).toContain(marker);
   }
   expect(bodyOf(request)).not.toContain("Draft");

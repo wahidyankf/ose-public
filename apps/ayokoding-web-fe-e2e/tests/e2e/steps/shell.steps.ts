@@ -7,6 +7,7 @@ import { expect } from "@playwright/test";
 import { bodyOf, gotoPage, statusOf } from "../support/http";
 import { storedValue, THEME_KEY } from "../support/storage";
 import { stateFor } from "../support/state";
+import { primaryPage } from "../support/witness";
 
 const { Given, When, Then } = createBdd();
 
@@ -42,6 +43,8 @@ Then("the header, footer, and primary controls use that language", async ({ page
 
 Given("a reader is on a page with a translation in the other supported locale", async ({ page }) => {
   stateFor(page).locale = "en";
+  // Fixture-owned: the seeded go-basics lesson has an Indonesian translation. The real corpus has no id/learn tree,
+  // so this scenario carries @fixture-until-p4-tree and runs only on the parity fixture.
   await gotoPage(page, "/en/learn/courses/go-basics/learning/hello-world");
 });
 
@@ -89,7 +92,7 @@ Then("the page retains a visible focus indicator", async ({ page }) => {
 
 When("a reader opens a representative course page at {string} pixels wide", async ({ page }, width: string) => {
   await page.setViewportSize({ width: Number(width), height: 800 });
-  await gotoPage(page, "/en/learn/courses/go-basics/learning/hello-world");
+  await gotoPage(page, primaryPage(0).route);
 });
 
 Then("the main content remains readable without horizontal document scrolling", async ({ page }) => {
@@ -164,7 +167,7 @@ Then("theme text and controls remain accessible", async ({ page }) => {
 });
 
 Given("a reader has resized the desktop sidebar within the supported bounds", async ({ page }) => {
-  await gotoPage(page, "/en/learn/courses/go-basics/learning/setup");
+  await gotoPage(page, primaryPage(1).route);
   await page.locator("[data-sidebar-resize]").focus();
   await page.keyboard.press("ArrowRight");
   const width = await storedValue(page, "ayokoding-sidebar-width");
@@ -173,7 +176,7 @@ Given("a reader has resized the desktop sidebar within the supported bounds", as
 });
 
 When("the reader opens another content page", async ({ page }) => {
-  await gotoPage(page, "/en/learn/courses/go-basics/learning/hello-world");
+  await gotoPage(page, primaryPage(0).route);
 });
 
 Then("the sidebar uses the saved width", async ({ page }) => {
@@ -185,5 +188,5 @@ Then("the sidebar uses the saved width", async ({ page }) => {
 
 Then("the content remains reachable at the current viewport size", async ({ page }) => {
   expect(statusOf(page)).toBe(200);
-  await expect(page.locator("main")).toContainText("Hello World");
+  await expect(page.locator("main")).toContainText(primaryPage(0).title);
 });

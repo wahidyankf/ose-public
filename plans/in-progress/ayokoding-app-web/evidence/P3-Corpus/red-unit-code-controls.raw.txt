@@ -1,0 +1,18 @@
+=== RUN   TestFencedCodeShowsLanguageLabelAndPreLanguage
+    render_code_test.go:19: fenced go block lacks "data-language=\"go\"" in "<pre><code>package main\n</code></pre>\n"
+--- FAIL: TestFencedCodeShowsLanguageLabelAndPreLanguage (0.00s)
+=== RUN   TestFencedCodeCarriesCopyControlWithLabels
+    render_code_test.go:33: copy control lacks "data-copy=\"true\"" in "<pre><code>package main\n</code></pre>\n"
+--- FAIL: TestFencedCodeCarriesCopyControlWithLabels (0.00s)
+=== RUN   TestFencedCodeKeepsVerbatimSourceInsidePre
+--- PASS: TestFencedCodeKeepsVerbatimSourceInsidePre (0.00s)
+=== RUN   TestFencedCodeWithoutLanguageStillGetsCopyControl
+    render_code_test.go:48: plain fence lacks a copy control: "<pre><code>plain text\n</code></pre>\n"
+--- FAIL: TestFencedCodeWithoutLanguageStillGetsCopyControl (0.00s)
+=== RUN   TestMermaidFenceIsNotWrappedAsCode
+--- PASS: TestMermaidFenceIsNotWrappedAsCode (0.00s)
+=== RUN   TestInlineCodeGetsNoCopyControl
+--- PASS: TestInlineCodeGetsNoCopyControl (0.00s)
+FAIL
+FAIL	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/content	0.345s
+FAIL

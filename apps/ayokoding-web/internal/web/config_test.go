@@ -60,6 +60,18 @@ func TestResolveConfigExplicitFlagWinsOverEnv(t *testing.T) {
 	}
 }
 
+// TestResolveConfigDefaultsToNoFixture pins the default: no fixture is selected,
+// so the launcher serves the real corpus.
+func TestResolveConfigDefaultsToNoFixture(t *testing.T) {
+	cfg, err := resolve(nil, nil)
+	if err != nil {
+		t.Fatalf("ResolveConfig: %v", err)
+	}
+	if cfg.Fixture != "" {
+		t.Fatalf("default fixture = %q, want none (the real corpus)", cfg.Fixture)
+	}
+}
+
 func TestResolveConfigRejectsInvalidPort(t *testing.T) {
 	for _, value := range []string{"abc", "0", "70000", "-1", ""} {
 		if _, err := resolve(nil, map[string]string{"AYOKODING_WEB_PORT": value}); err == nil {

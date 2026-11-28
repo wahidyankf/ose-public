@@ -1,0 +1,35 @@
+--- FAIL: TestResolveConfigDefaultsToNoFixture (0.00s)
+    config_test.go:71: default fixture = "parity", want none (the real corpus)
+--- FAIL: TestResolveCorpusDiscoversRealRootsFromTheWorkingDirectory (0.00s)
+    corpus_test.go:47: content root = "", want the real ayokoding-www content root
+--- FAIL: TestResolveCorpusPrefersTheMovedContentCandidate (0.00s)
+    corpus_test.go:67: content root = "", want the first candidate
+--- FAIL: TestResolveCorpusRefusesAWorkingDirectoryOutsideARepository (0.00s)
+    corpus_test.go:73: a working directory with no repo-config.yml above it must refuse the default corpus
+--- FAIL: TestResolveCorpusRefusesAnUnreadableNamedRoot (0.00s)
+    corpus_test.go:81: an unreadable AYOKODING_WEB_CONTENT_DIR must refuse startup
+--- FAIL: TestSeedDepsDefaultServesTheRealCorpus (0.00s)
+panic: runtime error: invalid memory address or nil pointer dereference [recovered, repanicked]
+[signal SIGSEGV: segmentation violation code=0x2 addr=0x0 pc=0x1048ae498]
+
+goroutine 56 [running]:
+testing.tRunner.func1.2({0x105450458, 0x1054fe610})
+	<go-root>/Cellar/go/1.27.1/libexec/src/testing/testing.go:2123 +0x1a0
+testing.tRunner.func1()
+	<go-root>/Cellar/go/1.27.1/libexec/src/testing/testing.go:2126 +0x2c8
+panic({0x105450458?, 0x1054fe610?})
+	<go-root>/Cellar/go/1.27.1/libexec/src/runtime/panic.go:859 +0x120
+github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/web.ResolveConfig({0x0, 0x0, 0x3b3b4c89ab88?}, 0x0)
+	<repo>/apps/ayokoding-web/internal/web/config.go:127 +0x3d8
+github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/web_test.TestSeedDepsDefaultServesTheRealCorpus(0x3b3b4cc61d48)
+	<repo>/apps/ayokoding-web/internal/web/corpus_test.go:89 +0x38
+testing.tRunner(0x3b3b4cc61d48, 0x1054a8ff0)
+	<go-root>/Cellar/go/1.27.1/libexec/src/testing/testing.go:2193 +0xc4
+created by testing.(*T).Run in goroutine 1
+	<go-root>/Cellar/go/1.27.1/libexec/src/testing/testing.go:2258 +0x3b8
+FAIL	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/web	0.580s
+--- FAIL: TestDefaultStartServesTheRealCorpusOverHTTP (0.00s)
+    default_corpus_test.go:42: GET /en/learn/courses/go-basics/learning/hello-world = 200, want 404
+FAIL
+FAIL	github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/integration	2.836s
+FAIL

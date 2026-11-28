@@ -1,0 +1,203 @@
+[WebServer] ayokoding-web: serving the real corpus: content <repo>/apps/ayokoding-www/content, manifests <repo>/apps/ayokoding-www/src/features/course-paths/manifests
+
+Running 69 tests using 1 worker
+
+  ✓   1 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/content/content-rendering.feature.spec.js:10:7 › Shared learning content rendering › A section lists its pages by authored title and order (764ms)
+  ✓   2 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/content/content-rendering.feature.spec.js:17:7 › Shared learning content rendering › A page with invalid metadata is not published (122ms)
+  ✓   3 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/content/content-rendering.feature.spec.js:26:9 › Shared learning content rendering › Authored <structure> renders with the established article styling › Authored table renders with the established article styling (471ms)
+  ✘   4 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/content/content-rendering.feature.spec.js:32:9 › Shared learning content rendering › Authored <structure> renders with the established article styling › Authored task list renders with the established article styling (132ms)
+  ✘   5 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/content/content-rendering.feature.spec.js:38:9 › Shared learning content rendering › Authored <structure> renders with the established article styling › Authored raw details renders with the established article styling (6.0s)
+  ✘   6 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/content/content-rendering.feature.spec.js:46:7 › Shared learning content rendering › A page has one title heading and an ordered outline (5.8s)
+  ✓   7 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/content/content-rendering.feature.spec.js:52:7 › Shared learning content rendering › Copying a code block yields its exact source text (877ms)
+  ✓   8 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/content/content-rendering.feature.spec.js:58:7 › Shared learning content rendering › A code block shows its language label (207ms)
+  ✓   9 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/content/content-rendering.feature.spec.js:64:7 › Shared learning content rendering › Inline code wraps within the article on a phone (118ms)
+  ✓  10 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/content/content-rendering.feature.spec.js:70:7 › Shared learning content rendering › A wide code block scrolls inside the article on a phone (128ms)
+  ✓  11 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/courses/course-catalog-and-paths.feature.spec.js:10:7 › Course catalog and learning paths › The course catalog lists current courses by category (118ms)
+  ✓  12 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/courses/course-catalog-and-paths.feature.spec.js:17:7 › Course catalog and learning paths › An outline course is not presented as a completed lesson collection (101ms)
+  ✓  13 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/courses/course-catalog-and-paths.feature.spec.js:24:7 › Course catalog and learning paths › A path uses the current manifest's phase order (137ms)
+  ✓  14 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/courses/course-catalog-and-paths.feature.spec.js:31:7 › Course catalog and learning paths › A course page names each prerequisite with its title and link (98ms)
+  ✓  15 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/courses/course-catalog-and-paths.feature.spec.js:37:7 › Course catalog and learning paths › A path never places a prerequisite after its dependent course (125ms)
+  ✓  16 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/courses/course-catalog-and-paths.feature.spec.js:43:7 › Course catalog and learning paths › Invalid path context falls back to canonical course navigation (96ms)
+  ✓  17 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature.spec.js:10:7 › Browser learning progress › Completion survives a reload (204ms)
+  ✓  18 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature.spec.js:16:7 › Browser learning progress › Progress is never sent to the server (188ms)
+  ✓  19 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature.spec.js:22:7 › Browser learning progress › Progress saved on an earlier visit shows when the reader returns (144ms)
+  ✓  20 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature.spec.js:29:7 › Browser learning progress › Completion belongs to the course across its paths (130ms)
+  ✓  21 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature.spec.js:36:7 › Browser learning progress › A completion control can undo a completed page (175ms)
+  ✓  22 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature.spec.js:43:7 › Browser learning progress › Blocked storage keeps progress for the current visit (201ms)
+  ✓  23 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature.spec.js:51:7 › Browser learning progress › Corrupt saved progress is ignored and the reader can still read and complete pages (144ms)
+  ✓  24 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature.spec.js:58:7 › Browser learning progress › Confirming reset clears learning progress and keeps other site settings (123ms)
+  ✓  25 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature.spec.js:65:7 › Browser learning progress › Cancelling reset preserves progress and restores focus (128ms)
+  ✓  26 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature.spec.js:72:7 › Browser learning progress › Another tab receives completion changes (132ms)
+  ✓  27 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature.spec.js:78:7 › Browser learning progress › Progress saved at another site address is not imported (180ms)
+  ✓  28 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development.feature.spec.js:6:7 › Independent local development › The web app serves its entry pages on port 3102 by default (2.9s)
+  ✓  29 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development.feature.spec.js:11:7 › Independent local development › A prefixed port override changes only the rewrite listener (2.9s)
+  ✓  30 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development.feature.spec.js:18:7 › Independent local development › An explicit port flag wins over the prefixed environment value (2.9s)
+  ✓  31 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development.feature.spec.js:26:7 › Independent local development › A generic PORT variable does not retarget the rewrite (2.9s)
+  ✓  32 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development.feature.spec.js:32:7 › Independent local development › An invalid port override fails before accepting requests (55ms)
+  ✓  33 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development.feature.spec.js:39:7 › Independent local development › Browsing course pages leaves the content files unchanged (1.2s)
+  ✓  34 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development.feature.spec.js:45:7 › Independent local development › AYOKODING_WEB_CONTENT_DIR and AYOKODING_WEB_MANIFESTS_DIR point the app at another corpus (258ms)
+  ✓  35 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development.feature.spec.js:51:7 › Independent local development › An unreadable content directory stops startup before the listener opens (55ms)
+  ✓  36 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development.feature.spec.js:58:7 › Independent local development › Search, benchmark, and calculator fragments under /htmx update results without a full page load (55ms)
+  ✓  37 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development.feature.spec.js:65:9 › Independent local development › An unknown flag or fixture value stops startup with a message › Example #1 (55ms)
+  ✓  38 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development.feature.spec.js:70:9 › Independent local development › An unknown flag or fixture value stops startup with a message › Example #2 (55ms)
+  ✓  39 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development.feature.spec.js:79:9 › Independent local development › A fixture setting selects its canned corpus variant › Example #1 (255ms)
+  ✓  40 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development.feature.spec.js:84:9 › Independent local development › A fixture setting selects its canned corpus variant › Example #2 (254ms)
+  ✓  41 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation.feature.spec.js:10:7 › Canonical routes and learning navigation › The sidebar marks the active page and opens its ancestors (113ms)
+  ✓  42 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation.feature.spec.js:16:7 › Canonical routes and learning navigation › Breadcrumbs link to the section and course ancestors (95ms)
+  ✓  43 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation.feature.spec.js:22:7 › Canonical routes and learning navigation › A lesson follows the selected path's sequence (120ms)
+  ✓  44 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation.feature.spec.js:29:7 › Canonical routes and learning navigation › Browser back restores the previous content location (139ms)
+  ✓  45 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation.feature.spec.js:38:9 › Canonical routes and learning navigation › The learn home and learning paths hub pages list their entries in the selected locale › Example #1 (55ms)
+  ✓  46 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation.feature.spec.js:43:9 › Canonical routes and learning navigation › The learn home and learning paths hub pages list their entries in the selected locale › Example #2 (54ms)
+  ✓  47 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/search/search.feature.spec.js:10:7 › Locale-scoped site search › The keyboard shortcut opens search with input focus (91ms)
+  ✓  48 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/search/search.feature.spec.js:16:7 › Locale-scoped site search › Empty search input does not display stale results (55ms)
+  ✓  49 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/search/search.feature.spec.js:23:7 › Locale-scoped site search › Search includes both interactive tools (55ms)
+  ✓  50 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/search/search.feature.spec.js:28:7 › Locale-scoped site search › Escape returns focus to the search opener (95ms)
+  ✓  51 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature.spec.js:12:9 › Bilingual accessible shell › The page shell uses the route's language › Example #1 (107ms)
+  ✓  52 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature.spec.js:18:9 › Bilingual accessible shell › The page shell uses the route's language › Example #2 (95ms)
+  ✓  53 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature.spec.js:26:7 › Bilingual accessible shell › Keyboard readers can skip the repeated navigation (95ms)
+  ✓  54 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature.spec.js:34:9 › Bilingual accessible shell › The shell fits the viewport without document overflow › Example #1 (104ms)
+  ✓  55 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature.spec.js:40:9 › Bilingual accessible shell › The shell fits the viewport without document overflow › Example #2 (121ms)
+  ✓  56 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature.spec.js:46:9 › Bilingual accessible shell › The shell fits the viewport without document overflow › Example #3 (126ms)
+  ✓  57 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature.spec.js:54:7 › Bilingual accessible shell › Mobile navigation restores focus after dismissal (93ms)
+  ✓  58 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature.spec.js:61:7 › Bilingual accessible shell › A selected theme survives a reload (181ms)
+  ✓  59 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature.spec.js:68:7 › Bilingual accessible shell › A resized sidebar retains its width within supported bounds (143ms)
+  ✓  60 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/tools/ai-benchmark.feature.spec.js:10:7 › AI model benchmark comparison › Benchmark figures and ordering match the published reference results (65ms)
+  ✓  61 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/tools/ai-benchmark.feature.spec.js:16:7 › AI model benchmark comparison › A benchmark URL restores all supported filter state (89ms)
+  ✓  62 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/tools/ai-benchmark.feature.spec.js:23:7 › AI model benchmark comparison › Invalid benchmark URL values fall back to the default filters (99ms)
+  ✓  63 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/tools/ai-benchmark.feature.spec.js:30:7 › AI model benchmark comparison › Benchmark results show their sources, dates, notes, and methodology (86ms)
+  ✓  64 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/tools/ai-benchmark.feature.spec.js:37:7 › AI model benchmark comparison › A benchmark filter with no matches shows an empty result (70ms)
+  ✓  65 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/tools/cost-of-living-calculator.feature.spec.js:10:7 › Cost-of-living and savings calculation › Calculator costs, savings, and minimum qualifying role match the published reference results (65ms)
+  ✓  66 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/tools/cost-of-living-calculator.feature.spec.js:17:7 › Cost-of-living and savings calculation › A calculator URL restores all supported input state (97ms)
+  ✓  67 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/tools/cost-of-living-calculator.feature.spec.js:24:7 › Cost-of-living and savings calculation › Invalid calculator input shows a recovered value or a message, never a misleading estimate (55ms)
+  ✓  68 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/tools/cost-of-living-calculator.feature.spec.js:31:7 › Cost-of-living and savings calculation › Changing geography clears a city that no longer applies (99ms)
+  ✓  69 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/tools/cost-of-living-calculator.feature.spec.js:38:7 › Cost-of-living and savings calculation › Currency-converted estimates show the FX snapshot date and each currency's source (96ms)
+
+
+  1) [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/content/content-rendering.feature.spec.js:32:9 › Shared learning content rendering › Authored <structure> renders with the established article styling › Authored task list renders with the established article styling › Then the authored "task list" renders with the established article styling 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+       at tests/e2e/steps/content.steps.ts:88
+
+      86 |
+      87 | Then("the authored {string} renders with the established article styling", async ({ page }, structure: string) => {
+    > 88 |   expect(statusOf(page)).toBe(200);
+         |                          ^
+      89 |   const article = page.locator(".article-body");
+      90 |   if (structure === "table") {
+      91 |     await expect(article.locator("table").first()).toBeVisible();
+        at Object.<anonymous> (<repo>/apps/ayokoding-web-fe-e2e/tests/e2e/steps/content.steps.ts:88:26)
+        at <repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:58:48
+        at BddStepInvoker.runWithAfterStepHooks (<repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:82:22)
+        at <repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:57:19
+        at BddStepInvoker.invoke (<repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:55:5)
+        at <repo>/apps/ayokoding-web-fe-e2e/.features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/content/content-rendering.feature.spec.js:35:7
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/specs-apps-ayokoding-web-b-e7365-established-article-styling-bdd-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/specs-apps-ayokoding-web-b-e7365-established-article-styling-bdd-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/specs-apps-ayokoding-web-b-e7365-established-article-styling-bdd-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/specs-apps-ayokoding-web-b-e7365-established-article-styling-bdd-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/content/content-rendering.feature.spec.js:38:9 › Shared learning content rendering › Authored <structure> renders with the established article styling › Authored raw details renders with the established article styling › Then the authored "raw details" renders with the established article styling 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('.article-body').locator('details').first()
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for locator('.article-body').locator('details').first()
+
+
+       at tests/e2e/steps/content.steps.ts:95
+
+      93 |     await expect(article.locator('input[type="checkbox"]').first()).toBeAttached();
+      94 |   } else if (structure === "raw details") {
+    > 95 |     await expect(article.locator("details").first()).toBeVisible();
+         |                                                      ^
+      96 |   } else {
+      97 |     throw new Error(`no article-styling check for ${structure}`);
+      98 |   }
+        at Object.<anonymous> (<repo>/apps/ayokoding-web-fe-e2e/tests/e2e/steps/content.steps.ts:95:54)
+        at <repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:58:48
+        at BddStepInvoker.runWithAfterStepHooks (<repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:82:22)
+        at <repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:57:19
+        at BddStepInvoker.invoke (<repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:55:5)
+        at <repo>/apps/ayokoding-web-fe-e2e/.features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/content/content-rendering.feature.spec.js:41:7
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/specs-apps-ayokoding-web-b-0b071-established-article-styling-bdd-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/specs-apps-ayokoding-web-b-0b071-established-article-styling-bdd-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/specs-apps-ayokoding-web-b-0b071-established-article-styling-bdd-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/specs-apps-ayokoding-web-b-0b071-established-article-styling-bdd-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/content/content-rendering.feature.spec.js:46:7 › Shared learning content rendering › A page has one title heading and an ordered outline › Then the page has one title heading with a normalized body outline 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('.article-body h2').first()
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for locator('.article-body h2').first()
+
+
+       at tests/e2e/steps/content.steps.ts:112
+
+      110 | Then("the page has one title heading with a normalized body outline", async ({ page }) => {
+      111 |   await expect(page.locator("h1")).toHaveCount(1);
+    > 112 |   await expect(page.locator(".article-body h2").first()).toBeVisible();
+          |                                                          ^
+      113 | });
+      114 |
+      115 | // Fixture-owned: the table of contents is not emitted by the real pipeline yet, so this row runs only on the parity
+        at Object.<anonymous> (<repo>/apps/ayokoding-web-fe-e2e/tests/e2e/steps/content.steps.ts:112:58)
+        at BddStepInvoker.runWithAfterStepHooks (<repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:82:16)
+        at BddStepInvoker.invoke (<repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:55:5)
+        at <repo>/apps/ayokoding-web-fe-e2e/.features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/content/content-rendering.feature.spec.js:49:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/specs-apps-ayokoding-web-b-af9fe-ding-and-an-ordered-outline-bdd-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/specs-apps-ayokoding-web-b-af9fe-ding-and-an-ordered-outline-bdd-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/specs-apps-ayokoding-web-b-af9fe-ding-and-an-ordered-outline-bdd-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/specs-apps-ayokoding-web-b-af9fe-ding-and-an-ordered-outline-bdd-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/content/content-rendering.feature.spec.js:32:9 › Shared learning content rendering › Authored <structure> renders with the established article styling › Authored task list renders with the established article styling 
+    [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/content/content-rendering.feature.spec.js:38:9 › Shared learning content rendering › Authored <structure> renders with the established article styling › Authored raw details renders with the established article styling 
+    [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/content/content-rendering.feature.spec.js:46:7 › Shared learning content rendering › A page has one title heading and an ordered outline 
+  66 passed (39.6s)

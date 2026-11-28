@@ -49,6 +49,13 @@ Feature: Independent local development
     When the rewrite starts
     Then the rewrite serves its pages and course paths from that corpus
 
+  # Behaviour: AYB-059
+  Scenario: An unreadable content directory stops startup before the listener opens
+    Given AYOKODING_WEB_CONTENT_DIR names a content directory that cannot be read
+    When the rewrite is launched and fails to start
+    Then startup fails with a diagnostic naming AYOKODING_WEB_CONTENT_DIR
+    And no rewrite listener starts
+
   # Behaviour: AYB-032
   # Behaviour: AYB-033
   # Behaviour: AYB-034

@@ -19,6 +19,7 @@ Feature: Bilingual accessible shell
       | id     |
 
   # Behaviour: AYB-040
+  @fixture-until-p4-tree
   Scenario: The locale switch preserves an available translated destination
     Given a reader is on a page with a translation in the other supported locale
     When the reader switches locale

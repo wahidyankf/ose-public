@@ -24,6 +24,7 @@ import (
 type host struct {
 	environment web.Environment
 	root        func(dir string) fs.FS
+	working     string
 	listen      func(address string) (net.Listener, error)
 	notify      func(parent context.Context) (context.Context, context.CancelFunc)
 	stderr      io.Writer
@@ -43,9 +44,11 @@ func main() {
 // osHost wires the launcher to the real process, snapshotting the honored
 // launcher variables once at the boundary into the Environment seam.
 func osHost() host {
+	working, _ := os.Getwd()
 	return host{
 		environment: web.OSEnvironment(),
 		root:        os.DirFS,
+		working:     working,
 		listen: func(address string) (net.Listener, error) {
 			return net.Listen("tcp", address)
 		},
@@ -64,8 +67,21 @@ func run(args []string, process host) int {
 	}
 	ctx, stop := process.notify(context.Background())
 	defer stop()
-	sources := web.Sources{Environment: process.environment, Root: process.root}
-	server := web.NewServer(cfg, web.SeedFixtureDeps(cfg.Fixture, sources))
+	sources := web.Sources{Environment: process.environment, Root: process.root, Working: process.working}
+	if cfg.Fixture == "" {
+		corpus, err := web.ResolveCorpus(sources)
+		if err != nil {
+			_, _ = fmt.Fprintf(process.stderr, "ayokoding-web: %v\n", err)
+			return 1
+		}
+		_, _ = fmt.Fprintf(process.stderr, "ayokoding-web: serving the real corpus: content %s, manifests %s\n", corpus.ContentDir, corpus.ManifestsDir)
+	}
+	deps, err := web.SeedDeps(cfg, sources)
+	if err != nil {
+		_, _ = fmt.Fprintf(process.stderr, "ayokoding-web: %v\n", err)
+		return 1
+	}
+	server := web.NewServer(cfg, deps)
 	listener, err := process.listen("127.0.0.1:" + strconv.Itoa(cfg.Port))
 	if err != nil {
 		_, _ = fmt.Fprintf(process.stderr, "ayokoding-web: listen: %v\n", err)

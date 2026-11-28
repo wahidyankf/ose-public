@@ -3,8 +3,7 @@ import { defineConfig, devices } from "@playwright/test";
 import { defineBddConfig } from "playwright-bdd";
 
 // The browser boundary's one config. It binds every feature file under the corpus except the nine HTTP-only
-// files, which the HTTP home binds (008). Label: "real-corpus (fixture until P3-Corpus)". Until P3-Corpus
-// removes the switch below, the server still serves the parity fixture.
+// files, which the HTTP home binds (008). The server starts with no fixture selected, so it serves the real corpus.
 // The Go server owns port 3191 for the acceptance suite. The binary under test is built by `ayokoding-web-fe-e2e:test:e2e`
 // through its declared dependency on `ayokoding-web:build`, and Playwright always owns this server's lifecycle.
 const workspaceRoot = path.resolve(__dirname, "../..");
@@ -28,11 +27,16 @@ const httpOnlyFeatures = [
 const testDir = defineBddConfig({
   featuresRoot: workspaceRoot,
   features: [path.join(behaviours, "**/*.feature"), ...httpOnlyFeatures],
+  // Fixture-owned scenarios run only on the parity fixture (playwright.fixture.config.ts). Each carries the unit that
+  // moves it: @fixture (no real witness), @fixture-until-p3-render (product defect), @fixture-until-p4-search and
+  // @fixture-until-p4-tree (behaviour delivered by a later unit).
+  tags: "not @fixture and not @fixture-until-p3-render and not @fixture-until-p4-search and not @fixture-until-p4-tree",
   steps: "./tests/e2e/steps/**/*.steps.ts",
   outputDir: ".features-gen/fe-real-corpus",
 });
 
-const specFiles = ["browser-progress.spec.ts", "htmx-fragments.spec.ts", "playwright-owned-server.spec.ts"];
+// htmx-fragments.spec.ts moved to playwright.fixture.config.ts: it asserts fixture content the real corpus lacks.
+const specFiles = ["browser-progress.spec.ts", "playwright-owned-server.spec.ts"];
 
 const browsers = [
   { name: "chromium", device: devices["Desktop Chrome"] },
@@ -64,7 +68,6 @@ export default defineConfig({
     cwd: workspaceRoot,
     env: {
       AYOKODING_WEB_PORT: "3191",
-      AYOKODING_WEB_FIXTURE: "parity",
     },
   },
   projects: browsers.flatMap(({ name, device }) => [

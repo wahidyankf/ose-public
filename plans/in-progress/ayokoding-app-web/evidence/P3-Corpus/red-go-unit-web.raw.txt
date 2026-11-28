@@ -1,0 +1,147 @@
+=== RUN   TestRenderFailure
+--- PASS: TestRenderFailure (0.00s)
+=== RUN   TestResolveConfigDefaultsTo3102
+--- PASS: TestResolveConfigDefaultsTo3102 (0.00s)
+=== RUN   TestResolveConfigIgnoresBarePort
+--- PASS: TestResolveConfigIgnoresBarePort (0.00s)
+=== RUN   TestResolveConfigPrefixedEnvWins
+--- PASS: TestResolveConfigPrefixedEnvWins (0.00s)
+=== RUN   TestResolveConfigExplicitFlagWinsOverEnv
+--- PASS: TestResolveConfigExplicitFlagWinsOverEnv (0.00s)
+=== RUN   TestResolveConfigDefaultsToNoFixture
+    config_test.go:71: default fixture = "parity", want none (the real corpus)
+--- FAIL: TestResolveConfigDefaultsToNoFixture (0.00s)
+=== RUN   TestResolveConfigRejectsInvalidPort
+--- PASS: TestResolveConfigRejectsInvalidPort (0.00s)
+=== RUN   TestOSEnvironmentSnapshotsLauncher
+--- PASS: TestOSEnvironmentSnapshotsLauncher (0.00s)
+=== RUN   TestResolveConfigRejectsInvalidFlag
+--- PASS: TestResolveConfigRejectsInvalidFlag (0.00s)
+=== RUN   TestResolveErrorNamesSource
+--- PASS: TestResolveErrorNamesSource (0.00s)
+=== RUN   TestResolveRejectsUnknownAndMissingFlags
+--- PASS: TestResolveRejectsUnknownAndMissingFlags (0.00s)
+=== RUN   TestResolveEqualsFormFlag
+--- PASS: TestResolveEqualsFormFlag (0.00s)
+=== RUN   TestResolveFixtureMissingValue
+--- PASS: TestResolveFixtureMissingValue (0.00s)
+=== RUN   TestResolveFixtureModes
+--- PASS: TestResolveFixtureModes (0.00s)
+=== RUN   TestCanonicalRedirect
+--- PASS: TestCanonicalRedirect (0.00s)
+=== RUN   TestSupportedLocales
+--- PASS: TestSupportedLocales (0.00s)
+=== RUN   TestResolveCorpusDiscoversRealRootsFromTheWorkingDirectory
+    corpus_test.go:50: content root = "", want the real ayokoding-www content root
+--- FAIL: TestResolveCorpusDiscoversRealRootsFromTheWorkingDirectory (0.00s)
+=== RUN   TestResolveCorpusPrefersTheMovedContentCandidate
+    corpus_test.go:70: content root = "", want the first candidate
+--- FAIL: TestResolveCorpusPrefersTheMovedContentCandidate (0.00s)
+=== RUN   TestResolveCorpusRefusesAWorkingDirectoryOutsideARepository
+    corpus_test.go:76: a working directory with no repo-config.yml above it must refuse the default corpus
+--- FAIL: TestResolveCorpusRefusesAWorkingDirectoryOutsideARepository (0.00s)
+=== RUN   TestResolveCorpusRefusesAnUnreadableNamedRoot
+    corpus_test.go:84: an unreadable AYOKODING_WEB_CONTENT_DIR must refuse startup
+--- FAIL: TestResolveCorpusRefusesAnUnreadableNamedRoot (0.00s)
+=== RUN   TestSeedDepsDefaultServesTheRealCorpus
+    corpus_test.go:101: the default start must serve the real lesson just-enough-python/beginner
+--- FAIL: TestSeedDepsDefaultServesTheRealCorpus (0.00s)
+=== RUN   TestSeedDepsStopsStartupOnAnUnreadableDefaultRoot
+    corpus_test.go:115: a repository with no readable corpus root must stop startup
+--- FAIL: TestSeedDepsStopsStartupOnAnUnreadableDefaultRoot (0.00s)
+=== RUN   TestSeedDepsFixtureSelectionServesTheCannedCorpus
+--- PASS: TestSeedDepsFixtureSelectionServesTheCannedCorpus (0.00s)
+=== RUN   TestSitemapListsOnlyPublished
+--- PASS: TestSitemapListsOnlyPublished (0.00s)
+=== RUN   TestFeedExposesEligibleEntries
+--- PASS: TestFeedExposesEligibleEntries (0.00s)
+=== RUN   TestDiscoveryUnavailableCatalogIsGeneric
+--- PASS: TestDiscoveryUnavailableCatalogIsGeneric (0.00s)
+=== RUN   TestContentUnavailableCatalogIsGeneric
+--- PASS: TestContentUnavailableCatalogIsGeneric (0.00s)
+=== RUN   TestRobotsContractAndUnknownText
+--- PASS: TestRobotsContractAndUnknownText (0.00s)
+=== RUN   TestDocumentsNameDefaultCorpusAndFixtureSwitch
+    docs_test.go:20: ../../README.md does not name AYOKODING_WEB_FIXTURE
+    docs_test.go:23: ../../README.md does not name the default real corpus
+    docs_test.go:20: ../../.env.example does not name AYOKODING_WEB_FIXTURE
+    docs_test.go:23: ../../.env.example does not name the default real corpus
+--- FAIL: TestDocumentsNameDefaultCorpusAndFixtureSwitch (0.00s)
+=== RUN   TestSafePathAcceptsRoutablePaths
+--- PASS: TestSafePathAcceptsRoutablePaths (0.00s)
+=== RUN   TestSafePathRejectsTraversal
+--- PASS: TestSafePathRejectsTraversal (0.00s)
+=== RUN   TestLegacyPageServesLikeLesson
+--- PASS: TestLegacyPageServesLikeLesson (0.00s)
+=== RUN   TestLegacyMissingPageIsLocalizedNotFound
+--- PASS: TestLegacyMissingPageIsLocalizedNotFound (0.00s)
+=== RUN   TestLegacyUnavailableCatalogIsNotFound
+--- PASS: TestLegacyUnavailableCatalogIsNotFound (0.00s)
+=== RUN   TestUnsafeLessonSlugIsNotFound
+--- PASS: TestUnsafeLessonSlugIsNotFound (0.00s)
+=== RUN   TestUnsafeLegacyRestIsNotFound
+--- PASS: TestUnsafeLegacyRestIsNotFound (0.00s)
+=== RUN   TestOrderedRedirectLocaleEntryFirst
+--- PASS: TestOrderedRedirectLocaleEntryFirst (0.00s)
+=== RUN   TestOrderedRedirectContentNamespaceStripsC
+--- PASS: TestOrderedRedirectContentNamespaceStripsC (0.00s)
+=== RUN   TestOrderedRedirectLearnReorgTemporaryUses307
+--- PASS: TestOrderedRedirectLearnReorgTemporaryUses307 (0.00s)
+=== RUN   TestOrderedRedirectCourseRehomeWinsOverLegacyBucket
+--- PASS: TestOrderedRedirectCourseRehomeWinsOverLegacyBucket (0.00s)
+=== RUN   TestOrderedRedirectLearnHomeExactOnly
+--- PASS: TestOrderedRedirectLearnHomeExactOnly (0.00s)
+=== RUN   TestOrderedRedirectThreeBucketLast
+--- PASS: TestOrderedRedirectThreeBucketLast (0.00s)
+=== RUN   TestOrderedRedirectPreservesQuery
+--- PASS: TestOrderedRedirectPreservesQuery (0.00s)
+=== RUN   TestOrderedRedirectRetiredRootsToCourses
+--- PASS: TestOrderedRedirectRetiredRootsToCourses (0.00s)
+=== RUN   TestUnsafeIdentitiesAreNotFound
+--- PASS: TestUnsafeIdentitiesAreNotFound (0.00s)
+=== RUN   TestFirstValueQueryWins
+--- PASS: TestFirstValueQueryWins (0.00s)
+=== RUN   TestRedirectOrderAndNoLoop
+--- PASS: TestRedirectOrderAndNoLoop (0.00s)
+=== RUN   TestSearchFragmentSuccess
+--- PASS: TestSearchFragmentSuccess (0.00s)
+=== RUN   TestSearchFragmentClearsOnWhitespace
+--- PASS: TestSearchFragmentClearsOnWhitespace (0.00s)
+=== RUN   TestSearchFragmentRejectsInvalid
+--- PASS: TestSearchFragmentRejectsInvalid (0.00s)
+=== RUN   TestSearchFragmentLocaleFromMountedPage
+--- PASS: TestSearchFragmentLocaleFromMountedPage (0.00s)
+=== RUN   TestSearchFragmentRejectsMalformedEncoding
+--- PASS: TestSearchFragmentRejectsMalformedEncoding (0.00s)
+=== RUN   TestSearchFragmentFirstValueWins
+--- PASS: TestSearchFragmentFirstValueWins (0.00s)
+=== RUN   TestSeedFixtureDepsKeepsCannedCorpusWithoutSourceRoots
+--- PASS: TestSeedFixtureDepsKeepsCannedCorpusWithoutSourceRoots (0.00s)
+=== RUN   TestSeedFileDepsServesFileBackedSources
+--- PASS: TestSeedFileDepsServesFileBackedSources (0.00s)
+=== RUN   TestSeedFileDepsHonorsShowDrafts
+--- PASS: TestSeedFileDepsHonorsShowDrafts (0.00s)
+=== RUN   TestSeedFixtureDepsHonorsShowDraftsWithoutSourceRoot
+--- PASS: TestSeedFixtureDepsHonorsShowDraftsWithoutSourceRoot (0.00s)
+=== RUN   TestSeedFileDepsRefusesAnUnreadableNamedRoot
+--- FAIL: TestSeedFileDepsRefusesAnUnreadableNamedRoot (0.00s)
+panic: runtime error: invalid memory address or nil pointer dereference [recovered, repanicked]
+[signal SIGSEGV: segmentation violation code=0x2 addr=0x0 pc=0x104a3e498]
+
+goroutine 100 [running]:
+testing.tRunner.func1.2({0x1055e0458, 0x10568e610})
+	<go-root>/Cellar/go/1.27.1/libexec/src/testing/testing.go:2123 +0x1a0
+testing.tRunner.func1()
+	<go-root>/Cellar/go/1.27.1/libexec/src/testing/testing.go:2126 +0x2c8
+panic({0x1055e0458?, 0x10568e610?})
+	<go-root>/Cellar/go/1.27.1/libexec/src/runtime/panic.go:859 +0x120
+github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/web.ResolveConfig({0x734cf1d96f38, 0x2, 0x10563c460?}, 0x0)
+	<repo>/apps/ayokoding-web/internal/web/config.go:127 +0x3d8
+github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/web_test.TestSeedFileDepsRefusesAnUnreadableNamedRoot(0x734cf1e5e008)
+	<repo>/apps/ayokoding-web/internal/web/seed_file_test.go:145 +0x58
+testing.tRunner(0x734cf1e5e008, 0x105639028)
+	<go-root>/Cellar/go/1.27.1/libexec/src/testing/testing.go:2193 +0xc4
+created by testing.(*T).Run in goroutine 1
+	<go-root>/Cellar/go/1.27.1/libexec/src/testing/testing.go:2258 +0x3b8
+FAIL	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/web	0.377s
+FAIL

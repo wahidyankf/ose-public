@@ -27,6 +27,8 @@ export type ScenarioState = {
   focus?: string;
   clipboard?: string;
   clipboardGrant?: boolean;
+  lessonRoute?: string;
+  searchResultTitle?: string;
   otherUrl?: string;
   pathId?: string;
   courseId?: string;

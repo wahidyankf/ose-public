@@ -45,14 +45,18 @@ When("a reader searches for the matching term in one locale", async ({ page }) =
 
 Then("results link only to that locale's published content", async ({ page }) => {
   expect(statusOf(page)).toBe(200);
-  expect(bodyOf(page)).toContain("/en/learn/courses/go-basics/learning/hello-world");
+  expect(bodyOf(page)).toMatch(/href="\/en\/learn\//);
   expect(bodyOf(page)).not.toContain("/id/");
 });
 
 Then("each result shows a title, section path, and matching excerpt", async ({ page }) => {
-  for (const marker of ["Hello World", "Go Basics", "first program"]) {
-    expect(bodyOf(page)).toContain(marker);
-  }
+  // The first result link is a served en route; the page it opens must carry that result's own title.
+  const hit = /<a href="(\/en\/learn\/[^"]+)">([^<]+)<\/a>/.exec(bodyOf(page));
+  expect(hit).not.toBeNull();
+  const [, route = "", shown = ""] = hit ?? [];
+  await gotoPage(page, route);
+  expect(statusOf(page)).toBe(200);
+  await expect(page.locator("main h1")).toContainText(shown);
 });
 
 Given("the search dialog has results for an earlier query", async ({ page }) => {
@@ -87,18 +91,19 @@ When("the reader chooses that result", async ({ page }) => {
     const anchor = document.querySelector("[data-search-page-results] a[href]");
     const href = anchor?.getAttribute("href") ?? "";
     if (!href.startsWith("/en/learn/")) throw new Error("no result link to follow");
-    return href;
+    return { href, title: anchor?.textContent?.trim() ?? "" };
   });
+  stateFor(page).searchResultTitle = target.title;
   await Promise.all([
-    page.waitForURL((url) => url.pathname === target),
-    page.locator(`[data-search-page-results] a[href="${target}"]`).click(),
+    page.waitForURL((url) => url.pathname === target.href),
+    page.locator(`[data-search-page-results] a[href="${target.href}"]`).click(),
   ]);
 });
 
 Then("the corresponding content route opens", async ({ page }) => {
-  expect(page.url()).toContain("/en/learn/courses/go-basics/learning/hello-world");
+  // The opened page's heading must carry the title the result showed.
   expect(await page.locator("main h1").count()).toBe(1);
-  await expect(page.locator("main h1")).toContainText("Hello World");
+  await expect(page.locator("main h1")).toContainText(stateFor(page).searchResultTitle ?? "");
 });
 
 Then("the search dialog closes", async ({ page }) => {

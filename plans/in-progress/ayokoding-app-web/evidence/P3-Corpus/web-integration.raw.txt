@@ -1,0 +1,2 @@
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/bdd-integration	11.652s
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/integration	8.588s

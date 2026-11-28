@@ -46,6 +46,7 @@ Feature: Course catalog and learning paths
     And no path-specific control claims the invalid path is active
 
   # Behaviour: AYB-056
+  @fixture
   Scenario: A malformed path definition is left out and other paths still open
     Given the manifest collection contains one malformed file and one valid path
     When the path collection is loaded
@@ -54,6 +55,7 @@ Feature: Course catalog and learning paths
 
   # Behaviour: AYB-020
   # Behaviour: AYB-053
+  @fixture
   Scenario: An empty path category shows an intentional empty state
     Given a path category currently contains no published paths
     When a learner opens that category

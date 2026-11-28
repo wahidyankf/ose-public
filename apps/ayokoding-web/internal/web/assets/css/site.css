@@ -247,6 +247,26 @@ article.article-body pre {
   font-size: 0.875rem;
 }
 
+/* A fenced block is wrapped so its copy control stays outside the scrolling pre. */
+[data-code-block] {
+  position: relative;
+  margin: 1rem 0;
+}
+
+[data-code-language-label] {
+  margin-bottom: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--ayk-fg);
+}
+
+[data-code-block] > button[data-copy] {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+}
+
 article.article-body code {
   overflow-wrap: anywhere;
 }

@@ -135,7 +135,18 @@ func (w *World) StepDeveloperReceivesDiagnosticIdentifyingInvalidSou() error {
 	return nil
 }
 
-func (w *World) StepLessonContainsTablesTaskListsRawDetailsMarkupNes() error {
+// The unit layer serves the seeded fixture lesson for each structure row; the
+// real-corpus witnesses are in the fe home, which owns the browser checks.
+func (w *World) StepLessonContainsTable() error {
+	return w.get("/en/learn/courses/go-basics/learning/hello-world")
+}
+
+func (w *World) StepLessonContainsStructure(structure string) error {
+	w.structure = structure
+	return w.get("/en/learn/courses/go-basics/learning/hello-world")
+}
+
+func (w *World) StepLessonWithHeadingsOpens() error {
 	return w.get("/en/learn/courses/go-basics/learning/hello-world")
 }
 
@@ -143,9 +154,23 @@ func (w *World) StepReaderOpensLesson() error {
 	return w.get("/en/learn/courses/go-basics/learning/hello-world")
 }
 
-func (w *World) StepThoseAuthoredStructuresRenderEstablishedArticleS() error {
-	for _, marker := range []string{"<table>", "task-list", "<details>", "article-body"} {
+func (w *World) StepTheAuthoredTableRendersEstablishedArticleStyling() error {
+	for _, marker := range []string{"<table>", "article-body"} {
 		if err := w.mustContain(marker); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (w *World) StepTheAuthoredStructureRendersEstablishedArticleStyling(structure string) error {
+	markers := map[string]string{"task list": "task-list", "raw details": "<details>"}
+	marker, ok := markers[structure]
+	if !ok {
+		return fail("no marker for structure %s", structure)
+	}
+	for _, expected := range []string{marker, "article-body"} {
+		if err := w.mustContain(expected); err != nil {
 			return err
 		}
 	}

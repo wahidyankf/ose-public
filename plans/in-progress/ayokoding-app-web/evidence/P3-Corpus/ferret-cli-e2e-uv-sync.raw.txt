@@ -1,0 +1,18 @@
+Resolved 18 packages in 3ms
+Installed 16 packages in 87ms
+ + gherkin-official==29.0.0
+ + iniconfig==2.3.0
+ + mako==1.4.1
+ + markupsafe==3.0.3
+ + nodeenv==1.10.0
+ + packaging==26.3
+ + parse==1.22.2
+ + parse-type==0.6.6
+ + pluggy==1.6.0
+ + pygments==2.21.0
+ + pyright==1.1.414
+ + pytest==9.1.1
+ + pytest-bdd==8.1.0
+ + ruff==0.16.8
+ + six==1.17.0
+ + typing-extensions==4.16.0

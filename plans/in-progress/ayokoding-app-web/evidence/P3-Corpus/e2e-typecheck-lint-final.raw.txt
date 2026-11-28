@@ -1,0 +1,44 @@
+
+> nx run ayokoding-web-be-e2e:typecheck
+
+> npx tsc --noEmit
+
+
+
+
+ NX   Successfully ran target typecheck for project ayokoding-web-be-e2e
+
+
+
+> nx run ayokoding-web-be-e2e:lint
+
+> npx oxlint .
+
+
+
+
+ NX   Successfully ran target lint for project ayokoding-web-be-e2e
+
+
+
+> nx run ayokoding-web-fe-e2e:typecheck
+
+> npx tsc --noEmit
+
+
+
+
+ NX   Successfully ran target typecheck for project ayokoding-web-fe-e2e
+
+
+
+> nx run ayokoding-web-fe-e2e:lint
+
+> npx oxlint .
+
+
+
+
+ NX   Successfully ran target lint for project ayokoding-web-fe-e2e
+
+

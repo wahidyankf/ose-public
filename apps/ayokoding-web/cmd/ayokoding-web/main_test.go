@@ -7,9 +7,11 @@ import (
 	"io/fs"
 	"net"
 	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 	"testing"
+	"testing/fstest"
 )
 
 // noLauncher reports every launcher variable as unset.
@@ -106,7 +108,7 @@ func TestRunReportsListenFailure(t *testing.T) {
 		}
 		return nil, errors.New("address in use")
 	}, quietNotify)
-	if status := run(nil, process); status != 1 {
+	if status := run([]string{"--fixture", "parity"}, process); status != 1 {
 		t.Fatalf("status = %d, want 1 when the listener cannot bind", status)
 	}
 	if !strings.Contains(stderr.String(), "listen: address in use") {
@@ -133,7 +135,7 @@ func TestRunReportsServeFailure(t *testing.T) {
 	process := testHost(&stderr, func(string) (net.Listener, error) {
 		return refusingListener{addr: &net.TCPAddr{IP: net.IPv4(127, 0, 0, 1), Port: 3102}}, nil
 	}, quietNotify)
-	if status := run(nil, process); status != 1 {
+	if status := run([]string{"--fixture", "parity"}, process); status != 1 {
 		t.Fatalf("status = %d, want 1 when serving fails", status)
 	}
 	if !strings.Contains(stderr.String(), "serve: accept refused") {
@@ -171,3 +173,93 @@ func TestOSHostWiresEveryProcessSurface(t *testing.T) {
 		t.Fatal("root must return a file system")
 	}
 }
+
+// TestRunRefusesADefaultStartWithoutAReadableCorpus pins the fail-fast rule:
+// with no fixture and no repository above the working directory, startup exits
+// non-zero, names the setting, and opens no listener.
+func TestRunRefusesADefaultStartWithoutAReadableCorpus(t *testing.T) {
+	var stderr bytes.Buffer
+	listened := false
+	process := testHost(&stderr, func(string) (net.Listener, error) {
+		listened = true
+		return nil, errors.New("must not listen")
+	}, quietNotify)
+	if status := run(nil, process); status != 1 {
+		t.Fatalf("status = %d, want 1 when no corpus can be read", status)
+	}
+	if listened {
+		t.Fatal("a refused default start must not open a listener")
+	}
+	if !strings.Contains(stderr.String(), "AYOKODING_WEB_CONTENT_DIR") {
+		t.Fatalf("stderr = %q, want the content-root setting named", stderr.String())
+	}
+}
+
+// TestRunRefusesAFixtureStartWithAnUnreadableNamedRoot pins the other half of
+// the fail-fast rule: a selected fixture still reads an explicitly named root,
+// and a root the operating system refuses stops startup before any listener
+// opens, instead of serving the fixture over it. The refusal is injected
+// through the root seam, so it holds on every platform and for every user.
+func TestRunRefusesAFixtureStartWithAnUnreadableNamedRoot(t *testing.T) {
+	var stderr bytes.Buffer
+	listened := false
+	process := testHost(&stderr, func(string) (net.Listener, error) {
+		listened = true
+		return nil, errors.New("must not listen")
+	}, quietNotify)
+	process.environment = func(name string) (string, bool) {
+		if name == "AYOKODING_WEB_CONTENT_DIR" {
+			return "refused-content", true
+		}
+		return "", false
+	}
+	if status := run([]string{"--fixture", "parity"}, process); status != 1 {
+		t.Fatalf("status = %d, want 1 when the named content root is refused", status)
+	}
+	if listened {
+		t.Fatal("a refused named root must not open a listener")
+	}
+	for _, want := range []string{"AYOKODING_WEB_CONTENT_DIR", `"refused-content"`, "cannot be read"} {
+		if !strings.Contains(stderr.String(), want) {
+			t.Fatalf("stderr = %q, want it to contain %q", stderr.String(), want)
+		}
+	}
+}
+
+// TestRunServesTheDefaultCorpusFromTheRepository starts the default corpus
+// over a temporary repository: the launcher logs the roots it chose, then
+// serves until shutdown.
+func TestRunServesTheDefaultCorpusFromTheRepository(t *testing.T) {
+	// The repository is an in-memory tree: unit scope reads no disk. Only the
+	// repository marker and the two default corpus directories exist; every
+	// other directory answers as missing.
+	repo := filepath.Join(string(filepath.Separator), "fake-repo")
+	contentDir := filepath.Join(repo, "apps", "ayokoding-www", "content")
+	manifestsDir := filepath.Join(repo, "apps", "ayokoding-www", "src", "features", "course-paths", "manifests")
+	root := func(dir string) fs.FS {
+		switch dir {
+		case repo:
+			return fstest.MapFS{"repo-config.yml": {Data: []byte("# marker\n")}}
+		case contentDir, manifestsDir:
+			return fstest.MapFS{".keep": {Data: nil}}
+		}
+		return missingFS{}
+	}
+	var stderr bytes.Buffer
+	listener := newBlockingListener()
+	process := testHost(&stderr, func(string) (net.Listener, error) { return listener, nil }, immediateNotify)
+	process.root = root
+	process.working = filepath.Join(repo, "apps", "ayokoding-web")
+	if status := run(nil, process); status != 0 {
+		t.Fatalf("status = %d, want 0 after a clean shutdown; stderr %q", status, stderr.String())
+	}
+	if !strings.Contains(stderr.String(), "serving the real corpus: content "+filepath.Join(repo, "apps", "ayokoding-www", "content")) {
+		t.Fatalf("stderr = %q, want the chosen content root logged", stderr.String())
+	}
+}
+
+// missingFS answers every path as absent, so a directory that is not in the
+// in-memory repository reads as missing.
+type missingFS struct{}
+
+func (missingFS) Open(string) (fs.File, error) { return nil, fs.ErrNotExist }

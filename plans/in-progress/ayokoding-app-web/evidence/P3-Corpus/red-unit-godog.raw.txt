@@ -1,0 +1,679 @@
+[1;37mFeature:[0m Shared learning content rendering over HTTP
+  As a learner reading lessons
+  I want the authored content and its interactive formats to remain intact
+  So that changing the application framework does not change the lesson
+
+  [1;37mBackground:[0m
+    [32mGiven[0m [32mthe app is running[0m                                              [1;30m# reg_common_test.go:10 -> *World[0m
+
+  [1;37mScenario:[0m A lesson page is readable without browser scripts             [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering-http.feature:11[0m
+    [32mGiven[0m [32ma published Markdown lesson exists in the shared corpus[0m         [1;30m# reg_content_test.go:10 -> *World[0m
+    [32mWhen[0m [32ma reader requests its route without running browser scripts[0m      [1;30m# reg_content_test.go:11 -> *World[0m
+    [32mThen[0m [32mthe response contains the lesson title and readable article body[0m [1;30m# reg_content_test.go:12 -> *World[0m
+    [32mAnd[0m [32mthe response does not depend on a client-side build artifact[0m      [1;30m# reg_content_test.go:13 -> *World[0m
+
+  [1;37mScenario:[0m A draft lesson's route returns not found [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering-http.feature:20[0m
+    [32mGiven[0m [32ma lesson is marked as a draft[0m              [1;30m# reg_content_test.go:18 -> *World[0m
+    [32mAnd[0m [32mdraft viewing is disabled[0m                    [1;30m# reg_content_test.go:19 -> *World[0m
+    [32mWhen[0m [32ma reader requests the draft lesson's route[0m  [1;30m# reg_content_test.go:20 -> *World[0m
+    [32mThen[0m [32mits direct route returns not found[0m          [1;30m# reg_content_test.go:23 -> *World[0m
+
+  [1;37mScenario:[0m A draft lesson is absent from search results [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering-http.feature:28[0m
+    [32mGiven[0m [32ma lesson is marked as a draft[0m                  [1;30m# reg_content_test.go:18 -> *World[0m
+    [32mAnd[0m [32mdraft viewing is disabled[0m                        [1;30m# reg_content_test.go:19 -> *World[0m
+    [32mWhen[0m [32ma reader searches the corpus[0m                    [1;30m# reg_content_test.go:21 -> *World[0m
+    [32mThen[0m [32mthe lesson is absent from the public results[0m    [1;30m# reg_content_test.go:22 -> *World[0m
+
+  [1;37mScenario:[0m A missing page returns the locale's not-found experience         [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering-http.feature:35[0m
+    [32mWhen[0m [32ma reader requests a nonexistent content route in a supported locale[0m [1;30m# reg_content_test.go:54 -> *World[0m
+    [32mThen[0m [32mthe response status is 404[0m                                          [1;30m# reg_content_test.go:55 -> *World[0m
+    [32mAnd[0m [32mthe reader sees a localized not-found page with usable navigation[0m    [1;30m# reg_content_test.go:56 -> *World[0m
+
+  [1;37mScenario:[0m With AYOKODING_WEB_SHOW_DRAFTS set to true a draft lesson is shown [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering-http.feature:42[0m
+    [32mGiven[0m [32mAYOKODING_WEB_SHOW_DRAFTS is set to true for the app[0m                 [1;30m# reg_content_test.go:40 -> *World[0m
+    [32mAnd[0m [32ma lesson is marked as a draft[0m                                          [1;30m# reg_content_test.go:18 -> *World[0m
+    [32mWhen[0m [32ma reader requests the draft lesson's route[0m                            [1;30m# reg_content_test.go:20 -> *World[0m
+    [32mThen[0m [32mthe draft lesson's page shows its title and body[0m                      [1;30m# reg_content_test.go:41 -> *World[0m
+
+[1;37mFeature:[0m Shared learning content rendering
+  As a learner reading lessons
+  I want the authored content and its interactive formats to remain intact
+  So that changing the application framework does not change the lesson
+
+  [1;37mBackground:[0m
+    [32mGiven[0m [32mthe app is running[0m                                                       [1;30m# reg_common_test.go:10 -> *World[0m
+
+  [1;37mScenario:[0m A section lists its pages by authored title and order                  [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering.feature:10[0m
+    [32mGiven[0m [32ma section contains published pages with valid titles, slugs, and weights[0m [1;30m# reg_content_test.go:14 -> *World[0m
+    [32mWhen[0m [32ma reader opens that section[0m                                               [1;30m# reg_content_test.go:15 -> *World[0m
+    [32mThen[0m [32mpage titles and links match their authored metadata[0m                       [1;30m# reg_content_test.go:16 -> *World[0m
+    [32mAnd[0m [32mthe pages follow the established weight and title ordering[0m                 [1;30m# reg_content_test.go:17 -> *World[0m
+
+  [1;37mScenario:[0m A page with invalid metadata is not published                  [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering.feature:17[0m
+    [32mGiven[0m [32ma Markdown page has invalid required frontmatter[0m                 [1;30m# reg_content_test.go:24 -> *World[0m
+    [32mWhen[0m [32mthe content corpus is loaded[0m                                      [1;30m# reg_content_test.go:25 -> *World[0m
+    [32mThen[0m [32mthat page is excluded from the published catalog[0m                  [1;30m# reg_content_test.go:26 -> *World[0m
+    [32mAnd[0m [32mthe developer receives a diagnostic identifying the invalid source[0m [1;30m# reg_content_test.go:27 -> *World[0m
+
+  [1;37mScenario:[0m Tables, task lists, and details render with article styling                 [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering.feature:23[0m
+    [32mGiven[0m [32ma lesson contains tables, task lists, raw details markup, and nested headings[0m [1;30m# reg_content_test.go:28 -> *World[0m
+    [32mWhen[0m [32ma reader opens that lesson[0m                                                     [1;30m# reg_content_test.go:29 -> *World[0m
+    [32mThen[0m [32mthose authored structures render with the established article styling[0m          [1;30m# reg_content_test.go:30 -> *World[0m
+
+  [1;37mScenario:[0m A page has one title heading and an ordered outline                         [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering.feature:28[0m
+    [32mGiven[0m [32ma lesson contains tables, task lists, raw details markup, and nested headings[0m [1;30m# reg_content_test.go:28 -> *World[0m
+    [32mWhen[0m [32ma reader opens that lesson[0m                                                     [1;30m# reg_content_test.go:29 -> *World[0m
+    [32mThen[0m [32mthe page has one title heading with a normalized body outline[0m                  [1;30m# reg_content_test.go:31 -> *World[0m
+
+  [1;37mScenario:[0m The table of contents links to body headings                                [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering.feature:33[0m
+    [32mGiven[0m [32ma lesson contains tables, task lists, raw details markup, and nested headings[0m [1;30m# reg_content_test.go:28 -> *World[0m
+    [32mWhen[0m [32ma reader opens that lesson[0m                                                     [1;30m# reg_content_test.go:29 -> *World[0m
+    [32mThen[0m [32mthe table of contents links to stable body heading anchors[0m                     [1;30m# reg_content_test.go:32 -> *World[0m
+
+  [1;37mScenario Outline:[0m Supported shortcodes remain interactive content      [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering.feature:39[0m
+    [36mGiven[0m [36mthe app is running[0m                                             [1;30m# reg_common_test.go:10 -> *World[0m
+    [36mGiven[0m [36ma lesson contains a "[0m[1;36m<format>[0m[36m" shortcode fixture[0m               [1;30m# reg_content_test.go:33 -> *World[0m
+    [36mWhen[0m [36ma reader opens the fixture and activates its supported controls[0m [1;30m# reg_content_test.go:34 -> *World[0m
+    [36mThen[0m [36mthe "[0m[1;36m<result>[0m[36m" is available to the reader[0m                       [1;30m# reg_content_test.go:35 -> *World[0m
+
+    [1;37mExamples:[0m
+      | [36mformat[0m  | [36mresult[0m                               |
+      | [32mcallout[0m | [32mlabeled admonition and authored body[0m |
+      | [32mtabs[0m    | [32mselected tab's authored panel[0m        |
+      | [32msteps[0m   | [32mordered numbered learning steps[0m      |
+      | [32myoutube[0m | [32mresponsive video iframe[0m              |
+
+  [1;37mScenario:[0m Relative Markdown links resolve from a section index                    [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering.feature:51[0m
+    [32mGiven[0m [32ma section index contains a relative Markdown link with a heading fragment[0m [1;30m# reg_content_test.go:36 -> *World[0m
+    [32mWhen[0m [32ma reader follows that link[0m                                                 [1;30m# reg_content_test.go:37 -> *World[0m
+    [32mThen[0m [32mthe destination is resolved relative to that section's directory[0m           [1;30m# reg_content_test.go:38 -> *World[0m
+    [32mAnd[0m [32mthe reader reaches the intended heading in the same locale[0m                  [1;30m# reg_content_test.go:39 -> *World[0m
+
+  [1;37mScenario:[0m Copying a code block yields its exact source text      [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering.feature:58[0m
+    [32mGiven[0m [32ma lesson contains annotated fenced code[0m                  [1;30m# reg_content_test.go:42 -> *World[0m
+    [32mWhen[0m [32ma reader copies that code block[0m                           [1;30m# reg_content_test.go:43 -> *World[0m
+    [32mThen[0m [32mthe clipboard contains its exact source text and newlines[0m [1;30m# reg_content_test.go:44 -> *World[0m
+
+  [1;37mScenario:[0m A code block shows its language label                          [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering.feature:63[0m
+    [32mGiven[0m [32ma lesson contains annotated fenced code[0m                          [1;30m# reg_content_test.go:42 -> *World[0m
+    [32mWhen[0m [32ma reader opens that lesson[0m                                        [1;30m# reg_content_test.go:29 -> *World[0m
+    [32mThen[0m [32mthe code block shows its language label and readable highlighting[0m [1;30m# reg_content_test.go:45 -> *World[0m
+
+  [1;37mScenario Outline:[0m Math and diagrams render their authored meaning [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering.feature:69[0m
+    [36mGiven[0m [36mthe app is running[0m                                        [1;30m# reg_common_test.go:10 -> *World[0m
+    [36mGiven[0m [36ma lesson contains a "[0m[1;36m<format>[0m[36m" fixture[0m                    [1;30m# reg_content_test.go:46 -> *World[0m
+    [36mWhen[0m [36ma reader opens the lesson[0m                                  [1;30m# reg_content_test.go:47 -> *World[0m
+    [36mThen[0m [36mthe reader sees "[0m[1;36m<result>[0m[36m"[0m                                 [1;30m# reg_content_test.go:48 -> *World[0m
+    [36mAnd[0m [36mthe source notation is not presented as the rendered result[0m [1;30m# reg_content_test.go:49 -> *World[0m
+
+    [1;37mExamples:[0m
+      | [36mformat[0m       | [36mresult[0m                        |
+      | [32minline math[0m  | [32minline mathematical notation[0m  |
+      | [32mdisplay math[0m | [32mdisplay mathematical notation[0m |
+      | [32mMermaid[0m      | [32man accessible SVG diagram[0m     |
+
+  [1;37mScenario:[0m Inline code wraps within the article on a phone                  [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering.feature:81[0m
+    [32mGiven[0m [32ma lesson contains a long inline token and a wide fenced code block[0m [1;30m# reg_content_test.go:50 -> *World[0m
+    [32mWhen[0m [32ma reader opens it at 375 pixels wide[0m                                [1;30m# reg_content_test.go:51 -> *World[0m
+    [32mThen[0m [32minline code wraps within the article[0m                                [1;30m# reg_content_test.go:52 -> *World[0m
+
+  [1;37mScenario:[0m A wide code block scrolls inside the article on a phone          [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/content/content-rendering.feature:87[0m
+    [32mGiven[0m [32ma lesson contains a long inline token and a wide fenced code block[0m [1;30m# reg_content_test.go:50 -> *World[0m
+    [32mWhen[0m [32ma reader opens it at 375 pixels wide[0m                                [1;30m# reg_content_test.go:51 -> *World[0m
+    [32mThen[0m [32mthe fenced block scrolls internally without widening the document[0m   [1;30m# reg_content_test.go:53 -> *World[0m
+
+[1;37mFeature:[0m Course catalog and learning paths
+  As a learner choosing what to study
+  I want clear course metadata and consistent learning paths
+  So that I can understand prerequisites and follow the intended order
+
+  [1;37mBackground:[0m
+    [32mGiven[0m [32mthe app is running[0m                                                             [1;30m# reg_common_test.go:10 -> *World[0m
+
+  [1;37mScenario:[0m The course catalog lists current courses by category                         [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/courses/course-catalog-and-paths.feature:11[0m
+    [32mWhen[0m [32ma learner opens the course catalog[0m                                              [1;30m# reg_courses_test.go:10 -> *World[0m
+    [32mThen[0m [32mcourses are grouped by their authored categories[0m                                [1;30m# reg_courses_test.go:11 -> *World[0m
+    [32mAnd[0m [32meach course shows its title, description, format, and applicable effort estimate[0m [1;30m# reg_courses_test.go:12 -> *World[0m
+    [32mAnd[0m [32mno catalog count depends on a frozen copy of the shared corpus[0m                   [1;30m# reg_courses_test.go:13 -> *World[0m
+
+  [1;37mScenario:[0m An outline course is not presented as a completed lesson collection [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/courses/course-catalog-and-paths.feature:18[0m
+    [32mGiven[0m [32ma course is currently marked as outline-only[0m                          [1;30m# reg_courses_test.go:14 -> *World[0m
+    [32mWhen[0m [32ma learner opens its landing page[0m                                       [1;30m# reg_courses_test.go:15 -> *World[0m
+    [32mThen[0m [32mthe course shows its outline status and available material honestly[0m    [1;30m# reg_courses_test.go:16 -> *World[0m
+    [32mAnd[0m [32mit is not presented as fully completed by having no learning pages[0m      [1;30m# reg_courses_test.go:17 -> *World[0m
+
+  [1;37mScenario:[0m A path uses the current manifest's phase order                    [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/courses/course-catalog-and-paths.feature:25[0m
+    [32mGiven[0m [32ma valid path manifest contains ordered phases and course membership[0m [1;30m# reg_courses_test.go:18 -> *World[0m
+    [32mWhen[0m [32ma learner opens that path[0m                                            [1;30m# reg_courses_test.go:19 -> *World[0m
+    [32mThen[0m [32mits roadmap and course controls follow the manifest's phase order[0m    [1;30m# reg_courses_test.go:20 -> *World[0m
+    [32mAnd[0m [32mphase labels and course position numbers agree across the page[0m        [1;30m# reg_courses_test.go:21 -> *World[0m
+
+  [1;37mScenario:[0m A course page names each prerequisite with its title and link      [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/courses/course-catalog-and-paths.feature:32[0m
+    [32mGiven[0m [32ma published course declares prerequisites[0m                            [1;30m# reg_courses_test.go:22 -> *World[0m
+    [32mWhen[0m [32ma learner opens its course landing page[0m                               [1;30m# reg_courses_test.go:23 -> *World[0m
+    [32mThen[0m [32meach prerequisite is shown with its current title and canonical route[0m [1;30m# reg_courses_test.go:24 -> *World[0m
+
+  [1;37mScenario:[0m A path never places a prerequisite after its dependent course                [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/courses/course-catalog-and-paths.feature:37[0m
+    [32mGiven[0m [32ma valid path manifest contains ordered phases and course membership[0m            [1;30m# reg_courses_test.go:18 -> *World[0m
+    [32mWhen[0m [32ma learner opens that path[0m                                                       [1;30m# reg_courses_test.go:19 -> *World[0m
+    [32mThen[0m [32mthe path does not place a required core prerequisite after its dependent course[0m [1;30m# reg_courses_test.go:25 -> *World[0m
+
+  [1;37mScenario:[0m Invalid path context falls back to canonical course navigation                        [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/courses/course-catalog-and-paths.feature:42[0m
+    [32mGiven[0m [32ma course URL contains a path identifier that is missing or does not contain that course[0m [1;30m# reg_courses_test.go:26 -> *World[0m
+    [32mWhen[0m [32ma learner opens that URL[0m                                                                 [1;30m# reg_courses_test.go:27 -> *World[0m
+    [32mThen[0m [32mthe course still renders with canonical navigation[0m                                       [1;30m# reg_courses_test.go:28 -> *World[0m
+    [32mAnd[0m [32mno path-specific control claims the invalid path is active[0m                                [1;30m# reg_courses_test.go:29 -> *World[0m
+
+  [1;37mScenario:[0m A malformed path definition is left out and other paths still open   [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/courses/course-catalog-and-paths.feature:49[0m
+    [32mGiven[0m [32mthe manifest collection contains one malformed file and one valid path[0m [1;30m# reg_courses_test.go:30 -> *World[0m
+    [32mWhen[0m [32mthe path collection is loaded[0m                                           [1;30m# reg_courses_test.go:31 -> *World[0m
+    [32mThen[0m [32mthe valid path remains available[0m                                        [1;30m# reg_courses_test.go:32 -> *World[0m
+    [32mAnd[0m [32mthe malformed file is excluded with a developer diagnostic[0m               [1;30m# reg_courses_test.go:33 -> *World[0m
+
+  [1;37mScenario:[0m An empty path category shows an intentional empty state     [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/courses/course-catalog-and-paths.feature:57[0m
+    [32mGiven[0m [32ma path category currently contains no published paths[0m         [1;30m# reg_courses_test.go:34 -> *World[0m
+    [32mWhen[0m [32ma learner opens that category[0m                                  [1;30m# reg_courses_test.go:35 -> *World[0m
+    [32mThen[0m [32mthe page explains that no paths are available in that category[0m [1;30m# reg_courses_test.go:36 -> *World[0m
+    [32mAnd[0m [32mthe rest of the learning navigation remains usable[0m              [1;30m# reg_courses_test.go:37 -> *World[0m
+
+[1;37mFeature:[0m Published-content discovery
+  As a reader or content crawler
+  I want accurate discovery documents
+  So that published pages can be found without exposing drafts or missing routes
+
+  [1;37mBackground:[0m
+    [32mGiven[0m [32mthe app is running[0m                                                 [1;30m# reg_common_test.go:10 -> *World[0m
+
+  [1;37mScenario:[0m A content page carries its title, description, and canonical URL [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/discovery/discovery-documents.feature:10[0m
+    [32mWhen[0m [32ma reader requests a published content page[0m                          [1;30m# reg_discovery_test.go:10 -> *World[0m
+    [32mThen[0m [32mits HTML contains the current title, description, and canonical URL[0m [1;30m# reg_discovery_test.go:11 -> *World[0m
+
+  [1;37mScenario:[0m Alternate-language links list only available translations  [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/discovery/discovery-documents.feature:14[0m
+    [32mWhen[0m [32ma reader requests a published content page[0m                    [1;30m# reg_discovery_test.go:10 -> *World[0m
+    [32mThen[0m [32malternate-language links identify only available translations[0m [1;30m# reg_discovery_test.go:12 -> *World[0m
+
+  [1;37mScenario:[0m The sitemap reflects the current published corpus                  [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/discovery/discovery-documents.feature:19[0m
+    [32mGiven[0m [32mthe corpus contains published pages, draft pages, and a removed page[0m [1;30m# reg_discovery_test.go:13 -> *World[0m
+    [32mWhen[0m [32ma crawler requests the sitemap[0m                                        [1;30m# reg_discovery_test.go:14 -> *World[0m
+    [32mThen[0m [32mit receives a successful XML sitemap response[0m                         [1;30m# reg_discovery_test.go:15 -> *World[0m
+    [32mAnd[0m [32mthe sitemap lists canonical published routes[0m                           [1;30m# reg_discovery_test.go:16 -> *World[0m
+    [32mAnd[0m [32mdraft and removed routes are absent[0m                                    [1;30m# reg_discovery_test.go:17 -> *World[0m
+
+  [1;37mScenario:[0m The feed exposes the current published entries                            [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/discovery/discovery-documents.feature:27[0m
+    [32mWhen[0m [32ma reader requests the RSS feed[0m                                               [1;30m# reg_discovery_test.go:18 -> *World[0m
+    [32mThen[0m [32mit receives a successful XML feed response[0m                                   [1;30m# reg_discovery_test.go:19 -> *World[0m
+    [32mAnd[0m [32mfeed entries have the existing ordering, metadata, and canonical destinations[0m [1;30m# reg_discovery_test.go:20 -> *World[0m
+    [32mAnd[0m [32mdraft pages are absent[0m                                                        [1;30m# reg_discovery_test.go:21 -> *World[0m
+
+  [1;37mScenario:[0m Robots instructions retain the current crawling contract                  [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/discovery/discovery-documents.feature:34[0m
+    [32mWhen[0m [32ma crawler requests the robots document[0m                                       [1;30m# reg_discovery_test.go:22 -> *World[0m
+    [32mThen[0m [32mit receives a successful plain-text robots response[0m                          [1;30m# reg_discovery_test.go:23 -> *World[0m
+    [32mAnd[0m [32mthe crawling directives and sitemap reference match the current site contract[0m [1;30m# reg_discovery_test.go:24 -> *World[0m
+
+[1;37mFeature:[0m Browser learning progress
+  As a learner without an account
+  I want progress stored in this browser only
+  So that I can resume learning without uploading my learning history
+
+  [1;37mBackground:[0m
+    [32mGiven[0m [32mthe app is running[0m                                      [1;30m# reg_common_test.go:10 -> *World[0m
+
+  [1;37mScenario:[0m Completion survives a reload                          [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature:11[0m
+    [32mGiven[0m [32ma reader has no saved progress[0m                          [1;30m# reg_progress_test.go:10 -> *World[0m
+    [32mWhen[0m [32mthe reader marks a learning page complete and reloads it[0m [1;30m# reg_progress_test.go:11 -> *World[0m
+    [32mThen[0m [32mthe page remains marked complete[0m                         [1;30m# reg_progress_test.go:12 -> *World[0m
+
+  [1;37mScenario:[0m Progress is never sent to the server                            [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature:16[0m
+    [32mGiven[0m [32ma reader has no saved progress[0m                                    [1;30m# reg_progress_test.go:10 -> *World[0m
+    [32mWhen[0m [32mthe reader marks a learning page complete and reloads it[0m           [1;30m# reg_progress_test.go:11 -> *World[0m
+    [32mThen[0m [32mno HTTP request or htmx request carries the stored progress record[0m [1;30m# reg_progress_test.go:13 -> *World[0m
+
+  [1;37mScenario:[0m Progress saved on an earlier visit shows when the reader returns [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature:21[0m
+    [32mGiven[0m [32mthis origin contains a valid ayokoding-learn-progress-v1 record[0m    [1;30m# reg_progress_test.go:14 -> *World[0m
+    [32mWhen[0m [32mthe reader opens its saved course and path[0m                          [1;30m# reg_progress_test.go:15 -> *World[0m
+    [32mThen[0m [32mthe saved completed pages and visit context appear correctly[0m        [1;30m# reg_progress_test.go:16 -> *World[0m
+    [32mAnd[0m [32mthe stored record keeps its version 1 schema[0m                         [1;30m# reg_progress_test.go:17 -> *World[0m
+
+  [1;37mScenario:[0m Completion belongs to the course across its paths              [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature:27[0m
+    [32mGiven[0m [32ma course appears in two paths[0m                                    [1;30m# reg_progress_test.go:18 -> *World[0m
+    [32mAnd[0m [32mthe reader has completed its learning pages through the first path[0m [1;30m# reg_progress_test.go:19 -> *World[0m
+    [32mWhen[0m [32mthe reader opens the second path[0m                                  [1;30m# reg_progress_test.go:20 -> *World[0m
+    [32mThen[0m [32mthe course shows the same completed state[0m                         [1;30m# reg_progress_test.go:21 -> *World[0m
+
+  [1;37mScenario:[0m A completion control can undo a completed page [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature:34[0m
+    [32mGiven[0m [32ma learning page is marked complete[0m               [1;30m# reg_progress_test.go:22 -> *World[0m
+    [32mWhen[0m [32mthe reader activates its completion control again[0m [1;30m# reg_progress_test.go:23 -> *World[0m
+    [32mThen[0m [32mthe page becomes incomplete[0m                       [1;30m# reg_progress_test.go:24 -> *World[0m
+    [32mAnd[0m [32mthe course completed-page count decreases by one[0m   [1;30m# reg_progress_test.go:25 -> *World[0m
+
+  [1;37mScenario:[0m Blocked storage keeps progress for the current visit [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature:41[0m
+    [32mGiven[0m [32mthe browser refuses storage reads and writes[0m           [1;30m# reg_progress_test.go:26 -> *World[0m
+    [32mWhen[0m [32mthe reader marks a learning page complete[0m               [1;30m# reg_progress_test.go:27 -> *World[0m
+    [32mThen[0m [32mcompletion remains available for the current visit[0m      [1;30m# reg_progress_test.go:28 -> *World[0m
+    [32mAnd[0m [32ma notice explains that progress cannot be saved[0m          [1;30m# reg_progress_test.go:29 -> *World[0m
+    [32mAnd[0m [32mthe page stays usable without an error[0m                   [1;30m# reg_progress_test.go:30 -> *World[0m
+
+  [1;37mScenario:[0m Corrupt saved progress is ignored and the reader can still read and complete pages [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature:48[0m
+    [32mGiven[0m [32mthe saved progress record is invalid[0m                                                 [1;30m# reg_progress_test.go:31 -> *World[0m
+    [32mWhen[0m [32mthe reader opens a course and marks a page complete[0m                                   [1;30m# reg_progress_test.go:32 -> *World[0m
+    [32mThen[0m [32mthe invalid record does not prevent reading or completion[0m                             [1;30m# reg_progress_test.go:33 -> *World[0m
+    [32mAnd[0m [32ma valid version 1 record replaces it when storage is available[0m                         [1;30m# reg_progress_test.go:34 -> *World[0m
+
+  [1;37mScenario:[0m Confirming reset clears learning progress and keeps other site settings [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature:55[0m
+    [32mGiven[0m [32ma reader has saved progress and unrelated site settings[0m                   [1;30m# reg_progress_test.go:35 -> *World[0m
+    [32mWhen[0m [32mthe reader confirms resetting learning progress[0m                            [1;30m# reg_progress_test.go:36 -> *World[0m
+    [32mThen[0m [32mthe learning progress key is cleared[0m                                       [1;30m# reg_progress_test.go:37 -> *World[0m
+    [32mAnd[0m [32munrelated site settings remain unchanged[0m                                    [1;30m# reg_progress_test.go:38 -> *World[0m
+
+  [1;37mScenario:[0m Cancelling reset preserves progress and restores focus [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature:61[0m
+    [32mGiven[0m [32ma reader has saved progress[0m                              [1;30m# reg_progress_test.go:39 -> *World[0m
+    [32mWhen[0m [32mthe reader opens reset confirmation and cancels it[0m        [1;30m# reg_progress_test.go:40 -> *World[0m
+    [32mThen[0m [32msaved progress remains unchanged[0m                          [1;30m# reg_progress_test.go:41 -> *World[0m
+    [32mAnd[0m [32mfocus returns to the reset control[0m                         [1;30m# reg_progress_test.go:42 -> *World[0m
+
+  [1;37mScenario:[0m Another tab receives completion changes           [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature:68[0m
+    [32mGiven[0m [32mthe same course is open in two tabs of this origin[0m  [1;30m# reg_progress_test.go:43 -> *World[0m
+    [32mWhen[0m [32mthe reader marks a learning page complete in one tab[0m [1;30m# reg_progress_test.go:44 -> *World[0m
+    [32mThen[0m [32mthe other tab updates its progress without reloading[0m [1;30m# reg_progress_test.go:45 -> *World[0m
+
+  [1;37mScenario:[0m Progress saved at another site address is not imported               [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature:73[0m
+    [32mGiven[0m [32ma reader saved progress on the existing site at port 3101[0m              [1;30m# reg_progress_test.go:46 -> *World[0m
+    [32mAnd[0m [32mthe rewrite origin has no saved progress[0m                                 [1;30m# reg_progress_test.go:47 -> *World[0m
+    [32mWhen[0m [32mthe reader opens the rewrite at port 3102[0m                               [1;30m# reg_progress_test.go:48 -> *World[0m
+    [32mThen[0m [32mthe rewrite does not claim to have imported the other origin's progress[0m [1;30m# reg_progress_test.go:49 -> *World[0m
+    [32mAnd[0m [32mthe existing site's saved progress remains unchanged[0m                     [1;30m# reg_progress_test.go:50 -> *World[0m
+
+[1;37mFeature:[0m Independent local development over HTTP
+  As a developer working on the learning site
+  I want the rewrite to run beside the existing site
+  So that both implementations and content work can progress independently
+
+  [1;37mScenario Outline:[0m Static assets and the favicon are served; an unknown asset returns 404 [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature:9[0m
+    [36mWhen[0m [36ma reader requests the asset "[0m[1;36m<path>[0m[36m"[0m                                              [1;30m# reg_localdev_test.go:33 -> *World[0m
+    [36mThen[0m [36mthe asset responds with status "[0m[1;36m<status>[0m[36m"[0m                                         [1;30m# reg_localdev_test.go:34 -> *World[0m
+
+    [1;37mExamples:[0m
+      | [36mpath[0m                       | [36mstatus[0m |
+      | [32m/favicon.ico[0m               | [32m200[0m    |
+      | [32m/assets/css/site.css[0m       | [32m200[0m    |
+      | [32m/assets/js/progress.js[0m     | [32m200[0m    |
+      | [32m/assets/vendor/htmx.min.js[0m | [32m200[0m    |
+      | [32m/assets/js/unknown.js[0m      | [32m404[0m    |
+
+  [1;37mScenario:[0m A default start serves the real content corpus                                             [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature:23[0m
+    [32mGiven[0m [32mno fixture is selected[0m                                                                       [1;30m# reg_localdev_test.go:39 -> *World[0m
+    [32mWhen[0m [32mthe rewrite starts with no fixture flag or fixture variable[0m                                   [1;30m# reg_localdev_test.go:40 -> *World[0m
+    [31mThen[0m [31mthe lesson "/en/learn/courses/just-enough-python/learning/beginner" answers with status "200"[0m [1;30m# reg_localdev_test.go:41 -> *World[0m
+    [1;31mstep assertion failed: status = 404, want 200 (body "<!doctype html>\n<html lang=\"en\" data-theme-hook>\n  <head>\n    <meta charset=\"utf-8\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<title>Not found</title>\n<meta name=\"descr")[0m
+    [36mAnd[0m [36mthe lesson "/en/learn/courses/go-basics/learning/hello-world" answers with status "404"[0m        [1;30m# reg_localdev_test.go:41 -> *World[0m
+
+  [1;37mScenario:[0m A fixture is served only when one is selected                                [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature:31[0m
+    [32mGiven[0m [32mthe "parity" fixture is selected[0m                                               [1;30m# reg_localdev_test.go:42 -> *World[0m
+    [32mWhen[0m [32ma reader requests the lesson "/en/learn/courses/go-basics/learning/hello-world"[0m [1;30m# reg_localdev_test.go:43 -> *World[0m
+    [32mThen[0m [32mthe lesson answers with status "200"[0m                                            [1;30m# reg_localdev_test.go:44 -> *World[0m
+
+[1;37mFeature:[0m Independent local development
+  As a developer working on the learning site
+  I want the rewrite to run beside the existing site
+  So that both implementations and content work can progress independently
+
+  [1;37mScenario:[0m The web app serves its entry pages on port 3102 by default [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/local-development/local-development.feature:8[0m
+    [32mWhen[0m [32mthe rewrite starts without a port override[0m                    [1;30m# reg_localdev_test.go:10 -> *World[0m
+    [32mThen[0m [32mthe rewrite serves its bilingual entry pages on port 3102[0m     [1;30m# reg_localdev_test.go:11 -> *World[0m
+
+  [1;37mScenario:[0m A prefixed port override changes only the rewrite listener [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/local-development/local-development.feature:13[0m
+    [32mGiven[0m [32mAYOKODING_WEB_PORT is set to an available valid port[0m         [1;30m# reg_localdev_test.go:12 -> *World[0m
+    [32mWhen[0m [32mthe rewrite starts[0m                                            [1;30m# reg_localdev_test.go:13 -> *World[0m
+    [32mThen[0m [32mthe rewrite listens on that port[0m                              [1;30m# reg_localdev_test.go:14 -> *World[0m
+    [32mAnd[0m [32mthe existing site's configured port remains unchanged[0m          [1;30m# reg_localdev_test.go:15 -> *World[0m
+
+  [1;37mScenario:[0m An explicit port flag wins over the prefixed environment value                  [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/local-development/local-development.feature:20[0m
+    [32mGiven[0m [32mAYOKODING_WEB_PORT contains one valid port[0m                                        [1;30m# reg_localdev_test.go:16 -> *World[0m
+    [32mAnd[0m [32mthe rewrite launcher receives a different valid port through its explicit port flag[0m [1;30m# reg_localdev_test.go:17 -> *World[0m
+    [32mWhen[0m [32mthe rewrite starts[0m                                                                 [1;30m# reg_localdev_test.go:13 -> *World[0m
+    [32mThen[0m [32mit listens on the explicit flag's port[0m                                             [1;30m# reg_localdev_test.go:18 -> *World[0m
+    [32mAnd[0m [32mit does not listen on the environment value's port[0m                                  [1;30m# reg_localdev_test.go:19 -> *World[0m
+
+  [1;37mScenario:[0m A generic PORT variable does not retarget the rewrite             [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/local-development/local-development.feature:28[0m
+    [32mGiven[0m [32monly the generic PORT variable contains a different valid port[0m      [1;30m# reg_localdev_test.go:20 -> *World[0m
+    [32mWhen[0m [32mthe rewrite starts without a prefixed override or explicit port flag[0m [1;30m# reg_localdev_test.go:21 -> *World[0m
+    [32mThen[0m [32mthe rewrite listens on port 3102[0m                                     [1;30m# reg_localdev_test.go:22 -> *World[0m
+
+  [1;37mScenario:[0m An invalid port override fails before accepting requests [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/local-development/local-development.feature:34[0m
+    [32mGiven[0m [32mAYOKODING_WEB_PORT is set to an invalid port value[0m         [1;30m# reg_localdev_test.go:23 -> *World[0m
+    [32mWhen[0m [32mthe rewrite starts[0m                                          [1;30m# reg_localdev_test.go:13 -> *World[0m
+    [32mThen[0m [32mstartup fails with a diagnostic naming AYOKODING_WEB_PORT[0m   [1;30m# reg_localdev_test.go:24 -> *World[0m
+    [32mAnd[0m [32mno rewrite listener starts on a fallback port[0m                [1;30m# reg_localdev_test.go:25 -> *World[0m
+
+  [1;37mScenario:[0m Browsing course pages leaves the content files unchanged  [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/local-development/local-development.feature:40[0m
+    [32mGiven[0m [32mthe shared Markdown and manifests have recorded byte hashes[0m [1;30m# reg_localdev_test.go:26 -> *World[0m
+    [32mWhen[0m [32ma developer starts the rewrite and browses its course pages[0m  [1;30m# reg_localdev_test.go:27 -> *World[0m
+    [32mThen[0m [32mthe Markdown and manifest byte hashes remain unchanged[0m       [1;30m# reg_localdev_test.go:28 -> *World[0m
+
+  [1;37mScenario:[0m AYOKODING_WEB_CONTENT_DIR and AYOKODING_WEB_MANIFESTS_DIR point the app at another corpus [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/local-development/local-development.feature:47[0m
+    [32mGiven[0m [32mAYOKODING_WEB_CONTENT_DIR and AYOKODING_WEB_MANIFESTS_DIR name another corpus root[0m          [1;30m# reg_localdev_test.go:29 -> *World[0m
+    [32mWhen[0m [32mthe rewrite starts[0m                                                                           [1;30m# reg_localdev_test.go:13 -> *World[0m
+    [32mThen[0m [32mthe rewrite serves its pages and course paths from that corpus[0m                               [1;30m# reg_localdev_test.go:30 -> *World[0m
+
+  [1;37mScenario:[0m An unreadable content directory stops startup before the listener opens [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/local-development/local-development.feature:53[0m
+    [32mGiven[0m [32mAYOKODING_WEB_CONTENT_DIR names a content directory that cannot be read[0m   [1;30m# reg_localdev_test.go:45 -> *World[0m
+    [32mWhen[0m [32mthe rewrite is launched and fails to start[0m                                 [1;30m# reg_localdev_test.go:46 -> *World[0m
+    [31mThen[0m [31mstartup fails with a diagnostic naming AYOKODING_WEB_CONTENT_DIR[0m           [1;30m# reg_localdev_test.go:47 -> *World[0m
+    [1;31mstep assertion failed: startup was accepted; want a refusal naming AYOKODING_WEB_CONTENT_DIR[0m
+    [36mAnd[0m [36mno rewrite listener starts[0m                                                  [1;30m# reg_localdev_test.go:48 -> *World[0m
+
+  [1;37mScenario:[0m Search, benchmark, and calculator fragments under /htmx update results without a full page load [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/local-development/local-development.feature:62[0m
+    [32mWhen[0m [32ma reader requests the search, benchmark, and calculator fragments[0m                                  [1;30m# reg_localdev_test.go:31 -> *World[0m
+    [32mThen[0m [32meach fragment returns results without the page layout[0m                                              [1;30m# reg_localdev_test.go:32 -> *World[0m
+
+  [1;37mScenario Outline:[0m An unknown flag or fixture value stops startup with a message [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/local-development/local-development.feature:67[0m
+    [36mWhen[0m [36mthe rewrite starts with the argument "[0m[1;36m<argument>[0m[36m"[0m                        [1;30m# reg_localdev_test.go:35 -> *World[0m
+    [36mThen[0m [36mstartup fails with a message naming "[0m[1;36m<naming>[0m[36m"[0m                           [1;30m# reg_localdev_test.go:36 -> *World[0m
+
+    [1;37mExamples:[0m
+      | [36margument[0m        | [36mnaming[0m         |
+      | [32m--unknown-flag[0m  | [32m--unknown-flag[0m |
+      | [32m--fixture=bogus[0m | [32m--fixture[0m      |
+
+  [1;37mScenario Outline:[0m A fixture setting selects its canned corpus variant     [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/local-development/local-development.feature:77[0m
+    [36mWhen[0m [36mthe rewrite starts with the "[0m[1;36m<fixture>[0m[36m" fixture set by "[0m[1;36m<channel>[0m[36m"[0m [1;30m# reg_localdev_test.go:37 -> *World[0m
+    [36mThen[0m [36mthe course catalog answers with status "[0m[1;36m<status>[0m[36m"[0m                  [1;30m# reg_localdev_test.go:38 -> *World[0m
+
+    [1;37mExamples:[0m
+      | [36mfixture[0m             | [36mchannel[0m               | [36mstatus[0m |
+      | [32mparity[0m              | [32m--fixture flag[0m        | [32m200[0m    |
+      | [32munavailable-catalog[0m | [32mAYOKODING_WEB_FIXTURE[0m | [32m500[0m    |
+
+[1;37mFeature:[0m Canonical routes and learning navigation over HTTP
+  As a reader following site links
+  I want stable destinations and clear navigation
+  So that existing bookmarks and learning journeys continue to work
+
+  [1;37mBackground:[0m
+    [32mGiven[0m [32mthe app is running[0m                   [1;30m# reg_common_test.go:10 -> *World[0m
+
+  [1;37mScenario:[0m The root enters the default locale [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation-http.feature:11[0m
+    [32mWhen[0m [32ma visitor requests the root URL[0m       [1;30m# reg_routes_test.go:10 -> *World[0m
+    [32mThen[0m [32mthe visitor is redirected to "/en"[0m    [1;30m# reg_routes_test.go:11 -> *World[0m
+    [32mAnd[0m [32mthe redirect does not loop[0m             [1;30m# reg_routes_test.go:12 -> *World[0m
+
+  [1;37mScenario Outline:[0m Uppercase locale entries resolve to lowercase URLs         [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation-http.feature:17[0m
+    [36mGiven[0m [36mthe app is running[0m                                                   [1;30m# reg_common_test.go:10 -> *World[0m
+    [36mWhen[0m [36ma visitor requests "[0m[1;36m<source>[0m[36m"[0m                                         [1;30m# reg_routes_test.go:13 -> *World[0m
+    [36mThen[0m [36mthe response permanently redirects with status 308 to "[0m[1;36m<destination>[0m[36m"[0m [1;30m# reg_routes_test.go:14 -> *World[0m
+
+    [1;37mExamples:[0m
+      | [36msource[0m            | [36mdestination[0m       |
+      | [32m/EN[0m               | [32m/en[0m               |
+      | [32m/ID[0m               | [32m/id[0m               |
+      | [32m/EN/learn/courses[0m | [32m/en/learn/courses[0m |
+
+  [1;37mScenario Outline:[0m An old URL redirects 308 to its current page               [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation-http.feature:28[0m
+    [36mGiven[0m [36mthe app is running[0m                                                   [1;30m# reg_common_test.go:10 -> *World[0m
+    [36mWhen[0m [36ma visitor requests "[0m[1;36m<source>[0m[36m"[0m                                         [1;30m# reg_routes_test.go:13 -> *World[0m
+    [36mThen[0m [36mthe response permanently redirects with status 308 to "[0m[1;36m<destination>[0m[36m"[0m [1;30m# reg_routes_test.go:14 -> *World[0m
+    [36mAnd[0m [36mthe query string is preserved[0m                                          [1;30m# reg_routes_test.go:15 -> *World[0m
+    [36mAnd[0m [36mthe redirect does not depend on the old page still existing[0m            [1;30m# reg_routes_test.go:16 -> *World[0m
+
+    [1;37mExamples:[0m
+      | [36msource[0m                                                                             | [36mdestination[0m                                         |
+      | [32m/en/learn/fundamentally-strong/software-engineer/just-enough-python/learning/intro[0m | [32m/en/learn/courses/just-enough-python/learning/intro[0m |
+
+  [1;37mScenario:[0m A fixture-only old URL redirects 308 to its current page                                                         [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation-http.feature:40[0m
+    [32mWhen[0m [32ma visitor requests "/en/old-guide?from=local"[0m                                                                       [1;30m# reg_routes_test.go:13 -> *World[0m
+    [32mThen[0m [32mthe response permanently redirects with status 308 to "/en/learn/courses/go-basics/learning/hello-world?from=local"[0m [1;30m# reg_routes_test.go:14 -> *World[0m
+    [32mAnd[0m [32mthe query string is preserved[0m                                                                                        [1;30m# reg_routes_test.go:15 -> *World[0m
+    [32mAnd[0m [32mthe redirect does not depend on the old page still existing[0m                                                          [1;30m# reg_routes_test.go:16 -> *World[0m
+
+  [1;37mScenario:[0m A legacy archived page URL shows the archived page [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation-http.feature:47[0m
+    [32mWhen[0m [32ma reader opens a legacy archived page[0m                 [1;30m# reg_routes_test.go:29 -> *World[0m
+    [32mThen[0m [32mthe archived page shows its title and canonical body[0m  [1;30m# reg_routes_test.go:30 -> *World[0m
+
+[1;37mFeature:[0m Canonical routes and learning navigation
+  As a reader following site links
+  I want stable destinations and clear navigation
+  So that existing bookmarks and learning journeys continue to work
+
+  [1;37mBackground:[0m
+    [32mGiven[0m [32mthe app is running[0m                                              [1;30m# reg_common_test.go:10 -> *World[0m
+
+  [1;37mScenario:[0m The sidebar marks the active page and opens its ancestors     [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation.feature:11[0m
+    [32mWhen[0m [32ma reader opens a nested published lesson[0m                         [1;30m# reg_routes_test.go:17 -> *World[0m
+    [32mThen[0m [32mthe sidebar expands its ancestors and identifies the active page[0m [1;30m# reg_routes_test.go:18 -> *World[0m
+    [32mAnd[0m [32mevery link stays within the selected locale[0m                       [1;30m# reg_routes_test.go:20 -> *World[0m
+
+  [1;37mScenario:[0m Breadcrumbs link to the section and course ancestors          [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation.feature:17[0m
+    [32mWhen[0m [32ma reader opens a nested published lesson[0m                         [1;30m# reg_routes_test.go:17 -> *World[0m
+    [32mThen[0m [32mthe breadcrumbs link to its current section and course ancestors[0m [1;30m# reg_routes_test.go:19 -> *World[0m
+    [32mAnd[0m [32mevery link stays within the selected locale[0m                       [1;30m# reg_routes_test.go:20 -> *World[0m
+
+  [1;37mScenario:[0m A lesson follows the selected path's sequence                  [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation.feature:23[0m
+    [32mGiven[0m [32ma reader opened a lesson through a valid learning path[0m           [1;30m# reg_routes_test.go:21 -> *World[0m
+    [32mWhen[0m [32mthe reader follows the next or previous lesson control[0m            [1;30m# reg_routes_test.go:22 -> *World[0m
+    [32mThen[0m [32mthe destination follows the path's current phase and course order[0m [1;30m# reg_routes_test.go:23 -> *World[0m
+    [32mAnd[0m [32mthe path context remains in the destination URL[0m                    [1;30m# reg_routes_test.go:24 -> *World[0m
+
+  [1;37mScenario:[0m Browser back restores the previous content location          [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation.feature:29[0m
+    [32mGiven[0m [32ma reader has followed an internal link to another content page[0m [1;30m# reg_routes_test.go:25 -> *World[0m
+    [32mWhen[0m [32mthe reader navigates back[0m                                       [1;30m# reg_routes_test.go:26 -> *World[0m
+    [32mThen[0m [32mthe previous content route and its URL state are restored[0m       [1;30m# reg_routes_test.go:27 -> *World[0m
+    [32mAnd[0m [32mnavigation controls reflect the restored location[0m                [1;30m# reg_routes_test.go:28 -> *World[0m
+
+  [1;37mScenario Outline:[0m The learn home and learning paths hub pages list their entries in the selected locale [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation.feature:37[0m
+    [36mGiven[0m [36mthe app is running[0m                                                                              [1;30m# reg_common_test.go:10 -> *World[0m
+    [36mWhen[0m [36ma reader opens the "[0m[1;36m<page>[0m[36m" page in the "[0m[1;36m<locale>[0m[36m" locale[0m                                        [1;30m# reg_routes_test.go:31 -> *World[0m
+    [36mThen[0m [36mthe page lists its entries in the "[0m[1;36m<locale>[0m[36m" locale[0m                                              [1;30m# reg_routes_test.go:32 -> *World[0m
+
+    [1;37mExamples:[0m
+      | [36mpage[0m       | [36mlocale[0m |
+      | [32mlearn home[0m | [32men[0m     |
+      | [32mpaths hub[0m  | [32men[0m     |
+
+[1;37mFeature:[0m Locale-scoped site search over HTTP
+  As a reader looking for a topic
+  I want relevant lessons and tools in the current language
+  So that I can reach the right material quickly
+
+  [1;37mBackground:[0m
+    [32mGiven[0m [32mthe app is running[0m                                                     [1;30m# reg_common_test.go:10 -> *World[0m
+
+  [1;37mScenario:[0m The search page route returns results for a query without the dialog [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/search/search-http.feature:11[0m
+    [32mGiven[0m [32mmatching published content exists in both supported locales[0m            [1;30m# reg_search_test.go:13 -> *World[0m
+    [32mWhen[0m [32ma reader opens the search page for the matching term in one locale[0m      [1;30m# reg_search_test.go:30 -> *World[0m
+    [32mThen[0m [32mthe search page lists the matching results for that locale only[0m         [1;30m# reg_search_test.go:31 -> *World[0m
+
+[1;37mFeature:[0m Locale-scoped site search
+  As a reader looking for a topic
+  I want relevant lessons and tools in the current language
+  So that I can reach the right material quickly
+
+  [1;37mBackground:[0m
+    [32mGiven[0m [32mthe app is running[0m                                    [1;30m# reg_common_test.go:10 -> *World[0m
+
+  [1;37mScenario:[0m The keyboard shortcut opens search with input focus [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/search/search.feature:11[0m
+    [32mWhen[0m [32ma reader presses the platform's search shortcut[0m        [1;30m# reg_search_test.go:10 -> *World[0m
+    [32mThen[0m [32mthe search dialog opens[0m                                [1;30m# reg_search_test.go:11 -> *World[0m
+    [32mAnd[0m [32mthe search input receives focus[0m                         [1;30m# reg_search_test.go:12 -> *World[0m
+
+  [1;37mScenario:[0m Results stay within the current locale                    [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/search/search.feature:17[0m
+    [32mGiven[0m [32mmatching published content exists in both supported locales[0m [1;30m# reg_search_test.go:13 -> *World[0m
+    [32mWhen[0m [32ma reader searches for the matching term in one locale[0m        [1;30m# reg_search_test.go:14 -> *World[0m
+    [32mThen[0m [32mresults link only to that locale's published content[0m         [1;30m# reg_search_test.go:15 -> *World[0m
+    [32mAnd[0m [32meach result shows a title, section path, and matching excerpt[0m [1;30m# reg_search_test.go:16 -> *World[0m
+
+  [1;37mScenario:[0m Empty search input does not display stale results [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/search/search.feature:23[0m
+    [32mGiven[0m [32mthe search dialog has results for an earlier query[0m  [1;30m# reg_search_test.go:17 -> *World[0m
+    [32mWhen[0m [32mthe reader clears the query to whitespace[0m            [1;30m# reg_search_test.go:18 -> *World[0m
+    [32mThen[0m [32mthe earlier results disappear[0m                        [1;30m# reg_search_test.go:19 -> *World[0m
+    [32mAnd[0m [32mthe dialog remains usable without an error[0m            [1;30m# reg_search_test.go:20 -> *World[0m
+
+  [1;37mScenario:[0m Choosing a result closes search and opens its destination [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/search/search.feature:29[0m
+    [32mGiven[0m [32ma reader has search results for a published page[0m            [1;30m# reg_search_test.go:21 -> *World[0m
+    [32mWhen[0m [32mthe reader chooses that result[0m                               [1;30m# reg_search_test.go:22 -> *World[0m
+    [32mThen[0m [32mthe corresponding content route opens[0m                        [1;30m# reg_search_test.go:23 -> *World[0m
+    [32mAnd[0m [32mthe search dialog closes[0m                                      [1;30m# reg_search_test.go:24 -> *World[0m
+
+  [1;37mScenario:[0m Search includes both interactive tools                        [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/search/search.feature:35[0m
+    [32mWhen[0m [32ma reader searches for the name of either interactive tool[0m        [1;30m# reg_search_test.go:25 -> *World[0m
+    [32mThen[0m [32mthe matching tool page appears as a result in the current locale[0m [1;30m# reg_search_test.go:26 -> *World[0m
+
+  [1;37mScenario:[0m Escape returns focus to the search opener [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/search/search.feature:40[0m
+    [32mGiven[0m [32mthe search dialog is open[0m                   [1;30m# reg_search_test.go:27 -> *World[0m
+    [32mWhen[0m [32mthe reader presses Escape[0m                    [1;30m# reg_search_test.go:28 -> *World[0m
+    [32mThen[0m [32mthe search dialog closes[0m                     [1;30m# reg_search_test.go:24 -> *World[0m
+    [32mAnd[0m [32mfocus returns to the control that opened it[0m   [1;30m# reg_search_test.go:29 -> *World[0m
+
+[1;37mFeature:[0m Bilingual accessible shell
+  As a reader visiting the learning site
+  I want familiar navigation in my chosen language
+  So that I can read comfortably on a phone or computer
+
+  [1;37mBackground:[0m
+    [32mGiven[0m [32mthe app is running[0m                                       [1;30m# reg_common_test.go:10 -> *World[0m
+
+  [1;37mScenario Outline:[0m The page shell uses the route's language       [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature:11[0m
+    [36mGiven[0m [36mthe app is running[0m                                       [1;30m# reg_common_test.go:10 -> *World[0m
+    [36mWhen[0m [36ma reader opens the "[0m[1;36m<locale>[0m[36m" home page[0m                   [1;30m# reg_shell_test.go:10 -> *World[0m
+    [36mThen[0m [36mthe document language is "[0m[1;36m<locale>[0m[36m"[0m                       [1;30m# reg_shell_test.go:11 -> *World[0m
+    [36mAnd[0m [36mthe header, footer, and primary controls use that language[0m [1;30m# reg_shell_test.go:12 -> *World[0m
+
+    [1;37mExamples:[0m
+      | [36mlocale[0m |
+      | [32men[0m     |
+      | [32mid[0m     |
+
+  [1;37mScenario:[0m The locale switch preserves an available translated destination      [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature:22[0m
+    [32mGiven[0m [32ma reader is on a page with a translation in the other supported locale[0m [1;30m# reg_shell_test.go:13 -> *World[0m
+    [32mWhen[0m [32mthe reader switches locale[0m                                              [1;30m# reg_shell_test.go:14 -> *World[0m
+    [32mThen[0m [32mthe translated page opens in the other locale[0m                           [1;30m# reg_shell_test.go:15 -> *World[0m
+    [32mAnd[0m [32mthe active locale control matches the destination[0m                        [1;30m# reg_shell_test.go:16 -> *World[0m
+
+  [1;37mScenario:[0m Keyboard readers can skip the repeated navigation [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature:29[0m
+    [32mWhen[0m [32ma keyboard reader activates the skip-to-content link[0m [1;30m# reg_shell_test.go:17 -> *World[0m
+    [32mThen[0m [32mfocus moves to the main content[0m                      [1;30m# reg_shell_test.go:18 -> *World[0m
+    [32mAnd[0m [32mthe page retains a visible focus indicator[0m            [1;30m# reg_shell_test.go:19 -> *World[0m
+
+  [1;37mScenario Outline:[0m The shell fits the viewport without document overflow        [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature:34[0m
+    [36mGiven[0m [36mthe app is running[0m                                                     [1;30m# reg_common_test.go:10 -> *World[0m
+    [36mWhen[0m [36ma reader opens a representative course page at "[0m[1;36m<width>[0m[36m" pixels wide[0m    [1;30m# reg_shell_test.go:20 -> *World[0m
+    [36mThen[0m [36mthe main content remains readable without horizontal document scrolling[0m [1;30m# reg_shell_test.go:21 -> *World[0m
+    [36mAnd[0m [36mthe navigation uses the layout intended for that viewport[0m                [1;30m# reg_shell_test.go:22 -> *World[0m
+
+    [1;37mExamples:[0m
+      | [36mwidth[0m |
+      | [32m375[0m   |
+      | [32m768[0m   |
+      | [32m1280[0m  |
+
+  [1;37mScenario:[0m Mobile navigation restores focus after dismissal [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature:46[0m
+    [32mGiven[0m [32ma reader has opened the mobile navigation panel[0m    [1;30m# reg_shell_test.go:23 -> *World[0m
+    [32mWhen[0m [32mthe reader dismisses the panel with Escape[0m          [1;30m# reg_shell_test.go:24 -> *World[0m
+    [32mThen[0m [32mthe panel closes[0m                                    [1;30m# reg_shell_test.go:25 -> *World[0m
+    [32mAnd[0m [32mfocus returns to its opener[0m                          [1;30m# reg_shell_test.go:26 -> *World[0m
+
+  [1;37mScenario:[0m A selected theme survives a reload    [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature:53[0m
+    [32mGiven[0m [32ma reader has chosen the dark theme[0m      [1;30m# reg_shell_test.go:27 -> *World[0m
+    [32mWhen[0m [32mthe reader reloads the page[0m              [1;30m# reg_shell_test.go:28 -> *World[0m
+    [32mThen[0m [32mthe page uses the dark theme[0m             [1;30m# reg_shell_test.go:29 -> *World[0m
+    [32mAnd[0m [32mtheme text and controls remain accessible[0m [1;30m# reg_shell_test.go:30 -> *World[0m
+
+  [1;37mScenario:[0m A resized sidebar retains its width within supported bounds        [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature:60[0m
+    [32mGiven[0m [32ma reader has resized the desktop sidebar within the supported bounds[0m [1;30m# reg_shell_test.go:31 -> *World[0m
+    [32mWhen[0m [32mthe reader opens another content page[0m                                 [1;30m# reg_shell_test.go:32 -> *World[0m
+    [32mThen[0m [32mthe sidebar uses the saved width[0m                                      [1;30m# reg_shell_test.go:33 -> *World[0m
+    [32mAnd[0m [32mthe content remains reachable at the current viewport size[0m             [1;30m# reg_shell_test.go:34 -> *World[0m
+
+[1;37mFeature:[0m AI model benchmark comparison
+  As a reader comparing AI models
+  I want the existing benchmark results and shareable filters
+  So that I can compare the same evidence in either implementation
+
+  [1;37mBackground:[0m
+    [32mGiven[0m [32mthe app is running[0m                                                      [1;30m# reg_common_test.go:10 -> *World[0m
+
+  [1;37mScenario:[0m Benchmark figures and ordering match the published reference results  [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/tools/ai-benchmark.feature:11[0m
+    [32mGiven[0m [32mthe current shared benchmark data and an established calculation vector[0m [1;30m# reg_tools_test.go:10 -> *World[0m
+    [32mWhen[0m [32mthe reader applies that vector's filters and comparison options[0m          [1;30m# reg_tools_test.go:11 -> *World[0m
+    [32mThen[0m [32mthe displayed figures, ordering, and value results match the vector[0m      [1;30m# reg_tools_test.go:12 -> *World[0m
+
+  [1;37mScenario:[0m A benchmark URL restores all supported filter state      [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/tools/ai-benchmark.feature:18[0m
+    [32mGiven[0m [32ma benchmark URL encodes supported comparison options[0m       [1;30m# reg_tools_test.go:14 -> *World[0m
+    [32mWhen[0m [32ma reader opens that URL[0m                                     [1;30m# reg_tools_test.go:15 -> *World[0m
+    [32mThen[0m [32mevery supported option reflects the encoded state[0m           [1;30m# reg_tools_test.go:16 -> *World[0m
+    [32mAnd[0m [32mcopying the current URL preserves that state for a new visit[0m [1;30m# reg_tools_test.go:17 -> *World[0m
+
+  [1;37mScenario:[0m Invalid benchmark URL values fall back to the default filters   [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/tools/ai-benchmark.feature:25[0m
+    [32mGiven[0m [32ma benchmark URL contains invalid or unknown filter values[0m         [1;30m# reg_tools_test.go:18 -> *World[0m
+    [32mWhen[0m [32ma reader opens that URL[0m                                            [1;30m# reg_tools_test.go:15 -> *World[0m
+    [32mThen[0m [32mthe tool uses the existing codec's valid defaults for those values[0m [1;30m# reg_tools_test.go:19 -> *World[0m
+    [32mAnd[0m [32mthe comparison remains usable without an error[0m                      [1;30m# reg_tools_test.go:20 -> *World[0m
+
+  [1;37mScenario:[0m Benchmark results show their sources, dates, notes, and methodology           [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/tools/ai-benchmark.feature:32[0m
+    [32mGiven[0m [32mthe benchmark data has been extracted into shared JSON[0m                          [1;30m# reg_tools_test.go:21 -> *World[0m
+    [32mWhen[0m [32meither implementation reads the data and generates its reference results[0m         [1;30m# reg_tools_test.go:22 -> *World[0m
+    [32mThen[0m [32mmodel figures, prices, ordering policies, and reference results remain unchanged[0m [1;30m# reg_tools_test.go:23 -> *World[0m
+    [32mAnd[0m [32mthe source links, source dates, notes, and methodology remain available[0m           [1;30m# reg_tools_test.go:24 -> *World[0m
+
+  [1;37mScenario:[0m A benchmark filter with no matches shows an empty result [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/tools/ai-benchmark.feature:39[0m
+    [32mGiven[0m [32ma supported filter combination matches no model[0m            [1;30m# reg_tools_test.go:25 -> *World[0m
+    [32mWhen[0m [32mthe reader applies that combination[0m                         [1;30m# reg_tools_test.go:26 -> *World[0m
+    [32mThen[0m [32mthe tool shows an intentional no-results state[0m              [1;30m# reg_tools_test.go:27 -> *World[0m
+    [32mAnd[0m [32mthe reader can change or reset the filters[0m                   [1;30m# reg_tools_test.go:28 -> *World[0m
+
+[1;37mFeature:[0m Cost-of-living and savings calculation
+  As a reader comparing places to live
+  I want the existing cost and income calculations with shareable inputs
+  So that I can compare consistent estimates across both implementations
+
+  [1;37mBackground:[0m
+    [32mGiven[0m [32mthe app is running[0m                                                                             [1;30m# reg_common_test.go:10 -> *World[0m
+
+  [1;37mScenario:[0m Calculator costs, savings, and minimum qualifying role match the published reference results [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/tools/cost-of-living-calculator.feature:11[0m
+    [32mGiven[0m [32mthe current shared city, role, and foreign-exchange data[0m                                       [1;30m# reg_tools_test.go:29 -> *World[0m
+    [32mWhen[0m [32ma reader enters an established calculator vector's inputs[0m                                       [1;30m# reg_tools_test.go:30 -> *World[0m
+    [32mThen[0m [32mthe displayed costs, savings, and minimum qualifying role match that vector[0m                     [1;30m# reg_tools_test.go:31 -> *World[0m
+    [32mAnd[0m [32mTypeScript and Go produce the same accepted results[0m                                              [1;30m# reg_tools_test.go:13 -> *World[0m
+
+  [1;37mScenario:[0m A calculator URL restores all supported input state                                  [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/tools/cost-of-living-calculator.feature:18[0m
+    [32mGiven[0m [32ma calculator URL encodes supported geography, household, schooling, and income options[0m [1;30m# reg_tools_test.go:32 -> *World[0m
+    [32mWhen[0m [32ma reader opens that URL[0m                                                                 [1;30m# reg_tools_test.go:15 -> *World[0m
+    [32mThen[0m [32mevery supported input reflects the encoded state[0m                                        [1;30m# reg_tools_test.go:33 -> *World[0m
+    [32mAnd[0m [32mcopying the current URL preserves the inputs for a new visit[0m                             [1;30m# reg_tools_test.go:34 -> *World[0m
+
+  [1;37mScenario:[0m Invalid calculator input shows a recovered value or a message, never a misleading estimate [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/tools/cost-of-living-calculator.feature:25[0m
+    [32mGiven[0m [32ma reader provides an invalid or out-of-range calculator input[0m                                [1;30m# reg_tools_test.go:35 -> *World[0m
+    [32mWhen[0m [32mthe tool validates that input[0m                                                                 [1;30m# reg_tools_test.go:36 -> *World[0m
+    [32mThen[0m [32mit applies the existing input codec's accepted recovery or validation result[0m                  [1;30m# reg_tools_test.go:37 -> *World[0m
+    [32mAnd[0m [32mthe tool does not display a misleading finite estimate from invalid arithmetic[0m                 [1;30m# reg_tools_test.go:38 -> *World[0m
+
+  [1;37mScenario:[0m Changing geography clears a city that no longer applies          [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/tools/cost-of-living-calculator.feature:32[0m
+    [32mGiven[0m [32ma reader has selected a city[0m                                       [1;30m# reg_tools_test.go:39 -> *World[0m
+    [32mWhen[0m [32mthe reader changes geography so that city is no longer eligible[0m     [1;30m# reg_tools_test.go:40 -> *World[0m
+    [32mThen[0m [32mthe selection follows the current tool's fallback behavior[0m          [1;30m# reg_tools_test.go:41 -> *World[0m
+    [32mAnd[0m [32mthe visible results match the resulting geography and city selection[0m [1;30m# reg_tools_test.go:42 -> *World[0m
+
+  [1;37mScenario:[0m Currency-converted estimates show the FX snapshot date and each currency's source [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/tools/cost-of-living-calculator.feature:38[0m
+    [32mGiven[0m [32mthe city, salary, and currency datasets have their own source dates[0m                 [1;30m# reg_tools_test.go:43 -> *World[0m
+    [32mWhen[0m [32meither implementation calculates a currency-converted estimate[0m                       [1;30m# reg_tools_test.go:44 -> *World[0m
+    [32mThen[0m [32mit uses the shared USD-per-unit rates without refreshing them[0m                        [1;30m# reg_tools_test.go:45 -> *World[0m
+    [32mAnd[0m [32mthe independent FX snapshot date and per-currency provenance remain available[0m         [1;30m# reg_tools_test.go:46 -> *World[0m
+
+--- [31mFailed steps:[0m
+
+  [31mScenario: A default start serves the real content corpus[0m [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature:23[0m
+    [31mThen the lesson "/en/learn/courses/just-enough-python/learning/beginner" answers with status "200"[0m [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature:26[0m
+      [31mError: [0m[1;31mstep assertion failed: status = 404, want 200 (body "<!doctype html>\n<html lang=\"en\" data-theme-hook>\n  <head>\n    <meta charset=\"utf-8\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<title>Not found</title>\n<meta name=\"descr")[0m
+
+  [31mScenario: An unreadable content directory stops startup before the listener opens[0m [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/local-development/local-development.feature:53[0m
+    [31mThen startup fails with a diagnostic naming AYOKODING_WEB_CONTENT_DIR[0m [1;30m# ../../../../specs/apps/ayokoding/web/behaviours/local-development/local-development.feature:56[0m
+      [31mError: [0m[1;31mstep assertion failed: startup was accepted; want a refusal naming AYOKODING_WEB_CONTENT_DIR[0m
+
+
+106 scenarios ([32m104 passed[0m, [31m2 failed[0m)
+440 steps ([32m436 passed[0m, [31m2 failed[0m, [36m2 skipped[0m)
+541.728375ms
+--- FAIL: TestContract (0.54s)
+    suite_test.go:85: godog suite exited 1
+FAIL
+FAIL	github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/bdd	0.907s
+FAIL

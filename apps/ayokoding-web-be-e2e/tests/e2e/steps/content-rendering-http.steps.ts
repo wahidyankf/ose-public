@@ -6,6 +6,7 @@ import { expect } from "@playwright/test";
 import { bodyOf, fetchText, statusOf } from "../support/http";
 import { startOwnedBinary } from "../support/servers";
 import { stateFor, trackOwned } from "../support/state";
+import { frontmatterTitle, lessonFile, lessonRoute } from "../support/witness";
 
 const { Given, When, Then } = createBdd();
 
@@ -13,16 +14,16 @@ const { Given, When, Then } = createBdd();
 // @scenario specs/apps/ayokoding/web/behaviours/content/content-rendering-http.feature: *
 
 Given("a published Markdown lesson exists in the shared corpus", async ({ request }) => {
-  await fetchText(request, "/en/learn/courses/go-basics/learning/hello-world");
+  await fetchText(request, lessonRoute);
 });
 
 When("a reader requests its route without running browser scripts", async ({ request }) => {
-  await fetchText(request, "/en/learn/courses/go-basics/learning/hello-world");
+  await fetchText(request, lessonRoute);
 });
 
 Then("the response contains the lesson title and readable article body", async ({ request }) => {
   expect(statusOf(request)).toBe(200);
-  expect(bodyOf(request)).toContain("Hello World");
+  expect(bodyOf(request)).toContain(frontmatterTitle(lessonFile));
   expect(bodyOf(request)).toContain("article-body");
 });
 

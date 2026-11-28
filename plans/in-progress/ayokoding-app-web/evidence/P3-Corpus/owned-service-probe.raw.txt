@@ -1,0 +1,1 @@
+ayokoding-web: serving the real corpus: content <repo>/apps/ayokoding-www/content, manifests <repo>/apps/ayokoding-www/src/features/course-paths/manifests

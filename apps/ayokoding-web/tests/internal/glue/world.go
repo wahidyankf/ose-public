@@ -55,10 +55,16 @@ type World struct {
 	// content journey state.
 	diagnostic string
 	shortcode  string
+	structure  string
 	clipboard  string
 	// local-dev journey state.
 	flagPort string
 	hashes   map[string]string
+	// realCorpus marks a default-corpus scenario that launches with no fixture.
+	realCorpus bool
+	// exitCode and exitStderr keep a refused launch for its Then step.
+	exitCode   int
+	exitStderr string
 	// learn-entry page and htmx fragment replies of the current scenario.
 	learnPage string
 	fragments []fragmentReply

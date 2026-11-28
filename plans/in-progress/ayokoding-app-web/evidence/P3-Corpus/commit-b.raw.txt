@@ -1,0 +1,9 @@
+[gate] format-staged passed
+[gate] commit-message passed
+[ayokoding-web-p3-corpus 951ee90f8] feat(ayokoding-web): serve the real corpus by default
+ 20 files changed, 876 insertions(+), 98 deletions(-)
+ create mode 100644 apps/ayokoding-web/internal/web/corpus.go
+ create mode 100644 apps/ayokoding-web/internal/web/corpus_test.go
+ create mode 100644 apps/ayokoding-web/tests/integration/default_corpus_test.go
+ create mode 100644 apps/ayokoding-web/tests/integration/documents_test.go
+ create mode 100644 apps/ayokoding-web/tests/internal/glue/steps_corpus.go

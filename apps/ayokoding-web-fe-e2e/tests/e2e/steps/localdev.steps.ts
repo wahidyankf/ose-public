@@ -3,13 +3,14 @@
 // real spawned binaries on free loopback ports; the 3101 origin is a
 // suite-owned stub, and the 3191 acceptance server is the Playwright-owned
 // webServer. The suite never kills or reuses a developer's listener.
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { createBdd } from "playwright-bdd";
 import { expect, type Page } from "@playwright/test";
 import { bodyOf, fetchText, gotoPage, statusOf } from "../support/http";
 import { hashSources } from "../support/hashes";
+import { primaryPage } from "../support/witness";
 import { freePort, portAnswers, spawnBinary, spawnExpectExit, startExternalStub } from "../support/servers";
 import { stateFor, trackOwned } from "../support/state";
 
@@ -184,7 +185,7 @@ Given("the shared Markdown and manifests have recorded byte hashes", async ({ pa
 });
 
 When("a developer starts the rewrite and browses its course pages", async ({ page }) => {
-  for (const target of ["/en", "/en/learn/courses", "/en/learn/courses/go-basics/learning/hello-world"]) {
+  for (const target of ["/en", "/en/learn/courses", primaryPage(0).route]) {
     await gotoPage(page, target);
     expect(statusOf(page)).toBe(200);
   }
@@ -275,4 +276,37 @@ When(
 Then("the course catalog answers with status {string}", async ({ page }, status: string) => {
   await fetchText(page, `${stateFor(page).spawnedUrl ?? ""}/en/learn/courses`);
   expect(statusOf(page)).toBe(Number(status));
+});
+
+// The unreadable root is a directory with no permissions, which the launcher must refuse before it opens a listener.
+// The scenario removes it when it closes, restoring its permissions first.
+Given("AYOKODING_WEB_CONTENT_DIR names a content directory that cannot be read", async ({ page }) => {
+  const root = mkdtempSync(path.join(os.tmpdir(), "ayokoding-web-unreadable-"));
+  chmodSync(root, 0o000);
+  trackOwned(page, {
+    port: 0,
+    close: async () => {
+      chmodSync(root, 0o755);
+      rmSync(root, { recursive: true, force: true });
+    },
+  });
+  stateFor(page).corpusEnv = { AYOKODING_WEB_CONTENT_DIR: root };
+});
+
+When("the rewrite is launched and fails to start", async ({ page }) => {
+  const outcome = await spawnExpectExit([], {
+    ...stateFor(page).corpusEnv,
+    AYOKODING_WEB_PORT: String(await freePort()),
+  });
+  stateFor(page).status = outcome.code;
+  stateFor(page).diagnostic = outcome.stderr;
+});
+
+Then("startup fails with a diagnostic naming AYOKODING_WEB_CONTENT_DIR", async ({ page }) => {
+  expect(stateFor(page).status).not.toBe(0);
+  expect(stateFor(page).diagnostic ?? "").toContain("AYOKODING_WEB_CONTENT_DIR");
+});
+
+Then("no rewrite listener starts", async ({ page }) => {
+  expect(stateFor(page).spawnedUrl).toBeUndefined();
 });

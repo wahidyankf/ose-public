@@ -1,0 +1,8 @@
+=== RUN   TestDefaultStartServesTheRealCorpusOverHTTP
+--- PASS: TestDefaultStartServesTheRealCorpusOverHTTP (2.49s)
+=== RUN   TestDefaultStartRendersCopyControlsForRealFences
+    default_corpus_test.go:81: real Go fence lacks "data-language=\"go\""
+--- FAIL: TestDefaultStartRendersCopyControlsForRealFences (2.39s)
+FAIL
+FAIL	github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/integration	5.202s
+FAIL

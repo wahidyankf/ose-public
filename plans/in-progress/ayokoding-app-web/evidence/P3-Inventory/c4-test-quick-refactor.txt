@@ -1,0 +1,1229 @@
+
+> nx run ayokoding-web:"test:quick"
+
+> npm exec -- nx run ayokoding-web:typecheck
+
+
+ NX   Running target typecheck for project ayokoding-web and 1 task it depends on:
+
+
+
+> nx run ayokoding-web:"build:assets"  [existing outputs match the cache, left as is]
+
+> mkdir -p internal/tools/shareddata/data && cp ../../libs/ayokoding-data/data/ai-benchmark.json ../../libs/ayokoding-data/data/cost-of-living.json ../../libs/ayokoding-data/data/fx.json internal/tools/shareddata/data/ && ../../node_modules/.bin/esbuild assets/js/progress.ts --bundle --minify --format=iife --outfile=internal/web/assets/dist/progress.js && ../../node_modules/.bin/esbuild assets/js/copy.ts --bundle --minify --format=iife --outfile=internal/web/assets/dist/copy.js
+
+
+  internal/web/assets/dist/progress.js  9.2kb
+
+⚡ Done in 3ms
+
+  internal/web/assets/dist/copy.js  498b 
+
+⚡ Done in 1ms
+
+> nx run ayokoding-web:typecheck
+
+> go build ./... && go vet ./...
+
+
+
+
+ NX   Successfully ran target typecheck for project ayokoding-web and 1 task it depends on
+
+Nx read the output from the cache instead of running the command for 1 out of 2 tasks.
+
+> npm exec -- nx run ayokoding-web:lint
+
+
+> nx run ayokoding-web:lint
+
+> go tool golangci-lint fmt --diff && go tool golangci-lint run && go tool nilaway -include-pkgs=github.com/wahidyankf/ose-public/apps/ayokoding-web -pretty-print=false ./... && go tool shfmt -d scripts && ../../node_modules/.bin/oxlint --deny-warnings assets/js
+
+0 issues.
+
+
+
+ NX   Successfully ran target lint for project ayokoding-web
+
+
+> npm exec -- nx run ayokoding-web:test:unit
+
+
+ NX   Running target test:unit for project ayokoding-web and 1 task it depends on:
+
+
+
+> nx run ayokoding-web:"build:assets"  [existing outputs match the cache, left as is]
+
+> mkdir -p internal/tools/shareddata/data && cp ../../libs/ayokoding-data/data/ai-benchmark.json ../../libs/ayokoding-data/data/cost-of-living.json ../../libs/ayokoding-data/data/fx.json internal/tools/shareddata/data/ && ../../node_modules/.bin/esbuild assets/js/progress.ts --bundle --minify --format=iife --outfile=internal/web/assets/dist/progress.js && ../../node_modules/.bin/esbuild assets/js/copy.ts --bundle --minify --format=iife --outfile=internal/web/assets/dist/copy.js
+
+
+  internal/web/assets/dist/progress.js  9.2kb
+
+⚡ Done in 3ms
+
+  internal/web/assets/dist/copy.js  498b 
+
+⚡ Done in 1ms
+
+> nx run ayokoding-web:"test:unit"
+
+> if grep -rn --include='*_test.go' -E '\.(Skip|Skipf|SkipNow)\(' internal cmd tests; then echo 'test:unit forbids skipped tests' >&2; exit 1; fi; COVERAGE_MINIMUM=99 ./scripts/coverage-gate.sh
+
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/content	1.626s	coverage: 14.9% of statements in ./internal/..., ./cmd/...
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/coursepaths	1.592s	coverage: 8.9% of statements in ./internal/..., ./cmd/...
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/parity	1.721s	coverage: 8.4% of statements in ./internal/..., ./cmd/...
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/search	2.027s	coverage: 1.8% of statements in ./internal/..., ./cmd/...
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/tools/benchmark	2.728s	coverage: 13.0% of statements in ./internal/..., ./cmd/...
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/tools/calculator	3.506s	coverage: 25.7% of statements in ./internal/..., ./cmd/...
+	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/tools/shareddata		coverage: 0.0% of statements
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/web	6.856s	coverage: 60.3% of statements in ./internal/..., ./cmd/...
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/cmd/ayokoding-web	2.904s	coverage: 10.7% of statements in ./internal/..., ./cmd/...
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/cmd/parity	2.871s	coverage: 1.5% of statements in ./internal/..., ./cmd/...
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/bdd	10.729s	coverage: 62.2% of statements in ./internal/..., ./cmd/...
+unit coverage total 99.0% (minimum 99%)
+
+
+
+ NX   Successfully ran target test:unit for project ayokoding-web and 1 task it depends on
+
+Nx read the output from the cache instead of running the command for 1 out of 2 tasks.
+
+> npm exec -- nx run ayokoding-web:test:unit:browser
+
+
+> nx run ayokoding-web:"test:unit:browser"  [existing outputs match the cache, left as is]
+
+> vitest run --coverage
+
+
+ RUN  v4.1.0 <repo>/apps/ayokoding-web
+      Coverage enabled with v8
+
+
+ Test Files  3 passed (3)
+      Tests  74 passed (74)
+   Start at  18:47:57
+   Duration  816ms (transform 62ms, setup 0ms, import 90ms, tests 85ms, environment 1.15s)
+
+ % Coverage report from v8
+-------------|---------|----------|---------|---------|-------------------
+File         | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------|---------|----------|---------|---------|-------------------
+All files    |   99.74 |    99.12 |     100 |     100 |                   
+ copy.ts     |     100 |      100 |     100 |     100 |                   
+ progress.ts |   99.73 |    99.11 |     100 |     100 | 742,799           
+-------------|---------|----------|---------|---------|-------------------
+
+
+
+ NX   Successfully ran target test:unit:browser for project ayokoding-web
+
+Nx read the output from the cache instead of running the command for 1 out of 1 tasks.
+
+> npm exec -- nx run ayokoding-web:test:behaviour:coverage
+
+
+> nx run ayokoding-web:"test:behaviour:coverage"  [existing outputs match the cache, left as is]
+
+> ./rhino behaviour coverage validate
+
+[behaviour-coverage] checked 1009 scenarios, no findings
+[behaviour-coverage] scanned apps/ayokoding-cli/tests/bdd/driver_binary_test.go
+[behaviour-coverage] scanned apps/ayokoding-cli/tests/bdd/driver_e2e_test.go
+[behaviour-coverage] scanned apps/ayokoding-cli/tests/bdd/driver_integration_test.go
+[behaviour-coverage] scanned apps/ayokoding-cli/tests/bdd/driver_unit_test.go
+[behaviour-coverage] scanned apps/ayokoding-cli/tests/bdd/drivers_test.go
+[behaviour-coverage] scanned apps/ayokoding-cli/tests/bdd/phase6_test.go
+[behaviour-coverage] scanned apps/ayokoding-cli/tests/bdd/podman_charter_test.go
+[behaviour-coverage] scanned apps/ayokoding-cli/tests/bdd/podman_contract_test.go
+[behaviour-coverage] scanned apps/ayokoding-cli/tests/bdd/podman_native_test.go
+[behaviour-coverage] scanned apps/ayokoding-cli/tests/bdd/podman_steps_test.go
+[behaviour-coverage] scanned apps/ayokoding-cli/tests/bdd/steps_adds_test.go
+[behaviour-coverage] scanned apps/ayokoding-cli/tests/bdd/steps_core_test.go
+[behaviour-coverage] scanned apps/ayokoding-cli/tests/bdd/steps_level_unit_test.go
+[behaviour-coverage] scanned apps/ayokoding-cli/tests/bdd/steps_test.go
+[behaviour-coverage] scanned apps/ayokoding-cli/tests/bdd/suite_test.go
+[behaviour-coverage] scanned apps/ayokoding-web-be-e2e/tests/e2e/steps/common.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-web-be-e2e/tests/e2e/steps/content-rendering-http.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-web-be-e2e/tests/e2e/steps/discovery-documents.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-web-be-e2e/tests/e2e/steps/lifecycle.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-web-be-e2e/tests/e2e/steps/local-development-http.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-web-be-e2e/tests/e2e/steps/routes-and-navigation-http.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-web-be-e2e/tests/e2e/steps/search-http.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-web-be-e2e/tests/e2e/support/http.ts
+[behaviour-coverage] scanned apps/ayokoding-web-be-e2e/tests/e2e/support/servers.ts
+[behaviour-coverage] scanned apps/ayokoding-web-be-e2e/tests/e2e/support/state.ts
+[behaviour-coverage] scanned apps/ayokoding-web-be-e2e/tests/e2e/support/witness.ts
+[behaviour-coverage] scanned apps/ayokoding-web-fe-e2e/tests/e2e/browser-progress.spec.ts
+[behaviour-coverage] scanned apps/ayokoding-web-fe-e2e/tests/e2e/htmx-fragments.spec.ts
+[behaviour-coverage] scanned apps/ayokoding-web-fe-e2e/tests/e2e/playwright-owned-server.spec.ts
+[behaviour-coverage] scanned apps/ayokoding-web-fe-e2e/tests/e2e/steps/common.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-web-fe-e2e/tests/e2e/steps/content.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-web-fe-e2e/tests/e2e/steps/courses.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-web-fe-e2e/tests/e2e/steps/lifecycle.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-web-fe-e2e/tests/e2e/steps/localdev.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-web-fe-e2e/tests/e2e/steps/parity-tools.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-web-fe-e2e/tests/e2e/steps/progress.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-web-fe-e2e/tests/e2e/steps/routes.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-web-fe-e2e/tests/e2e/steps/search.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-web-fe-e2e/tests/e2e/steps/shell.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-web-fe-e2e/tests/e2e/steps/tools.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-web-fe-e2e/tests/e2e/support/hashes.ts
+[behaviour-coverage] scanned apps/ayokoding-web-fe-e2e/tests/e2e/support/http.ts
+[behaviour-coverage] scanned apps/ayokoding-web-fe-e2e/tests/e2e/support/network.ts
+[behaviour-coverage] scanned apps/ayokoding-web-fe-e2e/tests/e2e/support/servers.ts
+[behaviour-coverage] scanned apps/ayokoding-web-fe-e2e/tests/e2e/support/state.ts
+[behaviour-coverage] scanned apps/ayokoding-web-fe-e2e/tests/e2e/support/storage.ts
+[behaviour-coverage] scanned apps/ayokoding-web-fe-e2e/tests/e2e/support/witness.ts
+[behaviour-coverage] scanned apps/ayokoding-web/tests/bdd-integration/reg_common_test.go
+[behaviour-coverage] scanned apps/ayokoding-web/tests/bdd-integration/reg_content_test.go
+[behaviour-coverage] scanned apps/ayokoding-web/tests/bdd-integration/reg_courses_test.go
+[behaviour-coverage] scanned apps/ayokoding-web/tests/bdd-integration/reg_discovery_test.go
+[behaviour-coverage] scanned apps/ayokoding-web/tests/bdd-integration/reg_localdev_test.go
+[behaviour-coverage] scanned apps/ayokoding-web/tests/bdd-integration/reg_parity_tools_test.go
+[behaviour-coverage] scanned apps/ayokoding-web/tests/bdd-integration/reg_routes_test.go
+[behaviour-coverage] scanned apps/ayokoding-web/tests/bdd-integration/reg_search_test.go
+[behaviour-coverage] scanned apps/ayokoding-web/tests/bdd-integration/reg_shell_test.go
+[behaviour-coverage] scanned apps/ayokoding-web/tests/bdd-integration/reg_tools_test.go
+[behaviour-coverage] scanned apps/ayokoding-web/tests/bdd-integration/suite_test.go
+[behaviour-coverage] scanned apps/ayokoding-web/tests/bdd/reg_common_test.go
+[behaviour-coverage] scanned apps/ayokoding-web/tests/bdd/reg_content_test.go
+[behaviour-coverage] scanned apps/ayokoding-web/tests/bdd/reg_courses_test.go
+[behaviour-coverage] scanned apps/ayokoding-web/tests/bdd/reg_discovery_test.go
+[behaviour-coverage] scanned apps/ayokoding-web/tests/bdd/reg_localdev_test.go
+[behaviour-coverage] scanned apps/ayokoding-web/tests/bdd/reg_parity_tools_test.go
+[behaviour-coverage] scanned apps/ayokoding-web/tests/bdd/reg_progress_test.go
+[behaviour-coverage] scanned apps/ayokoding-web/tests/bdd/reg_routes_test.go
+[behaviour-coverage] scanned apps/ayokoding-web/tests/bdd/reg_search_test.go
+[behaviour-coverage] scanned apps/ayokoding-web/tests/bdd/reg_shell_test.go
+[behaviour-coverage] scanned apps/ayokoding-web/tests/bdd/reg_tools_test.go
+[behaviour-coverage] scanned apps/ayokoding-web/tests/bdd/suite_test.go
+[behaviour-coverage] scanned apps/ayokoding-www-be-e2e/tests/e2e/steps/common.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-be-e2e/tests/e2e/steps/content-api.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-be-e2e/tests/e2e/steps/health-check.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-be-e2e/tests/e2e/steps/helpers.ts
+[behaviour-coverage] scanned apps/ayokoding-www-be-e2e/tests/e2e/steps/i18n-api.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-be-e2e/tests/e2e/steps/learn-three-bucket.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-be-e2e/tests/e2e/steps/navigation-api.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-be-e2e/tests/e2e/steps/search-api.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/accessibility.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/ai-benchmark.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/backend-common.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/backend-content-api.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/backend-health-check.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/backend-helpers.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/backend-i18n-api.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/backend-navigation-api.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/backend-search-api.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/canonical-fallback.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/code-block-copy.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/common.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/content-namespace.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/content-rendering.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/cost-of-living-calculator.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/course-catalog.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/course-landing-header.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/course-landing-progress.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/course-paths-a11y.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/course-paths-adds.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/course-paths.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/course-rehome-redirects.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/i18n.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/ia-navigation-revamp.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/invalid-path-fallback.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/landing.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/learn-home.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/learn-reorg-redirects.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/learn-three-bucket.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/learning-progress-accessibility.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/lesson-navigation.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/locale-redirects.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/nav-chrome.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/navigation.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/path-assumes.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/path-roadmap.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/progress-store.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/resizable-sidebar.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/responsive.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/search.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/sidebar-course-categories.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/static-delivery.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/support/complete-course.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/steps/tools-index.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www-fe-e2e/tests/e2e/support/resilient-request.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/app/content-route-static.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/app/course-path-data-static-boundary.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/app/globals-css-color-primary.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/app/globals-focus-ring.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/app/root-layout-static.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/app/security-headers.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/be-steps/content-api.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/be-steps/corpus-outline-sweep-0.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/be-steps/corpus-outline-sweep-1.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/be-steps/corpus-outline-sweep-2.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/be-steps/corpus-outline-sweep-3.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/be-steps/course-metadata.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/be-steps/env-prefix.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/be-steps/health-check.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/be-steps/helpers/corpus-outline-sweep.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/be-steps/helpers/integration-caller.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/be-steps/helpers/next-config-delivery.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/be-steps/i18n-api.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/be-steps/index-generation.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/be-steps/navigation-api.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/be-steps/search-api.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/build-typecheck-config.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/build-workers.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/env-loader.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/fe-steps/course-rehome-redirects.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/fe-steps/ia-navigation-revamp.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/fe-steps/learn-three-bucket.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/fe-steps/skills-path-composition.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/fe-steps/static-delivery.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/features/ai-benchmark/core/data/shared-data.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/features/content/core/static-search-docs.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/features/content/course-content-hygiene.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/features/content/course-frontmatter.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/features/content/shell/course-corpus-check.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/features/content/shell/course-effort-scan.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/features/content/shell/index-generator.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/features/content/shell/reader.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/features/content/shell/repository-fs.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/features/content/shell/service-search-data.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/features/cost-of-living-calculator/core/data/shared-data.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/features/course-paths/content/path-copy.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/features/course-paths/manifests/careers/careers-ai-manifest.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/features/course-paths/manifests/careers/careers-se-manifests.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/features/course-paths/manifests/legacy-membership.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/features/course-paths/manifests/legacy-skills-order.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/features/course-paths/manifests/manifest-membership.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/features/course-paths/manifests/path-model-integrity.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/features/course-paths/manifests/skills-order.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/features/course-paths/manifests/skills/conventional-accounting-manifest.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/features/course-paths/manifests/skills/erp-manifests.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/features/course-paths/manifests/skills/sharia-accounting-manifest.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/features/course-paths/shell/course-catalog-dispatch.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/features/course-paths/shell/manifest-repository.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/features/course-paths/shell/paths-route-drift.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/features/learning-progress/corpus-tree.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/features/learning-progress/lesson-sequence.corpus.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/features/learning-progress/progress-schema.corpus.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/features/learning-progress/sequence-payload-size.corpus.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/redirects/course-rehome-prerequisites.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/integration/redirects/learn-home.integration.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/ai-benchmark-browser-setup.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/app/[locale]/(content)/[...slug]/page.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/app/[locale]/tools/ai-benchmark/benchmark-content.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/app/ai-benchmark-metadata.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/app/browse-page.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/app/content-layout-sidebar.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/app/entry-page.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/app/feed.xml/route.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/app/locale-home-page.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/app/locale-layout.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/app/locale-redirects.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/app/robots.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/app/sitemap.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/app/slug-page-metadata.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/app/slug-page-render.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/app/trpc-route.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/be-steps/benchmark-reference-generation.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/be-steps/content-api.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/be-steps/course-content-hygiene.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/be-steps/course-metadata.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/be-steps/health-check.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/be-steps/helpers/mock-content.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/be-steps/helpers/test-caller.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/be-steps/helpers/test-service.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/be-steps/i18n-api.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/be-steps/i18n.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/be-steps/index-generation.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/be-steps/navigation-api.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/be-steps/parser.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/be-steps/reader-fs.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/be-steps/reader.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/be-steps/schemas.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/be-steps/search-api.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/be-steps/service.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/be-steps/shortcodes.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/be-steps/utils.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/build-output.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/build-workers.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/env-loader.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/accessibility.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/ai-benchmark.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/arc-landing-one-role.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/architecture-cases-routes.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/canonical-fallback.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/category-landing-arc-chooser.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/category-landing-empty-state.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/code-block-copy.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/content-namespace-redirects.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/content-rendering.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/cost-of-living-calculator.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/course-catalog.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/course-landing-header.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/course-landing-progress.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/course-paths-accessibility.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/course-paths-breadcrumb.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/course-rehome-redirects.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/helpers/lesson-page.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/helpers/progress-screens.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/helpers/test-setup.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/i18n.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/ia-navigation-revamp.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/invalid-path-fallback.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/landing-hero.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/learn-home.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/learn-reorg-redirects.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/learn-three-bucket.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/learning-progress-accessibility.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/lesson-navigation.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/locale-redirects.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/navigation.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/omitted-course.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/outline-course-status.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/path-assumes.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/path-copy.steps.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/path-order-nav.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/path-phases.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/path-position-numbers.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/path-roadmap.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/paths-hub-category-grouping.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/prerequisite-display.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/progress-store.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/raw-css.d.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/responsive.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/search.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/sidebar-course-categories.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/skills-fixed-arc-statement.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/skills-path-landing-body.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/static-delivery.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/fe-steps/tools-index.steps.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/ai-benchmark/core/data/benchmarks.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/ai-benchmark/core/data/models.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/ai-benchmark/core/data/shared-data.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/ai-benchmark/core/filter.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/ai-benchmark/core/fixtures.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/ai-benchmark/core/price.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/ai-benchmark/core/score.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/ai-benchmark/core/substitute.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/ai-benchmark/core/tiers.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/ai-benchmark/core/url-state.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/ai-benchmark/shell/listed-rate.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/ai-benchmark/shell/methodology.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/ai-benchmark/shell/substitute-finder.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/ai-benchmark/shell/usability.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/app-shell/core/nav-links.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/app-shell/shell/footer.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/app-shell/shell/header.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/app-shell/shell/landing.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/app-shell/shell/mobile-nav-runtime-path-data.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/app-shell/shell/mobile-nav.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/app-shell/shell/routers.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/app-shell/shell/skip-link.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/app-shell/shell/trpc-provider.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/app-shell/shell/use-mobile-nav-open.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/content/core/content-link-rewrite.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/content/core/content-url.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/content/core/course-categories.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/content/core/course-effort.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/content/core/course-metadata.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/content/core/course-start.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/content/core/landing-sections.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/content/core/schemas.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/content/core/slug.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/content/shell/browse-index.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/content/shell/callout.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/content/shell/course-corpus-check.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/content/shell/course-effort-scan.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/content/shell/index-generator.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/content/shell/markdown-renderer.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/content/shell/memory-file-system.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/content/shell/mermaid.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/content/shell/repository-fs.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/content/shell/section-card.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/content/shell/service-getbyslug-cache.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/content/shell/service.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/cost-of-living-calculator/core/calc.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/cost-of-living-calculator/core/data/cities.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/cost-of-living-calculator/core/data/fx.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/cost-of-living-calculator/core/data/roles.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/cost-of-living-calculator/core/data/shared-data.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/cost-of-living-calculator/core/format.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/cost-of-living-calculator/core/geo-filter.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/cost-of-living-calculator/core/role-lookup.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/cost-of-living-calculator/core/url-state.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/cost-of-living-calculator/shell/calculator-breadcrumb.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/cost-of-living-calculator/shell/calculator-content.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/cost-of-living-calculator/shell/city-detail.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/cost-of-living-calculator/shell/controls.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/cost-of-living-calculator/shell/cost-of-living.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/cost-of-living-calculator/shell/foreigner-school-flag.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/cost-of-living-calculator/shell/geo-filters.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/cost-of-living-calculator/shell/min-role.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/cost-of-living-calculator/shell/next-config-security.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/cost-of-living-calculator/shell/savings.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/cost-of-living-calculator/shell/use-debounced-field.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/core/course-catalog.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/core/manifest-integrity.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/core/manifest.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/core/path-context.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/core/path-core.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/core/path-hue.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/core/path-nav.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/core/path-phases.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/core/prerequisites.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/core/schemas.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/core/skills-restructure-allowlist.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/manifest-fixture.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/manifests/skills/skills-path-composition.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/active-course-scroll.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/arc-landing.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/assumed-courses.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/careers-arc-sections.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/category-landing.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/course-card-status.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/course-catalog.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/course-header-data.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/course-header.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/course-library.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/course-page-path-content.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/course-path-nav.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/empty-path-list-state.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/learn-path-card.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/manifest-repository.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/no-path-regression.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/outline-badge.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/path-banner.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/path-card-progress.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/path-card.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/path-course-links.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/path-landing.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/path-position-number.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/path-rail.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/path-roadmap.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/paths-route.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/phase-group.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/phase-progress.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/prerequisite-list.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/ramp-milestone-strip.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/roadmap-course-card.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/roadmap-phase.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/roadmap-progress-card.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/route-data-shape.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/route-path-context.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/route-path-data.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/route-paths-hub.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/sidebar-host.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/syllabus-preview.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/course-paths/shell/use-runtime-course-path-data.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/i18n/core/fill.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/i18n/core/html-lang.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/i18n/core/translations.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/i18n/shell/language-switcher-component.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/i18n/shell/language-switcher.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/i18n/shell/tools-page.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/learning-progress/context-bar.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/learning-progress/continue-learning-card.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/learning-progress/course-location.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/learning-progress/course-progress-action.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/learning-progress/course-progress-summary.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/learning-progress/course-status-label.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/learning-progress/learn-home.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/learning-progress/lesson-context-provider.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/learning-progress/lesson-fixtures.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/learning-progress/lesson-nav.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/learning-progress/lesson-path-context.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/learning-progress/lesson-sequence.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/learning-progress/lesson-sequences.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/learning-progress/next-step.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/learning-progress/progress-derivations.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/learning-progress/progress-meter.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/learning-progress/progress-placeholder.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/learning-progress/progress-schema.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/learning-progress/progress-state.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/learning-progress/progress-storage.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/learning-progress/progress-translations.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/learning-progress/reset-progress-control.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/learning-progress/storage-notice.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/learning-progress/use-learning-progress.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/navigation/core/schemas.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/navigation/shell/breadcrumb.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/navigation/shell/course-category-groups-null.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/navigation/shell/course-category-groups.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/navigation/shell/prev-next.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/navigation/shell/resizable-sidebar.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/navigation/shell/sidebar-scroll-containers.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/navigation/shell/sidebar-tree.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/navigation/shell/sidebar.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/navigation/shell/toc-observer.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/search/shell/generate-search-data.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/search/shell/search-dialog.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/features/search/shell/search-provider.test.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/redirects/content-namespace.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/redirects/course-rehome.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/redirects/learn-home.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/redirects/learn-three-bucket.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/render-course-path-page.tsx
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/scripts/generate-benchmark-reference.unit.test.ts
+[behaviour-coverage] scanned apps/ayokoding-www/tests/unit/scripts/generate-indexes.unit.test.ts
+[behaviour-coverage] scanned apps/crane-cli/tests/integration/Steps/CraneCliE2eSteps.fs
+[behaviour-coverage] scanned apps/crane-cli/tests/integration/Suite.fs
+[behaviour-coverage] scanned apps/crane-cli/tests/unit/Steps/BddState.fs
+[behaviour-coverage] scanned apps/crane-cli/tests/unit/Steps/CheckAllSteps.fs
+[behaviour-coverage] scanned apps/crane-cli/tests/unit/Steps/CommandSteps.fs
+[behaviour-coverage] scanned apps/crane-cli/tests/unit/Steps/FigureSteps.fs
+[behaviour-coverage] scanned apps/crane-cli/tests/unit/Steps/HeadingSteps.fs
+[behaviour-coverage] scanned apps/crane-cli/tests/unit/Steps/InMemoryBoundaries.fs
+[behaviour-coverage] scanned apps/crane-cli/tests/unit/Steps/MermaidSteps.fs
+[behaviour-coverage] scanned apps/crane-cli/tests/unit/Steps/NestingSteps.fs
+[behaviour-coverage] scanned apps/crane-cli/tests/unit/Steps/OcrSteps.fs
+[behaviour-coverage] scanned apps/crane-cli/tests/unit/Steps/PdfSteps.fs
+[behaviour-coverage] scanned apps/crane-cli/tests/unit/Steps/ReportSteps.fs
+[behaviour-coverage] scanned apps/crane-cli/tests/unit/Steps/SkiplistSteps.fs
+[behaviour-coverage] scanned apps/crane-cli/tests/unit/Steps/TableSteps.fs
+[behaviour-coverage] scanned apps/crane-cli/tests/unit/Steps/TextSteps.fs
+[behaviour-coverage] scanned apps/crane-cli/tests/unit/Steps/VersionSteps.fs
+[behaviour-coverage] scanned apps/crane-cli/tests/unit/Suite.fs
+[behaviour-coverage] scanned apps/crane-cli/tests/unit/Tests/FigureCheckerTests.fs
+[behaviour-coverage] scanned apps/crane-cli/tests/unit/Tests/HeadingCheckerTests.fs
+[behaviour-coverage] scanned apps/crane-cli/tests/unit/Tests/MermaidValidatorTests.fs
+[behaviour-coverage] scanned apps/crane-cli/tests/unit/Tests/NestingCheckerTests.fs
+[behaviour-coverage] scanned apps/crane-cli/tests/unit/Tests/OcrAssessorTests.fs
+[behaviour-coverage] scanned apps/crane-cli/tests/unit/Tests/TableCheckerTests.fs
+[behaviour-coverage] scanned apps/crane-cli/tests/unit/Tests/TextCheckerTests.fs
+[behaviour-coverage] scanned apps/ferret-cli-e2e/tests/conftest.py
+[behaviour-coverage] scanned apps/ferret-cli-e2e/tests/steps/test_commandcode_steps.py
+[behaviour-coverage] scanned apps/ferret-cli-e2e/tests/steps/test_fail_open_capabilities_and_platforms_steps.py
+[behaviour-coverage] scanned apps/ferret-cli-e2e/tests/steps/test_initialization_and_concurrency_steps.py
+[behaviour-coverage] scanned apps/ferret-cli-e2e/tests/steps/test_interpreter_guard_steps.py
+[behaviour-coverage] scanned apps/ferret-cli-e2e/tests/steps/test_local_query_and_export_steps.py
+[behaviour-coverage] scanned apps/ferret-cli-e2e/tests/steps/test_metadata_envelope_steps.py
+[behaviour-coverage] scanned apps/ferret-cli-e2e/tests/steps/test_retention_and_space_steps.py
+[behaviour-coverage] scanned apps/ferret-cli-e2e/tests/steps/test_usage_and_outcomes_steps.py
+[behaviour-coverage] scanned apps/ferret-cli-e2e/tests/test_adapter_latency.py
+[behaviour-coverage] scanned apps/ferret-cli-e2e/tests/test_harness_adapters.py
+[behaviour-coverage] scanned apps/ferret-cli-e2e/tests/test_package_smoke.py
+[behaviour-coverage] scanned apps/ferret-cli-e2e/tests/test_query_export.py
+[behaviour-coverage] scanned apps/ferret-cli-e2e/tests/test_standalone.py
+[behaviour-coverage] scanned apps/ferret-cli-e2e/tests/test_storage_benchmark.py
+[behaviour-coverage] scanned apps/ferret-cli-e2e/tests/test_suite_isolation.py
+[behaviour-coverage] scanned apps/ferret-cli-e2e/tests/test_user_install.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/conftest.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/steps/test_commandcode_steps.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/steps/test_fail_open_capabilities_and_platforms_steps.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/steps/test_initialization_and_concurrency_steps.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/steps/test_interpreter_guard_steps.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/steps/test_local_query_and_export_steps.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/steps/test_metadata_envelope_steps.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/steps/test_retention_and_space_steps.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/steps/test_usage_and_outcomes_steps.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/test_analytics.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/test_capability_repository.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/test_capture_hook.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/test_capture_wrapper.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/test_cli_contract.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/test_data_home.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/test_harness_scenarios.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/test_hook_registrations.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/test_initialization.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/test_install.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/test_interpreter_guard.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/test_manual_evidence.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/test_manual_retention_fixture.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/test_package_build.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/test_privacy.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/test_queries.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/test_query_paging_window_and_filters.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/test_retention.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/test_space.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/test_sqlite_repository.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/test_sqlite_transactions.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/test_suite_isolation.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/test_system_adapters.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/test_system_runtime.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/integration/test_workspace_roots.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/conftest.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/steps/test_commandcode_steps.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/steps/test_initialization_and_concurrency_steps.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/steps/test_interpreter_guard_steps.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/steps/test_local_query_and_export_steps.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/steps/test_metadata_envelope_steps.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/steps/test_retention_and_space_steps.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/steps/test_usage_and_outcomes_steps.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_analytics.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_bootstrap.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_canonical.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_capabilities.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_capture.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_capture_hook.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_cli_contract.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_commands.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_data_home_locality.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_event_contract.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_event_identity.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_ferret_error.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_ferret_result.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_fields.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_harness_scenarios.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_hook_failures.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_hook_mappers.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_identifier_derivation.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_initialization.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_install.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_install_domain.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_maintenance.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_maintenance_command.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_network_denial.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_privacy.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_queries.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_query_paging_window_and_filters.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_release_contract.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_scan_failure.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_space.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_status.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_store.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_timestamps.py
+[behaviour-coverage] scanned apps/ferret-cli/tests/unit/test_wrapper_timers.py
+[behaviour-coverage] scanned apps/organiclever-app-web-e2e/steps/_app-shell.ts
+[behaviour-coverage] scanned apps/organiclever-app-web-e2e/steps/_journal-db.ts
+[behaviour-coverage] scanned apps/organiclever-app-web-e2e/steps/_routine.ts
+[behaviour-coverage] scanned apps/organiclever-app-web-e2e/steps/app-shell.steps.ts
+[behaviour-coverage] scanned apps/organiclever-app-web-e2e/steps/disabled-routes.steps.ts
+[behaviour-coverage] scanned apps/organiclever-app-web-e2e/steps/entry-loggers.steps.ts
+[behaviour-coverage] scanned apps/organiclever-app-web-e2e/steps/history-screen.steps.ts
+[behaviour-coverage] scanned apps/organiclever-app-web-e2e/steps/home-screen.steps.ts
+[behaviour-coverage] scanned apps/organiclever-app-web-e2e/steps/progress-screen.steps.ts
+[behaviour-coverage] scanned apps/organiclever-app-web-e2e/steps/routine-management.steps.ts
+[behaviour-coverage] scanned apps/organiclever-app-web-e2e/steps/routing.steps.ts
+[behaviour-coverage] scanned apps/organiclever-app-web-e2e/steps/settings.steps.ts
+[behaviour-coverage] scanned apps/organiclever-app-web-e2e/steps/system-status-be.steps.ts
+[behaviour-coverage] scanned apps/organiclever-app-web-e2e/steps/workout-session.steps.ts
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/integration/landing-removed.integration.test.ts
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/integration/support/node-source-tree.ts
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/integration/system-status-be.integration.test.ts
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/integration/web-ui-consumed.integration.test.ts
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/app/app/layout.unit.test.tsx
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/app/app/routines/edit/page.unit.test.tsx
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/app/app/workout/finish/page.unit.test.tsx
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/app/app/workout/page.unit.test.tsx
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/app/metadata.unit.test.ts
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/app/page.unit.test.tsx
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/app/system/status/be/metadata.unit.test.ts
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/contexts/app-shell/presentation/app-machine.unit.test.ts
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/contexts/app-shell/presentation/app-runtime-context.unit.test.tsx
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/contexts/app-shell/presentation/components/loggers/custom-entry-logger.unit.test.tsx
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/contexts/app-shell/presentation/components/loggers/focus-logger.unit.test.tsx
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/contexts/app-shell/presentation/components/loggers/learning-logger.unit.test.tsx
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/contexts/app-shell/presentation/components/loggers/logger-shell.unit.test.tsx
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/contexts/app-shell/presentation/components/loggers/meal-logger.unit.test.tsx
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/contexts/app-shell/presentation/components/loggers/reading-logger.unit.test.tsx
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/contexts/app-shell/presentation/components/side-nav.unit.test.tsx
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/contexts/app-shell/presentation/components/tab-bar.unit.test.tsx
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/contexts/app-shell/presentation/translations.unit.test.ts
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/contexts/env-loader/infrastructure/env-loader.unit.test.ts
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/contexts/journal/domain/schema.unit.test.ts
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/contexts/journal/domain/typed-payloads.unit.test.ts
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/contexts/journal/infrastructure/gen-migrations-filename.unit.test.ts
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/contexts/journal/infrastructure/journal-store-batch.unit.test.ts
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/contexts/journal/infrastructure/journal-store.unit.test.ts
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/contexts/journal/infrastructure/migrations/2026_04_28T14_05_30__create_journal_entries_table.unit.test.ts
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/contexts/journal/infrastructure/migrations/2026_05_01T03_33_00__add_typed_payload_columns.unit.test.ts
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/contexts/journal/infrastructure/run-migrations.unit.test.ts
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/contexts/journal/infrastructure/runtime.unit.test.ts
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/contexts/journal/presentation/components/add-entry-sheet.unit.test.tsx
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/contexts/routine/infrastructure/routine-store.unit.test.ts
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/contexts/routine/presentation/use-routines.unit.test.tsx
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/contexts/settings/infrastructure/settings-store.unit.test.ts
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/contexts/settings/presentation/use-settings.unit.test.tsx
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/contexts/stats/application/stats.unit.test.ts
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/contexts/stats/domain/types.unit.test.ts
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/contexts/workout-session/application/workout-machine.unit.test.ts
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/e2e-fixture-contracts.unit.test.ts
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/landing-removal/landing-removed.unit.test.ts
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/shared/utils/fmt.unit.test.ts
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/shared/utils/format-relative-time.unit.test.ts
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/steps/app-shell/app-shell.steps.tsx
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/steps/app-shell/entry-loggers.steps.tsx
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/steps/health/system-status-be.steps.tsx
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/steps/journal/home-screen.steps.tsx
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/steps/routine/routine-management.steps.tsx
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/steps/routing/app-routes.steps.tsx
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/steps/routing/disabled-routes.steps.tsx
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/steps/settings/dark-mode.steps.tsx
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/steps/settings/language.steps.tsx
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/steps/settings/settings-screen.steps.tsx
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/steps/stats/history-screen.steps.tsx
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/steps/stats/progress-screen.steps.tsx
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/steps/workout-session/workout-session.steps.tsx
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/support/doubles.ts
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/support/source-tree.ts
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/support/test-utils.tsx
+[behaviour-coverage] scanned apps/organiclever-app-web/tests/unit/web-ui-consumption/web-ui-consumed.unit.test.ts
+[behaviour-coverage] scanned apps/organiclever-be-e2e/steps/backend-process.ts
+[behaviour-coverage] scanned apps/organiclever-be-e2e/steps/common.steps.ts
+[behaviour-coverage] scanned apps/organiclever-be-e2e/steps/database.steps.ts
+[behaviour-coverage] scanned apps/organiclever-be-e2e/steps/health.steps.ts
+[behaviour-coverage] scanned apps/organiclever-be-e2e/steps/journal.steps.ts
+[behaviour-coverage] scanned apps/organiclever-be-e2e/steps/messaging.steps.ts
+[behaviour-coverage] scanned apps/organiclever-be-e2e/steps/nats-config.steps.ts
+[behaviour-coverage] scanned apps/organiclever-be/tests/integration/Steps/NatsConfigSteps.fs
+[behaviour-coverage] scanned apps/organiclever-be/tests/integration/TestCollections.fs
+[behaviour-coverage] scanned apps/organiclever-be/tests/integration/Tests/EnvTierLoaderIntegrationTests.fs
+[behaviour-coverage] scanned apps/organiclever-be/tests/integration/Tests/NatsConfigIntegrationTests.fs
+[behaviour-coverage] scanned apps/organiclever-be/tests/unit/Steps/BddState.fs
+[behaviour-coverage] scanned apps/organiclever-be/tests/unit/Steps/DbMigrationSteps.fs
+[behaviour-coverage] scanned apps/organiclever-be/tests/unit/Steps/HealthSteps.fs
+[behaviour-coverage] scanned apps/organiclever-be/tests/unit/Steps/JournalSteps.fs
+[behaviour-coverage] scanned apps/organiclever-be/tests/unit/Steps/LiveMessagingSteps.fs
+[behaviour-coverage] scanned apps/organiclever-be/tests/unit/Steps/MessagingSteps.fs
+[behaviour-coverage] scanned apps/organiclever-be/tests/unit/Tests/AppDbContextTests.fs
+[behaviour-coverage] scanned apps/organiclever-be/tests/unit/Tests/DatabaseTests.fs
+[behaviour-coverage] scanned apps/organiclever-be/tests/unit/Tests/EnvTierLoaderTests.fs
+[behaviour-coverage] scanned apps/organiclever-be/tests/unit/Tests/HealthContextTests.fs
+[behaviour-coverage] scanned apps/organiclever-be/tests/unit/Tests/HealthHandlerTests.fs
+[behaviour-coverage] scanned apps/organiclever-be/tests/unit/Tests/JournalApiTests.fs
+[behaviour-coverage] scanned apps/organiclever-be/tests/unit/Tests/JournalDomainTests.fs
+[behaviour-coverage] scanned apps/organiclever-be/tests/unit/Tests/MessagingTests.fs
+[behaviour-coverage] scanned apps/organiclever-be/tests/unit/Tests/NatsClientTests.fs
+[behaviour-coverage] scanned apps/organiclever-be/tests/unit/Tests/WebAppTests.fs
+[behaviour-coverage] scanned apps/organiclever-www-fe-e2e/src/steps/accessibility.steps.ts
+[behaviour-coverage] scanned apps/organiclever-www-fe-e2e/src/steps/home.steps.ts
+[behaviour-coverage] scanned apps/organiclever-www/tests/unit/app/layout.unit.test.tsx
+[behaviour-coverage] scanned apps/organiclever-www/tests/unit/app/metadata.unit.test.ts
+[behaviour-coverage] scanned apps/organiclever-www/tests/unit/app/page.unit.test.tsx
+[behaviour-coverage] scanned apps/organiclever-www/tests/unit/env-loader-wrapper.unit.test.ts
+[behaviour-coverage] scanned apps/organiclever-www/tests/unit/env-loader.unit.test.ts
+[behaviour-coverage] scanned apps/organiclever-www/tests/unit/env.unit.test.ts
+[behaviour-coverage] scanned apps/organiclever-www/tests/unit/landing-page.unit.test.tsx
+[behaviour-coverage] scanned apps/organiclever-www/tests/unit/steps/accessibility/accessibility.steps.tsx
+[behaviour-coverage] scanned apps/organiclever-www/tests/unit/steps/home/home.steps.tsx
+[behaviour-coverage] scanned apps/ose-app-web-e2e/steps/smoke.steps.ts
+[behaviour-coverage] scanned apps/ose-app-web/tests/unit/app/layout.unit.test.tsx
+[behaviour-coverage] scanned apps/ose-app-web/tests/unit/app/metadata.unit.test.ts
+[behaviour-coverage] scanned apps/ose-app-web/tests/unit/app/page.test.tsx
+[behaviour-coverage] scanned apps/ose-app-web/tests/unit/env-loader.unit.test.ts
+[behaviour-coverage] scanned apps/ose-app-web/tests/unit/env.unit.test.ts
+[behaviour-coverage] scanned apps/ose-app-web/tests/unit/shared/utils/fmt.unit.test.ts
+[behaviour-coverage] scanned apps/ose-app-web/tests/unit/shared/utils/format-relative-time.unit.test.ts
+[behaviour-coverage] scanned apps/ose-app-web/tests/unit/steps/smoke.steps.tsx
+[behaviour-coverage] scanned apps/ose-app-web/tests/unit/support/test-utils.tsx
+[behaviour-coverage] scanned apps/ose-be-e2e/steps/backend-process.ts
+[behaviour-coverage] scanned apps/ose-be-e2e/steps/database.steps.ts
+[behaviour-coverage] scanned apps/ose-be-e2e/steps/health.steps.ts
+[behaviour-coverage] scanned apps/ose-be-e2e/steps/messaging.steps.ts
+[behaviour-coverage] scanned apps/ose-be-e2e/steps/nats-config.steps.ts
+[behaviour-coverage] scanned apps/ose-be/tests/integration/Steps/NatsConfigSteps.fs
+[behaviour-coverage] scanned apps/ose-be/tests/integration/Tests/EnvTierIntegrationTests.fs
+[behaviour-coverage] scanned apps/ose-be/tests/integration/Tests/NatsConfigIntegrationTests.fs
+[behaviour-coverage] scanned apps/ose-be/tests/integration/Tests/OpenRouterConfigIntegrationTests.fs
+[behaviour-coverage] scanned apps/ose-be/tests/unit/Steps/BddState.fs
+[behaviour-coverage] scanned apps/ose-be/tests/unit/Steps/DbMigrationSteps.fs
+[behaviour-coverage] scanned apps/ose-be/tests/unit/Steps/HealthSteps.fs
+[behaviour-coverage] scanned apps/ose-be/tests/unit/Steps/LiveMessagingSteps.fs
+[behaviour-coverage] scanned apps/ose-be/tests/unit/Steps/NatsConfigSteps.fs
+[behaviour-coverage] scanned apps/ose-be/tests/unit/TestCollections.fs
+[behaviour-coverage] scanned apps/ose-be/tests/unit/Tests/AiOrchestrationTests.fs
+[behaviour-coverage] scanned apps/ose-be/tests/unit/Tests/AppDbContextTests.fs
+[behaviour-coverage] scanned apps/ose-be/tests/unit/Tests/DatabaseTests.fs
+[behaviour-coverage] scanned apps/ose-be/tests/unit/Tests/EnvTierTests.fs
+[behaviour-coverage] scanned apps/ose-be/tests/unit/Tests/GapAnalysisTests.fs
+[behaviour-coverage] scanned apps/ose-be/tests/unit/Tests/HealthHandlerTests.fs
+[behaviour-coverage] scanned apps/ose-be/tests/unit/Tests/InternalPolicyTests.fs
+[behaviour-coverage] scanned apps/ose-be/tests/unit/Tests/MessagingTests.fs
+[behaviour-coverage] scanned apps/ose-be/tests/unit/Tests/NatsClientTests.fs
+[behaviour-coverage] scanned apps/ose-be/tests/unit/Tests/OpenRouterClientTests.fs
+[behaviour-coverage] scanned apps/ose-be/tests/unit/Tests/RegulatorySourceTests.fs
+[behaviour-coverage] scanned apps/ose-be/tests/unit/Tests/WebAppTests.fs
+[behaviour-coverage] scanned apps/ose-www-be-e2e/src/steps/common.steps.ts
+[behaviour-coverage] scanned apps/ose-www-be-e2e/src/steps/content-api.steps.ts
+[behaviour-coverage] scanned apps/ose-www-be-e2e/src/steps/content-pages.steps.ts
+[behaviour-coverage] scanned apps/ose-www-be-e2e/src/steps/health-check.steps.ts
+[behaviour-coverage] scanned apps/ose-www-be-e2e/src/steps/helpers.ts
+[behaviour-coverage] scanned apps/ose-www-be-e2e/src/steps/rss-feed.steps.ts
+[behaviour-coverage] scanned apps/ose-www-be-e2e/src/steps/search-api.steps.ts
+[behaviour-coverage] scanned apps/ose-www-be-e2e/src/steps/seo.steps.ts
+[behaviour-coverage] scanned apps/ose-www-fe-e2e/src/steps/accessibility.steps.ts
+[behaviour-coverage] scanned apps/ose-www-fe-e2e/src/steps/backend-fixtures.steps.ts
+[behaviour-coverage] scanned apps/ose-www-fe-e2e/src/steps/backend-helpers.ts
+[behaviour-coverage] scanned apps/ose-www-fe-e2e/src/steps/code-block-copy.steps.ts
+[behaviour-coverage] scanned apps/ose-www-fe-e2e/src/steps/common.steps.ts
+[behaviour-coverage] scanned apps/ose-www-fe-e2e/src/steps/content-pages.steps.ts
+[behaviour-coverage] scanned apps/ose-www-fe-e2e/src/steps/content-retrieval.steps.ts
+[behaviour-coverage] scanned apps/ose-www-fe-e2e/src/steps/health.steps.ts
+[behaviour-coverage] scanned apps/ose-www-fe-e2e/src/steps/landing-page.steps.ts
+[behaviour-coverage] scanned apps/ose-www-fe-e2e/src/steps/navigation.steps.ts
+[behaviour-coverage] scanned apps/ose-www-fe-e2e/src/steps/responsive.steps.ts
+[behaviour-coverage] scanned apps/ose-www-fe-e2e/src/steps/rss-feed.steps.ts
+[behaviour-coverage] scanned apps/ose-www-fe-e2e/src/steps/search.steps.ts
+[behaviour-coverage] scanned apps/ose-www-fe-e2e/src/steps/seo.steps.ts
+[behaviour-coverage] scanned apps/ose-www-fe-e2e/src/steps/theme.steps.ts
+[behaviour-coverage] scanned apps/ose-www/tests/integration/content-retrieval.steps.ts
+[behaviour-coverage] scanned apps/ose-www/tests/integration/rss-feed.steps.ts
+[behaviour-coverage] scanned apps/ose-www/tests/integration/search.steps.ts
+[behaviour-coverage] scanned apps/ose-www/tests/integration/seo.steps.ts
+[behaviour-coverage] scanned apps/ose-www/tests/unit/app-pages.unit.test.tsx
+[behaviour-coverage] scanned apps/ose-www/tests/unit/app-routes.unit.test.ts
+[behaviour-coverage] scanned apps/ose-www/tests/unit/app-shell.unit.test.tsx
+[behaviour-coverage] scanned apps/ose-www/tests/unit/be-steps/content-retrieval.steps.ts
+[behaviour-coverage] scanned apps/ose-www/tests/unit/be-steps/coverage-extras.unit.test.ts
+[behaviour-coverage] scanned apps/ose-www/tests/unit/be-steps/env-prefix.unit.test.ts
+[behaviour-coverage] scanned apps/ose-www/tests/unit/be-steps/health.steps.ts
+[behaviour-coverage] scanned apps/ose-www/tests/unit/be-steps/helpers/mock-content.ts
+[behaviour-coverage] scanned apps/ose-www/tests/unit/be-steps/helpers/test-caller.ts
+[behaviour-coverage] scanned apps/ose-www/tests/unit/be-steps/helpers/test-service.ts
+[behaviour-coverage] scanned apps/ose-www/tests/unit/be-steps/rss-feed.steps.ts
+[behaviour-coverage] scanned apps/ose-www/tests/unit/be-steps/search.steps.ts
+[behaviour-coverage] scanned apps/ose-www/tests/unit/be-steps/seo.steps.ts
+[behaviour-coverage] scanned apps/ose-www/tests/unit/content-fs-adapter.unit.test.ts
+[behaviour-coverage] scanned apps/ose-www/tests/unit/content-reader.unit.test.ts
+[behaviour-coverage] scanned apps/ose-www/tests/unit/content-repository-fs.unit.test.ts
+[behaviour-coverage] scanned apps/ose-www/tests/unit/env-loader.unit.test.ts
+[behaviour-coverage] scanned apps/ose-www/tests/unit/env.unit.test.ts
+[behaviour-coverage] scanned apps/ose-www/tests/unit/fe-steps/accessibility.steps.tsx
+[behaviour-coverage] scanned apps/ose-www/tests/unit/fe-steps/code-block-copy.steps.tsx
+[behaviour-coverage] scanned apps/ose-www/tests/unit/fe-steps/helpers/test-setup.ts
+[behaviour-coverage] scanned apps/ose-www/tests/unit/fe-steps/landing-page.steps.tsx
+[behaviour-coverage] scanned apps/ose-www/tests/unit/fe-steps/navigation.steps.tsx
+[behaviour-coverage] scanned apps/ose-www/tests/unit/fe-steps/responsive.steps.tsx
+[behaviour-coverage] scanned apps/ose-www/tests/unit/fe-steps/theme.steps.tsx
+[behaviour-coverage] scanned apps/ose-www/tests/unit/health-status-page.unit.test.tsx
+[behaviour-coverage] scanned apps/ose-www/tests/unit/helpers/memory-content-fs.ts
+[behaviour-coverage] scanned apps/ose-www/tests/unit/landing-content-shell.unit.test.tsx
+[behaviour-coverage] scanned apps/ose-www/tests/unit/markdown-search.unit.test.tsx
+[behaviour-coverage] scanned apps/ose-www/tests/unit/next-config.unit.test.ts
+[behaviour-coverage] scanned apps/ose-www/tests/unit/search-service.unit.test.ts
+[behaviour-coverage] scanned apps/ose-www/tests/unit/seo-feed.unit.test.ts
+[behaviour-coverage] scanned apps/ose-www/tests/unit/site-metadata.unit.test.ts
+[behaviour-coverage] scanned apps/ose-www/tests/unit/trpc-provider.unit.test.tsx
+[behaviour-coverage] scanned apps/ose-www/tests/unit/trpc-wiring.unit.test.ts
+[behaviour-coverage] scanned libs/ayokoding-data/tests/integration/data.test.ts
+[behaviour-coverage] scanned libs/ayokoding-data/tests/integration/dataset-files.steps.test.ts
+[behaviour-coverage] scanned libs/ayokoding-data/tests/unit/dataset-checks.unit.test.ts
+[behaviour-coverage] scanned libs/ayokoding-data/tests/unit/dataset-fixtures.ts
+[behaviour-coverage] scanned libs/fsharp-crane-core/tests/integration/Tests/PdfExtractionCacheIntegrationTests.fs
+[behaviour-coverage] scanned libs/fsharp-crane-core/tests/integration/Tests/ReportManagerIntegrationTests.fs
+[behaviour-coverage] scanned libs/fsharp-crane-core/tests/integration/Tests/SkiplistManagerIntegrationTests.fs
+[behaviour-coverage] scanned libs/fsharp-crane-core/tests/unit/Tests/ContractTests.fs
+[behaviour-coverage] scanned libs/fsharp-crane-core/tests/unit/Tests/ConvertTests.fs
+[behaviour-coverage] scanned libs/fsharp-crane-core/tests/unit/Tests/DomainTests.fs
+[behaviour-coverage] scanned libs/fsharp-crane-core/tests/unit/Tests/FigureCheckerTests.fs
+[behaviour-coverage] scanned libs/fsharp-crane-core/tests/unit/Tests/HeadingCheckerTests.fs
+[behaviour-coverage] scanned libs/fsharp-crane-core/tests/unit/Tests/MermaidValidatorTests.fs
+[behaviour-coverage] scanned libs/fsharp-crane-core/tests/unit/Tests/NestingCheckerTests.fs
+[behaviour-coverage] scanned libs/fsharp-crane-core/tests/unit/Tests/OcrAssessorTests.fs
+[behaviour-coverage] scanned libs/fsharp-crane-core/tests/unit/Tests/PdfToMarkdownRoutingFeatureRunner.fs
+[behaviour-coverage] scanned libs/fsharp-crane-core/tests/unit/Tests/PdfToMarkdownRoutingSteps.fs
+[behaviour-coverage] scanned libs/fsharp-crane-core/tests/unit/Tests/TableCheckerTests.fs
+[behaviour-coverage] scanned libs/fsharp-crane-core/tests/unit/Tests/TextCheckerTests.fs
+[behaviour-coverage] scanned libs/fsharp-env-loader/tests/integration/Behaviour/EnvTierIntegrationBehaviourDriver.fs
+[behaviour-coverage] scanned libs/fsharp-env-loader/tests/integration/Tests/EnvTierIntegrationTests.fs
+[behaviour-coverage] scanned libs/fsharp-env-loader/tests/integration/Tests/PortResolverIntegrationTests.fs
+[behaviour-coverage] scanned libs/fsharp-env-loader/tests/unit/Behaviour/FsharpEnvLoaderBehaviourDriver.fs
+[behaviour-coverage] scanned libs/fsharp-env-loader/tests/unit/Behaviour/SpecLoader.fs
+[behaviour-coverage] scanned libs/fsharp-env-loader/tests/unit/Tests/EnvTierTests.fs
+[behaviour-coverage] scanned libs/fsharp-env-loader/tests/unit/Tests/PortResolverTests.fs
+[behaviour-coverage] scanned libs/ts-env-loader/tests/e2e/port-resolver.e2e.test.ts
+[behaviour-coverage] scanned libs/ts-env-loader/tests/integration/env-loader.integration.test.ts
+[behaviour-coverage] scanned libs/ts-env-loader/tests/unit/env-loader.unit.test.ts
+[behaviour-coverage] scanned libs/ts-env-loader/tests/unit/node-tier-env-port.unit.test.ts
+[behaviour-coverage] scanned libs/ts-env-loader/tests/unit/port-resolver.unit.test.ts
+[behaviour-coverage] scanned libs/web-ui-token/tests/integration/tokens-on-disk.integration.test.ts
+[behaviour-coverage] scanned libs/web-ui-token/tests/unit/stylesheet-fixtures.ts
+[behaviour-coverage] scanned libs/web-ui-token/tests/unit/tokens-export.steps.ts
+[behaviour-coverage] scanned libs/web-ui/tests/e2e/components.visual.spec.ts
+[behaviour-coverage] scanned libs/web-ui/tests/e2e/playwright.config.ts
+[behaviour-coverage] scanned libs/web-ui/tests/e2e/steps/components-visual.steps.ts
+[behaviour-coverage] scanned libs/web-ui/tests/e2e/steps/web-ui-components.steps.ts
+[behaviour-coverage] scanned libs/web-ui/tests/e2e/steps/web-ui.steps.ts
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/alert/alert.steps.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/alert/alert.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/app-header/app-header.steps.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/app-header/app-header.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/badge/badge.steps.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/badge/badge.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/button/button.steps.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/button/button.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/card/card.steps.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/card/card.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/dialog/dialog.steps.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/dialog/dialog.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/highlight-text/highlight-text.scenario.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/highlight-text/highlight-text.unit.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/hue-picker/hue-picker.steps.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/hue-picker/hue-picker.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/icon/icon.steps.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/icon/icon.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/info-tip/info-tip.steps.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/info-tip/info-tip.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/input/input.steps.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/input/input.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/label/label.steps.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/label/label.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/progress-ring/progress-ring.steps.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/progress-ring/progress-ring.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/scroll-to-top/scroll-to-top.scenario.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/scroll-to-top/scroll-to-top.unit.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/search-component/search-component.scenario.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/search-component/search-component.unit.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/sheet/sheet.steps.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/sheet/sheet.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/side-nav/side-nav.steps.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/side-nav/side-nav.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/stat-card/stat-card.steps.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/stat-card/stat-card.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/tab-bar/tab-bar.steps.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/tab-bar/tab-bar.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/textarea/textarea.steps.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/textarea/textarea.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/theme-toggle/theme-toggle.scenario.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/theme-toggle/theme-toggle.unit.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/toggle/toggle.steps.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/components/toggle/toggle.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/index.test.ts
+[behaviour-coverage] scanned libs/web-ui/tests/unit/primitives/badge/badge.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/primitives/button/button.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/primitives/card/card.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/primitives/code-block/code-block.steps.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/primitives/code-block/code-block.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/primitives/code-block/copy-button.steps.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/primitives/code-block/copy-button.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/primitives/code-block/use-copy-to-clipboard.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/primitives/command/command.scenario.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/primitives/command/command.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/primitives/dialog/dialog.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/primitives/dropdown-menu/dropdown-menu.scenario.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/primitives/dropdown-menu/dropdown-menu.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/primitives/index.test.ts
+[behaviour-coverage] scanned libs/web-ui/tests/unit/primitives/resizable-panel/resizable-panel.steps.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/primitives/resizable-panel/resizable-panel.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/primitives/resizable-panel/use-resizable-width.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/primitives/resizable-panel/width-model.test.ts
+[behaviour-coverage] scanned libs/web-ui/tests/unit/primitives/scroll-area/scroll-area.scenario.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/primitives/scroll-area/scroll-area.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/primitives/separator/separator.scenario.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/primitives/separator/separator.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/primitives/sheet/sheet.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/primitives/table/table.scenario.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/primitives/table/table.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/primitives/tabs/tabs.scenario.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/primitives/tabs/tabs.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/primitives/tooltip/tooltip.scenario.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/primitives/tooltip/tooltip.test.tsx
+[behaviour-coverage] scanned libs/web-ui/tests/unit/utils/cn.unit.test.ts
+[behaviour-coverage] scanned libs/web-ui/tests/unit/visual/components-visual.unit.test.tsx
+[behaviour-coverage] scanned specs/apps/ayokoding/cli/behaviours/cli-contract/command-line-contract.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/cli/behaviours/examples/content-layout.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/cli/behaviours/examples/coverage-report.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/cli/behaviours/examples/determinism.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/cli/behaviours/examples/environment-failures.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/cli/behaviours/examples/example-execution.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/cli/behaviours/examples/inert-courses.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/cli/behaviours/examples/markdown-file-sync.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/cli/behaviours/examples/run-spec-validation.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/cli/behaviours/examples/selection.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/cli/behaviours/examples/simulation-runs.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/cli/behaviours/examples/static-mode.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/cli/behaviours/toolchains/rootless-runtime.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/cli/behaviours/toolchains/toolchain-catalog.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/web/behaviours/content/content-rendering-http.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/web/behaviours/content/content-rendering.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/web/behaviours/courses/course-catalog-and-paths.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/web/behaviours/discovery/discovery-documents.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/web/behaviours/learning-progress/browser-progress.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/web/behaviours/local-development/local-development.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation-http.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/web/behaviours/parity-tools/parity-tools.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/web/behaviours/search/search-http.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/web/behaviours/search/search.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/web/behaviours/tools/ai-benchmark.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/web/behaviours/tools/cost-of-living-calculator.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/backend/content/content-api.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/backend/content/course-metadata.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/backend/health/health-check.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/backend/i18n/i18n-api.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/backend/navigation/navigation-api.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/backend/search/search-api.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/build-tools/benchmark-reference-generation/benchmark-reference-generation.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/build-tools/build-workers/build-workers.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/build-tools/env-loader/env-loader.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/build-tools/index-generation/index-generation.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/app-shell/accessibility.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/app-shell/responsive.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/content/code-block-copy.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/content/content-rendering.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/content/course-content-hygiene.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/content/static-delivery.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/course-paths/accessibility.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/course-paths/arc-landing-one-role.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/course-paths/breadcrumb.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/course-paths/canonical-fallback.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/course-paths/category-landing-arc-chooser.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/course-paths/category-landing-empty-state.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-catalog.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/course-paths/course-landing-header.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/course-paths/invalid-path-fallback.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/course-paths/landing-hero.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/course-paths/omitted-course.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/course-paths/outline-course-status.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-assumes.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-copy.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-order-nav.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-phases.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-position-numbers.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/course-paths/path-roadmap.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/course-paths/paths-hub-category-grouping.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/course-paths/prerequisite-display.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/course-paths/skills-fixed-arc-statement.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/course-paths/skills-path-composition.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/course-paths/skills-path-landing-body.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/i18n/i18n.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/i18n/locale-redirects.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/learning-progress/course-landing-progress.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/learning-progress/learn-home.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/learning-progress/learning-progress-accessibility.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/learning-progress/lesson-navigation.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/learning-progress/progress-store.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/navigation/architecture-cases-routes.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/navigation/content-namespace-redirects.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/navigation/course-rehome-redirects.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/navigation/ia-navigation-revamp.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/navigation/learn-reorg-redirects.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/navigation/learn-three-bucket.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/navigation/navigation.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/navigation/resizable-sidebar.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/navigation/sidebar-course-categories.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/search/search.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/tools/ai-benchmark.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/tools/cost-of-living-calculator.feature
+[behaviour-coverage] scanned specs/apps/ayokoding/www/behaviours/frontend/tools/tools-index.feature
+[behaviour-coverage] scanned specs/apps/crane/cli/behaviours/content/heading-check.feature
+[behaviour-coverage] scanned specs/apps/crane/cli/behaviours/content/nesting-check.feature
+[behaviour-coverage] scanned specs/apps/crane/cli/behaviours/content/text-check.feature
+[behaviour-coverage] scanned specs/apps/crane/cli/behaviours/media/figure-check.feature
+[behaviour-coverage] scanned specs/apps/crane/cli/behaviours/media/mermaid-validate.feature
+[behaviour-coverage] scanned specs/apps/crane/cli/behaviours/media/ocr-quality.feature
+[behaviour-coverage] scanned specs/apps/crane/cli/behaviours/media/table-check.feature
+[behaviour-coverage] scanned specs/apps/crane/cli/behaviours/pdf/pdf-commands.feature
+[behaviour-coverage] scanned specs/apps/crane/cli/behaviours/reporting/report-management.feature
+[behaviour-coverage] scanned specs/apps/crane/cli/behaviours/reporting/skiplist-management.feature
+[behaviour-coverage] scanned specs/apps/crane/cli/behaviours/system/check-all.feature
+[behaviour-coverage] scanned specs/apps/crane/cli/behaviours/system/version.feature
+[behaviour-coverage] scanned specs/apps/ferret/cli/behaviours/analytics/usage-and-outcomes.feature
+[behaviour-coverage] scanned specs/apps/ferret/cli/behaviours/harness/fail-open-capabilities-and-platforms.feature
+[behaviour-coverage] scanned specs/apps/ferret/cli/behaviours/privacy/metadata-envelope.feature
+[behaviour-coverage] scanned specs/apps/ferret/cli/behaviours/queries/local-query-and-export.feature
+[behaviour-coverage] scanned specs/apps/ferret/cli/behaviours/storage/initialization-and-concurrency.feature
+[behaviour-coverage] scanned specs/apps/ferret/cli/behaviours/storage/retention-and-space.feature
+[behaviour-coverage] scanned specs/apps/organiclever/app-web/behaviours/app-shell/entry-loggers.feature
+[behaviour-coverage] scanned specs/apps/organiclever/app-web/behaviours/app-shell/navigation.feature
+[behaviour-coverage] scanned specs/apps/organiclever/app-web/behaviours/health/system-status-be.feature
+[behaviour-coverage] scanned specs/apps/organiclever/app-web/behaviours/journal/home-screen.feature
+[behaviour-coverage] scanned specs/apps/organiclever/app-web/behaviours/routine/routine-management.feature
+[behaviour-coverage] scanned specs/apps/organiclever/app-web/behaviours/routing/app-routes.feature
+[behaviour-coverage] scanned specs/apps/organiclever/app-web/behaviours/routing/disabled-routes.feature
+[behaviour-coverage] scanned specs/apps/organiclever/app-web/behaviours/settings/dark-mode.feature
+[behaviour-coverage] scanned specs/apps/organiclever/app-web/behaviours/settings/language.feature
+[behaviour-coverage] scanned specs/apps/organiclever/app-web/behaviours/settings/settings-screen.feature
+[behaviour-coverage] scanned specs/apps/organiclever/app-web/behaviours/stats/history-screen.feature
+[behaviour-coverage] scanned specs/apps/organiclever/app-web/behaviours/stats/progress-screen.feature
+[behaviour-coverage] scanned specs/apps/organiclever/app-web/behaviours/workout-session/workout-session.feature
+[behaviour-coverage] scanned specs/apps/organiclever/be/behaviours/db/migrations.feature
+[behaviour-coverage] scanned specs/apps/organiclever/be/behaviours/health/health-check.feature
+[behaviour-coverage] scanned specs/apps/organiclever/be/behaviours/journal/journal-crud.feature
+[behaviour-coverage] scanned specs/apps/organiclever/be/behaviours/messaging/live/jetstream-demo.feature
+[behaviour-coverage] scanned specs/apps/organiclever/be/behaviours/messaging/live/nats-connect.feature
+[behaviour-coverage] scanned specs/apps/organiclever/be/behaviours/messaging/nats-config.feature
+[behaviour-coverage] scanned specs/apps/organiclever/www/behaviours/frontend/accessibility/accessibility.feature
+[behaviour-coverage] scanned specs/apps/organiclever/www/behaviours/frontend/home/home.feature
+[behaviour-coverage] scanned specs/apps/ose/app-web/behaviours/smoke/smoke.feature
+[behaviour-coverage] scanned specs/apps/ose/be/behaviours/ai-orchestration/ai-orchestration.feature
+[behaviour-coverage] scanned specs/apps/ose/be/behaviours/db/migrations.feature
+[behaviour-coverage] scanned specs/apps/ose/be/behaviours/gap-analysis/gap-analysis.feature
+[behaviour-coverage] scanned specs/apps/ose/be/behaviours/health/health.feature
+[behaviour-coverage] scanned specs/apps/ose/be/behaviours/internal-policy/internal-policy.feature
+[behaviour-coverage] scanned specs/apps/ose/be/behaviours/messaging/live/jetstream-demo.feature
+[behaviour-coverage] scanned specs/apps/ose/be/behaviours/messaging/live/nats-connect.feature
+[behaviour-coverage] scanned specs/apps/ose/be/behaviours/messaging/nats-config.feature
+[behaviour-coverage] scanned specs/apps/ose/be/behaviours/regulatory-source/regulatory-source.feature
+[behaviour-coverage] scanned specs/apps/ose/www/behaviours/backend/content/content-retrieval.feature
+[behaviour-coverage] scanned specs/apps/ose/www/behaviours/backend/health/health.feature
+[behaviour-coverage] scanned specs/apps/ose/www/behaviours/backend/rss-feed/rss-feed.feature
+[behaviour-coverage] scanned specs/apps/ose/www/behaviours/backend/search/search.feature
+[behaviour-coverage] scanned specs/apps/ose/www/behaviours/backend/seo/seo.feature
+[behaviour-coverage] scanned specs/apps/ose/www/behaviours/frontend/app-shell/accessibility.feature
+[behaviour-coverage] scanned specs/apps/ose/www/behaviours/frontend/app-shell/navigation.feature
+[behaviour-coverage] scanned specs/apps/ose/www/behaviours/frontend/app-shell/responsive.feature
+[behaviour-coverage] scanned specs/apps/ose/www/behaviours/frontend/app-shell/theme.feature
+[behaviour-coverage] scanned specs/apps/ose/www/behaviours/frontend/content/code-block-copy.feature
+[behaviour-coverage] scanned specs/apps/ose/www/behaviours/frontend/landing/landing-page.feature
+[behaviour-coverage] scanned specs/libs/ayokoding-data/behaviours/provenance/source-provenance.feature
+[behaviour-coverage] scanned specs/libs/ayokoding-data/behaviours/validation/dataset-validation.feature
+[behaviour-coverage] scanned specs/libs/ayokoding-data/behaviours/vectors/test-vectors.feature
+[behaviour-coverage] scanned specs/libs/fsharp-crane-core/behaviours/adapters/adapters.feature
+[behaviour-coverage] scanned specs/libs/fsharp-crane-core/behaviours/cache/cache.feature
+[behaviour-coverage] scanned specs/libs/fsharp-crane-core/behaviours/checks/checks.feature
+[behaviour-coverage] scanned specs/libs/fsharp-crane-core/behaviours/convert/pdf-to-markdown-routing.feature
+[behaviour-coverage] scanned specs/libs/fsharp-crane-core/behaviours/convert/pdf-to-markdown-sampling.feature
+[behaviour-coverage] scanned specs/libs/fsharp-crane-core/behaviours/reports/reports.feature
+[behaviour-coverage] scanned specs/libs/fsharp-env-loader/behaviours/env-tier/env-tier.feature
+[behaviour-coverage] scanned specs/libs/fsharp-env-loader/behaviours/port-resolver/port-resolver.feature
+[behaviour-coverage] scanned specs/libs/ts-env-loader/behaviours/env-loader/env-loader.feature
+[behaviour-coverage] scanned specs/libs/ts-env-loader/behaviours/port-resolver/numeric-flag.feature
+[behaviour-coverage] scanned specs/libs/ts-env-loader/behaviours/port-resolver/port-resolver.feature
+[behaviour-coverage] scanned specs/libs/web-ui-token/behaviours/tokens/tokens-export.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/alert/alert.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/app-header/app-header.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/badge/badge.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/button/button.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/card/card.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/code-block/code-block.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/code-block/copy-button.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/command/command.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/dialog/dialog.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/dropdown-menu/dropdown-menu.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/highlight-text/highlight-text.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/hue-picker/hue-picker.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/icon/icon.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/info-tip/info-tip.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/input/input.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/label/label.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/primitives/primitives-entry.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/progress-ring/progress-ring.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/resizable-panel/resizable-panel.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/resizable-panel/width-model.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/scroll-area/scroll-area.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/scroll-to-top/scroll-to-top.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/search-component/search-component.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/separator/separator.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/sheet/sheet.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/side-nav/side-nav.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/stat-card/stat-card.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/tab-bar/tab-bar.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/table/table.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/tabs/tabs.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/textarea/textarea.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/theme-toggle/theme-toggle.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/toggle/toggle.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/tooltip/tooltip.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/utils/cn.feature
+[behaviour-coverage] scanned specs/libs/web-ui/behaviours/visual/components-visual.feature
+
+
+
+ NX   Successfully ran target test:behaviour:coverage for project ayokoding-web
+
+Nx read the output from the cache instead of running the command for 1 out of 1 tasks.
+
+
+
+
+ NX   Successfully ran target test:quick for project ayokoding-web
+
+

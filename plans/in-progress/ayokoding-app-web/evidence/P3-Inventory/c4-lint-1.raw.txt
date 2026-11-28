@@ -1,0 +1,24 @@
+
+> nx run ayokoding-web:lint
+
+> go tool golangci-lint fmt --diff && go tool golangci-lint run && go tool nilaway -include-pkgs=github.com/wahidyankf/ose-public/apps/ayokoding-web -pretty-print=false ./... && go tool shfmt -d scripts && ../../node_modules/.bin/oxlint --deny-warnings assets/js
+
+0 issues.
+<repo>/apps/ayokoding-web/internal/parity/gapreport.go:125:60: Potential nil panic detected. Observed nil flow from source to dereference point: 
+	- parity/gapreport.go:125:60: deep read from local variable `groups` lacking guarding; accessed field `count`
+
+<repo>/apps/ayokoding-web/internal/parity/gapreport.go:125:81: Potential nil panic detected. Observed nil flow from source to dereference point: 
+	- parity/gapreport.go:125:81: deep read from local variable `groups` lacking guarding; accessed field `unit`
+
+Warning: command "go tool golangci-lint fmt --diff && go tool golangci-lint run && go tool nilaway -include-pkgs=github.com/wahidyankf/ose-public/apps/ayokoding-web -pretty-print=false ./... && go tool shfmt -d scripts && ../../node_modules/.bin/oxlint --deny-warnings assets/js" exited with non-zero status code
+
+
+ NX   Running target lint for project ayokoding-web failed
+
+Failed tasks:
+
+- ayokoding-web:lint
+
+Hint: run the command with --verbose for more details.
+
+exit=1

@@ -1,0 +1,7 @@
+inventory: apps/ayokoding-web-be-e2e/fixtures/www-url-inventory.json
+run 1 (committed file) and run 2 (scratchpad copy) compared with cmp
+result: identical (cmp exit 0)
+f44364bb9e7bba7532f91a1577ecfcf663c698d6629e8ec626aefd63cfbde930  apps/ayokoding-web-be-e2e/fixtures/www-url-inventory.json
+third generation after the Go error-handling change: cmp exit 0 against the committed file
+sha256 f44364bb9e7bba7532f91a1577ecfcf663c698d6629e8ec626aefd63cfbde930
+fourth generation after the REFACTOR split of runInventory: cmp exit 0 against the committed file

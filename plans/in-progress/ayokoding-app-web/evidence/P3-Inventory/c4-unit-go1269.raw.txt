@@ -1,0 +1,41 @@
+
+ NX   Running target test:unit for project ayokoding-web and 1 task it depends on:
+
+
+
+> nx run ayokoding-web:"build:assets"
+
+> mkdir -p internal/tools/shareddata/data && cp ../../libs/ayokoding-data/data/ai-benchmark.json ../../libs/ayokoding-data/data/cost-of-living.json ../../libs/ayokoding-data/data/fx.json internal/tools/shareddata/data/ && ../../node_modules/.bin/esbuild assets/js/progress.ts --bundle --minify --format=iife --outfile=internal/web/assets/dist/progress.js && ../../node_modules/.bin/esbuild assets/js/copy.ts --bundle --minify --format=iife --outfile=internal/web/assets/dist/copy.js
+
+
+  internal/web/assets/dist/progress.js  9.2kb
+
+⚡ Done in 8ms
+
+  internal/web/assets/dist/copy.js  498b 
+
+⚡ Done in 1ms
+
+> nx run ayokoding-web:"test:unit"
+
+> if grep -rn --include='*_test.go' -E '\.(Skip|Skipf|SkipNow)\(' internal cmd tests; then echo 'test:unit forbids skipped tests' >&2; exit 1; fi; COVERAGE_MINIMUM=99 ./scripts/coverage-gate.sh
+
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/content	1.891s	coverage: 15.2% of statements in ./internal/..., ./cmd/...
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/coursepaths	1.309s	coverage: 9.0% of statements in ./internal/..., ./cmd/...
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/parity	2.578s	coverage: 8.2% of statements in ./internal/..., ./cmd/...
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/search	2.302s	coverage: 1.9% of statements in ./internal/..., ./cmd/...
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/tools/benchmark	3.646s	coverage: 13.3% of statements in ./internal/..., ./cmd/...
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/tools/calculator	3.938s	coverage: 26.0% of statements in ./internal/..., ./cmd/...
+	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/tools/shareddata		coverage: 0.0% of statements
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/web	7.960s	coverage: 59.5% of statements in ./internal/..., ./cmd/...
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/cmd/ayokoding-web	3.143s	coverage: 10.3% of statements in ./internal/..., ./cmd/...
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/cmd/parity	3.413s	coverage: 1.4% of statements in ./internal/..., ./cmd/...
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/bdd	12.739s	coverage: 60.8% of statements in ./internal/..., ./cmd/...
+unit coverage total 99.0% (minimum 99%)
+
+
+
+ NX   Successfully ran target test:unit for project ayokoding-web and 1 task it depends on
+
+
+exit=0

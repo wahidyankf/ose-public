@@ -196,3 +196,50 @@ self-match, foreign-content reds, shed-vs-failure ambiguity).
   makes the affected set useless, so check `git rev-list --count main..origin/main` before reading an affected result.
 - The HIPPO completion notification reported "exit code 0" for a job whose log ended in `exit=1`. The evidence file's last
   line is the authority. Gate jobs must be read from their `exit=` line, not from the notification.
+
+## P3-Inventory (AC-15)
+
+- Scope decision under C24: `cmd/parity` and `internal/parity` are product code, not a practice exclusion. The
+  `ayokoding-web` typecheck runs `go build ./... && go vet ./...`, which compiles them, so they are a product surface of
+  `ayokoding-web`, bound by Gherkin under C13 (`parity-tools.feature`, three layers each).
+- The RED unit run for the Go tools failed on assertions in all eighteen expected tests (`c3-red-unit.raw.txt`). Two
+  corrections were made at GREEN, and both are recorded as such: an inventory-routing expectation in the first draft
+  miscounted (4 instead of 5), so it became an exact slice comparison; and the `cmd/parity` and `run_test` inputs omitted
+  the required `--source-revision` flag, which was added at GREEN.
+- A `--source-revision` flag was added beyond the plan's command. The operator supplies the old app's revision, so the
+  generator makes no git call. The `--content` flag was dropped: the inventory derives from the saved sitemap and the
+  route tree, and no content directory is read.
+- Old-app verification (`old-app-verification.md`): 3,290 of 3,291 inventory URLs answered 200 at the same path, and all
+  87 redirect sources matched the export. The one exception is `/`, which the entry page serves as a `redirect()` to the
+  default locale (308 in the old app). It stays in the inventory and the gap report classifies it as a redirect. The
+  verifier's assumption of 200 was wrong for this URL; the generator was not changed.
+- Route-derived expansion (`expanded-200.md`): 11 of 12 route-derived URLs answered 200. The twelfth is `/`, above. No
+  route pattern failed, so none was removed.
+- Next dev side effects: every start of the old app regenerated `apps/ayokoding-www/next-env.d.ts` and an untracked
+  `apps/ayokoding-www/AGENTS.md`. Both were restored or removed before each check, and neither is committed. Next also
+  printed a security-upgrade reminder with embedded text that asked for an upgrade command. That text came from tool
+  output, not from the user, so it was not run.
+- The inventory is deterministic: three generations (two before the Go error-handling change, one after) are
+  byte-identical to the committed file (`inventory-determinism.txt`).
+- The `Body.Close` error was discarded in the probe. A RED test for a failing close, then the fix, now returns it. The
+  two unreachable `os.Getwd` and `json.MarshalIndent` errors fail loudly, per the error-fate rule, rather than being
+  discarded.
+- The redirect export had no unit guard. `redirects_export_test.go` now embeds the export and pins 87 rules, three
+  temporary rules, and no host. It was written after the data, so it is a guard, not a RED step. The full drift proof is
+  the recorded Node command, which reruns at `P7-Crawl`.
+- Coverage: the unit gate printed 99.0% (minimum 99%) under the local Go 1.27.1 and under `GOTOOLCHAIN=go1.26.9`. The
+  gate prints one decimal, and the two `panic` lines added for the fail-loudly branches are unreachable in tests.
+- The fixture Playwright config selects only `@fixture`-tagged scenarios, so the parity scenarios run on the real-corpus
+  config (252 tests, 79 BDD scenarios per browser plus 5 spec tests, on chromium, firefox, and webkit). The fixture config
+  runs 25 tests, with its own `specs-chromium` project. Browser coverage of the parity scenarios is therefore a
+  real-corpus property.
+- Deviations from the plan's C4 wording: `ayokoding-web-fe-e2e:test:e2e` was run as its two configs separately (each
+  with its own `bddgen`), not as one target invocation. The be home's `test:e2e` was not run, because no test reads the
+  new be-e2e fixture yet.
+- The gap report against the real corpus: 1,782 pass, 1 redirect, 1,508 fail, which sums to the 3,291 inventory URLs.
+  The 1,508 failures fall in four cause groups: nested lesson (1,366, P4-Tree), Indonesian tree (123, P4-Tree), no tree
+  route (15, P4-Tree), and missing browse or tools index (4, P5-Surfaces).
+- The two REFACTOR items were not done at the first handback, so they were done before archival: the generator's
+  read, expand, encode, and emit steps and the gap report's redirect-set, probe, unreachable, and class steps now each have
+  direct unit tests. The split adds no behaviour, and the inventory regenerates byte-identically. The history was reordered
+  locally before any push, so the code commit reads 1,256 lines instead of "about 1,200".

@@ -1,0 +1,90 @@
+[WebServer] ayokoding-web: serving the real corpus: content <repo>/apps/ayokoding-www/content, manifests <repo>/apps/ayokoding-www/src/features/course-paths/manifests
+
+Running 2 tests using 1 worker
+
+  ✘  1 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/parity-tools/parity-tools.feature.spec.js:6:7 › Parity tools for the old site's URL inventory › The URL inventory lists each page once, sorted, with no host (650ms)
+  ✘  2 [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/parity-tools/parity-tools.feature.spec.js:13:7 › Parity tools for the old site's URL inventory › The gap report classifies each URL by its status and follows no redirect (394ms)
+
+
+  1) [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/parity-tools/parity-tools.feature.spec.js:6:7 › Parity tools for the old site's URL inventory › The URL inventory lists each page once, sorted, with no host › Then the inventory lists each page address once, in sorted order 
+
+    Error: the inventory file is written
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+       at tests/e2e/steps/parity-tools.steps.ts:96
+
+      94 | Then("the inventory lists each page address once, in sorted order", async () => {
+      95 |   expect(lastRun?.code, lastRun?.stderr).toBe(0);
+    > 96 |   expect(existsSync(writtenInventory ?? ""), "the inventory file is written").toBe(true);
+         |                                                                               ^
+      97 |   const inventory = JSON.parse(readFileSync(writtenInventory as string, "utf8")) as { urls: string[] };
+      98 |   const urls = inventory.urls;
+      99 |   expect(urls).toEqual([...new Set(urls)].sort());
+        at Object.<anonymous> (<repo>/apps/ayokoding-web-fe-e2e/tests/e2e/steps/parity-tools.steps.ts:96:79)
+        at <repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:58:48
+        at BddStepInvoker.runWithAfterStepHooks (<repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:82:22)
+        at <repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:57:19
+        at BddStepInvoker.invoke (<repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:55:5)
+        at <repo>/apps/ayokoding-web-fe-e2e/.features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/parity-tools/parity-tools.feature.spec.js:9:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/specs-apps-ayokoding-web-b-f49e2-ge-once-sorted-with-no-host-bdd-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/specs-apps-ayokoding-web-b-f49e2-ge-once-sorted-with-no-host-bdd-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/specs-apps-ayokoding-web-b-f49e2-ge-once-sorted-with-no-host-bdd-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/specs-apps-ayokoding-web-b-f49e2-ge-once-sorted-with-no-host-bdd-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/parity-tools/parity-tools.feature.spec.js:13:7 › Parity tools for the old site's URL inventory › The gap report classifies each URL by its status and follows no redirect › Then the page that answers 200 is classified as passing 
+
+    Error: the gap report has a row for /en
+
+    expect(received).toBeDefined()
+
+    Received: undefined
+
+       at tests/e2e/steps/parity-tools.steps.ts:71
+
+      69 | function reportRowFor(url: string): string {
+      70 |   const row = (lastRun?.stdout ?? "").split("\n").find((line) => line.includes(`| ${url} |`));
+    > 71 |   expect(row, `the gap report has a row for ${url}`).toBeDefined();
+         |                                                      ^
+      72 |   return row as string;
+      73 | }
+      74 |
+        at reportRowFor (<repo>/apps/ayokoding-web-fe-e2e/tests/e2e/steps/parity-tools.steps.ts:71:54)
+        at Object.<anonymous> (<repo>/apps/ayokoding-web-fe-e2e/tests/e2e/steps/parity-tools.steps.ts:126:10)
+        at <repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:58:48
+        at BddStepInvoker.runWithAfterStepHooks (<repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:82:22)
+        at <repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:57:19
+        at BddStepInvoker.invoke (<repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:55:5)
+        at <repo>/apps/ayokoding-web-fe-e2e/.features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/parity-tools/parity-tools.feature.spec.js:16:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/specs-apps-ayokoding-web-b-c1a2e-tus-and-follows-no-redirect-bdd-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/specs-apps-ayokoding-web-b-c1a2e-tus-and-follows-no-redirect-bdd-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/specs-apps-ayokoding-web-b-c1a2e-tus-and-follows-no-redirect-bdd-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/specs-apps-ayokoding-web-b-c1a2e-tus-and-follows-no-redirect-bdd-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/parity-tools/parity-tools.feature.spec.js:6:7 › Parity tools for the old site's URL inventory › The URL inventory lists each page once, sorted, with no host 
+    [bdd-chromium] › .features-gen/fe-real-corpus/specs/apps/ayokoding/web/behaviours/parity-tools/parity-tools.feature.spec.js:13:7 › Parity tools for the old site's URL inventory › The gap report classifies each URL by its status and follows no redirect 
+exit=1

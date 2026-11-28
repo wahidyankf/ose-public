@@ -1,0 +1,4 @@
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/parity	1.642s	coverage: 99.2% of statements
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/cmd/parity	1.356s	coverage: 100.0% of statements
+gofmt-l:
+gofmt-done

@@ -1,0 +1,13 @@
+
+> nx run ayokoding-web:lint
+
+> go tool golangci-lint fmt --diff && go tool golangci-lint run && go tool nilaway -include-pkgs=github.com/wahidyankf/ose-public/apps/ayokoding-web -pretty-print=false ./... && go tool shfmt -d scripts && ../../node_modules/.bin/oxlint --deny-warnings assets/js
+
+0 issues.
+
+
+
+ NX   Successfully ran target lint for project ayokoding-web
+
+
+exit=0

@@ -1,0 +1,5 @@
+--- FAIL: TestProbeReportsAFailedBodyCloseInsteadOfDiscardingIt (0.00s)
+    host_test.go:45: probe error = <nil>; want the body close failure returned
+FAIL
+FAIL	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/parity	0.369s
+FAIL

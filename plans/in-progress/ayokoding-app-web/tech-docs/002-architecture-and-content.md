@@ -62,21 +62,34 @@ input. Ignore bare `PORT`, matching the repository's app-prefixed configuration 
 Tests start their own server on 3191 using `AYOKODING_WEB_PORT=3191` and do not reuse an
 arbitrary process.
 
-Defaults resolved relative to the new app root are:
+Defaults are resolved from the repository root, found by walking up from the working directory to
+the nearest `repo-config.yml`, so they do not depend on the shell's working directory. The
+[parity program design](./006-parity-program-design.md#corpus-configuration-g1) owns the exact
+rules; in summary:
 
-| Setting                       | Source                                                                                           |
-| ----------------------------- | ------------------------------------------------------------------------------------------------ |
-| `AYOKODING_WEB_CONTENT_DIR`   | `../ayokoding-www/content`                                                                       |
-| `AYOKODING_WEB_MANIFESTS_DIR` | `../ayokoding-www/src/features/course-paths/manifests`                                           |
-| `AYOKODING_WEB_SHOW_DRAFTS`   | false; explicit true only for owned test/authoring fixtures                                      |
-| Public asset source           | `../ayokoding-www/public`, exposed by a read-only static file handler with safe path containment |
-| Tool data source              | `../../libs/ayokoding-data/data`, JSON decoded directly in Go                                    |
+| Setting                       | Source                                                                                                                                                                |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `AYOKODING_WEB_CONTENT_DIR`   | First existing of `apps/ayokoding-web/content`, then `apps/ayokoding-www/content`; startup fails, with no listener, when none exists or the chosen one cannot be read |
+| `AYOKODING_WEB_MANIFESTS_DIR` | First existing of `apps/ayokoding-web/manifests`, then `apps/ayokoding-www/src/features/course-paths/manifests`                                                       |
+| `AYOKODING_WEB_SHOW_DRAFTS`   | false; explicit true only for owned test/authoring fixtures                                                                                                           |
+| `AYOKODING_WEB_FIXTURE`       | Unset. The canned fixture corpus is served only when this variable or `--fixture` selects `parity` or `unavailable-catalog`                                           |
+| `AYOKODING_WEB_SITE_URL`      | `https://www.ayokoding.com`; the origin for canonical links, sitemap, feed, and robots; `--site-url` overrides it; an invalid value stops startup                     |
+| Public asset source           | `apps/ayokoding-web/public` if present, else `../ayokoding-www/public`, exposed by a read-only static file handler with safe path containment                         |
+| Tool data source              | `../../libs/ayokoding-data/data`, JSON decoded directly in Go                                                                                                         |
 
 Reuse the existing environment variable meanings without loading another environment tier's files.
 Supply a documented uncommitted `.env.local` only if needed; the committed `.env.example` contains
 placeholders, not real secret values. Never read or modify `.env.prod` or `.env.stag`. Test bootstrap
 uses isolated fixture roots and test secrets before the server starts; no developer
 corpus is mutated by a test. Application configuration derives paths independently of shell cwd.
+
+## Content tree
+
+The loader reads every Markdown file under `<content root>/<locale>/` into one slug-keyed tree, not only
+the course and legacy subtrees. The generic route, the sidebar, the search index, and the discovery
+documents all read that tree, so a page cannot be served and missing from the sitemap, or searchable and
+unreachable. The tree and its route rules are in
+[006](./006-parity-program-design.md#one-content-tree-g3-g4).
 
 ## Go rendering pipeline
 

@@ -4,7 +4,7 @@
 > `[HUMAN]`: only a human can do it (physical action, out-of-band approval, real-secret or
 > privileged-credential handling). `[AI+HUMAN]`: agent prepares, human approves or finishes.
 
-**Remaining work is blocked** until the Podman migration and Phoenix rewrite have completed, and the user explicitly resumes this plan. Preserve its existing worktree checkpoint and progress.
+**Remaining work is blocked** until the Podman migration and Go rewrite have completed, and the user explicitly resumes this plan. Preserve its existing worktree checkpoint and progress.
 
 **Plan quality gate:** not run yet, so no verdict exists. By the user's decision of 2026-10-09 it was
 not run while this plan was written; it runs at the start of execution, as the first checkbox of
@@ -372,7 +372,7 @@ Phase 0 opens no PR. Its evidence rides the DU-10 PR.
 ### Preconditions
 
 - [ ] [AI] **Declared prerequisites:** confirm the plans listed in this plan's Depends-on declaration
-      have completed. Other live AyoKoding plans may proceed in parallel after Phoenix when the DAG
+      have completed. Other live AyoKoding plans may proceed in parallel after the Go rewrite when the DAG
       permits; do not gate on their status.
 - [ ] [AI] **Shared-source reconciliation:** inspect the current merged course corpus and toolchain
       catalog on `origin/main`, record which earlier-plan outputs are present, and reconcile this plan's

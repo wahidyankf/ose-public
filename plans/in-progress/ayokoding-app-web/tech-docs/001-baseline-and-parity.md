@@ -98,3 +98,19 @@ flowchart LR
 
 Final acceptance compares the new app against the latest recorded merged corpus and corresponding
 old-app behavior. Newly merged differences reopen only the affected parity packet.
+
+## Amendment baseline (2026-11-28)
+
+Phases 0 to 2 compared the new app with the old one against the fixture corpus. The parity program
+compares them against the **real corpus**, so it needs a second baseline: the `origin/main` revision
+`71c7ae840`, at which the audit in
+[006](./006-parity-program-design.md#audit-of-the-current-state) was run. Each parity unit records the
+revision it reconciled against in its evidence, and the Phase 8 gate compares the last unit's revision
+with current `main` before the plan archives. Content that lands in `apps/ayokoding-www/content`
+between those revisions needs no plan change: the crawl inventory is regenerated in `P7-Crawl`, and
+sample pages are chosen by rule, never by slug.
+
+Existing scenario dispositions in [evidence/P0/disposition-ledger.csv](../evidence/P0/disposition-ledger.csv)
+(509 rows) stay authoritative for which old behaviour is retained, adapted, or implementation-only.
+The parity program adds rows only for behaviour the new app gains, in
+[008](./008-bdd-delta-map.md); it never reclassifies an old row.

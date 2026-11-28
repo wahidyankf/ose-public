@@ -11,14 +11,13 @@ execution checklist.
 
 ## Active Plans
 
-### AyoKoding Phoenix LiveView rewrite
+### AyoKoding Go and htmx rewrite
 
-- [AyoKoding Web](./ayokoding-app-web/README.md) — full local feature and UI parity in
-  `apps/ayokoding-web`, using Phoenix LiveView, imported BeaverNest ExBdd, Unit/Integration tests,
-  and Playwright E2E with Gherkin BDD. The existing Next.js app remains on port 3101; Phoenix
-  uses 3102, with a separate E2E server on 3191. The Podman migration it followed is archived. It must
-  finish before the live Learn Revamp plans; it consumes their content read-only and excludes
-  deployment and cutover.
+- [AyoKoding Web](./ayokoding-app-web/README.md) — full feature, URL, and visual parity of `apps/ayokoding-web` (Go,
+  server-rendered HTML, htmx) with `apps/ayokoding-www`, on the real content corpus, proved by a parity crawler and a
+  design-parity harness. The existing Next.js app remains on port 3101; the Go app uses 3102, with one e2e port, 3191,
+  run serially. Phases 0 to 2 are merged; the 2026-11-28 amendment adds Phases 3 to 7. The Podman migration it followed
+  is archived. It consumes the Learn Revamp plans' content read-only.
 
 ### AyoKoding Learn Revamp series
 
@@ -39,7 +38,7 @@ execution checklist.
 - Plan 05 (code harness) moved to
   [plans/done/2026-10-19\_\_ayokoding-learn-revamp-05-code-harness](../done/2026-10-19__ayokoding-learn-revamp-05-code-harness/README.md)
   on 2026-10-19.
-  Live plans 06–13 proceed after Phoenix, retaining the 06 → 07 edge. Plans 06–13 all precede plan
+  Live plans 06–13 proceed after the Go rewrite, retaining the 06 → 07 edge. Plans 06–13 all precede plan
   14's terminal gate; the other AyoKoding plans may proceed in parallel when the DAG permits.
 - Plan 10 (legacy unique migration) is in progress at
   [plans/in-progress/ayokoding-learn-revamp-10-legacy-unique-migration](./ayokoding-learn-revamp-10-legacy-unique-migration/README.md).

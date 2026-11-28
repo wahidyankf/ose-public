@@ -2,7 +2,7 @@
 
 Depends-on: [ayokoding-app-web, ayokoding-learn-revamp-06-accounting-courses, ayokoding-learn-revamp-07-erp-courses, ayokoding-learn-revamp-08-capstone-courses, ayokoding-learn-revamp-09-filler-rewrites, ayokoding-learn-revamp-10-legacy-unique-migration, ayokoding-learn-revamp-11-audit-languages-and-tooling, ayokoding-learn-revamp-12-audit-cs-systems-and-data, ayokoding-learn-revamp-13-audit-product-security-ai]
 
-> **Status:** Backlog. Do not execute until the user gives an explicit execution command and every predecessor declared in this README has completed, including the Podman migration and Phoenix rewrite.
+> **Status:** Backlog. Do not execute until the user gives an explicit execution command and every predecessor declared in this README has completed, including the Podman migration and Go rewrite.
 >
 > **Plan quality gate:** not run yet, so no verdict exists. By the user's decision of 2026-10-09 it was not run
 > while the plan was written; it runs at the start of execution, as the first item of Phase 0 in
@@ -159,9 +159,9 @@ every decision this plan relies on is copied into
 | 13  | `audit-product-security-ai`   | Audit and fix web, backend, mobile, security, AI, testing, architecture, product courses                                     | 05            |
 | 14  | `legacy-removal` (this plan)  | Delete `learn/legacy`, add 308 redirects, repoint `docs/` links, update specs and tests, carry the series-completion gate    | 10 to 13      |
 
-## Phoenix Prerequisite
+## Go Rewrite Prerequisite
 
-The [AyoKoding Phoenix LiveView rewrite](../../in-progress/ayokoding-app-web/README.md) must complete before this plan starts. This plan retains ownership of its AyoKoding content and source files. Phoenix may reconcile the merged results at its own delivery boundaries after this plan completes.
+The [AyoKoding Go and htmx rewrite](../../in-progress/ayokoding-app-web/README.md) must complete before this plan starts. This plan retains ownership of its AyoKoding content and source files. The Go rewrite may reconcile the merged results at its own delivery boundaries after this plan completes.
 
 ## Navigation
 

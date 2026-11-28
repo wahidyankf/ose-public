@@ -30,3 +30,14 @@ record as execution evidence. No entry is routed to another durable owner; none 
 each names its concrete proof (failing suites, logs, wire captures) in `delivery.md` and
 `evidence/`. Revisit only if a second plan hits the same shape (codec-stale tests, pkill
 self-match, foreign-content reds, shed-vs-failure ambiguity).
+
+## 2026-11-28 — Amendment authoring (plan-level)
+
+- Knowledge Capture is reopened by the parity amendment (Phase 9 of `delivery.md`). Append execution
+  observations of Phases 3 to 8 above this line and triage them in Phase 9; the pre-archival triage
+  above covers only the five entries that existed on 2026-10-30.
+- A fixture default hides gaps: the first plan declared "full parity" while the app served a canned
+  corpus, so no test could fail for missing real content. When a plan's bar is "same as the live site",
+  its proof must run on the live site's real data and enumerate the live site's URLs, not only its
+  scenarios. Disposition: open. The Phase 9 triage action in `delivery.md` routes it to one durable owner
+  and records its terminal state.

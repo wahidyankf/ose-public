@@ -1,0 +1,15 @@
+=== RUN   TestRenderPageGap7RawDetailsBlockSurvives
+    render_page_test.go:141: raw details lacks "<details>" in ""
+--- FAIL: TestRenderPageGap7RawDetailsBlockSurvives (0.00s)
+=== RUN   TestRenderPageGap7OtherRawHTMLStaysOmitted
+    render_page_test.go:152: a details tag in a code span must stay text: ""
+--- FAIL: TestRenderPageGap7OtherRawHTMLStaysOmitted (0.00s)
+FAIL
+FAIL	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/content	0.183s
+=== RUN   TestRenderGap7ServedRawDetailsSurvives
+    render_gaps_test.go:140: served raw details block was dropped
+--- FAIL: TestRenderGap7ServedRawDetailsSurvives (2.76s)
+FAIL
+FAIL	github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/integration	3.110s
+FAIL
+exit=1

@@ -39,6 +39,8 @@ export type ScenarioState = {
   spawnedUrl?: string;
   spawnedPort?: number;
   diagnostic?: string;
+  shortcode?: string;
+  linkHref?: string;
   hashes?: Record<string, string>;
   learnPage?: string;
   corpusEnv?: Record<string, string>;

@@ -11,8 +11,8 @@ import (
 
 // codeBlockRenderer renders a fenced block the way the ayokoding-www page does:
 // a wrapper carrying a language label, a pre with data-language, and a copy
-// control whose clipboard text is the verbatim source. Mermaid keeps goldmark's
-// plain code element, because the diagram path reads that element.
+// control whose clipboard text is the verbatim source. Mermaid becomes a div.mermaid hook that holds its
+// source as the fallback; the browser diagram renderer replaces that source with the SVG.
 type codeBlockRenderer struct{}
 
 // RegisterFuncs registers the fenced-code renderer with goldmark.
@@ -27,9 +27,9 @@ func renderFencedCode(writer util.BufWriter, source []byte, node ast.Node, enter
 	block := node.(*ast.FencedCodeBlock)
 	language := string(util.EscapeHTML(block.Language(source)))
 	if language == "mermaid" {
-		_, _ = writer.WriteString(`<pre><code class="language-mermaid">`)
+		_, _ = writer.WriteString(`<div class="mermaid"><pre><code>`)
 		writeCodeLines(writer, source, block)
-		_, _ = writer.WriteString("</code></pre>\n")
+		_, _ = writer.WriteString("</code></pre></div>\n")
 		return ast.WalkContinue, nil
 	}
 	_, _ = writer.WriteString("<div data-code-block>\n")

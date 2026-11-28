@@ -1,0 +1,76 @@
+
+> nx run ayokoding-web:"test:quick"
+
+> npm exec -- nx run ayokoding-web:typecheck
+
+
+[7m[1m[36m NX [39m[22m[27m  [36mRunning target [1mtypecheck[22m for project ayokoding-web and [1m1[22m task it depends on:[39m
+
+[2m[36m[39m[22m
+
+[2m> [22m[2mnx run[22m ayokoding-web:"build:assets"
+
+[2m> [22mmkdir -p internal/tools/shareddata/data && cp ../../libs/ayokoding-data/data/ai-benchmark.json ../../libs/ayokoding-data/data/cost-of-living.json ../../libs/ayokoding-data/data/fx.json internal/tools/shareddata/data/ && ../../node_modules/.bin/esbuild assets/js/progress.ts --bundle --minify --format=iife --outfile=internal/web/assets/dist/progress.js && ../../node_modules/.bin/esbuild assets/js/copy.ts --bundle --minify --format=iife --outfile=internal/web/assets/dist/copy.js
+
+
+  internal/web/assets/dist/progress.js  9.2kb
+
+⚡ Done in 7ms
+
+  internal/web/assets/dist/copy.js  498b 
+
+⚡ Done in 1ms
+
+[2m> [22m[2mnx run[22m ayokoding-web:typecheck
+
+[2m> [22mgo build ./... && go vet ./...
+
+
+[2m[32m[39m[22m
+
+[7m[1m[32m NX [39m[22m[27m  [32mSuccessfully ran target [1mtypecheck[22m for project ayokoding-web and [1m1[22m task it depends on[39m
+
+
+> npm exec -- nx run ayokoding-web:lint
+
+
+[2m> [22m[2mnx run[22m ayokoding-web:lint
+
+[2m> [22mgo tool golangci-lint fmt --diff && go tool golangci-lint run && go tool nilaway -include-pkgs=github.com/wahidyankf/ose-public/apps/ayokoding-web -pretty-print=false ./... && go tool shfmt -d scripts && ../../node_modules/.bin/oxlint --deny-warnings assets/js
+
+0 issues.
+<repo>/apps/ayokoding-web/internal/content/render_page.go:69:19: Potential nil panic detected. Observed nil flow from source to dereference point: 
+	- content/pipeline.go:101:10: literal `nil` returned from `NormalizeHeadingLevels()` in position 0
+	- content/render_page.go:69:19: result 0 of `NormalizeHeadingLevels()` sliced into via the assignment(s):
+		- `NormalizeHeadingLevels(...)` to `shifted` at content/render_page.go:67:2
+
+(Same nil source could also cause potential nil panic(s) at 2 other place(s): "content/render_page.go:74:6", and "content/render_page.go:74:28".)
+
+<repo>/apps/ayokoding-web/internal/content/render_page.go:77:36: Potential nil panic detected. Observed nil flow from source to dereference point: 
+	- content/pipeline.go:134:9: unassigned variable `entries` returned from `ExtractTOC()` in position 0
+	- content/render_page.go:77:36: result 0 of `ExtractTOC()` sliced into via the assignment(s):
+		- `ExtractTOC(...)` to `entries` at content/render_page.go:71:2
+
+Warning: command "go tool golangci-lint fmt --diff && go tool golangci-lint run && go tool nilaway -include-pkgs=github.com/wahidyankf/ose-public/apps/ayokoding-web -pretty-print=false ./... && go tool shfmt -d scripts && ../../node_modules/.bin/oxlint --deny-warnings assets/js" exited with non-zero status code
+[2m[31m[39m[22m
+
+[7m[1m[31m NX [39m[22m[27m  [31mRunning target [1mlint[22m for project ayokoding-web failed[39m
+
+[2mFailed tasks:[22m
+
+[2m-[22m ayokoding-web:lint
+
+[2mHint: run the command with[22m --verbose [2mfor more details.[22m
+
+Warning: command "npm exec -- nx run ayokoding-web:lint" exited with non-zero status code
+
+
+ NX   Running target test:quick for project ayokoding-web failed
+
+Failed tasks:
+
+- ayokoding-web:test:quick
+
+Hint: run the command with --verbose for more details.
+
+exit=1

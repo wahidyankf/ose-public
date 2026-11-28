@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/yuin/goldmark"
-	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/renderer"
 	"github.com/yuin/goldmark/util"
 	"gopkg.in/yaml.v3"
@@ -24,6 +23,7 @@ type Page struct {
 	Title        string
 	Description  string
 	BodyHTML     string
+	TOC          []Heading
 	Draft        bool
 	Weight       int
 	Section      string
@@ -126,7 +126,7 @@ func ParseFrontmatter(front string) (map[string]any, error) {
 // RenderMarkdown converts GFM Markdown to HTML. P2 fills shortcodes, TOC,
 // and link rules; the base pipeline is real.
 func RenderMarkdown(source string) string {
-	converter := goldmark.New(goldmark.WithExtensions(extension.GFM, codeBlockExtension{}))
+	converter := newConverter()
 	var output strings.Builder
 	if err := converter.Convert([]byte(source), &output); err != nil {
 		return ""

@@ -1,0 +1,90 @@
+# P3-Render gap 3 probe, recorded before any code change
+# Built binary over the real corpus on 3191; chromium via playwright-core; three real pages.
+# Result: no mermaid or math hook exists on any page; no vendor script is requested on page load.
+{
+  "pages": [
+    {
+      "route": "/en/learn/legacy/information-security/tools/gobuster/quick-start",
+      "status": 200,
+      "vendorRequests": [],
+      "consoleMessages": [],
+      "dom": {
+        "mermaidClassNodes": 0,
+        "mermaidDataNodes": 0,
+        "languageMermaidCode": 0,
+        "mathInline": 0,
+        "mathDisplay": 0,
+        "katexNodes": 0,
+        "mermaidSvg": 0,
+        "windowMermaid": false,
+        "windowKatex": false,
+        "katexStylesheet": [
+          "/assets/css/site.css"
+        ],
+        "firstMermaidCode": null,
+        "dollarSignsInBody": 1
+      }
+    },
+    {
+      "route": "/en/learn/legacy/business/corporate-finance",
+      "status": 200,
+      "vendorRequests": [],
+      "consoleMessages": [],
+      "dom": {
+        "mermaidClassNodes": 0,
+        "mermaidDataNodes": 0,
+        "languageMermaidCode": 0,
+        "mathInline": 0,
+        "mathDisplay": 0,
+        "katexNodes": 0,
+        "mermaidSvg": 0,
+        "windowMermaid": false,
+        "windowKatex": false,
+        "katexStylesheet": [
+          "/assets/css/site.css"
+        ],
+        "firstMermaidCode": null,
+        "dollarSignsInBody": 687
+      }
+    },
+    {
+      "route": "/en/learn/legacy/information-security/tools/kali-linux/beginner",
+      "status": 200,
+      "vendorRequests": [],
+      "consoleMessages": [],
+      "dom": {
+        "mermaidClassNodes": 0,
+        "mermaidDataNodes": 0,
+        "languageMermaidCode": 0,
+        "mathInline": 0,
+        "mathDisplay": 0,
+        "katexNodes": 0,
+        "mermaidSvg": 0,
+        "windowMermaid": false,
+        "windowKatex": false,
+        "katexStylesheet": [
+          "/assets/css/site.css"
+        ],
+        "firstMermaidCode": null,
+        "dollarSignsInBody": 11
+      }
+    }
+  ]
+}
+
+# Served markup, gobuster quick-start, the mermaid fence (its class is not in the served HTML):
+</ul>
+<h2>Learning Path</h2>
+<pre><code>%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+flowchart TD
+    accTitle: Learning Path
+# Served markup, corporate-finance, display math (the source delimiters survive as text):
+224:            displayMode: node.classList.contains("math-display"),
+228:          console.warn("[katex] Failed to render math:", err);
+234:      var maths = Array.from(document.querySelectorAll(".math-inline, .math-display, [data-math]"));
+244:      if (maths.length > 0) {
+# Sanitizer rule that drops the class attribute (bluemonday v1.0.27 policies.go):
+	// "class" is not permitted as we are not allowing users to style their own
+	// content
+
+	p.AllowStandardAttributes()

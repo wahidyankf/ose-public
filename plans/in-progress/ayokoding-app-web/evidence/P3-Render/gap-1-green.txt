@@ -1,0 +1,9 @@
+=== RUN   TestRenderPageGap1ShortcodesBecomeComponentMarkup
+--- PASS: TestRenderPageGap1ShortcodesBecomeComponentMarkup (0.00s)
+PASS
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/content	0.346s
+=== RUN   TestRenderGap1ServedLessonRendersShortcodes
+--- PASS: TestRenderGap1ServedLessonRendersShortcodes (4.54s)
+PASS
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/integration	4.871s
+exit=0

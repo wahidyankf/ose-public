@@ -1,0 +1,9 @@
+    [32mAnd[0m [32mthe independent FX snapshot date and per-currency provenance remain available[0m         [1;30m# reg_tools_test.go:46 -> *World[0m
+
+108 scenarios ([32m108 passed[0m)
+448 steps ([32m448 passed[0m)
+535.158625ms
+--- PASS: TestContract (0.54s)
+PASS
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/bdd	0.863s
+exit=0

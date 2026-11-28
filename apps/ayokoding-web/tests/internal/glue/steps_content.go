@@ -181,7 +181,7 @@ func (w *World) StepPageHasOneTitleHeadingNormalizedBodyOutline() error {
 	if count(w.body, "<h1>") != 1 {
 		return fail("page must have one title heading")
 	}
-	return w.mustContain("<h2>")
+	return w.mustContain("<h2")
 }
 
 func (w *World) StepTableContentsLinksStableBodyHeadingAnchors() error {

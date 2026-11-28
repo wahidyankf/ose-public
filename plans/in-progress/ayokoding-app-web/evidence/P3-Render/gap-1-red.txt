@@ -1,0 +1,12 @@
+=== RUN   TestRenderPageGap1ShortcodesBecomeComponentMarkup
+    render_page_test.go:27: shortcode render lacks "data-callout=\"warning\"" in ""
+--- FAIL: TestRenderPageGap1ShortcodesBecomeComponentMarkup (0.00s)
+FAIL
+FAIL	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/content	0.340s
+=== RUN   TestRenderGap1ServedLessonRendersShortcodes
+    render_gaps_test.go:62: served lesson lacks "data-callout=\"warning\""
+--- FAIL: TestRenderGap1ServedLessonRendersShortcodes (2.78s)
+FAIL
+FAIL	github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/integration	3.253s
+FAIL
+exit=1

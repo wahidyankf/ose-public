@@ -200,6 +200,31 @@ export function coursePageWhere(rule: (text: string) => boolean, reason: string)
   return found;
 }
 
+// trackOverviewWhere returns the first published track overview (the learning overview of a course) whose source
+// satisfies the rule. The overview is served at its track route, learning/learning, as the router maps it.
+export function trackOverviewWhere(rule: (text: string) => boolean, reason: string): LearningPage {
+  for (const entry of readdirSync(coursesRoot).sort()) {
+    const file = path.join(coursesRoot, entry, "learning", "overview.md");
+    let text: string;
+    try {
+      text = readFileSync(file, "utf8");
+    } catch {
+      continue;
+    }
+    if (!isPublished(text) || !rule(text)) continue;
+    return {
+      course: entry,
+      slug: "overview",
+      kind: "learning",
+      route: `/en/learn/courses/${entry}/learning/learning`,
+      title: fieldOf(frontmatterOf(text), "title"),
+      weight: 0,
+      text,
+    };
+  }
+  throw new Error(`no published track overview in the real corpus has ${reason}`);
+}
+
 // primaryCourse is the first course with at least two published learning pages, with those pages in weight order.
 export function primaryCourse(): { course: CourseIndex; pages: LearningPage[] } {
   for (const course of courseIndexes()) {

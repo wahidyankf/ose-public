@@ -19,22 +19,22 @@ until then.
 
 ### Delivery Branch Inventory
 
-| Branch                                                                           | Mode          | Lifecycle state | Proof                                                                                                                                          |
-| -------------------------------------------------------------------------------- | ------------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ayokoding-app-web`                                                              | `provisioned` | active          | Branch of the earlier worktree, which is no longer listed; classify before cleanup.                                                            |
-| `ayokoding-app-web-go-htmx`                                                      | `planned`     | delivered       | Go+htmx stack rewrite of this plan, merged as PR #761 at `0205fdb3e`.                                                                          |
-| `ayokoding-app-web-exec`                                                         | `delivery`    | delivered       | Phase 0 baseline + Phase 1 (harness, shared data, rules) merged as PR #763.                                                                    |
-| `ayokoding-app-web-p2`                                                           | `delivery`    | delivered       | Phase 2 complete app, tools codec migration, and first manual-findings repair merged as PR #766 at `29d35c2ef81f274a749833064c2e3a2d810609c9`. |
-| `plan/ayokoding-app-web-parity`                                                  | `delivery`    | active          | The 2026-11-28 plan amendment (documents only), branched from `origin/main` at `71c7ae840`.                                                    |
-| `ayokoding-web-p3-e2e`                                                           | `planned`     | planned         | `P3-E2E`: both e2e homes under their final names.                                                                                              |
-| `ayokoding-web-p3-corpus`                                                        | `delivery`    | active          | `P3-Corpus`: real corpus by default. Committed on the branch; PR pending.                                                                      |
-| `ayokoding-web-p3-render`                                                        | `planned`     | planned         | `P3-Render`: the authored structures the fixture config still serves, and the final tag removal.                                               |
-| `ayokoding-web-p3-inventory`                                                     | `planned`     | planned         | `P3-Inventory`: committed URL inventory and gap report.                                                                                        |
-| `ayokoding-web-p4-tree`, `-p4-redirects`, `-p4-search`                           | `planned`     | planned         | Phase 4 units.                                                                                                                                 |
-| `ayokoding-web-p5-surfaces`, `-p5-discovery`, `-p5-cache`                        | `planned`     | planned         | Phase 5 units.                                                                                                                                 |
-| `ayokoding-web-p6-harness`, `-p6-shell`, `-p6-content`, `-p6-learn`, `-p6-pages` | `planned`     | planned         | Phase 6 units.                                                                                                                                 |
-| `ayokoding-web-p7-crawl`, `-p7-fe`                                               | `planned`     | planned         | Phase 7 units.                                                                                                                                 |
-| `ayokoding-web-p8-hardening`                                                     | `planned`     | planned         | Phase 8 hardening and archival preparation.                                                                                                    |
+| Branch                                                                           | Mode                | Lifecycle state | Proof                                                                                                                                          |
+| -------------------------------------------------------------------------------- | ------------------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ayokoding-app-web`                                                              | `provisioned`       | active          | Branch of the earlier worktree, which is no longer listed; classify before cleanup.                                                            |
+| `ayokoding-app-web-go-htmx`                                                      | `planned`           | delivered       | Go+htmx stack rewrite of this plan, merged as PR #761 at `0205fdb3e`.                                                                          |
+| `ayokoding-app-web-exec`                                                         | `delivery`          | delivered       | Phase 0 baseline + Phase 1 (harness, shared data, rules) merged as PR #763.                                                                    |
+| `ayokoding-app-web-p2`                                                           | `delivery`          | delivered       | Phase 2 complete app, tools codec migration, and first manual-findings repair merged as PR #766 at `29d35c2ef81f274a749833064c2e3a2d810609c9`. |
+| `plan/ayokoding-app-web-parity`                                                  | `delivery`          | active          | The 2026-11-28 plan amendment (documents only), branched from `origin/main` at `71c7ae840`.                                                    |
+| `ayokoding-web-p3-e2e`                                                           | `planned`           | planned         | `P3-E2E`: both e2e homes under their final names.                                                                                              |
+| `ayokoding-web-p3-corpus`                                                        | `delivery`          | active          | `P3-Corpus`: real corpus by default. Committed on the branch; PR pending.                                                                      |
+| `ayokoding-web-p3-render`                                                        | `delivered-locally` | active          | `P3-Render`: the authored structures the fixture config served; committed on the branch, PR pending.                                           |
+| `ayokoding-web-p3-inventory`                                                     | `planned`           | planned         | `P3-Inventory`: committed URL inventory and gap report.                                                                                        |
+| `ayokoding-web-p4-tree`, `-p4-redirects`, `-p4-search`                           | `planned`           | planned         | Phase 4 units.                                                                                                                                 |
+| `ayokoding-web-p5-surfaces`, `-p5-discovery`, `-p5-cache`                        | `planned`           | planned         | Phase 5 units.                                                                                                                                 |
+| `ayokoding-web-p6-harness`, `-p6-shell`, `-p6-content`, `-p6-learn`, `-p6-pages` | `planned`           | planned         | Phase 6 units.                                                                                                                                 |
+| `ayokoding-web-p7-crawl`, `-p7-fe`                                               | `planned`           | planned         | Phase 7 units.                                                                                                                                 |
+| `ayokoding-web-p8-hardening`                                                     | `planned`           | planned         | Phase 8 hardening and archival preparation.                                                                                                    |
 
 Append every delivery branch before use and record the merged PR plus reviewed 40-character head
 SHA. Resolve the worktree route against the selected repository at runtime and reconcile with
@@ -816,24 +816,34 @@ report with its zero-or-more gaps listed per unit that closes them.
 **Input:** `main` after `P3-Corpus`; the seven `@fixture-until-p3-render` scenarios in `content/content-rendering.feature` (shortcodes, relative links, KaTeX and mermaid, table of contents, one title heading, task list, raw details), which the fe fixture config still serves; and the product gaps that `P3-Corpus` recorded in `evidence/P3-Corpus/witness-rewrites-fe.md`.
 **Outcome:** the real corpus renders each structure those scenarios name, so each scenario can leave the fixture config. **Proof:** each gap has a Unit test, an Integration test, and an fe real-corpus E2E regression check that pass on chromium, firefox and webkit; a final step removes every `@fixture-until-p3-render` tag, and the fe fixture config then holds no P3-Render scenario.
 
-- [ ] [AI] Do C1 and C2: the seven scenarios already exist with their `@fixture-until-p3-render` tags and `# Behaviour:` comments. Any Gherkin change is recorded in `learnings.md` with its reason.
-- [ ] [AI] Gap 1, shortcodes (`{{< callout >}}`, tabs, steps): RED (Unit, Integration): a page with a shortcode must show the component markup, not the raw `{{<` text. The render path never calls `TransformShortcodes` today. Save the failures to `evidence/P3-Render/gap-1-red.txt`.
-- [ ] [AI] Gap 1: GREEN: call `TransformShortcodes` in the render path before sanitising. Unit and Integration pass.
-- [ ] [AI] Gap 2, relative `.md` links: RED (Unit, Integration): a relative link to a sibling `.md` file must become its route, and its fragment must survive. Save the failures to `evidence/P3-Render/gap-2-red.txt`.
-- [ ] [AI] Gap 2: GREEN: rewrite relative `.md` links to routes in the render path. Unit and Integration pass.
-- [ ] [AI] Gap 3, KaTeX and mermaid: RED (probe first): the vendor scripts answer 200 but the diagrams do not render in chromium, and the root cause is not yet known. Record the probe in `evidence/P3-Render/gap-3-probe.txt` before any code change, then write the failing Unit or Integration test for the cause the probe shows.
-- [ ] [AI] Gap 3: GREEN: fix the cause the probe names. Unit and Integration pass.
-- [ ] [AI] Gap 4, table of contents: RED (Unit, Integration): the lesson emits a `data-toc` navigation whose entries link to the body headings by id. Save the failures to `evidence/P3-Render/gap-4-red.txt`.
-- [ ] [AI] Gap 4: GREEN: emit the `data-toc` navigation. Unit and Integration pass.
-- [ ] [AI] Gap 5, one title heading: RED (Unit, Integration): the lesson page has exactly one `<h1>`, taken from the frontmatter title, and the body's headings start at `<h2>`. Save the failures to `evidence/P3-Render/gap-5-red.txt`.
-- [ ] [AI] Gap 5: GREEN: add the title `<h1>` to the lesson template. Unit and Integration pass.
-- [ ] [AI] Gap 6, task list: RED (Unit, Integration): a task list keeps its checkbox inputs after sanitising. Bluemonday removes them today. Save the failures to `evidence/P3-Render/gap-6-red.txt`.
-- [ ] [AI] Gap 6: GREEN: allow the checkbox input only inside list items through the sanitiser. Unit and Integration pass.
-- [ ] [AI] Gap 7, raw details: RED (Unit, Integration): a line-start raw `<details>` block survives rendering and sanitising, with its `<summary>`. Goldmark omits it today. Save the failures to `evidence/P3-Render/gap-7-red.txt`.
-- [ ] [AI] Gap 7: GREEN: allow raw `<details>` and `<summary>` blocks through goldmark and the sanitiser, and nothing else. Unit and Integration pass.
-- [ ] [AI] E2E regression for gaps 1 to 7: the fe real-corpus config runs each gap's scenario once the final step below drops its tag. Until then, the scenario runs on the fixture config only.
-- [ ] [AI] Final step: remove every `@fixture-until-p3-render` tag from `content/content-rendering.feature`, run `grep -rn "@fixture-until-p3-render" specs/` (expected empty), and run the fe real-corpus config on chromium, firefox and webkit. Gate: the seven scenarios pass there, and the fe fixture config holds no P3-Render scenario.
-- [ ] [AI] Do C4.
+- [x] [AI] Do C1 and C2: the seven scenarios already exist with their `@fixture-until-p3-render` tags and `# Behaviour:` comments. Any Gherkin change is recorded in `learnings.md` with its reason.
+- [x] [AI] Gap 1, shortcodes (`{{< callout >}}`, tabs, steps): RED (Unit, Integration): a page with a shortcode must show the component markup, not the raw `{{<` text. The render path never calls `TransformShortcodes` today. Save the failures to `evidence/P3-Render/gap-1-red.txt`.
+- [x] [AI] Gap 1: GREEN: call `TransformShortcodes` in the render path before sanitising. Unit and Integration pass.
+- [x] [AI] Gap 2, relative `.md` links: RED (Unit, Integration): a relative link to a sibling `.md` file must become its route, and its fragment must survive. Save the failures to `evidence/P3-Render/gap-2-red.txt`.
+- [x] [AI] Gap 2: GREEN: rewrite relative `.md` links to routes in the render path. Unit and Integration pass.
+- [x] [AI] Gap 3, KaTeX and mermaid: RED (probe first): the vendor scripts answer 200 but the diagrams do not render in chromium, and the root cause is not yet known. Record the probe in `evidence/P3-Render/gap-3-probe.txt` before any code change, then write the failing Unit or Integration test for the cause the probe shows.
+- [x] [AI] Gap 3: GREEN: fix the cause the probe names. Unit and Integration pass.
+- [x] [AI] Gap 4, table of contents: RED (Unit, Integration): the lesson emits a `data-toc` navigation whose entries link to the body headings by id. Save the failures to `evidence/P3-Render/gap-4-red.txt`.
+- [x] [AI] Gap 4: GREEN: emit the `data-toc` navigation. Unit and Integration pass.
+- [x] [AI] Gap 5, one title heading: RED (Unit, Integration): the lesson page has exactly one `<h1>`, taken from the frontmatter title, and the body's headings start at `<h2>`. Save the failures to `evidence/P3-Render/gap-5-red.txt`.
+- [x] [AI] Gap 5: GREEN: add the title `<h1>` to the lesson template. Unit and Integration pass.
+- [x] [AI] Gap 6, task list: RED (Unit, Integration): a task list keeps its checkbox inputs after sanitising. Bluemonday removes them today. Save the failures to `evidence/P3-Render/gap-6-red.txt`.
+- [x] [AI] Gap 6: GREEN: allow the checkbox input only inside list items through the sanitiser. Unit and Integration pass.
+- [x] [AI] Gap 7, raw details: RED (Unit, Integration): a line-start raw `<details>` block survives rendering and sanitising, with its `<summary>`. Goldmark omits it today. Save the failures to `evidence/P3-Render/gap-7-red.txt`.
+- [x] [AI] Gap 7: GREEN: allow raw `<details>` and `<summary>` blocks through goldmark and the sanitiser, and nothing else. Unit and Integration pass.
+- [x] [AI] E2E regression for gaps 1 to 7: the fe real-corpus config runs each gap's scenario once the final step below drops its tag. Until then, the scenario runs on the fixture config only.
+- [x] [AI] Final step: remove every `@fixture-until-p3-render` tag from `content/content-rendering.feature`, run `grep -rn "@fixture-until-p3-render" specs/` (expected empty), and run the fe real-corpus config on chromium, firefox and webkit. Gate: the seven scenarios pass there, and the fe fixture config holds no P3-Render scenario.
+- [x] [AI] Do C4.
+      Evidence: `evidence/P3-Render/` (under this plan). Gates on the final tree: `ayokoding-web` `test:quick` passes under the
+      local Go 1.27.1 and under `GOTOOLCHAIN=go1.26.9`; the unit coverage gate is 99.0% under both; `build` and
+      `test:integration` pass; `ayokoding-web-be-e2e` `test:e2e` passes (5 and 20); `test:behaviour:coverage` passes for the
+      be and fe homes; the fe real-corpus config passes 246 of 246 across chromium, firefox and webkit, and the fixture config
+      passes 25. Notes: (1) the fe target ran the fixture config on a stale generated spec until its `bddgen` step was added,
+      so the target now generates the fixture spec too. (2) `affected` run against local `main` pulled in 1,567 unrelated
+      files, because local `main` lags `origin/main`; the affected gate uses `--base=origin/main`. (3) The affected gate still
+      exits 1 on the known macOS-only `ayokoding-cli` `env-build-failed` case, which this unit leaves alone. (4)
+      `ayokoding-www` `test:unit` failed once in the affected run on one jsdom focus-return test, outside this diff, and
+      passed on a rerun alone (4448 of 4448); its root cause is not investigated here.
 
 ### P3-Inventory — AC-15: Generate and commit the old site's URL inventory
 

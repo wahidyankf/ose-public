@@ -1,0 +1,31 @@
+
+ NX   Running target test:integration for project ayokoding-web and 1 task it depends on:
+
+
+
+> nx run ayokoding-web:"build:assets"
+
+> mkdir -p internal/tools/shareddata/data && cp ../../libs/ayokoding-data/data/ai-benchmark.json ../../libs/ayokoding-data/data/cost-of-living.json ../../libs/ayokoding-data/data/fx.json internal/tools/shareddata/data/ && ../../node_modules/.bin/esbuild assets/js/progress.ts --bundle --minify --format=iife --outfile=internal/web/assets/dist/progress.js && ../../node_modules/.bin/esbuild assets/js/copy.ts --bundle --minify --format=iife --outfile=internal/web/assets/dist/copy.js
+
+
+  internal/web/assets/dist/progress.js  9.2kb
+
+⚡ Done in 2ms
+
+  internal/web/assets/dist/copy.js  498b 
+
+⚡ Done in 1ms
+
+> nx run ayokoding-web:"test:integration"
+
+> AYOKODING_BDD_ADAPTER=integration go test -count=1 ./tests/bdd-integration ./tests/integration/...
+
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/bdd-integration	15.016s
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/integration	52.322s
+
+
+
+ NX   Successfully ran target test:integration for project ayokoding-web and 1 task it depends on
+
+
+exit=0

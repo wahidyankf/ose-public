@@ -1,0 +1,11 @@
+=== RUN   TestRenderPageGap7RawDetailsBlockSurvives
+--- PASS: TestRenderPageGap7RawDetailsBlockSurvives (0.00s)
+=== RUN   TestRenderPageGap7OtherRawHTMLStaysOmitted
+--- PASS: TestRenderPageGap7OtherRawHTMLStaysOmitted (0.00s)
+PASS
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/internal/content	0.301s
+=== RUN   TestRenderGap7ServedRawDetailsSurvives
+--- PASS: TestRenderGap7ServedRawDetailsSurvives (4.70s)
+PASS
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/integration	5.134s
+exit=0

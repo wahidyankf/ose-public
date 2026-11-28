@@ -1,0 +1,70 @@
+
+ NX   Running target test:e2e for project ayokoding-web-be-e2e and 2 tasks it depends on:
+
+
+
+> nx run ayokoding-web:"build:assets"
+
+> mkdir -p internal/tools/shareddata/data && cp ../../libs/ayokoding-data/data/ai-benchmark.json ../../libs/ayokoding-data/data/cost-of-living.json ../../libs/ayokoding-data/data/fx.json internal/tools/shareddata/data/ && ../../node_modules/.bin/esbuild assets/js/progress.ts --bundle --minify --format=iife --outfile=internal/web/assets/dist/progress.js && ../../node_modules/.bin/esbuild assets/js/copy.ts --bundle --minify --format=iife --outfile=internal/web/assets/dist/copy.js
+
+
+  internal/web/assets/dist/progress.js  9.2kb
+
+⚡ Done in 2ms
+
+  internal/web/assets/dist/copy.js  498b 
+
+⚡ Done in 1ms
+
+> nx run ayokoding-web:build
+
+> go build -trimpath -o dist/ayokoding-web ./cmd/ayokoding-web
+
+
+> nx run ayokoding-web-be-e2e:"test:e2e"
+
+> if grep -rn -E --include='*.ts' --exclude-dir=node_modules --exclude-dir=.features-gen --exclude-dir=test-results --exclude-dir=playwright-report 'test\\.skip\\([^,)]*\\)' .; then echo 'ERROR: unconditional test.skip() found in test files above - use test.skip(condition, reason) for legitimate environment guards, or remove'; exit 1; fi && if [ -n "$BASE_URL" ]; then npx bddgen --config=playwright.real-corpus.config.ts && npx playwright test --config=playwright.real-corpus.config.ts; else npx bddgen --config=playwright.fixture.config.ts && npx playwright test --config=playwright.fixture.config.ts && npx bddgen --config=playwright.real-corpus.config.ts && npx playwright test --config=playwright.real-corpus.config.ts; fi
+
+
+[2mRunning [22m5[2m tests using [22m1[2m worker[22m
+
+  [32m✓[39m  [2m1 [22m[bdd-http] › .features-gen/be-fixture/specs/apps/ayokoding/web/behaviours/content/content-rendering-http.feature.spec.js:10:7 › Shared learning content rendering over HTTP › A draft lesson's route returns not found @fixture[2m (366ms)[22m
+  [32m✓[39m  [2m2 [22m[bdd-http] › .features-gen/be-fixture/specs/apps/ayokoding/web/behaviours/content/content-rendering-http.feature.spec.js:17:7 › Shared learning content rendering over HTTP › A draft lesson is absent from search results @fixture[2m (8ms)[22m
+  [32m✓[39m  [2m3 [22m[bdd-http] › .features-gen/be-fixture/specs/apps/ayokoding/web/behaviours/content/content-rendering-http.feature.spec.js:24:7 › Shared learning content rendering over HTTP › With AYOKODING_WEB_SHOW_DRAFTS set to true a draft lesson is shown @fixture[2m (231ms)[22m
+  [32m✓[39m  [2m4 [22m[bdd-http] › .features-gen/be-fixture/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:6:7 › Independent local development over HTTP › A fixture is served only when one is selected @fixture[2m (12ms)[22m
+  [32m✓[39m  [2m5 [22m[bdd-http] › .features-gen/be-fixture/specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation-http.feature.spec.js:10:7 › Canonical routes and learning navigation over HTTP › A fixture-only old URL redirects 308 to its current page @fixture[2m (11ms)[22m
+
+[32m  5 passed[39m[2m (1.6s)[22m
+[2m[WebServer] [22mayokoding-web: serving the real corpus: content <repo>/apps/ayokoding-www/content, manifests <repo>/apps/ayokoding-www/src/features/course-paths/manifests
+
+[2mRunning [22m20[2m tests using [22m1[2m worker[22m
+
+  [32m✓[39m  [2m 1 [22m[bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/content/content-rendering-http.feature.spec.js:10:7 › Shared learning content rendering over HTTP › A lesson page is readable without browser scripts[2m (361ms)[22m
+  [32m✓[39m  [2m 2 [22m[bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/content/content-rendering-http.feature.spec.js:17:7 › Shared learning content rendering over HTTP › A missing page returns the locale's not-found experience[2m (15ms)[22m
+  [32m✓[39m  [2m 3 [22m[bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/discovery/discovery-documents.feature.spec.js:10:7 › Published-content discovery › A content page carries its title, description, and canonical URL[2m (11ms)[22m
+  [32m✓[39m  [2m 4 [22m[bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/discovery/discovery-documents.feature.spec.js:15:7 › Published-content discovery › Alternate-language links list only available translations[2m (9ms)[22m
+  [32m✓[39m  [2m 5 [22m[bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/discovery/discovery-documents.feature.spec.js:20:7 › Published-content discovery › The sitemap reflects the current published corpus[2m (14ms)[22m
+  [32m✓[39m  [2m 6 [22m[bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/discovery/discovery-documents.feature.spec.js:28:7 › Published-content discovery › The feed exposes the current published entries[2m (25ms)[22m
+  [32m✓[39m  [2m 7 [22m[bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/discovery/discovery-documents.feature.spec.js:35:7 › Published-content discovery › Robots instructions retain the current crawling contract[2m (8ms)[22m
+  [32m✓[39m  [2m 8 [22m[bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:8:9 › Independent local development over HTTP › Static assets and the favicon are served; an unknown asset returns 404 › Example #1[2m (5ms)[22m
+  [32m✓[39m  [2m 9 [22m[bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:13:9 › Independent local development over HTTP › Static assets and the favicon are served; an unknown asset returns 404 › Example #2[2m (4ms)[22m
+  [32m✓[39m  [2m10 [22m[bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:18:9 › Independent local development over HTTP › Static assets and the favicon are served; an unknown asset returns 404 › Example #3[2m (3ms)[22m
+  [32m✓[39m  [2m11 [22m[bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:23:9 › Independent local development over HTTP › Static assets and the favicon are served; an unknown asset returns 404 › Example #4[2m (3ms)[22m
+  [32m✓[39m  [2m12 [22m[bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:28:9 › Independent local development over HTTP › Static assets and the favicon are served; an unknown asset returns 404 › Example #5[2m (3ms)[22m
+  [32m✓[39m  [2m13 [22m[bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:35:7 › Independent local development over HTTP › A default start serves the real content corpus @real-corpus[2m (7ms)[22m
+  [32m✓[39m  [2m14 [22m[bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation-http.feature.spec.js:10:7 › Canonical routes and learning navigation over HTTP › The root enters the default locale[2m (8ms)[22m
+  [32m✓[39m  [2m15 [22m[bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation-http.feature.spec.js:18:9 › Canonical routes and learning navigation over HTTP › Uppercase locale entries resolve to lowercase URLs › Example #1[2m (7ms)[22m
+  [32m✓[39m  [2m16 [22m[bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation-http.feature.spec.js:23:9 › Canonical routes and learning navigation over HTTP › Uppercase locale entries resolve to lowercase URLs › Example #2[2m (5ms)[22m
+  [32m✓[39m  [2m17 [22m[bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation-http.feature.spec.js:28:9 › Canonical routes and learning navigation over HTTP › Uppercase locale entries resolve to lowercase URLs › Example #3[2m (5ms)[22m
+  [32m✓[39m  [2m18 [22m[bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation-http.feature.spec.js:37:9 › Canonical routes and learning navigation over HTTP › An old URL redirects 308 to its current page › Example #1[2m (9ms)[22m
+  [32m✓[39m  [2m19 [22m[bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation-http.feature.spec.js:46:7 › Canonical routes and learning navigation over HTTP › A legacy archived page URL shows the archived page[2m (6ms)[22m
+  [32m✓[39m  [2m20 [22m[bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/search/search-http.feature.spec.js:10:7 › Locale-scoped site search over HTTP › The search page route returns results for a query without the dialog[2m (7ms)[22m
+
+[32m  20 passed[39m[2m (7.3s)[22m
+
+
+
+ NX   Successfully ran target test:e2e for project ayokoding-web-be-e2e and 2 tasks it depends on
+
+
+exit=0

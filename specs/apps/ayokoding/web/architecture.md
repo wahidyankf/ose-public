@@ -19,6 +19,27 @@ The working educational site is still
 Its Markdown, manifests, and public assets remain in their current locations. The rewrite
 reads those sources in place and does not claim ownership of them or stop existing content work.
 
+### Parity tools
+
+`cmd/parity` is the entry and `internal/parity` holds the logic, both in `apps/ayokoding-web`. They
+build the inventory of old-site URLs from a saved sitemap, the committed redirect export, and the old
+route tree, and they request each inventory URL from the new app once to report its gaps. Only the
+owner's command line runs them; no other entry point calls them. Every file read, tree, write, and HTTP request goes through
+`parity.Host`, and `OSHost` is the only operating-system wiring. Their behaviour is bound at Unit,
+Integration, and E2E level by the [parity tools behaviours](./behaviours/parity-tools/README.md).
+
+```mermaid
+C4Context
+  title Parity tools (development boundary)
+  Person(owner, "Repository owner", "Runs the parity tools while the parity plan is in progress")
+  System(parity, "Parity tools", "cmd/parity and internal/parity in apps/ayokoding-web")
+  System_Ext(app, "ayokoding-web", "The new Go app, served on a local port")
+  System_Ext(files, "Repository files", "Saved old sitemap, redirect export, old route tree, inventory")
+  Rel(owner, parity, "Runs inventory and gap-report")
+  Rel(parity, files, "Reads the sources and writes the inventory")
+  Rel(parity, app, "Requests each inventory URL once")
+```
+
 ## Design location
 
 The [rewrite plan](../../../../plans/in-progress/ayokoding-app-web/README.md) carries the

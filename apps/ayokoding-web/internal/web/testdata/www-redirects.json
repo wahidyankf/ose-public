@@ -1,0 +1,437 @@
+[
+  {
+    "source": "/",
+    "destination": "/en",
+    "permanent": true
+  },
+  {
+    "source": "/EN",
+    "destination": "/en",
+    "permanent": true
+  },
+  {
+    "source": "/En",
+    "destination": "/en",
+    "permanent": true
+  },
+  {
+    "source": "/eN",
+    "destination": "/en",
+    "permanent": true
+  },
+  {
+    "source": "/ID",
+    "destination": "/id",
+    "permanent": true
+  },
+  {
+    "source": "/Id",
+    "destination": "/id",
+    "permanent": true
+  },
+  {
+    "source": "/iD",
+    "destination": "/id",
+    "permanent": true
+  },
+  {
+    "source": "/EN/:path*",
+    "destination": "/en/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/En/:path*",
+    "destination": "/en/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/eN/:path*",
+    "destination": "/en/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/ID/:path*",
+    "destination": "/id/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/Id/:path*",
+    "destination": "/id/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/iD/:path*",
+    "destination": "/id/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/c/learn/:path*",
+    "destination": "/en/learn/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/c/rants/:path*",
+    "destination": "/en/rants/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/id/c/belajar/:path*",
+    "destination": "/id/belajar/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/id/c/celoteh/:path*",
+    "destination": "/id/celoteh/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/id/c/konten-video/:path*",
+    "destination": "/id/konten-video/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/software-engineering/software-architecture/by-example",
+    "destination": "/en/learn/software-engineering/software-architecture/by-example/overview",
+    "permanent": false
+  },
+  {
+    "source": "/en/learn/software-engineering/system-design/by-example",
+    "destination": "/en/learn/software-engineering/system-design/by-example/overview",
+    "permanent": false
+  },
+  {
+    "source": "/en/learn/software-engineering/software-architecture/cases/:path*",
+    "destination": "/en/learn/software-engineering/software-architecture/by-example/cases/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/software-engineering/system-design/cases/:path*",
+    "destination": "/en/learn/software-engineering/system-design/by-example/cases/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/software-engineering/infrastructure/concepts/how-to/:path*",
+    "destination": "/en/learn/software-engineering/infrastructure/by-example/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/software-engineering/infrastructure/concepts/:path*",
+    "destination": "/en/learn/software-engineering/infrastructure/by-concept/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/information-security/by-example",
+    "destination": "/en/learn/information-security/by-example/foundations",
+    "permanent": false
+  },
+  {
+    "source": "/en/learn/information-security/concepts/explanation/:path*",
+    "destination": "/en/learn/information-security/by-concept/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/information-security/foundations/by-example/:path*",
+    "destination": "/en/learn/information-security/by-example/foundations/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/information-security/foundations/:path*",
+    "destination": "/en/learn/information-security/by-concept/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/information-security/concepts/:path*",
+    "destination": "/en/learn/information-security/by-concept/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/human/:path*",
+    "destination": "/en/learn/personal-development/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/software-engineering/algorithm-and-data-structures/:path*",
+    "destination": "/en/learn/software-engineering/algorithms-and-data-structures/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/software-engineering/platform-linux/:path*",
+    "destination": "/en/learn/software-engineering/platforms/linux/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/software-engineering/platform-web/:path*",
+    "destination": "/en/learn/software-engineering/platforms/web/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/software-engineering/platform-mobile/:path*",
+    "destination": "/en/learn/software-engineering/platforms/mobile/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/advanced-algorithms/:path*",
+    "destination": "/en/learn/courses/advanced-algorithms/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/advanced-networking/:path*",
+    "destination": "/en/learn/courses/advanced-networking/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/advanced-sql-and-query-performance/:path*",
+    "destination": "/en/learn/courses/advanced-sql-and-query-performance/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/agentic-coding/:path*",
+    "destination": "/en/learn/courses/agentic-coding/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/backend-essentials/:path*",
+    "destination": "/en/learn/courses/backend-essentials/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/build-your-own-orm-and-query-builder/:path*",
+    "destination": "/en/learn/courses/build-your-own-orm-and-query-builder/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/capstone-first-working-software/:path*",
+    "destination": "/en/learn/courses/capstone-first-working-software/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/capstone-forge-ready/:path*",
+    "destination": "/en/learn/courses/capstone-forge-ready/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/capstone-full-stack-app/:path*",
+    "destination": "/en/learn/courses/capstone-full-stack-app/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/capstone-solid-core/:path*",
+    "destination": "/en/learn/courses/capstone-solid-core/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/computer-architecture/:path*",
+    "destination": "/en/learn/courses/computer-architecture/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/computer-science-foundations/:path*",
+    "destination": "/en/learn/courses/computer-science-foundations/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/concurrency-and-parallelism/:path*",
+    "destination": "/en/learn/courses/concurrency-and-parallelism/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/data-access-orms-and-query-builders/:path*",
+    "destination": "/en/learn/courses/data-access-orms-and-query-builders/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/data-structures-and-algorithms-essentials/:path*",
+    "destination": "/en/learn/courses/data-structures-and-algorithms-essentials/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/debugging-and-profiling/:path*",
+    "destination": "/en/learn/courses/debugging-and-profiling/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/engineering-management/:path*",
+    "destination": "/en/learn/courses/engineering-management/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/extending-neovim/:path*",
+    "destination": "/en/learn/courses/extending-neovim/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/frontend-essentials/:path*",
+    "destination": "/en/learn/courses/frontend-essentials/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/functional-programming/:path*",
+    "destination": "/en/learn/courses/functional-programming/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/just-enough-bash/:path*",
+    "destination": "/en/learn/courses/just-enough-bash/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/just-enough-lua/:path*",
+    "destination": "/en/learn/courses/just-enough-lua/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/just-enough-nvim/:path*",
+    "destination": "/en/learn/courses/just-enough-nvim/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/just-enough-python/:path*",
+    "destination": "/en/learn/courses/just-enough-python/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/just-enough-typescript/:path*",
+    "destination": "/en/learn/courses/just-enough-typescript/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/networking-essentials/:path*",
+    "destination": "/en/learn/courses/networking-essentials/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/object-oriented-design-and-patterns/:path*",
+    "destination": "/en/learn/courses/object-oriented-design-and-patterns/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/object-oriented-programming-essentials/:path*",
+    "destination": "/en/learn/courses/object-oriented-programming-essentials/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/programming-paradigms/:path*",
+    "destination": "/en/learn/courses/programming-paradigms/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/project-management/:path*",
+    "destination": "/en/learn/courses/project-management/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/security-essentials/:path*",
+    "destination": "/en/learn/courses/security-essentials/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/software-engineering-practices/:path*",
+    "destination": "/en/learn/courses/software-engineering-practices/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/software-product-engineering/:path*",
+    "destination": "/en/learn/courses/software-product-engineering/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/software-testing/:path*",
+    "destination": "/en/learn/courses/software-testing/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/sql-essentials/:path*",
+    "destination": "/en/learn/courses/sql-essentials/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/technical-communication/:path*",
+    "destination": "/en/learn/courses/technical-communication/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/version-control-and-git/:path*",
+    "destination": "/en/learn/courses/version-control-and-git/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong",
+    "destination": "/en/learn/courses",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer",
+    "destination": "/en/learn/courses",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/fundamentally-strong/software-engineer/overview",
+    "destination": "/en/learn/courses",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/overview",
+    "destination": "/en/learn",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/software-engineering",
+    "destination": "/en/learn/legacy/software-engineering",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/software-engineering/:path*",
+    "destination": "/en/learn/legacy/software-engineering/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/artificial-intelligence",
+    "destination": "/en/learn/legacy/artificial-intelligence",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/artificial-intelligence/:path*",
+    "destination": "/en/learn/legacy/artificial-intelligence/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/information-security",
+    "destination": "/en/learn/legacy/information-security",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/information-security/:path*",
+    "destination": "/en/learn/legacy/information-security/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/personal-development",
+    "destination": "/en/learn/legacy/personal-development",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/personal-development/:path*",
+    "destination": "/en/learn/legacy/personal-development/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/it-governance",
+    "destination": "/en/learn/legacy/it-governance",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/it-governance/:path*",
+    "destination": "/en/learn/legacy/it-governance/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/business",
+    "destination": "/en/learn/legacy/business",
+    "permanent": true
+  },
+  {
+    "source": "/en/learn/business/:path*",
+    "destination": "/en/learn/legacy/business/:path*",
+    "permanent": true
+  }
+]

@@ -43,9 +43,23 @@ scenarios (`<owner>:test:e2e`). The `e2e` adapter reference checked by
 `test:behaviour:coverage` only asserts that the corpus keeps its shape for those
 owners; it runs no browser or server here.
 
+## Parity tools
+
+`cmd/parity` (logic in `internal/parity`) is the owner's tool for the parity plan. Run it from the repository root with
+`go -C apps/ayokoding-web run ./cmd/parity <subcommand>`. Relative paths resolve against the repository root.
+
+- `inventory --sitemap FILE --source-revision REV [--routes DIR] [--export FILE] [--out FILE]` writes the old site's URL
+  inventory as JSON. The sitemap is a file saved from the old app's `/sitemap.xml`, so the command makes no network call.
+  The redirect export defaults to `internal/web/testdata/www-redirects.json`, which the recorded Node command in the
+  plan's P3-Inventory unit writes from the old www redirect modules.
+- `gap-report --inventory FILE --base-url URL` requests each inventory URL once, follows no redirect, and prints a
+  markdown report. A 200 passes, a 308 is recorded and not followed, and any other status fails, grouped by cause.
+
 ## Layout
 
 - `cmd/ayokoding-web` — launcher: flag/env resolution, listener.
+- `cmd/parity` — parity tools entry (`inventory`, `gap-report`); see above.
+- `internal/parity` — parity inventory and gap report logic; reads only through an injected host.
 - `internal/web` — router, config, templates, fixture seed.
 - `internal/content`, `internal/coursepaths`, `internal/search`,
   `internal/tools/benchmark`, `internal/tools/calculator` — domain doubles.

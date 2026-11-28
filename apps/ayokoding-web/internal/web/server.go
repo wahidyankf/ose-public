@@ -30,7 +30,7 @@ var templates embed.FS
 // serves them because go:embed paths must stay inside the source directory;
 // the plan's app-root assets tree keeps the TypeScript authoring sources.
 //
-//go:embed assets/vendor/htmx.min.js assets/dist/progress.js assets/favicon.svg assets/css/site.css assets/vendor/mermaid/mermaid.min.js assets/vendor/katex/katex.min.js assets/vendor/katex/katex.min.css assets/vendor/katex/fonts/*.woff2
+//go:embed assets/vendor/htmx.min.js assets/dist/progress.js assets/dist/copy.js assets/favicon.svg assets/css/site.css assets/vendor/mermaid/mermaid.min.js assets/vendor/katex/katex.min.js assets/vendor/katex/katex.min.css assets/vendor/katex/fonts/*.woff2
 var staticAssets embed.FS
 
 // staticFiles allowlists the servable scripts and styles by request name
@@ -38,6 +38,7 @@ var staticAssets embed.FS
 var staticFiles = map[string]string{
 	"htmx.min.js": "assets/vendor/htmx.min.js",
 	"progress.js": "assets/dist/progress.js",
+	"copy.js":     "assets/dist/copy.js",
 	"site.css":    "assets/css/site.css",
 }
 

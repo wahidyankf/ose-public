@@ -7,10 +7,10 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   test: {
     environment: "node",
-    include: ["assets/js/progress.test.ts", "assets/js/progress.dom.test.ts"],
+    include: ["assets/js/progress.test.ts", "assets/js/progress.dom.test.ts", "assets/js/copy.dom.test.ts"],
     coverage: {
       provider: "v8",
-      include: ["assets/js/progress.ts"],
+      include: ["assets/js/progress.ts", "assets/js/copy.ts"],
       all: true,
       reportsDirectory: "coverage/browser",
       reporter: ["text", "json-summary"],

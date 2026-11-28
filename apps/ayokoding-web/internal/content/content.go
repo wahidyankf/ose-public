@@ -5,9 +5,10 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/microcosm-cc/bluemonday"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/extension"
+	"github.com/yuin/goldmark/renderer"
+	"github.com/yuin/goldmark/util"
 	"gopkg.in/yaml.v3"
 )
 
@@ -125,7 +126,7 @@ func ParseFrontmatter(front string) (map[string]any, error) {
 // RenderMarkdown converts GFM Markdown to HTML. P2 fills shortcodes, TOC,
 // and link rules; the base pipeline is real.
 func RenderMarkdown(source string) string {
-	converter := goldmark.New(goldmark.WithExtensions(extension.GFM))
+	converter := goldmark.New(goldmark.WithExtensions(extension.GFM, codeBlockExtension{}))
 	var output strings.Builder
 	if err := converter.Convert([]byte(source), &output); err != nil {
 		return ""
@@ -133,7 +134,18 @@ func RenderMarkdown(source string) string {
 	return output.String()
 }
 
-// SanitizeHTML removes executable markup while keeping authored content.
+// SanitizeHTML removes executable markup while keeping authored content. The
+// fenced-code markup from codeBlockRenderer is allowed through by codeBlockPolicy.
 func SanitizeHTML(html string) string {
-	return bluemonday.UGCPolicy().Sanitize(html)
+	return codeBlockPolicy().Sanitize(html)
+}
+
+// codeBlockExtension installs codeBlockRenderer on the Markdown converter.
+type codeBlockExtension struct{}
+
+// Extend registers the fenced-code renderer in place of goldmark's default one.
+// goldmark registers node renderers from the highest priority down and keeps
+// the last registration, so the lowest value wins: 1 beats the HTML renderer's 1000.
+func (codeBlockExtension) Extend(m goldmark.Markdown) {
+	m.Renderer().AddOptions(renderer.WithNodeRenderers(util.Prioritized(codeBlockRenderer{}, 1)))
 }

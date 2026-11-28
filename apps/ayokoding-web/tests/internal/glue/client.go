@@ -124,7 +124,7 @@ func (w *World) openRoot(dir string) fs.FS {
 // sources is the seed's port for this scenario: the recorded launcher
 // variables and the source roots the adapter opens.
 func (w *World) sources() web.Sources {
-	return web.Sources{Environment: scenarioEnvironment(w.env), Root: w.openRoot}
+	return web.Sources{Environment: scenarioEnvironment(w.launchEnv()), Root: w.openRoot, Working: w.workingDir()}
 }
 
 // stageCorpus places a corpus under a scenario root and returns that root. The
@@ -149,7 +149,7 @@ func (w *World) stageCorpus(files map[string]string) (string, error) {
 
 // resolve parses the launcher configuration from the scenario environment.
 func (w *World) resolve() error {
-	cfg, err := web.ResolveConfig(w.args, scenarioEnvironment(w.env))
+	cfg, err := web.ResolveConfig(w.args, scenarioEnvironment(w.launchEnv()))
 	if err != nil {
 		w.startErr = err
 		w.listenerStarted = false
@@ -157,7 +157,12 @@ func (w *World) resolve() error {
 	}
 	// The seed reads the source-root and draft variables through the scenario
 	// sources, so it serves the configured fixture.
-	deps := web.SeedFixtureDeps(cfg.Fixture, w.sources())
+	deps, err := web.SeedDeps(cfg, w.sources())
+	if err != nil {
+		w.startErr = err
+		w.listenerStarted = false
+		return nil
+	}
 	w.cfg = cfg
 	w.resolvedPort = cfg.Port
 	w.listenerStarted = true
@@ -178,11 +183,7 @@ func (w *World) launch() error {
 		return nil
 	}
 	port := w.resolvedPort
-	env := map[string]string{}
-	for key, value := range w.env {
-		env[key] = value
-	}
-	proc, err := startBinary(SuiteBinary, w.args, env)
+	proc, err := startBinary(SuiteBinary, w.args, w.launchEnv())
 	if err != nil {
 		if strings.Contains(err.Error(), "address already in use") {
 			return fail("port %d is busy; refusing to reuse another process", port)
@@ -202,9 +203,13 @@ func (w *World) launch() error {
 // the launcher's diagnostic as the exit. Other adapters run the binary.
 func (w *World) launchExpectExit() (int, string, error) {
 	if w.adapter != "unit" {
-		return realLaunchExpectExit(w.args, w.env)
+		return realLaunchExpectExit(w.args, w.launchEnv())
 	}
-	if _, err := web.ResolveConfig(w.args, scenarioEnvironment(w.env)); err != nil {
+	cfg, err := web.ResolveConfig(w.args, scenarioEnvironment(w.launchEnv()))
+	if err != nil {
+		return 1, fmt.Sprintf("ayokoding-web: %v\n", err), nil
+	}
+	if _, err := web.SeedDeps(cfg, w.sources()); err != nil {
 		return 1, fmt.Sprintf("ayokoding-web: %v\n", err), nil
 	}
 	return 0, "", nil

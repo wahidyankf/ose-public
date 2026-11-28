@@ -23,8 +23,8 @@ const (
 	FixtureUnavailableCatalog = "unavailable-catalog"
 )
 
-// Config is the validated runtime configuration. P2 fills source-directory
-// resolution against the shared corpus; P1H carries listener fields only.
+// Config is the validated runtime configuration. Fixture is empty when no
+// fixture is selected, and the launcher then serves the real corpus.
 type Config struct {
 	Port    int
 	Fixture string
@@ -84,11 +84,12 @@ func OSEnvironment() Environment {
 }
 
 // ResolveConfig resolves an explicit --port flag, then AYOKODING_WEB_PORT,
-// then 3102. Bare PORT is ignored by repository convention. --fixture selects
-// the canned corpus variant for test and authoring fixtures. The environment
-// is injected so the resolution reads no process state under test.
+// then 3102. Bare PORT is ignored by repository convention. --fixture, then
+// AYOKODING_WEB_FIXTURE, selects a canned corpus variant for test and authoring
+// fixtures; with neither set, no fixture is selected and the real corpus serves.
+// The environment is injected so the resolution reads no process state under test.
 func ResolveConfig(args []string, environment Environment) (Config, error) {
-	cfg := Config{Port: DefaultPort, Fixture: FixtureParity}
+	cfg := Config{Port: DefaultPort}
 	flagPort := ""
 	flagFixture := ""
 	for index := 0; index < len(args); index++ {

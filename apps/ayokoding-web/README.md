@@ -15,6 +15,19 @@ AYOKODING_WEB_PORT=3200 go run ./cmd/ayokoding-web
 Port precedence: `--port` flag, then `AYOKODING_WEB_PORT`, then 3102. Bare
 `PORT` is ignored. Test servers use `AYOKODING_WEB_PORT=3191`.
 
+## Corpus
+
+A default start serves the real corpus: the repository's content and course manifests. The launcher finds the
+repository root as the nearest ancestor of the working directory that holds `repo-config.yml`. The content root is the
+first existing of `apps/ayokoding-web/content` and `apps/ayokoding-www/content`. The manifests root is the first existing
+of `apps/ayokoding-web/manifests` and `apps/ayokoding-www/src/features/course-paths/manifests`.
+
+`AYOKODING_WEB_CONTENT_DIR` and `AYOKODING_WEB_MANIFESTS_DIR` name either root explicitly. A root that cannot be read
+stops startup before the listener opens, and the server never falls back to the fixture.
+
+The canned fixture is served only when one is selected, with `--fixture parity` (or `unavailable-catalog`) or with
+`AYOKODING_WEB_FIXTURE`. It is for owned tests and authoring. Drafts stay hidden unless `AYOKODING_WEB_SHOW_DRAFTS=true`.
+
 ## Targets (from the worktree root)
 
 ```bash

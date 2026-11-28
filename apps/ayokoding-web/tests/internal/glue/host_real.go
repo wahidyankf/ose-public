@@ -257,3 +257,37 @@ func IntegrationCorpus() ([]string, error) {
 	})
 	return paths, err
 }
+
+// realWorkingDir returns the test process directory, the launcher working directory for real adapters.
+func realWorkingDir() string {
+	dir, err := os.Getwd()
+	if err != nil {
+		return ""
+	}
+	return dir
+}
+
+// errNotRoot reports the precondition the unreadable-directory scenario needs.
+var errNotRoot = errors.New("the process can read a directory with no permissions; the scenario needs a non-root user")
+
+// realUnreadableDir creates a directory with no permissions and returns its
+// path with a cleanup that restores permissions and removes it.
+func realUnreadableDir() (string, func(), error) {
+	dir, err := os.MkdirTemp("", "ayokoding-unreadable-")
+	if err != nil {
+		return "", nil, err
+	}
+	cleanup := func() {
+		_ = os.Chmod(dir, 0o755)
+		_ = os.RemoveAll(dir)
+	}
+	if err := os.Chmod(dir, 0); err != nil {
+		cleanup()
+		return "", nil, err
+	}
+	if _, err := os.ReadDir(dir); err == nil {
+		cleanup()
+		return "", nil, errNotRoot
+	}
+	return dir, cleanup, nil
+}

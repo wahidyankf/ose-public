@@ -29,15 +29,19 @@ owner's command line runs them; no other entry point calls them. Every file read
 Integration, and E2E level by the [parity tools behaviours](./behaviours/parity-tools/README.md).
 
 ```mermaid
-C4Context
-  title Parity tools (development boundary)
-  Person(owner, "Repository owner", "Runs the parity tools while the parity plan is in progress")
-  System(parity, "Parity tools", "cmd/parity and internal/parity in apps/ayokoding-web")
-  System_Ext(app, "ayokoding-web", "The new Go app, served on a local port")
-  System_Ext(files, "Repository files", "Saved old sitemap, redirect export, old route tree, inventory")
-  Rel(owner, parity, "Runs inventory and gap-report")
-  Rel(parity, files, "Reads the sources and writes the inventory")
-  Rel(parity, app, "Requests each inventory URL once")
+%% Color palette: Blue #0173B2, Teal #029E73, Gray #808080. Text is white on blue and black on teal and gray.
+flowchart LR
+    accTitle: Parity tools development boundary
+    accDescr: The repository owner runs the parity tools. The tools read the saved sitemap, the redirect export, and the route tree, and write the URL inventory. They also send one request per inventory URL to the new app on a local port.
+    OWNER(["Repository owner"]) -->|runs both commands| PARITY[["Parity tools<br/>cmd/parity"]]
+    PARITY -->|reads saved inputs| SOURCES[("Saved sitemap,<br/>redirect export,<br/>route tree")]
+    PARITY -->|writes inventory| INVENTORY[("URL inventory<br/>JSON file")]
+    PARITY -->|one request per URL| APP["ayokoding-web<br/>local port"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef gray fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+    class PARITY teal
+    class SOURCES,INVENTORY gray
 ```
 
 ## Design location

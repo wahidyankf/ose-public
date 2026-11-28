@@ -13,6 +13,10 @@ adapters. Each domain below requires Unit proof, applicable Integration proof, a
 proof. Browser-only progress uses the JavaScript/TypeScript Unit adapter and the Playwright home,
 which binds it at integration and e2e level. The unit godog scope covers the whole corpus.
 
+Two Playwright homes bind the corpus at E2E level, partitioned by feature file. The HTTP home,
+`ayokoding-web-be-e2e`, binds the nine HTTP-only feature files, and the browser home,
+`ayokoding-web-fe-e2e`, binds every other feature file.
+
 The plan carries the full source-scenario parity inventory. These domains supplement rather than
 silently reduce the existing [`www` behavior corpus](../../www/behaviours/README.md).
 

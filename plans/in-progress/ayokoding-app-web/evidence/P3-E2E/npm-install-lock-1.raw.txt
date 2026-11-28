@@ -1,0 +1,31 @@
+
+> open-sharia-enterprise@1.0.0 postinstall
+> npm run doctor || true
+
+
+> open-sharia-enterprise@1.0.0 doctor
+> .github/scripts/run-doctor.sh
+
+[toolchain-validate] checked 25 declared toolchains, no findings
+
+> open-sharia-enterprise@1.0.0 prepare
+> husky
+
+
+added 2 packages, removed 1 package, and audited 1566 packages in 10s
+
+426 packages are looking for funding
+  run `npm fund` for details
+
+88 vulnerabilities (8 low, 41 moderate, 34 high, 5 critical)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues possible (including breaking changes), run:
+  npm audit fix --force
+
+Some issues need review, and may require choosing
+a different dependency.
+
+Run `npm audit` for details.

@@ -23,11 +23,12 @@ rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npm exe
 ```
 
 `test:quick` runs lint, typecheck, Unit (99% floor), and the static behaviour
-gates. Integration and browser E2E never run inside quick. Runtime browser E2E
-proof lives in the dedicated `ayokoding-web-e2e` owner
-(`ayokoding-web-e2e:test:e2e`); the `e2e` adapter reference checked by
-`test:behaviour:coverage` only asserts that the same 79-scenario corpus keeps
-its shape for that owner, it runs no browser here.
+gates. Integration and browser E2E never run inside quick. Runtime E2E
+proof lives in two dedicated owners: `ayokoding-web-be-e2e` proves the HTTP-only
+scenarios request by request, and `ayokoding-web-fe-e2e` proves the browser
+scenarios (`<owner>:test:e2e`). The `e2e` adapter reference checked by
+`test:behaviour:coverage` only asserts that the corpus keeps its shape for those
+owners; it runs no browser or server here.
 
 ## Layout
 

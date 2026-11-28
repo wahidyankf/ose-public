@@ -1,0 +1,14 @@
+Server start measurement for the webServer timeouts (P3-E2E)
+
+Method: five starts of apps/ayokoding-web/dist/ayokoding-web with AYOKODING_WEB_FIXTURE=parity on spare loopback
+ports 3193 to 3197. Each start polled GET /en every 50 ms and stopped at the first HTTP 200. Times are seconds from
+process spawn to the first 200.
+
+ready seconds per start: 0.012, 0.059, 0.063, 0.063, 0.063
+max ready seconds: 0.063
+
+Test durations, from the list reporter of the runs recorded in this directory:
+- be (fixture and real-corpus configs): longest test 1.6 s (be-e2e-1.raw.txt).
+- fe (real-corpus config, three browsers): longest test 2.8 s (fe-e2e-2.raw.txt).
+
+Timeouts set from these figures: test timeout 15 s in each config; webServer start timeout 10 s in each config.

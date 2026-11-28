@@ -89,7 +89,8 @@ Flat structure - all apps at the same level, no subdirectories.
 - `ayokoding-www-be-e2e` - Playwright BE E2E tests for ayokoding-www tRPC API
 - `ayokoding-www-fe-e2e` - Playwright FE E2E tests for ayokoding-www UI
 - `ayokoding-web` - AyoKoding learning website rewrite (Go standard library + htmx, port 3102; in progress)
-- `ayokoding-web-e2e` - Playwright E2E tests for ayokoding-web (lands in plan Phase 2)
+- `ayokoding-web-be-e2e` - Playwright HTTP-boundary E2E tests for ayokoding-web (fixture and real-corpus configs; request-only)
+- `ayokoding-web-fe-e2e` - Playwright browser-boundary E2E tests for ayokoding-web (real-corpus config; three browsers)
 - `ayokoding-cli` - AyoKoding course code-example harness (Go + Cobra CLI; validates, syncs,
   runs, and covers course examples in pinned containers)
 - `crane-cli` - PDF-to-Markdown pipeline CLI (F# application)

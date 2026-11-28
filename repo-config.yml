@@ -656,6 +656,8 @@ policies:
         - glob: "SECURITY.md"
         - glob: "apps/ayokoding-cli/README.md"
         - glob: "apps/ayokoding-web/README.md"
+        - glob: "apps/ayokoding-web-be-e2e/README.md"
+        - glob: "apps/ayokoding-web-fe-e2e/README.md"
         - glob: "apps/ayokoding-www/README.md"
         - glob: "apps/ayokoding-www-be-e2e/README.md"
         - glob: "apps/ayokoding-www-fe-e2e/README.md"
@@ -1614,8 +1616,12 @@ extensions:
         path: apps/ayokoding-web
         kind: app
         stacks: [golang]
-      ayokoding-web-e2e:
-        path: apps/ayokoding-web-e2e
+      ayokoding-web-be-e2e:
+        path: apps/ayokoding-web-be-e2e
+        kind: app
+        stacks: [typescript]
+      ayokoding-web-fe-e2e:
+        path: apps/ayokoding-web-fe-e2e
         kind: app
         stacks: [typescript]
       ayokoding-www:

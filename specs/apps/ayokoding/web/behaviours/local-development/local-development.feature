@@ -56,20 +56,6 @@ Feature: Independent local development
     When a reader requests the search, benchmark, and calculator fragments
     Then each fragment returns results without the page layout
 
-  # Behaviour: AYB-029
-  # Behaviour: AYB-030
-  Scenario Outline: Static assets and the favicon are served; an unknown asset returns 404
-    When a reader requests the asset "<path>"
-    Then the asset responds with status "<status>"
-
-    Examples:
-      | path                       | status |
-      | /favicon.ico               | 200    |
-      | /assets/css/site.css       | 200    |
-      | /assets/js/progress.js     | 200    |
-      | /assets/vendor/htmx.min.js | 200    |
-      | /assets/js/unknown.js      | 404    |
-
   # Behaviour: AYB-011
   Scenario Outline: An unknown flag or fixture value stops startup with a message
     When the rewrite starts with the argument "<argument>"

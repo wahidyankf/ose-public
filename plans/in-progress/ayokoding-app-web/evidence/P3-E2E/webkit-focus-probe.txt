@@ -1,0 +1,3 @@
+Probe on arm64 macOS, WebKit (playwright-core), app on 127.0.0.1:3290 with parity fixture:
+Tab {"tag":"BODY","className":"","href":""}
+Alt+Tab {"tag":"A","className":"skip-link","href":"#main"}

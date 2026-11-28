@@ -98,11 +98,11 @@ Compose network the backend still reaches it at `postgres:5432`.
 Ports that a test suite or a developer tool binds on the host, outside the app and backend stack
 tables above:
 
-| Port | Owner                              | Use                                                            |
-| ---- | ---------------------------------- | -------------------------------------------------------------- |
-| 3190 | `ose-www-fe-e2e`, `ose-www-be-e2e` | The `ose-www` server Playwright starts for the E2E suites      |
-| 3191 | `ayokoding-web-e2e`                | The `ayokoding-web` server Playwright starts for the E2E suite |
-| 6006 | `libs/web-ui`                      | Storybook (`storybook` target and its Playwright suite)        |
+| Port | Owner                                          | Use                                                                                         |
+| ---- | ---------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| 3190 | `ose-www-fe-e2e`, `ose-www-be-e2e`             | The `ose-www` server Playwright starts for the E2E suites                                   |
+| 3191 | `ayokoding-web-be-e2e`, `ayokoding-web-fe-e2e` | The `ayokoding-web` server Playwright starts for the E2E suites; the two homes run serially |
+| 6006 | `libs/web-ui`                                  | Storybook (`storybook` target and its Playwright suite)                                     |
 
 A port listed here is claimed the same way as an app port: pick a new one listed nowhere on this
 page.

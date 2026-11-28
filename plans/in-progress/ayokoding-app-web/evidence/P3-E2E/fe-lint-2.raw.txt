@@ -1,0 +1,12 @@
+
+> nx run ayokoding-web-fe-e2e:lint
+
+> npx oxlint .
+
+tests/e2e/steps/localdev.steps.ts:53:41: warning unicorn(no-useless-fallback-in-spread): Empty fallbacks in spreads are unnecessary help: Spreading falsy values in object literals won't add any unexpected properties, so it's unnecessary to add an empty object as fallback.
+
+
+
+ NX   Successfully ran target lint for project ayokoding-web-fe-e2e
+
+

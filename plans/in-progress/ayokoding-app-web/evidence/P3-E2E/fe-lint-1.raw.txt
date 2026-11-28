@@ -1,0 +1,17 @@
+
+> nx run ayokoding-web-fe-e2e:lint
+
+> npx oxlint .
+
+tests/e2e/steps/content.steps.ts:6:18: warning eslint(no-unused-vars): Identifier 'fetchText' is imported but never used. help: Consider removing this import.
+tests/e2e/steps/content.steps.ts:7:10: warning eslint(no-unused-vars): Identifier 'freePort' is imported but never used. help: Consider removing this import.
+tests/e2e/steps/content.steps.ts:7:20: warning eslint(no-unused-vars): Identifier 'spawnBinary' is imported but never used. help: Consider removing this import.
+tests/e2e/steps/content.steps.ts:8:20: warning eslint(no-unused-vars): Identifier 'trackOwned' is imported but never used. help: Consider removing this import.
+tests/e2e/steps/routes.steps.ts:6:39: warning eslint(no-unused-vars): Identifier 'locationOf' is imported but never used. help: Consider removing this import.
+tests/e2e/steps/localdev.steps.ts:68:41: warning unicorn(no-useless-fallback-in-spread): Empty fallbacks in spreads are unnecessary help: Spreading falsy values in object literals won't add any unexpected properties, so it's unnecessary to add an empty object as fallback.
+
+
+
+ NX   Successfully ran target lint for project ayokoding-web-fe-e2e
+
+

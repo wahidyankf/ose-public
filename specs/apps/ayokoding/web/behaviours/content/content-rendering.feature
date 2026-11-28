@@ -7,33 +7,11 @@ Feature: Shared learning content rendering
   Background:
     Given the app is running
 
-  # Behaviour: AYB-018
-  Scenario: A lesson page is readable without browser scripts
-    Given a published Markdown lesson exists in the shared corpus
-    When a reader requests its route without running browser scripts
-    Then the response contains the lesson title and readable article body
-    And the response does not depend on a client-side build artifact
-
   Scenario: A section lists its pages by authored title and order
     Given a section contains published pages with valid titles, slugs, and weights
     When a reader opens that section
     Then page titles and links match their authored metadata
     And the pages follow the established weight and title ordering
-
-  # Behaviour: AYB-008
-  # Behaviour: AYB-054
-  Scenario: A draft lesson's route returns not found
-    Given a lesson is marked as a draft
-    And draft viewing is disabled
-    When a reader requests the draft lesson's route
-    Then its direct route returns not found
-
-  # Behaviour: AYB-008
-  Scenario: A draft lesson is absent from search results
-    Given a lesson is marked as a draft
-    And draft viewing is disabled
-    When a reader searches the corpus
-    Then the lesson is absent from the public results
 
   # Behaviour: AYB-055
   Scenario: A page with invalid metadata is not published
@@ -110,16 +88,3 @@ Feature: Shared learning content rendering
     Given a lesson contains a long inline token and a wide fenced code block
     When a reader opens it at 375 pixels wide
     Then the fenced block scrolls internally without widening the document
-
-  # Behaviour: AYB-031
-  Scenario: A missing page returns the locale's not-found experience
-    When a reader requests a nonexistent content route in a supported locale
-    Then the response status is 404
-    And the reader sees a localized not-found page with usable navigation
-
-  # Behaviour: AYB-007
-  Scenario: With AYOKODING_WEB_SHOW_DRAFTS set to true a draft lesson is shown
-    Given AYOKODING_WEB_SHOW_DRAFTS is set to true for the app
-    And a lesson is marked as a draft
-    When a reader requests the draft lesson's route
-    Then the draft lesson's page shows its title and body

@@ -7,5 +7,9 @@
 
 ## Contents
 
-- [Routes and navigation](./routes-and-navigation.feature) — locale entry, permanent redirects,
-  query preservation, sidebar location, breadcrumbs, and previous/next lessons. Bindings are implemented.
+- [Routes and navigation](./routes-and-navigation.feature) — sidebar location, breadcrumbs, previous/next lessons,
+  browser history, and the learn-entry pages. Bound by `ayokoding-web-fe-e2e` (browser) and the Go unit and integration
+  drivers. Bindings are implemented.
+- [Routes and navigation over HTTP](./routes-and-navigation-http.feature) — locale entry, permanent redirects, query
+  preservation, a fixture-only redirect (`@fixture`), and a legacy archived page. Bound by `ayokoding-web-be-e2e`, and by
+  the Go unit and integration drivers. Bindings are implemented.

@@ -17,11 +17,15 @@ import (
 // is bound by name in the Playwright home (an integration-level file).
 //
 // @scenario specs/apps/ayokoding/web/behaviours/content/content-rendering.feature: *
+// @scenario specs/apps/ayokoding/web/behaviours/content/content-rendering-http.feature: *
 // @scenario specs/apps/ayokoding/web/behaviours/courses/course-catalog-and-paths.feature: *
 // @scenario specs/apps/ayokoding/web/behaviours/discovery/discovery-documents.feature: *
 // @scenario specs/apps/ayokoding/web/behaviours/local-development/local-development.feature: *
+// @scenario specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature: *
 // @scenario specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation.feature: *
+// @scenario specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation-http.feature: *
 // @scenario specs/apps/ayokoding/web/behaviours/search/search.feature: *
+// @scenario specs/apps/ayokoding/web/behaviours/search/search-http.feature: *
 // @scenario specs/apps/ayokoding/web/behaviours/shell/bilingual-shell.feature: *
 // @scenario specs/apps/ayokoding/web/behaviours/tools/ai-benchmark.feature: *
 // @scenario specs/apps/ayokoding/web/behaviours/tools/cost-of-living-calculator.feature: *

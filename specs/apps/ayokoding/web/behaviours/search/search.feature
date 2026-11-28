@@ -42,9 +42,3 @@ Feature: Locale-scoped site search
     When the reader presses Escape
     Then the search dialog closes
     And focus returns to the control that opened it
-
-  # Behaviour: AYB-023
-  Scenario: The search page route returns results for a query without the dialog
-    Given matching published content exists in both supported locales
-    When a reader opens the search page for the matching term in one locale
-    Then the search page lists the matching results for that locale only

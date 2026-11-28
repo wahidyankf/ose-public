@@ -8,4 +8,7 @@
 ## Contents
 
 - [Search](./search.feature) — dialog focus, locale-scoped results, empty input, result selection,
-  and tool discovery. Bindings are implemented.
+  and tool discovery. Bound by `ayokoding-web-fe-e2e` (browser) and the Go unit and integration drivers.
+  Bindings are implemented.
+- [Search over HTTP](./search-http.feature) — the search page route for a query, without the dialog. Bound by
+  `ayokoding-web-be-e2e`, and by the Go unit and integration drivers. Bindings are implemented.

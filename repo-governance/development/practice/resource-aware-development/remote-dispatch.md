@@ -8,7 +8,7 @@ when_to_use: >-
 
 # Remote Dispatch
 
-Adopted by explicit copy from the shared catalog (`origin/main` commit `429a891`), adapted to this repository's
+Adopted by explicit copy from the shared catalog (`origin/main` commit `48f2085`), adapted to this repository's
 homes. A contributor dispatches remote compute only through a local binding found at `REMOTE_DISPATCH_HOME`. The
 binding stays with the contributor: this module names the variable only, never a value. A remote payload carries its
 single HIPPO boundary on the target host, never locally, under the
@@ -33,13 +33,16 @@ single HIPPO boundary on the target host, never locally, under the
   already-guarded target script supplying that one admission, and no second local or nested boundary. (RD-B3, unenforced
   by decision: no checker proves how many admissions a quoted payload received, or the remote host's identity; review
   compares the transcript with target admission evidence.)
-- After the work ends, teardown removes every artifact and worktree the task created on the target, or reports what
-  remains and why. (RD-B4, unenforced by decision: remaining state exists only on the target; review compares the
-  post-work target listing with what the task created.)
+- Remove each artifact a dispatched task creates on the target once the step that needed it ends. At a handoff, the
+  target holds only the task worktree and its installed dependencies. After the work ends, remove the worktree and its
+  branch, then delete the dispatch record last. The dispatch note lists the target's `/var/tmp` entries, `git worktree
+list`, containers, and disk use before the first remote step and after teardown. Never remove what existed before the
+  task or what another session made. (RD-B4, unenforced by decision: the state exists only on the target; review
+  compares the listings with what the task created.)
 - Each dispatch has one dispatch record identifying the dispatch semantically and listing what it created and what
-  teardown left. Write the record before remote work and delete it last after verified teardown, so a dropped session
-  leaves evidence rather than silence; delete a record only once nothing it lists remains. (RD-B5, unenforced by
-  decision: a record's agreement with the target needs the target's own listing, which no shape check proves.)
+  teardown left. Write the record before remote work and delete it last, as RD-B4 orders, so a dropped session leaves
+  evidence rather than silence; delete a record only once nothing it lists remains. (RD-B5, unenforced by decision: a
+  record's agreement with the target needs the target's own listing, which no shape check proves.)
 - Dispatch-created worktrees count toward the same max-worktree caps that plan-execution and multi-plans-execution
   enforce, per-repo and global: every active dispatch-created worktree is included in the cap count, and a dispatch
   waits or moves to another eligible host when the cap is full. (RD-B6, unenforced by decision: active worktrees live
@@ -59,6 +62,4 @@ an alias is an ordinary token no shape tells from code.
 
 ## Enforcement
 
-RD-A2 is gated; every other statement above is unenforced by decision, with its reason beside it. A refusal test against
-live adopter tooling and bindings is filed as its own work: this repository ships the documented refusal, not the
-tooling that performs it.
+RD-A2 is gated; every other statement above is unenforced by decision, with its reason beside it.

@@ -6,7 +6,7 @@ when_to_use: "Use when a plan or task has finished with a repository's worktree 
 # Dev Artifact Clean-Up
 
 Teardown, in order, for one repository. Every rule this workflow applies is stated elsewhere; this
-is the sequence, and the point at which it stops.
+is the sequence, and where it stops.
 
 ## Goal and Termination
 
@@ -33,9 +33,10 @@ the only copies, and nothing there is removable except regenerable build output.
 
 ## Steps
 
-1. **Confirm the terminal gate.** Every delivery unit that used the worktree is delivered, or the
-   work is deliberately abandoned. Not between units: one worktree is reused for all of them under
-   the [Worktree Cap](../../conventions/structure/plans/worktree-cap.md).
+1. **Confirm the terminal gate.** Every delivery unit that used the worktree is delivered, or the work is deliberately
+   abandoned. Not between units, except on a remote host ([Remote
+   Dispatch](../../development/practice/resource-aware-development/remote-dispatch.md)): one worktree is reused for all
+   of them under the [Worktree Cap](../../conventions/structure/plans/worktree-cap.md).
 2. **Run the pre-removal checks** — all six, before any removal:
    [Mandatory Pre-Removal Checks](../../development/workflow/worktree-and-artifact-cleanup/mandatory-pre-removal-checks.md).
 3. **Bring down the dev containers this session started, and remove its leaked test containers**, before touching the worktree:

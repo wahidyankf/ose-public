@@ -2,8 +2,7 @@ import path from "node:path";
 import { defineConfig } from "@playwright/test";
 import { defineBddConfig } from "playwright-bdd";
 
-// Real-corpus config for the HTTP boundary. Its label is "real-corpus (fixture until P3-Corpus)":
-// until P3-Corpus removes the switch below, the server still serves the parity fixture.
+// Real-corpus config for the HTTP boundary. The server starts with no fixture selected, so it serves the real corpus.
 // The read-only BASE_URL mode runs only this config, against that address, and starts no server.
 const workspaceRoot = path.resolve(__dirname, "../..");
 const behaviours = path.join(workspaceRoot, "specs/apps/ayokoding/web/behaviours");
@@ -57,7 +56,6 @@ export default defineConfig({
         cwd: workspaceRoot,
         env: {
           AYOKODING_WEB_PORT: "3191",
-          AYOKODING_WEB_FIXTURE: "parity",
         },
       },
   projects: [

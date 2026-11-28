@@ -5,6 +5,7 @@ import { createBdd } from "playwright-bdd";
 import { expect } from "@playwright/test";
 import { bodyOf, fetchText, locationOf, statusOf } from "../support/http";
 import { stateFor } from "../support/state";
+import { firstHeadingHTML, frontmatterTitle, legacyFile, legacyRoute } from "../support/witness";
 
 const { When, Then } = createBdd();
 
@@ -45,18 +46,21 @@ Then("the query string is preserved", async ({ request }) => {
 });
 
 Then("the redirect does not depend on the old page still existing", async ({ request }) => {
-  await fetchText(request, "/en/learn/courses/go-basics/learning/hello-world");
+  // The redirect's own Location is the destination; it must answer on its own, whether or not the old page exists.
+  const destination = locationOf(request).split("?")[0] ?? "";
+  expect(destination).not.toBe("");
+  await fetchText(request, destination);
   expect(statusOf(request)).toBe(200);
 });
 
 When("a reader opens a legacy archived page", async ({ request }) => {
-  await fetchText(request, "/en/learn/legacy/software-engineering");
+  await fetchText(request, legacyRoute);
 });
 
 Then("the archived page shows its title and canonical body", async ({ request }) => {
   expect(statusOf(request)).toBe(200);
   const body = bodyOf(request);
-  expect(body).toContain("Legacy Software Engineering");
-  expect(body).toContain("Archived canonical content");
+  expect(body).toContain(frontmatterTitle(legacyFile));
+  expect(body).toContain(firstHeadingHTML(legacyFile));
   expect(body).toContain('lang="en"');
 });

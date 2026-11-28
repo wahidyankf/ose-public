@@ -1,0 +1,9 @@
+--- FAIL: TestRealExecReportsLocalExitStatus (0.00s)
+    internal_test.go:182: run=ayokoding.examples.env-build-failed: build failed: , want nil
+--- FAIL: TestControlPlaneRunnerRefusesFailingBinary (0.00s)
+    unit_gaps_test.go:33: code="ayokoding.env.container-cli-not-found", want "ayokoding.env.container-runtime-unavailable"
+--- FAIL: TestRunReportsRealExitStatus (0.00s)
+    unit_gaps_test.go:60: Run=containers: run []: ayokoding.env.container-cli-not-found: container command /bin/true not found on PATH, want nil
+FAIL
+FAIL	github.com/wahidyankf/ose-public/apps/ayokoding-cli/internal/adapters/containers	0.219s
+FAIL

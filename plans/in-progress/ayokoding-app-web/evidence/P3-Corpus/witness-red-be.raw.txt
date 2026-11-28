@@ -1,0 +1,47 @@
+
+ NX   Running target test:e2e for project ayokoding-web-be-e2e and 2 tasks it depends on:
+
+
+
+> nx run ayokoding-web:"build:assets"  [existing outputs match the cache, left as is]
+
+
+> nx run ayokoding-web:build
+
+> go build -trimpath -o dist/ayokoding-web ./cmd/ayokoding-web
+
+
+> nx run ayokoding-web-be-e2e:"test:e2e"
+
+> if grep -rn -E --include='*.ts' --exclude-dir=node_modules --exclude-dir=.features-gen --exclude-dir=test-results --exclude-dir=playwright-report '\\$?test\\.skip\\([^,)]*\\)' .; then echo 'ERROR: unconditional test.skip() found in test files above - use test.skip(condition, reason) for legitimate environment guards, or remove'; exit 1; fi && if [ -n "$BASE_URL" ]; then npx bddgen --config=playwright.real-corpus.config.ts && npx playwright test --config=playwright.real-corpus.config.ts; else npx bddgen --config=playwright.fixture.config.ts && npx playwright test --config=playwright.fixture.config.ts && npx bddgen --config=playwright.real-corpus.config.ts && npx playwright test --config=playwright.real-corpus.config.ts; fi
+
+grep: repetition-operator operand invalid
+Missing step definitions: 3
+
+Given('the {string} fixture is selected', async ({}, arg: string) => {
+  // Step: Given the "parity" fixture is selected
+  // From: ../../specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature:32:5
+});
+
+When('a reader requests the lesson {string}', async ({}, arg: string) => {
+  // Step: When a reader requests the lesson "/en/learn/courses/go-basics/learning/hello-world"
+  // From: ../../specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature:33:5
+});
+
+Then('the lesson answers with status {string}', async ({}, arg: string) => {
+  // Step: Then the lesson answers with status "200"
+  // From: ../../specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature:34:5
+});
+
+Use snippets above to create missing steps.
+Warning: command "if grep -rn -E --include='*.ts' --exclude-dir=node_modules --exclude-dir=.features-gen --exclude-dir=test-results --exclude-dir=playwright-report '\\$?test\\.skip\\([^,)]*\\)' .; then echo 'ERROR: unconditional test.skip() found in test files above - use test.skip(condition, reason) for legitimate environment guards, or remove'; exit 1; fi && if [ -n "$BASE_URL" ]; then npx bddgen --config=playwright.real-corpus.config.ts && npx playwright test --config=playwright.real-corpus.config.ts; else npx bddgen --config=playwright.fixture.config.ts && npx playwright test --config=playwright.fixture.config.ts && npx bddgen --config=playwright.real-corpus.config.ts && npx playwright test --config=playwright.real-corpus.config.ts; fi" exited with non-zero status code
+
+
+ NX   Running target test:e2e for project ayokoding-web-be-e2e and 2 tasks it depends on failed
+
+Failed tasks:
+
+- ayokoding-web-be-e2e:test:e2e
+
+Hint: run the command with --verbose for more details.
+

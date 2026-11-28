@@ -1,0 +1,5 @@
+# HTTP-01 success
+200
+200
+# HTTP-01 failure (expect 404)
+404

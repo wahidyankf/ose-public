@@ -1,0 +1,2 @@
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/cmd/ayokoding-web	0.570s
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/bdd	0.865s

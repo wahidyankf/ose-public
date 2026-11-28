@@ -1,0 +1,427 @@
+[WebServer] ayokoding-web: serving the real corpus: content <repo>/apps/ayokoding-www/content, manifests <repo>/apps/ayokoding-www/src/features/course-paths/manifests
+
+Running 20 tests using 1 worker
+
+  ✓   1 [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/content/content-rendering-http.feature.spec.js:10:7 › Shared learning content rendering over HTTP › A lesson page is readable without browser scripts (360ms)
+  ✓   2 [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/content/content-rendering-http.feature.spec.js:17:7 › Shared learning content rendering over HTTP › A missing page returns the locale's not-found experience (15ms)
+  ✓   3 [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/discovery/discovery-documents.feature.spec.js:10:7 › Published-content discovery › A content page carries its title, description, and canonical URL (11ms)
+  ✓   4 [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/discovery/discovery-documents.feature.spec.js:15:7 › Published-content discovery › Alternate-language links list only available translations (9ms)
+  ✓   5 [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/discovery/discovery-documents.feature.spec.js:20:7 › Published-content discovery › The sitemap reflects the current published corpus (15ms)
+  ✓   6 [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/discovery/discovery-documents.feature.spec.js:28:7 › Published-content discovery › The feed exposes the current published entries (26ms)
+  ✓   7 [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/discovery/discovery-documents.feature.spec.js:35:7 › Published-content discovery › Robots instructions retain the current crawling contract (14ms)
+  ✓   8 [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:8:9 › Independent local development over HTTP › Static assets and the favicon are served; an unknown asset returns 404 › Example #1 (6ms)
+  ✓   9 [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:13:9 › Independent local development over HTTP › Static assets and the favicon are served; an unknown asset returns 404 › Example #2 (4ms)
+  ✓  10 [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:18:9 › Independent local development over HTTP › Static assets and the favicon are served; an unknown asset returns 404 › Example #3 (4ms)
+  ✓  11 [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:23:9 › Independent local development over HTTP › Static assets and the favicon are served; an unknown asset returns 404 › Example #4 (3ms)
+  ✓  12 [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:28:9 › Independent local development over HTTP › Static assets and the favicon are served; an unknown asset returns 404 › Example #5 (3ms)
+  ✓  13 [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:35:7 › Independent local development over HTTP › A default start serves the real content corpus @real-corpus (7ms)
+  ✓  14 [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation-http.feature.spec.js:10:7 › Canonical routes and learning navigation over HTTP › The root enters the default locale (8ms)
+  ✓  15 [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation-http.feature.spec.js:18:9 › Canonical routes and learning navigation over HTTP › Uppercase locale entries resolve to lowercase URLs › Example #1 (7ms)
+  ✓  16 [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation-http.feature.spec.js:23:9 › Canonical routes and learning navigation over HTTP › Uppercase locale entries resolve to lowercase URLs › Example #2 (5ms)
+  ✓  17 [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation-http.feature.spec.js:28:9 › Canonical routes and learning navigation over HTTP › Uppercase locale entries resolve to lowercase URLs › Example #3 (5ms)
+  ✓  18 [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation-http.feature.spec.js:37:9 › Canonical routes and learning navigation over HTTP › An old URL redirects 308 to its current page › Example #1 (9ms)
+  ✘  19 [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation-http.feature.spec.js:46:7 › Canonical routes and learning navigation over HTTP › A legacy archived page URL shows the archived page (15ms)
+  ✓  20 [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/search/search-http.feature.spec.js:10:7 › Locale-scoped site search over HTTP › The search page route returns results for a query without the dialog (346ms)
+
+
+  1) [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation-http.feature.spec.js:46:7 › Canonical routes and learning navigation over HTTP › A legacy archived page URL shows the archived page › Then the archived page shows its title and canonical body 
+
+    Error: expect(received).toContain(expected) // indexOf
+
+    Expected substring: "What You'll Learn"
+    Received string:    "<!doctype html>
+    <html lang=\"en\" data-theme-hook data-sidebar style=\"--sidebar-width: 240px\">
+      <head>
+        <meta charset=\"utf-8\" />
+    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
+    <title>Overview</title>
+    <meta name=\"description\" content=\"Master software engineering through programming languages, system design, and best practices\" />
+    <link rel=\"canonical\" href=\"/en/learn/legacy/software-engineering/overview\" />
+    <link rel=\"stylesheet\" href=\"/assets/css/site.css\" />
+    <link rel=\"alternate\" hreflang=\"id\" href=\"/id\" />·
+    <style>
+      main {
+        min-width: 0;
+        overflow-wrap: anywhere;
+      }
+      pre {
+        max-width: 100%;
+        overflow-x: auto;
+      }
+      img,
+      table,
+      iframe {
+        max-width: 100%;
+      }
+      :focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: 2px;
+      }
+      .skip-link {
+        position: absolute;
+        left: -9999px;
+      }
+      .skip-link:focus {
+        left: 0;
+      }
+      @media (max-width: 767px) {
+        [data-nav=\"mobile\"] {
+          display: block;
+        }
+        [data-sidebar] {
+          --sidebar-width: 100%;
+        }
+      }
+      @media (min-width: 768px) {
+        [data-nav=\"mobile\"] {
+          display: none;
+        }
+      }
+    </style>
+    <script src=\"/assets/js/htmx.min.js\" defer></script>
+    <script src=\"/assets/js/progress.js\" defer data-progress-key=\"ayokoding-learn-progress-v1\"></script>·
+      </head>
+      <body>
+        <a class=\"skip-link\" href=\"#main\"
+      >Skip to content</a
+    >
+    <header data-shell=\"header\">
+      <nav aria-label=\"primary\">
+        <a href=\"/en\">Home</a>
+        <a href=\"/en/learn/courses\">Courses</a>
+      </nav>
+      <nav aria-label=\"locale\">
+        <span aria-current=\"true\" data-locale-active
+          >English</span
+        >
+        <a href=\"/id\" data-locale-switch hreflang=\"id\">Indonesia</a>
+      </nav>
+      <button type=\"button\" data-nav-opener aria-expanded=\"false\">Menu</button>
+      <button type=\"button\" data-search-opener aria-haspopup=\"dialog\">Search</button>
+      <button
+        type=\"button\"
+        data-theme-toggle
+        aria-pressed=\"false\"
+        aria-label=\"Toggle theme\"
+        data-light-label=\"Light\"
+        data-dark-label=\"Dark\"
+      >
+        <span data-theme-name>Light</span>
+      </button>
+    </header>
+    <nav id=\"mobile-nav\" data-nav=\"mobile\" data-close-on-escape hidden>
+      <button type=\"button\" data-nav-closer>Close</button>
+    </nav>
+    <div data-search-dialog hidden>
+      <form
+        method=\"get\"
+        action=\"/en/search\"
+        data-search-form
+        hx-get=\"/htmx/search\"
+        hx-target=\"[data-search-results-live]\"
+        hx-swap=\"innerHTML\"
+        hx-trigger=\"submit, input changed delay:300ms from:[data-search-input]\"
+      >
+        <input type=\"search\" name=\"q\" value=\"\" data-search-input data-search-shortcut aria-label=\"search\" />
+      </form>
+      <div data-search-results-live></div>
+    </div>
+    <script>
+      (function () {
+        var lastSearchOpener = null;
+        function searchDialog() {
+          return document.querySelector(\"[data-search-dialog]\");
+        }
+        function searchInput() {
+          return document.querySelector(\"[data-search-input]\");
+        }
+        function searchOpener() {
+          return document.querySelector(\"[data-search-opener]\");
+        }
+        document.addEventListener(\"click\", function (event) {
+          var skip = event.target && event.target.closest ? event.target.closest(\".skip-link\") : null;
+          if (skip) {····································
+            var main = document.getElementById(\"main\");
+            if (main) {
+              event.preventDefault();
+              main.focus();
+              try {
+                history.replaceState(null, \"\", \"#main\");
+              } catch (e) {}
+            }
+            return;
+          }
+          var opener = event.target && event.target.closest ? event.target.closest(\"[data-search-opener]\") : null;
+          if (opener) {
+            lastSearchOpener = opener;
+            var dialog = searchDialog();
+            if (dialog) dialog.removeAttribute(\"hidden\");
+            var input = searchInput();
+            if (input) input.focus();
+            return;
+          }
+          var navOpener = event.target && event.target.closest ? event.target.closest(\"[data-nav-opener]\") : null;
+          if (navOpener) {
+            var nav = document.querySelector(\"#mobile-nav\");
+            if (nav) {
+              nav.removeAttribute(\"hidden\");
+              navOpener.setAttribute(\"aria-expanded\", \"true\");
+            }
+            return;
+          }
+          var closer = event.target && event.target.closest ? event.target.closest(\"[data-nav-closer]\") : null;
+          if (closer) {
+            var panel = document.querySelector(\"#mobile-nav\");
+            if (panel) panel.setAttribute(\"hidden\", \"\");
+            var openerBtn = document.querySelector(\"[data-nav-opener]\");
+            if (openerBtn) {
+              openerBtn.setAttribute(\"aria-expanded\", \"false\");
+              openerBtn.focus();
+            }
+          }
+        });··········
+        function preserveLocaleSwitchHrefs() {
+          try {
+            var path = window.location.pathname || \"/\";
+            var segments = path.split(\"/\").filter(Boolean);
+            var links = document.querySelectorAll(\"[data-locale-switch]\");
+            for (var i = 0; i < links.length; i++) {
+              var link = links[i];
+              var target = link.getAttribute(\"hreflang\") || \"\";
+              if (!target) continue;
+              var rest = segments.slice(1).join(\"/\");
+              var href = \"/\" + target + (rest ? \"/\" + rest : \"\") + window.location.search;
+              link.setAttribute(\"href\", href);
+            }
+          } catch (e) {}
+        }
+        if (document.readyState === \"loading\") {
+          document.addEventListener(\"DOMContentLoaded\", function () {
+            preserveLocaleSwitchHrefs();
+            enhanceContentHooks();
+          });
+        } else {
+          preserveLocaleSwitchHrefs();
+          enhanceContentHooks();
+        }····················
+        function loadVendorScript(src) {
+          return new Promise(function (resolve, reject) {
+            if (document.querySelector('script[data-vendor-src=\"' + src + '\"]')) {
+              resolve();
+              return;
+            }
+            var script = document.createElement(\"script\");
+            script.src = src;
+            script.setAttribute(\"data-vendor-src\", src);
+            script.onload = function () {
+              resolve();
+            };
+            script.onerror = function () {
+              reject(new Error(\"vendor script failed: \" + src));
+            };
+            document.head.appendChild(script);
+          });
+        }
+        function ensureVendorStylesheet(href) {
+          if (document.querySelector('link[data-vendor-href=\"' + href + '\"]')) return;
+          var link = document.createElement(\"link\");
+          link.rel = \"stylesheet\";
+          link.href = href;
+          link.setAttribute(\"data-vendor-href\", href);
+          document.head.appendChild(link);
+        }
+        function renderDiagrams(nodes) {
+          if (!window.mermaid) return;
+          try {
+            window.mermaid.initialize({ startOnLoad: false, theme: \"default\", securityLevel: \"loose\" });
+          } catch (e) {}
+          nodes.forEach(function (node, index) {
+            var chart = node.getAttribute(\"data-chart\") || node.textContent || \"\";
+            if (!chart.trim()) return;
+            var id = \"mermaid-\" + index + \"-\" + Math.random().toString(36).slice(2, 9);
+            try {
+              window.mermaid
+                .render(id, chart)
+                .then(function (result) {
+                  node.innerHTML = result.svg;
+                })
+                .catch(function (err) {
+                  console.warn(\"[mermaid] Failed to render diagram:\", err);
+                });
+            } catch (err) {
+              console.warn(\"[mermaid] Failed to render diagram:\", err);
+            }
+          });
+        }
+        function renderMath(nodes) {
+          if (!window.katex) return;
+          nodes.forEach(function (node) {
+            var tex = node.getAttribute(\"data-tex\") || node.textContent || \"\";
+            if (!tex.trim()) return;
+            try {
+              window.katex.render(tex, node, {
+                displayMode: node.classList.contains(\"math-display\"),
+                throwOnError: false,
+              });
+            } catch (err) {
+              console.warn(\"[katex] Failed to render math:\", err);
+            }
+          });
+        }
+        function enhanceContentHooks() {
+          var diagrams = Array.from(document.querySelectorAll(\".mermaid, [data-mermaid]\"));
+          var maths = Array.from(document.querySelectorAll(\".math-inline, .math-display, [data-math]\"));
+          if (diagrams.length > 0) {
+            loadVendorScript(\"/assets/vendor/mermaid/mermaid.min.js\")
+              .then(function () {
+                renderDiagrams(diagrams);
+              })
+              .catch(function (err) {
+                console.warn(\"[mermaid] Renderer unavailable:\", err);
+              });
+          }
+          if (maths.length > 0) {
+            ensureVendorStylesheet(\"/assets/vendor/katex/katex.min.css\");
+            loadVendorScript(\"/assets/vendor/katex/katex.min.js\")
+              .then(function () {
+                renderMath(maths);
+              })
+              .catch(function (err) {
+                console.warn(\"[katex] Renderer unavailable:\", err);
+              });
+          }
+        }
+        document.addEventListener(\"keydown\", function (event) {
+          var isShortcut = (event.metaKey || event.ctrlKey) && event.key && event.key.toLowerCase() === \"k\";
+          if (isShortcut) {
+            event.preventDefault();
+            lastSearchOpener = document.activeElement;
+            var dialog = searchDialog();
+            if (dialog) dialog.removeAttribute(\"hidden\");
+            var input = searchInput();
+            if (input) input.focus();
+            return;
+          }
+          if (event.key === \"Escape\") {
+            var openDialog = searchDialog();
+            if (openDialog && !openDialog.hasAttribute(\"hidden\")) {
+              openDialog.setAttribute(\"hidden\", \"\");
+              if (lastSearchOpener && lastSearchOpener.focus) lastSearchOpener.focus();
+              else {
+                var fallback = searchOpener();
+                if (fallback) fallback.focus();
+              }
+            }
+            var nav = document.querySelector(\"#mobile-nav\");
+            if (nav && !nav.hasAttribute(\"hidden\")) {
+              nav.setAttribute(\"hidden\", \"\");
+              var navOpener = document.querySelector(\"[data-nav-opener]\");
+              if (navOpener) {
+                navOpener.setAttribute(\"aria-expanded\", \"false\");
+                navOpener.focus();
+              }
+            }
+          }
+        });
+      })();
+    </script>·
+        <main id=\"main\" tabindex=\"-1\">
+          <nav aria-label=\"breadcrumb\" data-breadcrumbs>
+            <a href=\"/en\">Home</a> /
+            <a href=\"/en/learn/courses/legacy\"></a> /
+            <span aria-current=\"page\">Overview</span>
+          </nav>
+          <aside data-sidebar-nav data-active-page=\"software-engineering/overview\">
+            <div
+              data-sidebar-resize
+              role=\"separator\"
+              aria-orientation=\"vertical\"
+              tabindex=\"0\"
+              aria-label=\"Resize panel\"
+            ></div>
+            <ul>
+              <li>
+                <a href=\"/en/learn/courses/legacy/learning/software-engineering/overview\" aria-current=\"page\"
+                  >Overview</a
+                >
+              </li>
+            </ul>
+          </aside>·······
+          <article class=\"article-body\" data-lesson-meta data-course=\"legacy\" data-lesson=\"software-engineering/overview\">
+            <p>Build your software engineering expertise with structured learning paths covering modern programming languages and system design.</p>
+    <h2>What You&#39;ll Learn</h2>
+    <ul>
+    <li><strong>Programming Languages</strong> - Deep dives into Python, Go, Java, Kotlin, Rust, TypeScript, C#, F#, and more, with tutorials from basics to advanced topics</li>
+    <li><strong>Algorithms &amp; Data Structures</strong> - Core algorithmic thinking and data-structure fundamentals through annotated examples</li>
+    <li><strong>Platforms</strong> - Linux (shell and tooling), Web (frontend and backend frameworks), and Mobile (React Native)</li>
+    <li><strong>Data</strong> - Databases, SQL, and data-access/migration tools across languages</li>
+    <li><strong>Automation Testing</strong> - Test automation with Playwright, Vitest, and Testing Library</li>
+    <li><strong>Automation Tools</strong> - Developer automation with Git, GitHub Actions, the GitHub CLI, and text tools (awk, sed, jq)</li>
+    <li><strong>Infrastructure</strong> - Infrastructure concepts and tools including Terraform, Ansible, Docker, Kubernetes, K3s, and Proxmox VE</li>
+    <li><strong>Networking</strong> - Computer networking fundamentals, protocols, and distributed-systems communication</li>
+    <li><strong>System Design</strong> - Distributed-systems patterns (load balancing, sharding, CAP, microservices, multi-region) across multiple services and scale levels</li>
+    <li><strong>Architecture</strong> - Single-application structure patterns (SOLID, layered, hexagonal, DDD, FSM, design patterns) inside one app</li>
+    <li><strong>Compilers &amp; Interpreters</strong> - Build working interpreters from scratch (Lisp in F# and in Go)</li>
+    <li><strong>Development</strong> - Development methodologies including TDD and BDD</li>
+    </ul>
+    <h2>Architecture vs. System Design — Two Different Layers</h2>
+    <p>These two tracks are often confused, but they target different layers of the same system:</p>
+    <ul>
+    <li><strong>Architecture</strong> focuses on <strong>single-application internals</strong> — how classes, modules, and layers inside one app (or one service) are organized. Think SOLID, layered architecture, hexagonal/clean architecture, DDD building blocks, GoF design patterns.</li>
+    <li><strong>System Design</strong> focuses on <strong>distributed systems</strong> — how multiple services, databases, caches, and queues interact across machines and regions. Think load balancing, sharding, CAP theorem, sagas, consistent hashing, microservices.</li>
+    </ul>
+    <p>Both are valuable, and most real systems need both. An e-commerce monolith primarily needs software architecture; a multi-region payment platform needs both. Pick the track that matches the problem you&#39;re solving right now; cross-link to the other when the scope expands.</p>
+    <p>Each topic follows the Diátaxis framework with tutorials (learning-oriented), how-to guides (problem-solving), reference (technical lookup), and explanations (conceptual understanding).</p>·
+          </article>
+          <div data-progress-region data-course=\"legacy\" data-lesson=\"software-engineering/overview\">
+            <button
+              type=\"button\"
+              data-progress-control=\"complete-trigger\"
+              data-page=\"legacy/software-engineering/overview\"
+              data-mark-label=\"\"
+              data-unmark-label=\"\"
+              aria-pressed=\"false\"
+            >···········
+            </button>
+            <p data-progress-status role=\"status\" aria-live=\"polite\"></p>
+            <p data-progress-blocked hidden>
+              Progress can't be saved in this browser. It lasts until you close this tab.
+            </p>
+          </div>
+          <nav aria-label=\"lesson\" data-lesson-nav>·········
+          </nav>
+        </main>·····
+    <footer data-shell=\"footer\"><p>AyoKoding</p></footer>·
+      </body>
+    </html>
+    "
+
+       at ../../tests/e2e/steps/routes-and-navigation-http.steps.ts:61
+
+      59 |   const body = bodyOf(request);
+      60 |   expect(body).toContain(frontmatterTitle(legacyFile));
+    > 61 |   expect(body).toContain(firstHeading(legacyFile));
+         |                ^
+      62 |   expect(body).toContain('lang="en"');
+      63 | });
+      64 |
+        at Object.<anonymous> (<repo>/apps/ayokoding-web-be-e2e/tests/e2e/steps/routes-and-navigation-http.steps.ts:61:16)
+        at <repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:58:48
+        at BddStepInvoker.runWithAfterStepHooks (<repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:82:22)
+        at <repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:57:19
+        at BddStepInvoker.invoke (<repo>/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:55:5)
+        at <repo>/apps/ayokoding-web-be-e2e/.features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation-http.feature.spec.js:48:5
+
+    Error Context: test-results/specs-apps-ayokoding-web-b-ea274-URL-shows-the-archived-page-bdd-http/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/specs-apps-ayokoding-web-b-ea274-URL-shows-the-archived-page-bdd-http/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/specs-apps-ayokoding-web-b-ea274-URL-shows-the-archived-page-bdd-http/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [bdd-http] › .features-gen/be-real-corpus/specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation-http.feature.spec.js:46:7 › Canonical routes and learning navigation over HTTP › A legacy archived page URL shows the archived page 
+  19 passed (5.3s)

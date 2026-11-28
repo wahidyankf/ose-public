@@ -1,0 +1,10 @@
+
+Running 5 tests using 1 worker
+
+  ✓  1 [bdd-http] › .features-gen/be-fixture/specs/apps/ayokoding/web/behaviours/content/content-rendering-http.feature.spec.js:10:7 › Shared learning content rendering over HTTP › A draft lesson's route returns not found @fixture (366ms)
+  ✓  2 [bdd-http] › .features-gen/be-fixture/specs/apps/ayokoding/web/behaviours/content/content-rendering-http.feature.spec.js:17:7 › Shared learning content rendering over HTTP › A draft lesson is absent from search results @fixture (8ms)
+  ✓  3 [bdd-http] › .features-gen/be-fixture/specs/apps/ayokoding/web/behaviours/content/content-rendering-http.feature.spec.js:24:7 › Shared learning content rendering over HTTP › With AYOKODING_WEB_SHOW_DRAFTS set to true a draft lesson is shown @fixture (238ms)
+  ✓  4 [bdd-http] › .features-gen/be-fixture/specs/apps/ayokoding/web/behaviours/local-development/local-development-http.feature.spec.js:6:7 › Independent local development over HTTP › A fixture is served only when one is selected @fixture (11ms)
+  ✓  5 [bdd-http] › .features-gen/be-fixture/specs/apps/ayokoding/web/behaviours/navigation/routes-and-navigation-http.feature.spec.js:10:7 › Canonical routes and learning navigation over HTTP › A fixture-only old URL redirects 308 to its current page @fixture (11ms)
+
+  5 passed (1.6s)

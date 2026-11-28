@@ -1,0 +1,5 @@
+
+> open-sharia-enterprise@1.0.0 doctor
+> .github/scripts/run-doctor.sh
+
+[toolchain-validate] checked 25 declared toolchains, no findings

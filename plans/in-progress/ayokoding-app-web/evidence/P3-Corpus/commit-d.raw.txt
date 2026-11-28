@@ -1,0 +1,11 @@
+[gate] format-staged changed apps/ayokoding-web-fe-e2e/tests/e2e/browser-progress.spec.ts
+[gate] format-staged changed apps/ayokoding-web-fe-e2e/tests/e2e/steps/content.steps.ts
+[gate] format-staged changed apps/ayokoding-web-fe-e2e/tests/e2e/steps/localdev.steps.ts
+[gate] format-staged changed apps/ayokoding-web-fe-e2e/tests/e2e/steps/progress.steps.ts
+[gate] format-staged changed apps/ayokoding-web-fe-e2e/tests/e2e/support/witness.ts
+[gate] format-staged passed
+[gate] commit-message passed
+[ayokoding-web-p3-corpus 20649895b] test(ayokoding-web-fe-e2e): run the fe home against the real corpus
+ 20 files changed, 757 insertions(+), 133 deletions(-)
+ create mode 100644 apps/ayokoding-web-fe-e2e/playwright.fixture.config.ts
+ create mode 100644 apps/ayokoding-web-fe-e2e/tests/e2e/support/witness.ts

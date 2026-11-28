@@ -1,0 +1,63 @@
+
+[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m<repo>/apps/ayokoding-web[39m
+
+ [31m❯[39m assets/js/copy.dom.test.ts [2m([22m[2m5 tests[22m[2m | [22m[31m3 failed[39m[2m)[22m[32m 18[2mms[22m[39m
+[31m     [31m×[31m copies the verbatim source text of its own block[39m[32m 11[2mms[22m[39m
+[31m     [31m×[31m shows the copied label after a successful copy[39m[32m 3[2mms[22m[39m
+[31m     [31m×[31m shows the failure label when the clipboard refuses[39m[32m 1[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 3 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m assets/js/copy.dom.test.ts[2m > [22mcopy control for fenced code[2m > [22mcopies the verbatim source text of its own block
+[31m[1mAssertionError[22m: expected "vi.fn()" to be called with arguments: [ Array(1) ][90m
+
+Number of calls: [1m0[22m
+[31m[39m
+[36m [2m❯[22m assets/js/copy.dom.test.ts:[2m42:23[22m[39m
+    [90m 40|[39m     [34mbutton[39m()[33m.[39m[34mclick[39m()[33m;[39m
+    [90m 41|[39m     [35mawait[39m vi[33m.[39m[34mrunAllTicks[39m()[33m;[39m
+    [90m 42|[39m     expect(writeText).toHaveBeenCalledWith("package main // source\n\n…
+    [90m   |[39m                       [31m^[39m
+    [90m 43|[39m   })[33m;[39m
+    [90m 44|[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m assets/js/copy.dom.test.ts[2m > [22mcopy control for fenced code[2m > [22mshows the copied label after a successful copy
+[31m[1mAssertionError[22m: expected 'Copy' to be 'Copied' // Object.is equality[39m
+
+Expected: [32m"Cop[7mied[27m"[39m
+Received: [31m"Cop[7my[27m"[39m
+
+[36m [2m❯[22m assets/js/copy.dom.test.ts:[2m48:34[22m[39m
+    [90m 46|[39m     [34mbutton[39m()[33m.[39m[34mclick[39m()[33m;[39m
+    [90m 47|[39m     [35mawait[39m vi[33m.[39m[34mrunAllTicks[39m()[33m;[39m
+    [90m 48|[39m     [34mexpect[39m([34mbutton[39m()[33m.[39mtextContent)[33m.[39m[34mtoBe[39m([32m"Copied"[39m)[33m;[39m
+    [90m   |[39m                                  [31m^[39m
+    [90m 49|[39m   })[33m;[39m
+    [90m 50|[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m assets/js/copy.dom.test.ts[2m > [22mcopy control for fenced code[2m > [22mshows the failure label when the clipboard refuses
+[31m[1mAssertionError[22m: expected 'Copy' to be 'Copy failed' // Object.is equality[39m
+
+Expected: [32m"Copy[7m failed[27m"[39m
+Received: [31m"Copy"[39m
+
+[36m [2m❯[22m assets/js/copy.dom.test.ts:[2m55:34[22m[39m
+    [90m 53|[39m     [34mbutton[39m()[33m.[39m[34mclick[39m()[33m;[39m
+    [90m 54|[39m     [35mawait[39m vi[33m.[39m[34mrunAllTicks[39m()[33m;[39m
+    [90m 55|[39m     [34mexpect[39m([34mbutton[39m()[33m.[39mtextContent)[33m.[39m[34mtoBe[39m([32m"Copy failed"[39m)[33m;[39m
+    [90m   |[39m                                  [31m^[39m
+    [90m 56|[39m   })[33m;[39m
+    [90m 57|[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m3 failed[39m[22m[2m | [22m[1m[32m2 passed[39m[22m[90m (5)[39m
+[2m   Start at [22m 16:22:32
+[2m   Duration [22m 693ms[2m (transform 16ms, setup 0ms, import 22ms, tests 18ms, environment 571ms)[22m
+

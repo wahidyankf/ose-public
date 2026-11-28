@@ -1,0 +1,21 @@
+Resolved 21 packages in 13ms
+Installed 19 packages in 170ms
+ + coverage==7.16.1
+ + gherkin-official==29.0.0
+ + iniconfig==2.3.0
+ + mako==1.4.1
+ + markupsafe==3.0.3
+ + nodeenv==1.10.0
+ + packaging==26.3
+ + parse==1.22.2
+ + parse-type==0.6.6
+ + pluggy==1.6.0
+ + py-typekit==0.1.0 (from git+https://github.com/wahidyankf/py-typekit@938ed1d2da38d289c61a83f4618c5de52a01ad8b)
+ + pygments==2.21.0
+ + pyright==1.1.414
+ + pytest==9.1.1
+ + pytest-bdd==8.1.0
+ + pytest-cov==7.1.0
+ + ruff==0.16.8
+ + six==1.17.0
+ + typing-extensions==4.16.0

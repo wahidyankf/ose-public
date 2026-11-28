@@ -27,7 +27,8 @@ until then.
 | `ayokoding-app-web-p2`                                                           | `delivery`    | delivered       | Phase 2 complete app, tools codec migration, and first manual-findings repair merged as PR #766 at `29d35c2ef81f274a749833064c2e3a2d810609c9`. |
 | `plan/ayokoding-app-web-parity`                                                  | `delivery`    | active          | The 2026-11-28 plan amendment (documents only), branched from `origin/main` at `71c7ae840`.                                                    |
 | `ayokoding-web-p3-e2e`                                                           | `planned`     | planned         | `P3-E2E`: both e2e homes under their final names.                                                                                              |
-| `ayokoding-web-p3-corpus`                                                        | `planned`     | planned         | `P3-Corpus`: real corpus by default.                                                                                                           |
+| `ayokoding-web-p3-corpus`                                                        | `delivery`    | active          | `P3-Corpus`: real corpus by default. Committed on the branch; PR pending.                                                                      |
+| `ayokoding-web-p3-render`                                                        | `planned`     | planned         | `P3-Render`: the authored structures the fixture config still serves, and the final tag removal.                                               |
 | `ayokoding-web-p3-inventory`                                                     | `planned`     | planned         | `P3-Inventory`: committed URL inventory and gap report.                                                                                        |
 | `ayokoding-web-p4-tree`, `-p4-redirects`, `-p4-search`                           | `planned`     | planned         | Phase 4 units.                                                                                                                                 |
 | `ayokoding-web-p5-surfaces`, `-p5-discovery`, `-p5-cache`                        | `planned`     | planned         | Phase 5 units.                                                                                                                                 |
@@ -59,30 +60,31 @@ nodes in this DAG.
 
 Arrows are dependencies. Where two units have no arrow between them, the fixed order below decides which one
 runs first, and a unit never runs beside another that shares its writer files, ports, or the single worktree.
-The three pairs that would otherwise run in parallel are serialized: `P3-Corpus` before `P3-Inventory`,
+The three pairs that would otherwise run in parallel are serialized: `P3-Corpus` before `P3-Render` before `P3-Inventory`,
 `P4-Redirects` before `P4-Search`, and `P6-Content` before `P6-Learn` before `P6-Pages`. They share
 `internal/web/server.go`, the layout template, `repo-config.yml`, the lockfile, the spec READMEs, and the ports.
 The coordinator integrates every unit into the one worktree in this fixed order:
 
 1. P3-E2E
 2. P3-Corpus
-3. P3-Inventory
-4. P4-Tree
-5. P4-Redirects
-6. P4-Search
-7. P5-Surfaces
-8. P5-Discovery
-9. P5-Cache
-10. P6-Harness
-11. P6-Shell
-12. P6-Content
-13. P6-Learn
-14. P6-Pages
-15. P7-Crawl
-16. P7-FE
-17. P8-Hardening
-18. P9-Knowledge
-19. Archive and cleanup
+3. P3-Render
+4. P3-Inventory
+5. P4-Tree
+6. P4-Redirects
+7. P4-Search
+8. P5-Surfaces
+9. P5-Discovery
+10. P5-Cache
+11. P6-Harness
+12. P6-Shell
+13. P6-Content
+14. P6-Learn
+15. P6-Pages
+16. P7-Crawl
+17. P7-FE
+18. P8-Hardening
+19. P9-Knowledge
+20. Archive and cleanup
 
 ```mermaid
 flowchart LR
@@ -90,7 +92,8 @@ flowchart LR
   accDescr: Merged baseline, harness, and shared data lead to the e2e homes, then one serialized chain of corpus, inventory, tree, redirects, search, surfaces, discovery, cache, harness, shell, content, learn, and pages units; the crawl and the browser suite follow, then hardening, knowledge capture, and archival.
   P2["P0 to P2 merged"] --> E2E["P3-E2E homes"]
   E2E --> COR["P3-Corpus"]
-  COR --> INV["P3-Inventory"]
+  COR --> REN["P3-Render"]
+  REN --> INV["P3-Inventory"]
   INV --> TREE["P4-Tree"]
   TREE --> RED["P4-Redirects"]
   RED --> SRC["P4-Search"]
@@ -125,7 +128,7 @@ revert of that unit's pull request.
 | -------- | ------------------------------------------------ | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
 | 0        | — (setup and baseline)                           | —                                  | —                                                                                                                                    | none                                                    | No resulting state change                                                                                   |
 | 1-2      | Harness, shared data, and the complete local app | earlier worktree, no longer listed | `ayokoding-app-web-exec`, `ayokoding-app-web-p2`                                                                                     | delivered (PRs #763 and #766)                           | Merged; the old and new apps run together; rollback reverts the merged PR                                   |
-| 3        | E2E homes, real corpus, URL inventory            | `worktrees/ayokoding-app-web/`     | `ayokoding-web-p3-e2e`, `ayokoding-web-p3-corpus`, `ayokoding-web-p3-inventory`                                                      | one PR per unit, at its merge                           | Both e2e homes pass and the old `ayokoding-www-*` files are byte-identical; rollback reverts the unit's PR  |
+| 3        | E2E homes, real corpus, URL inventory            | `worktrees/ayokoding-app-web/`     | `ayokoding-web-p3-e2e`, `ayokoding-web-p3-corpus`, `ayokoding-web-p3-render`, `ayokoding-web-p3-inventory`                           | one PR per unit, at its merge                           | Both e2e homes pass and the old `ayokoding-www-*` files are byte-identical; rollback reverts the unit's PR  |
 | 4        | Content tree, redirects, search                  | `worktrees/ayokoding-app-web/`     | `ayokoding-web-p4-tree`, `ayokoding-web-p4-redirects`, `ayokoding-web-p4-search`                                                     | one PR per unit, at its merge                           | Every authored page and redirect source is served; rollback reverts the unit's PR                           |
 | 5        | Entry pages, discovery, caching                  | `worktrees/ayokoding-app-web/`     | `ayokoding-web-p5-surfaces`, `ayokoding-web-p5-discovery`, `ayokoding-web-p5-cache`                                                  | one PR per unit, at its merge                           | Landing, browse, tools, sitemap, feed, robots, and cache headers are served; rollback reverts the unit's PR |
 | 6        | Design parity                                    | `worktrees/ayokoding-app-web/`     | `ayokoding-web-p6-harness`, `ayokoding-web-p6-shell`, `ayokoding-web-p6-content`, `ayokoding-web-p6-learn`, `ayokoding-web-p6-pages` | one PR per unit, at its merge                           | Styling changes only, with the old app untouched; rollback reverts the unit's PR                            |
@@ -765,29 +768,71 @@ report with its zero-or-more gaps listed per unit that closes them.
 **Input:** `main` after `P3-E2E`; `internal/web/config.go` and `seed.go` default to the fixture; the be witness list `evidence/P3-E2E/moved-scenario-verification.md`, which `P3-E2E` recorded; and the fe htmx spec, which needs fixture content.
 **Outcome:** a default start serves the repository's real content; `--fixture` / `AYOKODING_WEB_FIXTURE` is the only way to serve the fixture; corpus and manifest roots are discovered by the rule in [006](./tech-docs/006-parity-program-design.md#corpus-configuration-g1); an unreadable root stops startup before the listener opens. Both real-corpus configs (be and fe) serve the real corpus with no switch, and their steps use real-corpus witnesses. The fixture-only htmx spec moves into a new fe fixture config, `playwright.fixture.config.ts`, which keeps the switch. **Proof:** the three AC-13 scenarios are green at Unit, Integration, and E2E; both real-corpus configs pass with their switches removed; the fe fixture config passes the htmx spec's seven tests; and a manual default start serves a real lesson.
 
-- [ ] [AI] Do C1 and C2 for the three AC-13 scenarios listed for `P3-Corpus` in 008. Two are HTTP scenarios in `local-development-http.feature`; one is a process-boundary scenario in `local-development.feature`.
-- [ ] [AI] RED (Unit): write config-resolution scenarios in `tests/bdd` with a fake corpus root and no fixture; assert the resolved corpus is the real root and the fixture is unset. Save the failure.
-- [ ] [AI] RED (Integration): write the `httptest` scenario that starts the real server over the repository's `apps/ayokoding-www/content` (current location) and asserts a known lesson responds 200. Save the failure.
+- [x] [AI] Do C1 and C2 for the three AC-13 scenarios listed for `P3-Corpus` in 008. Two are HTTP scenarios in `local-development-http.feature`; one is a process-boundary scenario in `local-development.feature`.
+- [x] [AI] RED (Unit): write config-resolution scenarios in `tests/bdd` with a fake corpus root and no fixture; assert the resolved corpus is the real root and the fixture is unset. Save the failure.
+- [x] [AI] RED (Integration): write the `httptest` scenario that starts the real server over the repository's `apps/ayokoding-www/content` (current location) and asserts a known lesson responds 200. Save the failure.
 - [ ] [AI] RED (E2E, be home): bind the two AC-13 HTTP scenarios, "A default start serves the real content corpus" (real-corpus config) and "A fixture is served only when one is selected" (fixture config). Save the failures.
+      Not ticked: no separate failing output was saved under this name. The binding is written and green: the AC-13 steps in `apps/ayokoding-web-be-e2e/tests/e2e/steps/local-development-http.steps.ts` pass in the real-corpus config (20 passed) and the fixture config (5 passed), in `evidence/P3-Corpus/c4/ayokoding-web-be-e2e-test-e2e.raw.txt`. The nearest real RED is `evidence/P3-Corpus/witness-red-be-real.raw.txt`: the real-corpus config with the switch removed, which fails the moved HTTP scenarios on the real corpus. The first be RED attempt was invalid (wrapper exit 0, no test ran); `evidence/P3-Corpus/witness-red-be.raw.txt` holds that run. No run of the two AC-13 scenarios was saved before the default flip, so no RED exists for them under this name.
 - [ ] [AI] RED (E2E, fe home): bind "An unreadable content directory stops startup before the listener opens" through the process boundary in `ayokoding-web-fe-e2e`: spawn the built binary over an unreadable root and assert a non-zero exit and the message. Follow the precedent in `apps/ayokoding-web-fe-e2e/tests/e2e/steps/localdev.steps.ts`. Save the failure.
+      Not ticked: no failing output exists for this binding. The scenario passed on its first real run, with the switch removed, on chromium, firefox and webkit (`evidence/P3-Corpus/witness-red-fe.raw.txt`), because the process-boundary check does not depend on the switch. The Go unit RED of the same check is `evidence/P3-Corpus/red-go-unit-web.raw.txt` (`TestResolveCorpusRefusesAnUnreadableNamedRoot`). The binding is green in `evidence/P3-Corpus/c4/ayokoding-web-fe-e2e-test-e2e.raw.txt`.
 - [ ] [AI] RED (Integration): bind the unreadable-directory scenario over an unreadable directory on the real filesystem in `tests/bdd-integration`. Save the failure.
-- [ ] [AI] RED (documentation): a Unit test asserts that `apps/ayokoding-web/README.md` and `.env.example` name the default corpus and the fixture switch. Before the GREEN step it must fail by assertion, and its diagnostic must name the missing setting (for example, "README does not name AYOKODING_WEB_FIXTURE"), not a missing-file or parse error. Save the failure.
-- [ ] [AI] GREEN (default change, first): implement repo-root discovery (nearest `repo-config.yml`; content candidates `apps/ayokoding-web/content` then `apps/ayokoding-www/content`; manifest candidates `apps/ayokoding-web/manifests` then `apps/ayokoding-www/src/features/course-paths/manifests`), the fail-fast check, and the default flip: `internal/web/config.go` defaults to the real corpus, and `FixtureParity` is selected only by `--fixture parity` or `AYOKODING_WEB_FIXTURE`. Keep every existing test's fixture selection explicit by passing the switch in the harnesses. The Unit, Integration, and documentation REDs above now pass.
-- [ ] [AI] GREEN: add the two AC-13 HTTP scenarios, with their Gherkin and `# Behaviour:` comments, to `local-development/local-development-http.feature`, which `P3-E2E` created. Tag "A default start serves the real content corpus" `@real-corpus` and "A fixture is served only when one is selected" `@fixture`.
-- [ ] [AI] GREEN: add "An unreadable content directory stops startup before the listener opens" to `local-development/local-development.feature` with its `# Behaviour:` comment, untagged, so the fe home's real-corpus config binds it.
-- [ ] [AI] RED (witness, both homes): in a scratch copy of each real-corpus config (`playwright.real-corpus.config.ts` of the be home and of the fe home), remove the `AYOKODING_WEB_FIXTURE=parity` env line and run it. The webServer then starts the built binary with no `--fixture` flag and no fixture environment, so the server serves the real corpus, which the step records by requesting a real-corpus witness page. Save the failing assertions to `evidence/P3-Corpus/witness-red-be.md` and `evidence/P3-Corpus/witness-red-fe.md`. Each failure names a step that still expects fixture content. Delete the scratch copies after saving.
-- [ ] [AI] GREEN (witness rewrites, both homes): rewrite each be step that expects fixture content to the witness recorded for its scenario in `evidence/P3-E2E/moved-scenario-verification.md`; rows the witness file marks fixture-only keep their fixture content and stay in `playwright.fixture.config.ts`. Rewrite each fe step that fails the RED run to a witness found by rule in `apps/ayokoding-www/content` or `apps/ayokoding-www/src/redirects`, with no hard-coded title. Record each changed step in `evidence/P3-Corpus/witness-rewrites-be.md` and `evidence/P3-Corpus/witness-rewrites-fe.md`.
-- [ ] [AI] GREEN (htmx spec to a fixture config): create `apps/ayokoding-web-fe-e2e/playwright.fixture.config.ts`. It binds no feature file. Its single project `specs-chromium` has `testDir` `tests/e2e` and `testMatch` `htmx-fragments.spec.ts`, and its `webServer` starts the binary with `AYOKODING_WEB_FIXTURE=parity` on 3191. Remove `htmx-fragments.spec.ts` from the `specs-<browser>` projects of `playwright.real-corpus.config.ts`, so the htmx spec runs only in the fixture config. Its named runner is `ayokoding-web-fe-e2e:test:e2e`. Its gate is this unit's run of the fixture config, in which its seven tests pass with retries zero. The spec's content (fixture-only `go-basics/hello-world`, `data-count="109"`, and `SGD 4,718`) is the reason it stays on the fixture; `P5-Surfaces` moves it to the be home and then deletes this config.
-- [ ] [AI] GREEN (fixture wiring, fe home): add `playwright.fixture.config.ts` to the fe `test:e2e` command, after the real-corpus config, and to the fe `project.json` `inputs`. `P5-Surfaces` reverts this wiring when it deletes the config.
-- [ ] [AI] GREEN (the default change, both real-corpus configs): remove `AYOKODING_WEB_FIXTURE=parity` from the `webServer` env of `apps/ayokoding-web-be-e2e/playwright.real-corpus.config.ts` and of `apps/ayokoding-web-fe-e2e/playwright.real-corpus.config.ts`, and remove both labels "fixture until P3-Corpus". Both real-corpus configs now serve the real corpus. The be fixture config and the fe fixture config keep their switches.
-- [ ] [AI] Rerun `ayokoding-web-be-e2e:test:e2e` and record the counts of its two configs; the real-corpus config must pass with no switch, and the fixture config must pass unchanged.
-- [ ] [AI] Rerun `ayokoding-web-fe-e2e:test:e2e` and record the counts of its real-corpus and fixture configs; the real-corpus config must pass with no switch, and the fixture config must pass the htmx spec's seven tests.
-- [ ] [AI] GREEN: update `.env.example` and `apps/ayokoding-web/README.md` with the defaults.
-- [ ] [AI] REFACTOR: with tests green, collapse the three place-specific path checks into one function in `internal/web/config.go` and delete any now-unused seed helpers (dead code is a finding).
-- [ ] [AI] Manual check, start: run `rtk ./hippo run --class service --resource-tier standard --disk-path . --cwd apps/ayokoding-web -- go run ./cmd/ayokoding-web --port 3102` with no other flag, and record the owned service handle.
-- [ ] [AI] Manual check, success: run recipe `HTTP-01` of [the manual HTTP recipe registry](#manual-http-recipe-registry) (generic and nested content page, expected `200`) and save its output to `evidence/P3-Corpus/`.
-- [ ] [AI] Manual check, failure: run recipe `HTTP-01` negative case (a missing page, expected `404`) and save its output to `evidence/P3-Corpus/`.
-- [ ] [AI] Manual check, stop: stop only the owned service started in the start step.
+      Not ticked: the integration-layer RED was not captured. `evidence/P3-Corpus/red-integration-godog.raw.txt` is empty, which is a failed capture. The nearest real RED is the unit-layer failure of the same check, `TestResolveCorpusRefusesAnUnreadableNamedRoot`, in `evidence/P3-Corpus/red-go-unit-integration.raw.txt`. The integration binding (`apps/ayokoding-web/tests/internal/glue/steps_corpus.go` with `host_real.go`) is green in `evidence/P3-Corpus/c4/ayokoding-web-test-integration.raw.txt`.
+- [x] [AI] RED (documentation): a Unit test asserts that `apps/ayokoding-web/README.md` and `.env.example` name the default corpus and the fixture switch. Before the GREEN step it must fail by assertion, and its diagnostic must name the missing setting (for example, "README does not name AYOKODING_WEB_FIXTURE"), not a missing-file or parse error. Save the failure.
+      Ticked on its real capture. `evidence/P3-Corpus/red-go-unit-web.raw.txt` shows `TestDocumentsNameDefaultCorpusAndFixtureSwitch` failing with the diagnostic the plan asks for: `README.md does not name AYOKODING_WEB_FIXTURE` and `.env.example does not name AYOKODING_WEB_FIXTURE`. That run was captured while the test lived at `internal/web/docs_test.go`; it moved to `tests/integration/documents_test.go` because forbidigo bans disk reads in unit scope. Its GREEN is in `evidence/P3-Corpus/c4/ayokoding-web-test-integration.raw.txt`.
+- [x] [AI] GREEN (default change, first): implement repo-root discovery (nearest `repo-config.yml`; content candidates `apps/ayokoding-web/content` then `apps/ayokoding-www/content`; manifest candidates `apps/ayokoding-web/manifests` then `apps/ayokoding-www/src/features/course-paths/manifests`), the fail-fast check, and the default flip: `internal/web/config.go` defaults to the real corpus, and `FixtureParity` is selected only by `--fixture parity` or `AYOKODING_WEB_FIXTURE`. Keep every existing test's fixture selection explicit by passing the switch in the harnesses. The Unit, Integration, and documentation REDs above now pass.
+- [x] [AI] GREEN: add the two AC-13 HTTP scenarios, with their Gherkin and `# Behaviour:` comments, to `local-development/local-development-http.feature`, which `P3-E2E` created. Tag "A default start serves the real content corpus" `@real-corpus` and "A fixture is served only when one is selected" `@fixture`.
+- [x] [AI] GREEN: add "An unreadable content directory stops startup before the listener opens" to `local-development/local-development.feature` with its `# Behaviour:` comment, untagged, so the fe home's real-corpus config binds it.
+- [x] [AI] RED (witness, both homes): in a scratch copy of each real-corpus config (`playwright.real-corpus.config.ts` of the be home and of the fe home), remove the `AYOKODING_WEB_FIXTURE=parity` env line and run it. The webServer then starts the built binary with no `--fixture` flag and no fixture environment, so the server serves the real corpus, which the step records by requesting a real-corpus witness page. Save the failing assertions to `evidence/P3-Corpus/witness-red-be.md` and `evidence/P3-Corpus/witness-red-fe.md`. Each failure names a step that still expects fixture content. Delete the scratch copies after saving.
+- [x] [AI] GREEN (witness rewrites, both homes): rewrite each be step that expects fixture content to the witness recorded for its scenario in `evidence/P3-E2E/moved-scenario-verification.md`; rows the witness file marks fixture-only keep their fixture content and stay in `playwright.fixture.config.ts`. Rewrite each fe step that fails the RED run to a witness found by rule in `apps/ayokoding-www/content` or `apps/ayokoding-www/src/redirects`, with no hard-coded title. Record each changed step in `evidence/P3-Corpus/witness-rewrites-be.md` and `evidence/P3-Corpus/witness-rewrites-fe.md`.
+- [x] [AI] GREEN (htmx spec to a fixture config): create `apps/ayokoding-web-fe-e2e/playwright.fixture.config.ts`. It binds no feature file. Its single project `specs-chromium` has `testDir` `tests/e2e` and `testMatch` `htmx-fragments.spec.ts`, and its `webServer` starts the binary with `AYOKODING_WEB_FIXTURE=parity` on 3191. Remove `htmx-fragments.spec.ts` from the `specs-<browser>` projects of `playwright.real-corpus.config.ts`, so the htmx spec runs only in the fixture config. Its named runner is `ayokoding-web-fe-e2e:test:e2e`. Its gate is this unit's run of the fixture config, in which its seven tests pass with retries zero. The spec's content (fixture-only `go-basics/hello-world`, `data-count="109"`, and `SGD 4,718`) is the reason it stays on the fixture; `P5-Surfaces` moves it to the be home and then deletes this config.
+- [x] [AI] GREEN (fixture wiring, fe home): add `playwright.fixture.config.ts` to the fe `test:e2e` command, after the real-corpus config, and to the fe `project.json` `inputs`. `P5-Surfaces` reverts this wiring when it deletes the config.
+- [x] [AI] GREEN (the default change, both real-corpus configs): remove `AYOKODING_WEB_FIXTURE=parity` from the `webServer` env of `apps/ayokoding-web-be-e2e/playwright.real-corpus.config.ts` and of `apps/ayokoding-web-fe-e2e/playwright.real-corpus.config.ts`, and remove both labels "fixture until P3-Corpus". Both real-corpus configs now serve the real corpus. The be fixture config and the fe fixture config keep their switches.
+- [x] [AI] Rerun `ayokoding-web-be-e2e:test:e2e` and record the counts of its two configs; the real-corpus config must pass with no switch, and the fixture config must pass unchanged.
+- [x] [AI] Rerun `ayokoding-web-fe-e2e:test:e2e` and record the counts of its real-corpus and fixture configs; the real-corpus config must pass with no switch, and the fixture config must pass the htmx spec's seven tests.
+- [x] [AI] GREEN: update `.env.example` and `apps/ayokoding-web/README.md` with the defaults.
+- [x] [AI] REFACTOR: with tests green, collapse the three place-specific path checks into one function in `internal/web/config.go` and delete any now-unused seed helpers (dead code is a finding).
+      Done in `00d942256`. The three path checks (the named root, the repository-marker walk, and the candidate and readability checks) are one function, `resolveSourceRoot`, in `internal/web/config.go`, and `corpus.go` is deleted. No seed helper became unused: `explicitRoot` is still used by `SeedDeps`. Gates: `evidence/P3-Corpus/c4-gates-final.md`.
+- [x] [AI] Manual check, start: run `rtk ./hippo run --class service --resource-tier standard --disk-path . --cwd apps/ayokoding-web -- go run ./cmd/ayokoding-web --port 3102` with no other flag, and record the owned service handle.
+- [x] [AI] Manual check, success: run recipe `HTTP-01` of [the manual HTTP recipe registry](#manual-http-recipe-registry) (generic and nested content page, expected `200`) and save its output to `evidence/P3-Corpus/`.
+- [x] [AI] Manual check, failure: run recipe `HTTP-01` negative case (a missing page, expected `404`) and save its output to `evidence/P3-Corpus/`.
+- [x] [AI] Manual check, stop: stop only the owned service started in the start step.
+- [x] [AI] ADDED during delivery: `TestResolveCorpusRefusesAMissingManifestsRoot` and `TestResolveCorpusNeedsAKnownWorkingDirectory` in `internal/web/corpus_test.go`. Reason: the unit coverage gate (99%) counted the manifests-error and working-directory branches of the new corpus code as uncovered.
+- [x] [AI] ADDED during delivery: the documents check moved from `internal/web/docs_test.go` to `tests/integration/documents_test.go`. Reason: forbidigo bans disk reads in unit-scope tests.
+- [x] [AI] ADDED during delivery: launcher tests use in-memory `fstest.MapFS` roots and a `missingFS` for absent directories, and the real-filesystem helpers (`realWorkingDir`, `realUnreadableDir`, `errNotRoot`) sit in `tests/internal/glue/host_real.go`. Reason: the same forbidigo rule, plus the real-filesystem scenario needs one exempt file.
+- [x] [AI] ADDED during delivery: the be fixture-selection step takes `({ request: _request }, fixture: string)` and checks the value. Reason: a zero-argument form made bddgen report "incorrect arguments", and an empty `{}` pattern warned under lint.
+- [x] [AI] ADDED during delivery: the be redirect step checks that Location is non-empty and fetches it, instead of comparing with a page the real corpus lacks. Reason: the old-page assertion could not pass on the real corpus.
+- [x] [AI] ADDED during delivery: the routes Examples row changed from `just-enough-python/learning/intro` to `learning/beginner`. Reason: `intro` is absent from the real corpus.
+- [x] [AI] ADDED during delivery: fixture-owned fe scenarios keep their fixture literals and carry `@fixture-until-p3-render`, `@fixture-until-p4-search` or `@fixture-until-p4-tree`, and the fe real-corpus config excludes those tags. Reason: rule-found witnesses returned 404 on the parity fixture, and the product gaps belong to later units (coordinator decision). Evidence: `evidence/P3-Corpus/witness-rewrites-fe.md`.
+- [x] [AI] ADDED during delivery: the be and fe `test:e2e` guard command drops the optional `\\$?` prefix from its `test.skip` pattern. Reason: the grep returned an error, so the guard could not run.
+- [x] [AI] ADDED during delivery: P3-Render, P4-Search and P4-Tree each gained a tag-removal step, and P7-FE gained a step that finds no `@fixture-until-*` tag. Reason: coordinator decision, so each product gap has a named owner.
+- [x] [AI] ADDED during delivery: the Gherkin split of the structures outline (one structure per row) and the table scenario. Reason: each row witnesses one real lesson, so a failure names one structure. The Gherkin change is recorded in `learnings.md`.
+- [x] [AI] ADDED during delivery: the code-block controls (decision A) land as their own commit, `feat(ayokoding-web): render fenced code controls in the real pipeline`, ahead of the corpus default. Reason: approved commit split.
+- [x] [AI] Evidence names: the plan's `witness-red-be.md` and `witness-red-fe.md` are saved as `witness-red-be.raw.txt` and `witness-red-fe.raw.txt`. The witness rewrite records are `witness-rewrites-fe.md` and `witness-rewrites-be.md`.
+- [x] [AI] Recorded: the four RED items above each carry a note. The documentation RED is ticked on its real capture. The other three stay unticked, with the nearest real evidence named. The plans convention defines no deviation form, so each deviation is a note under its item plus a `learnings.md` entry.
+- [x] [AI] Do C4. Evidence: `evidence/P3-Corpus/c4-gates-final.md` and `evidence/P3-Corpus/c4/`, run on `00d942256`.
+
+### P3-Render — AC-13 follow-up: Render the authored structures the fixture config still serves
+
+**Input:** `main` after `P3-Corpus`; the seven `@fixture-until-p3-render` scenarios in `content/content-rendering.feature` (shortcodes, relative links, KaTeX and mermaid, table of contents, one title heading, task list, raw details), which the fe fixture config still serves; and the product gaps that `P3-Corpus` recorded in `evidence/P3-Corpus/witness-rewrites-fe.md`.
+**Outcome:** the real corpus renders each structure those scenarios name, so each scenario can leave the fixture config. **Proof:** each gap has a Unit test, an Integration test, and an fe real-corpus E2E regression check that pass on chromium, firefox and webkit; a final step removes every `@fixture-until-p3-render` tag, and the fe fixture config then holds no P3-Render scenario.
+
+- [ ] [AI] Do C1 and C2: the seven scenarios already exist with their `@fixture-until-p3-render` tags and `# Behaviour:` comments. Any Gherkin change is recorded in `learnings.md` with its reason.
+- [ ] [AI] Gap 1, shortcodes (`{{< callout >}}`, tabs, steps): RED (Unit, Integration): a page with a shortcode must show the component markup, not the raw `{{<` text. The render path never calls `TransformShortcodes` today. Save the failures to `evidence/P3-Render/gap-1-red.txt`.
+- [ ] [AI] Gap 1: GREEN: call `TransformShortcodes` in the render path before sanitising. Unit and Integration pass.
+- [ ] [AI] Gap 2, relative `.md` links: RED (Unit, Integration): a relative link to a sibling `.md` file must become its route, and its fragment must survive. Save the failures to `evidence/P3-Render/gap-2-red.txt`.
+- [ ] [AI] Gap 2: GREEN: rewrite relative `.md` links to routes in the render path. Unit and Integration pass.
+- [ ] [AI] Gap 3, KaTeX and mermaid: RED (probe first): the vendor scripts answer 200 but the diagrams do not render in chromium, and the root cause is not yet known. Record the probe in `evidence/P3-Render/gap-3-probe.txt` before any code change, then write the failing Unit or Integration test for the cause the probe shows.
+- [ ] [AI] Gap 3: GREEN: fix the cause the probe names. Unit and Integration pass.
+- [ ] [AI] Gap 4, table of contents: RED (Unit, Integration): the lesson emits a `data-toc` navigation whose entries link to the body headings by id. Save the failures to `evidence/P3-Render/gap-4-red.txt`.
+- [ ] [AI] Gap 4: GREEN: emit the `data-toc` navigation. Unit and Integration pass.
+- [ ] [AI] Gap 5, one title heading: RED (Unit, Integration): the lesson page has exactly one `<h1>`, taken from the frontmatter title, and the body's headings start at `<h2>`. Save the failures to `evidence/P3-Render/gap-5-red.txt`.
+- [ ] [AI] Gap 5: GREEN: add the title `<h1>` to the lesson template. Unit and Integration pass.
+- [ ] [AI] Gap 6, task list: RED (Unit, Integration): a task list keeps its checkbox inputs after sanitising. Bluemonday removes them today. Save the failures to `evidence/P3-Render/gap-6-red.txt`.
+- [ ] [AI] Gap 6: GREEN: allow the checkbox input only inside list items through the sanitiser. Unit and Integration pass.
+- [ ] [AI] Gap 7, raw details: RED (Unit, Integration): a line-start raw `<details>` block survives rendering and sanitising, with its `<summary>`. Goldmark omits it today. Save the failures to `evidence/P3-Render/gap-7-red.txt`.
+- [ ] [AI] Gap 7: GREEN: allow raw `<details>` and `<summary>` blocks through goldmark and the sanitiser, and nothing else. Unit and Integration pass.
+- [ ] [AI] E2E regression for gaps 1 to 7: the fe real-corpus config runs each gap's scenario once the final step below drops its tag. Until then, the scenario runs on the fixture config only.
+- [ ] [AI] Final step: remove every `@fixture-until-p3-render` tag from `content/content-rendering.feature`, run `grep -rn "@fixture-until-p3-render" specs/` (expected empty), and run the fe real-corpus config on chromium, firefox and webkit. Gate: the seven scenarios pass there, and the fe fixture config holds no P3-Render scenario.
 - [ ] [AI] Do C4.
 
 ### P3-Inventory — AC-15: Generate and commit the old site's URL inventory
@@ -837,7 +882,7 @@ report with its zero-or-more gaps listed per unit that closes them.
 
 ### Phase 3 Gate
 
-Gate inputs, in the DAG order: `P3-E2E`, `P3-Corpus`, `P3-Inventory`.
+Gate inputs, in the DAG order: `P3-E2E`, `P3-Corpus`, `P3-Render`, `P3-Inventory`.
 
 - [ ] [AI] Confirm `main` has both e2e homes under their final names, the old `ayokoding-www-*-e2e`
       homes byte-identical to `evidence/P3-E2E/old-homes.txt`, the real corpus as the default and in both real-corpus configs, the htmx spec on the fe fixture config, and the committed inventory, export, and gap report.
@@ -883,6 +928,8 @@ tree groups close.
 - [ ] [AI] Do C4.
 - [ ] [AI] Do C5 (`content/README.md` indexing `content-tree-routes.feature` and naming the be home, architecture, 002's content-tree section as built).
 - [ ] [AI] Do C6.
+
+- [ ] [AI] GREEN (remove the tree tags): remove `@fixture-until-p4-tree` from "The locale switch preserves an available translated destination" in `shell/bilingual-shell.feature` and from the YouTube scenario in `content/content-rendering.feature`. Gate: the fe real-corpus config runs both, and `grep -rn "@fixture-until-p4-tree" specs/` is empty.
 
 ### P4-Redirects — AC-15: The real redirect table
 
@@ -931,6 +978,8 @@ memory measurement is recorded.
 - [ ] [AI] Do C5.
 - [ ] [AI] Do C6.
 
+- [ ] [AI] GREEN (remove the search tags): remove `@fixture-until-p4-search` from "Results stay within the current locale" and "Choosing a result closes search and opens its destination" in `search/search.feature`. Those scenarios run on the real search index this unit builds from the tree. Gate: the fe real-corpus config runs both, and `grep -rn "@fixture-until-p4-search" specs/` is empty.
+
 ### Phase 4 Gate
 
 Gate inputs, in the DAG order: `P4-Tree`, `P4-Redirects`, `P4-Search`.
@@ -965,6 +1014,7 @@ pass; the gap report has no browse or tools index group.
       the tools index lists both tools with locale text. Specific routes keep winning over the generic one.
 - [ ] [AI] GREEN: `git mv apps/ayokoding-web-fe-e2e/tests/e2e/htmx-fragments.spec.ts apps/ayokoding-web-be-e2e/tests/e2e/htmx-fragments.spec.ts`, then rewrite the spec as request-level tests with no browser project. In the same unit, add an ordinary-spec project `http-specs` (`testDir` `tests/e2e`, `testMatch` `htmx-fragments.spec.ts`) to the be `playwright.fixture.config.ts`, so the request-level spec runs there under the fixture switch; and delete the fe `playwright.fixture.config.ts` that `P3-Corpus` created, because it then holds no spec. Save the rewrite diff under `evidence/P5-Surfaces/`.
 - [ ] [AI] GREEN (revert the fe fixture wiring): remove the fe fixture config from the fe `test:e2e` command and `inputs`, which `P3-Corpus` added, in the same unit that deletes the config.
+- [ ] [AI] NOTE (fixture-only scenarios, recorded during P3-Corpus): three `@fixture` scenarios in `content/content-rendering-http.feature`, one in `navigation/routes-and-navigation-http.feature`, and one in `local-development/local-development-http.feature` bind the be fixture config and have no real witness, so they stay there. This unit does not move them to the real-corpus config. The two `@fixture` scenarios in `courses/course-catalog-and-paths.feature` bind the fe fixture config for the same reason. The htmx spec is the only scenario left on the fe fixture config once P3-Render, P4-Search and P4-Tree have removed their tags, so the `git mv` step above moves it, and the config deletion follows.
 - [ ] [AI] REFACTOR: reuse the card partial in the section page and the landing; rerun tests.
 - [ ] [AI] Start the new app as an owned service on port 3102 with its default configuration. Run recipes HTTP-03 and HTTP-10 (cite their ids), save the output under `evidence/P5-Surfaces/`, and stop the service.
 - [ ] [AI] Do C4.
@@ -1212,6 +1262,7 @@ inventory URL.
 reason. **Proof:** the three AC-22 scenarios pass through the real-corpus config; mapping rows total the old
 ledger's 509 rows.
 
+- [ ] [AI] GREEN (no fixture tag remains): after P3-Render, P4-Search and P4-Tree have removed their tags, run `grep -rn "@fixture-until-" specs/apps/ayokoding/web/` and confirm it prints nothing. Gate: the grep is empty, and the fe real-corpus config passes on chromium, firefox and webkit.
 - [ ] [AI] Do C1 and C2 for the three AC-22 scenarios. `P7-FE` only adds and extends the AC-22 browser steps on the real corpus. It changes no switch, because `P3-Corpus` already removed the fe real-corpus switch.
 - [ ] [AI] Extend `evidence/P0/disposition-ledger.csv` into the mapping file with `final_home`,
       `final_scenario_title`, and `drop_reason`. A row may be `dropped` only for a Next- or tRPC-only

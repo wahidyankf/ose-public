@@ -1,0 +1,68 @@
+=== RUN   TestLoadDatasetPreservesOrderDatesAndProvenance
+--- PASS: TestLoadDatasetPreservesOrderDatesAndProvenance (0.00s)
+=== RUN   TestCompositeIndexMatchesSharedVectors
+--- PASS: TestCompositeIndexMatchesSharedVectors (0.00s)
+=== RUN   TestScoredBenchmarksMatchSharedVectors
+--- PASS: TestScoredBenchmarksMatchSharedVectors (0.00s)
+=== RUN   TestTiersMatchSharedVectors
+--- PASS: TestTiersMatchSharedVectors (0.00s)
+=== RUN   TestBlendedPriceMatchesSharedVectors
+--- PASS: TestBlendedPriceMatchesSharedVectors (0.00s)
+=== RUN   TestPriceRatioMatchesSharedVectors
+--- PASS: TestPriceRatioMatchesSharedVectors (0.00s)
+=== RUN   TestFilterCountsMatchSharedVectors
+--- PASS: TestFilterCountsMatchSharedVectors (0.00s)
+=== RUN   TestSubstitutesMatchSharedVector
+--- PASS: TestSubstitutesMatchSharedVector (0.00s)
+=== RUN   TestInsufficientTargetHasNoSubstitutes
+--- PASS: TestInsufficientTargetHasNoSubstitutes (0.00s)
+=== RUN   TestDecodeBenchmarkURLVectors
+--- PASS: TestDecodeBenchmarkURLVectors (0.00s)
+=== RUN   TestBenchmarkRosterScopeMatchesVectors
+--- PASS: TestBenchmarkRosterScopeMatchesVectors (0.00s)
+=== RUN   TestLoadDatasetPreservesSnapshotDates
+--- PASS: TestLoadDatasetPreservesSnapshotDates (0.00s)
+=== RUN   TestEssentialsLocalMatchesSharedVectors
+--- PASS: TestEssentialsLocalMatchesSharedVectors (0.00s)
+=== RUN   TestNetUSDMatchesSharedVectors
+--- PASS: TestNetUSDMatchesSharedVectors (0.00s)
+=== RUN   TestSavingsRowMatchesSharedVectors
+--- PASS: TestSavingsRowMatchesSharedVectors (0.00s)
+=== RUN   TestMinimumRoleMatchesSharedVectors
+--- PASS: TestMinimumRoleMatchesSharedVectors (0.00s)
+=== RUN   TestFormatMatchesSharedVectors
+--- PASS: TestFormatMatchesSharedVectors (0.00s)
+=== RUN   TestRoleMedianGrossUSDMatchesSharedVectors
+--- PASS: TestRoleMedianGrossUSDMatchesSharedVectors (0.00s)
+=== RUN   TestPolicyConstantsDriveScaling
+--- PASS: TestPolicyConstantsDriveScaling (0.00s)
+=== RUN   TestDualCurrencyMatchesSharedVectors
+--- PASS: TestDualCurrencyMatchesSharedVectors (0.00s)
+=== RUN   TestDecodeCalculatorURLVectors
+--- PASS: TestDecodeCalculatorURLVectors (0.00s)
+=== RUN   TestContentLoadsDiskFixtureThroughOperatingSystemAdapter
+--- PASS: TestContentLoadsDiskFixtureThroughOperatingSystemAdapter (0.00s)
+=== RUN   TestContentMissingDiskRootFails
+--- PASS: TestContentMissingDiskRootFails (0.00s)
+=== RUN   TestContentLoadsRealCorpusFromDisk
+--- PASS: TestContentLoadsRealCorpusFromDisk (2.76s)
+=== RUN   TestDefaultStartServesTheRealCorpusOverHTTP
+--- PASS: TestDefaultStartServesTheRealCorpusOverHTTP (2.77s)
+=== RUN   TestDefaultStartRendersCopyControlsForRealFences
+--- PASS: TestDefaultStartRendersCopyControlsForRealFences (2.72s)
+=== RUN   TestLiveHomeServesLocale
+--- PASS: TestLiveHomeServesLocale (0.00s)
+=== RUN   TestLiveRootRedirectsWithoutLoop
+--- PASS: TestLiveRootRedirectsWithoutLoop (0.00s)
+=== RUN   TestLiveInventoryRedirects
+--- PASS: TestLiveInventoryRedirects (0.00s)
+=== RUN   TestLiveLessonAndDraft
+--- PASS: TestLiveLessonAndDraft (0.00s)
+=== RUN   TestFixtureVectorsDecode
+--- PASS: TestFixtureVectorsDecode (0.00s)
+=== RUN   TestFixtureLessonFrontmatter
+--- PASS: TestFixtureLessonFrontmatter (0.00s)
+=== RUN   TestEmbeddedMatchesSource
+--- PASS: TestEmbeddedMatchesSource (0.00s)
+PASS
+ok  	github.com/wahidyankf/ose-public/apps/ayokoding-web/tests/integration	8.610s

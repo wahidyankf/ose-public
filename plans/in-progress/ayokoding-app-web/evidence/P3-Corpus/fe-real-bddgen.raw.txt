@@ -1,0 +1,1 @@
+hippo: [hippo.args.invalid] class must be ephemeral, service, or transactional
